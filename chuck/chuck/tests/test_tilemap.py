@@ -181,13 +181,13 @@ def test_tavern_opens_as_a_walkable_exterior_threshold() -> None:
 
 def test_docks_district_wall_reads_as_a_castle_wall() -> None:
     """Wall-reference reskin: battlements over brick, banners and
-    torches deliberately placed, portcullis gates walkable, footprint
+    torches deliberately placed, raised portcullis gates walkable, footprint
     and collision identical to the old generic wall."""
     m = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
     for c in range(7, 34):
         top, body = m.terrain_at(c, 8), m.terrain_at(c, 9)
         if c in (21, 22, 31, 32):  # the two gates
-            assert top == "," and body == "g"
+            assert top == "g" and body == ","
             assert not m.is_solid(c, 8) and not m.is_solid(c, 9)
         else:
             assert top == "w", (c, top)

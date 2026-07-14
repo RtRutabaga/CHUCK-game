@@ -3,7 +3,7 @@
 ; Tavern exterior: slate roof 'r', eave 'e', tan facade 't',
 ; lit windows 'W', chimneys 'm' — per the facade reference.
 ; District wall: battlements 'w' over brick 'b', banners 'F',
-; torches 'i', portcullis gates 'g' — per the wall reference.
+; torches 'i', raised portcullis gates 'g' — per the wall reference.
 ; Northern boundary (row 0): same castle battlements 'w'.
 ; North district: the three blocks are houses/shops now —
 ; tavern grammar (roof 'r', eave 'e', facade 't', windows 'W',
@@ -29,8 +29,8 @@
 ~~~~~~~,,O,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,G,
 ~~~~~~~,,,,,,,,,,,,,c,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,S,,,
 ~~~~~~~,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-~~~~~~~wwwwwwwwwwwwww,,wwwwwwww,,wrrrrrrrrrrrrrrrrrrrrrr
-~~~~~~~bbbbbbbFbbbbbiggibbFbbbiggirrrmrrrrrrrrrrrrrmrrrr
+~~~~~~~wwwwwwwwwwwwwwggwwwwwwwwggwrrrrrrrrrrrrrrrrrrrrrr
+~~~~~~~bbbbbbbFbbbbbi,,ibbFbbbi,,irrrmrrrrrrrrrrrrrmrrrr
 ~~~~~~~=============,,,,,,,,,,,,,,rrrrrrrrrrrrrrrrrrrrrr
 ~~~~~~~=============,,,,,,c,,,,,,,rrrrrrrrrrrrrrrrrrrrrr
 ~~~~~~~==oB=========,,,,,,,N,,,,,,rrrrrrrrrrrrrrrrrrrrrr

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 52 (post-sewer tavern entrance). This file is required by the
+Updated: session 53 (raised north portcullises). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -53,7 +53,9 @@ project rules and updated every session.
   threshold tile becomes walkable; the surrounding facade remains solid
 - District wall: battlements/brick/banners/flickering torches
   ('w','b','F','i') with portcullis gates drawn overhead ('g');
-  northern boundary wall battlemented too; footprint/gates unchanged
+  both northern portcullises now occupy the upper opening row with clear
+  walkable stone beneath, so they read as raised/open without changing the
+  passage footprint; northern boundary wall battlemented too
 - District houses: the three north blocks reskinned with the tavern
   grammar + decorative house doors ('h'); solid, never accessible
 - Market stall (cutaway): checkered canopy over the back rows ending
