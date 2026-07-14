@@ -22,11 +22,11 @@ def test_grate_yes_goes_to_the_sewer() -> None:
     assert yes.dialogue is None
 
 
-def test_no_option_speaks_and_does_not_navigate() -> None:
+def test_no_option_is_a_silent_close() -> None:
     no = ChoiceSystem().get("sewer_grate").options[1]
     assert no.label == "NO"
     assert no.goto is None
-    assert no.dialogue == "sewer_grate_no"
+    assert no.dialogue is None
 
 
 def test_every_choice_goto_points_at_a_real_map() -> None:

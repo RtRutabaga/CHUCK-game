@@ -10,7 +10,8 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.systems.choice import ChoiceSystem
+from src.scenes.dialogue_scene import DialogueScene
+from src.systems.choice import Choice, ChoiceSystem, Option
 from src.systems.dialogue import DialogueSystem
 
 
@@ -56,8 +57,10 @@ def test_malformed_choices_are_loud() -> None:
         {"c": {"prompt": "Q?", "options": [{"label": "A", "dialogue": "x"}]}},
         {"c": {"prompt": "Q?", "options": [{"label": "", "dialogue": "x"},
                                            {"label": "B", "dialogue": "y"}]}},
-        {"c": {"prompt": "Q?", "options": [{"label": "A"},
-                                           {"label": "B", "dialogue": "y"}]}},
+        {"c": {"prompt": "Q?", "options": [
+            {"label": "A", "dialogue": "x", "goto": "somewhere"},
+            {"label": "B", "dialogue": "y"},
+        ]}},
     ]
     for data in bad:
         try:
@@ -73,22 +76,55 @@ def test_real_grate_choice_asks_the_right_question() -> None:
     choice = cs.get("sewer_grate")
     assert choice.prompt == "Jump into the sewer?"
     assert [o.label for o in choice.options] == ["YES", "NO"]
+    assert choice.options[1].dialogue is None
+    assert choice.options[1].goto is None
+
+
+def test_silent_choice_closes_dialogue_immediately() -> None:
+    class Input:
+        @staticmethod
+        def was_pressed(action):
+            return action == "interact"
+
+    class Audio:
+        played = []
+
+        @classmethod
+        def play_sfx(cls, name):
+            cls.played.append(name)
+
+    class Scenes:
+        pops = 0
+
+        @classmethod
+        def pop(cls):
+            cls.pops += 1
+
+    scene = object.__new__(DialogueScene)
+    scene.game = type("Game", (), {
+        "input": Input(), "audio": Audio(), "scenes": Scenes(),
+    })()
+    scene._choice = Choice("Jump?", [Option("NO"), Option("YES", goto="sewer")])
+    scene._selected = 0
+    scene._on_choice = None
+    scene._dialogue = None
+    scene._update_choice()
+    assert Scenes.pops == 1
+    assert Audio.played == ["interact"]
 
 
 def test_every_choice_branch_resolves() -> None:
-    # A spoken option must point at real lines; a navigation option must
-    # point at a real map. Either dead end would strand the player mid-
-    # conversation — catch it here instead. Every option is exactly one
-    # kind (the loader enforces the XOR; this checks the target exists).
+    # Spoken options point at real lines and navigation options at real maps.
+    # A third valid kind has neither target and simply closes the choice.
     from src.core import config
     cs, ds = ChoiceSystem(), DialogueSystem()
     for choice_id in cs.ids():
         for option in cs.get(choice_id).options:
-            assert (option.dialogue is None) != (option.goto is None)
+            assert option.dialogue is None or option.goto is None
             if option.dialogue is not None:
                 lines = ds.get(option.dialogue)  # raises if missing
                 assert lines and all(isinstance(l, str) for l in lines)
-            else:
+            elif option.goto is not None:
                 assert (config.MAPS_DIR / f"{option.goto}.txt").is_file()
 
 

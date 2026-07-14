@@ -29,16 +29,15 @@ A sewer grate sits in the plaza near the guard. Interacting with it
 asks a question — "Jump into the sewer?" — with YES / NO options and a
 caret you move with up/down and commit with E. Choices are data
 (data/choices/*.json, validated loudly), so any future decision anywhere
-in the game is a JSON entry, not new code. An option either speaks a
-line of dialogue or carries Chuck to another map (its `goto`): YES drops
-him straight into the sewer, wordlessly, while NO puts the grate back
-with a line. Any scene rebuilds into another area via
+in the game is a JSON entry, not new code. An option can speak dialogue,
+carry Chuck to another map (its `goto`), or silently close: YES drops
+him straight into the sewer, wordlessly, while NO simply closes the box.
+Any scene rebuilds into another area via
 WorldScene.load_map(), and each map draws with its own tileset
 (tileset_layout: docks.png, sewer.png). The sewer (assets/maps/sewer.txt)
-is a narrow, winding descent with its own art — brick walls, a stone
-landing, dirt and mud, a flowing drainage channel — and its own eerie,
-funky theme (data/music/sewer.py) that plays on entry. It's a forward
-dead-end you leave with ESC for now; the outflow exit is a later session.
+is a long corrupted descent with its own art — brick walls, dirt and mud,
+flowing drainage, and Astral blocks — plus its own eerie, funky theme.
+Its iron outflow returns Chuck to Waterdeep's south pier.
 
 Current state (after session 13): the docks are lived-in. Bobert
 sleeps in his barrel beside Chuck's spawn — gray beard over the rim,

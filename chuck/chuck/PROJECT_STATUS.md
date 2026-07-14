@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 47 (sewer outflow and dock return). This file is required by the
+Updated: session 48 (silent sewer-grate NO choice). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -17,7 +17,8 @@ project rules and updated every session.
 - Sanity with i-frames; cigarette pickups; HUD meter (a cigarette
   burning down); patrolling cat hazard; Astral Anchor checkpoints;
   quiet vanish -> starfield -> respawn (no game-over screen, ever)
-- Dialogue: JSON data files, typewriter box, one NPC (dock worker)
+- Dialogue: JSON data files, typewriter box, one NPC (dock worker); choice
+  options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
   sequencer), offline rendering (tools/generate_audio.py +
   tools/generate_music.py <name>), AudioSystem with graceful no-device
@@ -142,7 +143,8 @@ end-to-end headlessly with dummy SDL drivers.
        while an interactable is in reach (session 34)
 3. [x] Sewer grate + Yes/No dialogue choice: choices are data
        (data/choices/*.json), DialogueScene renders options with a
-       caret, up/down selects, E commits (session 35)
+       caret, up/down selects, E commits; YES enters the sewer and NO
+       immediately closes with no follow-up text (sessions 35/48)
 4. [x] Sewer map + tileset: the grate's YES loads a narrow, linear
        sewer map (assets/maps/sewer.txt) via a reusable
        WorldScene.load_map + data-driven `goto` (sessions 36-37). Now

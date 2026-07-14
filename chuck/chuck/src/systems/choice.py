@@ -1,8 +1,8 @@
 """Dialogue choices — data, loaded and validated loudly.
 
 A choice is a prompt plus two or more options. Picking an option either
-plays a line of dialogue OR carries Chuck straight to another map — each
-option declares exactly one of `dialogue` or `goto`. Choices live in
+plays dialogue, carries Chuck straight to another map, or simply closes the
+choice. An option may declare one of `dialogue` or `goto`, never both. Choices live in
 data/choices/*.json, exactly like dialogue lines live in
 data/dialogue/*.json:
 
@@ -11,13 +11,13 @@ data/dialogue/*.json:
         "prompt": "Jump into the sewer?",
         "options": [
           { "label": "YES", "goto": "sewer"          },
-          { "label": "NO",  "dialogue": "sewer_grate_no" }
+          { "label": "NO" }
         ]
       }
     }
 
-YES drops Chuck into the sewer with no further words; NO speaks a line
-and closes. Content, not code: a new decision anywhere in the game is a
+YES drops Chuck into the sewer with no further words; NO simply closes.
+Content, not code: a new decision anywhere in the game is a
 JSON entry and (if it's a prop) one line in PROP_CHOICE.
 
 Malformed data is a loud error at load, never a mystery at runtime.
@@ -77,10 +77,10 @@ class ChoiceSystem:
                     raise ValueError(f"{choice_id}: an option has no label")
                 has_dialogue = isinstance(dialogue, str) and bool(dialogue.strip())
                 has_goto = isinstance(goto, str) and bool(goto.strip())
-                if has_dialogue == has_goto:  # both, or neither
+                if has_dialogue and has_goto:
                     raise ValueError(
-                        f"{choice_id}: option {label!r} needs exactly one of "
-                        f"'dialogue' (lines to play) or 'goto' (a map to enter)"
+                        f"{choice_id}: option {label!r} cannot have both "
+                        f"'dialogue' and 'goto'"
                     )
                 parsed.append(Option(
                     label=label,

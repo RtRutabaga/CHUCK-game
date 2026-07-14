@@ -106,6 +106,10 @@ class DialogueScene(Scene):
                 # read — close now and let the world act on the goto.
                 self.game.scenes.pop()
                 return
+            if option.dialogue is None:
+                # A silent terminal choice: close the box immediately.
+                self.game.scenes.pop()
+                return
             # A spoken branch becomes an ordinary conversation.
             self._lines = self._dialogue.get(option.dialogue)
             self._index = 0
