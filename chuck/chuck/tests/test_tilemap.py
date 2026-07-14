@@ -164,6 +164,21 @@ def test_docks_tavern_exterior_reads_as_a_building() -> None:
             assert m.is_solid(c, r)
 
 
+def test_tavern_opens_as_a_walkable_exterior_threshold() -> None:
+    from collections import Counter
+    m = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
+    m.open_tavern_entrance()
+    assert m.terrain_at(44, 17) == "v"
+    assert not m.is_solid(44, 17)
+    counts = Counter(kind for kind, _, _ in m.prop_tiles)
+    assert counts["tavern_door"] == 0
+    assert counts["tavern_open"] == 1
+    # The facade behind and beside the shallow threshold remains closed;
+    # Phase 2 does not build an interior.
+    assert m.is_solid(44, 16)
+    assert m.is_solid(43, 17) and m.is_solid(45, 17)
+
+
 def test_docks_district_wall_reads_as_a_castle_wall() -> None:
     """Wall-reference reskin: battlements over brick, banners and
     torches deliberately placed, portcullis gates walkable, footprint

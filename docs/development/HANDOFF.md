@@ -3,42 +3,49 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `b908225` (`Add maze checkpoint and interactive sewer exit`)
-- Current work: Waterdeep market woman NPC
+- Base commit: `72fce5a` (`Add Waterdeep market woman`)
+- Current work: post-sewer tavern entrance state
 - Active phase: Phase 2 — Waterdeep Starting Area and Sewer Tutorial
 
 ## Completed This Pass
 
-The documented market woman now stands beside the existing red market stall
-and delivers the sewer-scraps line through the ordinary NPC interaction flow.
+Returning through the sewer outflow now visibly opens the Waterdeep tavern
+entrance. The initial exterior remains unchanged until that return.
 
 ## Implementation
 
-- Waterdeep marker `I` places `npc:market_woman` at tile (40, 31), immediately
-  left of the stall's open goods and outside the canopy.
-- The new 48×30 sprite sheet contains the standard down/up/left frames. It is
-  a palette variant of the dock worker's exact 16×30 silhouette, using a muted
-  ochre headscarf, red blouse, practical apron, and established human scale.
-- Dialogue data contains: “No handouts here. If you're hungry, you should
-  check the sewer for scraps”. There is no quest, marker, waypoint, flag, or
-  custom interaction logic.
+- `WorldScene` records sewer completion only when Waterdeep loads through the
+  named `sewer_outflow` arrival. The state persists across later map loads in
+  the same scene.
+- `TileMap.open_tavern_entrance()` changes the single `D` door tile to a
+  walkable `v` threshold and swaps only its prop from `tavern_door` to
+  `tavern_open`. It validates that exactly one authored tavern door exists.
+- The new 48×34 procedural prop removes the wooden leaves, retains the familiar
+  side lanterns and frame, and fills the opening with near-black interior space
+  plus a stone sill.
+- The threshold is a shallow exterior alcove. Adjacent and rear facade tiles
+  remain solid; there is no interior scene, transition, or Phase 3 content.
 
 ## Verification
 
-- Focused dialogue, tilemap, and headless game-loading checks pass.
-- Dialogue coverage verifies the exact line and pixel-font compatibility.
-- Map coverage verifies one market woman on walkable stone beside the stall.
+- Focused prop, tilemap, and outflow lifecycle suites pass.
+- Coverage confirms the ordinary map begins with a solid closed `D`, while the
+  sewer return produces one walkable `v` and one `tavern_open` prop.
+- The outflow test loads and draws the returned Waterdeep scene headlessly.
 - All 18 test suites pass, including existing headless launch/render coverage.
 
 ## Playtest Focus
 
-- Approach the red market stall from the docks and confirm the woman is easy
-  to see beside the open goods without blocking the stall.
-- Confirm she matches the dock worker and guard in overall human scale.
-- Approach from several directions, verify “Press E to interact” appears, and
-  confirm she turns toward Chuck and says only the requested line.
+- On a fresh start, confirm the original wooden tavern doors remain closed.
+- Complete the sewer and return through the outflow. Confirm the doors are gone
+  and the dark threshold reads clearly from the south pier approach.
+- Walk onto the threshold. Chuck should enter the shallow opening but stop at
+  the still-solid facade; no interior transition should occur.
+- Confirm the guard, market woman, HEROD sign, windows, and exterior layout are
+  otherwise unchanged.
 
 ## Next Bounded Task
 
-Make the tavern doorway read as open and accessible from the exterior after
-the sewer return, without building the tavern interior or beginning Phase 3.
+Phase 2's documented feature checklist is complete. Conduct a full human
+playtest and wait for Sean to advance `CURRENT-PHASE.md` before beginning the
+tavern interior or any Phase 3 work.

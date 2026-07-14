@@ -28,6 +28,7 @@ _SPRITES = {
     "bobert_barrel": "objects/bobert_barrel.png",
     "herod_sign": "objects/herod_sign.png",
     "tavern_door": "objects/tavern_door.png",
+    "tavern_open": "objects/tavern_open.png",
     "chimney": "objects/chimney.png",
     "sewer_grate": "objects/sewer_grate.png",
     "house_door": "objects/house_door.png",

@@ -55,6 +55,7 @@ class WorldScene(Scene):
         self._pending_map: str | None = None
         self._pending_arrival: str | None = None
         self._pending_climb_from_water = False
+        self._sewer_completed = False
 
     def on_enter(self) -> None:
         """Build the starting area when this scene becomes active."""
@@ -69,10 +70,14 @@ class WorldScene(Scene):
         """(Re)build the map and all entities for an area. Used both on
         first entry and when a transition carries Chuck somewhere new."""
         self.map_name = map_name
+        if map_name == "waterdeep_docks" and arrival == "sewer_outflow":
+            self._sewer_completed = True
         self._pending_map = None
         self._pending_arrival = None
         self._pending_climb_from_water = False
         self.tilemap = TileMap(config.MAPS_DIR / f"{self.map_name}.txt")
+        if self.map_name == "waterdeep_docks" and self._sewer_completed:
+            self.tilemap.open_tavern_entrance()
         self.tilemap.load_tileset(self.game.assets, tileset_for(self.map_name))
         self._world_time = 0.0  # drives water shimmer
 

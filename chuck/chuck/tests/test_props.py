@@ -51,6 +51,14 @@ def test_tavern_door_is_human_scale() -> None:
     assert door._draw_x == 44 * 16 + (16 - 32) // 2
 
 
+def test_open_tavern_threshold_keeps_the_human_scale() -> None:
+    doorway = Prop("tavern_open", col=44, row=17, assets=FakeAssets(48, 34))
+    assert doorway.dialogue_id is None
+    assert doorway.choice_id is None
+    assert doorway._draw_x == 44 * TS + (TS - 48) // 2
+    assert doorway._draw_y == 18 * TS - 34
+
+
 def test_chimney_is_a_valid_mute_prop() -> None:
     p = Prop("chimney", col=37, row=9, assets=FakeAssets(12, 22))
     assert p.dialogue_id is None

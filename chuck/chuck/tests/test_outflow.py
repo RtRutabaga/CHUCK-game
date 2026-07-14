@@ -62,6 +62,10 @@ def test_outflow_yes_climbs_from_water_onto_south_pier() -> None:
         _choose_exit(game, scene, selected=0)
         scene.update(0.01)
         assert scene.map_name == "waterdeep_docks"
+        assert scene._sewer_completed
+        assert scene.tilemap.terrain_at(44, 17) == "v"
+        assert not scene.tilemap.is_solid(44, 17)
+        assert any(prop.kind == "tavern_open" for prop in scene.props)
         assert scene._climb_t == 0.0
         assert scene.player.facing == "up"
         start_y, target_y = scene._climb_from_y, scene._climb_target_y

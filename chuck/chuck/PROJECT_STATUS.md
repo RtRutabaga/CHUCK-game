@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 51 (market woman NPC). This file is required by the
+Updated: session 52 (post-sewer tavern entrance). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -47,8 +47,10 @@ project rules and updated every session.
   lanterns), enlarged west pier (4 rows to col 1), south pier with
   T-head, and a 48-tile market awning
 - Tavern exterior: slate roof + chimney props + eave trim + tan brick
-  facade + lit windows, all new tileset terrains ('r','e','t','W','m');
-  building footprint and collision unchanged
+  facade + lit windows, all new tileset terrains ('r','e','t','W','m'). It
+  begins with solid double doors; returning through the sewer outflow swaps
+  them for a 48x34 black open threshold with lit side lanterns. Only the
+  threshold tile becomes walkable; the surrounding facade remains solid
 - District wall: battlements/brick/banners/flickering torches
   ('w','b','F','i') with portcullis gates drawn overhead ('g');
   northern boundary wall battlemented too; footprint/gates unchanged
@@ -110,7 +112,8 @@ project rules and updated every session.
   control-locked climb, with no further dialogue or explanation
 
 ## Placeholder systems
-- Tavern door is solid decoration; interiors are a later phase
+- The post-sewer tavern threshold is an accessible exterior alcove only;
+  the tavern interior remains intentionally absent until Phase 3
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -185,14 +188,18 @@ end-to-end headlessly with dummy SDL drivers.
        onto the planks in a brief, silent, control-locked animation. The late
        maze now also contains an ashtray checkpoint with proximity guidance
        (sessions 47/50)
-9. [ ] Tavern doorway opens (Phase 3 setup)
+9. [x] Tavern doorway opens (Phase 3 setup): the initial solid doors remain
+       until Chuck returns through the sewer outflow, then become a dark,
+       walkable exterior threshold. No interior or Phase 3 transition is
+       present (session 52)
 
 ## Next recommended session
 
-Complete item 9 by making the tavern doorway read as open and accessible from
-the Waterdeep exterior after the sewer return. Do not build the tavern interior
-or begin the pantry sequence during Phase 2.
+Phase 2's documented feature checklist is complete. Playtest the full Waterdeep
+-> sewer -> Waterdeep loop, especially the changed tavern threshold. Do not
+begin the tavern interior until Sean advances `CURRENT-PHASE.md` to Phase 3.
 
-## Also open (Phase 2 / later)
+## Also open
 
-- Tavern doorway reads as open for Phase 3 (item 9)
+- Full Phase 2 human playtest and acceptance
+- Phase 3 remains blocked by the active-phase document

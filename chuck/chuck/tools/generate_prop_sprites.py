@@ -374,6 +374,39 @@ def _build_tavern_door() -> str:
     return "\n".join("".join(row) for row in g)
 
 
+def _build_tavern_open() -> str:
+    """The same human-scale entrance after the sewer: doors gone, dark within."""
+    width, height, offset = 48, 34, 8
+    grid = [["." for _ in range(width)] for _ in range(height)]
+    # A heavy two-pixel frame around a black, readable opening. The bottom
+    # stays open except for a pale stone sill, so it reads as a threshold.
+    for y in range(height):
+        for x in range(32):
+            world_x = x + offset
+            if x in (0, 1, 30, 31) or y in (0, 1):
+                grid[y][world_x] = "n"
+            elif y < 32:
+                grid[y][world_x] = "_"
+    for x, y in ((0, 0), (1, 0), (0, 1), (30, 0), (31, 0), (31, 1)):
+        grid[y][x + offset] = "."
+    for x in range(2, 30):
+        grid[32][x + offset] = "S"
+        grid[33][x + offset] = "E"
+    # Keep the familiar lanterns lit on either side of the changed doorway.
+    for lantern_x in (2, 41):
+        grid[10][lantern_x + 1] = "J"
+        grid[10][lantern_x + 2] = "J"
+        grid[11][lantern_x + 2] = "J"
+        for y in range(12, 21):
+            for x in range(lantern_x, lantern_x + 5):
+                grid[y][x] = "J"
+        for y in range(14, 19):
+            for x in range(lantern_x + 1, lantern_x + 4):
+                grid[y][x] = "q"
+        grid[16][lantern_x + 2] = "x"
+    return "\n".join("".join(row) for row in grid)
+
+
 def _write(name: str, grid: str, w: int, h: int) -> None:
     out = (Path(__file__).resolve().parents[1]
            / "assets" / "sprites" / "objects" / f"{name}.png")
@@ -396,6 +429,7 @@ def main() -> None:
     _write("bobert_barrel", BOBERT_BARREL, 16, 24)
     _write("herod_sign", HEROD_SIGN, 16, 24)
     _write("tavern_door", _build_tavern_door(), 48, 34)
+    _write("tavern_open", _build_tavern_open(), 48, 34)
     _write("chimney", CHIMNEY, 12, 22)
     _write("sewer_grate", SEWER_GRATE, 16, 13)
     _write("house_door", HOUSE_DOOR, 14, 20)

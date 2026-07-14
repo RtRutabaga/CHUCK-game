@@ -30,6 +30,7 @@ Terrain legend:
     'H'  HEROD sign          (solid standing prop, y-sorted)
     'D'  tavern door         (solid prop; big enough for humans —
                               interiors are a later phase)
+    'v'  open tavern threshold (walkable exterior state after sewer)
     'a'  market awning       (walkable; canvas drawn OVER entities)
     't'  tavern facade       (solid tan brick)
     'W'  tavern window       (solid; warm lit panes)
@@ -136,6 +137,10 @@ TILE_DEFS: dict[str, TileDef] = {
     # the wall). Solid for now — interiors are a later phase.
     "D": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="tavern_door", under="#"),
+    # Phase 2 return state: the doors are gone and a dark threshold remains.
+    # It is walkable only as a shallow exterior alcove; no interior exists yet.
+    "v": TileDef(solid=False, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="tavern_open", under=","),
     # Market awning: walkable stone with red canvas drawn OVERHEAD —
     # Chuck passes underneath and the canvas covers him.
     "a": TileDef(solid=False, color=config.COLOR_STONE_PLACEHOLDER,
@@ -288,6 +293,27 @@ class TileMap:
         self._tileset_info = DOCKS.info()
         self._tile_art: dict[str, list] = {}
         self._overhead_art: dict[str, list] = {}
+
+    def open_tavern_entrance(self) -> None:
+        """Swap the authored tavern door to its post-sewer exterior state."""
+        door_tiles = [
+            (col, row)
+            for row, terrain_row in enumerate(self._grid)
+            for col, char in enumerate(terrain_row)
+            if char == "D"
+        ]
+        if len(door_tiles) != 1:
+            raise ValueError(
+                f"Expected one tavern door in {self.map_path.name}, "
+                f"found {len(door_tiles)}"
+            )
+        col, row = door_tiles[0]
+        terrain_row = self._grid[row]
+        self._grid[row] = terrain_row[:col] + "v" + terrain_row[col + 1:]
+        self.prop_tiles = [
+            ("tavern_open" if kind == "tavern_door" else kind, pcol, prow)
+            for kind, pcol, prow in self.prop_tiles
+        ]
 
     # ------------------------------------------------------------------
     # Collision interface (used by src/world/collision.py)
