@@ -42,6 +42,9 @@ MUD = {"base": (58, 50, 38), "dark": (44, 38, 28),
        "glint": (86, 80, 58), "wet": (70, 64, 46)}
 CHAN = {"water": (46, 56, 46), "dark": (34, 44, 36),
         "mid": (60, 72, 58), "glint": (96, 112, 90)}
+ASTRAL = {"deep": (14, 16, 38), "blue": (28, 38, 82),
+          "purple": (72, 42, 104), "bright": (158, 132, 210),
+          "star": (228, 232, 248)}
 
 
 def _rand(x: int, y: int, salt: int) -> float:
@@ -132,7 +135,28 @@ def draw_channel(surf, _variant, frame):
             if (x + phase) % 6 < 2:
                 surf.set_at((x, ry), CHAN["mid"])
             if (x + phase) % 12 == 0:
-                surf.set_at((x, ry), CHAN["glint"])
+                    surf.set_at((x, ry), CHAN["glint"])
+
+
+def draw_astral_void(surf, variant, frame):
+    """A hard-edged chunk of another map, never a swirling portal."""
+    surf.fill(ASTRAL["deep"])
+    # Blocky nebula bands shift by whole pixels, preserving the visibly
+    # incorrect tile-grid language instead of reading as liquid or mist.
+    phase = frame * 2 + variant * 3
+    for y in range(TILE_PX):
+        for x in range(TILE_PX):
+            band = (x // 3 + y // 2 + phase) % 9
+            if band in (0, 1):
+                surf.set_at((x, y), ASTRAL["blue"])
+            elif band == 5 and (x + y + variant) % 3 == 0:
+                surf.set_at((x, y), ASTRAL["purple"])
+    stars = ((2, 3), (11, 2), (7, 9), (14, 13))
+    for i, (x, y) in enumerate(stars):
+        if (i + frame + variant) % 3 != 0:
+            surf.set_at((x, y), ASTRAL["star"])
+        elif i == 0:
+            surf.set_at((x, y), ASTRAL["bright"])
 
 
 DRAW = {
@@ -141,6 +165,7 @@ DRAW = {
     "sewer_dirt": draw_dirt,
     "sewer_mud": draw_mud,
     "sewer_channel": draw_channel,
+    "astral_void": draw_astral_void,
 }
 
 

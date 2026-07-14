@@ -52,6 +52,7 @@ Terrain legend:
     'd'  sewer dirt          (walkable; packed-earth sewer floor)
     'M'  sewer mud           (walkable; wet muck, darker than dirt)
     '%'  drainage channel    (solid; murky sewer water Chuck can't cross)
+    'V'  Astral wrong-map    (solid on foot; jumpable, never a portal)
 
 Marker legend (things ON a tile, not the tile itself — each marker
 declares the terrain underneath it, so no seams appear in the ground):
@@ -189,6 +190,7 @@ TILE_DEFS: dict[str, TileDef] = {
     "d": TileDef(solid=False, color=config.COLOR_SEWER_DIRT),
     "M": TileDef(solid=False, color=config.COLOR_SEWER_MUD),
     "%": TileDef(solid=True, color=config.COLOR_SEWER_CHANNEL),
+    "V": TileDef(solid=True, color=config.COLOR_ASTRAL),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {

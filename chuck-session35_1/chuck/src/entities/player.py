@@ -3,8 +3,7 @@
 Responsibilities:
     * Read named actions from the InputManager and move through the
       world via collision.move_and_collide (8-directional top-down
-      movement — no jumping, no gravity; this is a top-down RPG per
-      the Game Bible).
+      movement plus a short committed hop; no platformer gravity).
     * Drive animation state: idle/walk in four facings (right is the
       left frames flipped).
     * (Future) Trigger interactions when the interact action is pressed.
@@ -55,6 +54,9 @@ class Player(Entity):
         self.visible = True
         # Seconds of hurt-blink remaining (set by the WorldScene on hit).
         self.hurt_blink = 0.0
+        # A jump is a short committed hop in the current facing direction.
+        self.jump_remaining = 0.0
+        self._jump_direction = (0.0, 1.0)
         # (state, facing) -> Animation. Empty until load_sprites() is
         # called; draw() falls back to a rectangle so headless tests
         # and asset failures degrade gracefully instead of crashing.
@@ -96,7 +98,24 @@ class Player(Entity):
         if self.hurt_blink > 0.0:
             self.hurt_blink = max(0.0, self.hurt_blink - dt)
 
-        dx, dy = self.input.movement_vector()
+        if self.input.was_pressed("jump") and not self.jumping:
+            self.jump_remaining = config.JUMP_DURATION
+            self._jump_direction = {
+                "up": (0.0, -1.0),
+                "down": (0.0, 1.0),
+                "left": (-1.0, 0.0),
+                "right": (1.0, 0.0),
+            }[self.facing]
+
+        if self.jumping:
+            dx, dy = self._jump_direction
+            move_speed = config.JUMP_SPEED
+            ignored_terrain = frozenset({"V"})
+            self.jump_remaining = max(0.0, self.jump_remaining - dt)
+        else:
+            dx, dy = self.input.movement_vector()
+            move_speed = self.speed
+            ignored_terrain = frozenset()
         self.moving = bool(dx or dy)
 
         if self.moving:
@@ -107,9 +126,10 @@ class Player(Entity):
                     self.y,
                     self.width,
                     self.height,
-                    dx * self.speed * dt,
-                    dy * self.speed * dt,
+                    dx * move_speed * dt,
+                    dy * move_speed * dt,
                     self.tilemap,
+                    ignored_terrain=ignored_terrain,
                 )
 
         if self._animations:
@@ -118,6 +138,10 @@ class Player(Entity):
                 self._current_key = key
                 self._animations[key].reset()
             self._animations[key].update(dt)
+
+    @property
+    def jumping(self) -> bool:
+        return self.jump_remaining > 0.0
 
 
 
@@ -174,7 +198,12 @@ class Player(Entity):
             fw, fh = frame.get_size()
             # Horizontally centered on the hitbox, bottom edges aligned.
             draw_x = int(self.x + self.width / 2 - fw / 2) - ox
-            draw_y = int(self.y + self.height - fh) - oy
+            lift = 0
+            if self.jumping:
+                import math
+                progress = 1.0 - self.jump_remaining / config.JUMP_DURATION
+                lift = round(math.sin(progress * math.pi) * config.JUMP_HEIGHT)
+            draw_y = int(self.y + self.height - fh) - oy - lift
             surface.blit(frame, (draw_x, draw_y))
         else:
             # Fallback (sprites not loaded): the old placeholder rect.

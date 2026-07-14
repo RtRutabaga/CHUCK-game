@@ -89,6 +89,17 @@ def test_hint_text_names_the_real_interact_key() -> None:
         "hint says E but E is not bound to interact"
 
 
+def test_space_is_jump_not_interact() -> None:
+    import re
+    from pathlib import Path
+
+    assert config.HINT_JUMP == "Press SPACE to jump"
+    src = (Path(__file__).resolve().parents[1]
+           / "src" / "core" / "input.py").read_text()
+    assert re.search(r"pygame\.K_SPACE:\s*\"jump\"", src)
+    assert not re.search(r"pygame\.K_SPACE:\s*\"interact\"", src)
+
+
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):

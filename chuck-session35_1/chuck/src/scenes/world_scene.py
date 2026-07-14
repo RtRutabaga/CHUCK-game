@@ -93,6 +93,7 @@ class WorldScene(Scene):
             if self.map_name in config.TUTORIAL_MAPS
             else None
         )
+        self._jump_tutorial_complete = False
 
         # Respawn: where Chuck returns (defaults to where he woke up),
         # and the transition state (None = living normally).
@@ -175,6 +176,8 @@ class WorldScene(Scene):
 
         self.sanity.update(dt)
         self.player.update(dt)
+        if self.map_name == "sewer" and self._player_tile()[1] >= 20:
+            self._jump_tutorial_complete = True
 
         # Talking: interact probes one tile ahead of Chuck.
         if self.game.input.was_pressed("interact"):
@@ -247,12 +250,11 @@ class WorldScene(Scene):
         self.hud.draw(surface)
         # Tutorial hint (temporary; Waterdeep + sewer only). Hidden
         # while a dialogue is open — it has already been taken up on.
-        if (
-            self._hint is not None
-            and self.game.scenes.current is self
-            and self._interactable_in_range() is not None
-        ):
-            self._hint.draw(surface, config.HINT_INTERACT)
+        if self._hint is not None and self.game.scenes.current is self:
+            if self._jump_hint_visible():
+                self._hint.draw(surface, config.HINT_JUMP)
+            elif self._interactable_in_range() is not None:
+                self._hint.draw(surface, config.HINT_INTERACT)
         self._draw_respawn_overlay(surface)
 
     def _sorted_drawables(self):
@@ -291,9 +293,24 @@ class WorldScene(Scene):
             self.props,
         )
 
+    def _player_tile(self) -> tuple[int, int]:
+        """Tile under Chuck's footprint center."""
+        ts = config.TILE_SIZE
+        return (
+            int((self.player.x + self.player.width / 2) // ts),
+            int((self.player.y + self.player.height / 2) // ts),
+        )
+
+    def _jump_hint_visible(self) -> bool:
+        """Show the sewer's temporary prompt only on approach to the gap."""
+        if self.map_name != "sewer" or self._jump_tutorial_complete:
+            return False
+        col, row = self._player_tile()
+        return 5 <= col <= 15 and 16 <= row <= 19
+
     def _update_footsteps(self, dt: float) -> None:
         """A soft tap per stride; wood on the dock, stone on the street."""
-        if not self.player.moving:
+        if not self.player.moving or self.player.jumping:
             self._step_timer = 0.0
             return
         self._step_timer -= dt

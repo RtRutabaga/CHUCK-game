@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 38 (the sewer gets its own eerie/funky theme). This file is required by the
+Updated: session 39 (Astral interruption + jump tutorial). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -71,7 +71,11 @@ project rules and updated every session.
   tools/generate_sewer_tileset.py): brick walls '#', stone landing ',',
   dirt 'd', mud 'M', and a drainage channel '%' that flows over 3
   frames. Its own looping theme plays on entry (data/music/sewer.py ->
-  sewer.wav). Walled off at the bottom (no exit yet)
+  sewer.wav). A hard-edged band of animated dark-blue/purple Astral
+  wrong-map material interrupts the corridor; SPACE performs a short
+  committed hop that crosses it but cannot bypass normal walls. The
+  nearby jump hint clears after Chuck lands beyond it. Walled off at
+  the bottom (no exit yet)
 
 ## Placeholder systems
 - Tavern door is solid decoration; interiors are a later phase
@@ -80,8 +84,8 @@ project rules and updated every session.
 
 ## Known issues / accepted quirks
 
-- SPACE and RETURN are also bound to "interact". SPACE becomes jump in
-  Phase 2 item 6 — unbind it from interact then (E and RETURN remain).
+- E and RETURN interact; SPACE jumps. The jump is intentionally short
+  and only ignores Astral-gap collision while Chuck is airborne.
 
 - Scroll shimmer fix (session 29): native pipeline audited whole-pixel
   (int camera offset used by every draw; exact 4x nearest-neighbor
@@ -100,9 +104,9 @@ project rules and updated every session.
 
 ## Tests
 
-14 suites, all pure Python (no pygame needed): collision, tilemap,
+15 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
-tutorial, choice, music, transitions
+tutorial, choice, music, transitions, jump
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -126,20 +130,20 @@ end-to-end headlessly with dummy SDL drivers.
 5. [x] Sewer music: an eerie/funky 83s D-minor loop (data/music/sewer.py,
        rendered to sewer.wav), wired via AREA_MUSIC and playing on entry
        (session 38)
-6. [ ] Astral Sea glitch blocks + jump mechanic & tutorial
+6. [x] Astral Sea glitch blocks + jump mechanic & tutorial: animated
+       dark-blue/purple wrong-map tiles form a one-tile interruption;
+       SPACE makes a restrained forward hop, ordinary walls remain solid,
+       and the proximity hint clears after landing beyond it (session 39)
 7. [ ] Rats + scratch attack & tutorial
 8. [ ] Sewer exit -> climb-out -> return to docks
 9. [ ] Tavern doorway opens (Phase 3 setup)
 
 ## Next recommended session
 
-Item 6 — Astral-Sea glitch blocks + the jump mechanic & tutorial: place
-chunks of dark-blue/purple nebula "wrong map" material in the sewer (a
-new terrain, per the Phase 2 spec — not a portal, just another world's
-tiles bleeding in), and make one void section physically interrupt the
-corridor so Chuck must jump it. This is the first real mechanic addition
-(SPACE becomes jump — unbind it from "interact" then; E and RETURN stay),
-with a "Press SPACE to jump" tutorial hint that clears once crossed.
+Item 7 — ordinary sewer rats + scratch attack & tutorial. Place a small
+group beyond the jump, visibly smaller than Chuck, gate forward progress
+until they are defeated, bind and display the real scratch control, and
+keep the attack animation minimal and readable. One scratch kills one rat.
 
 ## Also open (Phase 2 / later)
 

@@ -37,6 +37,7 @@ def move_and_collide(
     dx: float,
     dy: float,
     grid: SolidGrid,
+    ignored_terrain: frozenset[str] = frozenset(),
 ) -> tuple[float, float]:
     """Move a hitbox by (dx, dy), stopping flush against solid tiles.
 
@@ -46,8 +47,20 @@ def move_and_collide(
 
     Movement is swept: every tile the leading edge crosses is checked,
     so even a large dt (lag spike) can't tunnel through a thin wall.
+    `ignored_terrain` is reserved for explicit traversal states such as
+    the sewer jump; the default preserves ordinary collision exactly.
     """
     ts = config.TILE_SIZE
+
+    def blocked(col: int, row: int) -> bool:
+        return (
+            grid.is_solid(col, row)
+            and (
+                not ignored_terrain
+                or not hasattr(grid, "terrain_at")
+                or grid.terrain_at(col, row) not in ignored_terrain
+            )
+        )
 
     # ----- X axis -----
     if dx != 0.0:
@@ -59,14 +72,14 @@ def move_and_collide(
             first_col = int((old_x + width - _EPS) // ts) + 1  # first newly entered
             last_col = int((x + width - _EPS) // ts)
             for col in range(first_col, last_col + 1):
-                if any(grid.is_solid(col, r) for r in range(top_row, bottom_row + 1)):
+                if any(blocked(col, r) for r in range(top_row, bottom_row + 1)):
                     x = col * ts - width
                     break
         else:
             first_col = int(old_x // ts) - 1
             last_col = int(x // ts)
             for col in range(first_col, last_col - 1, -1):
-                if any(grid.is_solid(col, r) for r in range(top_row, bottom_row + 1)):
+                if any(blocked(col, r) for r in range(top_row, bottom_row + 1)):
                     x = (col + 1) * ts
                     break
 
@@ -80,14 +93,14 @@ def move_and_collide(
             first_row = int((old_y + height - _EPS) // ts) + 1
             last_row = int((y + height - _EPS) // ts)
             for row in range(first_row, last_row + 1):
-                if any(grid.is_solid(c, row) for c in range(left_col, right_col + 1)):
+                if any(blocked(c, row) for c in range(left_col, right_col + 1)):
                     y = row * ts - height
                     break
         else:
             first_row = int(old_y // ts) - 1
             last_row = int(y // ts)
             for row in range(first_row, last_row - 1, -1):
-                if any(grid.is_solid(c, row) for c in range(left_col, right_col + 1)):
+                if any(blocked(c, row) for c in range(left_col, right_col + 1)):
                     y = (row + 1) * ts
                     break
 

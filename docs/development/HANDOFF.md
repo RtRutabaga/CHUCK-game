@@ -3,69 +3,55 @@
 ## Repository State
 
 - Branch: main
-- Latest relevant commit: (uncommitted working tree — Phase 2 sewer work: entrance, tileset, and now music)
+- Latest commit reviewed: `6cedb0b` (`feat: build the sewer — entrance, tileset, and theme`)
+- Current work: uncommitted Phase 2 jump-obstacle pass; stop for Sean's playtest
 - Active phase: Phase 2 — Waterdeep Starting Area and Sewer Tutorial
+
+## Review This Pass
+
+Commit `6cedb0b` was reviewed in detail, including its transition flow,
+choice data, map rebuild, per-area tilesets, generated sewer art, music
+wiring, and tests. It is coherent with the established architecture,
+Game Bible, and Phase 2 scope. No corrective fix was needed.
 
 ## Completed This Pass
 
-- Phase 2 item 5 — the sewer soundtrack. Composed an original eerie/funky
-  theme for the sewer and wired it to play on entry. The descent is no
-  longer silent.
+Phase 2 item 6: an Astral wrong-map interruption, a short top-down jump,
+and the temporary jump tutorial prompt.
 
-## Files Changed
+## Files and Systems Changed
 
-- data/music/sewer.py (new): the composition. D natural minor, 104 BPM,
-  36 bars (~83s), 7 voices. A syncopated round-bass groove is the funk; a
-  sparse minor pluck lead plus Eb/Ab tritone bell-drips are the unease.
-  Intro / A / A' / B (the tritone turn) / transition / A'' — same
-  section grammar as the docks theme, transposed dark.
-- assets/audio/music/sewer.wav (new): rendered output (regenerate with
-  `python tools/generate_music.py sewer`).
-- tools/generate_music.py: generalized to render any song module —
-  `generate_music.py [name]`, default "waterdeep_docks" (unchanged
-  behavior). Uses importlib; output is assets/audio/music/<name>.wav.
-- src/world/transitions.py: AREA_MUSIC["sewer"] = "sewer.wav" (was None).
-- tests/test_music.py: sewer composition test (60s+, 4+ voices, all
-  pitches parse, busy bass groove in A, Eb tritone present in B) and a
-  rendered-WAV quality-gate test (mono/22050, 60s+, peak <= 0.9, loop
-  seam < 0.15), mirroring the docks tests.
+- Input/config/player/collision: SPACE is now `jump`; E and RETURN remain
+  `interact`. A short committed hop travels in Chuck's facing direction,
+  lifts his sprite six native pixels, and ignores only terrain `V` while
+  airborne. Normal walls remain solid.
+- Sewer map/tileset/generator: `V` is a solid, animated, hard-edged
+  blue-purple Astral terrain, deliberately not a portal. A one-tile-thick
+  band interrupts the full corridor at row 19. `sewer.png` was regenerated
+  with a sixth terrain row.
+- WorldScene/tutorial: approaching the gap shows "Press SPACE to jump";
+  reaching the far side clears the prompt for the rest of that sewer visit.
+- Tests: new jump suite plus map, tileset, and input/hint coverage.
 
-## Systems Added or Changed
+`move_and_collide` gained an optional ignored-terrain set. Its default is
+empty, so every existing caller retains the prior behavior; Player passes
+only `{V}` during a jump.
 
-- generate_music.py now renders any data/music/<name>.py, so a new area
-  theme is a composition file + one command, no tool duplication.
-- AREA_MUSIC is the single place an area's loop is chosen; both real
-  areas now name a track.
+## Verification
 
-## Verification Performed
+- All 15 test suites pass.
+- Headless launch/render check reached `WorldScene`, loaded the sewer,
+  updated and drew it at 320x180, then shut down cleanly.
 
-- All 14 test suites pass (`python -m tests.test_<name>`).
-- Rendered sewer.wav measured directly: 83.1s, peak 0.750, loop seam
-  0.0000, mono/22050 — all quality gates pass.
-- Headless (dummy SDL): entering the sewer calls play_music("sewer.wav");
-  the docks call play_music("waterdeep_docks.wav"); returning to the
-  docks switches back. NOTE: audio was not auditioned by ear — the
-  composition is verified structurally (in-key, sectioned, seamless, no
-  clipping). Sean should give it a listen and call the vibe.
+## Known Issues / Playtest Focus
 
-## Known Issues
+- Sewer remains a forward dead-end; the exit is Phase 2 item 8.
+- Check jump timing, the six-pixel arc, prompt distance, and whether the
+  Astral band reads as misplaced map material at native scale.
+- Existing note from the prior pass: entering an area rebuilds SanitySystem,
+  so sanity resets on descent. Harmless while the sewer has no hazards.
 
-- Sewer is still a forward dead-end (exit is item 8).
-- Music is unauditioned here; tuning (tempo/mix/how funky vs eerie) is a
-  judgement call best made on Sean's ears.
-- Entering an area builds a fresh SanitySystem, so sanity resets on the
-  descent. Harmless today (no sewer hazards yet).
+## Next Bounded Task
 
-## Scope Notes
-
-- No future-phase work was intentionally implemented.
-- No documented creative rules were intentionally changed.
-
-## Recommended Next Bounded Task
-
-- Item 6: Astral-Sea glitch blocks + the jump mechanic & tutorial. Add
-  dark-blue/purple "wrong map" nebula terrain in the sewer and a void
-  section that interrupts the corridor and must be jumped. First real
-  mechanic: SPACE becomes jump (unbind SPACE from "interact" then; E and
-  RETURN remain), with a "Press SPACE to jump" hint that clears once
-  crossed.
+Phase 2 item 7: ordinary rats and the scratch attack/tutorial beyond the
+jump. Rats must be visibly smaller than Chuck; one scratch kills one rat.

@@ -24,8 +24,8 @@ KEY_BINDINGS: dict[int, str] = {
     pygame.K_d: "move_right",
     pygame.K_RIGHT: "move_right",
     pygame.K_e: "interact",
-    pygame.K_SPACE: "interact",
     pygame.K_RETURN: "interact",
+    pygame.K_SPACE: "jump",
 }
 
 

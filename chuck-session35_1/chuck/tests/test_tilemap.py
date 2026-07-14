@@ -337,13 +337,20 @@ def test_sewer_is_a_narrow_connected_descent() -> None:
         c, r = q.popleft()
         for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             n = (c + dc, r + dr)
-            if n not in seen and not m.is_solid(*n):
+            if n not in seen and (
+                not m.is_solid(*n) or m.terrain_at(*n) == "V"
+            ):
                 seen.add(n)
                 q.append(n)
     walkable = {(c, r) for r in range(m.height_tiles)
                 for c in range(m.width_tiles) if not m.is_solid(c, r)}
     sealed = walkable - seen
     assert not sealed, f"sealed pockets: {sorted(sealed)[:8]}"
+    # A single-tile-thick wrong-map band fully interrupts the corridor.
+    voids = {(c, r) for r in range(m.height_tiles)
+             for c in range(m.width_tiles) if m.terrain_at(c, r) == "V"}
+    assert voids == {(c, 19) for c in range(5, 16)}
+    assert all(m.is_solid(*tile) for tile in voids)
     # Bottom row is solid: no way out yet (the exit is a later session).
     assert all(m.is_solid(c, m.height_tiles - 1)
                for c in range(m.width_tiles))

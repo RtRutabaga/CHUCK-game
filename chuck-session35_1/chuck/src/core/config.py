@@ -84,6 +84,9 @@ PLAYER_SPEED = 80.0  # pixels/second — tune until walking feels good
 # his footprint; the sprite is taller and anchored to its bottom edge.
 PLAYER_HITBOX_W = 10
 PLAYER_HITBOX_H = 8
+JUMP_DURATION = 0.36
+JUMP_SPEED = 104.0
+JUMP_HEIGHT = 6
 
 # Chuck's sprite sheet (see tools/generate_chuck_sprites.py).
 CHUCK_SHEET = "chuck/chuck.png"
@@ -163,6 +166,7 @@ DIALOGUE_CPS = 40           # typewriter speed, characters per second
 TUTORIAL_MAPS = {"waterdeep_docks", "sewer"}
 TUTORIAL_HINT_TOP = 8       # pixels from the top of the 320x180 view
 HINT_INTERACT = "Press E to interact"
+HINT_JUMP = "Press SPACE to jump"
 
 # Choice options drawn inside the dialogue panel.
 CHOICE_LEFT = 8             # px indent inside the panel's text area

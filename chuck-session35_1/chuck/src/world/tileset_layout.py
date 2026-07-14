@@ -110,6 +110,7 @@ SEWER = Tileset(
         ("sewer_dirt", 3, 1),
         ("sewer_mud", 2, 1),
         ("sewer_channel", 1, 3),
+        ("astral_void", 2, 3),
     ],
     char_to_terrain={
         "#": "sewer_wall",
@@ -117,6 +118,7 @@ SEWER = Tileset(
         "d": "sewer_dirt",
         "M": "sewer_mud",
         "%": "sewer_channel",
+        "V": "astral_void",
     },
     overhead_char_to_terrain={},
 )
