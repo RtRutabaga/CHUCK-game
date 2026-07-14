@@ -482,6 +482,40 @@ def _build_tavern_hearth() -> str:
     return "\n".join("".join(row) for row in grid)
 
 
+def _build_cheese() -> str:
+    """A bright floor-level wedge, readable without becoming a pickup."""
+    return "\n".join((
+        "..........",
+        "......q...",
+        "....qqqq..",
+        "..qqxqqq..",
+        ".qqqqOqqq.",
+        "qqxqqqqqqq",
+        "OOOOOOOOOO",
+    ))
+
+
+def _build_pantry_door() -> str:
+    """A human-scale rear door that frames the next Phase 3 route."""
+    width, height = 24, 30
+    grid = [["." for _ in range(width)] for _ in range(height)]
+    for y in range(2, height):
+        for x in range(2, width - 2):
+            grid[y][x] = "Y"
+    for x in range(2, width - 2):
+        grid[2][x] = "L"
+        grid[3][x] = "y"
+        grid[height - 1][x] = "y"
+    for y in range(2, height):
+        for x in (2, 3, width - 4, width - 3, width // 2):
+            grid[y][x] = "y"
+    for y in (10, 20):
+        for x in range(4, width - 3):
+            grid[y][x] = "y"
+    grid[16][width // 2 - 3] = "M"
+    return "\n".join("".join(row) for row in grid)
+
+
 def _write(name: str, grid: str, w: int, h: int) -> None:
     out = (Path(__file__).resolve().parents[1]
            / "assets" / "sprites" / "objects" / f"{name}.png")
@@ -509,6 +543,8 @@ def main() -> None:
     _write("tavern_chair", _build_tavern_chair(), 12, 14)
     _write("bar_counter", _build_bar_counter(), 16, 20)
     _write("tavern_hearth", _build_tavern_hearth(), 28, 26)
+    _write("cheese", _build_cheese(), 10, 7)
+    _write("pantry_door", _build_pantry_door(), 24, 30)
     _write("chimney", CHIMNEY, 12, 22)
     _write("sewer_grate", SEWER_GRATE, 16, 13)
     _write("house_door", HOUSE_DOOR, 14, 20)

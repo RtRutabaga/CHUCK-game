@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: session 54 (Phase 3 tavern shell). This file is required by the
-project rules and updated every session.
+Updated: session 55 (tavern occupants and cheese hook). This file is required
+by the project rules and updated every session.
 
 ## Working systems
 
@@ -122,11 +122,18 @@ project rules and updated every session.
   hearth, barrels, and crates. Furniture is solid, all remaining floor is one
   connected traversal area, the camera remains on the normal WorldScene path,
   and the existing Waterdeep theme currently carries across the doorway
+- Tavern hook: two non-solid human NPCs use the established dock-worker scale
+  and facing/dialogue behavior. The bartender calmly points toward the kitchen;
+  a patron supplies one restrained ambient line. Four bright cheese wedges form
+  a visible south-to-north trail across successive camera views and end beneath
+  a human-scale pantry door. Cheese is walkable, remains in place, and only says
+  "It is cheese." when examined: there is no pickup, inventory, counter, reward,
+  or progression flag. The pantry door is deliberately solid until its map is
+  built in the next bounded pass
 
 ## Placeholder systems
-- Tavern occupants, the environmental cheese hook, rear pantry route, pantry
-  hazards, sky fall, and falling cutscene remain intentionally absent pending
-  their bounded Phase 3 passes
+- The playable pantry, its three floor types, sky fall, and falling cutscene
+  remain intentionally absent pending their bounded Phase 3 passes
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -209,9 +216,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Add the tavern's minimal occupants and a plainly readable environmental cheese
-trail that leads toward a rear pantry entrance. Keep the cheese non-inventory
-and leave pantry hazards and the Chult fall for later bounded passes.
+Build the compact pantry map behind the established north door, including its
+normal floor, reused Astral Sea floor language, and visually distinct teal
+sky/cloud floor. Keep fall branching and the cutscene for later bounded passes.
 
 ## Also open
 
@@ -225,7 +232,8 @@ and leave pantry hazards and the Chult fall for later bounded passes.
 1. [x] Tavern doorway transition + common-room shell: bidirectional safe named
        arrivals, stable collision, readable sparse furniture, dedicated warm
        procedural tileset, and normal camera/audio behavior (session 54)
-2. [ ] Minimal tavern occupants + environmental cheese hook toward the pantry
+2. [x] Minimal tavern occupants + environmental cheese hook toward the pantry
+       door, with no inventory or progression state (session 55)
 3. [ ] Pantry room + normal/Astral/teal-sky floor navigation
 4. [ ] Reused Astral fall death + distinct successful sky-fall branch
 5. [ ] Dedicated circa-1994 falling-to-Chult cutscene and Phase 4 handoff point

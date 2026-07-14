@@ -7,6 +7,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
 from src.core.game import Game
+from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.world_scene import WorldScene
 from src.world.tilemap import TileMap
 
@@ -29,6 +30,20 @@ def test_tavern_shell_is_connected_and_readable() -> None:
     assert kinds.count("tavern_table") == 3
     assert kinds.count("tavern_chair") == 12
     assert kinds.count("tavern_hearth") == 1
+    assert kinds.count("cheese") == 4
+    assert kinds.count("pantry_door") == 1
+    assert all(not tavern.is_solid(14, row) for row in (2, 6, 10, 14))
+    assert tavern.is_solid(14, 1)
+
+    occupants = {
+        kind: (int(x // config.TILE_SIZE), int(y // config.TILE_SIZE))
+        for kind, (x, y) in tavern.object_spawns
+        if kind.startswith("npc:")
+    }
+    assert occupants == {
+        "npc:bartender": (6, 2),
+        "npc:patron": (22, 10),
+    }
 
     ts = config.TILE_SIZE
     spawn = tavern.spawn_points["player"]
@@ -51,6 +66,35 @@ def test_tavern_shell_is_connected_and_readable() -> None:
         if not tavern.is_solid(col, row)
     }
     assert reachable == every_walkable
+
+
+def test_tavern_cheese_is_an_examinable_environmental_hook() -> None:
+    game = Game()
+    try:
+        game.scenes.replace(WorldScene(game, "waterdeep_tavern"))
+        scene = game.scenes.current
+        cheeses = [prop for prop in scene.props if prop.kind == "cheese"]
+        assert len(cheeses) == 4
+        assert not scene.pickups
+        assert {npc.npc_id for npc in scene.npcs} == {"bartender", "patron"}
+        assert all(
+            frame.get_size() == (config.NPC_FRAME_W, config.NPC_FRAME_H)
+            for npc in scene.npcs for frame in npc._frames.values()
+        )
+
+        cheese = cheeses[0]
+        x, y, w, h = cheese.interaction_bounds()
+        scene.player.x = x + (w - scene.player.width) / 2
+        scene.player.y = y + (h - scene.player.height) / 2
+        game.input._actions_just_pressed.add("interact")
+        scene.update(0.01)
+        dialogue = game.scenes.current
+        assert isinstance(dialogue, DialogueScene)
+        assert dialogue._lines == ["It is cheese."]
+        assert len(cheeses) == 4
+        assert cheese in scene.props
+    finally:
+        game._shutdown()
 
 
 def test_open_docks_door_enters_tavern_and_returns_safely() -> None:

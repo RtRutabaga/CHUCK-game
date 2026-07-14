@@ -33,6 +33,8 @@ _SPRITES = {
     "tavern_chair": "objects/tavern_chair.png",
     "bar_counter": "objects/bar_counter.png",
     "tavern_hearth": "objects/tavern_hearth.png",
+    "cheese": "objects/cheese.png",
+    "pantry_door": "objects/pantry_door.png",
     "chimney": "objects/chimney.png",
     "sewer_grate": "objects/sewer_grate.png",
     "house_door": "objects/house_door.png",
@@ -48,6 +50,7 @@ _SPRITES = {
 PROP_DIALOGUE = {
     "bobert_barrel": "bobert_sleeping",  # he does not wake up
     "herod_sign": "herod_sign",
+    "cheese": "cheese",
 }
 
 # Props that ask a question instead of making a statement (ids live in

@@ -94,6 +94,14 @@ def test_tavern_furniture_is_valid_and_mute() -> None:
         assert prop.choice_id is None
         assert prop.sort_y == 7 * TS
 
+    door = Prop("pantry_door", col=14, row=1, assets=FakeAssets(24, 30))
+    assert door.dialogue_id is None and door.choice_id is None
+    assert door._draw_y == 2 * TS - 30
+
+    cheese = Prop("cheese", col=14, row=6, assets=FakeAssets(10, 7))
+    assert cheese.dialogue_id == "cheese"
+    assert cheese.choice_id is None
+
 
 def test_grate_carries_a_choice_not_a_line() -> None:
     grate = Prop("sewer_grate", col=52, row=6, assets=FakeAssets(16, 13))
@@ -117,9 +125,11 @@ def test_prop_dialogue_mapping() -> None:
     sign = Prop("herod_sign", 43, 18, FakeAssets(16, 24))
     barrel = Prop("barrel", 9, 4, FakeAssets(14, 19))
     crate = Prop("crate", 14, 6, FakeAssets(16, 20))
+    cheese = Prop("cheese", 14, 6, FakeAssets(10, 7))
     assert bobert.dialogue_id == "bobert_sleeping"
     assert sign.dialogue_id == "herod_sign"
     assert barrel.dialogue_id is None and crate.dialogue_id is None
+    assert cheese.dialogue_id == "cheese"
 
 
 def test_prop_interaction_bounds_cover_the_sprite() -> None:

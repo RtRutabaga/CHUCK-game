@@ -51,6 +51,8 @@ Terrain legend:
     '7'  tavern chair        (solid standing prop on planks)
     '8'  tavern bar counter  (solid standing prop on planks)
     '9'  tavern hearth       (solid standing prop on planks)
+    '!'  cheese              (walkable environmental hook on planks)
+    '?'  pantry door         (solid standing prop on planks)
     'S'  sewer grate         (solid prop; asks to be jumped into)
     'R'  ruin wall           (solid; crumbling tan foundation blocks)
     'f'  ruin floor          (solid; the rubble inside the ruin)
@@ -75,6 +77,8 @@ declares the terrain underneath it, so no seams appear in the ground):
     'J'  Chuck tavern spawn    (on planks '=')
     'T'  tavern return arrival (on stone ',')
     'U'  tavern entry arrival  (on planks '=')
+    'k'  tavern bartender NPC  (on planks '=')
+    'l'  tavern patron NPC     (on planks '=')
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -202,6 +206,10 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="bar_counter", under="="),
     "9": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="tavern_hearth", under="="),
+    "!": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="cheese", under="="),
+    "?": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="pantry_door", under="="),
     # The sewer grate: iron set in the street near the guard. Solid;
     # Chuck interacts with it (it asks a question — see PROP_CHOICE).
     "S": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
@@ -240,6 +248,8 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "J": MarkerDef(kind="player", under="="),
     "T": MarkerDef(kind="arrival:tavern_return", under=","),
     "U": MarkerDef(kind="arrival:front_entrance", under="="),
+    "k": MarkerDef(kind="npc:bartender", under="="),
+    "l": MarkerDef(kind="npc:patron", under="="),
 }
 
 _COMMENT_PREFIX = ";"

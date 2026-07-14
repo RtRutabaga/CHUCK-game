@@ -3,57 +3,62 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `0bf51d4` (`Raise Waterdeep portcullises`)
-- Current work: Phase 3 Waterdeep tavern transition and common-room shell
+- Base commit: `cc3688d` (`Add Waterdeep tavern shell`)
+- Current work: Phase 3 tavern occupants and environmental cheese hook
 - Active phase: Phase 3 - Waterdeep Tavern, Pantry, and Fall to Chult
 
 ## Completed This Pass
 
-The opened post-sewer doorway now leads into a compact 30x20 tavern common
-room, and Chuck can safely return through the same entrance. This pass stops at
-the explorable shell: it does not add occupants, cheese, pantry content, sky
-hazards, the cutscene, or playable Chult.
+The tavern now feels lightly occupied and contains a conspicuous environmental
+cheese trail leading from the entrance side of the common room to a framed
+pantry door on the north wall. This pass does not create the pantry map, floor
+hazards, sky-fall behavior, cutscene, or playable Chult.
 
 ## Implementation
 
-- Added data-driven walk-over area exits with named arrivals and explicit
-  arrival facing. The exterior threshold enters the tavern above its doorway;
-  the interior threshold returns Chuck below the exterior doorway, so held
-  movement does not immediately bounce him back.
-- Added a dedicated procedural tavern tileset with warm wooden boards and
-  interior walls, plus generated table, chair, bar-counter, and hearth props.
-- Added a sparse, connected common-room layout with six counter segments,
-  three tables, twelve chairs, one hearth, and reused barrels/crates. Furniture
-  collision and depth anchoring use the established prop architecture.
-- The tavern reuses the Waterdeep theme for this first shell, avoiding silence
-  or an abrupt unrelated cue until a dedicated tavern audio pass.
-- Added a named tavern-return marker to Waterdeep without changing its existing
-  spawn, sewer outflow, collision, or post-sewer door-state behavior.
+- Added a bartender behind the northwest counter and one patron in the common
+  room. Both reuse the dock worker's exact 16x30 human silhouette with muted
+  palette swaps, established non-solid feet-scale behavior, facing, and the
+  existing data-driven dialogue system.
+- Dialogue stays short: the bartender points toward the kitchen and cheese;
+  the patron mentions the missing stew.
+- Added four bright cheese wedges along a south-to-north route across successive
+  camera views. They are non-solid environmental props, not pickups. Examining
+  any wedge says "It is cheese." and leaves every wedge in place.
+- Added a human-scale, solid pantry door at the trail's end. It frames the next
+  route without adding a dead transition or prematurely building the pantry.
+- Added procedural source and generated sprites for both occupants, cheese, and
+  the pantry door. No inventory, counter, reward, quest, or progression flag was
+  introduced.
 
 ## Verification
 
-- All 19 test suites pass, including new headless tavern lifecycle coverage.
-- Coverage confirms the tavern is fully drawable, all non-solid floor is one
-  connected region, furniture is valid and mute, both exit destinations have
-  real named arrivals, doorway transitions do not loop, sewer completion
-  remains set after returning outside, and the native scene draw path succeeds.
-- The game launches successfully through the headless scene/render checks.
+- All 19 test suites pass.
+- Tavern coverage verifies exact occupant identities and positions, established
+  16x30 human frame scale, four walkable cheese placements, a solid pantry door,
+  connected traversal, successful cheese interaction, no pickup entities, and
+  persistence of the examined cheese.
+- Dialogue glyph coverage, props, tilesets, transitions, and native headless
+  launch/render checks pass.
+- Native-scale visual review confirms the gold wedges stand apart from the
+  brown floor and lead clearly toward the north door across camera views.
 
 ## Playtest Focus
 
-- Complete the sewer and step into the newly opened tavern doorway. Chuck
-  should appear just inside, facing north, without being pushed back outside.
-- Check that the room reads as a restrained tavern at native scale: bar at the
-  northwest, table clusters, hearth to the northeast, and sparse storage.
-- Walk around every furniture cluster and check collision, depth, camera
-  clamping, and whether Chuck still looks approximately one foot tall.
-- Walk south through the interior doorway. Chuck should return immediately
-  below the Waterdeep entrance, facing south, with the doorway still open.
-- Listen for a clean musical handoff; this shell intentionally keeps the warm
-  Waterdeep track rather than introducing dedicated tavern audio yet.
+- Enter after completing the sewer and confirm the bartender reads as standing
+  behind the northwest bar and the lone patron makes the room feel occupied
+  without crowding it.
+- Follow the cheese from south to north without a marker. Confirm each piece is
+  obvious at native scale and naturally leads to the pantry door.
+- Press E near multiple cheese pieces. Each should say "It is cheese." without
+  disappearing or changing Sanity, state, HUD, or inventory.
+- Talk to both occupants and check their scale, facing, deadpan tone, and depth
+  ordering around nearby furniture.
+- Confirm the pantry door reads as the next destination but is still solid.
 
 ## Next Bounded Task
 
-Add only the minimal tavern occupants and a readable environmental cheese hook
-leading toward a rear pantry entrance. Do not add an inventory, pantry hazards,
-the sky-fall branch, the falling cutscene, or playable Chult in that pass.
+Build the compact pantry map and its three readable floor materials: ordinary
+pantry boards, reused Astral Sea blocks, and distinct teal sky/cloud blocks.
+Connect the north door bidirectionally, but leave differentiated fall resolution
+and the falling-to-Chult cutscene for subsequent passes.

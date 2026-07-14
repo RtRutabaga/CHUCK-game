@@ -42,6 +42,12 @@ PALETTE = {
     "R": (132, 58, 54, 255),    # muted red blouse
     "r": (94, 42, 44, 255),     # blouse shadow
     "C": (188, 166, 124, 255),  # work apron / skirt
+    # Tavern occupants: exact worker silhouette, restrained indoor palettes.
+    "D": (196, 176, 132, 255),  # bartender shirt / apron
+    "d": (148, 126, 92, 255),   # bartender cloth shadow
+    "A": (104, 82, 62, 255),    # bartender trousers
+    "V": (78, 100, 130, 255),   # patron blue shirt
+    "v": (56, 72, 98, 255),     # patron shirt shadow
 }
 
 WORKER_DOWN = """
@@ -261,6 +267,22 @@ MARKET_SHEET = [[
 ]]
 MARKET_NAMES = [["market_down", "market_up", "market_left"]]
 
+_BARTENDER_COLORS = str.maketrans({"O": "D", "o": "d", "B": "A"})
+BARTENDER_SHEET = [[
+    WORKER_DOWN.translate(_BARTENDER_COLORS),
+    WORKER_UP.translate(_BARTENDER_COLORS),
+    WORKER_LEFT.translate(_BARTENDER_COLORS),
+]]
+BARTENDER_NAMES = [["bartender_down", "bartender_up", "bartender_left"]]
+
+_PATRON_COLORS = str.maketrans({"O": "V", "o": "v"})
+PATRON_SHEET = [[
+    WORKER_DOWN.translate(_PATRON_COLORS),
+    WORKER_UP.translate(_PATRON_COLORS),
+    WORKER_LEFT.translate(_PATRON_COLORS),
+]]
+PATRON_NAMES = [["patron_down", "patron_up", "patron_left"]]
+
 
 def main() -> None:
     npcs = (
@@ -271,6 +293,8 @@ def main() -> None:
         ("dock_worker", SHEET, NAMES),
         ("guard", GUARD_SHEET, GUARD_NAMES),
         ("market_woman", MARKET_SHEET, MARKET_NAMES),
+        ("bartender", BARTENDER_SHEET, BARTENDER_NAMES),
+        ("patron", PATRON_SHEET, PATRON_NAMES),
     ):
         out = npcs / f"{name}.png"
         render_sheet(sheet, names, FRAME_W, FRAME_H, PALETTE).save(out)
