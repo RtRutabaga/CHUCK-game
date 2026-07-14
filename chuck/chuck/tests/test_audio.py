@@ -88,8 +88,11 @@ def test_jump_sfx_is_brief_quiet_and_audible() -> None:
     samples = _read_wav(config.SFX_DIR / "jump.wav")
     duration = len(samples) / SAMPLE_RATE
     peak = max(abs(s) for s in samples)
+    zero_crossings = sum((a < 0) != (b < 0)
+                         for a, b in zip(samples, samples[1:]))
     assert 0.07 <= duration <= 0.15, duration
     assert 0.15 <= peak <= 0.3, peak
+    assert 20 <= zero_crossings <= 80, zero_crossings
 
 
 

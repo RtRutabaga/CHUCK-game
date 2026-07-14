@@ -14,7 +14,7 @@ Sound design intent (Bible: understated, dry, never cartoonish):
     pickup      two quick warm plucks — small satisfaction
     interact    one very soft blip — a page turning
     hurt        a dry low thud — inconvenience, not tragedy
-    jump        a tiny cloth-and-foot lift — movement, not a cartoon boing
+    jump        a tiny rounded bounce tone — movement, not a large impact
     scratch     a short filtered scrape — quick motion, no sword clang
     vanish      three soft falling tones ending unresolved
     respawn     two quiet rising bells — a restrained return
@@ -23,6 +23,7 @@ Sound design intent (Bible: understated, dry, never cartoonish):
                 two variants each so steps don't machine-gun
 """
 
+import math
 import sys
 from pathlib import Path
 
@@ -80,16 +81,18 @@ def sfx_hurt() -> list[float]:
 
 
 def sfx_jump() -> list[float]:
-    """A quiet dry lift: soft cloth noise with a restrained upward edge."""
-    cloth = envelope(lowpass(noise(0.11, seed=43), 1300), 0.002, 0.095)
-    lift = mix(
-        envelope(gain(tone(180, 0.07, "triangle"), 0.22), 0.002, 0.06),
-        _pad(
-            envelope(gain(tone(240, 0.07, "triangle"), 0.18), 0.002, 0.06),
-            0.025,
-        ),
-    )
-    return normalize(mix(cloth, lift), headroom=0.24)
+    """A quiet rounded upward bounce with no scratchy noise layer."""
+    duration = 0.12
+    sample_count = int(duration * SAMPLE_RATE)
+    phase = 0.0
+    bounce = []
+    for i in range(sample_count):
+        progress = i / max(1, sample_count - 1)
+        eased = progress * progress * (3.0 - 2.0 * progress)
+        frequency = 155.0 + 105.0 * eased
+        phase += 2.0 * math.pi * frequency / SAMPLE_RATE
+        bounce.append(math.sin(phase) + 0.08 * math.sin(phase * 2.0))
+    return normalize(envelope(bounce, 0.004, 0.105), headroom=0.24)
 
 
 def sfx_scratch() -> list[float]:
