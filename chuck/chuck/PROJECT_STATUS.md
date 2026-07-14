@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 42 (scratch motion blur + SFX). This file is required by the
+Updated: session 43 (expanded sewer corruption route). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -65,25 +65,30 @@ project rules and updated every session.
   table). Each area's looping music (or deliberate silence) is data too
   (transitions.AREA_MUSIC). The grate's YES drops Chuck straight into
   the sewer, wordlessly — no confirmation lines
-- Sewer: assets/maps/sewer.txt is a narrow, long, mostly-linear descent
+- Sewer: assets/maps/sewer.txt is a 48x72, mostly-linear descent
   (walkable corridor wrapped in thick rock so it fills the view) with
   its own tileset (assets/tilesets/sewer.png, built by
   tools/generate_sewer_tileset.py): brick walls '#', stone landing ',',
   dirt 'd', mud 'M', and a drainage channel '%' that flows over 3
   frames. Its own looping theme plays on entry (data/music/sewer.py ->
-  sewer.wav). A hard-edged band of animated dark-blue/purple Astral
-  wrong-map material interrupts the corridor; SPACE performs a short
+  sewer.wav). The east-side approach now runs for roughly 28 rows before the
+  required jump, with sparse avoidable Astral substitutions foreshadowing the
+  wrong map. A hard-edged band of animated dark-blue/purple Astral material
+  then interrupts the corridor; SPACE performs a short
   committed hop that crosses it but cannot bypass normal walls. On foot,
   the Astral blocks are a lethal fall zone: control locks, Chuck quietly
   shrinks and sinks for 0.65s, then the existing Astral Anchor respawn
   flow returns him to the sewer entrance. Airborne Chuck crosses safely.
-  The nearby jump hint clears after Chuck lands beyond it. Walled off at
-  the bottom (no exit yet). Beyond the gap, three ordinary rats occupy
+  The nearby jump hint clears after Chuck lands beyond it. Beyond the gap,
+  three ordinary rats occupy
   a one-tile choke: their 10x8 sprites are smaller than Chuck, contact
   costs 10 Sanity, and their bodies block progress. F performs a brief
   forward scratch with a moving fan of translucent claw afterimages and
   a brief filtered scrape SFX; one swipe defeats one rat, and the nearby
-  tutorial hint disappears when all three are gone
+  tutorial hint disappears when all three are gone. Past the encounter the
+  map opens broadly west and continues for another three screens, with Astral
+  blocks becoming denser and more chaotically arranged around a continuous
+  narrow safe route. The bottom is still walled off (no exit yet)
 
 ## Placeholder systems
 - Tavern door is solid decoration; interiors are a later phase
@@ -148,6 +153,9 @@ end-to-end headlessly with dummy SDL drivers.
        motion-blurred swipe with a dry scrape SFX, one hit removes one rat,
        contact costs light Sanity, and the proximity hint clears with the
        group (sessions 40/42)
+   - [x] Sewer route expansion: longer pre-gap walk with sparse Astral
+         foreshadowing, then a broad westward post-rat continuation with
+         escalating corruption and a preserved safe path (session 43)
 8. [ ] Sewer exit -> climb-out -> return to docks
 9. [ ] Tavern doorway opens (Phase 3 setup)
 

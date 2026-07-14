@@ -56,7 +56,8 @@ def test_sewer_has_three_rats_in_a_one_tile_choke_after_gap() -> None:
     m = TileMap(config.MAPS_DIR / "sewer.txt")
     rats = [(int(x // config.TILE_SIZE), int(y // config.TILE_SIZE))
             for kind, (x, y) in m.object_spawns if kind == "rat"]
-    assert rats == [(10, 22), (10, 23), (10, 24)]
+    assert rats == [(config.SEWER_RAT_COL, row)
+                    for row in config.SEWER_RAT_ROWS]
     for col, row in rats:
         assert not m.is_solid(col, row)
         assert m.is_solid(col - 1, row) and m.is_solid(col + 1, row)

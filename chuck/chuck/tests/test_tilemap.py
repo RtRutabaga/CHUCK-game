@@ -309,17 +309,14 @@ def test_real_docks_map_loads_and_spawn_is_walkable() -> None:
         assert not m.is_solid(int(x // TS), int(y // TS))
 
 
-def test_sewer_is_a_narrow_connected_descent() -> None:
-    """Phase 2: the sewer is a single narrow, mostly-linear descent —
-    no sealed pockets, long enough to scroll, its placeholder terrain
-    present, and (for now) walled off at the bottom. The outflow exit
-    back to the docks is a later Phase 2 session."""
+def test_sewer_is_an_expanded_connected_descent() -> None:
+    """The long descent introduces Astral corruption, then opens west."""
     from collections import deque
     m = TileMap(config.MAPS_DIR / "sewer.txt")
-    # Long enough to scroll vertically; at least a screen wide so the
-    # camera never shows void past the edge; far narrower than the docks.
-    assert m.height_tiles * TS >= config.NATIVE_HEIGHT
-    assert m.width_tiles * TS >= config.NATIVE_WIDTH
+    # Several screens of descent, with enough width for the post-rat opening,
+    # while remaining more constrained than the Waterdeep exterior.
+    assert m.height_tiles >= 70
+    assert m.width_tiles >= 40
     docks = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
     assert m.width_tiles < docks.width_tiles
     # The entrance spawn sits near the top, on walkable ground.
@@ -330,7 +327,8 @@ def test_sewer_is_a_narrow_connected_descent() -> None:
     # The placeholder sewer terrains are all present (dirt, mud, channel).
     chars = {ch for row in m._grid for ch in row}
     assert {"d", "M", "%"} <= chars
-    # One connected world: every walkable tile is reachable from spawn.
+    # One connected world when Astral fall zones are treated as traversable
+    # topology (the mandatory band is crossed in play by jumping).
     seen = {(scol, srow)}
     q = deque([(scol, srow)])
     while q:
@@ -346,11 +344,37 @@ def test_sewer_is_a_narrow_connected_descent() -> None:
                 for c in range(m.width_tiles) if not m.is_solid(c, r)}
     sealed = walkable - seen
     assert not sealed, f"sealed pockets: {sorted(sealed)[:8]}"
-    # A single-tile-thick wrong-map band fully interrupts the corridor.
+    # Sparse, avoidable wrong-map blocks foreshadow the setting during the
+    # long approach. A single full-width row remains the mandatory jump.
     voids = {(c, r) for r in range(m.height_tiles)
              for c in range(m.width_tiles) if m.terrain_at(c, r) == "V"}
-    assert voids == {(c, 19) for c in range(5, 16)}
+    pre_gap = {tile for tile in voids if tile[1] < config.SEWER_JUMP_ROW}
+    gap = {tile for tile in voids if tile[1] == config.SEWER_JUMP_ROW}
+    post_rats = {tile for tile in voids
+                 if tile[1] > max(config.SEWER_RAT_ROWS)}
+    assert config.SEWER_JUMP_ROW - srow >= 25
+    assert 6 <= len(pre_gap) <= 20
+    assert gap == {(c, config.SEWER_JUMP_ROW) for c in range(25, 39)}
+    assert len(post_rats) > len(pre_gap) * 20
     assert all(not m.is_solid(*tile) for tile in voids)
+    # The post-encounter route expands far west of the east-side choke and
+    # still retains a continuous safe (non-Astral) walking line.
+    after_rats = {(c, r) for r in range(max(config.SEWER_RAT_ROWS) + 1,
+                                        m.height_tiles - 1)
+                  for c in range(m.width_tiles)
+                  if not m.is_solid(c, r) and m.terrain_at(c, r) != "V"}
+    assert min(c for c, _ in after_rats) <= 5
+    safe_start = (config.SEWER_RAT_COL, max(config.SEWER_RAT_ROWS) + 1)
+    safe_seen = {safe_start}
+    safe_q = deque([safe_start])
+    while safe_q:
+        c, r = safe_q.popleft()
+        for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            n = (c + dc, r + dr)
+            if n in after_rats and n not in safe_seen:
+                safe_seen.add(n)
+                safe_q.append(n)
+    assert any(r >= m.height_tiles - 2 for _, r in safe_seen)
     # Bottom row is solid: no way out yet (the exit is a later session).
     assert all(m.is_solid(c, m.height_tiles - 1)
                for c in range(m.width_tiles))

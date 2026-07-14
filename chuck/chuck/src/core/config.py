@@ -89,6 +89,15 @@ JUMP_SPEED = 104.0
 JUMP_HEIGHT = 6
 FALL_DURATION = 0.65
 
+# Sewer layout landmarks shared by scene tutorials and map tests. Keeping
+# these beside the movement rules makes geometry changes fail loudly instead
+# of leaving prompts behind at obsolete coordinates.
+SEWER_JUMP_ROW = 30
+SEWER_RAT_COL = 32
+SEWER_RAT_ROWS = (34, 35, 36)
+SEWER_JUMP_HINT_BOUNDS = (24, 39, 27, 30)  # left, right, top, bottom
+SEWER_SCRATCH_HINT_BOUNDS = (24, 39, 31, 36)
+
 # Scratch: deliberately brief and simple. The forward box extends a little
 # beyond Chuck's footprint so attacking never demands pixel-perfect contact.
 SCRATCH_DURATION = 0.18

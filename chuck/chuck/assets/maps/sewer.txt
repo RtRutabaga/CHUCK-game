@@ -1,48 +1,81 @@
-; WATERDEEP SEWER — the "way around" the guard (20x30 tiles).
-; Chuck hauls the grate aside and drops in here. Per the Phase 2 spec
-; the sewer is narrow, long, and mostly linear — a single winding
-; descent, not a maze. The walkable corridor is deliberately narrow;
-; it's wrapped in thick rock so the tunnel fills the screen instead of
-; letting the camera show void past a skinny map's edge.
+; WATERDEEP SEWER — the "way around" the guard (48x72 tiles).
+; A long east-side descent introduces sparse, avoidable Astral Sea
+; substitutions before the mandatory jump and one-tile rat choke. Past the
+; encounter the tunnel opens sharply west, then grows progressively more
+; corrupted while preserving a narrow readable route through the wrong map.
+; The bottom remains sealed for the later Phase 2 outflow session.
 ;
-; Terrain (drawn from assets/tilesets/sewer.png): '#' brick/rock wall
-; (solid), ',' stone entrance landing, 'd' dirt floor, 'M' mud
-; (walkable), '%' drainage channel (solid water in a side trench Chuck
-; can't cross). 'E' is Chuck's entrance spawn on the landing.
-;
-; Top: a stone landing under the grate (spawn 'E'). The corridor then
-; snakes down past drainage trenches to a lower chamber. The bottom is
-; walled off for now — the outflow exit that returns Chuck to the docks
-; is a later Phase 2 session. The Astral gap and three ordinary rats now
-; interrupt the middle of the run. Chuck cannot climb back out
-; the entrance: the only way is forward (once forward exists).
-####################
-####,,,,,,,,,,,,####
-####,,,,E,,,,,,,####
-####,,,,,,,,,,,,####
-####,,,,,,,,,,,,####
-####dddddM#%%#######
-####dddddM#%%#######
-####dddddM#%%#######
-####dddddM#%%#######
-####ddddddd%%#######
-#######dddddd#######
-#######dddddd#######
-#######dddddd#######
-#######dddddd#######
-#####%%###Mddddd####
-#####%%###Mddddd####
-#####%%###Mddddd####
-#####%%###Mddddd####
-#####%%##ddddddd####
-#####VVVVVVVVVVV####
-#####ddddddd########
-#####ddddddd########
-##########q#########
-##########q#########
-##########q#########
-####dddddMdddddd####
-####ddddddMddddd####
-####dddddddddddd####
-####dddddddddddd####
-####################
+; '#' wall, ',' entrance stone, 'd' dirt, 'M' mud, '%' solid drainage,
+; 'V' lethal Astral fall zone, 'E' player entrance, 'q' ordinary rat.
+################################################
+#############################,,,,,,,,,,,,,,,####
+#############################,,,,,,,E,,,,,,,####
+#############################,,,,,,,,,,,,,,,####
+#############################,,,,,,,,,,,,,,,####
+#############################,,,,,,,,,,,,,,,####
+###############################ddddddddd%%######
+###############################ddMMMdddd%%######
+###############################ddddddddd%%######
+###############################ddddddVVd%%######
+###############################ddddddddd%%######
+##############################%%dddddddd########
+##############################%%dddMMMMd########
+##############################%%VVdddddd########
+##############################%%dddddddd########
+##############################%%dddddddd########
+############################%%ddddddddd#########
+############################%%ddddddVVd#########
+############################%%ddddddddd#########
+############################%%dMMMMdddd#########
+############################%%ddddddddd#########
+###########################dddddddddddd#########
+###########################dVVddddddddd#########
+###########################ddddddMMMMdd#########
+###########################dddddddddddd#########
+###########################dddddddddddd#########
+#########################dddddddddVVddd#########
+#########################ddddMMMMdddddd#########
+#########################ddVddddddddddd#########
+#########################dddddddddddddd#########
+#########################VVVVVVVVVVVVVV#########
+#########################dddddddddddddd#########
+#########################ddMMMMdddddddd#########
+#########################dddddddddddddd#########
+################################q###############
+################################q###############
+################################q###############
+####################ddddddddddddddd#############
+##############ddVVdddddddVVdddddddd#############
+########ddVVVddddddddVVddddddVddddd#############
+######dVVVddddddVVVVddddMMMMddddVVd#############
+#####%%ddVVVVdddddddVVVddddddd##################
+#####%%dddddddVVVVdddddVVVddd###################
+#####%%dVVVddddddVVVVdddddddV###################
+#####%%ddddVVVVdddddVVVVddddd###################
+#####%%VVVdddddVVVVdddddddVVd###################
+####dVVVVdddddVVVdddVVddd%######################
+####dMMMdVVVVddddVVVVddd%%######################
+####dVVVdddddVVVVVdddddV%%######################
+####dddVVVVdddVVddddddVV%%######################
+####dVVddddVVVVddVdddVdd%%######################
+###%%dVVVVdddddVVddddVVVd#######################
+###%%VVVVddddVVVdddVVVVVd#######################
+###%%dVVVVVdddVdddVdVVVVV#######################
+###%%VVVddVVVVdddVVVVVVdd#######################
+###%%dVVVVddVdddVddVVVVVV#######################
+###%%VVVVdVVddddVVVVVVdVV#######################
+####dVVVVVddddVVVddVVVVVddd#####################
+####ddVVVVddddVVVVVddVVVVVd#####################
+####dVVVVdddVVVddVVVVVVdVVV#####################
+####ddVVddddVVVVVVddVVVVVVd#####################
+####dVVddddVVVVVddVVVVVVdVV#####################
+####ddVdddVVddVVVVVVMdVVVVV#####################
+######dVdddVddVVVVVVddVVVVVVddd#################
+######VVVdddVVVVVVddVVVVVVddVVV#################
+######dVVVdddVddVVVVVVddVVVVVVd#################
+######VVVVddddVVVddVVVVVVdVVVVV#################
+######dVVVVVdddVVVVVVddVVVVVVdd#################
+######VVVVVdVdddVVVddVVVVVVdVVV#################
+######dVVVVVVVdddVVVVVVdVVVVVVd#################
+########dVVVVVVdddVVVVVVddVVVVd#################
+################################################

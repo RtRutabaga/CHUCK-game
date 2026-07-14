@@ -199,7 +199,10 @@ class WorldScene(Scene):
             self._begin_fall()
             self.camera.update(dt)
             return
-        if self.map_name == "sewer" and self._player_tile()[1] >= 20:
+        if (
+            self.map_name == "sewer"
+            and self._player_tile()[1] > config.SEWER_JUMP_ROW
+        ):
             self._jump_tutorial_complete = True
 
         # One committed scratch resolves against at most one rat. Rat bodies
@@ -352,14 +355,16 @@ class WorldScene(Scene):
         if self.map_name != "sewer" or self._jump_tutorial_complete:
             return False
         col, row = self._player_tile()
-        return 5 <= col <= 15 and 16 <= row <= 19
+        left, right, top, bottom = config.SEWER_JUMP_HINT_BOUNDS
+        return left <= col <= right and top <= row <= bottom
 
     def _scratch_hint_visible(self) -> bool:
         """Prompt only at the post-gap rat choke, until all rats are gone."""
         if self.map_name != "sewer" or not self.rats:
             return False
         col, row = self._player_tile()
-        return 5 <= col <= 15 and 20 <= row <= 23
+        left, right, top, bottom = config.SEWER_SCRATCH_HINT_BOUNDS
+        return left <= col <= right and top <= row <= bottom
 
     def _update_footsteps(self, dt: float) -> None:
         """A soft tap per stride; wood on the dock, stone on the street."""
