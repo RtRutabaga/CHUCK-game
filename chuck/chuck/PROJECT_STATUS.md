@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 45 (rounded jump bounce SFX). This file is required by the
+Updated: session 46 (late-maze sewer rats). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -89,7 +89,10 @@ project rules and updated every session.
   tutorial hint disappears when all three are gone. Past the encounter the
   map opens broadly west and continues for another three screens, with Astral
   blocks becoming denser and more chaotically arranged around a continuous
-  narrow safe route. The bottom is still walled off (no exit yet)
+  narrow safe route. Four additional ordinary rats are spaced through this
+  late corrupted run; they use the established one-hit behavior without
+  extending the original scratch tutorial prompt. The bottom is still walled
+  off (no exit yet)
 
 ## Placeholder systems
 - Tavern door is solid decoration; interiors are a later phase

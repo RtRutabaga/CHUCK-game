@@ -56,11 +56,25 @@ def test_sewer_has_three_rats_in_a_one_tile_choke_after_gap() -> None:
     m = TileMap(config.MAPS_DIR / "sewer.txt")
     rats = [(int(x // config.TILE_SIZE), int(y // config.TILE_SIZE))
             for kind, (x, y) in m.object_spawns if kind == "rat"]
-    assert rats == [(config.SEWER_RAT_COL, row)
-                    for row in config.SEWER_RAT_ROWS]
-    for col, row in rats:
+    choke_rats = [(col, row) for col, row in rats
+                  if row in config.SEWER_RAT_ROWS]
+    assert choke_rats == [(config.SEWER_RAT_COL, row)
+                          for row in config.SEWER_RAT_ROWS]
+    for col, row in choke_rats:
         assert not m.is_solid(col, row)
         assert m.is_solid(col - 1, row) and m.is_solid(col + 1, row)
+
+
+def test_sewer_has_spaced_rats_through_the_late_astral_maze() -> None:
+    m = TileMap(config.MAPS_DIR / "sewer.txt")
+    rats = [(int(x // config.TILE_SIZE), int(y // config.TILE_SIZE))
+            for kind, (x, y) in m.object_spawns if kind == "rat"]
+    maze_rats = [(col, row) for col, row in rats
+                 if row > max(config.SEWER_RAT_ROWS)]
+    assert maze_rats == [(26, 43), (17, 52), (8, 61), (14, 68)]
+    for col, row in maze_rats:
+        assert m.terrain_at(col, row) == "d"
+        assert not m.is_solid(col, row)
 
 
 def _run_all() -> None:

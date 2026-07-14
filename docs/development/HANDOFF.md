@@ -3,40 +3,42 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `21b71f4` (`Add subtle jump sound effect`)
-- Current work: Phase 2 jump SFX tonal refinement
+- Base commit: `0208064` (`Refine jump sound into bounce tone`)
+- Current work: Phase 2 late Astral-maze rat encounters
 - Active phase: Phase 2 — Waterdeep Starting Area and Sewer Tutorial
 
 ## Completed This Pass
 
-Refined the jump cue into a clearer bounce tone. Jump movement, duration,
-collision, visuals, playback timing, and tutorial behavior are unchanged.
+Added four ordinary rats to the increasingly corrupted late sewer run, spaced
+through the safe route after the original three-rat tutorial choke.
 
 ## Implementation
 
-- `Player.jump_just_started` is a one-frame event set only when a jump is
-  accepted, mirroring the established scratch-start event pattern.
-- `WorldScene` plays `jump.wav` from the shared `AudioSystem` on that event.
-- `tools/generate_audio.py` now synthesizes the asset as a 0.12-second rounded
-  sine glide from 155 Hz to 260 Hz. The previous filtered-noise layer was
-  removed so the cue reads as a bounce rather than another scratch.
-- Audio checks enforce that the sound remains brief, quiet, click-free, and
-  tonal rather than noisy. Jump checks still enforce that the start event
-  lasts exactly one update.
+- Four additional `q` markers sit at rows 43, 52, 61, and 68, giving the long
+  Astral-block section intermittent encounters without changing its geometry.
+- Every new rat stands on existing safe dirt rather than Astral material and
+  uses the established small sprite, light contact damage, and one-hit defeat.
+- `WorldScene` now tracks the original choke rats as the scratch tutorial group.
+  Killing those three clears the prompt even while later maze rats remain.
+- Combat tests separately protect the original one-tile tutorial formation and
+  the four spaced late-maze placements.
 
 ## Verification
 
 - All 16 test suites pass.
-- Headless integration confirmed one `jump` playback across two airborne
-  updates, rendered the expanded sewer, and shut down cleanly.
+- Headless integration loaded and rendered all seven rats, then confirmed that
+  defeating the three tutorial rats clears the prompt while four maze rats
+  remain alive.
 
 ## Playtest Focus
 
-- Jump repeatedly on ordinary ground and across the mandatory Astral band.
-- Confirm one quiet cue plays per accepted SPACE press, never continuously
-  while airborne and never when SPACE is held.
-- Confirm it remains audible beneath both area themes, reads as a small bounce
-  instead of a scratch, and does not become a large cartoon boing.
+- Clear the original three-rat choke and confirm its scratch prompt disappears.
+- Continue through the Astral maze and confirm four rats appear as spaced
+  encounters rather than one large group.
+- Verify each rat can be reached and scratched from safe dirt without forcing
+  Chuck onto an Astral fall tile.
+- Check that the added combat pressure does not make the narrow safe route feel
+  unfair or obscure where to walk.
 
 ## Next Bounded Task
 

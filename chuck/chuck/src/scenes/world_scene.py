@@ -131,6 +131,7 @@ class WorldScene(Scene):
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
         self.rats: list[SewerRat] = []
+        self._scratch_tutorial_rats: list[SewerRat] = []
         for kind, (cx, cy) in self.tilemap.object_spawns:
             if kind == "cigarette":
                 cig = Cigarette(cx, cy)
@@ -154,6 +155,15 @@ class WorldScene(Scene):
                 rat = SewerRat(cx, cy)
                 rat.load_sprites(self.game.assets)
                 self.rats.append(rat)
+                rat_tile = (
+                    int(cx // config.TILE_SIZE),
+                    int(cy // config.TILE_SIZE),
+                )
+                if self.map_name == "sewer" and rat_tile in {
+                    (config.SEWER_RAT_COL, row)
+                    for row in config.SEWER_RAT_ROWS
+                }:
+                    self._scratch_tutorial_rats.append(rat)
             else:
                 raise ValueError(f"No spawner for object kind {kind!r}")
 
@@ -362,7 +372,10 @@ class WorldScene(Scene):
 
     def _scratch_hint_visible(self) -> bool:
         """Prompt only at the post-gap rat choke, until all rats are gone."""
-        if self.map_name != "sewer" or not self.rats:
+        if (
+            self.map_name != "sewer"
+            or not any(rat.alive for rat in self._scratch_tutorial_rats)
+        ):
             return False
         col, row = self._player_tile()
         left, right, top, bottom = config.SEWER_SCRATCH_HINT_BOUNDS
