@@ -1,21 +1,24 @@
 """Dialogue choices — data, loaded and validated loudly.
 
-A choice is a prompt plus two or more options; picking one plays that
-option's dialogue. Choices live in data/choices/*.json, exactly like
-dialogue lines live in data/dialogue/*.json:
+A choice is a prompt plus two or more options. Picking an option either
+plays a line of dialogue OR carries Chuck straight to another map — each
+option declares exactly one of `dialogue` or `goto`. Choices live in
+data/choices/*.json, exactly like dialogue lines live in
+data/dialogue/*.json:
 
     {
       "sewer_grate": {
         "prompt": "Jump into the sewer?",
         "options": [
-          { "label": "YES", "dialogue": "sewer_grate_yes" },
-          { "label": "NO",  "dialogue": "sewer_grate_no"  }
+          { "label": "YES", "goto": "sewer"          },
+          { "label": "NO",  "dialogue": "sewer_grate_no" }
         ]
       }
     }
 
-Content, not code: a new decision anywhere in the game is a JSON entry
-and (if it's a prop) one line in PROP_CHOICE.
+YES drops Chuck into the sewer with no further words; NO speaks a line
+and closes. Content, not code: a new decision anywhere in the game is a
+JSON entry and (if it's a prop) one line in PROP_CHOICE.
 
 Malformed data is a loud error at load, never a mystery at runtime.
 Pure stdlib — no pygame — so it's unit-tested headless.
@@ -31,8 +34,9 @@ from src.core import config
 
 
 class Option(NamedTuple):
-    label: str        # what the player reads: "YES"
-    dialogue: str     # dialogue id played when chosen
+    label: str                    # what the player reads: "YES"
+    dialogue: str | None = None   # dialogue id played when chosen, or...
+    goto: str | None = None       # ...a map to enter at once (no lines)
 
 
 class Choice(NamedTuple):
@@ -68,13 +72,21 @@ class ChoiceSystem:
             for opt in options:
                 label = opt.get("label")
                 dialogue = opt.get("dialogue")
+                goto = opt.get("goto")
                 if not isinstance(label, str) or not label.strip():
                     raise ValueError(f"{choice_id}: an option has no label")
-                if not isinstance(dialogue, str) or not dialogue.strip():
+                has_dialogue = isinstance(dialogue, str) and bool(dialogue.strip())
+                has_goto = isinstance(goto, str) and bool(goto.strip())
+                if has_dialogue == has_goto:  # both, or neither
                     raise ValueError(
-                        f"{choice_id}: option {label!r} has no dialogue id"
+                        f"{choice_id}: option {label!r} needs exactly one of "
+                        f"'dialogue' (lines to play) or 'goto' (a map to enter)"
                     )
-                parsed.append(Option(label=label, dialogue=dialogue))
+                parsed.append(Option(
+                    label=label,
+                    dialogue=dialogue if has_dialogue else None,
+                    goto=goto if has_goto else None,
+                ))
             self._choices[choice_id] = Choice(prompt=prompt, options=parsed)
 
     def get(self, choice_id: str) -> Choice:

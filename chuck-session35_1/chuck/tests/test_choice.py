@@ -75,14 +75,21 @@ def test_real_grate_choice_asks_the_right_question() -> None:
     assert [o.label for o in choice.options] == ["YES", "NO"]
 
 
-def test_every_choice_branch_has_dialogue_that_exists() -> None:
-    # A choice pointing at a missing branch would be a dead end mid-
-    # conversation. Catch it here instead.
+def test_every_choice_branch_resolves() -> None:
+    # A spoken option must point at real lines; a navigation option must
+    # point at a real map. Either dead end would strand the player mid-
+    # conversation — catch it here instead. Every option is exactly one
+    # kind (the loader enforces the XOR; this checks the target exists).
+    from src.core import config
     cs, ds = ChoiceSystem(), DialogueSystem()
     for choice_id in cs.ids():
         for option in cs.get(choice_id).options:
-            lines = ds.get(option.dialogue)  # raises if missing
-            assert lines and all(isinstance(l, str) for l in lines)
+            assert (option.dialogue is None) != (option.goto is None)
+            if option.dialogue is not None:
+                lines = ds.get(option.dialogue)  # raises if missing
+                assert lines and all(isinstance(l, str) for l in lines)
+            else:
+                assert (config.MAPS_DIR / f"{option.goto}.txt").is_file()
 
 
 def test_choice_text_is_renderable_by_the_pixel_font() -> None:

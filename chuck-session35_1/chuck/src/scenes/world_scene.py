@@ -35,18 +35,32 @@ from src.ui.hud import HUD
 from src.world.camera import Camera
 from src.world.collision import overlaps
 from src.world.tilemap import TileMap
+from src.world.tileset_layout import tileset_for
+from src.world.transitions import AREA_MUSIC
 
 
 class WorldScene(Scene):
-    """The explorable world. Current map: the placeholder test room."""
+    """The explorable world. Starts at the docks; a dialogue choice can
+    carry Chuck to another map (the sewer) via load_map()."""
+
+    def __init__(self, game, map_name: str = "waterdeep_docks") -> None:
+        super().__init__(game)
+        self._initial_map = map_name
+        # Set by a transition choice; applied once the conversation that
+        # triggered it has closed (see update()).
+        self._pending_map: str | None = None
 
     def on_enter(self) -> None:
-        """Set up the map and entities for the current area."""
-        # First pass of the Waterdeep Docks (one screen until the
-        # camera exists). Spawn point 'C' sits beside Bobert's barrels.
-        self.map_name = "waterdeep_docks"
+        """Build the starting area when this scene becomes active."""
+        self.load_map(self._initial_map)
+
+    def load_map(self, map_name: str) -> None:
+        """(Re)build the map and all entities for an area. Used both on
+        first entry and when a transition carries Chuck somewhere new."""
+        self.map_name = map_name
+        self._pending_map = None
         self.tilemap = TileMap(config.MAPS_DIR / f"{self.map_name}.txt")
-        self.tilemap.load_tileset(self.game.assets)
+        self.tilemap.load_tileset(self.game.assets, tileset_for(self.map_name))
         self._world_time = 0.0  # drives water shimmer
 
         spawn_cx, spawn_cy = self.tilemap.spawn_points.get(
@@ -88,9 +102,14 @@ class WorldScene(Scene):
         self._respawn_phase: str | None = None  # "out" | "hold" | "in"
         self._respawn_t = 0.0
 
-        # The Waterdeep Docks theme, looping. Footsteps alternate
-        # variants and pick wood/stone from the tile under Chuck's feet.
-        self.game.audio.play_music(config.MUSIC_FILE)
+        # Area music, looping — or silence where an area has no theme yet
+        # (the sewer's track is a later Phase 2 session). Footsteps
+        # alternate variants and pick wood/stone from the tile underfoot.
+        music = AREA_MUSIC.get(self.map_name, config.MUSIC_FILE)
+        if music is not None:
+            self.game.audio.play_music(music)
+        else:
+            self.game.audio.stop_music()
         self._step_timer = 0.0
         self._step_variant = 1
 
@@ -136,6 +155,14 @@ class WorldScene(Scene):
 
     def update(self, dt: float) -> None:
         """Advance the world simulation."""
+        # A transition chosen during a conversation waits until that
+        # conversation has closed and control returns here — only then
+        # is this scene the top of the stack again — so the descent
+        # lines finish over the old world before the new one loads.
+        if self._pending_map is not None:
+            self.load_map(self._pending_map)
+            return
+
         # The world keeps moving whether or not Chuck is in it.
         self._world_time += dt
         for cat in self.hazards:
@@ -242,11 +269,14 @@ class WorldScene(Scene):
     def _on_choice(self, option) -> None:
         """What a decision means. The scene reports; the world acts.
 
-        TODO (next session): option.dialogue == "sewer_grate_yes" will
-        transition to the sewer map after its line finishes. For now
-        the line is the whole answer.
+        A `goto` option carries Chuck to another map (the grate's YES
+        drops him into the sewer, wordlessly). We only record the
+        destination here; the DialogueScene closes itself, and the
+        actual load happens back in update() once it has.
         """
-        self.last_choice = option.dialogue
+        self.last_choice = option.dialogue or option.goto
+        if option.goto is not None:
+            self._pending_map = option.goto
 
     def _interactable_in_range(self):
         """The NPC or prop Chuck could talk to right now, or None.

@@ -49,10 +49,14 @@ Terrain legend:
     'S'  sewer grate         (solid prop; asks to be jumped into)
     'R'  ruin wall           (solid; crumbling tan foundation blocks)
     'f'  ruin floor          (solid; the rubble inside the ruin)
+    'd'  sewer dirt          (walkable; packed-earth sewer floor)
+    'M'  sewer mud           (walkable; wet muck, darker than dirt)
+    '%'  drainage channel    (solid; murky sewer water Chuck can't cross)
 
 Marker legend (things ON a tile, not the tile itself — each marker
 declares the terrain underneath it, so no seams appear in the ground):
     'C'  Chuck's spawn point   (on planks '=')
+    'E'  Chuck's spawn point   (on stone ',' — the sewer entrance landing)
     'c'  cigarette pickup      (on stone ',')
     'j'  cigarette pickup      (on planks '=')
     'K'  patrolling cat        (on stone ',')
@@ -78,10 +82,7 @@ from pathlib import Path
 from typing import NamedTuple
 
 from src.core import config
-from src.world.tileset_layout import (
-    CHAR_TO_TERRAIN, OVERHEAD_CHAR_TO_TERRAIN, TILE_PX, TILESET_ORDER,
-    art_index,
-)
+from src.world.tileset_layout import DOCKS, TILE_PX, art_index
 
 
 class TileDef(NamedTuple):
@@ -182,10 +183,17 @@ TILE_DEFS: dict[str, TileDef] = {
     # interior. All solid — stylistic only, nothing walks through it.
     "R": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER),
     "f": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER),
+    # The sewer (placeholder terrain; a tileset art pass comes later).
+    # Dirt and mud are the walkable floor; the drainage channel is solid
+    # water — Chuck is one foot tall, so it may as well be a canal.
+    "d": TileDef(solid=False, color=config.COLOR_SEWER_DIRT),
+    "M": TileDef(solid=False, color=config.COLOR_SEWER_MUD),
+    "%": TileDef(solid=True, color=config.COLOR_SEWER_CHANNEL),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {
     "C": MarkerDef(kind="player", under="="),
+    "E": MarkerDef(kind="player", under=","),
     "c": MarkerDef(kind="cigarette", under=","),
     "j": MarkerDef(kind="cigarette", under="="),
     "K": MarkerDef(kind="cat", under=","),
@@ -196,9 +204,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
 
 _COMMENT_PREFIX = ";"
 _PAD_CHAR = "#"  # ragged short lines are padded solid
-
-# (variants, frames) per terrain, derived from the layout contract.
-TILESET_INFO = {name: (v, f) for name, v, f in TILESET_ORDER}
 
 
 class TileMap:
@@ -262,7 +267,10 @@ class TileMap:
         self._grid = grid
         # char -> list of tile Surfaces (variants*frames), set by
         # load_tileset(). Without it, draw_ground falls back to flat
-        # colors (headless tests, missing assets).
+        # colors (headless tests, missing assets). The active Tileset
+        # (which char maps to which sheet row) is chosen per map.
+        self._tileset = DOCKS
+        self._tileset_info = DOCKS.info()
         self._tile_art: dict[str, list] = {}
         self._overhead_art: dict[str, list] = {}
 
@@ -288,20 +296,23 @@ class TileMap:
     # ------------------------------------------------------------------
     # Drawing
     # ------------------------------------------------------------------
-    def load_tileset(self, assets) -> None:
-        """Slice the docks tileset for drawing (called by WorldScene).
+    def load_tileset(self, assets, tileset=DOCKS) -> None:
+        """Slice an area's tileset for drawing (called by WorldScene).
 
-        Rows follow tileset_layout.TILESET_ORDER; each terrain char
-        maps to its row's cells.
+        Rows follow the Tileset's `order`; each terrain char maps to its
+        row's cells. Pass the tileset the current map should use
+        (tileset_layout.tileset_for(map_name)); defaults to the docks.
         """
-        rows = assets.tileset("docks.png", TILE_PX)
+        self._tileset = tileset
+        self._tileset_info = tileset.info()
+        rows = assets.tileset(tileset.sheet, TILE_PX)
         by_name = {name: rows[i][: v * f]
-                   for i, (name, v, f) in enumerate(TILESET_ORDER)}
+                   for i, (name, v, f) in enumerate(tileset.order)}
         self._tile_art = {char: by_name[name]
-                          for char, name in CHAR_TO_TERRAIN.items()}
+                          for char, name in tileset.char_to_terrain.items()}
         self._overhead_art = {char: by_name[name]
                               for char, name in
-                              OVERHEAD_CHAR_TO_TERRAIN.items()}
+                              tileset.overhead_char_to_terrain.items()}
 
     def visible_range(self, camera_offset: tuple[int, int],
                       view_w: int, view_h: int
@@ -331,7 +342,8 @@ class TileMap:
         col0, col1, row0, row1 = self.visible_range(
             camera_offset, view_w, view_h
         )
-        lookup = TILESET_INFO  # (variants, frames) per terrain name
+        char_to_terrain = self._tileset.char_to_terrain
+        lookup = self._tileset_info  # (variants, frames) per terrain name
         for row_i in range(row0, row1):
             grid_row = self._grid[row_i]
             for col_i in range(col0, col1):
@@ -340,7 +352,7 @@ class TileMap:
                 ground_char = tile.under if tile.under else char
                 art = self._tile_art.get(ground_char)
                 if art is not None:
-                    variants, frames = lookup[CHAR_TO_TERRAIN[ground_char]]
+                    variants, frames = lookup[char_to_terrain[ground_char]]
                     idx = art_index(col_i, row_i, variants, frames, time_s)
                     surface.blit(art[idx],
                                  (col_i * ts - ox, row_i * ts - oy))
@@ -369,14 +381,15 @@ class TileMap:
         col0, col1, row0, row1 = self.visible_range(
             camera_offset, view_w, view_h
         )
+        overhead_to_terrain = self._tileset.overhead_char_to_terrain
         for row_i in range(row0, row1):
             grid_row = self._grid[row_i]
             for col_i in range(col0, col1):
                 char = grid_row[col_i]
                 art = self._overhead_art.get(char)
                 if art is not None:
-                    name = OVERHEAD_CHAR_TO_TERRAIN[char]
-                    variants, frames = TILESET_INFO[name]
+                    name = overhead_to_terrain[char]
+                    variants, frames = self._tileset_info[name]
                     idx = art_index(col_i, row_i, variants, frames, time_s)
                     surface.blit(art[idx],
                                  (col_i * ts - ox, row_i * ts - oy))

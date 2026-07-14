@@ -68,10 +68,10 @@ def test_ragged_lines_pad_solid() -> None:
 
 def test_unknown_character_raises_with_location() -> None:
     try:
-        TileMap(_write_map("..\n.%\n"))
+        TileMap(_write_map("..\n.@\n"))
     except ValueError as exc:
         msg = str(exc)
-        assert "'%'" in msg and "row 1" in msg and "col 1" in msg, msg
+        assert "'@'" in msg and "row 1" in msg and "col 1" in msg, msg
     else:
         raise AssertionError("expected ValueError for unknown tile char")
 
@@ -307,6 +307,46 @@ def test_real_docks_map_loads_and_spawn_is_walkable() -> None:
     assert len(cigs) >= 3
     for x, y in cigs:
         assert not m.is_solid(int(x // TS), int(y // TS))
+
+
+def test_sewer_is_a_narrow_connected_descent() -> None:
+    """Phase 2: the sewer is a single narrow, mostly-linear descent —
+    no sealed pockets, long enough to scroll, its placeholder terrain
+    present, and (for now) walled off at the bottom. The outflow exit
+    back to the docks is a later Phase 2 session."""
+    from collections import deque
+    m = TileMap(config.MAPS_DIR / "sewer.txt")
+    # Long enough to scroll vertically; at least a screen wide so the
+    # camera never shows void past the edge; far narrower than the docks.
+    assert m.height_tiles * TS >= config.NATIVE_HEIGHT
+    assert m.width_tiles * TS >= config.NATIVE_WIDTH
+    docks = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
+    assert m.width_tiles < docks.width_tiles
+    # The entrance spawn sits near the top, on walkable ground.
+    sx, sy = m.spawn_points["player"]
+    scol, srow = int(sx // TS), int(sy // TS)
+    assert srow <= 3
+    assert not m.is_solid(scol, srow)
+    # The placeholder sewer terrains are all present (dirt, mud, channel).
+    chars = {ch for row in m._grid for ch in row}
+    assert {"d", "M", "%"} <= chars
+    # One connected world: every walkable tile is reachable from spawn.
+    seen = {(scol, srow)}
+    q = deque([(scol, srow)])
+    while q:
+        c, r = q.popleft()
+        for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            n = (c + dc, r + dr)
+            if n not in seen and not m.is_solid(*n):
+                seen.add(n)
+                q.append(n)
+    walkable = {(c, r) for r in range(m.height_tiles)
+                for c in range(m.width_tiles) if not m.is_solid(c, r)}
+    sealed = walkable - seen
+    assert not sealed, f"sealed pockets: {sorted(sealed)[:8]}"
+    # Bottom row is solid: no way out yet (the exit is a later session).
+    assert all(m.is_solid(c, m.height_tiles - 1)
+               for c in range(m.width_tiles))
 
 
 def _run_all() -> None:

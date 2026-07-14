@@ -65,6 +65,13 @@ COLOR_PLANK_PLACEHOLDER = (150, 112, 74)  # dock planks
 COLOR_WATER_PLACEHOLDER = (36, 52, 84)    # harbor water
 COLOR_BARREL_PLACEHOLDER = (134, 88, 50)  # barrels (incl. Bobert's)
 
+# The sewer: placeholder terrain colors (a tileset art pass comes later,
+# just as the docks layout in session 3 preceded the docks tileset in
+# session 12). Damp, colorless, a step down out of the daylit docks.
+COLOR_SEWER_DIRT = (74, 62, 48)      # packed earth floor
+COLOR_SEWER_MUD = (58, 50, 38)       # wet muck (walkable, darker dirt)
+COLOR_SEWER_CHANNEL = (46, 56, 46)   # murky drainage water (solid)
+
 # TODO: Define the warm Waterdeep-at-sunset palette once art direction
 #       work begins (Game Bible: ALttP / Link's Awakening / Chrono Trigger).
 

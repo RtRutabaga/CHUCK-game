@@ -99,13 +99,18 @@ class DialogueScene(Scene):
         elif self.game.input.was_pressed("interact"):
             option = self._choice.options[self._selected]
             self.game.audio.play_sfx("interact")
-            # The chosen branch becomes an ordinary conversation.
+            if self._on_choice is not None:
+                self._on_choice(option)
+            if option.goto is not None:
+                # A navigation choice, not a spoken one: no lines to
+                # read — close now and let the world act on the goto.
+                self.game.scenes.pop()
+                return
+            # A spoken branch becomes an ordinary conversation.
             self._lines = self._dialogue.get(option.dialogue)
             self._index = 0
             self._choice = None
             self._box.show(self._lines[0])
-            if self._on_choice is not None:
-                self._on_choice(option)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """ESC also closes the conversation (politely)."""

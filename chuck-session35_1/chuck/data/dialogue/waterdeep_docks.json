@@ -14,10 +14,6 @@
   "guard": [
     "Stick to the docks, rat."
   ],
-  "sewer_grate_yes": [
-    "Chuck hauls the grate aside.",
-    "Below: a long dark drop, and a smell he recognizes."
-  ],
   "sewer_grate_no": [
     "Chuck puts the grate back. It was only an idea."
   ]

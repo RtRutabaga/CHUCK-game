@@ -9,11 +9,14 @@ Run from the project root with:
 from src.core import config
 from src.world.tilemap import TILE_DEFS, TileMap
 from src.world.tileset_layout import (
-    ANIM_FPS, CHAR_TO_TERRAIN, TILESET_ORDER, art_index,
+    ANIM_FPS, CHAR_TO_TERRAIN, TILESET_ORDER, TILESETS, art_index,
+    tileset_for,
 )
 
 import tempfile
 from pathlib import Path
+
+REAL_MAPS = ("waterdeep_docks", "sewer")
 
 
 def _map(text: str) -> TileMap:
@@ -23,22 +26,31 @@ def _map(text: str) -> TileMap:
     return TileMap(Path(f.name))
 
 
-def test_every_ground_terrain_has_art() -> None:
-    # Mirrors draw_ground's rule (ground = under if set, else the char)
-    # and draw_overhead's mapping: every drawable char must have art —
-    # a new tile char without art is a loud test failure, not an
-    # invisible black square.
-    from src.world.tileset_layout import OVERHEAD_CHAR_TO_TERRAIN
+def test_each_tileset_is_internally_consistent() -> None:
+    # Every char a tileset maps must name a row that actually exists in
+    # that tileset's sheet order — the generator and the slicer reading
+    # the same contract, per area.
+    for name, ts in TILESETS.items():
+        row_names = {n for n, _, _ in ts.order}
+        assert set(ts.char_to_terrain.values()) <= row_names, name
+        assert set(ts.overhead_char_to_terrain.values()) <= row_names, name
 
-    needed_ground = {tile.under if tile.under else char
-                     for char, tile in TILE_DEFS.items()}
-    assert needed_ground <= set(CHAR_TO_TERRAIN),         needed_ground - set(CHAR_TO_TERRAIN)
-    needed_overhead = {char for char, tile in TILE_DEFS.items()
-                       if tile.overhead}
-    assert needed_overhead <= set(OVERHEAD_CHAR_TO_TERRAIN),         needed_overhead - set(OVERHEAD_CHAR_TO_TERRAIN)
-    names = {name for name, _, _ in TILESET_ORDER}
-    assert set(CHAR_TO_TERRAIN.values()) <= names
-    assert set(OVERHEAD_CHAR_TO_TERRAIN.values()) <= names
+
+def test_every_real_map_is_drawable_by_its_tileset() -> None:
+    # Mirrors draw_ground's rule (ground = under if set, else the char)
+    # and draw_overhead's mapping: every terrain a real map actually uses
+    # must have art in that map's tileset — a char its sheet can't draw
+    # is a loud failure here, not an invisible square in the world.
+    for map_name in REAL_MAPS:
+        m = TileMap(config.MAPS_DIR / f"{map_name}.txt")
+        ts = tileset_for(map_name)
+        used = {ch for row in m._grid for ch in row}
+        for ch in used:
+            tile = TILE_DEFS[ch]
+            ground = tile.under if tile.under else ch
+            assert ground in ts.char_to_terrain, (map_name, ch, ground)
+            if tile.overhead:
+                assert ch in ts.overhead_char_to_terrain, (map_name, ch)
 
 
 def test_art_index_variant_is_stable_per_position() -> None:

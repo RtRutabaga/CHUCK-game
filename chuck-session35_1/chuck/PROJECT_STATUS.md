@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 31 (checkpoint marker is an ashtray now). This file is required by the
+Updated: session 38 (the sewer gets its own eerie/funky theme). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -19,17 +19,19 @@ project rules and updated every session.
   quiet vanish -> starfield -> respawn (no game-over screen, ever)
 - Dialogue: JSON data files, typewriter box, one NPC (dock worker)
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
-  sequencer), offline rendering (tools/generate_audio.py + 
-  tools/generate_music.py), AudioSystem with graceful no-device
-  fallback; the composed 95s Waterdeep Docks theme (7 voices, seamless
-  loop, composition data in data/music/); SFX for pickup, interact,
-  hurt, vanish, respawn, anchor chime, and per-surface footsteps
+  sequencer), offline rendering (tools/generate_audio.py +
+  tools/generate_music.py <name>), AudioSystem with graceful no-device
+  fallback; two composed themes (data/music/, 7 voices, seamless loop) —
+  the 95s warm Waterdeep Docks theme and the 83s eerie/funky D-minor
+  Sewer theme; SFX for pickup, interact, hurt, vanish, respawn, anchor
+  chime, and per-surface footsteps
 - NPC interaction covers the whole visible person (probe + overlap)
 - Depth: barrels/crates are standing props (solid tiles + tall
   sprites), y-sorted with all characters by feet position
-- Ground: drawn tileset (planks/stone/water/floor/wall) with stable
-  per-position variants, animated water, view culling, and a flat-
-  color fallback when the tileset is missing
+- Ground: per-area drawn tilesets (tileset_layout.Tileset: a sheet +
+  its terrain rows + char maps; tileset_for(map) picks one) with stable
+  per-position variants, animated frames, view culling, and a flat-
+  color fallback when a sheet is missing. docks.png and sewer.png so far
 - Bobert asleep in his barrel at spawn (solid scenery, tile 'B');
   cigarette is a drawn sprite; the Astral Anchor presents as an
   ashtray (cold ash dormant / live ember + smoke when attuned), with
@@ -57,6 +59,19 @@ project rules and updated every session.
   crumbling ruin with collapsed gaps; solid, style only
 - Shared mathutil.approach() (camera follow + any future smoothing)
 - Crash logging: unhandled exceptions write crash_log.txt
+- Map transitions: WorldScene.load_map(name) (re)builds a whole area;
+  a dialogue choice can carry Chuck between maps. Where a choice goes is
+  data — a choice option's `goto` names the destination map (no code
+  table). Each area's looping music (or deliberate silence) is data too
+  (transitions.AREA_MUSIC). The grate's YES drops Chuck straight into
+  the sewer, wordlessly — no confirmation lines
+- Sewer: assets/maps/sewer.txt is a narrow, long, mostly-linear descent
+  (walkable corridor wrapped in thick rock so it fills the view) with
+  its own tileset (assets/tilesets/sewer.png, built by
+  tools/generate_sewer_tileset.py): brick walls '#', stone landing ',',
+  dirt 'd', mud 'M', and a drainage channel '%' that flows over 3
+  frames. Its own looping theme plays on entry (data/music/sewer.py ->
+  sewer.wav). Walled off at the bottom (no exit yet)
 
 ## Placeholder systems
 - Tavern door is solid decoration; interiors are a later phase
@@ -85,9 +100,12 @@ project rules and updated every session.
 
 ## Tests
 
-9 suites, all pure Python (no pygame needed):
-collision, tilemap, camera, animation, sanity, hazard, dialogue, audio
+14 suites, all pure Python (no pygame needed): collision, tilemap,
+camera, animation, sanity, hazard, dialogue, audio, props, tileset,
+tutorial, choice, music, transitions
 (`python -m tests.test_<name>` from the project root, or `pytest`).
+The map-transition flow (grate YES -> sewer) is also verified
+end-to-end headlessly with dummy SDL drivers.
 
 ## Phase 2 progress (starting area + sewer tutorial)
 
@@ -99,8 +117,15 @@ collision, tilemap, camera, animation, sanity, hazard, dialogue, audio
 3. [x] Sewer grate + Yes/No dialogue choice: choices are data
        (data/choices/*.json), DialogueScene renders options with a
        caret, up/down selects, E commits (session 35)
-4. [ ] Sewer map + tileset (stone/dirt/mud/channel)
-5. [ ] Sewer music (eerie, funky)
+4. [x] Sewer map + tileset: the grate's YES loads a narrow, linear
+       sewer map (assets/maps/sewer.txt) via a reusable
+       WorldScene.load_map + data-driven `goto` (sessions 36-37). Now
+       with its own art (assets/tilesets/sewer.png): brick walls, stone
+       landing, dirt/mud, and a flowing drainage channel. Per-area
+       tilesets (tileset_layout.Tileset + tileset_for). YES is wordless
+5. [x] Sewer music: an eerie/funky 83s D-minor loop (data/music/sewer.py,
+       rendered to sewer.wav), wired via AREA_MUSIC and playing on entry
+       (session 38)
 6. [ ] Astral Sea glitch blocks + jump mechanic & tutorial
 7. [ ] Rats + scratch attack & tutorial
 8. [ ] Sewer exit -> climb-out -> return to docks
@@ -108,14 +133,17 @@ collision, tilemap, camera, animation, sanity, hazard, dialogue, audio
 
 ## Next recommended session
 
-Continue playtest & polish: this size pass was the first round of
-playtest-driven changes. Sean keeps playing the full loop and
-reporting; we tune (speeds, damage, cigarette economy, camera feel,
-volumes) and fix whatever surfaces. Phase One closes when the slice
-feels right in Sean's hands.
+Item 6 — Astral-Sea glitch blocks + the jump mechanic & tutorial: place
+chunks of dark-blue/purple nebula "wrong map" material in the sewer (a
+new terrain, per the Phase 2 spec — not a portal, just another world's
+tiles bleeding in), and make one void section physically interrupt the
+corridor so Chuck must jump it. This is the first real mechanic addition
+(SPACE becomes jump — unbind it from "interact" then; E and RETURN stay),
+with a "Press SPACE to jump" tutorial hint that clears once crossed.
 
-## After that (Phase Two territory)
+## Also open (Phase 2 / later)
 
-- A market NPC under the awning (pure data)
-- Tavern interior behind the door
-- 12 test suites and counting
+- Market NPC near the red awning (pure data; Phase 2 spec)
+- Rats + scratch attack (item 7)
+- Sewer outflow exit -> climb-out -> return to the docks (item 8)
+- Tavern doorway reads as open for Phase 3 (item 9)

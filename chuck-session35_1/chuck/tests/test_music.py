@@ -12,6 +12,7 @@ the Waterdeep theme into executable checks.
 import struct
 import wave
 
+from data.music import sewer as sewer_song
 from data.music import waterdeep_docks as song
 from src.audio.sequencer import Note, Track, note_to_freq, render_song
 from src.audio.synth import SAMPLE_RATE
@@ -71,6 +72,39 @@ def test_theme_meets_the_soundtrack_bible_bar() -> None:
 
 def test_rendered_theme_exists_and_respects_quality_gates() -> None:
     with wave.open(str(config.MUSIC_DIR / config.MUSIC_FILE)) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 60 * SAMPLE_RATE
+    peak = max(abs(s) for s in samples)
+    assert peak <= 0.9, f"clipping risk: peak {peak:.2f}"
+    assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
+
+
+def test_sewer_theme_is_eerie_funky_and_loops() -> None:
+    tracks = sewer_song.build_tracks()
+    duration = sewer_song.TOTAL_BEATS * 60.0 / sewer_song.TEMPO_BPM
+    assert duration >= 60.0, "sewer theme must run 60+ seconds before repeating"
+    voiced = [t for t in tracks if t.notes]
+    assert len(voiced) >= 4, "sewer theme needs at least four voices"
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)  # every pitch must parse
+            assert 0 <= note.beat < sewer_song.TOTAL_BEATS, (track.name, note)
+    # Funk: the bass grooves busily through the A section (many
+    # syncopated hits per bar, not just downbeats).
+    bass = next(t for t in tracks if t.name == "bass")
+    a_hits = [n for n in bass.notes if 4 * 4 <= n.beat < 12 * 4]
+    assert len(a_hits) >= 8 * 4, len(a_hits)
+    # Eerie: the B section (bars 20-27) leans on the Eb tritone color.
+    lead = next(t for t in tracks if t.name == "lead")
+    b_start, b_end = 20 * 4, 28 * 4
+    assert any(b_start <= n.beat < b_end and n.pitch.startswith("Eb")
+               for n in lead.notes), "B section is missing its tritone chill"
+
+
+def test_rendered_sewer_theme_respects_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "sewer.wav")) as f:
         assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
         raw = f.readframes(f.getnframes())
     samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
