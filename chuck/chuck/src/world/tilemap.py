@@ -28,9 +28,9 @@ Terrain legend:
     'B'  Bobert's barrel     (solid standing prop; the sleeping man
                               beside Chuck's spawn — snores if asked)
     'H'  HEROD sign          (solid standing prop, y-sorted)
-    'D'  tavern door         (solid prop; big enough for humans —
-                              interiors are a later phase)
+    'D'  tavern door         (solid prop; big enough for humans)
     'v'  open tavern threshold (walkable exterior state after sewer)
+    '>'  tavern interior exit (walkable open threshold)
     'a'  market awning       (walkable; canvas drawn OVER entities)
     't'  tavern facade       (solid tan brick)
     'W'  tavern window       (solid; warm lit panes)
@@ -47,6 +47,10 @@ Terrain legend:
     'P'  stall post          (solid; timber holding the canopy corner)
     '1'-'5' stall goods      (solid props in the open stall front:
                               green/red/orange produce, barrel, table)
+    '6'  tavern table        (solid standing prop on planks)
+    '7'  tavern chair        (solid standing prop on planks)
+    '8'  tavern bar counter  (solid standing prop on planks)
+    '9'  tavern hearth       (solid standing prop on planks)
     'S'  sewer grate         (solid prop; asks to be jumped into)
     'R'  ruin wall           (solid; crumbling tan foundation blocks)
     'f'  ruin floor          (solid; the rubble inside the ruin)
@@ -68,6 +72,9 @@ declares the terrain underneath it, so no seams appear in the ground):
     'I'  market woman NPC      (on stone ',')
     'q'  ordinary sewer rat    (on dirt 'd')
     'Z'  sewer exit choice     (on outflow 'Q')
+    'J'  Chuck tavern spawn    (on planks '=')
+    'T'  tavern return arrival (on stone ',')
+    'U'  tavern entry arrival  (on planks '=')
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -133,14 +140,16 @@ TILE_DEFS: dict[str, TileDef] = {
     # HEROD COVER BAND. TONIGHT ONLY. (It is always tonight.)
     "H": TileDef(solid=True, color=(0, 0, 0), prop="herod_sign",
                  under=","),
-    # Tavern door: a human-scale double door (32x34 prop sprite over
-    # the wall). Solid for now — interiors are a later phase.
+    # Tavern door: a human-scale double door prop over the wall. It remains
+    # solid until the established post-sewer state swaps in the threshold.
     "D": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="tavern_door", under="#"),
     # Phase 2 return state: the doors are gone and a dark threshold remains.
-    # It is walkable only as a shallow exterior alcove; no interior exists yet.
+    # It becomes the walk-over entrance to the Phase 3 tavern interior.
     "v": TileDef(solid=False, color=config.COLOR_STONE_PLACEHOLDER,
                  prop="tavern_open", under=","),
+    ">": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="tavern_open", under="="),
     # Market awning: walkable stone with red canvas drawn OVERHEAD —
     # Chuck passes underneath and the canvas covers him.
     "a": TileDef(solid=False, color=config.COLOR_STONE_PLACEHOLDER,
@@ -185,6 +194,14 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="barrel", under=","),
     "5": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
                  prop="stall_table", under=","),
+    "6": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="tavern_table", under="="),
+    "7": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="tavern_chair", under="="),
+    "8": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="bar_counter", under="="),
+    "9": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="tavern_hearth", under="="),
     # The sewer grate: iron set in the street near the guard. Solid;
     # Chuck interacts with it (it asks a question — see PROP_CHOICE).
     "S": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
@@ -220,6 +237,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "q": MarkerDef(kind="rat", under="d"),
     "Z": MarkerDef(kind="choice:sewer_exit", under="Q"),
     "L": MarkerDef(kind="arrival:sewer_outflow", under="="),
+    "J": MarkerDef(kind="player", under="="),
+    "T": MarkerDef(kind="arrival:tavern_return", under=","),
+    "U": MarkerDef(kind="arrival:front_entrance", under="="),
 }
 
 _COMMENT_PREFIX = ";"

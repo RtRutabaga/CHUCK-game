@@ -16,7 +16,7 @@ from src.world.tileset_layout import (
 import tempfile
 from pathlib import Path
 
-REAL_MAPS = ("waterdeep_docks", "sewer")
+REAL_MAPS = ("waterdeep_docks", "sewer", "waterdeep_tavern")
 
 
 def _map(text: str) -> TileMap:

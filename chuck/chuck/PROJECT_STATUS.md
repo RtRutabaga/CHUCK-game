@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 53 (raised north portcullises). This file is required by the
+Updated: session 54 (Phase 3 tavern shell). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -33,7 +33,7 @@ project rules and updated every session.
 - Ground: per-area drawn tilesets (tileset_layout.Tileset: a sheet +
   its terrain rows + char maps; tileset_for(map) picks one) with stable
   per-position variants, animated frames, view culling, and a flat-
-  color fallback when a sheet is missing. docks.png and sewer.png so far
+  color fallback when a sheet is missing. docks.png, sewer.png, and tavern.png
 - Bobert asleep in his barrel at spawn (solid scenery, tile 'B');
   cigarette is a drawn sprite; the Astral Anchor presents as an
   ashtray (cold ash dormant / live ember + smoke when attuned), with
@@ -113,9 +113,20 @@ project rules and updated every session.
   in the harbor and rises onto the planks over a restrained 0.65-second
   control-locked climb, with no further dialogue or explanation
 
+- Phase 3 tavern shell: once the sewer return has opened the exterior doorway,
+  stepping onto it loads a compact 30x20 tavern common room. A named interior
+  arrival places Chuck safely above the threshold facing inward; the matching
+  walk-out exit returns him below the Waterdeep doorway facing away, preventing
+  immediate transition bounce. The room uses a dedicated warm plank-and-wall
+  procedural tileset with a bar counter, three human-scale tables, chairs,
+  hearth, barrels, and crates. Furniture is solid, all remaining floor is one
+  connected traversal area, the camera remains on the normal WorldScene path,
+  and the existing Waterdeep theme currently carries across the doorway
+
 ## Placeholder systems
-- The post-sewer tavern threshold is an accessible exterior alcove only;
-  the tavern interior remains intentionally absent until Phase 3
+- Tavern occupants, the environmental cheese hook, rear pantry route, pantry
+  hazards, sky fall, and falling cutscene remain intentionally absent pending
+  their bounded Phase 3 passes
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -141,9 +152,10 @@ project rules and updated every session.
 
 ## Tests
 
-18 suites (most pure Python/headless): collision, tilemap,
+19 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
-tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset
+tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
+tavern
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -197,11 +209,23 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Phase 2's documented feature checklist is complete. Playtest the full Waterdeep
--> sewer -> Waterdeep loop, especially the changed tavern threshold. Do not
-begin the tavern interior until Sean advances `CURRENT-PHASE.md` to Phase 3.
+Add the tavern's minimal occupants and a plainly readable environmental cheese
+trail that leads toward a rear pantry entrance. Keep the cheese non-inventory
+and leave pantry hazards and the Chult fall for later bounded passes.
 
 ## Also open
 
 - Full Phase 2 human playtest and acceptance
-- Phase 3 remains blocked by the active-phase document
+- Dedicated tavern music or ambience (the shell currently reuses Waterdeep)
+- Pantry room and three-way floor language
+- Sky fall branch and falling-to-Chult cutscene
+
+## Phase 3 progress (tavern, pantry, and fall to Chult)
+
+1. [x] Tavern doorway transition + common-room shell: bidirectional safe named
+       arrivals, stable collision, readable sparse furniture, dedicated warm
+       procedural tileset, and normal camera/audio behavior (session 54)
+2. [ ] Minimal tavern occupants + environmental cheese hook toward the pantry
+3. [ ] Pantry room + normal/Astral/teal-sky floor navigation
+4. [ ] Reused Astral fall death + distinct successful sky-fall branch
+5. [ ] Dedicated circa-1994 falling-to-Chult cutscene and Phase 4 handoff point

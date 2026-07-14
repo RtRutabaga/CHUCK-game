@@ -40,7 +40,7 @@ from src.world.camera import Camera
 from src.world.collision import overlaps
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import tileset_for
-from src.world.transitions import AREA_MUSIC
+from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 
 class WorldScene(Scene):
@@ -66,6 +66,7 @@ class WorldScene(Scene):
         map_name: str,
         arrival: str | None = None,
         climb_from_water: bool = False,
+        facing: str | None = None,
     ) -> None:
         """(Re)build the map and all entities for an area. Used both on
         first entry and when a transition carries Chuck somewhere new."""
@@ -106,6 +107,8 @@ class WorldScene(Scene):
             target_player_y,
             self.game.input,
         )
+        if facing is not None:
+            self.player.facing = facing
         if climb_from_water:
             self.player.y += config.TILE_SIZE
             self.player.facing = "up"
@@ -259,6 +262,17 @@ class WorldScene(Scene):
             and self._player_tile()[1] > config.SEWER_JUMP_ROW
         ):
             self._jump_tutorial_complete = True
+
+        exit_config = AREA_WALK_EXITS.get(
+            (self.map_name, self.tilemap.terrain_at(*self._player_tile()))
+        )
+        if exit_config is not None:
+            self.load_map(
+                exit_config.destination,
+                arrival=exit_config.arrival,
+                facing=exit_config.facing,
+            )
+            return
 
         # One committed scratch resolves against at most one rat. Rat bodies
         # block the one-tile choke, so the group must be cleared to continue.

@@ -82,6 +82,19 @@ def test_stall_props_are_valid_and_mute() -> None:
         assert p.sort_y == 30 * TS
 
 
+def test_tavern_furniture_is_valid_and_mute() -> None:
+    for kind, w, h in (
+        ("tavern_table", 24, 16),
+        ("tavern_chair", 12, 14),
+        ("bar_counter", 16, 20),
+        ("tavern_hearth", 28, 26),
+    ):
+        prop = Prop(kind, col=8, row=6, assets=FakeAssets(w, h))
+        assert prop.dialogue_id is None
+        assert prop.choice_id is None
+        assert prop.sort_y == 7 * TS
+
+
 def test_grate_carries_a_choice_not_a_line() -> None:
     grate = Prop("sewer_grate", col=52, row=6, assets=FakeAssets(16, 13))
     assert grate.choice_id == "sewer_grate"

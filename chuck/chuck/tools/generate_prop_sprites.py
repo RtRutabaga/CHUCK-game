@@ -407,6 +407,81 @@ def _build_tavern_open() -> str:
     return "\n".join("".join(row) for row in grid)
 
 
+def _build_tavern_table() -> str:
+    """A broad human table whose underside is a room at Chuck's scale."""
+    width, height = 24, 16
+    grid = [["." for _ in range(width)] for _ in range(height)]
+    for y in range(2, 10):
+        for x in range(1, width - 1):
+            grid[y][x] = "C"
+    for x in range(width):
+        grid[1][x] = "T"
+        grid[9][x] = "c"
+    for leg_x in (3, 4, 19, 20):
+        for y in range(10, height):
+            grid[y][leg_x] = "c"
+    return "\n".join("".join(row) for row in grid)
+
+
+def _build_tavern_chair() -> str:
+    width, height = 12, 14
+    grid = [["." for _ in range(width)] for _ in range(height)]
+    for y in range(0, 7):
+        for x in range(2, 10):
+            grid[y][x] = "C" if x not in (3, 8) else "c"
+    for x in range(1, 11):
+        grid[7][x] = "T"
+        grid[8][x] = "C"
+    for leg_x in (2, 3, 8, 9):
+        for y in range(9, height):
+            grid[y][leg_x] = "c"
+    return "\n".join("".join(row) for row in grid)
+
+
+def _build_bar_counter() -> str:
+    width, height = 16, 20
+    grid = [["." for _ in range(width)] for _ in range(height)]
+    for y in range(3, height):
+        for x in range(width):
+            grid[y][x] = "C"
+    for y in (2, 8, 15, 19):
+        for x in range(width):
+            grid[y][x] = "c" if y != 2 else "T"
+    for x in (0, 7, 8, 15):
+        for y in range(3, height):
+            grid[y][x] = "c"
+    return "\n".join("".join(row) for row in grid)
+
+
+def _build_tavern_hearth() -> str:
+    width, height = 28, 26
+    grid = [["." for _ in range(width)] for _ in range(height)]
+    for y in range(3, height):
+        for x in range(2, width - 2):
+            grid[y][x] = "S"
+    for y in range(8, 24):
+        for x in range(7, 21):
+            grid[y][x] = "_"
+    for x in range(5, 23):
+        grid[2][x] = "E"
+        grid[3][x] = "S"
+    for x in range(4, 24):
+        grid[24][x] = "E"
+        grid[25][x] = "S"
+    # One restrained, readable flame in the dark firebox.
+    for x, y, char in (
+        (13, 14, "O"), (14, 14, "O"), (12, 15, "q"), (13, 15, "x"),
+        (14, 15, "x"), (15, 15, "q"), (11, 16, "O"), (12, 16, "x"),
+        (13, 16, "x"), (14, 16, "x"), (15, 16, "x"), (16, 16, "O"),
+        (10, 17, "q"), (11, 17, "O"), (12, 17, "O"), (13, 17, "x"),
+        (14, 17, "x"), (15, 17, "O"), (16, 17, "O"), (17, 17, "q"),
+        (10, 18, "O"), (11, 18, "O"), (12, 18, "O"), (13, 18, "O"),
+        (14, 18, "O"), (15, 18, "O"), (16, 18, "O"), (17, 18, "O"),
+    ):
+        grid[y][x] = char
+    return "\n".join("".join(row) for row in grid)
+
+
 def _write(name: str, grid: str, w: int, h: int) -> None:
     out = (Path(__file__).resolve().parents[1]
            / "assets" / "sprites" / "objects" / f"{name}.png")
@@ -430,6 +505,10 @@ def main() -> None:
     _write("herod_sign", HEROD_SIGN, 16, 24)
     _write("tavern_door", _build_tavern_door(), 48, 34)
     _write("tavern_open", _build_tavern_open(), 48, 34)
+    _write("tavern_table", _build_tavern_table(), 24, 16)
+    _write("tavern_chair", _build_tavern_chair(), 12, 14)
+    _write("bar_counter", _build_bar_counter(), 16, 20)
+    _write("tavern_hearth", _build_tavern_hearth(), 28, 26)
     _write("chimney", CHIMNEY, 12, 22)
     _write("sewer_grate", SEWER_GRATE, 16, 13)
     _write("house_door", HOUSE_DOOR, 14, 20)

@@ -12,6 +12,7 @@ repetition (picked deterministically per tile position); frames animate
 
     docks.png  — the daylit port (planks, quay stone, harbor, tavern...)
     sewer.png  — the tunnel below (brick, stone, dirt, mud, channel)
+    tavern.png — warm timber floor and interior walls
 
 Which map uses which tileset is MAP_TILESET / tileset_for(). No pygame
 here: pure data + the index math, unit-testable anywhere.
@@ -124,12 +125,30 @@ SEWER = Tileset(
     overhead_char_to_terrain={"Q": "sewer_outflow"},
 )
 
-TILESETS: dict[str, Tileset] = {"docks": DOCKS, "sewer": SEWER}
+TAVERN = Tileset(
+    sheet="tavern.png",
+    order=[
+        ("tavern_floor", 3, 1),
+        ("tavern_interior_wall", 2, 1),
+    ],
+    char_to_terrain={
+        "=": "tavern_floor",
+        "#": "tavern_interior_wall",
+    },
+    overhead_char_to_terrain={},
+)
+
+TILESETS: dict[str, Tileset] = {
+    "docks": DOCKS,
+    "sewer": SEWER,
+    "tavern": TAVERN,
+}
 
 # Which map draws with which tileset (default: the docks sheet).
 MAP_TILESET: dict[str, str] = {
     "waterdeep_docks": "docks",
     "sewer": "sewer",
+    "waterdeep_tavern": "tavern",
 }
 
 

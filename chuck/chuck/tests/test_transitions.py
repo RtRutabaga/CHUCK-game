@@ -10,7 +10,7 @@ Pure stdlib (no pygame), like the rest of the data-layer tests.
 from src.core import config
 from src.systems.choice import ChoiceSystem
 from src.world.tilemap import TileMap
-from src.world.transitions import AREA_MUSIC
+from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 
 def test_grate_yes_goes_to_the_sewer() -> None:
@@ -53,6 +53,30 @@ def test_area_music_is_a_real_file_or_deliberate_silence() -> None:
             assert (config.MUSIC_DIR / music).is_file(), (name, music)
 
 
+def test_every_walk_exit_targets_a_real_named_arrival() -> None:
+    assert AREA_WALK_EXITS[("waterdeep_docks", "v")].destination == (
+        "waterdeep_tavern"
+    )
+    assert AREA_WALK_EXITS[("waterdeep_tavern", ">")].destination == (
+        "waterdeep_docks"
+    )
+    for (source, terrain), exit_config in AREA_WALK_EXITS.items():
+        source_map = TileMap(config.MAPS_DIR / f"{source}.txt")
+        if (source, terrain) == ("waterdeep_docks", "v"):
+            source_map.open_tavern_entrance()
+        assert any(terrain in row for row in source_map._grid), (source, terrain)
+        destination = TileMap(
+            config.MAPS_DIR / f"{exit_config.destination}.txt"
+        )
+        arrivals = {
+            kind.split(":", 1)[1]
+            for kind, _ in destination.object_spawns
+            if kind.startswith("arrival:")
+        }
+        assert exit_config.arrival in arrivals
+        assert exit_config.facing in {"up", "down", "left", "right"}
+
+
 def test_sewer_outflow_targets_the_named_waterdeep_arrival() -> None:
     exit_option = ChoiceSystem().get("sewer_exit").options[0]
     assert exit_option.goto == "waterdeep_docks"
@@ -61,7 +85,7 @@ def test_sewer_outflow_targets_the_named_waterdeep_arrival() -> None:
     docks = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
     arrivals = {kind: pos for kind, pos in docks.object_spawns
                 if kind.startswith("arrival:")}
-    assert list(arrivals) == ["arrival:sewer_outflow"]
+    assert "arrival:sewer_outflow" in arrivals
     x, y = arrivals["arrival:sewer_outflow"]
     assert (int(x // config.TILE_SIZE), int(y // config.TILE_SIZE)) == (15, 30)
 
