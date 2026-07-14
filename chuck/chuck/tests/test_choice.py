@@ -61,6 +61,13 @@ def test_malformed_choices_are_loud() -> None:
             {"label": "A", "dialogue": "x", "goto": "somewhere"},
             {"label": "B", "dialogue": "y"},
         ]}},
+        {"c": {"prompt": "Q?", "options": [
+            {"label": "A", "arrival": "dock"}, {"label": "B"},
+        ]}},
+        {"c": {"prompt": "Q?", "options": [
+            {"label": "A", "goto": "map", "climb_from_water": "yes"},
+            {"label": "B"},
+        ]}},
     ]
     for data in bad:
         try:
@@ -78,6 +85,17 @@ def test_real_grate_choice_asks_the_right_question() -> None:
     assert [o.label for o in choice.options] == ["YES", "NO"]
     assert choice.options[1].dialogue is None
     assert choice.options[1].goto is None
+
+
+def test_real_sewer_exit_choice_carries_arrival_choreography() -> None:
+    choice = ChoiceSystem().get("sewer_exit")
+    assert choice.prompt == "Leave the sewer?"
+    assert [o.label for o in choice.options] == ["YES", "NO"]
+    yes, no = choice.options
+    assert yes.goto == "waterdeep_docks"
+    assert yes.arrival == "sewer_outflow"
+    assert yes.climb_from_water
+    assert no.dialogue is None and no.goto is None
 
 
 def test_silent_choice_closes_dialogue_immediately() -> None:

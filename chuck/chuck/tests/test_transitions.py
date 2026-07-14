@@ -10,7 +10,7 @@ Pure stdlib (no pygame), like the rest of the data-layer tests.
 from src.core import config
 from src.systems.choice import ChoiceSystem
 from src.world.tilemap import TileMap
-from src.world.transitions import AREA_EXIT_TILES, AREA_MUSIC
+from src.world.transitions import AREA_MUSIC
 
 
 def test_grate_yes_goes_to_the_sewer() -> None:
@@ -37,7 +37,14 @@ def test_every_choice_goto_points_at_a_real_map() -> None:
             if opt.goto is not None:
                 path = config.MAPS_DIR / f"{opt.goto}.txt"
                 assert path.is_file(), (choice_id, opt.label, path)
-                TileMap(path)  # parses without raising
+                destination = TileMap(path)  # parses without raising
+                if opt.arrival is not None:
+                    arrivals = {
+                        kind.split(":", 1)[1]
+                        for kind, _ in destination.object_spawns
+                        if kind.startswith("arrival:")
+                    }
+                    assert opt.arrival in arrivals
 
 
 def test_area_music_is_a_real_file_or_deliberate_silence() -> None:
@@ -47,10 +54,10 @@ def test_area_music_is_a_real_file_or_deliberate_silence() -> None:
 
 
 def test_sewer_outflow_targets_the_named_waterdeep_arrival() -> None:
-    exit_config = AREA_EXIT_TILES[("sewer", "Q")]
-    assert exit_config.destination == "waterdeep_docks"
-    assert exit_config.arrival == "sewer_outflow"
-    assert exit_config.climb_from_water
+    exit_option = ChoiceSystem().get("sewer_exit").options[0]
+    assert exit_option.goto == "waterdeep_docks"
+    assert exit_option.arrival == "sewer_outflow"
+    assert exit_option.climb_from_water
     docks = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
     arrivals = {kind: pos for kind, pos in docks.object_spawns
                 if kind.startswith("arrival:")}

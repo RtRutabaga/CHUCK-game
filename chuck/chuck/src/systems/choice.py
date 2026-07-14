@@ -17,6 +17,8 @@ data/dialogue/*.json:
     }
 
 YES drops Chuck into the sewer with no further words; NO simply closes.
+Navigation options may also name an `arrival` marker and request the existing
+`climb_from_water` arrival choreography.
 Content, not code: a new decision anywhere in the game is a
 JSON entry and (if it's a prop) one line in PROP_CHOICE.
 
@@ -37,6 +39,8 @@ class Option(NamedTuple):
     label: str                    # what the player reads: "YES"
     dialogue: str | None = None   # dialogue id played when chosen, or...
     goto: str | None = None       # ...a map to enter at once (no lines)
+    arrival: str | None = None    # optional named marker in that map
+    climb_from_water: bool = False
 
 
 class Choice(NamedTuple):
@@ -73,6 +77,8 @@ class ChoiceSystem:
                 label = opt.get("label")
                 dialogue = opt.get("dialogue")
                 goto = opt.get("goto")
+                arrival = opt.get("arrival")
+                climb_from_water = opt.get("climb_from_water", False)
                 if not isinstance(label, str) or not label.strip():
                     raise ValueError(f"{choice_id}: an option has no label")
                 has_dialogue = isinstance(dialogue, str) and bool(dialogue.strip())
@@ -82,10 +88,27 @@ class ChoiceSystem:
                         f"{choice_id}: option {label!r} cannot have both "
                         f"'dialogue' and 'goto'"
                     )
+                has_arrival = isinstance(arrival, str) and bool(arrival.strip())
+                if arrival is not None and not has_arrival:
+                    raise ValueError(
+                        f"{choice_id}: option {label!r} has an invalid arrival"
+                    )
+                if not isinstance(climb_from_water, bool):
+                    raise ValueError(
+                        f"{choice_id}: option {label!r} climb_from_water "
+                        "must be a boolean"
+                    )
+                if (has_arrival or climb_from_water) and not has_goto:
+                    raise ValueError(
+                        f"{choice_id}: option {label!r} transition details "
+                        "require 'goto'"
+                    )
                 parsed.append(Option(
                     label=label,
                     dialogue=dialogue if has_dialogue else None,
                     goto=goto if has_goto else None,
+                    arrival=arrival if has_arrival else None,
+                    climb_from_water=climb_from_water,
                 ))
             self._choices[choice_id] = Choice(prompt=prompt, options=parsed)
 

@@ -18,6 +18,7 @@ import pygame
 
 from src.core import config
 from src.entities.anchor import AstralAnchor
+from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.hazard import Cat
 from src.entities.npc import NPC
 from src.entities.pickup import Cigarette
@@ -39,7 +40,7 @@ from src.world.camera import Camera
 from src.world.collision import overlaps
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import tileset_for
-from src.world.transitions import AREA_EXIT_TILES, AREA_MUSIC
+from src.world.transitions import AREA_MUSIC
 
 
 class WorldScene(Scene):
@@ -52,6 +53,8 @@ class WorldScene(Scene):
         # Set by a transition choice; applied once the conversation that
         # triggered it has closed (see update()).
         self._pending_map: str | None = None
+        self._pending_arrival: str | None = None
+        self._pending_climb_from_water = False
 
     def on_enter(self) -> None:
         """Build the starting area when this scene becomes active."""
@@ -67,6 +70,8 @@ class WorldScene(Scene):
         first entry and when a transition carries Chuck somewhere new."""
         self.map_name = map_name
         self._pending_map = None
+        self._pending_arrival = None
+        self._pending_climb_from_water = False
         self.tilemap = TileMap(config.MAPS_DIR / f"{self.map_name}.txt")
         self.tilemap.load_tileset(self.game.assets, tileset_for(self.map_name))
         self._world_time = 0.0  # drives water shimmer
@@ -155,6 +160,7 @@ class WorldScene(Scene):
         self.hazards: list[Cat] = []
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
+        self.choice_triggers: list[ChoiceTrigger] = []
         self._enemy_spawns = [
             (kind, position)
             for kind, position in self.tilemap.object_spawns
@@ -178,6 +184,9 @@ class WorldScene(Scene):
                 self.npcs.append(npc)
             elif kind == "rat":
                 continue  # rebuilt with all enemies below
+            elif kind.startswith("choice:"):
+                choice_id = kind.split(":", 1)[1]
+                self.choice_triggers.append(ChoiceTrigger(cx, cy, choice_id))
             elif kind.startswith("arrival:"):
                 continue  # named map metadata, not a runtime entity
             else:
@@ -197,7 +206,14 @@ class WorldScene(Scene):
         # is this scene the top of the stack again — so the descent
         # lines finish over the old world before the new one loads.
         if self._pending_map is not None:
-            self.load_map(self._pending_map)
+            destination = self._pending_map
+            arrival = self._pending_arrival
+            climb_from_water = self._pending_climb_from_water
+            self.load_map(
+                destination,
+                arrival=arrival,
+                climb_from_water=climb_from_water,
+            )
             return
 
         # The world keeps moving whether or not Chuck is in it.
@@ -238,17 +254,6 @@ class WorldScene(Scene):
             and self._player_tile()[1] > config.SEWER_JUMP_ROW
         ):
             self._jump_tutorial_complete = True
-
-        exit_config = AREA_EXIT_TILES.get(
-            (self.map_name, self.tilemap.terrain_at(*self._player_tile()))
-        )
-        if exit_config is not None:
-            self.load_map(
-                exit_config.destination,
-                arrival=exit_config.arrival,
-                climb_from_water=exit_config.climb_from_water,
-            )
-            return
 
         # One committed scratch resolves against at most one rat. Rat bodies
         # block the one-tile choke, so the group must be cleared to continue.
@@ -348,6 +353,8 @@ class WorldScene(Scene):
                 self._hint.draw(surface, config.HINT_JUMP)
             elif self._scratch_hint_visible():
                 self._hint.draw(surface, config.HINT_SCRATCH)
+            elif self._anchor_hint_visible():
+                self._hint.draw(surface, config.HINT_ANCHOR)
             elif self._interactable_in_range() is not None:
                 self._hint.draw(surface, config.HINT_INTERACT)
         self._draw_respawn_overlay(surface)
@@ -366,14 +373,16 @@ class WorldScene(Scene):
     def _on_choice(self, option) -> None:
         """What a decision means. The scene reports; the world acts.
 
-        A `goto` option carries Chuck to another map (the grate's YES
-        drops him into the sewer, wordlessly). We only record the
-        destination here; the DialogueScene closes itself, and the
-        actual load happens back in update() once it has.
+        A `goto` option carries Chuck to another map. It may also name an
+        arrival marker and restrained arrival choreography. We only record
+        the transition here; DialogueScene closes itself, and the actual
+        load happens back in update() once it has.
         """
         self.last_choice = option.dialogue or option.goto
         if option.goto is not None:
             self._pending_map = option.goto
+            self._pending_arrival = option.arrival
+            self._pending_climb_from_water = option.climb_from_water
 
     def _interactable_in_range(self):
         """The NPC or prop Chuck could talk to right now, or None.
@@ -385,7 +394,7 @@ class WorldScene(Scene):
             self.player.interaction_probe(),
             self.player.hitbox,
             self.npcs,
-            self.props,
+            [*self.props, *self.choice_triggers],
         )
 
     def _player_tile(self) -> tuple[int, int]:
@@ -414,6 +423,19 @@ class WorldScene(Scene):
         col, row = self._player_tile()
         left, right, top, bottom = config.SEWER_SCRATCH_HINT_BOUNDS
         return left <= col <= right and top <= row <= bottom
+
+    def _anchor_hint_visible(self) -> bool:
+        """Introduce the maze ashtray when Chuck comes within 1.5 tiles."""
+        if self.map_name != "sewer":
+            return False
+        player_cx = self.player.x + self.player.width / 2
+        player_cy = self.player.y + self.player.height / 2
+        reach = config.TILE_SIZE * 1.5
+        return any(
+            abs(player_cx - (anchor.x + anchor.width / 2)) <= reach
+            and abs(player_cy - (anchor.y + anchor.height / 2)) <= reach
+            for anchor in self.anchors
+        )
 
     def _update_footsteps(self, dt: float) -> None:
         """A soft tap per stride; wood on the dock, stone on the street."""

@@ -6,8 +6,8 @@ promise an interaction the key won't deliver, or vice versa.
 
 The rule (unchanged from when it was inline in the WorldScene): a
 target is in reach if Chuck's facing probe touches it OR he's standing
-on it (NPCs and props aren't solid, so he routinely overlaps them).
-NPCs answer before props.
+on it. NPCs answer before environmental targets such as props and
+map-authored choice zones.
 
 Pure math on (x, y, w, h) tuples — no pygame, so it's unit-testable
 headless. Callers pass rects; pygame.Rect exposes .x/.y/.width/.height
@@ -47,8 +47,8 @@ def in_reach(target: Interactable, probe, player_box) -> bool:
 def find_target(probe, player_box, npcs, props):
     """The thing Chuck would talk to right now, or None.
 
-    NPCs take precedence over props (a person standing by a sign
-    answers first); props without a line are mute scenery and skipped.
+    NPCs take precedence over environmental targets (a person standing by
+    a sign answers first); mute targets are skipped.
     """
     for npc in npcs:
         if in_reach(npc, probe, player_box):

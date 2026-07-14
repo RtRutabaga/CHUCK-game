@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 49 (enemy reset + rat patrols). This file is required by the
+Updated: session 50 (maze checkpoint + interactive sewer exit). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -65,10 +65,10 @@ project rules and updated every session.
   a dialogue choice can carry Chuck between maps. Where a choice goes is
   data — a choice option's `goto` names the destination map (no code
   table). Each area's looping music (or deliberate silence) is data too
-  (transitions.AREA_MUSIC). Walk-over exit tiles use AREA_EXIT_TILES plus
-  named arrival markers, so an exit can choose a destination and arrival
-  choreography without hardcoded map coordinates. The grate's YES drops Chuck
-  straight into the sewer, wordlessly — no confirmation lines
+  (transitions.AREA_MUSIC). Navigation choices can also carry a named arrival
+  marker and restrained arrival choreography without hardcoded coordinates.
+  The entrance grate's YES drops Chuck straight into the sewer, wordlessly —
+  no confirmation lines
 - Sewer: assets/maps/sewer.txt is a 48x72, mostly-linear descent
   (walkable corridor wrapped in thick rock so it fills the view) with
   its own tileset (assets/tilesets/sewer.png, built by
@@ -98,11 +98,14 @@ project rules and updated every session.
   extending the original scratch tutorial prompt. Those four make restrained
   six-pixel horizontal patrols at 12 px/s; the three choke rats and any rat
   beside walls, props, another rat spawn, or Astral fall tiles stay stationary.
-  Defeated rats reset when Chuck dies and returns. The safe route ends at a
-  three-tile iron drainage outflow drawn overhead from the sewer tileset.
-  Walking through it returns Chuck to the Waterdeep south pier: he appears one
-  tile out in the harbor and rises onto the planks over a restrained 0.65-second
-  control-locked climb, with no dialogue or explanation
+  Defeated rats reset when Chuck dies and returns. A cold ashtray midway through
+  the late maze lights on contact, becomes the active respawn checkpoint, and
+  introduces itself on proximity with "Ashtrays save your progress." The safe
+  route ends at a three-tile iron drainage outflow drawn overhead from the sewer
+  tileset. E opens "Leave the sewer?" with YES/NO choices. NO closes silently;
+  YES returns Chuck to the Waterdeep south pier, where he appears one tile out
+  in the harbor and rises onto the planks over a restrained 0.65-second
+  control-locked climb, with no further dialogue or explanation
 
 ## Placeholder systems
 - Tavern door is solid decoration; interiors are a later phase
@@ -172,9 +175,11 @@ end-to-end headlessly with dummy SDL drivers.
          foreshadowing, then a broad westward post-rat continuation with
          escalating corruption and a preserved safe path (session 43)
 8. [x] Sewer exit -> climb-out -> return to docks: a rat-scale iron outflow
-       uses a data-driven walk-over transition and named south-pier arrival;
-       Chuck rises one tile from harbor water onto the planks in a brief,
-       silent, control-locked animation (session 47)
+       uses a data-driven YES/NO interaction and named south-pier arrival;
+       NO closes silently, while YES has Chuck rise one tile from harbor water
+       onto the planks in a brief, silent, control-locked animation. The late
+       maze now also contains an ashtray checkpoint with proximity guidance
+       (sessions 47/50)
 9. [ ] Tavern doorway opens (Phase 3 setup)
 
 ## Next recommended session

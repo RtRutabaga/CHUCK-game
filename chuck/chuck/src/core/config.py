@@ -195,6 +195,7 @@ TUTORIAL_HINT_TOP = 8       # pixels from the top of the 320x180 view
 HINT_INTERACT = "Press E to interact"
 HINT_JUMP = "Press SPACE to jump"
 HINT_SCRATCH = "Press F to scratch"
+HINT_ANCHOR = "Ashtrays save your progress"
 
 # Choice options drawn inside the dialogue panel.
 CHOICE_LEFT = 8             # px indent inside the panel's text area

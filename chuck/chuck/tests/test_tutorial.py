@@ -110,6 +110,10 @@ def test_scratch_hint_names_the_f_binding() -> None:
     assert re.search(r"pygame\.K_f:\s*\"scratch\"", src)
 
 
+def test_anchor_hint_uses_the_requested_tutorial_text() -> None:
+    assert config.HINT_ANCHOR == "Ashtrays save your progress"
+
+
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):

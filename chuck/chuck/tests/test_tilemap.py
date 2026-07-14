@@ -383,6 +383,15 @@ def test_sewer_is_an_expanded_connected_descent() -> None:
                for c in (15, 16, 17))
     assert all(m.is_solid(c, m.height_tiles - 1)
                for c in range(m.width_tiles))
+    # The late safe route carries one dirt-based checkpoint, and the middle
+    # outflow tile carries the invisible exit interaction marker.
+    anchors = [pos for kind, pos in m.object_spawns if kind == "anchor"]
+    exits = [pos for kind, pos in m.object_spawns
+             if kind == "choice:sewer_exit"]
+    assert [(int(x // TS), int(y // TS)) for x, y in anchors] == [(12, 57)]
+    assert [(int(x // TS), int(y // TS)) for x, y in exits] == [(16, 70)]
+    assert m.terrain_at(12, 57) == "d"
+    assert m.terrain_at(16, 70) == "Q"
 
 
 def _run_all() -> None:

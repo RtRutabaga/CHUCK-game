@@ -62,8 +62,10 @@ declares the terrain underneath it, so no seams appear in the ground):
     'j'  cigarette pickup      (on planks '=')
     'K'  patrolling cat        (on stone ',')
     'A'  Astral Anchor         (on stone ',')
+    'Y'  Astral Anchor         (on sewer dirt 'd')
     'N'  dock worker NPC       (on stone ',')
     'q'  ordinary sewer rat    (on dirt 'd')
+    'Z'  sewer exit choice     (on outflow 'Q')
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -205,9 +207,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "j": MarkerDef(kind="cigarette", under="="),
     "K": MarkerDef(kind="cat", under=","),
     "A": MarkerDef(kind="anchor", under=","),
+    "Y": MarkerDef(kind="anchor", under="d"),
     "N": MarkerDef(kind="npc:dock_worker", under=","),
     "G": MarkerDef(kind="npc:guard", under=","),
     "q": MarkerDef(kind="rat", under="d"),
+    "Z": MarkerDef(kind="choice:sewer_exit", under="Q"),
     "L": MarkerDef(kind="arrival:sewer_outflow", under="="),
 }
 
