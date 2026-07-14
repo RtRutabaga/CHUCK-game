@@ -42,6 +42,16 @@ def test_jump_clears_one_astral_tile() -> None:
     assert player.y > 3 * config.TILE_SIZE, player.y
 
 
+def test_jump_start_is_a_one_frame_event() -> None:
+    controls = FakeInput()
+    player = Player(19.0, 20.0, controls)
+    controls.press_jump = True
+    player.update(0.01)
+    assert player.jumping and player.jump_just_started
+    player.update(0.01)
+    assert player.jumping and not player.jump_just_started
+
+
 def test_walking_into_astral_void_triggers_fall_zone() -> None:
     controls = FakeInput()
     player = Player(19.0, 20.0, controls)

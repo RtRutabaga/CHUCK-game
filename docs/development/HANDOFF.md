@@ -3,51 +3,40 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `4d114ae` (`Remove obsolete content and simplify the codebase`)
-- Current work: uncommitted Phase 2 sewer route expansion
+- Base commit: `7603999` (`Expand sewer route and update tutorial landmarks`)
+- Current work: Phase 2 subtle jump SFX pass
 - Active phase: Phase 2 — Waterdeep Starting Area and Sewer Tutorial
 
 ## Completed This Pass
 
-Follow-up level-design refinement to Phase 2 items 6–7: the sewer is now much
-larger, with a longer introduction to Astral corruption and a substantial
-post-rat continuation to the west.
+Added a restrained sound cue when Chuck begins a real jump. Jump movement,
+duration, collision, visuals, and tutorial behavior are unchanged.
 
 ## Implementation
 
-- `assets/maps/sewer.txt` expands from 20x30 to 48x72 tiles while retaining a
-  mostly-linear sewer progression and the sealed lower boundary.
-- Chuck now walks roughly 28 rows before the required Astral jump. Six small,
-  avoidable Astral clusters appear along that approach as environmental
-  foreshadowing; all use the existing lethal `V` tile behavior.
-- The mandatory one-row fall band, landing, and three-rat one-tile choke are
-  preserved later in the route rather than mechanically redesigned.
-- Past the rats, the floor opens from the east-side choke far to the west and
-  continues for more than three native screens. Astral substitutions increase
-  sharply in density and irregularity while a continuous safe path remains.
-- Sewer landmark coordinates now live in `src/core/config.py`; scene tutorial
-  regions and map/combat tests share them so later layout edits fail loudly.
+- `Player.jump_just_started` is a one-frame event set only when a jump is
+  accepted, mirroring the established scratch-start event pattern.
+- `WorldScene` plays `jump.wav` from the shared `AudioSystem` on that event.
+- `tools/generate_audio.py` now synthesizes the asset as a 0.11-second quiet
+  cloth/foot lift with a small upward tonal edge. It deliberately avoids a
+  cartoon boing, large impact, or magical flourish.
+- Audio checks enforce that the sound remains brief, audible, click-free, and
+  quieter than the more forceful scratch cue. Jump checks enforce that the
+  start event lasts exactly one update.
 
 ## Verification
 
-- All 16 test suites pass after the geometry update.
-- The sewer map test verifies 70+ rows, sparse pre-gap corruption, the exact
-  mandatory jump band, much denser post-rat corruption, westward expansion,
-  full topology connectivity, and a continuous non-Astral route to the end.
-- Headless launch loaded and rendered the 48x72 sewer at native resolution
-  with all three rat entities, then shut down cleanly.
+- All 16 test suites pass.
+- Headless integration confirmed one `jump` playback across two airborne
+  updates, rendered the expanded sewer, and shut down cleanly.
 
 ## Playtest Focus
 
-- Time the entrance-to-gap walk and confirm it feels meaningfully longer
-  without becoming empty or repetitive.
-- Confirm the early Astral blocks read as isolated glitches and can all be
-  walked around; deliberately step on one to verify the normal fall/respawn.
-- Verify the mandatory jump and three-rat choke still teach their mechanics
-  clearly at their new positions and both tutorial prompts appear on approach.
-- After the rats, follow the route west and down. Confirm the growing Astral
-  density feels chaotic while the intended dirt path remains legible and fair.
-- Reach the sealed lower end without being forced onto Astral material.
+- Jump repeatedly on ordinary ground and across the mandatory Astral band.
+- Confirm one quiet cue plays per accepted SPACE press, never continuously
+  while airborne and never when SPACE is held.
+- Confirm it remains audible beneath both area themes without sounding like a
+  cartoon jump, spell, or major action.
 
 ## Next Bounded Task
 

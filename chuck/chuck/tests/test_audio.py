@@ -65,7 +65,7 @@ def test_crossfade_loop_seam_is_continuous() -> None:
 
 
 def test_all_rendered_sfx_exist_and_respect_headroom() -> None:
-    names = ["pickup", "interact", "hurt", "scratch", "vanish", "respawn", "chime",
+    names = ["pickup", "interact", "hurt", "jump", "scratch", "vanish", "respawn", "chime",
              "footstep_wood_1", "footstep_wood_2",
              "footstep_stone_1", "footstep_stone_2"]
     for name in names:
@@ -82,6 +82,14 @@ def test_scratch_sfx_is_brief_and_audible() -> None:
     duration = len(samples) / SAMPLE_RATE
     assert 0.08 <= duration <= 0.2, duration
     assert max(abs(s) for s in samples) >= 0.3
+
+
+def test_jump_sfx_is_brief_quiet_and_audible() -> None:
+    samples = _read_wav(config.SFX_DIR / "jump.wav")
+    duration = len(samples) / SAMPLE_RATE
+    peak = max(abs(s) for s in samples)
+    assert 0.07 <= duration <= 0.15, duration
+    assert 0.15 <= peak <= 0.3, peak
 
 
 

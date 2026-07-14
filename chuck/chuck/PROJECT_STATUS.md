@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 43 (expanded sewer corruption route). This file is required by the
+Updated: session 44 (subtle jump SFX). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -24,7 +24,7 @@ project rules and updated every session.
   fallback; two composed themes (data/music/, 7 voices, seamless loop) —
   the 95s warm Waterdeep Docks theme and the 83s eerie/funky D-minor
   Sewer theme; SFX for pickup, interact, hurt, vanish, respawn, anchor
-  chime, scratch scrape, and per-surface footsteps
+  chime, a quiet jump lift, scratch scrape, and per-surface footsteps
 - NPC interaction covers the whole visible person (probe + overlap)
 - Depth: barrels/crates are standing props (solid tiles + tall
   sprites), y-sorted with all characters by feet position
@@ -75,7 +75,8 @@ project rules and updated every session.
   required jump, with sparse avoidable Astral substitutions foreshadowing the
   wrong map. A hard-edged band of animated dark-blue/purple Astral material
   then interrupts the corridor; SPACE performs a short
-  committed hop that crosses it but cannot bypass normal walls. On foot,
+  committed hop with a subtle dry lift sound that crosses it but cannot
+  bypass normal walls. On foot,
   the Astral blocks are a lethal fall zone: control locks, Chuck quietly
   shrinks and sinks for 0.65s, then the existing Astral Anchor respawn
   flow returns him to the sewer entrance. Airborne Chuck crosses safely.

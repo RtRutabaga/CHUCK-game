@@ -56,6 +56,7 @@ class Player(Entity):
         self.hurt_blink = 0.0
         # A jump is a short committed hop in the current facing direction.
         self.jump_remaining = 0.0
+        self.jump_just_started = False
         self._jump_direction = (0.0, 1.0)
         self.scratch_remaining = 0.0
         self.scratch_just_started = False
@@ -99,6 +100,7 @@ class Player(Entity):
     # ------------------------------------------------------------------
     def update(self, dt: float) -> None:
         """Movement and animation state."""
+        self.jump_just_started = False
         self.scratch_just_started = False
         if self.hurt_blink > 0.0:
             self.hurt_blink = max(0.0, self.hurt_blink - dt)
@@ -109,6 +111,7 @@ class Player(Entity):
             and not self.scratching
         ):
             self.jump_remaining = config.JUMP_DURATION
+            self.jump_just_started = True
             self._jump_direction = {
                 "up": (0.0, -1.0),
                 "down": (0.0, 1.0),

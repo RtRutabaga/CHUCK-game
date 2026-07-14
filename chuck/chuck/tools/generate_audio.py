@@ -14,6 +14,7 @@ Sound design intent (Bible: understated, dry, never cartoonish):
     pickup      two quick warm plucks — small satisfaction
     interact    one very soft blip — a page turning
     hurt        a dry low thud — inconvenience, not tragedy
+    jump        a tiny cloth-and-foot lift — movement, not a cartoon boing
     scratch     a short filtered scrape — quick motion, no sword clang
     vanish      three soft falling tones ending unresolved
     respawn     two quiet rising bells — a restrained return
@@ -78,6 +79,19 @@ def sfx_hurt() -> list[float]:
     return normalize(thud, headroom=0.6)
 
 
+def sfx_jump() -> list[float]:
+    """A quiet dry lift: soft cloth noise with a restrained upward edge."""
+    cloth = envelope(lowpass(noise(0.11, seed=43), 1300), 0.002, 0.095)
+    lift = mix(
+        envelope(gain(tone(180, 0.07, "triangle"), 0.22), 0.002, 0.06),
+        _pad(
+            envelope(gain(tone(240, 0.07, "triangle"), 0.18), 0.002, 0.06),
+            0.025,
+        ),
+    )
+    return normalize(mix(cloth, lift), headroom=0.24)
+
+
 def sfx_scratch() -> list[float]:
     """A dry two-part scrape: filtered noise with a tiny tonal edge."""
     first = envelope(lowpass(noise(0.11, seed=47), 4600), 0.001, 0.09)
@@ -125,6 +139,7 @@ def main() -> None:
         "pickup.wav": sfx_pickup,
         "interact.wav": sfx_interact,
         "hurt.wav": sfx_hurt,
+        "jump.wav": sfx_jump,
         "scratch.wav": sfx_scratch,
         "vanish.wav": sfx_vanish,
         "respawn.wav": sfx_respawn,

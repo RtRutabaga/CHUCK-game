@@ -193,6 +193,8 @@ class WorldScene(Scene):
         self.sanity.update(dt)
         old_player_position = (self.player.x, self.player.y)
         self.player.update(dt)
+        if self.player.jump_just_started:
+            self.game.audio.play_sfx("jump")
         if touches_astral_fall_zone(
             self.tilemap, self.player.hitbox, self.player.jumping
         ):
