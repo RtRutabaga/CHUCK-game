@@ -11,7 +11,8 @@
 ; Market stall: checkered canopy, scalloped front 'u', posts 'P',
 ; goods '1'-'5' (produce crates, table, barrel) under the canvas.
 ; Market stall (cutaway): canopy rows 28-29, scalloped edge +
-; posts row 30, goods visible in the open front row 31.
+; posts row 30, goods visible in the open front row 31. The market
+; woman ('I') stands immediately left of the open goods.
 ; North: warehouse district, reached through two gaps in the old wall.
 ; West: harbor with the fishing pier. Center: the great plank dock;
 ; Bobert asleep in his barrel ('B') beside Chuck's spawn.
@@ -51,7 +52,7 @@
 ~~~~~~~~~~~====~~~~~,,,,,,,,,,,,,,,,,,,,,aaaaaaaaaaaa,,,
 ~~~~~~~~~========~~~,,,,,,,XXX,,,c,,,,,,,aaaaaaaaaaaac,,
 ~~~~~~~~~===j==L=~~~,,,,,,,XXX,,,,,,,,,,,PuuuuuuuuuuP,,,
-~~~~~~~~~~~~~~~~~~~~,,,,,,,,,,,,,,,,,,,,,,,1,2,5,3,4,,,,
+~~~~~~~~~~~~~~~~~~~~,,,,,,,,,,,,,,,,,,,,I,,1,2,5,3,4,,,,
 ~~~~~~~~~~~~~~~~~~~~,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ~~~~~~~~~~~~~~~~~~~~,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ~~~~~~~~~~~~~~~~~~~~,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

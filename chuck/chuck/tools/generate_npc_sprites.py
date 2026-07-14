@@ -4,8 +4,8 @@ Run from the project root (requires Pillow, dev-only):
 
     python tools/generate_npc_sprites.py
 
-Writes assets/sprites/npcs/dock_worker.png — 3 frames of 16x30, one
-per facing (down, up, left); right-facing is flipped at runtime.
+Writes one sheet per human NPC under assets/sprites/npcs/: three 16x30
+frames (down, up, left), with right-facing flipped at runtime.
 
 Design notes (Game Bible: scale is a pillar): a human is 30px tall to
 Chuck's 14. Talking to one means talking to a pair of boots and trusting
@@ -37,6 +37,11 @@ PALETTE = {
     "t": (52, 68, 100, 255),    # tabard shadow
     "P": (110, 78, 48, 255),    # spear shaft
     "p": (176, 180, 190, 255),  # spear head
+    # Market woman: the worker's exact silhouette in a headscarf and apron.
+    "K": (176, 116, 62, 255),   # warm ochre headscarf
+    "R": (132, 58, 54, 255),    # muted red blouse
+    "r": (94, 42, 44, 255),     # blouse shadow
+    "C": (188, 166, 124, 255),  # work apron / skirt
 }
 
 WORKER_DOWN = """
@@ -245,6 +250,17 @@ NAMES = [["worker_down", "worker_up", "worker_left"]]
 GUARD_SHEET = [[GUARD_DOWN, GUARD_UP, GUARD_LEFT]]
 GUARD_NAMES = [["guard_down", "guard_up", "guard_left"]]
 
+# Keep the human silhouette and every facing pixel-for-pixel identical to the
+# established worker. The palette swap reads as a tied headscarf, red blouse,
+# and practical apron without introducing a larger or more detailed person.
+_MARKET_COLORS = str.maketrans({"H": "K", "O": "R", "o": "r", "B": "C"})
+MARKET_SHEET = [[
+    WORKER_DOWN.translate(_MARKET_COLORS),
+    WORKER_UP.translate(_MARKET_COLORS),
+    WORKER_LEFT.translate(_MARKET_COLORS),
+]]
+MARKET_NAMES = [["market_down", "market_up", "market_left"]]
+
 
 def main() -> None:
     npcs = (
@@ -254,6 +270,7 @@ def main() -> None:
     for name, sheet, names in (
         ("dock_worker", SHEET, NAMES),
         ("guard", GUARD_SHEET, GUARD_NAMES),
+        ("market_woman", MARKET_SHEET, MARKET_NAMES),
     ):
         out = npcs / f"{name}.png"
         render_sheet(sheet, names, FRAME_W, FRAME_H, PALETTE).save(out)

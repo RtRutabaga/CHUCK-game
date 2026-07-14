@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 50 (maze checkpoint + interactive sewer exit). This file is required by the
+Updated: session 51 (market woman NPC). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -13,12 +13,12 @@ project rules and updated every session.
 - Swept, axis-separated tile collision (no tunneling at any dt)
 - Smooth frame-rate-independent follow camera, clamped to map bounds
 - Sprites from text grids (tools/): Chuck (idle/walk x4 facings), the
-  cat, the dock worker, and the 75-glyph 5x9 pixel font
+  cat, three human NPCs, and the 75-glyph 5x9 pixel font
 - Sanity with i-frames; cigarette pickups; HUD meter (a cigarette
   burning down); patrolling cat hazard; Astral Anchor checkpoints;
   quiet vanish -> starfield -> respawn (no game-over screen, ever); enemies
   rebuild from their map markers when Chuck returns
-- Dialogue: JSON data files, typewriter box, one NPC (dock worker); choice
+- Dialogue: JSON data files, typewriter box, three NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
   sequencer), offline rendering (tools/generate_audio.py +
@@ -56,7 +56,9 @@ project rules and updated every session.
   grammar + decorative house doors ('h'); solid, never accessible
 - Market stall (cutaway): checkered canopy over the back rows ending
   in scalloped edge ('u') + corner posts ('P'); goods '1'-'5' (produce
-  crates/table/barrel) stand visible in the open front row
+  crates/table/barrel) stand visible in the open front row. A human-scale
+  market woman stands just left of the goods in a muted headscarf and apron;
+  she directs Chuck toward sewer scraps without a quest or marker
 - Ruined foundation ('R' walls / 'f' rubble): the mid-map block is a
   crumbling ruin with collapsed gaps; solid, style only
 - Shared mathutil.approach() (camera follow + any future smoothing)
@@ -146,6 +148,9 @@ end-to-end headlessly with dummy SDL drivers.
 1. [x] Waterdeep guard: armored NPC at the upper plaza's east edge,
        "Stick to the docks, rat." No gate/barrier — the map layout
        already blocks (sessions 32-33)
+   - [x] Market woman: human-scale NPC beside the open market goods,
+         "No handouts here. If you're hungry, you should check the sewer for
+         scraps" with no quest, marker, or waypoint (session 51)
 2. [x] Tutorial text ("Press E to interact"), area-scoped, shown only
        while an interactable is in reach (session 34)
 3. [x] Sewer grate + Yes/No dialogue choice: choices are data
@@ -184,12 +189,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Add the missing market woman near the red awning at established human scale,
-with her single documented sewer-scraps line. Keep it a normal NPC interaction:
-no quest, marker, waypoint, or Waterdeep redesign. After that, item 9 can make
-the tavern doorway read as open without building the Phase 3 interior.
+Complete item 9 by making the tavern doorway read as open and accessible from
+the Waterdeep exterior after the sewer return. Do not build the tavern interior
+or begin the pantry sequence during Phase 2.
 
 ## Also open (Phase 2 / later)
 
-- Market NPC near the red awning (pure data; Phase 2 spec)
 - Tavern doorway reads as open for Phase 3 (item 9)

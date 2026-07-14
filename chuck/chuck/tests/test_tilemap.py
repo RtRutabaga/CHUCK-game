@@ -225,6 +225,19 @@ def test_docks_market_stall_reads_like_the_reference() -> None:
         assert m.is_solid(goods.index(ch) * 2 + 43, 31)
 
 
+def test_market_woman_stands_beside_the_open_stall() -> None:
+    """Phase 2: one human-scale market NPC subtly points Chuck sewerward."""
+    m = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
+    women = [pos for kind, pos in m.object_spawns
+             if kind == "npc:market_woman"]
+    assert len(women) == 1
+    x, y = women[0]
+    col, row = int(x // TS), int(y // TS)
+    assert (col, row) == (40, 31)
+    assert not m.is_solid(col, row)
+    assert m.terrain_at(41, 30) == "P"  # immediately beside stall post
+
+
 def test_docks_ruined_foundation_is_solid_style() -> None:
     """The mid-map ruin: crumbling perimeter around rubble, with two
     collapsed wall gaps — every tile solid, pure style."""
