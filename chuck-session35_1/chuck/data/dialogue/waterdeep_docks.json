@@ -1,0 +1,24 @@
+{
+  "dock_worker": [
+    "Morning.",
+    "Ship came in with no crew again. Third time this month.",
+    "Harbormaster says it's fine. The ship says nothing.",
+    "Anyway. Watch out for the cat."
+  ],
+  "bobert_sleeping": [
+    "... Zzzzz."
+  ],
+  "herod_sign": [
+    "Herod Cover Band - Tonight Only"
+  ],
+  "guard": [
+    "Stick to the docks, rat."
+  ],
+  "sewer_grate_yes": [
+    "Chuck hauls the grate aside.",
+    "Below: a long dark drop, and a smell he recognizes."
+  ],
+  "sewer_grate_no": [
+    "Chuck puts the grate back. It was only an idea."
+  ]
+}

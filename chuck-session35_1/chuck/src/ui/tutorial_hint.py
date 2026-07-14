@@ -1,0 +1,31 @@
+"""Tutorial hint text.
+
+A single line of pale text near the top of the screen, shown only
+while Chuck is in reach of something he can interact with (and, later,
+at the sewer's jump and combat teaching moments).
+
+TEMPORARY BY DESIGN (Phase 2 doc): this exists for Waterdeep and the
+sewer and must not become permanent instructional UI. It is scoped by
+config.TUTORIAL_MAPS, and deleting the system later means deleting
+this file, its config block, and three lines in the WorldScene.
+
+No panel, no border, no icon — just the words, the way a 1994 game
+would have done it.
+"""
+
+from __future__ import annotations
+
+from src.core import config
+
+
+class TutorialHint:
+    """Draws one centered line of hint text near the top of the view."""
+
+    def __init__(self, assets) -> None:
+        self._font = assets.bitmap_font()
+
+    def draw(self, surface, text: str) -> None:
+        """Centered horizontally, TUTORIAL_HINT_TOP px from the top."""
+        rendered = self._font.render(text)
+        x = (surface.get_width() - rendered.get_width()) // 2
+        surface.blit(rendered, (x, config.TUTORIAL_HINT_TOP))

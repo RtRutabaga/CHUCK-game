@@ -1,0 +1,9 @@
+{
+  "sewer_grate": {
+    "prompt": "Jump into the sewer?",
+    "options": [
+      { "label": "YES", "dialogue": "sewer_grate_yes" },
+      { "label": "NO", "dialogue": "sewer_grate_no" }
+    ]
+  }
+}
