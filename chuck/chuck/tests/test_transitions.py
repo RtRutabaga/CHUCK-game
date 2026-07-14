@@ -60,6 +60,12 @@ def test_every_walk_exit_targets_a_real_named_arrival() -> None:
     assert AREA_WALK_EXITS[("waterdeep_tavern", ">")].destination == (
         "waterdeep_docks"
     )
+    assert AREA_WALK_EXITS[("waterdeep_tavern", "?")].destination == (
+        "waterdeep_pantry"
+    )
+    assert AREA_WALK_EXITS[("waterdeep_pantry", "^")].destination == (
+        "waterdeep_tavern"
+    )
     for (source, terrain), exit_config in AREA_WALK_EXITS.items():
         source_map = TileMap(config.MAPS_DIR / f"{source}.txt")
         if (source, terrain) == ("waterdeep_docks", "v"):

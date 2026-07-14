@@ -52,7 +52,14 @@ Terrain legend:
     '8'  tavern bar counter  (solid standing prop on planks)
     '9'  tavern hearth       (solid standing prop on planks)
     '!'  cheese              (walkable environmental hook on planks)
-    '?'  pantry door         (solid standing prop on planks)
+    '?'  open pantry door    (walkable tavern threshold)
+    'p'  pantry floor        (walkable worn boards)
+    's'  teal sky/cloud      (solid until its distinct fall branch exists)
+    '^'  pantry return exit  (walkable open threshold)
+    'n'  pantry shelf        (solid standing prop on pantry boards)
+    'z'  grain sack          (solid standing prop on pantry boards)
+    '['  pantry crate        (solid standing prop on pantry boards)
+    ']'  pantry barrel       (solid standing prop on pantry boards)
     'S'  sewer grate         (solid prop; asks to be jumped into)
     'R'  ruin wall           (solid; crumbling tan foundation blocks)
     'f'  ruin floor          (solid; the rubble inside the ruin)
@@ -79,6 +86,9 @@ declares the terrain underneath it, so no seams appear in the ground):
     'U'  tavern entry arrival  (on planks '=')
     'k'  tavern bartender NPC  (on planks '=')
     'l'  tavern patron NPC     (on planks '=')
+    ':'  tavern pantry arrival (on planks '=')
+    '*'  Chuck pantry spawn    (on pantry floor 'p')
+    '0'  pantry entry arrival  (on pantry floor 'p')
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -208,8 +218,22 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="tavern_hearth", under="="),
     "!": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="cheese", under="="),
-    "?": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
-                 prop="pantry_door", under="="),
+    "?": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="pantry_open", under="="),
+    "p": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
+    # The visual target of the next bounded pass. It remains collision until
+    # it can branch into the authored sky fall instead of normal hazard death.
+    "s": TileDef(solid=True, color=(32, 146, 156)),
+    "^": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="pantry_open", under="p"),
+    "n": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="pantry_shelf", under="p"),
+    "z": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="grain_sack", under="p"),
+    "[": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="crate", under="p"),
+    "]": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="barrel", under="p"),
     # The sewer grate: iron set in the street near the guard. Solid;
     # Chuck interacts with it (it asks a question — see PROP_CHOICE).
     "S": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
@@ -250,6 +274,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "U": MarkerDef(kind="arrival:front_entrance", under="="),
     "k": MarkerDef(kind="npc:bartender", under="="),
     "l": MarkerDef(kind="npc:patron", under="="),
+    ":": MarkerDef(kind="arrival:pantry_return", under="="),
+    "*": MarkerDef(kind="player", under="p"),
+    "0": MarkerDef(kind="arrival:pantry_entry", under="p"),
 }
 
 _COMMENT_PREFIX = ";"

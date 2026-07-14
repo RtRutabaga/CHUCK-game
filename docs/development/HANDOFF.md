@@ -3,62 +3,67 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `cc3688d` (`Add Waterdeep tavern shell`)
-- Current work: Phase 3 tavern occupants and environmental cheese hook
+- Base commit: `baa4ded` (`Add tavern occupants and cheese hook`)
+- Current work: Phase 3 compact pantry and three floor materials
 - Active phase: Phase 3 - Waterdeep Tavern, Pantry, and Fall to Chult
 
 ## Completed This Pass
 
-The tavern now feels lightly occupied and contains a conspicuous environmental
-cheese trail leading from the entrance side of the common room to a framed
-pantry door on the north wall. This pass does not create the pantry map, floor
-hazards, sky-fall behavior, cutscene, or playable Chult.
+The north tavern door now leads into a compact, dressed pantry containing
+ordinary floorboards, established Astral Sea hazards, and a distinct teal
+sky/cloud floor. Chuck can return safely to the tavern. This pass does not add
+the successful sky fall, dedicated falling cutscene, or playable Chult.
 
 ## Implementation
 
-- Added a bartender behind the northwest counter and one patron in the common
-  room. Both reuse the dock worker's exact 16x30 human silhouette with muted
-  palette swaps, established non-solid feet-scale behavior, facing, and the
-  existing data-driven dialogue system.
-- Dialogue stays short: the bartender points toward the kitchen and cheese;
-  the patron mentions the missing stew.
-- Added four bright cheese wedges along a south-to-north route across successive
-  camera views. They are non-solid environmental props, not pickups. Examining
-  any wedge says "It is cheese." and leaves every wedge in place.
-- Added a human-scale, solid pantry door at the trail's end. It frames the next
-  route without adding a dead transition or prematurely building the pantry.
-- Added procedural source and generated sprites for both occupants, cheese, and
-  the pantry door. No inventory, counter, reward, quest, or progression flag was
-  introduced.
+- Converted the framed pantry door into a dark open threshold and connected it
+  bidirectionally through the established data-driven walk exits. Named arrivals
+  place Chuck off each threshold facing away, preventing transition bounce.
+- Added a 26x18 pantry with a connected safe route and restrained storage
+  dressing: two human-scale shelves containing jars, four sacks, two barrels,
+  and two crates.
+- Added a dedicated procedural pantry tileset. Its worn boards and wall beams
+  remain related to the tavern, while its Astral row calls the same generator
+  used by the sewer so the wrong-map visual is exact rather than approximate.
+- Added animated teal sky/cloud blocks with hard tile boundaries and simple
+  blocky clouds. They are visually complete and distinct from Astral material.
+- Astral `V` remains the existing walkable fall hazard. Falling there uses the
+  established shrink/sink animation and ordinary recovery, with the pantry
+  entry as the local retry point.
+- Teal sky blocks remain solid for this bounded pass. This prevents a temporary
+  incorrect death or the ability to stand over open sky; the next pass should
+  make them a distinct successful fall trigger and cutscene handoff.
+- Pantry and tavern reuse the warm Waterdeep music pending a dedicated audio
+  decision, so transitions do not fall silent or introduce an unrelated cue.
 
 ## Verification
 
-- All 19 test suites pass.
-- Tavern coverage verifies exact occupant identities and positions, established
-  16x30 human frame scale, four walkable cheese placements, a solid pantry door,
-  connected traversal, successful cheese interaction, no pickup entities, and
-  persistence of the examined cheese.
-- Dialogue glyph coverage, props, tilesets, transitions, and native headless
-  launch/render checks pass.
-- Native-scale visual review confirms the gold wedges stand apart from the
-  brown floor and lead clearly toward the north door across camera views.
+- All 20 test suites pass, including a new pantry suite.
+- Coverage verifies exact map dimensions/material counts, food-storage props,
+  full safe-floor connectivity, bidirectional non-bouncing transitions, local
+  Astral fall/retry, tileset drawability, valid named arrivals, and native scene
+  rendering.
+- Native-scale visual review confirms all three floor materials separate at a
+  glance and the pantry reads as storage before it reads as impossible space.
 
 ## Playtest Focus
 
-- Enter after completing the sewer and confirm the bartender reads as standing
-  behind the northwest bar and the lone patron makes the room feel occupied
-  without crowding it.
-- Follow the cheese from south to north without a marker. Confirm each piece is
-  obvious at native scale and naturally leads to the pantry door.
-- Press E near multiple cheese pieces. Each should say "It is cheese." without
-  disappearing or changing Sanity, state, HUD, or inventory.
-- Talk to both occupants and check their scale, facing, deadpan tone, and depth
-  ordering around nearby furniture.
-- Confirm the pantry door reads as the next destination but is still solid.
+- Follow the cheese north and enter the now-open pantry door. Chuck should
+  arrive near the south edge facing inward without bouncing back.
+- Confirm the room feels compact and readable, with worn boards and oversized
+  shelves, jars, sacks, barrels, and crates reinforcing Chuck's scale.
+- Compare the purple Astral blocks to the sewer: their animation and visual
+  language should match exactly.
+- Walk into Astral material without jumping. The familiar fall should return
+  Chuck to the pantry entrance, not another map.
+- Confirm the teal cloud blocks are unmistakably different from Astral blocks.
+  They intentionally block movement until their successful fall branch exists.
+- Exit south and confirm Chuck returns below the tavern pantry doorway without
+  immediately re-entering.
 
 ## Next Bounded Task
 
-Build the compact pantry map and its three readable floor materials: ordinary
-pantry boards, reused Astral Sea blocks, and distinct teal sky/cloud blocks.
-Connect the north door bidirectionally, but leave differentiated fall resolution
-and the falling-to-Chult cutscene for subsequent passes.
+Make teal sky/cloud tiles trigger the familiar initial fall animation without
+depleting Sanity, then hand off reliably to a contained dedicated cutscene
+scene/state. Do not build playable Chult; leave the authored long-fall sequence,
+audio shaping, and clean Phase 4 endpoint for the following pass.

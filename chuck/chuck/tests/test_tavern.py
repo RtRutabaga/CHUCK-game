@@ -31,9 +31,13 @@ def test_tavern_shell_is_connected_and_readable() -> None:
     assert kinds.count("tavern_chair") == 12
     assert kinds.count("tavern_hearth") == 1
     assert kinds.count("cheese") == 4
-    assert kinds.count("pantry_door") == 1
-    assert all(not tavern.is_solid(14, row) for row in (2, 6, 10, 14))
-    assert tavern.is_solid(14, 1)
+    assert kinds.count("pantry_open") == 1
+    cheese_tiles = {
+        (col, row) for kind, col, row in tavern.prop_tiles if kind == "cheese"
+    }
+    assert cheese_tiles == {(13, 2), (14, 6), (14, 10), (14, 14)}
+    assert all(not tavern.is_solid(col, row) for col, row in cheese_tiles)
+    assert not tavern.is_solid(14, 1)
 
     occupants = {
         kind: (int(x // config.TILE_SIZE), int(y // config.TILE_SIZE))

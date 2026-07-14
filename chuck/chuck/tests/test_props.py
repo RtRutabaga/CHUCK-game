@@ -103,6 +103,17 @@ def test_tavern_furniture_is_valid_and_mute() -> None:
     assert cheese.choice_id is None
 
 
+def test_pantry_storage_and_doorway_are_valid_props() -> None:
+    for kind, w, h in (
+        ("pantry_open", 24, 30),
+        ("pantry_shelf", 28, 24),
+        ("grain_sack", 12, 16),
+    ):
+        prop = Prop(kind, col=8, row=6, assets=FakeAssets(w, h))
+        assert prop.dialogue_id is None and prop.choice_id is None
+        assert prop.sort_y == 7 * TS
+
+
 def test_grate_carries_a_choice_not_a_line() -> None:
     grate = Prop("sewer_grate", col=52, row=6, assets=FakeAssets(16, 13))
     assert grate.choice_id == "sewer_grate"

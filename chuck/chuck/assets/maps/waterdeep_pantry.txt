@@ -1,0 +1,22 @@
+; WATERDEEP PANTRY — compact Phase 3 broken-floor room (26x18 tiles).
+; 'p' is worn pantry board, 'V' reuses the Astral fall hazard, and 's' is
+; teal sky/cloud material. The sky remains collision until its distinct fall.
+; Shelves n, sacks z, crates [, and barrels ] keep the room food-storage first.
+##########################
+#pppppppppppppppppppppppp#
+#p]nppzppppppppppppzppn]p#
+#pppppppppppppppppppppppp#
+#ppppppppppsssspppppppppp#
+#p[pppppppssssssppppppp[p#
+#ppppppppppsssspppppppppp#
+#ppppppppVVppppVVpppppppp#
+#ppppppppVppppppVpppppppp#
+#pppppppVVppppppVVppppppp#
+#pppppppVppppppppVppppppp#
+#pppppppVVVppppVVVppppppp#
+#pppppppppppppppppppppppp#
+#pppzppppppppppppppppzppp#
+#pppppppppppppppppppppppp#
+#ppppppppppp*0ppppppppppp#
+#pppppppppppp^ppppppppppp#
+##########################

@@ -516,6 +516,70 @@ def _build_pantry_door() -> str:
     return "\n".join("".join(row) for row in grid)
 
 
+def _build_pantry_open() -> str:
+    """A dark human doorway with a restrained timber frame."""
+    width, height = 24, 30
+    grid = [["." for _ in range(width)] for _ in range(height)]
+    for y in range(3, height):
+        for x in range(4, width - 4):
+            grid[y][x] = "_"
+    for y in range(2, height):
+        for x in (2, 3, width - 4, width - 3):
+            grid[y][x] = "y"
+    for x in range(2, width - 2):
+        grid[2][x] = "L"
+        grid[3][x] = "y"
+    return "\n".join("".join(row) for row in grid)
+
+
+def _build_pantry_shelf() -> str:
+    """Human storage shelves with jars looming above Chuck."""
+    width, height = 28, 24
+    grid = [["." for _ in range(width)] for _ in range(height)]
+    for y in range(2, height):
+        for x in (1, 2, width - 3, width - 2):
+            grid[y][x] = "c"
+    for shelf_y in (3, 11, 19):
+        for x in range(1, width - 1):
+            grid[shelf_y][x] = "T" if shelf_y == 3 else "C"
+            grid[shelf_y + 1][x] = "c"
+    for base_x, jar in ((5, "q"), (10, "S"), (16, "O"), (21, "q")):
+        for y in range(6, 11):
+            for x in range(base_x, base_x + 4):
+                grid[y][x] = jar
+        grid[5][base_x + 1] = "M"
+        grid[5][base_x + 2] = "M"
+    for base_x, jar in ((7, "S"), (14, "q"), (20, "O")):
+        for y in range(14, 19):
+            for x in range(base_x, base_x + 4):
+                grid[y][x] = jar
+        grid[13][base_x + 1] = "M"
+        grid[13][base_x + 2] = "M"
+    return "\n".join("".join(row) for row in grid)
+
+
+def _build_grain_sack() -> str:
+    """A tied food sack, slightly taller than Chuck."""
+    return "\n".join((
+        ".....cc.....",
+        "....cTTc....",
+        ".....cc.....",
+        "...TTTTTT...",
+        "..TTTTTTTT..",
+        ".TTTTTTTTTT.",
+        ".TTTTCTTTTT.",
+        "TTTTTCTTTTTT",
+        "TTTTTTTTTTTT",
+        "TTTTTTTTTTTT",
+        "TTTTTCTTTTTT",
+        ".TTTTCTTTTT.",
+        ".TTTTTTTTTT.",
+        "..CCCCCCCC..",
+        "...cccccc...",
+        "............",
+    ))
+
+
 def _write(name: str, grid: str, w: int, h: int) -> None:
     out = (Path(__file__).resolve().parents[1]
            / "assets" / "sprites" / "objects" / f"{name}.png")
@@ -545,6 +609,9 @@ def main() -> None:
     _write("tavern_hearth", _build_tavern_hearth(), 28, 26)
     _write("cheese", _build_cheese(), 10, 7)
     _write("pantry_door", _build_pantry_door(), 24, 30)
+    _write("pantry_open", _build_pantry_open(), 24, 30)
+    _write("pantry_shelf", _build_pantry_shelf(), 28, 24)
+    _write("grain_sack", _build_grain_sack(), 12, 16)
     _write("chimney", CHIMNEY, 12, 22)
     _write("sewer_grate", SEWER_GRATE, 16, 13)
     _write("house_door", HOUSE_DOOR, 14, 20)

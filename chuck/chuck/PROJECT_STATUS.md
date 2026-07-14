@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 55 (tavern occupants and cheese hook). This file is required
+Updated: session 56 (compact pantry and floor language). This file is required
 by the project rules and updated every session.
 
 ## Working systems
@@ -13,12 +13,12 @@ by the project rules and updated every session.
 - Swept, axis-separated tile collision (no tunneling at any dt)
 - Smooth frame-rate-independent follow camera, clamped to map bounds
 - Sprites from text grids (tools/): Chuck (idle/walk x4 facings), the
-  cat, three human NPCs, and the 75-glyph 5x9 pixel font
+  cat, five human NPCs, and the 75-glyph 5x9 pixel font
 - Sanity with i-frames; cigarette pickups; HUD meter (a cigarette
   burning down); patrolling cat hazard; Astral Anchor checkpoints;
   quiet vanish -> starfield -> respawn (no game-over screen, ever); enemies
   rebuild from their map markers when Chuck returns
-- Dialogue: JSON data files, typewriter box, three NPCs; choice
+- Dialogue: JSON data files, typewriter box, five NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
   sequencer), offline rendering (tools/generate_audio.py +
@@ -33,7 +33,8 @@ by the project rules and updated every session.
 - Ground: per-area drawn tilesets (tileset_layout.Tileset: a sheet +
   its terrain rows + char maps; tileset_for(map) picks one) with stable
   per-position variants, animated frames, view culling, and a flat-
-  color fallback when a sheet is missing. docks.png, sewer.png, and tavern.png
+  color fallback when a sheet is missing. docks.png, sewer.png, tavern.png,
+  and pantry.png
 - Bobert asleep in his barrel at spawn (solid scenery, tile 'B');
   cigarette is a drawn sprite; the Astral Anchor presents as an
   ashtray (cold ash dormant / live ember + smoke when attuned), with
@@ -128,12 +129,20 @@ by the project rules and updated every session.
   a visible south-to-north trail across successive camera views and end beneath
   a human-scale pantry door. Cheese is walkable, remains in place, and only says
   "It is cheese." when examined: there is no pickup, inventory, counter, reward,
-  or progression flag. The pantry door is deliberately solid until its map is
-  built in the next bounded pass
+  or progression flag. The north doorway now opens into the pantry
+- Phase 3 pantry: a compact 26x18 storage room connected bidirectionally to the
+  tavern with safe named arrivals. Worn boards, human shelves with jars, sacks,
+  barrels, and crates establish the ordinary room before its central broken
+  floor. Purple/dark-blue `V` blocks reuse the sewer's exact animated Astral art
+  and existing fall -> local respawn behavior. A separate hard-edged teal sky
+  with blocky clouds is immediately distinct at native scale. The safe pantry
+  floor remains fully connected around the hazards. Teal sky is deliberately
+  collision-only until the next pass can route it into the successful fall and
+  cutscene rather than accidentally treating it as normal death
 
 ## Placeholder systems
-- The playable pantry, its three floor types, sky fall, and falling cutscene
-  remain intentionally absent pending their bounded Phase 3 passes
+- The successful teal sky fall and falling-to-Chult cutscene remain
+  intentionally absent pending their bounded Phase 3 passes
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -159,10 +168,10 @@ by the project rules and updated every session.
 
 ## Tests
 
-19 suites (most pure Python/headless): collision, tilemap,
+20 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
-tavern
+tavern, pantry
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -216,9 +225,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build the compact pantry map behind the established north door, including its
-normal floor, reused Astral Sea floor language, and visually distinct teal
-sky/cloud floor. Keep fall branching and the cutscene for later bounded passes.
+Give teal sky/cloud tiles their distinct successful fall path: begin with the
+existing Chuck fall animation, do not deplete Sanity, and hand off reliably to
+a contained dedicated cutscene scene. Leave the authored long-fall sequence and
+Phase 4 endpoint for the following bounded pass.
 
 ## Also open
 
@@ -234,6 +244,7 @@ sky/cloud floor. Keep fall branching and the cutscene for later bounded passes.
        procedural tileset, and normal camera/audio behavior (session 54)
 2. [x] Minimal tavern occupants + environmental cheese hook toward the pantry
        door, with no inventory or progression state (session 55)
-3. [ ] Pantry room + normal/Astral/teal-sky floor navigation
+3. [x] Compact pantry room + normal/Astral/teal-sky floor language, connected
+       safe route, storage dressing, and local Astral retry (session 56)
 4. [ ] Reused Astral fall death + distinct successful sky-fall branch
 5. [ ] Dedicated circa-1994 falling-to-Chult cutscene and Phase 4 handoff point

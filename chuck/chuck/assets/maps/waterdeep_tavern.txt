@@ -1,11 +1,11 @@
 ; WATERDEEP TAVERN — Phase 3 opening shell (30x20 tiles).
 ; Warm planks '=' and solid interior walls '#'. Furniture is deliberately
 ; sparse: tables '6', chairs '7', counter '8', hearth '9', barrels/crates.
-; Cheese '!' leads to the solid pantry door '?'; k/l are the two occupants.
+; Cheese '!' leads to the open pantry door '?'; k/l are the two occupants.
 ; 'U' is the safe arrival inside; '>' is the return threshold to Waterdeep.
 ##############################
 #=============?==============#
-#==ox=k=======!==========xo==#
+#==ox=k======!:==========xo==#
 #==888888====================#
 #============================#
 #========================9===#
