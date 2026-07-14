@@ -62,6 +62,8 @@ class Player(Entity):
         self.scratch_just_started = False
         # Set by WorldScene while Chuck drops into an Astral fall zone.
         self.fall_progress: float | None = None
+        # Set during the brief sewer-outflow return to the Waterdeep pier.
+        self.climb_progress: float | None = None
         # (state, facing) -> Animation. Empty until load_sprites() is
         # called; draw() falls back to a rectangle so headless tests
         # and asset failures degrade gracefully instead of crashing.
@@ -246,16 +248,21 @@ class Player(Entity):
         if self.hurt_blink > 0.0 and int(self.hurt_blink / 0.08) % 2 == 0:
             return
         ox, oy = camera_offset
+        lift = 0
+        if self.jumping:
+            import math
+            progress = 1.0 - self.jump_remaining / config.JUMP_DURATION
+            lift = round(math.sin(progress * math.pi) * config.JUMP_HEIGHT)
+        elif self.climb_progress is not None:
+            import math
+            lift = round(
+                math.sin(self.climb_progress * math.pi) * config.CLIMB_OUT_LIFT
+            )
         if self._animations:
             frame = self._animations[self._current_key].current_frame
             fw, fh = frame.get_size()
             # Horizontally centered on the hitbox, bottom edges aligned.
             draw_x = int(self.x + self.width / 2 - fw / 2) - ox
-            lift = 0
-            if self.jumping:
-                import math
-                progress = 1.0 - self.jump_remaining / config.JUMP_DURATION
-                lift = round(math.sin(progress * math.pi) * config.JUMP_HEIGHT)
             if self.fall_progress is not None:
                 scale = max(0.2, 1.0 - self.fall_progress * 0.8)
                 fw, fh = max(1, round(fw * scale)), max(1, round(fh * scale))
@@ -276,7 +283,7 @@ class Player(Entity):
                 config.COLOR_CHUCK_PLACEHOLDER,
                 pygame.Rect(
                     int(self.x + self.width / 2 - fw / 2) - ox,
-                    int(self.y + self.height - fh) - oy,
+                    int(self.y + self.height - fh) - oy - lift,
                     fw, fh,
                 ),
             )

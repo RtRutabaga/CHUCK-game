@@ -10,7 +10,7 @@ Pure stdlib (no pygame), like the rest of the data-layer tests.
 from src.core import config
 from src.systems.choice import ChoiceSystem
 from src.world.tilemap import TileMap
-from src.world.transitions import AREA_MUSIC
+from src.world.transitions import AREA_EXIT_TILES, AREA_MUSIC
 
 
 def test_grate_yes_goes_to_the_sewer() -> None:
@@ -44,6 +44,19 @@ def test_area_music_is_a_real_file_or_deliberate_silence() -> None:
     for name, music in AREA_MUSIC.items():
         if music is not None:
             assert (config.MUSIC_DIR / music).is_file(), (name, music)
+
+
+def test_sewer_outflow_targets_the_named_waterdeep_arrival() -> None:
+    exit_config = AREA_EXIT_TILES[("sewer", "Q")]
+    assert exit_config.destination == "waterdeep_docks"
+    assert exit_config.arrival == "sewer_outflow"
+    assert exit_config.climb_from_water
+    docks = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
+    arrivals = {kind: pos for kind, pos in docks.object_spawns
+                if kind.startswith("arrival:")}
+    assert list(arrivals) == ["arrival:sewer_outflow"]
+    x, y = arrivals["arrival:sewer_outflow"]
+    assert (int(x // config.TILE_SIZE), int(y // config.TILE_SIZE)) == (15, 30)
 
 
 def _run_all() -> None:

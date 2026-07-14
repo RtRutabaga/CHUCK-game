@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 46 (late-maze sewer rats). This file is required by the
+Updated: session 47 (sewer outflow and dock return). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -63,8 +63,10 @@ project rules and updated every session.
   a dialogue choice can carry Chuck between maps. Where a choice goes is
   data — a choice option's `goto` names the destination map (no code
   table). Each area's looping music (or deliberate silence) is data too
-  (transitions.AREA_MUSIC). The grate's YES drops Chuck straight into
-  the sewer, wordlessly — no confirmation lines
+  (transitions.AREA_MUSIC). Walk-over exit tiles use AREA_EXIT_TILES plus
+  named arrival markers, so an exit can choose a destination and arrival
+  choreography without hardcoded map coordinates. The grate's YES drops Chuck
+  straight into the sewer, wordlessly — no confirmation lines
 - Sewer: assets/maps/sewer.txt is a 48x72, mostly-linear descent
   (walkable corridor wrapped in thick rock so it fills the view) with
   its own tileset (assets/tilesets/sewer.png, built by
@@ -91,8 +93,11 @@ project rules and updated every session.
   blocks becoming denser and more chaotically arranged around a continuous
   narrow safe route. Four additional ordinary rats are spaced through this
   late corrupted run; they use the established one-hit behavior without
-  extending the original scratch tutorial prompt. The bottom is still walled
-  off (no exit yet)
+  extending the original scratch tutorial prompt. The safe route ends at a
+  three-tile iron drainage outflow drawn overhead from the sewer tileset.
+  Walking through it returns Chuck to the Waterdeep south pier: he appears one
+  tile out in the harbor and rises onto the planks over a restrained 0.65-second
+  control-locked climb, with no dialogue or explanation
 
 ## Placeholder systems
 - Tavern door is solid decoration; interiors are a later phase
@@ -121,9 +126,9 @@ project rules and updated every session.
 
 ## Tests
 
-16 suites (most pure Python/headless): collision, tilemap,
+17 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
-tutorial, choice, music, transitions, jump, combat
+tutorial, choice, music, transitions, jump, combat, outflow
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -160,18 +165,20 @@ end-to-end headlessly with dummy SDL drivers.
    - [x] Sewer route expansion: longer pre-gap walk with sparse Astral
          foreshadowing, then a broad westward post-rat continuation with
          escalating corruption and a preserved safe path (session 43)
-8. [ ] Sewer exit -> climb-out -> return to docks
+8. [x] Sewer exit -> climb-out -> return to docks: a rat-scale iron outflow
+       uses a data-driven walk-over transition and named south-pier arrival;
+       Chuck rises one tile from harbor water onto the planks in a brief,
+       silent, control-locked animation (session 47)
 9. [ ] Tavern doorway opens (Phase 3 setup)
 
 ## Next recommended session
 
-Item 8 — sewer outflow and return to Waterdeep. Add a readable drainage
-gate/outflow at the end, transition Chuck back to the recognizable docks,
-and use a brief restrained climb-from-water animation. Do not explain the
-route, and do not open/build the tavern interior in this pass.
+Add the missing market woman near the red awning at established human scale,
+with her single documented sewer-scraps line. Keep it a normal NPC interaction:
+no quest, marker, waypoint, or Waterdeep redesign. After that, item 9 can make
+the tavern doorway read as open without building the Phase 3 interior.
 
 ## Also open (Phase 2 / later)
 
 - Market NPC near the red awning (pure data; Phase 2 spec)
-- Sewer outflow exit -> climb-out -> return to the docks (item 8)
 - Tavern doorway reads as open for Phase 3 (item 9)

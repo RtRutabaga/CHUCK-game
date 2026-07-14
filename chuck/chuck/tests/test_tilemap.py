@@ -375,7 +375,12 @@ def test_sewer_is_an_expanded_connected_descent() -> None:
                 safe_seen.add(n)
                 safe_q.append(n)
     assert any(r >= m.height_tiles - 2 for _, r in safe_seen)
-    # Bottom row is solid: no way out yet (the exit is a later session).
+    # The safe route now ends at a readable three-tile outflow, with solid
+    # map boundary behind it rather than an open edge.
+    assert {c for c in range(m.width_tiles)
+            if m.terrain_at(c, m.height_tiles - 2) == "Q"} == {15, 16, 17}
+    assert all(not m.is_solid(c, m.height_tiles - 2)
+               for c in (15, 16, 17))
     assert all(m.is_solid(c, m.height_tiles - 1)
                for c in range(m.width_tiles))
 

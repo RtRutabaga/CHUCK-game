@@ -45,6 +45,8 @@ CHAN = {"water": (46, 56, 46), "dark": (34, 44, 36),
 ASTRAL = {"deep": (14, 16, 38), "blue": (28, 38, 82),
           "purple": (72, 42, 104), "bright": (158, 132, 210),
           "star": (228, 232, 248)}
+GATE = {"iron": (70, 76, 76), "edge": (126, 130, 124),
+        "rust": (112, 72, 48), "dark": (36, 40, 40)}
 
 
 def _rand(x: int, y: int, salt: int) -> float:
@@ -159,6 +161,20 @@ def draw_astral_void(surf, variant, frame):
             surf.set_at((x, y), ASTRAL["bright"])
 
 
+def draw_outflow(surf, _variant, _frame):
+    """Transparent ironwork across a rat-scale drainage opening."""
+    surf.fill((0, 0, 0, 0))
+    pygame.draw.rect(surf, GATE["dark"], (0, 0, 16, 3))
+    pygame.draw.line(surf, GATE["edge"], (0, 0), (15, 0))
+    pygame.draw.line(surf, GATE["rust"], (0, 2), (15, 2))
+    for x in (2, 7, 12):
+        pygame.draw.rect(surf, GATE["dark"], (x + 1, 2, 2, 14))
+        pygame.draw.line(surf, GATE["edge"], (x, 2), (x, 15))
+        surf.set_at((x, 8), GATE["rust"])
+    pygame.draw.line(surf, GATE["iron"], (0, 8), (15, 8), 2)
+    pygame.draw.line(surf, GATE["edge"], (0, 8), (15, 8))
+
+
 DRAW = {
     "sewer_wall": draw_wall,
     "sewer_stone": draw_stone,
@@ -166,6 +182,7 @@ DRAW = {
     "sewer_mud": draw_mud,
     "sewer_channel": draw_channel,
     "astral_void": draw_astral_void,
+    "sewer_outflow": draw_outflow,
 }
 
 
@@ -178,7 +195,7 @@ def main() -> None:
         draw = DRAW[name]
         for variant in range(variants):
             for frame in range(frames):
-                cell = pygame.Surface((TILE_PX, TILE_PX))
+                cell = pygame.Surface((TILE_PX, TILE_PX), pygame.SRCALPHA)
                 draw(cell, variant, frame)
                 col = variant * frames + frame
                 sheet.blit(cell, (col * TILE_PX, row_i * TILE_PX))

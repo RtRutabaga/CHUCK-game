@@ -4,7 +4,7 @@
 ; encounter the tunnel opens sharply west, then grows progressively more
 ; corrupted while preserving a narrow readable route through the wrong map.
 ; Four more ordinary rats are spaced along that late safe route.
-; The bottom remains sealed for the later Phase 2 outflow session.
+; The route ends at a three-tile rat-scale iron outflow ('Q').
 ;
 ; '#' wall, ',' entrance stone, 'd' dirt, 'M' mud, '%' solid drainage,
 ; 'V' lethal Astral fall zone, 'E' player entrance, 'q' ordinary rat.
@@ -78,5 +78,5 @@
 ######dVVVVVdddVVVVVVddVVVVVVdd#################
 ######VVVVVdVdqdVVVddVVVVVVdVVV#################
 ######dVVVVVVVdddVVVVVVdVVVVVVd#################
-########dVVVVVVdddVVVVVVddVVVVd#################
+########dVVVVVVQQQVVVVVVddVVVVd#################
 ################################################

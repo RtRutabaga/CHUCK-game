@@ -192,6 +192,10 @@ TILE_DEFS: dict[str, TileDef] = {
     "M": TileDef(solid=False, color=config.COLOR_SEWER_MUD),
     "%": TileDef(solid=True, color=config.COLOR_SEWER_CHANNEL),
     "V": TileDef(solid=False, color=config.COLOR_ASTRAL),
+    # Rat-scale drainage gate: dirt beneath, iron bars overhead. Walking
+    # through it is resolved by the area's transition configuration.
+    "Q": TileDef(solid=False, color=config.COLOR_SEWER_DIRT,
+                 under="d", overhead="sewer_outflow"),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {
@@ -204,6 +208,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "N": MarkerDef(kind="npc:dock_worker", under=","),
     "G": MarkerDef(kind="npc:guard", under=","),
     "q": MarkerDef(kind="rat", under="d"),
+    "L": MarkerDef(kind="arrival:sewer_outflow", under="="),
 }
 
 _COMMENT_PREFIX = ";"

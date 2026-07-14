@@ -39,7 +39,7 @@ from src.world.camera import Camera
 from src.world.collision import overlaps
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import tileset_for
-from src.world.transitions import AREA_MUSIC
+from src.world.transitions import AREA_EXIT_TILES, AREA_MUSIC
 
 
 class WorldScene(Scene):
@@ -57,7 +57,12 @@ class WorldScene(Scene):
         """Build the starting area when this scene becomes active."""
         self.load_map(self._initial_map)
 
-    def load_map(self, map_name: str) -> None:
+    def load_map(
+        self,
+        map_name: str,
+        arrival: str | None = None,
+        climb_from_water: bool = False,
+    ) -> None:
         """(Re)build the map and all entities for an area. Used both on
         first entry and when a transition carries Chuck somewhere new."""
         self.map_name = map_name
@@ -66,20 +71,40 @@ class WorldScene(Scene):
         self.tilemap.load_tileset(self.game.assets, tileset_for(self.map_name))
         self._world_time = 0.0  # drives water shimmer
 
-        spawn_cx, spawn_cy = self.tilemap.spawn_points.get(
-            "player",
-            (
-                self.tilemap.width_tiles * config.TILE_SIZE / 2,
-                self.tilemap.height_tiles * config.TILE_SIZE / 2,
-            ),
-        )
+        arrivals = {
+            kind.split(":", 1)[1]: position
+            for kind, position in self.tilemap.object_spawns
+            if kind.startswith("arrival:")
+        }
+        if arrival is not None:
+            if arrival not in arrivals:
+                raise ValueError(
+                    f"Map {map_name!r} has no arrival marker {arrival!r}"
+                )
+            spawn_cx, spawn_cy = arrivals[arrival]
+        else:
+            spawn_cx, spawn_cy = self.tilemap.spawn_points.get(
+                "player",
+                (
+                    self.tilemap.width_tiles * config.TILE_SIZE / 2,
+                    self.tilemap.height_tiles * config.TILE_SIZE / 2,
+                ),
+            )
+        target_player_y = spawn_cy - config.PLAYER_HITBOX_H / 2
         self.player = Player(
             spawn_cx - config.PLAYER_HITBOX_W / 2,
-            spawn_cy - config.PLAYER_HITBOX_H / 2,
+            target_player_y,
             self.game.input,
         )
+        if climb_from_water:
+            self.player.y += config.TILE_SIZE
+            self.player.facing = "up"
         self.player.tilemap = self.tilemap
         self.player.load_sprites(self.game.assets)
+        self._climb_t: float | None = 0.0 if climb_from_water else None
+        self._climb_from_y = self.player.y
+        self._climb_target_y = target_player_y
+        self.player.climb_progress = 0.0 if climb_from_water else None
 
         self.camera = Camera(config.NATIVE_WIDTH, config.NATIVE_HEIGHT)
         self.camera.set_bounds(
@@ -164,6 +189,8 @@ class WorldScene(Scene):
                     for row in config.SEWER_RAT_ROWS
                 }:
                     self._scratch_tutorial_rats.append(rat)
+            elif kind.startswith("arrival:"):
+                continue  # named map metadata, not a runtime entity
             else:
                 raise ValueError(f"No spawner for object kind {kind!r}")
 
@@ -189,6 +216,11 @@ class WorldScene(Scene):
             cat.update(dt)
         for rat in self.rats:
             rat.update(dt)
+
+        if self._climb_t is not None:
+            self._update_climb(dt)
+            self.camera.update(dt)
+            return
 
         if self._respawn_phase is not None:
             self._update_respawn(dt)
@@ -216,6 +248,17 @@ class WorldScene(Scene):
             and self._player_tile()[1] > config.SEWER_JUMP_ROW
         ):
             self._jump_tutorial_complete = True
+
+        exit_config = AREA_EXIT_TILES.get(
+            (self.map_name, self.tilemap.terrain_at(*self._player_tile()))
+        )
+        if exit_config is not None:
+            self.load_map(
+                exit_config.destination,
+                arrival=exit_config.arrival,
+                climb_from_water=exit_config.climb_from_water,
+            )
+            return
 
         # One committed scratch resolves against at most one rat. Rat bodies
         # block the one-tile choke, so the group must be cleared to continue.
@@ -309,6 +352,7 @@ class WorldScene(Scene):
             self._hint is not None
             and self.game.scenes.current is self
             and self._fall_t is None
+            and self._climb_t is None
         ):
             if self._jump_hint_visible():
                 self._hint.draw(surface, config.HINT_JUMP)
@@ -398,6 +442,25 @@ class WorldScene(Scene):
         surface = "wood" if terrain == "=" else "stone"
         self.game.audio.play_sfx(f"footstep_{surface}_{self._step_variant}")
         self._step_variant = 2 if self._step_variant == 1 else 1
+
+    def _update_climb(self, dt: float) -> None:
+        """Move Chuck one tile from harbor water onto the return pier."""
+        assert self._climb_t is not None
+        self._climb_t += dt
+        progress = min(1.0, self._climb_t / config.CLIMB_OUT_DURATION)
+        eased = progress * progress * (3.0 - 2.0 * progress)
+        self.player.y = (
+            self._climb_from_y
+            + (self._climb_target_y - self._climb_from_y) * eased
+        )
+        self.player.facing = "up"
+        self.player.moving = progress < 1.0
+        self.player.climb_progress = progress
+        if progress >= 1.0:
+            self.player.y = self._climb_target_y
+            self.player.moving = False
+            self.player.climb_progress = None
+            self._climb_t = None
 
     # ------------------------------------------------------------------
     # Astral fall hazard

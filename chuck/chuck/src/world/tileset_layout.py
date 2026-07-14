@@ -111,6 +111,7 @@ SEWER = Tileset(
         ("sewer_mud", 2, 1),
         ("sewer_channel", 1, 3),
         ("astral_void", 2, 3),
+        ("sewer_outflow", 1, 1),
     ],
     char_to_terrain={
         "#": "sewer_wall",
@@ -120,7 +121,7 @@ SEWER = Tileset(
         "%": "sewer_channel",
         "V": "astral_void",
     },
-    overhead_char_to_terrain={},
+    overhead_char_to_terrain={"Q": "sewer_outflow"},
 )
 
 TILESETS: dict[str, Tileset] = {"docks": DOCKS, "sewer": SEWER}

@@ -88,6 +88,8 @@ JUMP_DURATION = 0.36
 JUMP_SPEED = 104.0
 JUMP_HEIGHT = 6
 FALL_DURATION = 0.65
+CLIMB_OUT_DURATION = 0.65
+CLIMB_OUT_LIFT = 2
 
 # Sewer layout landmarks shared by scene tutorials and map tests. Keeping
 # these beside the movement rules makes geometry changes fail loudly instead
