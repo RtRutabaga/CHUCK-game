@@ -24,6 +24,26 @@ class SewerRat(Entity):
         )
         self.damage = config.RAT_SANITY_DAMAGE
         self._idle: Animation | None = None
+        self._spawn_x = self.x
+        self._patrol_direction = 1.0
+        self.patrolling = False
+
+    def configure_patrol(self, tilemap, blocked_spawn_tiles=()) -> None:
+        """Enable a short horizontal patrol only when both sides are safe."""
+        ts = config.TILE_SIZE
+        col = int((self.x + self.width / 2) // ts)
+        row = int((self.y + self.height / 2) // ts)
+        blocked = set(blocked_spawn_tiles)
+
+        def safe(neighbor_col: int) -> bool:
+            tile = (neighbor_col, row)
+            return (
+                tile not in blocked
+                and not tilemap.is_solid(*tile)
+                and tilemap.terrain_at(*tile) != "V"
+            )
+
+        self.patrolling = safe(col - 1) and safe(col + 1)
 
     def load_sprites(self, assets: "AssetManager") -> None:
         frames = assets.sheet(
@@ -34,6 +54,17 @@ class SewerRat(Entity):
     def update(self, dt: float) -> None:
         if self._idle is not None:
             self._idle.update(dt)
+        if not self.patrolling:
+            return
+        self.x += self._patrol_direction * config.RAT_PATROL_SPEED * dt
+        left = self._spawn_x - config.RAT_PATROL_RANGE
+        right = self._spawn_x + config.RAT_PATROL_RANGE
+        if self.x <= left:
+            self.x = left
+            self._patrol_direction = 1.0
+        elif self.x >= right:
+            self.x = right
+            self._patrol_direction = -1.0
 
     def on_scratched(self) -> None:
         """One scratch, one rat. Later enemies may be stronger."""

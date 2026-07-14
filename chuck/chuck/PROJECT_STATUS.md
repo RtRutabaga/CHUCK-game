@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 48 (silent sewer-grate NO choice). This file is required by the
+Updated: session 49 (enemy reset + rat patrols). This file is required by the
 project rules and updated every session.
 
 ## Working systems
@@ -16,7 +16,8 @@ project rules and updated every session.
   cat, the dock worker, and the 75-glyph 5x9 pixel font
 - Sanity with i-frames; cigarette pickups; HUD meter (a cigarette
   burning down); patrolling cat hazard; Astral Anchor checkpoints;
-  quiet vanish -> starfield -> respawn (no game-over screen, ever)
+  quiet vanish -> starfield -> respawn (no game-over screen, ever); enemies
+  rebuild from their map markers when Chuck returns
 - Dialogue: JSON data files, typewriter box, one NPC (dock worker); choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
@@ -94,7 +95,10 @@ project rules and updated every session.
   blocks becoming denser and more chaotically arranged around a continuous
   narrow safe route. Four additional ordinary rats are spaced through this
   late corrupted run; they use the established one-hit behavior without
-  extending the original scratch tutorial prompt. The safe route ends at a
+  extending the original scratch tutorial prompt. Those four make restrained
+  six-pixel horizontal patrols at 12 px/s; the three choke rats and any rat
+  beside walls, props, another rat spawn, or Astral fall tiles stay stationary.
+  Defeated rats reset when Chuck dies and returns. The safe route ends at a
   three-tile iron drainage outflow drawn overhead from the sewer tileset.
   Walking through it returns Chuck to the Waterdeep south pier: he appears one
   tile out in the harbor and rises onto the planks over a restrained 0.65-second
@@ -127,9 +131,9 @@ project rules and updated every session.
 
 ## Tests
 
-17 suites (most pure Python/headless): collision, tilemap,
+18 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
-tutorial, choice, music, transitions, jump, combat, outflow
+tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.

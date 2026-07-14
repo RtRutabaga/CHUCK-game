@@ -150,6 +150,8 @@ RAT_FRAME_H = 8
 RAT_HITBOX_W = 8
 RAT_HITBOX_H = 6
 RAT_SANITY_DAMAGE = 10
+RAT_PATROL_SPEED = 12.0
+RAT_PATROL_RANGE = 6.0
 
 # ---------------------------------------------------------------------------
 # Astral Anchor respawn (Game Bible: quiet, quick, never punishing)

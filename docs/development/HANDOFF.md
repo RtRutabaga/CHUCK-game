@@ -3,37 +3,47 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `4885383` (`Add sewer outflow and dock return`)
-- Current work: silent sewer-grate NO choice
+- Base commit: `8934806` (`Close sewer grate dialogue silently on no`)
+- Current work: enemy reset and short sewer-rat patrols
 - Active phase: Phase 2 — Waterdeep Starting Area and Sewer Tutorial
 
 ## Completed This Pass
 
-The sewer grate's NO option now closes the dialogue box immediately. It does
-not show any follow-up narration or change maps. YES is unchanged.
+Enemies now reset from their map markers when Chuck dies and returns. Eligible
+ordinary sewer rats also make short horizontal patrols around their spawn.
 
 ## Implementation
 
-- The grate's NO option has only a label in choice data; the obsolete
-  `sewer_grate_no` dialogue line was removed.
-- Choice options now support three validated outcomes: spoken dialogue,
-  navigation via `goto`, or a silent close when neither target is present.
-  Declaring both dialogue and navigation remains a loud data error.
-- `DialogueScene` pops immediately for a silent terminal option after playing
-  the normal selection blip and reporting the choice callback.
+- `WorldScene` stores enemy marker data and centralizes cat/rat construction in
+  `_reset_enemies()`. It runs on map load and when the respawn hold returns
+  Chuck to the active Anchor.
+- Defeated rats are reconstructed alive; the docks cat also returns to its
+  original marker. Pickups, Anchor state, and other non-enemy state are not
+  reset.
+- `SewerRat.configure_patrol()` enables movement only when both neighboring
+  horizontal tiles are walkable, non-Astral, and free of another rat spawn.
+  Solid walls and props are rejected through normal tile solidity.
+- Eligible rats travel at 12 px/s within six pixels of their home position and
+  reverse at each endpoint. The three tutorial-choke rats remain stationary;
+  the four late-maze rats patrol.
 
 ## Verification
 
-- All 17 test suites pass.
-- A direct scene-level test confirms selecting a silent option pops the overlay
-  once and does not attempt dialogue lookup or navigation.
-- Existing headless launch/render coverage remains green.
+- Focused combat checks cover patrol range/reversal and stationary behavior
+  beside walls, props, Astral fall zones, and other rat spawns.
+- Headless lifecycle checks defeat all seven rats, advance the full respawn,
+  and confirm seven fresh living rats return with the same 3/4 stationary-to-
+  patrolling split. A separate check confirms the docks cat resets to spawn.
+- All 18 test suites pass, including existing headless launch/render coverage.
 
 ## Playtest Focus
 
-- Open the sewer grate prompt, choose NO, and confirm the box disappears
-  immediately with no narration.
-- Reopen it and choose YES to confirm the sewer transition is unchanged.
+- Watch the original three-rat choke: all three should remain fixed in place.
+- In the late Astral section, confirm each of the four rats makes a subtle short
+  side-to-side patrol without stepping onto Astral blocks.
+- Defeat several rats, deliberately die to contact or a fall tile, and confirm
+  every rat is restored after Chuck returns to the sewer entrance.
+- On the docks, let the cat move, die, and confirm it restarts from its marker.
 
 ## Next Bounded Task
 

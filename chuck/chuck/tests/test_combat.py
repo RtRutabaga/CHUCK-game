@@ -1,6 +1,8 @@
 """Phase 2 scratch attack and ordinary-rat tutorial tests."""
 
 import pygame
+import tempfile
+from pathlib import Path
 
 from src.core import config
 from src.entities.player import Player
@@ -18,6 +20,14 @@ class FakeInput:
 
     def movement_vector(self):
         return (0.0, 0.0)
+
+
+def _map(text: str) -> TileMap:
+    f = tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False,
+                                    encoding="utf-8")
+    f.write(text)
+    f.close()
+    return TileMap(Path(f.name))
 
 
 def test_f_starts_a_brief_stationary_scratch() -> None:
@@ -50,6 +60,31 @@ def test_rat_is_smaller_than_chuck_and_dies_in_one_hit() -> None:
     assert rat.width < config.PLAYER_HITBOX_W
     rat.on_scratched()
     assert not rat.alive
+
+
+def test_rat_short_patrol_reverses_at_its_home_range() -> None:
+    rat = SewerRat(40, 24)
+    rat.configure_patrol(_map("#####\n#ddd#\n#####\n"))
+    assert rat.patrolling
+    start = rat.x
+    rat.update(1.0)
+    assert rat.x == start + config.RAT_PATROL_RANGE
+    rat.update(0.25)
+    assert rat.x < start + config.RAT_PATROL_RANGE
+
+
+def test_rat_stays_put_beside_objects_fall_zones_or_other_rats() -> None:
+    cases = [
+        (_map("#####\n##dO#\n#####\n"), set()),
+        (_map("#####\n#ddV#\n#####\n"), set()),
+        (_map("#####\n#ddd#\n#####\n"), {(1, 1)}),
+    ]
+    for tilemap, blocked_spawns in cases:
+        rat = SewerRat(40, 24)
+        rat.configure_patrol(tilemap, blocked_spawns)
+        start = rat.x
+        rat.update(1.0)
+        assert not rat.patrolling and rat.x == start
 
 
 def test_sewer_has_three_rats_in_a_one_tile_choke_after_gap() -> None:

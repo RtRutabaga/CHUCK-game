@@ -155,18 +155,18 @@ class WorldScene(Scene):
         self.hazards: list[Cat] = []
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
-        self.rats: list[SewerRat] = []
-        self._scratch_tutorial_rats: list[SewerRat] = []
+        self._enemy_spawns = [
+            (kind, position)
+            for kind, position in self.tilemap.object_spawns
+            if kind in {"cat", "rat"}
+        ]
         for kind, (cx, cy) in self.tilemap.object_spawns:
             if kind == "cigarette":
                 cig = Cigarette(cx, cy)
                 cig.load_sprite(self.game.assets)
                 self.pickups.append(cig)
             elif kind == "cat":
-                cat = Cat(cx, cy)
-                cat.tilemap = self.tilemap
-                cat.load_sprites(self.game.assets)
-                self.hazards.append(cat)
+                continue  # rebuilt with all enemies below
             elif kind == "anchor":
                 anchor = AstralAnchor(cx, cy)
                 anchor.load_sprites(self.game.assets)
@@ -177,22 +177,12 @@ class WorldScene(Scene):
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
             elif kind == "rat":
-                rat = SewerRat(cx, cy)
-                rat.load_sprites(self.game.assets)
-                self.rats.append(rat)
-                rat_tile = (
-                    int(cx // config.TILE_SIZE),
-                    int(cy // config.TILE_SIZE),
-                )
-                if self.map_name == "sewer" and rat_tile in {
-                    (config.SEWER_RAT_COL, row)
-                    for row in config.SEWER_RAT_ROWS
-                }:
-                    self._scratch_tutorial_rats.append(rat)
+                continue  # rebuilt with all enemies below
             elif kind.startswith("arrival:"):
                 continue  # named map metadata, not a runtime entity
             else:
                 raise ValueError(f"No spawner for object kind {kind!r}")
+        self._reset_enemies()
 
 
     def handle_event(self, event: pygame.event.Event) -> None:
@@ -462,6 +452,40 @@ class WorldScene(Scene):
             self.player.climb_progress = None
             self._climb_t = None
 
+    def _reset_enemies(self) -> None:
+        """Rebuild this area's enemies from map markers after Chuck returns."""
+        self.hazards = []
+        self.rats = []
+        self._scratch_tutorial_rats = []
+        rat_spawn_tiles = {
+            (int(cx // config.TILE_SIZE), int(cy // config.TILE_SIZE))
+            for kind, (cx, cy) in self._enemy_spawns
+            if kind == "rat"
+        }
+        tutorial_tiles = {
+            (config.SEWER_RAT_COL, row) for row in config.SEWER_RAT_ROWS
+        }
+        for kind, (cx, cy) in self._enemy_spawns:
+            if kind == "cat":
+                cat = Cat(cx, cy)
+                cat.tilemap = self.tilemap
+                cat.load_sprites(self.game.assets)
+                self.hazards.append(cat)
+            elif kind == "rat":
+                rat = SewerRat(cx, cy)
+                rat.load_sprites(self.game.assets)
+                rat_tile = (
+                    int(cx // config.TILE_SIZE),
+                    int(cy // config.TILE_SIZE),
+                )
+                rat.configure_patrol(
+                    self.tilemap,
+                    blocked_spawn_tiles=rat_spawn_tiles - {rat_tile},
+                )
+                self.rats.append(rat)
+                if self.map_name == "sewer" and rat_tile in tutorial_tiles:
+                    self._scratch_tutorial_rats.append(rat)
+
     # ------------------------------------------------------------------
     # Astral fall hazard
     # ------------------------------------------------------------------
@@ -505,6 +529,7 @@ class WorldScene(Scene):
             self.player.x, self.player.y = (
                 self.anchors_system.respawn_position_for_chuck()
             )
+            self._reset_enemies()
             self.sanity.refill()
             self.camera.follow(self.player)  # snap, no cross-map pan
             self.player.visible = True
