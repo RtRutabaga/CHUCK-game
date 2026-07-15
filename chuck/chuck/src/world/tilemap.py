@@ -71,6 +71,10 @@ Terrain legend:
     'V'  Astral wrong-map    (walkable fall hazard; never a portal)
     '_'  beneath fallen log  (walkable jungle ground, log drawn overhead)
     '|'  thorny undergrowth  (walkable Chult Sanity hazard)
+    "'"  beaten jungle trail (walkable route toward the next Chult area)
+    '"'  jungle trailhead    (walkable trail, canopy drawn overhead)
+    '{'  expedition backpack (solid standing prop on jungle ground)
+    '}'  abandoned boot      (solid standing prop on jungle ground)
 
 Marker legend (things ON a tile, not the tile itself — each marker
 declares the terrain underneath it, so no seams appear in the ground):
@@ -96,6 +100,7 @@ declares the terrain underneath it, so no seams appear in the ground):
     '0'  pantry entry arrival  (on pantry floor 'p')
     '('  Chult zombie           (on jungle ground '.')
     ')'  Chult skeleton         (on jungle ground '.')
+    '$'  Chult deeper boundary  (on jungle trailhead '"')
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -265,6 +270,13 @@ TILE_DEFS: dict[str, TileDef] = {
     "_": TileDef(solid=False, color=config.COLOR_FLOOR_PLACEHOLDER,
                  under=".", overhead="fallen_log"),
     "|": TileDef(solid=False, color=(48, 84, 39)),
+    "'": TileDef(solid=False, color=(44, 45, 29)),
+    '"': TileDef(solid=False, color=(44, 45, 29),
+                 under="'", overhead="jungle_exit"),
+    "{": TileDef(solid=True, color=config.COLOR_FLOOR_PLACEHOLDER,
+                 prop="expedition_backpack", under="."),
+    "}": TileDef(solid=True, color=config.COLOR_FLOOR_PLACEHOLDER,
+                 prop="abandoned_boot", under="."),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {
@@ -294,6 +306,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "&": MarkerDef(kind="anchor:chult_anchor", under="."),
     "(": MarkerDef(kind="zombie", under="."),
     ")": MarkerDef(kind="skeleton", under="."),
+    "$": MarkerDef(kind="boundary:chult_deeper", under='"'),
 }
 
 _COMMENT_PREFIX = ";"

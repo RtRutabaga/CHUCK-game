@@ -27,6 +27,9 @@ LOG_LIGHT = (78, 73, 42)
 LOG_DARK = (25, 34, 25)
 THORN = (66, 111, 47)
 THORN_LIGHT = (129, 143, 70)
+TRAIL = (47, 46, 29)
+TRAIL_LIGHT = (68, 62, 35)
+TRAIL_DARK = (30, 35, 24)
 
 
 def draw_ground(surface, variant: int, _frame: int) -> None:
@@ -80,11 +83,39 @@ def draw_thorn_patch(surface, variant: int, _frame: int) -> None:
                          (tip_x + (1 if tip_x < base_x else -1), tip_y + 2), 1)
 
 
+def draw_jungle_trail(surface, variant: int, _frame: int) -> None:
+    """A restrained worn track that remains part of the humid ground."""
+    surface.fill(TRAIL)
+    marks = (
+        ((2, 5), (10, 12), (14, 3)),
+        ((4, 13), (8, 4), (13, 9)),
+        ((1, 9), (7, 14), (12, 5)),
+    )[variant]
+    for index, (x, y) in enumerate(marks):
+        color = TRAIL_LIGHT if index == 0 else TRAIL_DARK
+        pygame.draw.rect(surface, color, (x, y, 3, 2))
+    pygame.draw.line(surface, GROUND_DARK, (0, 15), (15, 15))
+
+
+def draw_jungle_exit(surface, variant: int, _frame: int) -> None:
+    """Dense canopy arch over the stable northward handoff boundary."""
+    surface.fill((0, 0, 0, 0))
+    pygame.draw.rect(surface, CANOPY, (0, 0, 16, 5))
+    pygame.draw.rect(surface, CANOPY, (0, 0, 3, 16))
+    pygame.draw.rect(surface, CANOPY, (13, 0, 3, 16))
+    pygame.draw.rect(surface, LEAF, ((variant * 5) % 10, 1, 7, 4))
+    pygame.draw.rect(surface, CANOPY_LIGHT, (10 - variant * 2, 4, 6, 3))
+    pygame.draw.line(surface, VINE, (2 + variant, 0), (4 + variant, 12), 1)
+    pygame.draw.line(surface, VINE, (14 - variant, 0), (12 - variant, 10), 1)
+
+
 DRAW = {
     "jungle_ground": draw_ground,
     "dense_jungle": draw_dense_jungle,
     "fallen_log": draw_fallen_log,
     "thorn_patch": draw_thorn_patch,
+    "jungle_trail": draw_jungle_trail,
+    "jungle_exit": draw_jungle_exit,
 }
 
 

@@ -46,6 +46,8 @@ _SPRITES = {
     "crate_green": "objects/crate_green.png",
     "crate_red": "objects/crate_red.png",
     "crate_orange": "objects/crate_orange.png",
+    "expedition_backpack": "objects/expedition_backpack.png",
+    "abandoned_boot": "objects/abandoned_boot.png",
 }
 
 # Props that respond to the interact key with a line of dialogue
@@ -55,6 +57,7 @@ PROP_DIALOGUE = {
     "herod_sign": "herod_sign",
     "house_door": "closed_door",
     "cheese": "cheese",
+    "expedition_backpack": "expedition_backpack",
 }
 
 # Props that ask a question instead of making a statement (ids live in

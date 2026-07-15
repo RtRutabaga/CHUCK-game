@@ -3,8 +3,8 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `b098d34` (`Add shared save and checkpoint flow`)
-- Current work: Phase 4 through the first Chult terrain hazard
+- Base commit before this pass: `69d8118` (`Add Phase 4 Chult landing, undead, and thorn hazard`)
+- Current work: Phase 4 through the route-deeper boundary
 - Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
 
 ## Completed This Pass
@@ -14,7 +14,7 @@ the active scope referenced by the docs guide. Phase 3's final jungle tableau
 holds for two seconds after its authored completion, then loads a playable Chult
 landing through the shared checkpoint loader.
 
-`chult_jungle.txt` is now a contained 64x60 exploration area, slightly larger in
+`chult_jungle.txt` is now a contained 60x60 exploration area, slightly larger in
 authored tile area than the sewer. Its dedicated procedural
 tileset uses the cutscene's dark ground, canopy, trunk, vine, and leaf colors so
 normal gameplay continues the same visual language. Dense vegetation is solid;
@@ -62,9 +62,25 @@ effect lookup and footprint contact scan. Thorns cost 10 Sanity on foot through
 normal i-frames/hurt feedback; airborne Chuck is safe. No required route crosses
 the cluster.
 
+An optional northern clearing now holds two oversized human expedition props:
+a 30x32 packed backpack and a 26x16 discarded boot. They are solid standing
+props backed against vegetation and approachable from three directions. The
+backpack is more than twice Chuck's height and returns the sole line `Someone
+left quickly.`; the boot is mute. This is deliberately generic environmental
+history, not an overt Tomb campaign reference.
+
+The existing north route now resolves into a distinct three-tile-wide worn
+track. It runs beneath a dense overhead canopy arch at the top edge and carries
+one named `boundary:chult_deeper` marker. Boundary markers are authored map
+metadata and intentionally spawn no runtime entity until a real destination is
+available. This preserves the transition system's rule that actual exits must
+target loadable maps, while giving the next Chult area a stable connection
+point. No second map, narrative beat, progression flag, or placeholder teleport
+was added.
+
 ## Verification
 
-- All 24 test modules pass through their standalone runners (pytest is not
+- All 27 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
 - New Chult coverage verifies map dimensions/spawns, shared-loader cutscene
   handoff, required progression, Ashtray save data, and relaunch/CONTINUE.
@@ -87,6 +103,13 @@ the cluster.
 - A 25th terrain-hazard suite verifies contact classification, airborne safety,
   WorldScene damage/i-frames, authored cluster size, and a thorn-free route from
   the landing to the north end. Native render review confirms clear silhouettes.
+- A 26th traveler-scene suite verifies exact authored placement, open approach,
+  sprite scale relative to Chuck/humans, prop dialogue mapping, and the single
+  restrained line. The normal tileset and dialogue suites also cover the new data.
+- A 27th Chult-exit suite verifies the single named boundary, its exact stable
+  location, the continuous three-wide approach, solid authored edge, and
+  dedicated ground/overhead tileset rows. Native 320x180 review confirms the
+  darker track and canopy opening read clearly from the northern clearing.
 
 ## Playtest Focus
 
@@ -119,10 +142,15 @@ the cluster.
 13. Find the thorn cluster in the mid-jungle side clearing. Walk into it twice
     quickly and confirm only one 10-Sanity hit lands during i-frames; jump across
     it without damage, then confirm the main route can bypass it entirely.
+14. Find the backpack and boot in the northern clearing. Confirm their human
+    scale makes Chuck look appropriately tiny, neither blocks the route, the
+    backpack says `Someone left quickly.`, and the boot remains mute.
+15. Continue north onto the darker worn trail. Confirm it reads as the route
+    deeper, the canopy closes over Chuck at the threshold, and the stable edge
+    stops him cleanly without a broken transition or missing-map error.
 
 ## Next Bounded Task
 
-Add the compact previous-traveler environmental scene. Use one or two oversized
-human expedition objects to reinforce Chuck's scale and at most one short
-interaction line. Consult the Tomb campaign notes before including any specific
-campaign reference. Do not add the map exit or soundtrack in the same pass.
+Create the dedicated bass-forward Chult exploration soundtrack as one bounded
+audio slice. Keep it original, groove-led, jungle-oriented, and consistent with
+the established procedural retro soundtrack; do not add a new map in that pass.

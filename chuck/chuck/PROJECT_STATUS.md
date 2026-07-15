@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 69 (Phase 4 thorn terrain hazard). This file is required by
+Updated: session 71 (Phase 4 route-deeper boundary). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -210,7 +210,7 @@ the project rules and updated every session.
   seconds with control and simulation locked. Direct Chult 1/CONTINUE loads do
   not replay this one-time arrival presentation
 
-- Phase 4 jungle layout: `chult_jungle.txt` is a 64x60 playable jungle space
+- Phase 4 jungle layout: `chult_jungle.txt` is a 60x60 playable jungle space
   with a dedicated procedural `chult.png` sheet derived from the cutscene's
   ground, canopy, trunk, vine, and leaf palette. Dense vegetation forms stable
   collision boundaries around the landing and large growth masses create a
@@ -243,10 +243,24 @@ the project rules and updated every session.
   Flood-fill coverage verifies the northbound main route remains reachable
   without touching any thorn tile
 
+- Phase 4 traveler evidence: an optional northern clearing contains one packed
+  expedition backpack and one discarded boot, with no overt campaign reference.
+  Both are solid, y-sorted human-scale props over jungle ground. The 30x32
+  backpack is more than twice Chuck's height and reads almost architecturally;
+  the 26px boot is wider than two Chuck sprites. Three open approach directions
+  keep the scene inspectable without gating progress. Only the backpack responds,
+  with the restrained line `Someone left quickly.`
+
+- Phase 4 route deeper: a three-tile-wide worn track now leads out of the
+  existing northern clearing and terminates beneath a dense canopy arch. The
+  walkable threshold carries one inert `boundary:chult_deeper` map marker,
+  giving the next authored Chult area a stable handoff point without inventing
+  a placeholder map or fake transition. Solid jungle beyond the threshold
+  remains the deliberate Phase 4 edge
+
 ## Placeholder systems
 - The landing and exploration layout are only the first Phase 4 slices.
-  Traveler evidence, exit,
-  and Chult soundtrack remain unfinished
+  Chult soundtrack remains unfinished
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -272,11 +286,11 @@ the project rules and updated every session.
 
 ## Tests
 
-25 suites (most pure Python/headless): collision, tilemap,
+27 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
-Chult terrain hazard
+Chult terrain hazard, previous-traveler scene, Chult route-deeper boundary
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -330,9 +344,8 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Human-playtest thorn readability, contact damage/i-frames, jumping, and the safe
-route around the patch. Then add the previous-traveler environmental scene as
-one bounded slice; consult campaign notes only if using a specific reference.
+Human-playtest the backpack/boot scene and north trail boundary. Then create the
+dedicated bass-forward Chult exploration soundtrack as the next bounded slice.
 
 ## Also open
 
@@ -349,7 +362,7 @@ one bounded slice; consult campaign notes only if using a specific reference.
        supports stable jungle-ground and dense-vegetation collision language.
 4. [x] `Chult 1` Ashtray is wired to save, CONTINUE, development selection, and
        Sanity-zero respawn through the existing shared architecture.
-5. [x] Expanded 64x60 connected exploration layout with a main route, optional
+5. [x] Expanded 60x60 connected exploration layout with a main route, optional
        branch, and overhead fallen-log passage sized for Chuck (session 65).
 6. [x] Added two human-scale durable zombies and two skeletons with simple
        collision-aware pursuit, avoidable placement, existing scratch/contact
@@ -357,8 +370,12 @@ one bounded slice; consult campaign notes only if using a specific reference.
 7. [x] Added an optional reusable thorn-terrain cluster: 10 Sanity on-foot
        contact, existing i-frames, jump-safe traversal, and a safe route around
        it (session 69).
-8. [ ] Add the previous-traveler scene, route deeper, and dedicated
-       bass-forward Chult soundtrack in separate bounded slices.
+8. [x] Added a generic abandoned expedition backpack and boot scene with one
+       short interaction line and no overt campaign reference (session 70).
+9. [x] Added a clear worn north trail and canopy-framed, named
+       `chult_deeper` boundary without inventing the next full map (session 71).
+10. [ ] Add the dedicated bass-forward Chult soundtrack as its own bounded
+        slice.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

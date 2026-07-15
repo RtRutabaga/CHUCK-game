@@ -167,13 +167,19 @@ CHULT = Tileset(
         ("dense_jungle", 4, 1),
         ("fallen_log", 4, 1),
         ("thorn_patch", 3, 1),
+        ("jungle_trail", 3, 1),
+        ("jungle_exit", 3, 1),
     ],
     char_to_terrain={
         ".": "jungle_ground",
         "#": "dense_jungle",
         "|": "thorn_patch",
+        "'": "jungle_trail",
     },
-    overhead_char_to_terrain={"_": "fallen_log"},
+    overhead_char_to_terrain={
+        "_": "fallen_log",
+        '"': "jungle_exit",
+    },
 )
 
 TILESETS: dict[str, Tileset] = {

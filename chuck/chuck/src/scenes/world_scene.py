@@ -254,6 +254,10 @@ class WorldScene(Scene):
                 self.choice_triggers.append(ChoiceTrigger(cx, cy, choice_id))
             elif kind.startswith("arrival:"):
                 continue  # named map metadata, not a runtime entity
+            elif kind.startswith("boundary:"):
+                # Authored handoff metadata for a future destination.  It is
+                # deliberately inert until that destination map exists.
+                continue
             else:
                 raise ValueError(f"No spawner for object kind {kind!r}")
         self._reset_enemies()
