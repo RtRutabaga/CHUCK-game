@@ -121,6 +121,22 @@ def test_pantry_doorway_is_bidirectional_without_bounce() -> None:
         game._shutdown()
 
 
+def test_pantry_repeats_jump_hint_near_sky_blocks() -> None:
+    game = Game()
+    try:
+        game.scenes.replace(WorldScene(game, "waterdeep_pantry"))
+        scene = game.scenes.current
+        assert scene._hint is not None
+        _place_on_tile(scene, 2, 15)
+        assert not scene._jump_hint_visible()
+        _place_on_tile(scene, 6, 6)
+        assert scene.tilemap.terrain_at(8, 6) == "s"
+        assert scene._jump_hint_visible()
+        game.scenes.draw(game.native_surface)
+    finally:
+        game._shutdown()
+
+
 def test_pantry_astral_floor_reuses_fall_and_local_retry() -> None:
     game = Game()
     try:

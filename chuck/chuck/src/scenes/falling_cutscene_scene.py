@@ -32,6 +32,8 @@ CIGARETTE_START = 35.0
 CIGARETTE_SEATED = 36.0
 DRAG_START = 36.1
 COMPLETE_TIME = 39.0
+CHULT_FADE_OUT_START = 41.0
+CHULT_HANDOFF_TIME = CHULT_FADE_OUT_START + config.AREA_FADE_DURATION
 GROUND_Y = 132
 
 
@@ -118,6 +120,12 @@ class FallingCutsceneScene(Scene):
     def cigarette_lit(self) -> bool:
         return self.elapsed >= CIGARETTE_SEATED
 
+    @property
+    def fade_out_progress(self) -> float:
+        return _clamp01(
+            (self.elapsed - CHULT_FADE_OUT_START) / config.AREA_FADE_DURATION
+        )
+
     def update(self, dt: float) -> None:
         previous = self.elapsed
         self.elapsed += dt
@@ -125,6 +133,8 @@ class FallingCutsceneScene(Scene):
         for cloud in self.clouds:
             cloud[1] = ((cloud[1] - cloud[3] * dt + 18) % span) - 18
         self._play_cues(previous, self.elapsed)
+        if previous < CHULT_HANDOFF_TIME <= self.elapsed:
+            self.game.checkpoints.load_checkpoint("chult_landing")
 
     def _play_cues(self, previous: float, current: float) -> None:
         if previous < MUSIC_START <= current:
@@ -154,6 +164,10 @@ class FallingCutsceneScene(Scene):
             surface, (13, 22, 25),
             (0, config.NATIVE_HEIGHT - 7, config.NATIVE_WIDTH, 7),
         )
+        if self.fade_out_progress > 0.0:
+            fade = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+            fade.fill((0, 0, 0, round(255 * self.fade_out_progress)))
+            surface.blit(fade, (0, 0))
 
     # ------------------------------------------------------------------
     # Long sky descent

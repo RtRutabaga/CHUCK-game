@@ -25,6 +25,7 @@ from src.entities.pickup import Cigarette
 from src.entities.player import Player
 from src.entities.prop import Prop
 from src.entities.rat import SewerRat
+from src.entities.undead import UndeadEnemy
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
 from src.systems.astral_anchor import AstralAnchorSystem
@@ -33,6 +34,7 @@ from src.systems.combat import scratch_first_target
 from src.systems.dialogue import DialogueSystem
 from src.systems.fall import fall_zone_kind
 from src.systems.interaction import find_target
+from src.systems.terrain_hazard import touching_terrain_hazard
 from src.ui.tutorial_hint import TutorialHint
 from src.systems.sanity import SanitySystem
 from src.ui.hud import HUD
@@ -58,6 +60,7 @@ class WorldScene(Scene):
         initial_climb_from_water: bool = False,
         initial_sanity: int | None = None,
         initial_checkpoint_id: str | None = None,
+        initial_fade_in: bool = False,
     ) -> None:
         super().__init__(game)
         self._initial_map = map_name
@@ -67,6 +70,7 @@ class WorldScene(Scene):
         self._initial_climb_from_water = initial_climb_from_water
         self._initial_sanity = initial_sanity
         self._initial_checkpoint_id = initial_checkpoint_id
+        self._initial_fade_in = initial_fade_in
         # Set by a transition choice; applied once the conversation that
         # triggered it has closed (see update()).
         self._pending_map: str | None = None
@@ -84,6 +88,7 @@ class WorldScene(Scene):
             position=self._initial_position,
             sanity=self._initial_sanity,
             checkpoint_id=self._initial_checkpoint_id,
+            fade_in=self._initial_fade_in,
         )
 
     def load_map(
@@ -95,6 +100,7 @@ class WorldScene(Scene):
         position: tuple[float, float] | None = None,
         sanity: int | None = None,
         checkpoint_id: str | None = None,
+        fade_in: bool = False,
     ) -> None:
         """(Re)build the map and all entities for an area. Used both on
         first entry and when a transition carries Chuck somewhere new."""
@@ -115,6 +121,7 @@ class WorldScene(Scene):
             self.tilemap.open_tavern_entrance()
         self.tilemap.load_tileset(self.game.assets, tileset_for(self.map_name))
         self._world_time = 0.0  # drives water shimmer
+        self._arrival_fade_t: float | None = 0.0 if fade_in else None
 
         arrivals = {
             kind.split(":", 1)[1]: position
@@ -220,7 +227,7 @@ class WorldScene(Scene):
         self._enemy_spawns = [
             (kind, position)
             for kind, position in self.tilemap.object_spawns
-            if kind in {"cat", "rat"}
+            if kind in {"cat", "rat", "zombie", "skeleton"}
         ]
         for kind, (cx, cy) in self.tilemap.object_spawns:
             if kind == "cigarette":
@@ -240,7 +247,7 @@ class WorldScene(Scene):
                 npc = NPC(cx, cy, npc_id=npc_id, dialogue_id=npc_id)
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
-            elif kind == "rat":
+            elif kind in {"rat", "zombie", "skeleton"}:
                 continue  # rebuilt with all enemies below
             elif kind.startswith("choice:"):
                 choice_id = kind.split(":", 1)[1]
@@ -276,10 +283,18 @@ class WorldScene(Scene):
 
         # The world keeps moving whether or not Chuck is in it.
         self._world_time += dt
+        if self._arrival_fade_t is not None:
+            self._arrival_fade_t += dt
+            if self._arrival_fade_t >= config.AREA_FADE_DURATION:
+                self._arrival_fade_t = None
+            self.camera.update(dt)
+            return
         for cat in self.hazards:
             cat.update(dt)
         for rat in self.rats:
             rat.update(dt)
+        for undead in self.undead:
+            undead.update(dt, self.player)
 
         if self._climb_t is not None:
             self._update_climb(dt)
@@ -325,12 +340,14 @@ class WorldScene(Scene):
             )
             return
 
-        # One committed scratch resolves against at most one rat. Rat bodies
-        # block the one-tile choke, so the group must be cleared to continue.
+        # One committed scratch resolves against at most one living enemy.
         if self.player.scratch_just_started:
             self.game.audio.play_sfx("scratch")
-            scratch_first_target(self.player.scratch_hitbox(), self.rats)
+            scratch_first_target(
+                self.player.scratch_hitbox(), [*self.rats, *self.undead]
+            )
         self.rats = [rat for rat in self.rats if rat.alive]
+        self.undead = [enemy for enemy in self.undead if enemy.alive]
 
         blocking_rat = next(
             (rat for rat in self.rats if overlaps(self.player.hitbox, rat.hitbox)),
@@ -338,6 +355,17 @@ class WorldScene(Scene):
         )
         if blocking_rat is not None:
             if self.sanity.damage(blocking_rat.damage):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+            self.player.x, self.player.y = old_player_position
+
+        blocking_undead = next(
+            (enemy for enemy in self.undead
+             if overlaps(self.player.hitbox, enemy.hitbox)),
+            None,
+        )
+        if blocking_undead is not None:
+            if self.sanity.damage(blocking_undead.damage):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
             self.player.x, self.player.y = old_player_position
@@ -372,6 +400,15 @@ class WorldScene(Scene):
                 return  # the world holds its breath
 
         player_box = self.player.hitbox
+
+        terrain_hazard = touching_terrain_hazard(
+            self.tilemap, player_box, self.player.jumping
+        )
+        if terrain_hazard is not None and self.sanity.damage(
+            terrain_hazard.sanity_damage
+        ):
+            self.player.hurt_blink = config.HURT_COOLDOWN
+            self.game.audio.play_sfx("hurt")
 
         # Pickups: collect on overlap, then drop dead ones.
         for pickup in self.pickups:
@@ -433,6 +470,7 @@ class WorldScene(Scene):
             elif self._interactable_in_range() is not None:
                 self._hint.draw(surface, config.HINT_INTERACT)
         self._draw_respawn_overlay(surface)
+        self._draw_arrival_fade(surface)
 
     def _sorted_drawables(self):
         """Everything that stands in the world, painter-ordered by feet.
@@ -442,7 +480,7 @@ class WorldScene(Scene):
         one foot tall; this is where that finally SHOWS.
         """
         drawables = [*self.props, *self.anchors, *self.hazards, *self.rats,
-                     *self.npcs, self.player]
+                     *self.undead, *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
 
     def _on_choice(self, option) -> None:
@@ -482,11 +520,21 @@ class WorldScene(Scene):
 
     def _jump_hint_visible(self) -> bool:
         """Show the sewer's temporary prompt only on approach to the gap."""
-        if self.map_name != "sewer" or self._jump_tutorial_complete:
-            return False
         col, row = self._player_tile()
-        left, right, top, bottom = config.SEWER_JUMP_HINT_BOUNDS
-        return left <= col <= right and top <= row <= bottom
+        if self.map_name == "sewer":
+            if self._jump_tutorial_complete:
+                return False
+            left, right, top, bottom = config.SEWER_JUMP_HINT_BOUNDS
+            return left <= col <= right and top <= row <= bottom
+        if self.map_name == "waterdeep_pantry":
+            radius = 2
+            return any(
+                self.tilemap.terrain_at(col + dx, row + dy) == "s"
+                for dx in range(-radius, radius + 1)
+                for dy in range(-radius, radius + 1)
+                if abs(dx) + abs(dy) <= radius
+            )
+        return False
 
     def _scratch_hint_visible(self) -> bool:
         """Prompt only at the post-gap rat choke, until all rats are gone."""
@@ -553,6 +601,7 @@ class WorldScene(Scene):
         """Rebuild this area's enemies from map markers after Chuck returns."""
         self.hazards = []
         self.rats = []
+        self.undead = []
         self._scratch_tutorial_rats = []
         rat_spawn_tiles = {
             (int(cx // config.TILE_SIZE), int(cy // config.TILE_SIZE))
@@ -582,6 +631,11 @@ class WorldScene(Scene):
                 self.rats.append(rat)
                 if self.map_name == "sewer" and rat_tile in tutorial_tiles:
                     self._scratch_tutorial_rats.append(rat)
+            elif kind in {"zombie", "skeleton"}:
+                enemy = UndeadEnemy(cx, cy, kind)
+                enemy.tilemap = self.tilemap
+                enemy.load_sprites(self.game.assets)
+                self.undead.append(enemy)
 
     # ------------------------------------------------------------------
     # Astral fall hazard
@@ -662,3 +716,12 @@ class WorldScene(Scene):
                 pygame.draw.rect(
                     surface, config.COLOR_STAR, pygame.Rect(sx, sy, 1, 1)
                 )
+
+    def _draw_arrival_fade(self, surface) -> None:
+        """Fade from black only for checkpoints that author an arrival fade."""
+        if self._arrival_fade_t is None:
+            return
+        progress = min(1.0, self._arrival_fade_t / config.AREA_FADE_DURATION)
+        overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, round(255 * (1.0 - progress))))
+        surface.blit(overlay, (0, 0))

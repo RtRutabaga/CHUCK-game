@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 63 (title, saves, and shared checkpoints). This file is required by
+Updated: session 69 (Phase 4 thorn terrain hazard). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -32,9 +32,9 @@ the project rules and updated every session.
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
-  development-only checkpoint saves disable CONTINUE without crashing. The sole
-  current durable world flag is `sewer_completed`, which restores the tavern's
-  open exterior
+  development-only checkpoint saves disable CONTINUE without crashing. Durable
+  flags are `sewer_completed`, which restores the tavern's open exterior, and
+  `chult_reached`, which restores the playable Phase 4 landing state
 - Dialogue: JSON data files, typewriter box, six NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
@@ -43,8 +43,13 @@ the project rules and updated every session.
   fallback; three composed pieces (data/music/, 7-8 voices) —
   the 95s warm Waterdeep Docks theme and the 83s eerie/funky D-minor
   Sewer theme loop seamlessly, while the 36s one-shot fall-to-Chult cue drives
-  the Phase 3 cutscene; SFX for pickup, interact, hurt, vanish, respawn, anchor
-  chime, a quiet rounded jump bounce, scratch scrape, and per-surface footsteps
+  the Phase 3 cutscene; Chult's exploration theme remains a Phase 4 audio slice;
+  SFX for pickup, interact, hurt, vanish, respawn, anchor
+  chime, a quiet rounded jump bounce, scratch scrape, and per-surface footsteps.
+  Re-requesting the same looping track is idempotent, so movement among the
+  docks, tavern, and pantry preserves the Waterdeep theme's playback position;
+  sewer, cutscene, Chult silence, and future differently scored regions still
+  switch or stop normally
 - Distribution: reproducible PyInstaller 6.21 single-file Windows build
   (`CHUCK.spec` + `requirements-build.txt`) bundles all runtime assets and data
   into `dist/CHUCK-demo.exe`. The windowed EXE needs no Python installation,
@@ -177,7 +182,9 @@ the project rules and updated every session.
   The game's sole cheese sits on a one-board island inside that broad sky field:
   every cardinal approach is four tiles from ordinary floor, beyond Chuck's
   fixed 2.3-tile jump. It is a readable temptation toward the successful fall,
-  not a collectible or reachable reward
+  not a collectible or reachable reward. Approaching within two tiles of the
+  teal sky repeats the established `Press SPACE to jump` tutorial line; it is
+  absent elsewhere in the pantry and uses the existing temporary hint system
 - Fall materials now classify independently before choreography. Astral retains
   its exact fall -> Sanity depletion -> local retry behavior. Teal sky is a
   walkable successful-fall trigger: it begins with the same restrained 0.65s
@@ -196,12 +203,50 @@ the project rules and updated every session.
   familiar Astral language, blips back, looks left/right/down, places a
   cigarette in his mouth, and takes a restrained smoking drag. Existing scrape,
   thud, vanish, and respawn cues punctuate the collision and return. At 39
-  seconds the scene holds indefinitely on the smoking jungle tableau with no
-  restored controls, forming the clean non-playable Phase 4 handoff
+  seconds the scene holds on the smoking jungle tableau for two more seconds,
+  fades fully to black over 0.75 seconds, then enters playable Chult through the
+  shared checkpoint loader. The authored `chult_landing` entry keeps the screen
+  black across scene replacement and fades gameplay in over another 0.75
+  seconds with control and simulation locked. Direct Chult 1/CONTINUE loads do
+  not replay this one-time arrival presentation
+
+- Phase 4 jungle layout: `chult_jungle.txt` is a 64x60 playable jungle space
+  with a dedicated procedural `chult.png` sheet derived from the cutscene's
+  ground, canopy, trunk, vine, and leaf palette. Dense vegetation forms stable
+  collision boundaries around the landing and large growth masses create a
+  main northbound route with connected side clearings. A central vegetation
+  mass near the landing creates an immediate optional left/right exploration
+  choice. A three-tile overhead fallen log cuts through a dense wall as the
+  first explicit Chuck-sized shortcut: ordinary movement carries Chuck beneath
+  the human-scale trunk, which occludes him without adding a crouch control.
+  The hidden `chult_landing` runtime
+  checkpoint receives the cutscene handoff; the nearby Ashtray is the saveable,
+  development-visible `chult_anchor`, displayed as `Chult 1`. Activation saves,
+  CONTINUE restores it, and Sanity-zero return uses it. The area is deliberately
+  silent until its dedicated Phase 4 soundtrack pass
+
+- Phase 4 undead: two zombies and two skeletons occupy broad Chult clearings,
+  never mandatory chokes. Both use the established 16x30 human-NPC scale and
+  simple three-facing procedural sprites. A reusable `UndeadEnemy` performs
+  direct collision-aware pursuit only within 112 pixels. Zombies shamble at
+  18 px/s, inflict 20 Sanity, and take eight scratches; skeletons move at
+  25 px/s, inflict 15 Sanity, and take six. Scratch still hits at most one
+  target per swipe. Contact blocks Chuck and respects existing damage i-frames.
+  Defeated undead rebuild from map markers during the established Astral return,
+  alongside cats and rats, while the wide encounter spaces remain escapable
+
+- Phase 4 terrain hazard: a ten-tile thorn cluster occupies an optional open
+  clearing, rendered as bright angular stems over ordinary jungle ground. A
+  reusable terrain-hazard lookup checks Chuck's full footprint rather than a
+  Chult-specific scene branch. Contact on foot costs 10 Sanity through the
+  established i-frame/hurt feedback; a committed jump passes safely above it.
+  Flood-fill coverage verifies the northbound main route remains reachable
+  without touching any thorn tile
 
 ## Placeholder systems
-- Playable Chult is intentionally absent. Phase 4 begins from the final jungle
-  tableau after its own active scope is established
+- The landing and exploration layout are only the first Phase 4 slices.
+  Traveler evidence, exit,
+  and Chult soundtrack remain unfinished
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -227,10 +272,11 @@ the project rules and updated every session.
 
 ## Tests
 
-22 suites (most pure Python/headless): collision, tilemap,
+25 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
-tavern, pantry, packaging, checkpoints
+tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
+Chult terrain hazard
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -284,16 +330,35 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Perform the title/save/checkpoint human playtest listed in HANDOFF, then run the
-full Phase 3 path from NEW GAME through the held jungle tableau. Tune only clear
-regressions or timing/readability issues. Do not begin playable Chult until
-Phase 4 scope is active.
+Human-playtest thorn readability, contact damage/i-frames, jumping, and the safe
+route around the patch. Then add the previous-traveler environmental scene as
+one bounded slice; consult campaign notes only if using a specific reference.
 
 ## Also open
 
 - Full Phase 2 human playtest and acceptance
 - Dedicated tavern music or ambience (the shell currently reuses Waterdeep)
 - Full clean-start Phase 3 human playtest and timing acceptance
+
+## Phase 4 progress (Chult jungle)
+
+1. [x] Phase 4 contract added and made the active development scope.
+2. [x] Phase 3 tableau now hands control to a first playable Chult landing map
+       through `load_checkpoint("chult_landing")` (session 64).
+3. [x] First procedural Chult terrain sheet matches the cutscene palette and
+       supports stable jungle-ground and dense-vegetation collision language.
+4. [x] `Chult 1` Ashtray is wired to save, CONTINUE, development selection, and
+       Sanity-zero respawn through the existing shared architecture.
+5. [x] Expanded 64x60 connected exploration layout with a main route, optional
+       branch, and overhead fallen-log passage sized for Chuck (session 65).
+6. [x] Added two human-scale durable zombies and two skeletons with simple
+       collision-aware pursuit, avoidable placement, existing scratch/contact
+       damage, and Astral-return reset behavior (session 66).
+7. [x] Added an optional reusable thorn-terrain cluster: 10 Sanity on-foot
+       contact, existing i-frames, jump-safe traversal, and a safe route around
+       it (session 69).
+8. [ ] Add the previous-traveler scene, route deeper, and dedicated
+       bass-forward Chult soundtrack in separate bounded slices.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

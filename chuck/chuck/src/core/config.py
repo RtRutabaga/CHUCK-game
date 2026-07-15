@@ -94,6 +94,7 @@ JUMP_HEIGHT = 6
 FALL_DURATION = 0.65
 CLIMB_OUT_DURATION = 0.65
 CLIMB_OUT_LIFT = 2
+AREA_FADE_DURATION = 0.75
 
 # Sewer layout landmarks shared by scene tutorials and map tests. Keeping
 # these beside the movement rules makes geometry changes fail loudly instead
@@ -157,6 +158,19 @@ RAT_SANITY_DAMAGE = 10
 RAT_PATROL_SPEED = 12.0
 RAT_PATROL_RANGE = 6.0
 
+# Chult undead share the established human footprint and sprite scale. Both
+# are deliberately durable; their low speeds leave room to evade them.
+UNDEAD_FRAME_W = 16
+UNDEAD_FRAME_H = 30
+ZOMBIE_SPEED = 18.0
+ZOMBIE_SANITY_DAMAGE = 20
+ZOMBIE_SCRATCHES = 8
+SKELETON_SPEED = 25.0
+SKELETON_SANITY_DAMAGE = 15
+SKELETON_SCRATCHES = 6
+UNDEAD_NOTICE_RANGE = 112.0
+THORN_SANITY_DAMAGE = 10
+
 # ---------------------------------------------------------------------------
 # Astral Anchor respawn (Game Bible: quiet, quick, never punishing)
 # ---------------------------------------------------------------------------
@@ -175,6 +189,8 @@ NPC_FRAME_W = 16
 NPC_FRAME_H = 30   # humans tower over a one-foot rat; that's the point
 NPC_HITBOX_W = 12
 NPC_HITBOX_H = 8
+UNDEAD_HITBOX_W = NPC_HITBOX_W
+UNDEAD_HITBOX_H = NPC_HITBOX_H
 
 # ---------------------------------------------------------------------------
 # Audio
@@ -194,7 +210,7 @@ DIALOGUE_CPS = 40           # typewriter speed, characters per second
 # Tutorial hints (TEMPORARY — Waterdeep and the sewer only; see
 # src/ui/tutorial_hint.py. Not instructional UI for the whole game.)
 # ---------------------------------------------------------------------------
-TUTORIAL_MAPS = {"waterdeep_docks", "sewer"}
+TUTORIAL_MAPS = {"waterdeep_docks", "sewer", "waterdeep_pantry"}
 TUTORIAL_HINT_TOP = 8       # pixels from the top of the 320x180 view
 HINT_INTERACT = "Press E to interact"
 HINT_JUMP = "Press SPACE to jump"

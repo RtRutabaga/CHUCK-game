@@ -69,6 +69,8 @@ Terrain legend:
     'M'  sewer mud           (walkable; wet muck, darker than dirt)
     '%'  drainage channel    (solid; murky sewer water Chuck can't cross)
     'V'  Astral wrong-map    (walkable fall hazard; never a portal)
+    '_'  beneath fallen log  (walkable jungle ground, log drawn overhead)
+    '|'  thorny undergrowth  (walkable Chult Sanity hazard)
 
 Marker legend (things ON a tile, not the tile itself — each marker
 declares the terrain underneath it, so no seams appear in the ground):
@@ -92,6 +94,8 @@ declares the terrain underneath it, so no seams appear in the ground):
     ':'  tavern pantry arrival (on planks '=')
     '*'  Chuck pantry spawn    (on pantry floor 'p')
     '0'  pantry entry arrival  (on pantry floor 'p')
+    '('  Chult zombie           (on jungle ground '.')
+    ')'  Chult skeleton         (on jungle ground '.')
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -256,6 +260,11 @@ TILE_DEFS: dict[str, TileDef] = {
     # through it is resolved by the area's transition configuration.
     "Q": TileDef(solid=False, color=config.COLOR_SEWER_DIRT,
                  under="d", overhead="sewer_outflow"),
+    # Chuck-sized jungle passage. The ground remains ordinary jungle floor;
+    # a human-scale fallen trunk is drawn above Chuck as he passes beneath it.
+    "_": TileDef(solid=False, color=config.COLOR_FLOOR_PLACEHOLDER,
+                 under=".", overhead="fallen_log"),
+    "|": TileDef(solid=False, color=(48, 84, 39)),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {
@@ -281,6 +290,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     ":": MarkerDef(kind="arrival:pantry_return", under="="),
     "*": MarkerDef(kind="player", under="p"),
     "0": MarkerDef(kind="arrival:pantry_entry", under="p"),
+    "@": MarkerDef(kind="player", under="."),
+    "&": MarkerDef(kind="anchor:chult_anchor", under="."),
+    "(": MarkerDef(kind="zombie", under="."),
+    ")": MarkerDef(kind="skeleton", under="."),
 }
 
 _COMMENT_PREFIX = ";"

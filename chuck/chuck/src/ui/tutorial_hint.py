@@ -4,8 +4,8 @@ A single line of pale text near the top of the screen, shown only
 while Chuck is in reach of something he can interact with (and, later,
 at the sewer's jump and combat teaching moments).
 
-TEMPORARY BY DESIGN (Phase 2 doc): this exists for Waterdeep and the
-sewer and must not become permanent instructional UI. It is scoped by
+TEMPORARY BY DESIGN: this exists for the opening tutorial areas and must not
+become permanent instructional UI. It is scoped by
 config.TUTORIAL_MAPS, and deleting the system later means deleting
 this file, its config block, and three lines in the WorldScene.
 

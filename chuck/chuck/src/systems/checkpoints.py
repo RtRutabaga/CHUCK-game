@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from src.core.game import Game
 
 
-KNOWN_PROGRESS_FLAGS = frozenset({"sewer_completed"})
+KNOWN_PROGRESS_FLAGS = frozenset({"sewer_completed", "chult_reached"})
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
 
@@ -34,6 +34,7 @@ class CheckpointDefinition:
     saveable: bool = False
     development_visible: bool = True
     runtime_entry: bool = False
+    fade_in: bool = False
 
 
 CHECKPOINTS = (
@@ -67,6 +68,18 @@ CHECKPOINTS = (
         "pantry_entry", "Pantry 1", "waterdeep_pantry",
         arrival="pantry_entry", facing="up",
         required_flags=frozenset({"sewer_completed"}), runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "chult_anchor", "Chult 1", "chult_jungle",
+        position=(500.0, 837.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True,
+    ),
+    CheckpointDefinition(
+        "chult_landing", "Chult Landing", "chult_jungle",
+        facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True, fade_in=True,
     ),
     # Internal return entries keep existing local retry positions, but do not
     # clutter the temporary test menu.
@@ -179,6 +192,7 @@ class CheckpointLoader:
             initial_climb_from_water=checkpoint.climb_from_water,
             initial_sanity=(config.SANITY_START if sanity is None else sanity),
             initial_checkpoint_id=checkpoint_id,
+            initial_fade_in=checkpoint.fade_in,
         )
         self.game.scenes.replace(scene)
         return scene

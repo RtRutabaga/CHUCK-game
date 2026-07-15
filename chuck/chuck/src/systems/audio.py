@@ -36,6 +36,7 @@ class AudioSystem:
                 print(f"[audio] disabled (no mixer): {exc}")
         self.music_volume = config.AUDIO_MUSIC_VOLUME
         self.sfx_volume = config.AUDIO_SFX_VOLUME
+        self._current_music: tuple[str, bool] | None = None
 
     # ------------------------------------------------------------------
     # Streams (ambience / music)
@@ -43,8 +44,13 @@ class AudioSystem:
     def play_music(self, filename: str, loop: bool = True) -> None:
         """Stream a track from assets/audio/music/, looping by default.
 
-        TODO (later): crossfades between area themes / variations.
+        Re-requesting the same track and loop mode is intentionally a no-op.
+        Adjacent maps can therefore share an area theme without restarting it.
+        TODO (later): crossfades between different area themes / variations.
         """
+        request = (filename, loop)
+        if self._current_music == request:
+            return
         if not self.enabled:
             return
         path = config.MUSIC_DIR / filename
@@ -55,8 +61,10 @@ class AudioSystem:
         pygame.mixer.music.load(str(path))
         pygame.mixer.music.set_volume(self.music_volume)
         pygame.mixer.music.play(-1 if loop else 0)
+        self._current_music = request
 
     def stop_music(self, fade_ms: int = 0) -> None:
+        self._current_music = None
         if not self.enabled:
             return
         if fade_ms > 0:

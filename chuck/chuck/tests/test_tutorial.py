@@ -71,7 +71,8 @@ def test_hint_is_scoped_to_the_tutorial_areas_only() -> None:
     # The hint must not become permanent instructional UI (Phase 2 doc).
     assert "waterdeep_docks" in config.TUTORIAL_MAPS
     assert "sewer" in config.TUTORIAL_MAPS
-    assert len(config.TUTORIAL_MAPS) == 2
+    assert "waterdeep_pantry" in config.TUTORIAL_MAPS
+    assert len(config.TUTORIAL_MAPS) == 3
 
 
 def test_hint_text_names_the_real_interact_key() -> None:

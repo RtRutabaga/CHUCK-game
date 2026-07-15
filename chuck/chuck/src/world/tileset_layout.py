@@ -160,11 +160,28 @@ PANTRY = Tileset(
     overhead_char_to_terrain={},
 )
 
+CHULT = Tileset(
+    sheet="chult.png",
+    order=[
+        ("jungle_ground", 4, 1),
+        ("dense_jungle", 4, 1),
+        ("fallen_log", 4, 1),
+        ("thorn_patch", 3, 1),
+    ],
+    char_to_terrain={
+        ".": "jungle_ground",
+        "#": "dense_jungle",
+        "|": "thorn_patch",
+    },
+    overhead_char_to_terrain={"_": "fallen_log"},
+)
+
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
     "sewer": SEWER,
     "tavern": TAVERN,
     "pantry": PANTRY,
+    "chult": CHULT,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -173,6 +190,7 @@ MAP_TILESET: dict[str, str] = {
     "sewer": "sewer",
     "waterdeep_tavern": "tavern",
     "waterdeep_pantry": "pantry",
+    "chult_jungle": "chult",
 }
 
 

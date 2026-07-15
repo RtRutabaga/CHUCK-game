@@ -13,10 +13,13 @@ ambience loop point.
 import struct
 import wave
 
+import pygame
+
 from src.audio.synth import (
     SAMPLE_RATE, crossfade_loop, envelope, mix, noise, normalize, tone,
 )
 from src.core import config  # noqa: F401 (SFX paths)
+from src.systems.audio import AudioSystem
 
 
 def _read_wav(path):
@@ -93,6 +96,44 @@ def test_jump_sfx_is_brief_quiet_and_audible() -> None:
     assert 0.07 <= duration <= 0.15, duration
     assert 0.15 <= peak <= 0.3, peak
     assert 20 <= zero_crossings <= 80, zero_crossings
+
+
+def test_same_music_request_continues_without_restarting() -> None:
+    """Shared Waterdeep interiors keep the current stream position."""
+    audio = object.__new__(AudioSystem)
+    audio.enabled = True
+    audio.music_volume = 0.6
+    audio._current_music = None
+    calls = []
+    original_load = pygame.mixer.music.load
+    original_volume = pygame.mixer.music.set_volume
+    original_play = pygame.mixer.music.play
+    original_stop = pygame.mixer.music.stop
+    try:
+        pygame.mixer.music.load = lambda path: calls.append(("load", path))
+        pygame.mixer.music.set_volume = lambda volume: calls.append(
+            ("volume", volume)
+        )
+        pygame.mixer.music.play = lambda loops: calls.append(("play", loops))
+        pygame.mixer.music.stop = lambda: calls.append(("stop",))
+
+        audio.play_music("waterdeep_docks.wav")
+        audio.play_music("waterdeep_docks.wav")
+        assert [name for name, *_rest in calls].count("load") == 1
+        assert [name for name, *_rest in calls].count("play") == 1
+
+        audio.play_music("sewer.wav")
+        assert [name for name, *_rest in calls].count("load") == 2
+        assert audio._current_music == ("sewer.wav", True)
+
+        audio.stop_music()
+        audio.play_music("sewer.wav")
+        assert [name for name, *_rest in calls].count("load") == 3
+    finally:
+        pygame.mixer.music.load = original_load
+        pygame.mixer.music.set_volume = original_volume
+        pygame.mixer.music.play = original_play
+        pygame.mixer.music.stop = original_stop
 
 
 

@@ -3,92 +3,126 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `8a62fb3` (`Package the demo for Windows`)
-- Current work: title menu, persistent saves, and shared checkpoint loading
-- Active phase: Phase 3 - Waterdeep Tavern, Pantry, and Fall to Chult
+- Base commit before this pass: `b098d34` (`Add shared save and checkpoint flow`)
+- Current work: Phase 4 through the first Chult terrain hazard
+- Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
 
 ## Completed This Pass
 
-CHUCK now opens on a restrained 320x180 title screen with NEW GAME and a
-save-aware CONTINUE. A temporary visible DEV CHECKPOINTS option exposes the
-currently authored test entries. All three entry paths call the same checkpoint
-loader; there is no separate debug teleport implementation.
+The complete Phase 4 contract now lives at `docs/development/PHASE-4.md` and is
+the active scope referenced by the docs guide. Phase 3's final jungle tableau
+holds for two seconds after its authored completion, then loads a playable Chult
+landing through the shared checkpoint loader.
 
-## Architecture
+`chult_jungle.txt` is now a contained 64x60 exploration area, slightly larger in
+authored tile area than the sewer. Its dedicated procedural
+tileset uses the cutscene's dark ground, canopy, trunk, vine, and leaf colors so
+normal gameplay continues the same visual language. Dense vegetation is solid;
+the landing and branching clearings support ordinary movement and camera
+behavior. All walkable terrain remains connected.
 
-- `systems/checkpoints.py` owns immutable checkpoint definitions, the single
-  known progress flag (`sewer_completed`), current progress state, save
-  validation, and `CheckpointLoader.load_checkpoint(checkpoint_id)`.
-- `systems/save.py` owns one atomic, versioned JSON slot. Version 1 contains:
-  `version`, `checkpoint_id`, `sanity`, and sorted `progress_flags`. Runtime
-  scenes, entities, enemies, animation, camera, and map data are rebuilt.
-- The default Windows path is `%LOCALAPPDATA%\CHUCK\save.json`; tests inject
-  temporary paths. Missing, malformed, outdated, semantically unknown, and
-  development-only checkpoint records are treated as no valid save.
-- NEW GAME deletes the old slot, resets progress, and loads
-  `waterdeep_start`. CONTINUE reads a valid Anchor save and calls the same
-  loader with its saved Sanity and flags.
-- Map entry and named-arrival definitions formalize existing local respawn
-  behavior without writing saves. The `A` and `Y` map markers now carry stable
-  `waterdeep_anchor` and `sewer_anchor` IDs; touching either updates active
-  runtime state and writes the save.
-- Sanity persists across ordinary map transitions. Sanity-zero still uses the
-  same quiet vanish/starfield/return choreography and returns to the current
-  local map-entry or activated Ashtray checkpoint with full Sanity.
-- `TitleScene` and `CheckpointSelectScene` use the existing bitmap font, input,
-  SFX, SceneManager, and native render surface. Set
-  `config.ENABLE_DEV_CHECKPOINT_SELECTOR = False` to remove the temporary menu.
+Large vegetation masses establish a northbound route with opportunities to
+circle them on either side. The first mass near Chult 1 creates an immediate
+optional branch. Farther north, three `_` tiles pass through a dense wall under
+a human-scale fallen trunk. Jungle ground draws below it and a new transparent
+overhead tileset row draws the log above Chuck, making the scale relationship
+visible without adding crouching or special-case movement.
 
-## Development Checkpoints
+The checkpoint registry now includes a hidden, non-saveable `chult_landing`
+runtime entry and a saveable/development-visible `chult_anchor` displayed as
+`Chult 1`. Both require `sewer_completed` and the new minimal durable flag
+`chult_reached`. The cutscene, development selector, Ashtray activation,
+CONTINUE, and Sanity-zero respawn therefore use the same existing loader and
+save architecture. Chult is deliberately silent pending its dedicated music
+slice; no placeholder Waterdeep track leaks into the jungle.
 
-The visible selector entries are:
+Four undead markers now populate broad clearings: two zombies and two skeletons.
+`UndeadEnemy` is one reusable entity with data-tuned variants. It uses the
+existing collision mover for simple direct pursuit inside a 112-pixel notice
+radius. Zombies move at 18 px/s, deal 20 Sanity, and require eight scratches;
+skeletons move at 25 px/s, deal 15 Sanity, and require six. Both use the exact
+human NPC sprite/hitbox scale, so they tower over Chuck. Scratch dispatch remains
+one-target-per-swipe, contact uses existing Sanity i-frames, and the normal
+enemy rebuild on Astral return restores defeated undead from map markers.
 
-1. Waterdeep 1 (`waterdeep_start`)
-2. Waterdeep Ashtray (`waterdeep_anchor`)
-3. Sewer 1 (`sewer_entrance`)
-4. Sewer 2 (`sewer_anchor`)
-5. Waterdeep 2 (`waterdeep_return`, with `sewer_completed`)
-6. Tavern 1 (`tavern_entry`, with `sewer_completed`)
-7. Pantry 1 (`pantry_entry`, with `sewer_completed`)
+The pantry now joins the temporary tutorial-map set. While Chuck is within two
+tiles of teal sky material, the existing hint renderer repeats the exact earlier
+line `Press SPACE to jump`; it remains hidden elsewhere and during the fall.
 
-No Chult entry exists because Phase 3 contains no playable Chult map. Two
-additional hidden registry entries preserve the tavern/docks and pantry/tavern
-return-arrival retry positions, plus hidden default spawns used by direct scene
-construction in tests.
+The cutscene's final tableau still holds for two seconds after completion, then
+fades to black over 0.75 seconds. `chult_landing` now authors a reusable
+checkpoint `fade_in` flag, so the shared loader replaces the scene while black
+and WorldScene fades in over 0.75 seconds with simulation/control locked. Chult
+1 development loads and saved CONTINUE restoration do not request that fade.
+
+Ten `|` tiles form one thorny-undergrowth cluster in an optional open clearing.
+The Chult tileset renders three stable variants as bright angular stems over the
+existing ground language. `systems/terrain_hazard.py` owns the reusable terrain
+effect lookup and footprint contact scan. Thorns cost 10 Sanity on foot through
+normal i-frames/hurt feedback; airborne Chuck is safe. No required route crosses
+the cluster.
 
 ## Verification
 
-- All 22 test suites pass.
-- Targeted coverage verifies no-save startup; disabled CONTINUE; NEW GAME
-  deletion/reset; readable atomic version-1 JSON; graceful invalid/outdated
-  handling; Anchor save; close/relaunch/CONTINUE restoration; restored tavern
-  exterior; saved Sanity; Sanity-zero Anchor respawn; rejection of forged
-  development saves; all seven visible development loads; required late-game
-  progression; and shared-loader dispatch from both real and development menus.
-- Native 2x visual review confirms both menus are crisp, readable, and fit the
-  established 1994-style presentation.
+- All 24 test modules pass through their standalone runners (pytest is not
+  installed in the bundled runtime).
+- New Chult coverage verifies map dimensions/spawns, shared-loader cutscene
+  handoff, required progression, Ashtray save data, and relaunch/CONTINUE.
+- Existing tileset coverage now requires every used Chult terrain to have art.
+- Chult coverage now also flood-fills every walkable tile and verifies the
+  three-tile log tunnel is horizontally traversable and enclosed above/below.
+- The generated `assets/tilesets/chult.png` is 64x48 and source-reproducible via
+  `tools/generate_chult_tileset.py`.
+- `tools/generate_undead_sprites.py` reproduces the 48x30 zombie and skeleton
+  sheets. Targeted tests cover human scale, six/eight-hit durability, pursuit,
+  wall collision, avoidable placement, contact damage, defeat, and respawn reset.
+- `AudioSystem.play_music()` now treats an identical filename/loop request as a
+  no-op. Docks, tavern, and pantry all configure the same Waterdeep theme, so
+  crossing those boundaries keeps its playback position. Different tracks
+  still load normally, and `stop_music()` clears the remembered request. The
+  audio suite directly verifies all three cases.
+- Pantry coverage verifies the jump reminder is proximity-scoped. Chult tests
+  verify partial cutscene fade, black handoff, control-locked WorldScene fade,
+  and completion back to ordinary simulation.
+- A 25th terrain-hazard suite verifies contact classification, airborne safety,
+  WorldScene damage/i-frames, authored cluster size, and a thorn-free route from
+  the landing to the north end. Native render review confirms clear silhouettes.
 
 ## Playtest Focus
 
-1. Remove/rename any existing save, launch, and confirm CONTINUE is dimmed and
-   skipped by the caret.
-2. Select NEW GAME and confirm Chuck starts beside Bobert at Waterdeep Docks.
-3. Touch the Waterdeep Ashtray, quit, relaunch, and confirm CONTINUE restores
-   that Ashtray and the saved Sanity value.
-4. Progress through the sewer, touch its late Ashtray, quit, and confirm
-   CONTINUE restores the Sewer 2 checkpoint and normal enemy layout.
-5. Reach Waterdeep after the sewer, then touch the Waterdeep Ashtray again;
-   relaunch and confirm the tavern exterior is still open.
-6. Deplete Sanity after each Anchor and confirm the existing quiet return lands
-   at the active local checkpoint with enemies reset and full Sanity.
-7. From the title screen choose DEV CHECKPOINTS. Load every visible entry and
-   verify Waterdeep 2, Tavern 1, and Pantry 1 all have the post-sewer open-door
-   progression required to function.
-8. Complete the normal Phase 3 route from NEW GAME through the held jungle
-   tableau to ensure the title/save infrastructure caused no transition drift.
+1. Finish the pantry fall and confirm the completed cigarette tableau holds for
+   about two seconds before player control returns in Chult.
+2. Confirm the playable ground feels like the same jungle shown in the cutscene,
+   with crisp native-scale terrain and stable collision/camera bounds.
+3. Walk north to the nearby Ashtray. Quit and use CONTINUE; verify Chuck returns
+   at Chult 1 with saved Sanity.
+4. Deplete Sanity after activating it and confirm Chuck's established quiet
+   return lands at Chult 1.
+5. From the title choose DEV CHECKPOINTS → Chult 1 and confirm it loads directly
+   with the Ashtray lit and no replay of prior regions.
+6. Explore north around both sides of the first vegetation mass; confirm one
+   direction reads as optional wandering without becoming a trapped pocket.
+7. Find the low fallen-log passage farther north. Confirm Chuck visibly passes
+   beneath the trunk and emerges on the other side without a crouch input.
+8. Approach each undead type and confirm it begins a slow readable pursuit.
+   Verify skeletons are modestly faster, both can be escaped, and neither blocks
+   the route merely by existing.
+9. Scratch a zombie eight times and a skeleton six times. Confirm contact costs
+   Sanity without rapid repeated drain, then die and verify all four return.
+10. Move docks → tavern → pantry → tavern → docks and confirm the Waterdeep
+    music never returns to its opening. Enter the sewer and confirm its distinct
+    theme still starts normally.
+11. Approach the teal sky in the pantry and confirm `Press SPACE to jump`
+    appears, then walk away and confirm it clears.
+12. Finish the cutscene and confirm the jungle tableau fades fully out, followed
+    by a smooth fade into controllable Chult with no bright frame between scenes.
+13. Find the thorn cluster in the mid-jungle side clearing. Walk into it twice
+    quickly and confirm only one 10-Sanity hit lands during i-frames; jump across
+    it without damage, then confirm the main route can bypass it entirely.
 
 ## Next Bounded Task
 
-Human-playtest the title, save slot, both Ashtray saves, and every development
-entry. Fix only demonstrated restoration or presentation defects; do not begin
-playable Chult until Phase 4 scope is active.
+Add the compact previous-traveler environmental scene. Use one or two oversized
+human expedition objects to reinforce Chuck's scale and at most one short
+interaction line. Consult the Tomb campaign notes before including any specific
+campaign reference. Do not add the map exit or soundtrack in the same pass.
