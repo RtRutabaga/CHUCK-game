@@ -3,60 +3,50 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `901c6ea` (`Polish tavern and pantry details`)
-- Current work: complete Phase 3 fall-to-Chult cutscene and handoff tableau
+- Base commit: `d898f92` (`Remove obsolete Phase 2 development spec`)
+- Current work: dedicated fall-to-Chult cutscene soundtrack
 - Active phase: Phase 3 - Waterdeep Tavern, Pantry, and Fall to Chult
 
 ## Completed This Pass
 
-The pantry's successful sky fall now plays the complete input-free Phase 3
-ending: an intentionally overlong cloud descent, escalating canopy collision,
-jungle impact, Astral death/return, Chuck looking around, and a cigarette drag.
-It holds on the non-playable Chult tableau ready for Phase 4.
+The complete Phase 3 cutscene now has its own procedural one-shot soundtrack.
+The first four seconds remain musically exposed; then a fast, exciting action
+cue arrives at full energy, follows the fall into the canopy, and breaks into a
+sparse resolution after Chuck hits the jungle floor.
 
 ## Implementation
 
-- Expanded `FallingCutsceneScene` into a 39-second deterministic timeline. Open
-  sky alone lasts almost 24 seconds, intentionally pushing just past comfort,
-  with nine looping cloud layers and a gradual teal-to-green darkening.
-- From 24-29 seconds, twelve crossing branches plus six vines accelerate upward
-  while trunks, canopy, and ground rise into frame. Chuck moves from the held
-  fall composition to the jungle floor for a restrained two-pixel impact jolt.
-- Impact plays the existing dry thud. Chuck then disappears into localized
-  Astral pixels with the established vanish cue and returns with the established
-  respawn bells; no Sanity state or WorldScene is created for the presentation.
-- After returning, Chuck looks left, right, then forward. The cutscene removes
-  the cigarette pixels from his profile frame, animates a cigarette from paw to
-  mouth, restores the lit profile, and emits subtle looping smoke during a drag.
-- The final dense jungle uses only native 320x180 procedural primitives: layered
-  trunks, canopy bands, hanging vines, roots, leaf litter, and foreground ferns.
-- At 39 seconds `cutscene_complete` becomes true and the image holds forever.
-  There is still no player entity, input response, playable Chult map, or return
-  to Waterdeep.
+- Added `data/music/fall_to_chult.py`, an 18-bar, 120 BPM, 36-second authored
+  composition rendered through the existing shared synth, instruments, and
+  sequencer. It uses eight voices and 431 note events without new dependencies.
+- The opening action section combines a fast D-minor pluck pulse, melodic runs,
+  syncopated round bass, bells, and full kick/snare/hat kit. Eb chromatic color
+  and denser percussion enter as the canopy starts crowding the frame.
+- At impact the pulse and drums stop. Sparse flute, bells, and bass then score
+  the blip-back, directional looks, cigarette placement, and final drag.
+- `FallingCutsceneScene` starts `fall_to_chult.wav` exactly four seconds into
+  the cutscene and requests one-shot playback. The existing Waterdeep fade and
+  all collision/death sound cues remain unchanged.
 
 ## Verification
 
 - All 20 test suites pass.
-- Timeline coverage advances through long fall, canopy, impact, vanished,
-  return, look, cigarette, and complete phases; verifies all five sound cues,
-  continued cloud movement, no player entity, cigarette state, and native draw
-  at representative transitions.
-- Native-scale storyboard review at twelve points from 8-42 seconds confirms the
-  long hold, accelerating jungle intrusion, readable impact/blips, directional
-  looks, cigarette placement, smoke, and stable final tableau.
+- Music tests verify the 36-second one-shot asset, sample format, safe peak,
+  immediate rhythmic attack, dense action section, percussion cutoff, and
+  sparse aftermath voicing.
+- Cutscene coverage verifies musical silence before four seconds and exactly one
+  non-looping `fall_to_chult.wav` request after crossing that boundary.
 
 ## Playtest Focus
 
-- Enter pantry sky on foot and confirm the familiar initial fall flows directly
-  into the authored sky shot without Sanity loss or a respawn flash.
-- Let the cutscene run without skipping. The open-sky section should feel almost
-  too long, but cloud motion and the slowly darkening grade should remain alive.
-- Confirm branch/vine strikes escalate into a clear crash through dense jungle,
-  followed by a grounded thud rather than a normal gameplay landing.
-- Watch Chuck blip out and back on impact, look left/right/forward, put the
-  cigarette in his mouth, and take a visible restrained drag.
-- Hold every control during and after the sequence. Nothing should return player
-  control; the smoking jungle image should remain the Phase 4 boundary.
+- Confirm the first four seconds have no music, creating a brief exposed fall.
+- The cue should then arrive suddenly and read as exciting action music while
+  retaining the existing compact synthesized 16-bit palette.
+- Check that the action section sustains the intentionally long cloud descent
+  without becoming grating, and that the added chromatic pressure fits the
+  branch/vine rush beginning around 24 seconds.
+- At the ground impact, the beat should fall away cleanly so the thud, blip-out,
+  respawn, cigarette placement, and drag remain readable.
 
 ## Next Bounded Task
 

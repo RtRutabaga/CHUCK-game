@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 60 (complete fall-to-Chult cutscene). This file is required by
+Updated: session 61 (fall-to-Chult action cue). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -23,9 +23,10 @@ the project rules and updated every session.
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
   sequencer), offline rendering (tools/generate_audio.py +
   tools/generate_music.py <name>), AudioSystem with graceful no-device
-  fallback; two composed themes (data/music/, 7 voices, seamless loop) —
+  fallback; three composed pieces (data/music/, 7-8 voices) —
   the 95s warm Waterdeep Docks theme and the 83s eerie/funky D-minor
-  Sewer theme; SFX for pickup, interact, hurt, vanish, respawn, anchor
+  Sewer theme loop seamlessly, while the 36s one-shot fall-to-Chult cue drives
+  the Phase 3 cutscene; SFX for pickup, interact, hurt, vanish, respawn, anchor
   chime, a quiet rounded jump bounce, scratch scrape, and per-surface footsteps
 - NPC interaction covers the whole visible person (probe + overlap)
 - Depth: barrels/crates are standing props (solid tiles + tall
@@ -160,7 +161,12 @@ the project rules and updated every session.
   walkable successful-fall trigger: it begins with the same restrained 0.65s
   shrink/sink animation, preserves Sanity, and replaces gameplay with a
   dedicated `FallingCutsceneScene`. The cutscene has no player-controlled entity
-  and fades out the Waterdeep music. Its complete 39-second authored timeline
+  and fades out the Waterdeep music. After four seconds of exposed freefall, a
+  dedicated 36-second one-shot cue launches directly into an urgent D-minor
+  pulse, fast bass, melodic runs, and full synthesized kit. It grows chromatic
+  and denser as the canopy arrives, fractures at impact, then leaves sparse
+  flute, bells, and bass under Chuck's return and cigarette drag. Its complete
+  39-second authored visual timeline
   intentionally holds open sky for almost 24 seconds while irregular cloud
   layers scroll upward and the teal grade slowly darkens. Branches, vines, and
   trunks then accelerate through frame as a dense eerie jungle and its ground
@@ -282,4 +288,5 @@ not begin playable Chult until Phase 4 scope is active.
        Sanity and handing off to an input-free cutscene scene (session 57)
 5. [x] Dedicated circa-1994 falling-to-Chult cutscene: deliberately long cloud
        descent, canopy collision, jungle impact, Astral return, cigarette drag,
-       and held non-playable Phase 4 handoff point (session 60)
+       held non-playable Phase 4 handoff point, and a delayed high-intensity
+       procedural action cue that resolves after impact (sessions 60-61)

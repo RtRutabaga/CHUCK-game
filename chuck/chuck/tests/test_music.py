@@ -12,6 +12,7 @@ the Waterdeep theme into executable checks.
 import struct
 import wave
 
+from data.music import fall_to_chult as fall_song
 from data.music import sewer as sewer_song
 from data.music import waterdeep_docks as song
 from src.audio.sequencer import Note, Track, note_to_freq, render_song
@@ -112,6 +113,36 @@ def test_rendered_sewer_theme_respects_quality_gates() -> None:
     peak = max(abs(s) for s in samples)
     assert peak <= 0.9, f"clipping risk: peak {peak:.2f}"
     assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
+
+
+def test_fall_cue_is_dense_then_resolves_for_the_jungle_tableau() -> None:
+    tracks = fall_song.build_tracks()
+    duration = fall_song.TOTAL_BEATS * 60.0 / fall_song.TEMPO_BPM
+    assert 35.0 <= duration <= 37.0
+    assert len([track for track in tracks if track.notes]) >= 7
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < fall_song.TOTAL_BEATS
+
+    pulse = next(track for track in tracks if track.name == "pulse")
+    kick = next(track for track in tracks if track.name == "kick")
+    assert len([note for note in pulse.notes if note.beat < 13 * 4]) >= 100
+    assert any(note.beat == 0 for note in kick.notes), "cue must kick off hard"
+    # Music begins four seconds into the scene, so beat 50 is the exact
+    # 29-second jungle impact. The action kit must stop there.
+    assert not any(note.beat >= 50 for note in kick.notes)
+    flute = next(track for track in tracks if track.name == "flute")
+    assert any(note.beat >= 13 * 4 for note in flute.notes)
+
+
+def test_rendered_fall_cue_respects_one_shot_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "fall_to_chult.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert 35 * SAMPLE_RATE <= len(samples) <= 37 * SAMPLE_RATE
+    assert max(abs(sample) for sample in samples) <= 0.9
 
 
 def _run_all() -> None:

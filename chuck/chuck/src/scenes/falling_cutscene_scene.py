@@ -22,6 +22,7 @@ CLOUD = (208, 234, 218)
 CLOUD_SHADE = (151, 204, 197)
 
 CANOPY_START = 24.0
+MUSIC_START = 4.0
 GROUND_APPROACH = 26.2
 IMPACT_TIME = 29.0
 VANISH_TIME = 29.15
@@ -126,6 +127,8 @@ class FallingCutsceneScene(Scene):
         self._play_cues(previous, self.elapsed)
 
     def _play_cues(self, previous: float, current: float) -> None:
+        if previous < MUSIC_START <= current:
+            self.game.audio.play_music("fall_to_chult.wav", loop=False)
         cues = (
             (CANOPY_START + 0.7, "scratch"),
             (CANOPY_START + 2.2, "scratch"),

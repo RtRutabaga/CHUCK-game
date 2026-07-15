@@ -12,7 +12,7 @@ from src.core import config
 from src.core.game import Game
 from src.scenes.falling_cutscene_scene import (
     CANOPY_START, CIGARETTE_START, COMPLETE_TIME, IMPACT_TIME, LOOK_START,
-    RESPAWN_TIME, VANISH_TIME, FallingCutsceneScene,
+    MUSIC_START, RESPAWN_TIME, VANISH_TIME, FallingCutsceneScene,
 )
 from src.scenes.world_scene import WorldScene
 from src.world.tilemap import TileMap
@@ -178,10 +178,19 @@ def test_falling_cutscene_completes_long_descent_and_jungle_return() -> None:
         game.scenes.replace(FallingCutsceneScene(game))
         scene = game.scenes.current
         sounds = []
+        music = []
         game.audio.play_sfx = sounds.append
+        game.audio.play_music = lambda filename, loop=True: music.append(
+            (filename, loop)
+        )
         initial_clouds = [cloud[1] for cloud in scene.clouds]
 
-        scene.update(CANOPY_START - 0.1)
+        scene.update(MUSIC_START - 0.1)
+        assert music == []
+        scene.update(0.2)
+        assert music == [("fall_to_chult.wav", False)]
+
+        scene.update(CANOPY_START - scene.elapsed - 0.1)
         assert scene.phase == "fall"
         assert scene.elapsed > 20.0  # The open-sky hold is intentionally long.
         assert [cloud[1] for cloud in scene.clouds] != initial_clouds
