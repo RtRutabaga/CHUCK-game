@@ -3,61 +3,77 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `2d13370` (`Build Waterdeep pantry floor`)
-- Current work: Phase 3 successful sky fall and dedicated cutscene handoff
+- Base commit: `410460f` (`Add successful pantry sky fall`)
+- Current work: Phase 3 tavern/pantry floor and cheese presentation refinement
 - Active phase: Phase 3 - Waterdeep Tavern, Pantry, and Fall to Chult
 
 ## Completed This Pass
 
-Teal pantry sky blocks now trigger the familiar initial fall without killing
-Chuck, then reliably replace gameplay with a dedicated, input-free falling
-scene. The scene establishes the visual cut and descent language but remains an
-open-ended first shot; the full long fall and Phase 4 endpoint are not built.
+The main tavern now uses the pantry's preferred worn-board floor art, includes a
+small north-wall stage with a lanky green musician, and contains no cheese. The
+sole cheese is visibly stranded on an unreachable board inside a broader,
+Astral-fractured pantry. The barkeep provides the complete verbal hook toward it.
 
 ## Implementation
 
-- Added a material-classifying fall query. `V` reports `astral`, `s` reports
-  `sky`, and both remain safe while Chuck is airborne. The existing Astral
-  compatibility helper and every Phase 2 behavior remain intact.
-- Made teal sky tiles walkable. Entering one locks control and runs the same
-  0.65-second shrink/sink used for Astral material.
-- At completion, Astral still depletes Sanity and respawns locally. Sky instead
-  preserves Sanity and replaces WorldScene with `FallingCutsceneScene`, so Chuck
-  cannot duplicate across scenes or accidentally continue pantry simulation.
-- The dedicated scene has no player-controlled entity and ignores movement
-  state. It fades the warm Waterdeep music, draws a native-pixel teal vertical
-  grade, moves two restrained layers of blocky clouds upward, and reframes the
-  idle Chuck sprite from the tiny end of the gameplay fall to readable cutscene
-  scale. Letterbox bars make the authored presentation boundary explicit.
-- The scene currently loops this first shot indefinitely. It does not yet vary
-  the descent over time, introduce a falling audio cue, suggest Chult below, or
-  reach the clean Phase 4 endpoint.
+- The tavern tileset generator imports the pantry floor renderer directly, so
+  all three floor variants are pixel-identical while the tavern wall row remains
+  unchanged and area-specific.
+- Removed all four cheese wedges from the tavern map. Furniture, occupants,
+  transitions, collision, and the open pantry doorway retain their positions.
+- Expanded the pantry's teal sky into a broad, readable rectangle and placed
+  the single cheese wedge on one ordinary board at its center. The cheese is
+  four tiles from ordinary floor on every cardinal approach, while Chuck's
+  committed jump covers about 2.3 tiles, making the invitation deliberately
+  impossible before the successful sky fall.
+- Cheese remains an environmental prop with no pickup, inventory, reward, or
+  progression state.
+- Added twenty small Astral substitutions around the pantry's ordinary boards,
+  bringing the room to thirty Astral tiles. Singles and pairs are distributed
+  around the sky field and outer floor without disconnecting the safe route.
+- Added dedicated procedural stage-top and stage-front terrain to the tavern
+  tileset. The seven-tile stage sits against the north wall, its fascia blocks
+  direct approach, and its narrow east side remains connected for interaction.
+- Added a 16x30 musician sheet through the established NPC generator. He keeps
+  the human height rule but uses a thin, long-legged silhouette, green hat and
+  clothes, an orange beard, and a held brown lute.
+- Added the musician through the normal map marker/NPC/dialogue path. His
+  requested sentence is split naturally at the comma into two dialogue pages so
+  neither page overflows the existing box.
+- Updated the barkeep dialogue exactly to: "Oh, it's you again. There's some
+  cheese in the back if you're hungry. I was planning to throw it out, it's gone
+  a bit ...funky"
 
 ## Verification
 
 - All 20 test suites pass.
-- Pantry coverage verifies Astral and sky identify separately; Astral still
-  performs local death/retry; sky preserves Sanity, completes the familiar
-  initial fall, replaces the world exactly once, and reaches the dedicated
-  scene. Held movement does not create a controllable entity there.
-- Cutscene clouds advance over time and the scene renders through the native
-  320x180 pipeline. Native-scale visual review confirms Chuck remains
-  recognizable and the sky palette connects directly to the pantry blocks.
+- Coverage verifies exact tavern/pantry floor pixel equality, zero tavern
+  cheese, one pantry cheese, the two-tile sky halo and impossible jump distance,
+  stage collision/connectivity, musician palette/dialogue, map drawability, and
+  unchanged Astral/sky fall resolution.
+- Native-scale visual review confirms the tavern boards read as floor rather
+  than wall, the stage and musician read clearly, the added Astral fragments
+  produce the requested broken-reality texture, and the isolated cheese board
+  remains immediately legible in the sky.
+  The barkeep line wraps cleanly into three lines in the existing dialogue box.
 
 ## Playtest Focus
 
-- Enter a teal sky block on foot. Chuck should perform the same quiet initial
-  shrink/sink as an Astral fall, then cut to the dedicated sky shot.
-- Confirm there is no vanish/respawn sequence, Sanity loss, or return to the
-  pantry after the sky fall.
-- Hold movement, jump, scratch, and interact during the cutscene. None should
-  restore normal player control or affect the shot.
-- Watch the cloud layers: they should move upward at different restrained speeds
-  while Chuck remains recognizable and calm at center frame.
-- Compare an Astral fall afterward from a fresh run to confirm it still returns
-  Chuck locally and never enters the cutscene.
-- The cutscene intentionally continues indefinitely in its opening shot; that
-  is the next session's implementation boundary, not the final Phase 3 ending.
+- Compare the tavern and pantry boards; their worn plank treatment should match
+  exactly, while the tavern's perimeter still reads as wall.
+- Confirm there are no cheese wedges anywhere in the common room.
+- Speak to the barkeep and verify the full new line fits and advances cleanly.
+- Inspect the north-wall stage. Its front should read raised and block Chuck;
+  the thin green, orange-bearded lute player should be clearly visible above it.
+- Speak to the musician and verify his 37-rendition line advances cleanly across
+  two dialogue pages.
+- Enter the pantry and approach the broad teal field. The sole cheese should be
+  obvious on its tiny central board and look tempting but too far to jump to.
+- Confirm the added small Astral singles and pairs make the ordinary pantry
+  floor feel fractured without obscuring the route.
+- Attempt the jump from each side. Chuck should land in sky and continue into
+  the successful falling scene rather than reaching the cheese.
+- Verify the rearranged Astral blocks still cause local death/retry.
 
 ## Next Bounded Task
 

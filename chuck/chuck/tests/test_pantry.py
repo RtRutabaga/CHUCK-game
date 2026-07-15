@@ -24,9 +24,9 @@ def test_pantry_is_compact_readable_and_safely_navigable() -> None:
     assert (pantry.width_tiles, pantry.height_tiles) == (26, 18)
     terrain = Counter(ch for row in pantry._grid for ch in row)
     assert terrain["p"] > 250
-    assert terrain["V"] == 18
-    assert terrain["s"] == 14
-    assert not pantry.is_solid(9, 7)  # Astral retains the fall-zone contract.
+    assert terrain["V"] == 30
+    assert terrain["s"] == 55
+    assert not pantry.is_solid(9, 10)  # Astral retains the fall-zone contract.
     assert not pantry.is_solid(11, 4)  # Sky is the successful fall route.
 
     props = Counter(kind for kind, _, _ in pantry.prop_tiles)
@@ -36,7 +36,21 @@ def test_pantry_is_compact_readable_and_safely_navigable() -> None:
         "pantry_shelf": 2,
         "crate": 2,
         "pantry_open": 1,
+        "cheese": 1,
     })
+    cheese_tiles = {
+        (col, row) for kind, col, row in pantry.prop_tiles if kind == "cheese"
+    }
+    assert cheese_tiles == {(11, 6)}
+    # Chuck's committed hop travels only about 2.3 tiles. The cheese board is
+    # four tiles from ordinary floor in every cardinal direction, so it reads
+    # as tempting but remains the documented impossible pantry jump.
+    assert config.JUMP_SPEED * config.JUMP_DURATION < 3 * config.TILE_SIZE
+    assert all(
+        pantry.terrain_at(11 + dx, 6 + dy) == "s"
+        for dx, dy in ((-1, 0), (1, 0), (0, -1), (0, 1),
+                       (-2, 0), (2, 0), (0, -2), (0, 2))
+    )
 
     sx, sy = pantry.spawn_points["player"]
     start = (int(sx // config.TILE_SIZE), int(sy // config.TILE_SIZE))
@@ -61,7 +75,8 @@ def test_pantry_is_compact_readable_and_safely_navigable() -> None:
         for col in range(pantry.width_tiles)
         if pantry.terrain_at(col, row) == "p" and not pantry.is_solid(col, row)
     }
-    assert seen == safe_floor
+    assert seen == safe_floor - cheese_tiles
+    assert not (seen & cheese_tiles)
 
 
 def test_pantry_doorway_is_bidirectional_without_bounce() -> None:
@@ -94,7 +109,7 @@ def test_pantry_astral_floor_reuses_fall_and_local_retry() -> None:
         game.scenes.replace(WorldScene(game, "waterdeep_pantry"))
         scene = game.scenes.current
         spawn = (scene.player.x, scene.player.y)
-        _place_on_tile(scene, 9, 7)
+        _place_on_tile(scene, 9, 10)
         scene.update(0.01)
         assert scene._fall_t == 0.0
         assert scene._fall_kind == "astral"

@@ -1,9 +1,12 @@
 """Phase 3 Waterdeep tavern shell and doorway lifecycle tests."""
 
 import os
+from collections import Counter
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+
+import pygame
 
 from src.core import config
 from src.core.game import Game
@@ -18,6 +21,15 @@ def _place_on_tile(scene: WorldScene, col: int, row: int) -> None:
     scene.player.y = row * ts + (ts - scene.player.height) / 2
 
 
+def test_tavern_floor_uses_the_exact_pantry_board_art() -> None:
+    tavern = pygame.image.load(config.TILESETS_DIR / "tavern.png")
+    pantry = pygame.image.load(config.TILESETS_DIR / "pantry.png")
+    floor_width = 3 * config.TILE_SIZE
+    for y in range(config.TILE_SIZE):
+        for x in range(floor_width):
+            assert tavern.get_at((x, y)) == pantry.get_at((x, y))
+
+
 def test_tavern_shell_is_connected_and_readable() -> None:
     tavern = TileMap(config.MAPS_DIR / "waterdeep_tavern.txt")
     assert (tavern.width_tiles, tavern.height_tiles) == (30, 20)
@@ -30,14 +42,14 @@ def test_tavern_shell_is_connected_and_readable() -> None:
     assert kinds.count("tavern_table") == 3
     assert kinds.count("tavern_chair") == 12
     assert kinds.count("tavern_hearth") == 1
-    assert kinds.count("cheese") == 4
+    assert kinds.count("cheese") == 0
     assert kinds.count("pantry_open") == 1
-    cheese_tiles = {
-        (col, row) for kind, col, row in tavern.prop_tiles if kind == "cheese"
-    }
-    assert cheese_tiles == {(13, 2), (14, 6), (14, 10), (14, 14)}
-    assert all(not tavern.is_solid(col, row) for col, row in cheese_tiles)
     assert not tavern.is_solid(14, 1)
+    terrain = Counter(ch for row in tavern._grid for ch in row)
+    assert terrain["+"] == 14
+    assert terrain["-"] == 7
+    assert not tavern.is_solid(24, 2)
+    assert tavern.is_solid(24, 3)
 
     occupants = {
         kind: (int(x // config.TILE_SIZE), int(y // config.TILE_SIZE))
@@ -47,6 +59,7 @@ def test_tavern_shell_is_connected_and_readable() -> None:
     assert occupants == {
         "npc:bartender": (6, 2),
         "npc:patron": (22, 10),
+        "npc:musician": (24, 2),
     }
 
     ts = config.TILE_SIZE
@@ -72,31 +85,48 @@ def test_tavern_shell_is_connected_and_readable() -> None:
     assert reachable == every_walkable
 
 
-def test_tavern_cheese_is_an_examinable_environmental_hook() -> None:
+def test_tavern_occupants_remain_scaled_and_cheese_is_only_in_pantry() -> None:
     game = Game()
     try:
         game.scenes.replace(WorldScene(game, "waterdeep_tavern"))
         scene = game.scenes.current
         cheeses = [prop for prop in scene.props if prop.kind == "cheese"]
-        assert len(cheeses) == 4
+        assert not cheeses
         assert not scene.pickups
-        assert {npc.npc_id for npc in scene.npcs} == {"bartender", "patron"}
+        assert {npc.npc_id for npc in scene.npcs} == {
+            "bartender", "patron", "musician",
+        }
         assert all(
             frame.get_size() == (config.NPC_FRAME_W, config.NPC_FRAME_H)
             for npc in scene.npcs for frame in npc._frames.values()
         )
+    finally:
+        game._shutdown()
 
-        cheese = cheeses[0]
-        x, y, w, h = cheese.interaction_bounds()
-        scene.player.x = x + (w - scene.player.width) / 2
-        scene.player.y = y + (h - scene.player.height) / 2
+
+def test_lanky_green_musician_stands_on_stage_with_requested_dialogue() -> None:
+    game = Game()
+    try:
+        game.scenes.replace(WorldScene(game, "waterdeep_tavern"))
+        scene = game.scenes.current
+        musician = next(npc for npc in scene.npcs if npc.npc_id == "musician")
+        frame = musician._frames["down"]
+        colors = {tuple(frame.get_at((x, y))) for y in range(frame.get_height())
+                  for x in range(frame.get_width())}
+        assert (58, 132, 63, 255) in colors       # green clothes and hat
+        assert (207, 104, 35, 255) in colors      # orange beard
+        assert (167, 106, 48, 255) in colors      # lute
+
+        _place_on_tile(scene, 24, 2)
         game.input._actions_just_pressed.add("interact")
         scene.update(0.01)
         dialogue = game.scenes.current
         assert isinstance(dialogue, DialogueScene)
-        assert dialogue._lines == ["It is cheese."]
-        assert len(cheeses) == 4
-        assert cheese in scene.props
+        assert dialogue._lines == [
+            'Tonight I will be playing 37 different renditions of "Fortune '
+            'Favors the Kobold",',
+            "beginning with the Hurdy Gurdy arrangement",
+        ]
     finally:
         game._shutdown()
 

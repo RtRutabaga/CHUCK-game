@@ -1,9 +1,13 @@
 {
   "bartender": [
-    "Kitchen's in back. Mind the cheese."
+    "Oh, it's you again. There's some cheese in the back if you're hungry. I was planning to throw it out, it's gone a bit ...funky"
   ],
   "patron": [
     "They're out of stew."
+  ],
+  "musician": [
+    "Tonight I will be playing 37 different renditions of \"Fortune Favors the Kobold\",",
+    "beginning with the Hurdy Gurdy arrangement"
   ],
   "cheese": [
     "It is cheese."

@@ -1,22 +1,23 @@
 ; WATERDEEP PANTRY — compact Phase 3 broken-floor room (26x18 tiles).
 ; 'p' is worn pantry board, 'V' reuses the Astral fall hazard, and 's' is
 ; teal sky/cloud material. Sky falls continue into the dedicated cutscene.
+; The only cheese '!' sits on a deliberately unreachable board in the sky.
 ; Shelves n, sacks z, crates [, and barrels ] keep the room food-storage first.
 ##########################
-#pppppppppppppppppppppppp#
+#pppVpppppppppppppppVpppp#
 #p]nppzppppppppppppzppn]p#
-#pppppppppppppppppppppppp#
-#ppppppppppsssspppppppppp#
-#p[pppppppssssssppppppp[p#
-#ppppppppppsssspppppppppp#
-#ppppppppVVppppVVpppppppp#
-#ppppppppVppppppVpppppppp#
-#pppppppVVppppppVVppppppp#
-#pppppppVppppppppVppppppp#
+#ppVppppssssssssppppVpppp#
+#ppppVppssssssssppppppVpp#
+#p[pppppssssssssppppppp[p#
+#pppppppsss!ssssppppppppp#
+#pppVpppsssssssspppppVppp#
+#ppVVpppssssssssppppVpppp#
+#pppppVpsssssssspppVppppp#
+#pppppppVVppppVVppppppppp#
 #pppppppVVVppppVVVppppppp#
-#pppppppppppppppppppppppp#
-#pppzppppppppppppppppzppp#
-#pppppppppppppppppppppppp#
+#ppVpppppppppppppppppVppp#
+#pppzppVppppppppppVppzppp#
+#pVVppppppppppppppppppVpp#
 #ppppppppppp*0ppppppppppp#
 #pppppppppppp^ppppppppppp#
 ##########################

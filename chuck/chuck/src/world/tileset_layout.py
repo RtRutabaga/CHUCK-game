@@ -131,10 +131,14 @@ TAVERN = Tileset(
     order=[
         ("tavern_floor", 3, 1),
         ("tavern_interior_wall", 2, 1),
+        ("tavern_stage_top", 2, 1),
+        ("tavern_stage_front", 2, 1),
     ],
     char_to_terrain={
         "=": "tavern_floor",
         "#": "tavern_interior_wall",
+        "+": "tavern_stage_top",
+        "-": "tavern_stage_front",
     },
     overhead_char_to_terrain={},
 )

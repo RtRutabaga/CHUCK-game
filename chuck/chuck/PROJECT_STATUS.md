@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 57 (successful sky fall and cutscene handoff). This file is
+Updated: session 58 (tavern/pantry presentation refinement). This file is
 required by the project rules and updated every session.
 
 ## Working systems
@@ -118,25 +118,34 @@ required by the project rules and updated every session.
   stepping onto it loads a compact 30x20 tavern common room. A named interior
   arrival places Chuck safely above the threshold facing inward; the matching
   walk-out exit returns him below the Waterdeep doorway facing away, preventing
-  immediate transition bounce. The room uses a dedicated warm plank-and-wall
-  procedural tileset with a bar counter, three human-scale tables, chairs,
-  hearth, barrels, and crates. Furniture is solid, all remaining floor is one
+  immediate transition bounce. The room uses a dedicated procedural tileset;
+  its floor now calls the pantry generator's exact worn-board renderer while
+  retaining the tavern's distinct interior walls. A bar counter, three
+  human-scale tables, chairs, hearth, barrels, and crates remain solid. A small
+  raised stage against the north wall uses dedicated top-board and solid front-
+  fascia terrain. All remaining floor and the stage's side access form one
   connected traversal area, the camera remains on the normal WorldScene path,
   and the existing Waterdeep theme currently carries across the doorway
-- Tavern hook: two non-solid human NPCs use the established dock-worker scale
-  and facing/dialogue behavior. The bartender calmly points toward the kitchen;
-  a patron supplies one restrained ambient line. Four bright cheese wedges form
-  a visible south-to-north trail across successive camera views and end beneath
-  a human-scale pantry door. Cheese is walkable, remains in place, and only says
-  "It is cheese." when examined: there is no pickup, inventory, counter, reward,
-  or progression flag. The north doorway now opens into the pantry
+- Tavern hook: three non-solid human NPCs use the established dock-worker scale
+  and facing/dialogue behavior. The bartender recognizes Chuck and directs him
+  to unwanted cheese in the kitchen; a patron supplies one restrained ambient
+  line. A third human-height but deliberately thin/lanky musician stands on the
+  stage in green clothes and hat with an orange beard and lute, promising 37
+  renditions of "Fortune Favors the Kobold." The former common-room cheese trail
+  is gone. The north doorway remains plainly open into the pantry without
+  requiring an inventory item or flag
 - Phase 3 pantry: a compact 26x18 storage room connected bidirectionally to the
   tavern with safe named arrivals. Worn boards, human shelves with jars, sacks,
   barrels, and crates establish the ordinary room before its central broken
-  floor. Purple/dark-blue `V` blocks reuse the sewer's exact animated Astral art
-  and existing fall -> local respawn behavior. A separate hard-edged teal sky
-  with blocky clouds is immediately distinct at native scale. The safe pantry
-  floor remains fully connected around the hazards
+  floor. Thirty scattered purple/dark-blue `V` blocks now fracture the ordinary
+  boards around the room while reusing the sewer's exact animated Astral art and
+  existing fall -> local respawn behavior; small singles and pairs make reality
+  feel substituted without breaking the connected safe route. A separate hard-
+  edged teal sky with blocky clouds is immediately distinct at native scale.
+  The game's sole cheese sits on a one-board island inside that broad sky field:
+  every cardinal approach is four tiles from ordinary floor, beyond Chuck's
+  fixed 2.3-tile jump. It is a readable temptation toward the successful fall,
+  not a collectible or reachable reward
 - Fall materials now classify independently before choreography. Astral retains
   its exact fall -> Sanity depletion -> local retry behavior. Teal sky is a
   walkable successful-fall trigger: it begins with the same restrained 0.65s
@@ -241,16 +250,18 @@ Do not build playable Chult.
 
 - Full Phase 2 human playtest and acceptance
 - Dedicated tavern music or ambience (the shell currently reuses Waterdeep)
-- Pantry room and three-way floor language
-- Sky fall branch and falling-to-Chult cutscene
+- Complete falling-to-Chult cutscene
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 
 1. [x] Tavern doorway transition + common-room shell: bidirectional safe named
-       arrivals, stable collision, readable sparse furniture, dedicated warm
-       procedural tileset, and normal camera/audio behavior (session 54)
-2. [x] Minimal tavern occupants + environmental cheese hook toward the pantry
-       door, with no inventory or progression state (session 55)
+       arrivals, stable collision, readable sparse furniture, small wall stage,
+       dedicated warm procedural tileset, and normal camera/audio behavior
+       (sessions 54/58)
+2. [x] Restrained tavern occupants, including the lanky green stage musician,
+       plus barkeep cheese hook toward the pantry door, with the sole cheese on
+       an impossible sky island and no inventory or progression state
+       (sessions 55/58)
 3. [x] Compact pantry room + normal/Astral/teal-sky floor language, connected
        safe route, storage dressing, and local Astral retry (session 56)
 4. [x] Reused Astral fall death + distinct successful sky fall preserving

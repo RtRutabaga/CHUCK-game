@@ -51,7 +51,9 @@ Terrain legend:
     '7'  tavern chair        (solid standing prop on planks)
     '8'  tavern bar counter  (solid standing prop on planks)
     '9'  tavern hearth       (solid standing prop on planks)
-    '!'  cheese              (walkable environmental hook on planks)
+    '+'  tavern stage top    (walkable raised boards)
+    '-'  tavern stage front  (solid raised fascia)
+    '!'  cheese              (walkable environmental hook on pantry boards)
     '?'  open pantry door    (walkable tavern threshold)
     'p'  pantry floor        (walkable worn boards)
     's'  teal sky/cloud      (walkable successful-fall trigger)
@@ -86,6 +88,7 @@ declares the terrain underneath it, so no seams appear in the ground):
     'U'  tavern entry arrival  (on planks '=')
     'k'  tavern bartender NPC  (on planks '=')
     'l'  tavern patron NPC     (on planks '=')
+    'y'  tavern musician NPC   (on stage '+')
     ':'  tavern pantry arrival (on planks '=')
     '*'  Chuck pantry spawn    (on pantry floor 'p')
     '0'  pantry entry arrival  (on pantry floor 'p')
@@ -216,8 +219,10 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="bar_counter", under="="),
     "9": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="tavern_hearth", under="="),
+    "+": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
+    "-": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER),
     "!": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
-                 prop="cheese", under="="),
+                 prop="cheese", under="p"),
     "?": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="pantry_open", under="="),
     "p": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
@@ -272,6 +277,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "U": MarkerDef(kind="arrival:front_entrance", under="="),
     "k": MarkerDef(kind="npc:bartender", under="="),
     "l": MarkerDef(kind="npc:patron", under="="),
+    "y": MarkerDef(kind="npc:musician", under="+"),
     ":": MarkerDef(kind="arrival:pantry_return", under="="),
     "*": MarkerDef(kind="player", under="p"),
     "0": MarkerDef(kind="arrival:pantry_entry", under="p"),

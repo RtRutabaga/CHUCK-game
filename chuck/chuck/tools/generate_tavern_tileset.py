@@ -13,35 +13,14 @@ sys.path.insert(0, str(ROOT))
 import pygame
 
 from src.world.tileset_layout import TAVERN, TILE_PX
+from generate_pantry_tileset import draw_floor as draw_pantry_floor
 
-FLOOR = {
-    "base": (116, 76, 43),
-    "light": (148, 100, 55),
-    "dark": (78, 50, 32),
-    "nail": (48, 38, 34),
-}
 WALL = {
     "plaster": (139, 113, 78),
     "shade": (94, 72, 52),
     "beam": (70, 45, 29),
     "light": (166, 139, 96),
 }
-
-
-def draw_floor(surface, variant: int, _frame: int) -> None:
-    surface.fill(FLOOR["base"])
-    split = 7 + (variant % 2)
-    pygame.draw.line(surface, FLOOR["dark"], (0, split), (15, split))
-    pygame.draw.line(surface, FLOOR["light"], (0, split + 1), (15, split + 1))
-    pygame.draw.line(surface, FLOOR["dark"], (0, 15), (15, 15))
-    upper_joint = (4 + variant * 5) % 16
-    lower_joint = (11 + variant * 3) % 16
-    pygame.draw.line(surface, FLOOR["dark"], (upper_joint, 0),
-                     (upper_joint, split))
-    pygame.draw.line(surface, FLOOR["dark"], (lower_joint, split + 1),
-                     (lower_joint, 15))
-    for x, y in ((2 + variant * 3, 3), (13 - variant * 2, 12)):
-        surface.set_at((x % 16, y), FLOOR["nail"])
 
 
 def draw_wall(surface, variant: int, _frame: int) -> None:
@@ -56,9 +35,30 @@ def draw_wall(surface, variant: int, _frame: int) -> None:
         surface.set_at((x, y), WALL["shade"])
 
 
+def draw_stage_top(surface, variant: int, _frame: int) -> None:
+    """Raised but restrained boards for the tavern's tiny wall stage."""
+    surface.fill((129, 83, 43))
+    pygame.draw.line(surface, (169, 112, 56), (0, 2), (15, 2))
+    pygame.draw.line(surface, (73, 45, 29), (0, 15), (15, 15))
+    seam = 5 + variant * 6
+    pygame.draw.line(surface, (91, 55, 33), (seam, 3), (seam, 14))
+    surface.set_at(((2 + variant * 9) % 16, 10), (54, 39, 31))
+
+
+def draw_stage_front(surface, variant: int, _frame: int) -> None:
+    surface.fill((78, 46, 29))
+    pygame.draw.rect(surface, (109, 65, 34), (0, 0, 16, 4))
+    pygame.draw.line(surface, (49, 33, 27), (0, 15), (15, 15))
+    post_x = 3 if variant == 0 else 12
+    pygame.draw.rect(surface, (58, 37, 27), (post_x, 4, 2, 12))
+    surface.set_at((8, 8), (178, 128, 57))
+
+
 DRAW = {
-    "tavern_floor": draw_floor,
+    "tavern_floor": draw_pantry_floor,
     "tavern_interior_wall": draw_wall,
+    "tavern_stage_top": draw_stage_top,
+    "tavern_stage_front": draw_stage_front,
 }
 
 

@@ -65,7 +65,7 @@ def test_real_docks_dialogue_loads() -> None:
     ds = DialogueSystem()
     for dialogue_id in (
         "dock_worker", "bobert_sleeping", "herod_sign", "market_woman",
-        "bartender", "patron", "cheese",
+        "bartender", "patron", "musician", "cheese",
     ):
         lines = ds.get(dialogue_id)
         assert lines and all(isinstance(l, str) for l in lines)
@@ -75,8 +75,16 @@ def test_real_docks_dialogue_loads() -> None:
     assert ds.get("market_woman") == [
         "No handouts here. If you're hungry, you should check the sewer for scraps"
     ]
-    assert ds.get("bartender") == ["Kitchen's in back. Mind the cheese."]
+    assert ds.get("bartender") == [
+        "Oh, it's you again. There's some cheese in the back if you're hungry. "
+        "I was planning to throw it out, it's gone a bit ...funky"
+    ]
     assert ds.get("patron") == ["They're out of stew."]
+    assert ds.get("musician") == [
+        'Tonight I will be playing 37 different renditions of "Fortune Favors '
+        'the Kobold",',
+        "beginning with the Hurdy Gurdy arrangement",
+    ]
     assert ds.get("cheese") == ["It is cheese."]
 
 
