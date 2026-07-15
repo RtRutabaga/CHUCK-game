@@ -5,7 +5,7 @@ from pathlib import Path
 
 from src.core import config
 from src.entities.player import Player
-from src.systems.fall import touches_astral_fall_zone
+from src.systems.fall import fall_zone_kind, touches_astral_fall_zone
 from src.world.tilemap import TileMap
 
 
@@ -69,6 +69,16 @@ def test_airborne_chuck_is_safe_over_astral_void() -> None:
     assert not touches_astral_fall_zone(
         player.tilemap, player.hitbox, airborne=True
     )
+
+
+def test_sky_and_astral_are_distinct_fall_materials() -> None:
+    controls = FakeInput()
+    player = Player(19.0, 20.0, controls)
+    tilemap = _map("###\n#s#\n#V#\n###\n")
+    assert fall_zone_kind(tilemap, player.hitbox, airborne=False) == "sky"
+    player.y += config.TILE_SIZE
+    assert fall_zone_kind(tilemap, player.hitbox, airborne=False) == "astral"
+    assert fall_zone_kind(tilemap, player.hitbox, airborne=True) is None
 
 
 def test_jump_does_not_clear_normal_walls() -> None:

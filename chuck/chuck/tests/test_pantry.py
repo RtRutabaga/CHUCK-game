@@ -8,6 +8,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
 from src.core.game import Game
+from src.scenes.falling_cutscene_scene import FallingCutsceneScene
 from src.scenes.world_scene import WorldScene
 from src.world.tilemap import TileMap
 
@@ -26,7 +27,7 @@ def test_pantry_is_compact_readable_and_safely_navigable() -> None:
     assert terrain["V"] == 18
     assert terrain["s"] == 14
     assert not pantry.is_solid(9, 7)  # Astral retains the fall-zone contract.
-    assert pantry.is_solid(11, 4)     # Sky waits for its distinct fall branch.
+    assert not pantry.is_solid(11, 4)  # Sky is the successful fall route.
 
     props = Counter(kind for kind, _, _ in pantry.prop_tiles)
     assert props == Counter({
@@ -96,6 +97,7 @@ def test_pantry_astral_floor_reuses_fall_and_local_retry() -> None:
         _place_on_tile(scene, 9, 7)
         scene.update(0.01)
         assert scene._fall_t == 0.0
+        assert scene._fall_kind == "astral"
         assert scene.player.fall_progress == 0.0
         scene.update(config.FALL_DURATION)
         assert scene._respawn_phase == "out"
@@ -104,6 +106,34 @@ def test_pantry_astral_floor_reuses_fall_and_local_retry() -> None:
         assert scene.map_name == "waterdeep_pantry"
         assert (scene.player.x, scene.player.y) == spawn
         assert scene.player.visible
+        game.scenes.draw(game.native_surface)
+    finally:
+        game._shutdown()
+
+
+def test_pantry_sky_fall_preserves_sanity_and_enters_cutscene() -> None:
+    game = Game()
+    try:
+        game.scenes.replace(WorldScene(game, "waterdeep_pantry"))
+        world = game.scenes.current
+        sanity_before = world.sanity.current
+        _place_on_tile(world, 11, 4)
+        world.update(0.01)
+        assert world._fall_t == 0.0
+        assert world._fall_kind == "sky"
+        assert world.sanity.current == sanity_before
+
+        world.update(config.FALL_DURATION)
+        cutscene = game.scenes.current
+        assert isinstance(cutscene, FallingCutsceneScene)
+        assert world.sanity.current == sanity_before
+        cloud_y = [cloud[1] for cloud in cutscene.clouds]
+
+        game.input._actions_down.update({"move_up", "move_right"})
+        cutscene.update(0.25)
+        assert cutscene.elapsed == 0.25
+        assert [cloud[1] for cloud in cutscene.clouds] != cloud_y
+        assert not hasattr(cutscene, "player")
         game.scenes.draw(game.native_surface)
     finally:
         game._shutdown()

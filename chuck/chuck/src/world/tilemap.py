@@ -54,7 +54,7 @@ Terrain legend:
     '!'  cheese              (walkable environmental hook on planks)
     '?'  open pantry door    (walkable tavern threshold)
     'p'  pantry floor        (walkable worn boards)
-    's'  teal sky/cloud      (solid until its distinct fall branch exists)
+    's'  teal sky/cloud      (walkable successful-fall trigger)
     '^'  pantry return exit  (walkable open threshold)
     'n'  pantry shelf        (solid standing prop on pantry boards)
     'z'  grain sack          (solid standing prop on pantry boards)
@@ -221,9 +221,7 @@ TILE_DEFS: dict[str, TileDef] = {
     "?": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="pantry_open", under="="),
     "p": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
-    # The visual target of the next bounded pass. It remains collision until
-    # it can branch into the authored sky fall instead of normal hazard death.
-    "s": TileDef(solid=True, color=(32, 146, 156)),
+    "s": TileDef(solid=False, color=(32, 146, 156)),
     "^": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="pantry_open", under="p"),
     "n": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,

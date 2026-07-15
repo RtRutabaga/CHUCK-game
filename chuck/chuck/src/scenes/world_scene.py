@@ -31,7 +31,7 @@ from src.systems.astral_anchor import AstralAnchorSystem
 from src.systems.choice import ChoiceSystem
 from src.systems.combat import scratch_first_target
 from src.systems.dialogue import DialogueSystem
-from src.systems.fall import touches_astral_fall_zone
+from src.systems.fall import fall_zone_kind
 from src.systems.interaction import find_target
 from src.ui.tutorial_hint import TutorialHint
 from src.systems.sanity import SanitySystem
@@ -144,6 +144,7 @@ class WorldScene(Scene):
         self._respawn_phase: str | None = None  # "out" | "hold" | "in"
         self._respawn_t = 0.0
         self._fall_t: float | None = None
+        self._fall_kind: str | None = None
 
         # Area music, looping — or silence where an area has no theme yet
         # (the sewer's track is a later Phase 2 session). Footsteps
@@ -251,10 +252,11 @@ class WorldScene(Scene):
         self.player.update(dt)
         if self.player.jump_just_started:
             self.game.audio.play_sfx("jump")
-        if touches_astral_fall_zone(
+        fall_kind = fall_zone_kind(
             self.tilemap, self.player.hitbox, self.player.jumping
-        ):
-            self._begin_fall()
+        )
+        if fall_kind is not None:
+            self._begin_fall(fall_kind)
             self.camera.update(dt)
             return
         if (
@@ -530,8 +532,9 @@ class WorldScene(Scene):
     # ------------------------------------------------------------------
     # Astral fall hazard
     # ------------------------------------------------------------------
-    def _begin_fall(self) -> None:
+    def _begin_fall(self, kind: str) -> None:
         """Lock control and let Chuck quietly drop into the wrong map."""
+        self._fall_kind = kind
         self._fall_t = 0.0
         self.player.fall_progress = 0.0
         self.player.moving = False
@@ -545,9 +548,15 @@ class WorldScene(Scene):
         self._fall_t += dt
         self.player.fall_progress = min(1.0, self._fall_t / config.FALL_DURATION)
         if self._fall_t >= config.FALL_DURATION:
+            kind = self._fall_kind
             self._fall_t = None
+            self._fall_kind = None
             self.player.fall_progress = None
-            self.sanity.deplete()
+            if kind == "sky":
+                from src.scenes.falling_cutscene_scene import FallingCutsceneScene
+                self.game.scenes.replace(FallingCutsceneScene(self.game))
+            else:
+                self.sanity.deplete()
 
     # ------------------------------------------------------------------
     # Astral respawn (Game Bible: quiet, quick, never punishing)

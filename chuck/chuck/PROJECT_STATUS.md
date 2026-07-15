@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: session 56 (compact pantry and floor language). This file is required
-by the project rules and updated every session.
+Updated: session 57 (successful sky fall and cutscene handoff). This file is
+required by the project rules and updated every session.
 
 ## Working systems
 
@@ -136,13 +136,20 @@ by the project rules and updated every session.
   floor. Purple/dark-blue `V` blocks reuse the sewer's exact animated Astral art
   and existing fall -> local respawn behavior. A separate hard-edged teal sky
   with blocky clouds is immediately distinct at native scale. The safe pantry
-  floor remains fully connected around the hazards. Teal sky is deliberately
-  collision-only until the next pass can route it into the successful fall and
-  cutscene rather than accidentally treating it as normal death
+  floor remains fully connected around the hazards
+- Fall materials now classify independently before choreography. Astral retains
+  its exact fall -> Sanity depletion -> local retry behavior. Teal sky is a
+  walkable successful-fall trigger: it begins with the same restrained 0.65s
+  shrink/sink animation, preserves Sanity, and replaces gameplay with a
+  dedicated `FallingCutsceneScene`. The cutscene has no player-controlled entity,
+  fades out the Waterdeep music, reframes Chuck from tiny gameplay scale, and
+  presents him against a native-resolution teal grade with two speeds of blocky
+  clouds moving upward. This first shot loops indefinitely until the authored
+  long descent and clean Phase 4 endpoint are added
 
 ## Placeholder systems
-- The successful teal sky fall and falling-to-Chult cutscene remain
-  intentionally absent pending their bounded Phase 3 passes
+- The authored long-fall progression, audio arc, approach toward Chult, and
+  clean non-playable Phase 4 endpoint remain intentionally absent
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -225,10 +232,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Give teal sky/cloud tiles their distinct successful fall path: begin with the
-existing Chuck fall animation, do not deplete Sanity, and hand off reliably to
-a contained dedicated cutscene scene. Leave the authored long-fall sequence and
-Phase 4 endpoint for the following bounded pass.
+Author the contained falling scene into the complete circa-1994 long descent:
+vary cloud layers and sky over time, shape the audio transition, suggest the
+approach toward Chult, then stop at a clean non-playable Phase 4 handoff point.
+Do not build playable Chult.
 
 ## Also open
 
@@ -246,5 +253,6 @@ Phase 4 endpoint for the following bounded pass.
        door, with no inventory or progression state (session 55)
 3. [x] Compact pantry room + normal/Astral/teal-sky floor language, connected
        safe route, storage dressing, and local Astral retry (session 56)
-4. [ ] Reused Astral fall death + distinct successful sky-fall branch
+4. [x] Reused Astral fall death + distinct successful sky fall preserving
+       Sanity and handing off to an input-free cutscene scene (session 57)
 5. [ ] Dedicated circa-1994 falling-to-Chult cutscene and Phase 4 handoff point

@@ -3,67 +3,65 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `baa4ded` (`Add tavern occupants and cheese hook`)
-- Current work: Phase 3 compact pantry and three floor materials
+- Base commit: `2d13370` (`Build Waterdeep pantry floor`)
+- Current work: Phase 3 successful sky fall and dedicated cutscene handoff
 - Active phase: Phase 3 - Waterdeep Tavern, Pantry, and Fall to Chult
 
 ## Completed This Pass
 
-The north tavern door now leads into a compact, dressed pantry containing
-ordinary floorboards, established Astral Sea hazards, and a distinct teal
-sky/cloud floor. Chuck can return safely to the tavern. This pass does not add
-the successful sky fall, dedicated falling cutscene, or playable Chult.
+Teal pantry sky blocks now trigger the familiar initial fall without killing
+Chuck, then reliably replace gameplay with a dedicated, input-free falling
+scene. The scene establishes the visual cut and descent language but remains an
+open-ended first shot; the full long fall and Phase 4 endpoint are not built.
 
 ## Implementation
 
-- Converted the framed pantry door into a dark open threshold and connected it
-  bidirectionally through the established data-driven walk exits. Named arrivals
-  place Chuck off each threshold facing away, preventing transition bounce.
-- Added a 26x18 pantry with a connected safe route and restrained storage
-  dressing: two human-scale shelves containing jars, four sacks, two barrels,
-  and two crates.
-- Added a dedicated procedural pantry tileset. Its worn boards and wall beams
-  remain related to the tavern, while its Astral row calls the same generator
-  used by the sewer so the wrong-map visual is exact rather than approximate.
-- Added animated teal sky/cloud blocks with hard tile boundaries and simple
-  blocky clouds. They are visually complete and distinct from Astral material.
-- Astral `V` remains the existing walkable fall hazard. Falling there uses the
-  established shrink/sink animation and ordinary recovery, with the pantry
-  entry as the local retry point.
-- Teal sky blocks remain solid for this bounded pass. This prevents a temporary
-  incorrect death or the ability to stand over open sky; the next pass should
-  make them a distinct successful fall trigger and cutscene handoff.
-- Pantry and tavern reuse the warm Waterdeep music pending a dedicated audio
-  decision, so transitions do not fall silent or introduce an unrelated cue.
+- Added a material-classifying fall query. `V` reports `astral`, `s` reports
+  `sky`, and both remain safe while Chuck is airborne. The existing Astral
+  compatibility helper and every Phase 2 behavior remain intact.
+- Made teal sky tiles walkable. Entering one locks control and runs the same
+  0.65-second shrink/sink used for Astral material.
+- At completion, Astral still depletes Sanity and respawns locally. Sky instead
+  preserves Sanity and replaces WorldScene with `FallingCutsceneScene`, so Chuck
+  cannot duplicate across scenes or accidentally continue pantry simulation.
+- The dedicated scene has no player-controlled entity and ignores movement
+  state. It fades the warm Waterdeep music, draws a native-pixel teal vertical
+  grade, moves two restrained layers of blocky clouds upward, and reframes the
+  idle Chuck sprite from the tiny end of the gameplay fall to readable cutscene
+  scale. Letterbox bars make the authored presentation boundary explicit.
+- The scene currently loops this first shot indefinitely. It does not yet vary
+  the descent over time, introduce a falling audio cue, suggest Chult below, or
+  reach the clean Phase 4 endpoint.
 
 ## Verification
 
-- All 20 test suites pass, including a new pantry suite.
-- Coverage verifies exact map dimensions/material counts, food-storage props,
-  full safe-floor connectivity, bidirectional non-bouncing transitions, local
-  Astral fall/retry, tileset drawability, valid named arrivals, and native scene
-  rendering.
-- Native-scale visual review confirms all three floor materials separate at a
-  glance and the pantry reads as storage before it reads as impossible space.
+- All 20 test suites pass.
+- Pantry coverage verifies Astral and sky identify separately; Astral still
+  performs local death/retry; sky preserves Sanity, completes the familiar
+  initial fall, replaces the world exactly once, and reaches the dedicated
+  scene. Held movement does not create a controllable entity there.
+- Cutscene clouds advance over time and the scene renders through the native
+  320x180 pipeline. Native-scale visual review confirms Chuck remains
+  recognizable and the sky palette connects directly to the pantry blocks.
 
 ## Playtest Focus
 
-- Follow the cheese north and enter the now-open pantry door. Chuck should
-  arrive near the south edge facing inward without bouncing back.
-- Confirm the room feels compact and readable, with worn boards and oversized
-  shelves, jars, sacks, barrels, and crates reinforcing Chuck's scale.
-- Compare the purple Astral blocks to the sewer: their animation and visual
-  language should match exactly.
-- Walk into Astral material without jumping. The familiar fall should return
-  Chuck to the pantry entrance, not another map.
-- Confirm the teal cloud blocks are unmistakably different from Astral blocks.
-  They intentionally block movement until their successful fall branch exists.
-- Exit south and confirm Chuck returns below the tavern pantry doorway without
-  immediately re-entering.
+- Enter a teal sky block on foot. Chuck should perform the same quiet initial
+  shrink/sink as an Astral fall, then cut to the dedicated sky shot.
+- Confirm there is no vanish/respawn sequence, Sanity loss, or return to the
+  pantry after the sky fall.
+- Hold movement, jump, scratch, and interact during the cutscene. None should
+  restore normal player control or affect the shot.
+- Watch the cloud layers: they should move upward at different restrained speeds
+  while Chuck remains recognizable and calm at center frame.
+- Compare an Astral fall afterward from a fresh run to confirm it still returns
+  Chuck locally and never enters the cutscene.
+- The cutscene intentionally continues indefinitely in its opening shot; that
+  is the next session's implementation boundary, not the final Phase 3 ending.
 
 ## Next Bounded Task
 
-Make teal sky/cloud tiles trigger the familiar initial fall animation without
-depleting Sanity, then hand off reliably to a contained dedicated cutscene
-scene/state. Do not build playable Chult; leave the authored long-fall sequence,
-audio shaping, and clean Phase 4 endpoint for the following pass.
+Turn `FallingCutsceneScene` into the complete circa-1994 long-fall sequence:
+author timed visual stages, changing cloud density/sky, a stylized audio arc,
+and an approach toward Chult, then end at a clean non-playable Phase 4 handoff.
+Do not create the playable Chult map or return control in Chult.
