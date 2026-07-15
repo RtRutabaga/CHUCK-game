@@ -13,6 +13,22 @@ pip install -r requirements.txt
 python main.py
 ```
 
+## Building the Windows demo
+
+Build on Windows with Python 3.12 or newer:
+
+```powershell
+py -m pip install -r requirements-build.txt
+py -m PyInstaller --clean --noconfirm CHUCK.spec
+```
+
+The shareable single-file build is written to `dist/CHUCK-demo.exe`. Friends do
+not need Python, Pygame, or the repository; they can run that EXE directly. The
+first launch may take a moment while the one-file bundle extracts. Because this
+is an unsigned personal build, Windows SmartScreen may ask the recipient to
+confirm that they want to run it. If the game crashes, `crash_log.txt` is written
+beside the EXE.
+
 PHASE 2 IN PROGRESS. An armored city guard now posts the east edge of
 the upper plaza — the way out of the docks. The map layout already
 ends the road there, so he needs no gate and no barrier: he simply

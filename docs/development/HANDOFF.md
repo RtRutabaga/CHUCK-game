@@ -3,50 +3,46 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `d898f92` (`Remove obsolete Phase 2 development spec`)
-- Current work: dedicated fall-to-Chult cutscene soundtrack
+- Base commit: `983bcd3` (`Score the fall-to-Chult cutscene`)
+- Current work: shareable single-file Windows demo build
 - Active phase: Phase 3 - Waterdeep Tavern, Pantry, and Fall to Chult
 
 ## Completed This Pass
 
-The complete Phase 3 cutscene now has its own procedural one-shot soundtrack.
-The first four seconds remain musically exposed; then a fast, exciting action
-cue arrives at full energy, follows the fall into the canopy, and breaks into a
-sparse resolution after Chuck hits the jungle floor.
+The current Phase 3 demo now builds as a portable `CHUCK-demo.exe` containing
+the game, Pygame runtime, maps, art, dialogue, music, and sound. Recipients do
+not need Python or the repository.
 
 ## Implementation
 
-- Added `data/music/fall_to_chult.py`, an 18-bar, 120 BPM, 36-second authored
-  composition rendered through the existing shared synth, instruments, and
-  sequencer. It uses eight voices and 431 note events without new dependencies.
-- The opening action section combines a fast D-minor pluck pulse, melodic runs,
-  syncopated round bass, bells, and full kick/snare/hat kit. Eb chromatic color
-  and denser percussion enter as the canopy starts crowding the frame.
-- At impact the pulse and drums stop. Sparse flute, bells, and bass then score
-  the blip-back, directional looks, cigarette placement, and final drag.
-- `FallingCutsceneScene` starts `fall_to_chult.wav` exactly four seconds into
-  the cutscene and requests one-shot playback. The existing Waterdeep fade and
-  all collision/death sound cues remain unchanged.
+- Added `CHUCK.spec`, a reproducible PyInstaller 6.21 one-file/windowed build
+  that mirrors `assets/` and `data/` at the paths expected by `config.py`.
+- Added `requirements-build.txt` and Windows build instructions to the README.
+- The spec excludes optional NumPy and OpenGL helpers that CHUCK never uses,
+  reducing the tested EXE from 36.3 MB to 25.1 MB.
+- Frozen builds now place `crash_log.txt` beside the executable. Source runs
+  retain the existing project-root crash location.
+- `build/` and `dist/` are ignored generated output; the current shareable file
+  remains locally available at `dist/CHUCK-demo.exe`.
 
 ## Verification
 
-- All 20 test suites pass.
-- Music tests verify the 36-second one-shot asset, sample format, safe peak,
-  immediate rhythmic attack, dense action section, percussion cutoff, and
-  sparse aftermath voicing.
-- Cutscene coverage verifies musical silence before four seconds and exactly one
-  non-looping `fall_to_chult.wav` request after crossing that boundary.
+- All 21 test suites pass.
+- New packaging tests cover source and frozen crash-log paths plus the bundle's
+  resource-root contract.
+- PyInstaller completed cleanly on Windows 11 with Python 3.12 and Pygame CE
+  2.5.7. The actual optimized EXE was launched with dummy video/audio drivers,
+  held its game loop for six seconds, and produced no crash log.
+- Built artifact: `dist/CHUCK-demo.exe`, 25,132,589 bytes.
 
 ## Playtest Focus
 
-- Confirm the first four seconds have no music, creating a brief exposed fall.
-- The cue should then arrive suddenly and read as exciting action music while
-  retaining the existing compact synthesized 16-bit palette.
-- Check that the action section sustains the intentionally long cloud descent
-  without becoming grating, and that the added chromatic pressure fits the
-  branch/vine rush beginning around 24 seconds.
-- At the ground impact, the beat should fall away cleanly so the thud, blip-out,
-  respawn, cigarette placement, and drag remain readable.
+- Double-click `dist/CHUCK-demo.exe` from outside the source tree and verify the
+  real window, controller/keyboard input, music, and SFX on a normal device.
+- Copy only the EXE to another Windows machine or folder and complete the demo
+  path through the held jungle tableau.
+- Expect an unsigned-build SmartScreen warning. If an actual crash occurs,
+  collect the `crash_log.txt` created beside the EXE.
 
 ## Next Bounded Task
 

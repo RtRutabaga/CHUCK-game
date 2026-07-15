@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 61 (fall-to-Chult action cue). This file is required by
+Updated: session 62 (shareable Windows demo build). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -28,6 +28,11 @@ the project rules and updated every session.
   Sewer theme loop seamlessly, while the 36s one-shot fall-to-Chult cue drives
   the Phase 3 cutscene; SFX for pickup, interact, hurt, vanish, respawn, anchor
   chime, a quiet rounded jump bounce, scratch scrape, and per-surface footsteps
+- Distribution: reproducible PyInstaller 6.21 single-file Windows build
+  (`CHUCK.spec` + `requirements-build.txt`) bundles all runtime assets and data
+  into `dist/CHUCK-demo.exe`. The windowed EXE needs no Python installation,
+  excludes unused optional NumPy/OpenGL support, and writes crash diagnostics
+  beside itself rather than into its temporary one-file extraction directory
 - NPC interaction covers the whole visible person (probe + overlap)
 - Depth: barrels/crates are standing props (solid tiles + tall
   sprites), y-sorted with all characters by feet position
@@ -205,10 +210,10 @@ the project rules and updated every session.
 
 ## Tests
 
-20 suites (most pure Python/headless): collision, tilemap,
+21 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
-tavern, pantry
+tavern, pantry, packaging
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
