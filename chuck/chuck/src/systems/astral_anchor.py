@@ -20,19 +20,29 @@ from __future__ import annotations
 
 
 class AstralAnchorSystem:
-    """Tracks the active respawn point. Owned by the WorldScene."""
+    """Tracks the active local respawn point. Owned by the WorldScene."""
 
-    def __init__(self, default_position: tuple[float, float] = (0.0, 0.0)) -> None:
+    def __init__(
+        self,
+        default_position: tuple[float, float] = (0.0, 0.0),
+        default_checkpoint_id: str | None = None,
+    ) -> None:
         # Where Chuck returns if he has never touched an anchor —
         # by default, where he woke up (Bobert's barrel).
         self.respawn_position = default_position
+        self.active_checkpoint_id = default_checkpoint_id
 
-    def activate(self, position: tuple[float, float]) -> None:
+    def activate(
+        self,
+        position: tuple[float, float],
+        checkpoint_id: str | None = None,
+    ) -> None:
         """Set a new active anchor (called when Chuck touches one).
 
         TODO: Small activation effect + sound, once effects exist.
         """
         self.respawn_position = position
+        self.active_checkpoint_id = checkpoint_id
 
     def respawn_position_for_chuck(self) -> tuple[float, float]:
         """Return where Chuck should reappear."""

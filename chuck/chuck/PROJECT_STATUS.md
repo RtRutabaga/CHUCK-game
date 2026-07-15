@@ -1,12 +1,18 @@
 # CHUCK — Project Status
 
-Updated: session 62 (shareable Windows demo build). This file is required by
+Updated: session 63 (title, saves, and shared checkpoints). This file is required by
 the project rules and updated every session.
 
 ## Working systems
 
 - Game loop, native 320x180 surface integer-scaled 4x, scene stack
   with overlay support (dialogue draws over the frozen world)
+- Startup now hands off from the one-frame BootScene to a native 320x180 title
+  menu. NEW GAME clears the single save slot and loads the authored Waterdeep
+  opening; CONTINUE is visibly disabled unless a valid current-version save can
+  be restored. A config-gated DEV CHECKPOINTS option opens the temporary test
+  selector and disappears entirely when `ENABLE_DEV_CHECKPOINT_SELECTOR` is
+  false
 - Input: keys -> named actions, normalized 8-way movement vector
 - Text maps (assets/maps/): terrain legend + marker system (spawns and
   objects declare their under-terrain); loud errors on any bad data
@@ -18,6 +24,17 @@ the project rules and updated every session.
   burning down); patrolling cat hazard; Astral Anchor checkpoints;
   quiet vanish -> starfield -> respawn (no game-over screen, ever); enemies
   rebuild from their map markers when Chuck returns
+- Checkpoints and saving: one registry defines map, position/named arrival,
+  facing, required progression flags, and visibility/save rules. NEW GAME,
+  CONTINUE, and the development selector all call the same
+  `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
+  retain the established local retry behavior; the two authored Ashtrays have
+  stable IDs and save on first contact. A small version-1 JSON slot under the
+  user's application-data folder stores only checkpoint ID, current Sanity, and
+  durable progression flags. Invalid, missing, outdated, unknown, or forged
+  development-only checkpoint saves disable CONTINUE without crashing. The sole
+  current durable world flag is `sewer_completed`, which restores the tavern's
+  open exterior
 - Dialogue: JSON data files, typewriter box, six NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
@@ -210,10 +227,10 @@ the project rules and updated every session.
 
 ## Tests
 
-21 suites (most pure Python/headless): collision, tilemap,
+22 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
-tavern, pantry, packaging
+tavern, pantry, packaging, checkpoints
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -267,9 +284,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Perform the full Phase 3 human playtest from a clean start through the held
-jungle tableau, tuning only clear regressions or timing/readability issues. Do
-not begin playable Chult until Phase 4 scope is active.
+Perform the title/save/checkpoint human playtest listed in HANDOFF, then run the
+full Phase 3 path from NEW GAME through the held jungle tableau. Tune only clear
+regressions or timing/readability issues. Do not begin playable Chult until
+Phase 4 scope is active.
 
 ## Also open
 

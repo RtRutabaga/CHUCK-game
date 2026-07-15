@@ -12,6 +12,7 @@ system, or entity instead.
 """
 
 import os
+from pathlib import Path
 
 import pygame
 
@@ -27,13 +28,17 @@ from src.core.assets import AssetManager
 from src.core.input import InputManager
 from src.core.scene_manager import SceneManager
 from src.systems.audio import AudioSystem
+from src.systems.checkpoints import (
+    OPENING_CHECKPOINT_ID, CheckpointLoader, ProgressState,
+)
+from src.systems.save import SaveSystem
 from src.scenes.boot_scene import BootScene
 
 
 class Game:
     """Top-level application object. Created once, in main.py."""
 
-    def __init__(self) -> None:
+    def __init__(self, save_path: str | Path | None = None) -> None:
         """Initialize pygame, the window, and core managers."""
         # Match the mixer to our rendered audio before pygame.init.
         pygame.mixer.pre_init(frequency=22050, size=-16, channels=2,
@@ -60,10 +65,12 @@ class Game:
         self.assets = AssetManager()
         self.audio = AudioSystem(self.assets)
         self.scenes = SceneManager(self)
+        self.progress = ProgressState()
+        self.active_checkpoint_id = OPENING_CHECKPOINT_ID
+        self.saves = SaveSystem(save_path)
+        self.checkpoints = CheckpointLoader(self, self.saves)
 
-        # The game boots into a placeholder scene (black screen).
-        # TODO: Replace BootScene with a WorldScene (Waterdeep Docks)
-        #       once the tilemap system exists.
+        # One black frame lets core systems settle before the title menu.
         self.scenes.push(BootScene(self))
 
     # ------------------------------------------------------------------

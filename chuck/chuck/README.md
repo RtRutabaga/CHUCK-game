@@ -13,6 +13,15 @@ pip install -r requirements.txt
 python main.py
 ```
 
+The game opens at a native-resolution title menu. NEW GAME starts fresh;
+CONTINUE becomes available after Chuck touches an Ashtray checkpoint. Saves use
+a single versioned JSON slot at `%LOCALAPPDATA%\CHUCK\save.json` on Windows.
+
+For development, choose `DEV CHECKPOINTS` on the title screen, then select an
+authored test entry with Up/Down and E or Enter. Set
+`ENABLE_DEV_CHECKPOINT_SELECTOR = False` in `src/core/config.py` to remove that
+option without changing the real checkpoint or save architecture.
+
 ## Building the Windows demo
 
 Build on Windows with Python 3.12 or newer:

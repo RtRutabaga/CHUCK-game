@@ -1,6 +1,8 @@
 """Phase 2 sewer outflow and restrained return-to-docks tests."""
 
 import os
+from pathlib import Path
+import tempfile
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
@@ -87,28 +89,31 @@ def test_outflow_yes_climbs_from_water_onto_south_pier() -> None:
 
 
 def test_maze_ashtray_attunes_and_becomes_respawn_point() -> None:
-    game = Game()
-    try:
-        game.scenes.replace(WorldScene(game, "sewer"))
-        scene = game.scenes.current
-        assert len(scene.anchors) == 1
-        anchor = scene.anchors[0]
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+    with tempfile.TemporaryDirectory() as temp_dir:
+        game = Game(save_path=Path(temp_dir) / "save.json")
+        try:
+            game.scenes.replace(WorldScene(game, "sewer"))
+            scene = game.scenes.current
+            assert len(scene.anchors) == 1
+            anchor = scene.anchors[0]
+            scene.player.x, scene.player.y = anchor.x, anchor.y
 
-        assert scene._anchor_hint_visible()
-        scene.update(0.01)
-        assert anchor.lit
-        assert scene.anchors_system.respawn_position_for_chuck() == (
-            anchor.x, anchor.y
-        )
+            assert scene._anchor_hint_visible()
+            scene.update(0.01)
+            assert anchor.lit
+            assert game.active_checkpoint_id == "sewer_anchor"
+            assert game.saves.load().checkpoint_id == "sewer_anchor"
+            assert scene.anchors_system.respawn_position_for_chuck() == (
+                anchor.x, anchor.y
+            )
 
-        scene.sanity.deplete()
-        scene.update(config.RESPAWN_FADE_OUT)
-        scene.update(config.RESPAWN_HOLD)
-        assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
-        assert scene.player.visible
-    finally:
-        game._shutdown()
+            scene.sanity.deplete()
+            scene.update(config.RESPAWN_FADE_OUT)
+            scene.update(config.RESPAWN_HOLD)
+            assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+            assert scene.player.visible
+        finally:
+            game._shutdown()
 
 
 def _run_all() -> None:

@@ -47,19 +47,44 @@ class WorldScene(Scene):
     """The explorable world. Starts at the docks; a dialogue choice can
     carry Chuck to another map (the sewer) via load_map()."""
 
-    def __init__(self, game, map_name: str = "waterdeep_docks") -> None:
+    def __init__(
+        self,
+        game,
+        map_name: str = "waterdeep_docks",
+        *,
+        initial_arrival: str | None = None,
+        initial_position: tuple[float, float] | None = None,
+        initial_facing: str | None = None,
+        initial_climb_from_water: bool = False,
+        initial_sanity: int | None = None,
+        initial_checkpoint_id: str | None = None,
+    ) -> None:
         super().__init__(game)
         self._initial_map = map_name
+        self._initial_arrival = initial_arrival
+        self._initial_position = initial_position
+        self._initial_facing = initial_facing
+        self._initial_climb_from_water = initial_climb_from_water
+        self._initial_sanity = initial_sanity
+        self._initial_checkpoint_id = initial_checkpoint_id
         # Set by a transition choice; applied once the conversation that
         # triggered it has closed (see update()).
         self._pending_map: str | None = None
         self._pending_arrival: str | None = None
         self._pending_climb_from_water = False
-        self._sewer_completed = False
+        self._sewer_completed = game.progress.has("sewer_completed")
 
     def on_enter(self) -> None:
         """Build the starting area when this scene becomes active."""
-        self.load_map(self._initial_map)
+        self.load_map(
+            self._initial_map,
+            arrival=self._initial_arrival,
+            climb_from_water=self._initial_climb_from_water,
+            facing=self._initial_facing,
+            position=self._initial_position,
+            sanity=self._initial_sanity,
+            checkpoint_id=self._initial_checkpoint_id,
+        )
 
     def load_map(
         self,
@@ -67,12 +92,21 @@ class WorldScene(Scene):
         arrival: str | None = None,
         climb_from_water: bool = False,
         facing: str | None = None,
+        position: tuple[float, float] | None = None,
+        sanity: int | None = None,
+        checkpoint_id: str | None = None,
     ) -> None:
         """(Re)build the map and all entities for an area. Used both on
         first entry and when a transition carries Chuck somewhere new."""
         self.map_name = map_name
         if map_name == "waterdeep_docks" and arrival == "sewer_outflow":
-            self._sewer_completed = True
+            self.game.progress.enable("sewer_completed")
+        if checkpoint_id is None:
+            checkpoint_id = self.game.checkpoints.entry_checkpoint_id(
+                map_name, arrival
+            )
+        self.game.checkpoints.set_runtime_checkpoint(checkpoint_id)
+        self._sewer_completed = self.game.progress.has("sewer_completed")
         self._pending_map = None
         self._pending_arrival = None
         self._pending_climb_from_water = False
@@ -87,7 +121,10 @@ class WorldScene(Scene):
             for kind, position in self.tilemap.object_spawns
             if kind.startswith("arrival:")
         }
-        if arrival is not None:
+        if position is not None:
+            spawn_cx = position[0] + config.PLAYER_HITBOX_W / 2
+            spawn_cy = position[1] + config.PLAYER_HITBOX_H / 2
+        elif arrival is not None:
             if arrival not in arrivals:
                 raise ValueError(
                     f"Map {map_name!r} has no arrival marker {arrival!r}"
@@ -127,7 +164,16 @@ class WorldScene(Scene):
         self.camera.follow(self.player)
 
         # Sanity + HUD. Depletion starts the quiet respawn.
-        self.sanity = SanitySystem(on_depleted=self._begin_respawn)
+        previous_sanity = getattr(getattr(self, "sanity", None), "current", None)
+        sanity_start = (
+            previous_sanity
+            if sanity is None and previous_sanity is not None
+            else sanity
+        )
+        self.sanity = SanitySystem(
+            on_depleted=self._begin_respawn,
+            start=sanity_start,
+        )
         self.hud = HUD(self.sanity)
         self._hint = (
             TutorialHint(self.game.assets)
@@ -139,7 +185,8 @@ class WorldScene(Scene):
         # Respawn: where Chuck returns (defaults to where he woke up),
         # and the transition state (None = living normally).
         self.anchors_system = AstralAnchorSystem(
-            default_position=(self.player.x, self.player.y)
+            default_position=(self.player.x, self.player.y),
+            default_checkpoint_id=checkpoint_id,
         )
         self._respawn_phase: str | None = None  # "out" | "hold" | "in"
         self._respawn_t = 0.0
@@ -182,9 +229,11 @@ class WorldScene(Scene):
                 self.pickups.append(cig)
             elif kind == "cat":
                 continue  # rebuilt with all enemies below
-            elif kind == "anchor":
-                anchor = AstralAnchor(cx, cy)
+            elif kind.startswith("anchor:"):
+                anchor_id = kind.split(":", 1)[1]
+                anchor = AstralAnchor(cx, cy, anchor_id)
                 anchor.load_sprites(self.game.assets)
+                anchor.lit = anchor_id == checkpoint_id
                 self.anchors.append(anchor)
             elif kind.startswith("npc:"):
                 npc_id = kind.split(":", 1)[1]
@@ -339,7 +388,12 @@ class WorldScene(Scene):
                 for other in self.anchors:
                     other.lit = False
                 anchor.lit = True
-                self.anchors_system.activate((anchor.x, anchor.y))
+                self.anchors_system.activate(
+                    (anchor.x, anchor.y), anchor.checkpoint_id
+                )
+                self.game.checkpoints.activate_checkpoint(
+                    anchor.checkpoint_id, self.sanity.current
+                )
                 self.game.audio.play_sfx("chime")  # singular.
 
         # Hazards: contact costs sanity (i-frames prevent draining).

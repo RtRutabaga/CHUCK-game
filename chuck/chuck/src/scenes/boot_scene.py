@@ -1,8 +1,8 @@
-"""Boot scene: the foundation's placeholder.
+"""Boot scene: one-frame handoff into the title menu.
 
 Responsibilities (for now):
-    * Fill the screen with black.
-    * Quit cleanly on ESC.
+    * Fill the screen with black while core systems finish initializing.
+    * Hand off to the title menu on the first update.
 
 This scene exists so the project runs on day one. It will eventually be
 replaced (or repurposed) as the scene that loads assets and hands off to
@@ -18,7 +18,7 @@ from src.scenes.scene import Scene
 
 
 class BootScene(Scene):
-    """A black screen with a working game loop behind it."""
+    """A one-frame black screen before the title menu."""
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """Allow quitting with ESC while there is no pause menu."""
@@ -26,14 +26,10 @@ class BootScene(Scene):
             self.game.quit()
 
     def update(self, dt: float) -> None:
-        """Hand off to the world immediately.
+        """Hand off to the title menu immediately."""
+        from src.scenes.title_scene import TitleScene
 
-        TODO: When real assets exist, load them here (possibly with a
-              brief title card) before the handoff.
-        """
-        from src.scenes.world_scene import WorldScene
-
-        self.game.scenes.replace(WorldScene(self.game))
+        self.game.scenes.replace(TitleScene(self.game))
 
     def draw(self, surface: pygame.Surface) -> None:
         """Paint it black."""

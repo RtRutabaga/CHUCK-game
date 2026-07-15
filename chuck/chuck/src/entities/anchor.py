@@ -21,10 +21,13 @@ _W, _H = 8, 6  # footprint: generous, so touching it is easy
 class AstralAnchor(Entity):
     """A quiet piece of the Astral Sea, moored to a dock."""
 
-    def __init__(self, center_x: float, center_y: float) -> None:
+    def __init__(
+        self, center_x: float, center_y: float, checkpoint_id: str,
+    ) -> None:
         super().__init__(
             center_x - _W / 2, center_y - _H / 2, width=_W, height=_H
         )
+        self.checkpoint_id = checkpoint_id
         self.lit = False  # True while this is the active anchor
         self._frames = None  # (dim, lit) set by load_sprites()
 
