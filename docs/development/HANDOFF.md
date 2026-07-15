@@ -3,55 +3,63 @@
 ## Repository State
 
 - Branch: main
-- Base commit: `447f2f2` (`Refine tavern and pantry presentation`)
-- Current work: Phase 3 environment placement and sky variation polish
+- Base commit: `901c6ea` (`Polish tavern and pantry details`)
+- Current work: complete Phase 3 fall-to-Chult cutscene and handoff tableau
 - Active phase: Phase 3 - Waterdeep Tavern, Pantry, and Fall to Chult
 
 ## Completed This Pass
 
-The tavern hearth is flush with the east wall, pantry sky clouds no longer form
-an obvious repeated tile stamp, the exterior HEROD sign clears the tavern door,
-and all three north-district house doors now answer "it's closed".
+The pantry's successful sky fall now plays the complete input-free Phase 3
+ending: an intentionally overlong cloud descent, escalating canopy collision,
+jungle impact, Astral death/return, Chuck looking around, and a cigarette drag.
+It holds on the non-playable Chult tableau ready for Phase 4.
 
 ## Implementation
 
-- Moved the tavern hearth from column 25 to column 28, the last floor tile before
-  the solid east wall. Its established sprite, collision, and prop behavior are
-  unchanged.
-- Increased pantry sky art from two to twelve stable variants. Each variant uses
-  a seeded generator for cloud height, width, horizontal position, and one-pixel
-  frame drift; map-coordinate hashing still keeps every selected variant stable.
-- Moved the exterior HEROD sign one tile west, from `(43, 18)` to `(42, 18)`,
-  while preserving the tavern threshold and named return marker.
-- Added a shared `closed_door` dialogue ID to the existing `house_door` prop.
-  All three north-district doors remain solid and now say exactly "it's closed".
+- Expanded `FallingCutsceneScene` into a 39-second deterministic timeline. Open
+  sky alone lasts almost 24 seconds, intentionally pushing just past comfort,
+  with nine looping cloud layers and a gradual teal-to-green darkening.
+- From 24-29 seconds, twelve crossing branches plus six vines accelerate upward
+  while trunks, canopy, and ground rise into frame. Chuck moves from the held
+  fall composition to the jungle floor for a restrained two-pixel impact jolt.
+- Impact plays the existing dry thud. Chuck then disappears into localized
+  Astral pixels with the established vanish cue and returns with the established
+  respawn bells; no Sanity state or WorldScene is created for the presentation.
+- After returning, Chuck looks left, right, then forward. The cutscene removes
+  the cigarette pixels from his profile frame, animates a cigarette from paw to
+  mouth, restores the lit profile, and emits subtle looping smoke during a drag.
+- The final dense jungle uses only native 320x180 procedural primitives: layered
+  trunks, canopy bands, hanging vines, roots, leaf litter, and foreground ferns.
+- At 39 seconds `cutscene_complete` becomes true and the image holds forever.
+  There is still no player entity, input response, playable Chult map, or return
+  to Waterdeep.
 
 ## Verification
 
 - All 20 test suites pass.
-- Coverage verifies exact hearth/sign coordinates, all three shared house-door
-  props and end-to-end interaction with each door, the closed-door line, twelve
-  sky variants with at least ten distinct first frames, map drawability, and
-  unchanged pantry fall behavior.
-- Native-scale visual review confirms the sign clears the open doorway, the
-  hearth reads flush to the east wall, and the sky field has varied cloud
-  placement without losing its clear teal/cloud identity.
+- Timeline coverage advances through long fall, canopy, impact, vanished,
+  return, look, cigarette, and complete phases; verifies all five sound cues,
+  continued cloud movement, no player entity, cigarette state, and native draw
+  at representative transitions.
+- Native-scale storyboard review at twelve points from 8-42 seconds confirms the
+  long hold, accelerating jungle intrusion, readable impact/blips, directional
+  looks, cigarette placement, smoke, and stable final tableau.
 
 ## Playtest Focus
 
-- Inspect the tavern's east side and confirm the fireplace visually meets the
-  wall rather than floating one or more floor tiles away.
-- Return to the exterior after the sewer and confirm the HEROD sign no longer
-  obscures any part of the open tavern threshold.
-- Interact with each of the three doors in the north-district buildings; every
-  one should show only "it's closed" while remaining physically shut.
-- View the pantry sky field for several animation frames. Cloud blocks should
-  feel scattered rather than stamped, while the cheese remains legible and sky
-  contact still enters the falling scene.
+- Enter pantry sky on foot and confirm the familiar initial fall flows directly
+  into the authored sky shot without Sanity loss or a respawn flash.
+- Let the cutscene run without skipping. The open-sky section should feel almost
+  too long, but cloud motion and the slowly darkening grade should remain alive.
+- Confirm branch/vine strikes escalate into a clear crash through dense jungle,
+  followed by a grounded thud rather than a normal gameplay landing.
+- Watch Chuck blip out and back on impact, look left/right/forward, put the
+  cigarette in his mouth, and take a visible restrained drag.
+- Hold every control during and after the sequence. Nothing should return player
+  control; the smoking jungle image should remain the Phase 4 boundary.
 
 ## Next Bounded Task
 
-Turn `FallingCutsceneScene` into the complete circa-1994 long-fall sequence:
-author timed visual stages, changing cloud density/sky, a stylized audio arc,
-and an approach toward Chult, then end at a clean non-playable Phase 4 handoff.
-Do not create the playable Chult map or return control in Chult.
+Run the complete Phase 3 path from a clean save and tune only demonstrated
+timing/readability defects. Once accepted, begin Phase 4 from the held jungle
+tableau under the Phase 4 scope; do not retrofit playable Chult into this scene.

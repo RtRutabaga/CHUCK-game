@@ -10,7 +10,10 @@ import pygame
 
 from src.core import config
 from src.core.game import Game
-from src.scenes.falling_cutscene_scene import FallingCutsceneScene
+from src.scenes.falling_cutscene_scene import (
+    CANOPY_START, CIGARETTE_START, COMPLETE_TIME, IMPACT_TIME, LOOK_START,
+    RESPAWN_TIME, VANISH_TIME, FallingCutsceneScene,
+)
 from src.scenes.world_scene import WorldScene
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import PANTRY
@@ -164,6 +167,59 @@ def test_pantry_sky_fall_preserves_sanity_and_enters_cutscene() -> None:
         assert cutscene.elapsed == 0.25
         assert [cloud[1] for cloud in cutscene.clouds] != cloud_y
         assert not hasattr(cutscene, "player")
+        game.scenes.draw(game.native_surface)
+    finally:
+        game._shutdown()
+
+
+def test_falling_cutscene_completes_long_descent_and_jungle_return() -> None:
+    game = Game()
+    try:
+        game.scenes.replace(FallingCutsceneScene(game))
+        scene = game.scenes.current
+        sounds = []
+        game.audio.play_sfx = sounds.append
+        initial_clouds = [cloud[1] for cloud in scene.clouds]
+
+        scene.update(CANOPY_START - 0.1)
+        assert scene.phase == "fall"
+        assert scene.elapsed > 20.0  # The open-sky hold is intentionally long.
+        assert [cloud[1] for cloud in scene.clouds] != initial_clouds
+        game.scenes.draw(game.native_surface)
+
+        scene.update(1.0)
+        assert scene.phase == "canopy"
+        assert sounds == ["scratch"]
+        game.scenes.draw(game.native_surface)
+
+        scene.update(IMPACT_TIME - scene.elapsed)
+        assert scene.phase == "impact"
+        assert sounds == ["scratch", "scratch", "hurt"]
+        game.scenes.draw(game.native_surface)
+
+        scene.update(VANISH_TIME - scene.elapsed + 0.01)
+        assert scene.phase == "vanished"
+        assert sounds[-1] == "vanish"
+        game.scenes.draw(game.native_surface)
+
+        scene.update(RESPAWN_TIME - scene.elapsed + 0.01)
+        assert scene.phase == "return"
+        assert sounds[-1] == "respawn"
+        game.scenes.draw(game.native_surface)
+
+        scene.update(LOOK_START - scene.elapsed + 0.01)
+        assert scene.phase == "look"
+        game.scenes.draw(game.native_surface)
+
+        scene.update(CIGARETTE_START - scene.elapsed + 0.01)
+        assert scene.phase == "cigarette"
+        assert not scene.cigarette_lit
+        game.scenes.draw(game.native_surface)
+
+        scene.update(COMPLETE_TIME - scene.elapsed + 0.01)
+        assert scene.phase == "complete"
+        assert scene.cutscene_complete and scene.cigarette_lit
+        assert not hasattr(scene, "player")
         game.scenes.draw(game.native_surface)
     finally:
         game._shutdown()

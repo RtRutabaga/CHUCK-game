@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: session 59 (environment placement and sky variation polish). This file
-is required by the project rules and updated every session.
+Updated: session 60 (complete fall-to-Chult cutscene). This file is required by
+the project rules and updated every session.
 
 ## Working systems
 
@@ -159,15 +159,21 @@ is required by the project rules and updated every session.
   its exact fall -> Sanity depletion -> local retry behavior. Teal sky is a
   walkable successful-fall trigger: it begins with the same restrained 0.65s
   shrink/sink animation, preserves Sanity, and replaces gameplay with a
-  dedicated `FallingCutsceneScene`. The cutscene has no player-controlled entity,
-  fades out the Waterdeep music, reframes Chuck from tiny gameplay scale, and
-  presents him against a native-resolution teal grade with two speeds of blocky
-  clouds moving upward. This first shot loops indefinitely until the authored
-  long descent and clean Phase 4 endpoint are added
+  dedicated `FallingCutsceneScene`. The cutscene has no player-controlled entity
+  and fades out the Waterdeep music. Its complete 39-second authored timeline
+  intentionally holds open sky for almost 24 seconds while irregular cloud
+  layers scroll upward and the teal grade slowly darkens. Branches, vines, and
+  trunks then accelerate through frame as a dense eerie jungle and its ground
+  rush upward. Chuck impacts at 29 seconds, quietly blips out through the
+  familiar Astral language, blips back, looks left/right/down, places a
+  cigarette in his mouth, and takes a restrained smoking drag. Existing scrape,
+  thud, vanish, and respawn cues punctuate the collision and return. At 39
+  seconds the scene holds indefinitely on the smoking jungle tableau with no
+  restored controls, forming the clean non-playable Phase 4 handoff
 
 ## Placeholder systems
-- The authored long-fall progression, audio arc, approach toward Chult, and
-  clean non-playable Phase 4 endpoint remain intentionally absent
+- Playable Chult is intentionally absent. Phase 4 begins from the final jungle
+  tableau after its own active scope is established
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -250,16 +256,15 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Author the contained falling scene into the complete circa-1994 long descent:
-vary cloud layers and sky over time, shape the audio transition, suggest the
-approach toward Chult, then stop at a clean non-playable Phase 4 handoff point.
-Do not build playable Chult.
+Perform the full Phase 3 human playtest from a clean start through the held
+jungle tableau, tuning only clear regressions or timing/readability issues. Do
+not begin playable Chult until Phase 4 scope is active.
 
 ## Also open
 
 - Full Phase 2 human playtest and acceptance
 - Dedicated tavern music or ambience (the shell currently reuses Waterdeep)
-- Complete falling-to-Chult cutscene
+- Full clean-start Phase 3 human playtest and timing acceptance
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 
@@ -275,4 +280,6 @@ Do not build playable Chult.
        safe route, storage dressing, and local Astral retry (session 56)
 4. [x] Reused Astral fall death + distinct successful sky fall preserving
        Sanity and handing off to an input-free cutscene scene (session 57)
-5. [ ] Dedicated circa-1994 falling-to-Chult cutscene and Phase 4 handoff point
+5. [x] Dedicated circa-1994 falling-to-Chult cutscene: deliberately long cloud
+       descent, canopy collision, jungle impact, Astral return, cigarette drag,
+       and held non-playable Phase 4 handoff point (session 60)
