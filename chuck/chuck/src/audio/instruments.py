@@ -95,3 +95,22 @@ def snare(freq: float, dur: float, vel: float = 1.0) -> list[float]:
 def hat(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     return gain(envelope(_highpassed_noise(0.035, 5200, seed=13),
                          0.001, 0.03), vel * 0.28)
+
+
+def jungle_tom(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Warm hand-drum/tom voice for low, pitched percussion patterns."""
+    body = mix(
+        tone(max(70.0, freq / 2), 0.16, "triangle"),
+        gain(tone(max(55.0, freq / 4), 0.18), 0.55),
+        gain(noise(0.012, seed=21), 0.18),
+    )
+    return gain(envelope(lowpass(body, 900), 0.001, 0.15), vel * 0.62)
+
+
+def woodblock(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Short woody click: pitched enough to groove, dry enough to stay retro."""
+    body = mix(
+        tone(max(280.0, freq), 0.045, "square", duty=0.2),
+        gain(noise(0.018, seed=22), 0.25),
+    )
+    return gain(envelope(lowpass(body, 2400), 0.001, 0.04), vel * 0.32)

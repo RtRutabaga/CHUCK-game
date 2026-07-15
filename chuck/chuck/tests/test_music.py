@@ -13,6 +13,7 @@ import struct
 import wave
 
 from data.music import fall_to_chult as fall_song
+from data.music import chult as chult_song
 from data.music import sewer as sewer_song
 from data.music import waterdeep_docks as song
 from src.audio.sequencer import Note, Track, note_to_freq, render_song
@@ -143,6 +144,42 @@ def test_rendered_fall_cue_respects_one_shot_quality_gates() -> None:
     samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
     assert 35 * SAMPLE_RATE <= len(samples) <= 37 * SAMPLE_RATE
     assert max(abs(sample) for sample in samples) <= 0.9
+
+
+def test_chult_theme_is_bass_forward_syncopated_and_layered() -> None:
+    tracks = chult_song.build_tracks()
+    duration = chult_song.TOTAL_BEATS * 60.0 / chult_song.TEMPO_BPM
+    assert duration >= 80.0
+    assert len([track for track in tracks if track.notes]) >= 9
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < chult_song.TOTAL_BEATS
+
+    bass = next(track for track in tracks if track.name == "bass")
+    assert bass.level > next(track for track in tracks if track.name == "lead").level
+    a_hits = [note for note in bass.notes if 4 * 4 <= note.beat < 12 * 4]
+    assert len(a_hits) >= 8 * 7
+    assert any(note.beat % 1 not in {0.0, 0.5} for note in a_hits)
+
+    toms = next(track for track in tracks if track.name == "toms")
+    wood = next(track for track in tracks if track.name == "wood")
+    assert len(toms.notes) >= chult_song.TOTAL_BARS * 3
+    assert len(wood.notes) >= chult_song.TOTAL_BARS * 4
+    assert any(note.pitch == "B4" for note in tracks[0].notes), (
+        "Dorian raised-sixth color is missing from the lead"
+    )
+
+
+def test_rendered_chult_theme_respects_loop_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "chult.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 80 * SAMPLE_RATE
+    peak = max(abs(sample) for sample in samples)
+    assert peak <= 0.9, f"clipping risk: peak {peak:.2f}"
+    assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
 
 
 def _run_all() -> None:

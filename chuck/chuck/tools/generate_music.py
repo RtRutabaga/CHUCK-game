@@ -5,6 +5,7 @@ Run from the project root (pure stdlib):
     python tools/generate_music.py                 # the docks theme
     python tools/generate_music.py sewer           # the sewer theme
     python tools/generate_music.py fall_to_chult   # the cutscene cue
+    python tools/generate_music.py chult            # the Chult jungle theme
 
 Reads the composition from data/music/<name>.py, renders it through
 src/audio (sequencer + instruments + synth), and writes

@@ -43,6 +43,5 @@ AREA_MUSIC: dict[str, str | None] = {
     # Reuse the warm Waterdeep theme until the dedicated tavern audio pass.
     "waterdeep_tavern": "waterdeep_docks.wav",
     "waterdeep_pantry": "waterdeep_docks.wav",
-    # Phase 4's dedicated exploration theme is a later bounded audio slice.
-    "chult_jungle": None,
+    "chult_jungle": "chult.wav",
 }

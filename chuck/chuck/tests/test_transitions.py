@@ -48,6 +48,7 @@ def test_every_choice_goto_points_at_a_real_map() -> None:
 
 
 def test_area_music_is_a_real_file_or_deliberate_silence() -> None:
+    assert AREA_MUSIC["chult_jungle"] == "chult.wav"
     for name, music in AREA_MUSIC.items():
         if music is not None:
             assert (config.MUSIC_DIR / music).is_file(), (name, music)

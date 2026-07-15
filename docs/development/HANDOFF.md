@@ -3,8 +3,8 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `69d8118` (`Add Phase 4 Chult landing, undead, and thorn hazard`)
-- Current work: Phase 4 through the route-deeper boundary
+- Base commit before this pass: `8e3ef42` (`Add Chult traveler scene and deeper trail`)
+- Current work: Phase 4 implementation complete through the Chult soundtrack
 - Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
 
 ## Completed This Pass
@@ -33,8 +33,7 @@ runtime entry and a saveable/development-visible `chult_anchor` displayed as
 `Chult 1`. Both require `sewer_completed` and the new minimal durable flag
 `chult_reached`. The cutscene, development selector, Ashtray activation,
 CONTINUE, and Sanity-zero respawn therefore use the same existing loader and
-save architecture. Chult is deliberately silent pending its dedicated music
-slice; no placeholder Waterdeep track leaks into the jungle.
+save architecture.
 
 Four undead markers now populate broad clearings: two zombies and two skeletons.
 `UndeadEnemy` is one reusable entity with data-tuned variants. It uses the
@@ -78,6 +77,16 @@ target loadable maps, while giving the next Chult area a stable connection
 point. No second map, narrative beat, progression flag, or placeholder teleport
 was added.
 
+Chult now has its dedicated exploration theme. `data/music/chult.py` defines an
+original 40-bar D-Dorian loop at 112 BPM (85.7 seconds) through the existing
+offline sequencer. Its two-bar syncopated bass ostinato persists across the
+groove intro, A/A' hooks, darker B section, humid breakdown, and full return.
+Ten reusable voices layer deep bass and sub pulse with pluck lead, flute, bells,
+kick/snare/hats, and two new generic instrument voices: warm pitched jungle toms
+and a short dry woodblock. `chult.wav` is cached at the established 22.05 kHz,
+16-bit mono format and `AREA_MUSIC` starts it for all normal Chult entry paths.
+No ambience subsystem or map/gameplay changes were added.
+
 ## Verification
 
 - All 27 test modules pass through their standalone runners (pytest is not
@@ -110,6 +119,12 @@ was added.
   location, the continuous three-wide approach, solid authored edge, and
   dedicated ground/overhead tileset rows. Native 320x180 review confirms the
   darker track and canopy opening read clearly from the northern clearing.
+- Music coverage now verifies Chult's 80+ second duration, ten active layers,
+  bass-forward relative mix, seven-hit syncopated bass bars, Dorian melodic
+  color, three tom and four woodblock hits per bar, valid pitches, rendered
+  format, peak headroom, and loop seam. The 85.7-second render peaks at 0.75;
+  a diagnostic 220 Hz low-pass retained about 88% of total RMS, confirming the
+  mix is materially low-end-led. Transition coverage verifies the file exists.
 
 ## Playtest Focus
 
@@ -148,9 +163,15 @@ was added.
 15. Continue north onto the darker worn trail. Confirm it reads as the route
     deeper, the canopy closes over Chuck at the threshold, and the stable edge
     stops him cleanly without a broken transition or missing-map error.
+16. Listen through the Chult theme from Chult 1. Confirm the bass hook is
+    immediately memorable, percussion feels jungle-oriented and syncopated,
+    the middle breakdown stays propulsive, and the full loop has no audible
+    seam. Die and CONTINUE in Chult; confirm music remains stable and restarts
+    appropriately on a fresh launch.
 
 ## Next Bounded Task
 
-Create the dedicated bass-forward Chult exploration soundtrack as one bounded
-audio slice. Keep it original, groove-led, jungle-oriented, and consistent with
-the established procedural retro soundtrack; do not add a new map in that pass.
+Human-playtest the complete Phase 4 route and soundtrack against the active
+acceptance criteria. Make only targeted tuning or bug fixes from concrete
+feedback. Do not begin Phase 5 without an active Phase 5 contract or explicit
+direction.

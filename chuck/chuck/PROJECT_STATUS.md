@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 71 (Phase 4 route-deeper boundary). This file is required by
+Updated: session 72 (Phase 4 Chult exploration soundtrack). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -40,16 +40,19 @@ the project rules and updated every session.
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
   sequencer), offline rendering (tools/generate_audio.py +
   tools/generate_music.py <name>), AudioSystem with graceful no-device
-  fallback; three composed pieces (data/music/, 7-8 voices) —
+  fallback; four composed pieces (data/music/, 7-10 voices) —
   the 95s warm Waterdeep Docks theme and the 83s eerie/funky D-minor
   Sewer theme loop seamlessly, while the 36s one-shot fall-to-Chult cue drives
-  the Phase 3 cutscene; Chult's exploration theme remains a Phase 4 audio slice;
+  the Phase 3 cutscene. Chult now has an original 86s D-Dorian exploration loop:
+  a persistent syncopated deep-bass hook, pitched hand drums, woody offbeats,
+  layered retro percussion, a compact plucked melody, flute answers, and a humid
+  breakdown. It enters immediately on either cutscene arrival or Chult 1 load;
   SFX for pickup, interact, hurt, vanish, respawn, anchor
   chime, a quiet rounded jump bounce, scratch scrape, and per-surface footsteps.
   Re-requesting the same looping track is idempotent, so movement among the
   docks, tavern, and pantry preserves the Waterdeep theme's playback position;
-  sewer, cutscene, Chult silence, and future differently scored regions still
-  switch or stop normally
+  sewer, cutscene, Chult, and future differently scored regions still switch
+  or stop normally
 - Distribution: reproducible PyInstaller 6.21 single-file Windows build
   (`CHUCK.spec` + `requirements-build.txt`) bundles all runtime assets and data
   into `dist/CHUCK-demo.exe`. The windowed EXE needs no Python installation,
@@ -259,8 +262,8 @@ the project rules and updated every session.
   remains the deliberate Phase 4 edge
 
 ## Placeholder systems
-- The landing and exploration layout are only the first Phase 4 slices.
-  Chult soundtrack remains unfinished
+- Phase 4 implementation is feature-complete pending full-route human playtest
+  and acceptance
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -344,8 +347,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Human-playtest the backpack/boot scene and north trail boundary. Then create the
-dedicated bass-forward Chult exploration soundtrack as the next bounded slice.
+Human-playtest the complete Phase 4 route, with particular attention to Chult's
+new bass-forward theme, its loop, and audio behavior after death/CONTINUE. Tune
+only from concrete playtest feedback; do not begin Phase 5 without a new active
+phase contract or explicit direction.
 
 ## Also open
 
@@ -374,8 +379,9 @@ dedicated bass-forward Chult exploration soundtrack as the next bounded slice.
        short interaction line and no overt campaign reference (session 70).
 9. [x] Added a clear worn north trail and canopy-framed, named
        `chult_deeper` boundary without inventing the next full map (session 71).
-10. [ ] Add the dedicated bass-forward Chult soundtrack as its own bounded
-        slice.
+10. [x] Added an original 86-second bass-forward Chult exploration loop with
+        syncopated percussion, layered groove, melodic identity, clean looping,
+        and normal area/checkpoint audio integration (session 72).
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

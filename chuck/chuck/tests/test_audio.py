@@ -15,6 +15,7 @@ import wave
 
 import pygame
 
+from src.audio import instruments
 from src.audio.synth import (
     SAMPLE_RATE, crossfade_loop, envelope, mix, noise, normalize, tone,
 )
@@ -65,6 +66,18 @@ def test_crossfade_loop_seam_is_continuous() -> None:
     assert abs(buf[0] - src[len(src) - n]) < 0.05
     # ...and the wrap buf[-1] -> buf[0] is adjacent-sample smooth.
     assert abs(buf[-1] - buf[0]) < 0.1
+
+
+def test_chult_percussion_voices_are_short_audible_and_click_free() -> None:
+    for voice, frequency in (
+        (instruments.jungle_tom, 147.0),
+        (instruments.woodblock, 784.0),
+    ):
+        samples = voice(frequency, 0.2, 1.0)
+        duration = len(samples) / SAMPLE_RATE
+        assert 0.04 <= duration <= 0.2
+        assert max(abs(sample) for sample in samples) >= 0.1
+        assert abs(samples[0]) < 0.05 and abs(samples[-1]) < 0.05
 
 
 def test_all_rendered_sfx_exist_and_respect_headroom() -> None:
