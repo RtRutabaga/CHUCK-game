@@ -53,6 +53,7 @@ _SPRITES = {
 PROP_DIALOGUE = {
     "bobert_barrel": "bobert_sleeping",  # he does not wake up
     "herod_sign": "herod_sign",
+    "house_door": "closed_door",
     "cheese": "cheese",
 }
 

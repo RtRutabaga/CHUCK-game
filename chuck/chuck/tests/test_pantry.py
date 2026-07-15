@@ -6,17 +6,32 @@ from collections import Counter, deque
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+import pygame
+
 from src.core import config
 from src.core.game import Game
 from src.scenes.falling_cutscene_scene import FallingCutsceneScene
 from src.scenes.world_scene import WorldScene
 from src.world.tilemap import TileMap
+from src.world.tileset_layout import PANTRY
 
 
 def _place_on_tile(scene: WorldScene, col: int, row: int) -> None:
     ts = config.TILE_SIZE
     scene.player.x = col * ts + (ts - scene.player.width) / 2
     scene.player.y = row * ts + (ts - scene.player.height) / 2
+
+
+def test_sky_cloud_tiles_have_stable_nonrepeating_variants() -> None:
+    assert PANTRY.info()["sky_cloud"] == (12, 2)
+    sheet = pygame.image.load(config.TILESETS_DIR / "pantry.png")
+    sky_row = 3 * config.TILE_SIZE
+    first_frames = []
+    for variant in range(12):
+        x = variant * 2 * config.TILE_SIZE
+        cell = sheet.subsurface((x, sky_row, config.TILE_SIZE, config.TILE_SIZE))
+        first_frames.append(pygame.image.tobytes(cell, "RGBA"))
+    assert len(set(first_frames)) >= 10
 
 
 def test_pantry_is_compact_readable_and_safely_navigable() -> None:

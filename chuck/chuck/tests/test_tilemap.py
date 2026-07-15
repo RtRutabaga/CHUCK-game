@@ -138,6 +138,11 @@ def test_docks_has_the_tavern_front() -> None:
     m = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
     counts = Counter(kind for kind, _, _ in m.prop_tiles)
     assert counts["herod_sign"] == 1
+    sign_tiles = {
+        (col, row) for kind, col, row in m.prop_tiles
+        if kind == "herod_sign"
+    }
+    assert sign_tiles == {(42, 18)}
     # A door exists somewhere in the tavern's south face.
     assert any("D" in row for row in m._grid)
     # And the market has awning tiles.
@@ -202,6 +207,11 @@ def test_docks_district_blocks_are_houses() -> None:
     facade, each with two lit windows, a decorative door, a chimney —
     and all of it solid (never accessible; style only)."""
     m = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
+    house_doors = {
+        (col, row) for kind, col, row in m.prop_tiles
+        if kind == "house_door"
+    }
+    assert house_doors == {(14, 4), (28, 4), (39, 4)}
     for block, door_col in ((range(10, 18), 14), (range(24, 32), 28),
                             (range(36, 44), 39)):
         for c in block:

@@ -149,7 +149,7 @@ PANTRY = Tileset(
         ("pantry_floor", 3, 1),
         ("pantry_wall", 2, 1),
         ("astral_void", 2, 3),
-        ("sky_cloud", 2, 2),
+        ("sky_cloud", 12, 2),
     ],
     char_to_terrain={
         "p": "pantry_floor",

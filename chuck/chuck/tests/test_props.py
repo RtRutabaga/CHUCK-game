@@ -65,9 +65,10 @@ def test_chimney_is_a_valid_mute_prop() -> None:
     assert p._draw_y == 10 * TS - 22  # rises above its roof tile
 
 
-def test_house_door_is_a_valid_mute_prop() -> None:
+def test_house_door_is_a_valid_closed_interactable() -> None:
     p = Prop("house_door", col=14, row=4, assets=FakeAssets(14, 20))
-    assert p.dialogue_id is None  # decorative; these homes stay shut
+    assert p.dialogue_id == "closed_door"
+    assert p.choice_id is None
     assert p._draw_y == 5 * TS - 20
 
 
@@ -137,10 +138,12 @@ def test_prop_dialogue_mapping() -> None:
     barrel = Prop("barrel", 9, 4, FakeAssets(14, 19))
     crate = Prop("crate", 14, 6, FakeAssets(16, 20))
     cheese = Prop("cheese", 14, 6, FakeAssets(10, 7))
+    house_door = Prop("house_door", 14, 4, FakeAssets(14, 20))
     assert bobert.dialogue_id == "bobert_sleeping"
     assert sign.dialogue_id == "herod_sign"
     assert barrel.dialogue_id is None and crate.dialogue_id is None
     assert cheese.dialogue_id == "cheese"
+    assert house_door.dialogue_id == "closed_door"
 
 
 def test_prop_interaction_bounds_cover_the_sprite() -> None:

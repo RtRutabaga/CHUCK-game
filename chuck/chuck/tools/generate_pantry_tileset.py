@@ -1,6 +1,7 @@
 """Generate the compact Waterdeep pantry tileset."""
 
 import os
+import random
 import sys
 from pathlib import Path
 
@@ -56,12 +57,20 @@ def draw_sky_cloud(surface, variant: int, frame: int) -> None:
     """A hard-edged view of teal open sky, not a glowing portal."""
     surface.fill(SKY["teal"])
     pygame.draw.line(surface, SKY["deep"], (0, 15), (15, 15))
-    shift = (frame * 2 + variant * 5) % 8
-    cloud_y = 4 + variant * 5
-    for x in range(-8 + shift, 20, 12):
-        pygame.draw.rect(surface, SKY["shade"], (x, cloud_y + 2, 9, 3))
-        pygame.draw.rect(surface, SKY["cloud"], (x + 2, cloud_y, 5, 4))
-        pygame.draw.rect(surface, SKY["cloud"], (x, cloud_y + 2, 9, 2))
+    # Each stable terrain variant gets its own seeded cloud placement. The
+    # runtime still picks variants deterministically per map coordinate, so the
+    # floor never rearranges, but a field no longer exposes a two-tile stamp.
+    rng = random.Random(0xC10D + variant * 7919)
+    cloud_y = rng.randint(1, 10)
+    cloud_w = rng.randint(6, 11)
+    cloud_x = rng.randint(-4, 9)
+    drift = frame * (-1 if variant % 3 == 0 else 1)
+    x = cloud_x + drift
+    cap_w = max(3, cloud_w - 4)
+    cap_x = x + (cloud_w - cap_w) // 2
+    pygame.draw.rect(surface, SKY["shade"], (x, cloud_y + 2, cloud_w, 3))
+    pygame.draw.rect(surface, SKY["cloud"], (cap_x, cloud_y, cap_w, 4))
+    pygame.draw.rect(surface, SKY["cloud"], (x, cloud_y + 2, cloud_w, 2))
 
 
 DRAW = {

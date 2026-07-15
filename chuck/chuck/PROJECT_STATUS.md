@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: session 58 (tavern/pantry presentation refinement). This file is
-required by the project rules and updated every session.
+Updated: session 59 (environment placement and sky variation polish). This file
+is required by the project rules and updated every session.
 
 ## Working systems
 
@@ -13,12 +13,12 @@ required by the project rules and updated every session.
 - Swept, axis-separated tile collision (no tunneling at any dt)
 - Smooth frame-rate-independent follow camera, clamped to map bounds
 - Sprites from text grids (tools/): Chuck (idle/walk x4 facings), the
-  cat, five human NPCs, and the 75-glyph 5x9 pixel font
+  cat, six human NPCs, and the 75-glyph 5x9 pixel font
 - Sanity with i-frames; cigarette pickups; HUD meter (a cigarette
   burning down); patrolling cat hazard; Astral Anchor checkpoints;
   quiet vanish -> starfield -> respawn (no game-over screen, ever); enemies
   rebuild from their map markers when Chuck returns
-- Dialogue: JSON data files, typewriter box, five NPCs; choice
+- Dialogue: JSON data files, typewriter box, six NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
   sequencer), offline rendering (tools/generate_audio.py +
@@ -43,7 +43,8 @@ required by the project rules and updated every session.
   sign 'H'), southeast market with awning 'a' — the overhead layer
   draws canvas over Chuck; flood-fill connectivity is a permanent test
 - Prop dialogue: Bobert snores ("... Zzzzz."), the sign reads "Herod
-  Cover Band - Tonight Only"; other props are mute; NPCs answer first
+  Cover Band - Tonight Only", and all three northern house doors answer
+  "it's closed"; other props are mute; NPCs answer first
 - Playtest sizing: human-scale tavern door (now 48x34 with hanging
   lanterns), enlarged west pier (4 rows to col 1), south pier with
   T-head, and a 48-tile market awning
@@ -51,14 +52,17 @@ required by the project rules and updated every session.
   facade + lit windows, all new tileset terrains ('r','e','t','W','m'). It
   begins with solid double doors; returning through the sewer outflow swaps
   them for a 48x34 black open threshold with lit side lanterns. Only the
-  threshold tile becomes walkable; the surrounding facade remains solid
+  threshold tile becomes walkable; the surrounding facade remains solid. The
+  freestanding HEROD sign now sits one tile farther west so neither its post nor
+  face competes with the open doorway
 - District wall: battlements/brick/banners/flickering torches
   ('w','b','F','i') with portcullis gates drawn overhead ('g');
   both northern portcullises now occupy the upper opening row with clear
   walkable stone beneath, so they read as raised/open without changing the
   passage footprint; northern boundary wall battlemented too
 - District houses: the three north blocks reskinned with the tavern
-  grammar + decorative house doors ('h'); solid, never accessible
+  grammar + decorative house doors ('h'); the doors remain solid but are now
+  interactable and all return the shared line "it's closed"
 - Market stall (cutaway): checkered canopy over the back rows ending
   in scalloped edge ('u') + corner posts ('P'); goods '1'-'5' (produce
   crates/table/barrel) stand visible in the open front row. A human-scale
@@ -121,7 +125,9 @@ required by the project rules and updated every session.
   immediate transition bounce. The room uses a dedicated procedural tileset;
   its floor now calls the pantry generator's exact worn-board renderer while
   retaining the tavern's distinct interior walls. A bar counter, three
-  human-scale tables, chairs, hearth, barrels, and crates remain solid. A small
+  human-scale tables, chairs, hearth, barrels, and crates remain solid. The
+  hearth now occupies the floor tile directly beside the east wall, with no
+  intervening plank gap. A small
   raised stage against the north wall uses dedicated top-board and solid front-
   fascia terrain. All remaining floor and the stage's side access form one
   connected traversal area, the camera remains on the normal WorldScene path,
@@ -142,6 +148,9 @@ required by the project rules and updated every session.
   existing fall -> local respawn behavior; small singles and pairs make reality
   feel substituted without breaking the connected safe route. A separate hard-
   edged teal sky with blocky clouds is immediately distinct at native scale.
+  Its animation now uses twelve seeded, stable cloud layouts instead of two
+  repeated stamps, varying cloud height, width, horizontal placement, and drift
+  without rearranging the floor between frames or runs.
   The game's sole cheese sits on a one-board island inside that broad sky field:
   every cardinal approach is four tiles from ordinary floor, beyond Chuck's
   fixed 2.3-tile jump. It is a readable temptation toward the successful fall,

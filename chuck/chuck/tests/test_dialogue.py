@@ -64,13 +64,15 @@ def test_empty_or_malformed_lines_are_loud() -> None:
 def test_real_docks_dialogue_loads() -> None:
     ds = DialogueSystem()
     for dialogue_id in (
-        "dock_worker", "bobert_sleeping", "herod_sign", "market_woman",
+        "dock_worker", "bobert_sleeping", "herod_sign", "closed_door",
+        "market_woman",
         "bartender", "patron", "musician", "cheese",
     ):
         lines = ds.get(dialogue_id)
         assert lines and all(isinstance(l, str) for l in lines)
     assert ds.get("bobert_sleeping") == ["... Zzzzz."]
     assert ds.get("herod_sign") == ["Herod Cover Band - Tonight Only"]
+    assert ds.get("closed_door") == ["it's closed"]
     assert ds.get("guard") == ["Stick to the docks, rat."]
     assert ds.get("market_woman") == [
         "No handouts here. If you're hungry, you should check the sewer for scraps"

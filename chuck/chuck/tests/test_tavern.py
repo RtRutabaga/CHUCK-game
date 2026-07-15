@@ -45,6 +45,12 @@ def test_tavern_shell_is_connected_and_readable() -> None:
     assert kinds.count("cheese") == 0
     assert kinds.count("pantry_open") == 1
     assert not tavern.is_solid(14, 1)
+    hearth_tiles = {
+        (col, row) for kind, col, row in tavern.prop_tiles
+        if kind == "tavern_hearth"
+    }
+    assert hearth_tiles == {(28, 5)}
+    assert tavern.is_solid(29, 5)  # flush with the east wall
     terrain = Counter(ch for row in tavern._grid for ch in row)
     assert terrain["+"] == 14
     assert terrain["-"] == 7
@@ -158,6 +164,25 @@ def test_open_docks_door_enters_tavern_and_returns_safely() -> None:
         scene.update(0.01)
         assert scene.map_name == "waterdeep_docks"
         game.scenes.draw(game.native_surface)
+    finally:
+        game._shutdown()
+
+
+def test_each_north_house_door_says_it_is_closed() -> None:
+    game = Game()
+    try:
+        game.scenes.replace(WorldScene(game, "waterdeep_docks"))
+        world = game.scenes.current
+        for col in (14, 28, 39):
+            _place_on_tile(world, col, 5)
+            world.player.facing = "up"
+            game.input._actions_just_pressed.add("interact")
+            world.update(0.01)
+            dialogue = game.scenes.current
+            assert isinstance(dialogue, DialogueScene)
+            assert dialogue._lines == ["it's closed"]
+            game.scenes.pop()
+            assert game.scenes.current is world
     finally:
         game._shutdown()
 
