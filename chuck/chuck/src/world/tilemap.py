@@ -322,6 +322,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "¡": MarkerDef(kind="raptor", under="."),
     "§": MarkerDef(kind="anchor:chult_2_anchor", under="."),
     "¶": MarkerDef(kind="massive_dinosaur", under="."),
+    "¤": MarkerDef(kind="boundary:chult_run", under='"'),
+    "µ": MarkerDef(kind="arrival:from_chult_2", under="."),
+    "¥": MarkerDef(kind="anchor:chult_3_anchor", under="."),
 }
 
 _COMMENT_PREFIX = ";"

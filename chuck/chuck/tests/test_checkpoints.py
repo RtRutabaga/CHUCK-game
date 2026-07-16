@@ -223,7 +223,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
         expected_names = (
             "Waterdeep 1", "Waterdeep Ashtray", "Sewer 1", "Sewer 2",
             "Waterdeep 2", "Tavern 1", "Pantry 1",
-            "Chult 1", "Chult 2",
+            "Chult 1", "Chult 2", "Chult 3",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)
@@ -244,7 +244,9 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
                 )
             if checkpoint.map_name in {"waterdeep_tavern", "waterdeep_pantry"}:
                 assert game.progress.has("sewer_completed")
-            if checkpoint.map_name in {"chult_jungle", "chult_cog"}:
+            if checkpoint.map_name in {
+                "chult_jungle", "chult_cog", "chult_run"
+            }:
                 assert game.progress.has("chult_reached")
         assert len(CHECKPOINTS) > len(selector.checkpoints)  # internal returns
     finally:

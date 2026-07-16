@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 88 (massive slow Chult dinosaur). This file is required by
+Updated: session 89 (thorn maze and Chult Map 3 staging). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -28,7 +28,7 @@ the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the four authored Ashtrays have
+  retain the established local retry behavior; the five authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
@@ -318,6 +318,21 @@ the project rules and updated every session.
   CONTINUE restores the Ashtray position, and Sanity-zero return rebuilds both
   raptors there. The durable decision log now records one physical checkpoint
   for each newly authored gameplay map
+- Phase 5 thorn maze and Chult Map 3 handoff: Map 2's former open northern tip
+  is now an 11-row compact maze built entirely from established dense-jungle
+  collision and 37 existing thorn-hazard tiles. Solid dividers, thorn bands,
+  loops, and branching safe corridors create wrong turns and visual pressure,
+  while a fully thorn-free solution remains available without a minimap. The
+  canopy-framed north threshold transitions to `chult_run` through the ordinary
+  walk-exit and named-arrival architecture
+- Chult Map 3 staging: the new 48x36 exterior foundation opens into a connected
+  southern Ashtray clearing and broad reserve for the future undead run. It
+  deliberately contains no undead, release triggers, escape route, or phase-end
+  content yet. Six reusable grass tufts continue the exterior-Chult convention.
+  `Chult 3` is development-visible through the shared loader; one separate
+  hidden `chult_3_anchor` definition saves on physical Ashtray contact, restores
+  through CONTINUE, and becomes the Sanity-zero return point. Chult art, music,
+  camera, collision, and save behavior continue unchanged across the transition
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -358,13 +373,14 @@ the project rules and updated every session.
 
 ## Tests
 
-31 suites (most pure Python/headless): collision, tilemap,
+32 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
 Chult terrain hazard, Chult route-deeper boundary,
 Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
-Phase 5 raptors, and the massive Chult dinosaur
+Phase 5 raptors, the massive Chult dinosaur, and the Phase 5 thorn-maze/Chult 3
+staging transition
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -422,10 +438,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Author the compact northern thorn maze and its readable route toward Chult Map
-3 using the existing thorn system. When Map 3 is created, include its one
-physical Ashtray and shared development checkpoint; do not begin its undead run
-in the same pass.
+Author the readable jungle openings and controlled finite release structure for
+the Chult Map 3 undead run, then tune the first pressure pass with existing
+zombies and skeletons. Do not build the Chuck-sized escape or Map 4 in the same
+session.
 
 ## Also open
 
@@ -486,7 +502,9 @@ in the same pass.
        enlarged the raptors and increased pursuit speed (session 87).
    - [x] Added one reference-informed massive but slower dinosaur in the broad
          northern clearing, with optional combat and normal reset (session 88).
-6. [ ] Author the thorn-maze route into Chult Map 3.
+6. [x] Added a compact branching thorn maze with a safe solution, transitioned
+       it into a connected Chult Map 3 staging foundation, and added Map 3's
+       shared development entry and one physical Ashtray (session 89).
 7. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)

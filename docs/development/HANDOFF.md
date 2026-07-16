@@ -3,11 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `e0f59a2` (`Enlarge and accelerate Chult raptors`)
-- Current work: one massive, slow Chult Map 2 dinosaur
+- Base commit before this pass: `e2a4047` (`Add massive Chult dinosaur`)
+- Current work: Chult Map 2 thorn maze and safe Chult Map 3 staging handoff
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+The former open northern tip of Chult Map 2 is now a compact 11-row thorn maze.
+Thirty-seven existing `|` hazard tiles form bright pressure bands among solid
+dense-jungle dividers. The safe-ground graph contains multiple loops and many
+branch points, but one complete route from the dinosaur clearing to the exit
+touches no thorn. This reuses the established 10-Sanity, i-frame, and jump-safe
+thorn behavior without a maze-specific system or UI.
+
+The canopy-framed north threshold now enters a new `chult_run` map at one named
+southern arrival through the ordinary walk-exit/checkpoint path. This 48x36
+Chult Map 3 staging foundation has a connected Ashtray clearing, broad future
+encounter space, and six reusable grass tufts. It intentionally contains no
+zombies, skeletons, release triggers, Chuck-sized escape, or Map 4 content.
+
+The shared registry exposes `chult_3` / `Chult 3` to the development selector.
+One separate menu-hidden `chult_3_anchor` definition backs the map's single
+physical Ashtray, saves on contact, restores via CONTINUE, and becomes the
+Sanity-zero return point. Chult tileset and music mappings now include Map 3.
 
 One massive dinosaur now occupies the broad northern Chult Map 2 clearing,
 separate from the two central raptors. Sean's supplied reference directly
@@ -247,8 +265,14 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
-- All 31 test modules pass through their standalone runners (pytest is not
+- All 32 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
+- New Phase 5 maze coverage verifies exact compact thorn bounds/count, a
+  thorn-free solution, graph loops and branching choices, the named Map 3 exit,
+  non-bouncing transition, connected 48x36 staging layout, absence of premature
+  undead, six grass tufts, Chult art/music reuse, the `Chult 3` development
+  entry, single physical Ashtray, save record, and relaunch/CONTINUE position.
+  Native 320x180 review confirms readable thorn bands and dense-jungle dividers.
 - New massive-dinosaur coverage verifies the single authored spawn, 72x60
   two-frame/three-facing asset, scale above the raptors, speed below zombies,
   twenty-hit durability, collision, 40-Sanity contact, a route around its body,
@@ -414,10 +438,18 @@ as a convention for each future exterior Chult map.
     green/yellow-eyed/plate-backed reference, and advances much more slowly
     than the other enemies. Circle around it without fighting, then verify
     contact costs heavy Sanity and death/return restores it to its authored spot.
+29. Continue north into the thorn maze. Confirm it feels compact, offers loops
+    and plausible wrong turns, and keeps thorn bands visually distinct from the
+    safe ground. Reach the north exit without touching thorns, then deliberately
+    test thorn damage and jumping over one narrow patch.
+30. Cross into Chult Map 3 and confirm the transition does not bounce. Touch the
+    single nearby Ashtray, quit, and use CONTINUE; verify Chuck returns there.
+    From DEV CHECKPOINTS, load Chult 3 directly and confirm the same quiet
+    staging area initializes with no undead encounter yet.
 
 ## Next Bounded Task
 
-Author the compact northern thorn maze and its readable route toward Chult Map
-3 using the existing thorn system. When Map 3 is created, give it one physical
-Ashtray and a shared-loader development checkpoint. Do not begin the undead run
-or temple in that pass.
+Author readable jungle openings and a controlled finite release structure for
+the Chult Map 3 undead run, then tune the first pressure pass with existing
+zombies and skeletons. Do not build the Chuck-sized escape, Map 4, or temple in
+that pass.
