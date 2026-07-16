@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 74 (Phase 4 broad-leaf jungle shrubs). This file is required by
+Updated: session 75 (Phase 4 thorn scatter and expedition-prop removal). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -238,21 +238,15 @@ the project rules and updated every session.
   Defeated undead rebuild from map markers during the established Astral return,
   alongside cats and rats, while the wide encounter spaces remain escapable
 
-- Phase 4 terrain hazard: a ten-tile thorn cluster occupies an optional open
-  clearing, rendered as bright angular stems over ordinary jungle ground. A
+- Phase 4 terrain hazard: 25 thorn tiles occupy six small patches scattered
+  through optional clearings, rendered as bright angular stems over ordinary
+  jungle ground. A
   reusable terrain-hazard lookup checks Chuck's full footprint rather than a
   Chult-specific scene branch. Contact on foot costs 10 Sanity through the
   established i-frame/hurt feedback; a committed jump passes safely above it.
   Flood-fill coverage verifies the northbound main route remains reachable
-  without touching any thorn tile
-
-- Phase 4 traveler evidence: an optional northern clearing contains one packed
-  expedition backpack and one discarded boot, with no overt campaign reference.
-  Both are solid, y-sorted human-scale props over jungle ground. The 30x32
-  backpack is more than twice Chuck's height and reads almost architecturally;
-  the 26px boot is wider than two Chuck sprites. Three open approach directions
-  keep the scene inspectable without gating progress. Only the backpack responds,
-  with the restrained line `Someone left quickly.`
+  without touching any thorn tile. The former backpack and boot have been
+  removed from the northern clearing, along with their unused art and dialogue
 
 - Phase 4 route deeper: a three-tile-wide worn track now leads out of the
   existing northern clearing and terminates beneath a dense canopy arch. The
@@ -272,8 +266,9 @@ the project rules and updated every session.
   read as dense forest and understory without changing a walkable tile or route
 
 ## Placeholder systems
-- Phase 4 implementation is feature-complete pending full-route human playtest
-  and acceptance
+- Phase 4 previous-traveler evidence needs a replacement environmental scene
+  after the requested backpack/boot removal; all other authored feature slices
+  remain pending full-route human playtest and acceptance
 - (Quiet music variation cut by creative direction — soundtrack is
   Phase-One-complete)
 
@@ -299,11 +294,11 @@ the project rules and updated every session.
 
 ## Tests
 
-28 suites (most pure Python/headless): collision, tilemap,
+27 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
-Chult terrain hazard, previous-traveler scene, Chult route-deeper boundary,
+Chult terrain hazard, Chult route-deeper boundary,
 Chult dense vegetation
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
@@ -358,10 +353,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Human-playtest the tree-and-shrub art at native scale, checking path readability,
-occlusion, collision edges, broad-leaf silhouettes, and vegetation density.
-Then complete the broader Phase 4 acceptance playtest; do not begin Phase 5
-without a new active phase contract or explicit direction.
+Choose and implement a replacement previous-traveler environmental scene that
+does not restore the removed backpack or boot. Then complete the broader Phase 4
+acceptance playtest; do not begin Phase 5 without a new active phase contract or
+explicit direction.
 
 ## Also open
 
@@ -383,11 +378,11 @@ without a new active phase contract or explicit direction.
 6. [x] Added two human-scale durable zombies and two skeletons with simple
        collision-aware pursuit, avoidable placement, existing scratch/contact
        damage, and Astral-return reset behavior (session 66).
-7. [x] Added an optional reusable thorn-terrain cluster: 10 Sanity on-foot
-       contact, existing i-frames, jump-safe traversal, and a safe route around
-       it (session 69).
-8. [x] Added a generic abandoned expedition backpack and boot scene with one
-       short interaction line and no overt campaign reference (session 70).
+7. [x] Expanded the reusable thorn terrain to 25 tiles across six optional
+       patches: 10 Sanity on-foot contact, existing i-frames, jump-safe
+       traversal, and a safe main route around every patch (sessions 69/75).
+8. [ ] Add replacement previous-traveler evidence after the requested removal
+       of the backpack and boot (session 75).
 9. [x] Added a clear worn north trail and canopy-framed, named
        `chult_deeper` boundary without inventing the next full map (session 71).
 10. [x] Added an original 86-second bass-forward Chult exploration loop with

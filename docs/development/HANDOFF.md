@@ -3,8 +3,8 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `59855ad` (`Add dense Chult tree graphics`)
-- Current work: Phase 4 complete through the broad-leaf shrub art pass
+- Base commit before this pass: `a24bc62` (`Add broad-leaf Chult shrubs`)
+- Current work: Phase 4 thorn scatter and requested expedition-prop removal
 - Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
 
 ## Completed This Pass
@@ -54,19 +54,16 @@ checkpoint `fade_in` flag, so the shared loader replaces the scene while black
 and WorldScene fades in over 0.75 seconds with simulation/control locked. Chult
 1 development loads and saved CONTINUE restoration do not request that fade.
 
-Ten `|` tiles form one thorny-undergrowth cluster in an optional open clearing.
+Twenty-five `|` tiles form six small thorny-undergrowth patches scattered
+through optional open clearings.
 The Chult tileset renders three stable variants as bright angular stems over the
 existing ground language. `systems/terrain_hazard.py` owns the reusable terrain
 effect lookup and footprint contact scan. Thorns cost 10 Sanity on foot through
 normal i-frames/hurt feedback; airborne Chuck is safe. No required route crosses
-the cluster.
-
-An optional northern clearing now holds two oversized human expedition props:
-a 30x32 packed backpack and a 26x16 discarded boot. They are solid standing
-props backed against vegetation and approachable from three directions. The
-backpack is more than twice Chuck's height and returns the sole line `Someone
-left quickly.`; the boot is mute. This is deliberately generic environmental
-history, not an overt Tomb campaign reference.
+the patches. The backpack and boot were removed from the northern clearing at
+Sean's request, including their map characters, sprites, generator functions,
+dialogue data, and obsolete placement test. Phase 4 therefore needs a different
+previous-traveler environmental scene before acceptance is complete.
 
 The existing north route now resolves into a distinct three-tile-wide worn
 track. It runs beneath a dense overhead canopy arch at the top edge and carries
@@ -105,7 +102,7 @@ filling the visual gap below the tall tree crowns without changing collision.
 
 ## Verification
 
-- All 28 test modules pass through their standalone runners (pytest is not
+- All 27 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
 - New Chult coverage verifies map dimensions/spawns, shared-loader cutscene
   handoff, required progression, Ashtray save data, and relaunch/CONTINUE.
@@ -126,12 +123,9 @@ filling the visual gap below the tall tree crowns without changing collision.
   verify partial cutscene fade, black handoff, control-locked WorldScene fade,
   and completion back to ordinary simulation.
 - A 25th terrain-hazard suite verifies contact classification, airborne safety,
-  WorldScene damage/i-frames, authored cluster size, and a thorn-free route from
+  WorldScene damage/i-frames, authored patch count, and a thorn-free route from
   the landing to the north end. Native render review confirms clear silhouettes.
-- A 26th traveler-scene suite verifies exact authored placement, open approach,
-  sprite scale relative to Chuck/humans, prop dialogue mapping, and the single
-  restrained line. The normal tileset and dialogue suites also cover the new data.
-- A 27th Chult-exit suite verifies the single named boundary, its exact stable
+- A 26th Chult-exit suite verifies the single named boundary, its exact stable
   location, the continuous three-wide approach, solid authored edge, and
   dedicated ground/overhead tileset rows. Native 320x180 review confirms the
   darker track and canopy opening read clearly from the northern clearing.
@@ -141,7 +135,7 @@ filling the visual gap below the tall tree crowns without changing collision.
   format, peak headroom, and loop seam. The 85.7-second render peaks at 0.75;
   a diagnostic 220 Hz low-pass retained about 88% of total RMS, confirming the
   mix is materially low-end-led. Transition coverage verifies the file exists.
-- The 28th vegetation suite verifies 150-180 trees and 160-180 shrubs, solid
+- The 27th vegetation suite verifies 150-180 trees and 160-180 shrubs, solid
   terrain preservation, all six generated variants, tree scale above humans,
   shrub scale above and wider than Chuck, and deterministic sprite selection.
   Existing Chult flood-fill and tileset coverage verify route/collision stability.
@@ -174,12 +168,11 @@ filling the visual gap below the tall tree crowns without changing collision.
     appears, then walk away and confirm it clears.
 12. Finish the cutscene and confirm the jungle tableau fades fully out, followed
     by a smooth fade into controllable Chult with no bright frame between scenes.
-13. Find the thorn cluster in the mid-jungle side clearing. Walk into it twice
+13. Find the thorn patches scattered through the jungle clearings. Walk into one twice
     quickly and confirm only one 10-Sanity hit lands during i-frames; jump across
     it without damage, then confirm the main route can bypass it entirely.
-14. Find the backpack and boot in the northern clearing. Confirm their human
-    scale makes Chuck look appropriately tiny, neither blocks the route, the
-    backpack says `Someone left quickly.`, and the boot remains mute.
+14. Revisit the northern clearing and confirm the backpack and boot are gone,
+    with no invisible collision or leftover interaction prompt where they stood.
 15. Continue north onto the darker worn trail. Confirm it reads as the route
     deeper, the canopy closes over Chuck at the threshold, and the stable edge
     stops him cleanly without a broken transition or missing-map error.
@@ -197,7 +190,6 @@ filling the visual gap below the tall tree crowns without changing collision.
 
 ## Next Bounded Task
 
-Human-playtest the tree-and-shrub pass at native scale, then finish the complete
-Phase 4 route/soundtrack acceptance run. Make only targeted tuning or bug fixes
-from concrete feedback. Do not begin Phase 5 without an active Phase 5 contract
-or explicit direction.
+Choose a replacement previous-traveler environmental scene that does not restore
+the removed backpack or boot, then finish the complete Phase 4 acceptance run.
+Do not begin Phase 5 without an active Phase 5 contract or explicit direction.

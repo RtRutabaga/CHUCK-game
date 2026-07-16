@@ -28,7 +28,7 @@ def test_thorns_damage_on_foot_but_are_safe_while_airborne() -> None:
     assert touching_terrain_hazard(tilemap, safe, airborne=False) is None
 
 
-def test_thorn_cluster_is_optional_and_main_route_stays_safe() -> None:
+def test_scattered_thorn_patches_are_optional_and_main_route_stays_safe() -> None:
     tilemap = TileMap(config.MAPS_DIR / "chult_jungle.txt")
     thorns = {
         (col, row)
@@ -36,7 +36,23 @@ def test_thorn_cluster_is_optional_and_main_route_stays_safe() -> None:
         for col, char in enumerate(line)
         if char == "|"
     }
-    assert len(thorns) == 10
+    assert len(thorns) == 25
+    # Thorn growth is scattered through distinct clearings rather than reading
+    # as one isolated tutorial patch.
+    remaining = set(thorns)
+    clusters = 0
+    while remaining:
+        clusters += 1
+        frontier = [remaining.pop()]
+        while frontier:
+            col, row = frontier.pop()
+            for neighbor in ((col - 1, row), (col + 1, row),
+                             (col, row - 1), (col, row + 1)):
+                if neighbor in remaining:
+                    remaining.remove(neighbor)
+                    frontier.append(neighbor)
+    assert clusters == 6
+
     sx, sy = tilemap.spawn_points["player"]
     start = (int(sx // config.TILE_SIZE), int(sy // config.TILE_SIZE))
     goal = (30, 3)

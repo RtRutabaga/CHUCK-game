@@ -73,8 +73,6 @@ Terrain legend:
     '|'  thorny undergrowth  (walkable Chult Sanity hazard)
     "'"  beaten jungle trail (walkable route toward the next Chult area)
     '"'  jungle trailhead    (walkable trail, canopy drawn overhead)
-    '{'  expedition backpack (solid standing prop on jungle ground)
-    '}'  abandoned boot      (solid standing prop on jungle ground)
     '/'  dense jungle tree   (solid tall prop over dense vegetation)
     '\\' jungle shrub        (solid broad-leaf prop over dense vegetation)
 
@@ -275,10 +273,6 @@ TILE_DEFS: dict[str, TileDef] = {
     "'": TileDef(solid=False, color=(44, 45, 29)),
     '"': TileDef(solid=False, color=(44, 45, 29),
                  under="'", overhead="jungle_exit"),
-    "{": TileDef(solid=True, color=config.COLOR_FLOOR_PLACEHOLDER,
-                 prop="expedition_backpack", under="."),
-    "}": TileDef(solid=True, color=config.COLOR_FLOOR_PLACEHOLDER,
-                 prop="abandoned_boot", under="."),
     "/": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="jungle_tree", under="#"),
     "\\": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
