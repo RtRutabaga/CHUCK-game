@@ -3,8 +3,8 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `1780ce3` (`Add Chult jungle exploration theme`)
-- Current work: Phase 4 complete through the dense-jungle tree art pass
+- Base commit before this pass: `59855ad` (`Add dense Chult tree graphics`)
+- Current work: Phase 4 complete through the broad-leaf shrub art pass
 - Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
 
 ## Completed This Pass
@@ -96,6 +96,13 @@ tree variants layer broad tropical crowns, visible trunks, and hanging vines;
 they tower over Chuck and human NPCs and overlap into path edges without moving
 the collision boundary. No open tile, enemy, checkpoint, or route changed.
 
+The same dense masses now also carry 170 y-sorted `jungle_shrub` props on solid
+`\\` tiles, distributed among the remaining `#` cells with extra coverage along
+vegetation edges. Three deterministic 28x24 variants use six overlapping
+pointed leaves, readable central veins, dark understory bases, and brighter
+tropical midtones. Each shrub is wider than two Chucks and taller than Chuck,
+filling the visual gap below the tall tree crowns without changing collision.
+
 ## Verification
 
 - All 28 test modules pass through their standalone runners (pytest is not
@@ -134,10 +141,10 @@ the collision boundary. No open tile, enemy, checkpoint, or route changed.
   format, peak headroom, and loop seam. The 85.7-second render peaks at 0.75;
   a diagnostic 220 Hz low-pass retained about 88% of total RMS, confirming the
   mix is materially low-end-led. Transition coverage verifies the file exists.
-- The 28th vegetation suite verifies 150-180 authored tree props, solid terrain
-  preservation, all three generated 34x46 sprites, scale above humans and more
-  than three Chuck heights, and deterministic use of every variant. Existing
-  Chult flood-fill and tileset coverage verify route/collision stability.
+- The 28th vegetation suite verifies 150-180 trees and 160-180 shrubs, solid
+  terrain preservation, all six generated variants, tree scale above humans,
+  shrub scale above and wider than Chuck, and deterministic sprite selection.
+  Existing Chult flood-fill and tileset coverage verify route/collision stability.
 
 ## Playtest Focus
 
@@ -184,10 +191,13 @@ the collision boundary. No open tile, enemy, checkpoint, or route changed.
 17. Walk the entire Chult route at native scale. Confirm the former green blocks
     now read as dense tropical tree masses, trunks and crowns layer naturally,
     Chuck remains visible on paths, and no tree appears to open or close a route.
+18. Check the vegetation edges and interiors for broad-leaf shrubs. Confirm they
+    read as distinct low understory beneath the trees, vary naturally, and do not
+    imply any collision difference from the surrounding dense growth.
 
 ## Next Bounded Task
 
-Human-playtest the dense-tree pass at native scale, then finish the complete
+Human-playtest the tree-and-shrub pass at native scale, then finish the complete
 Phase 4 route/soundtrack acceptance run. Make only targeted tuning or bug fixes
 from concrete feedback. Do not begin Phase 5 without an active Phase 5 contract
 or explicit direction.

@@ -26,7 +26,7 @@ class RecordingAssets:
         return FakeImage()
 
 
-def test_chult_dense_masses_are_layered_with_many_solid_trees() -> None:
+def test_chult_dense_masses_layer_solid_trees_and_shrubs() -> None:
     tilemap = TileMap(config.MAPS_DIR / "chult_jungle.txt")
     trees = [
         (col, row)
@@ -36,6 +36,15 @@ def test_chult_dense_masses_are_layered_with_many_solid_trees() -> None:
     assert 150 <= len(trees) <= 180
     for col, row in trees:
         assert tilemap.terrain_at(col, row) == "/"
+        assert tilemap.is_solid(col, row)
+    shrubs = [
+        (col, row)
+        for kind, col, row in tilemap.prop_tiles
+        if kind == "jungle_shrub"
+    ]
+    assert 160 <= len(shrubs) <= 180
+    for col, row in shrubs:
+        assert tilemap.terrain_at(col, row) == "\\"
         assert tilemap.is_solid(col, row)
 
 
@@ -48,6 +57,17 @@ def test_tree_silhouettes_are_large_and_all_variants_are_authored() -> None:
     assert sizes == [(34, 46)] * 3
     assert sizes[0][1] > config.NPC_FRAME_H
     assert sizes[0][1] > config.CHUCK_FRAME_H * 3
+
+
+def test_shrub_variants_are_broad_leafed_at_chucks_scale() -> None:
+    sizes = []
+    for index in range(1, 4):
+        path = config.SPRITES_DIR / "objects" / f"jungle_shrub_{index}.png"
+        image = pygame.image.load(path)
+        sizes.append(image.get_size())
+    assert sizes == [(28, 24)] * 3
+    assert sizes[0][0] > config.CHUCK_FRAME_W * 2
+    assert sizes[0][1] > config.CHUCK_FRAME_H
 
 
 def test_tree_variant_selection_is_stable_and_uses_all_three_sprites() -> None:
@@ -64,6 +84,15 @@ def test_tree_variant_selection_is_stable_and_uses_all_three_sprites() -> None:
     Prop("jungle_tree", 13, 9, first)
     Prop("jungle_tree", 13, 9, second)
     assert first.paths == second.paths
+
+    shrubs = RecordingAssets()
+    for col in range(12):
+        Prop("jungle_shrub", col, 7, shrubs)
+    assert set(shrubs.paths) == {
+        "objects/jungle_shrub_1.png",
+        "objects/jungle_shrub_2.png",
+        "objects/jungle_shrub_3.png",
+    }
 
 
 def _run_all() -> None:

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 73 (Phase 4 dense-jungle tree art pass). This file is required by
+Updated: session 74 (Phase 4 broad-leaf jungle shrubs). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -265,9 +265,11 @@ the project rules and updated every session.
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
   vines. Across the same solid vegetation cells, 165 deterministic y-sorted
   tree props use three 34x46 silhouettes with layered tropical crowns, trunks,
-  and trailing vines. The trees rise above human NPC height and more than three
-  times Chuck's height, making each collision mass read as dense forest without
-  changing a single walkable tile or route
+  and trailing vines. A second solid vegetation decoration adds 170 broad-leaf
+  shrubs across the same masses using three 28x24 variants: overlapping pointed
+  leaves, central veins, and brighter tropical midtones. Trees rise above human
+  NPC height while shrubs are wider than two Chucks, making each collision mass
+  read as dense forest and understory without changing a walkable tile or route
 
 ## Placeholder systems
 - Phase 4 implementation is feature-complete pending full-route human playtest
@@ -356,8 +358,8 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Human-playtest the new dense-tree art at native scale, checking path readability,
-occlusion, collision edges, and whether vegetation feels sufficiently dense.
+Human-playtest the tree-and-shrub art at native scale, checking path readability,
+occlusion, collision edges, broad-leaf silhouettes, and vegetation density.
 Then complete the broader Phase 4 acceptance playtest; do not begin Phase 5
 without a new active phase contract or explicit direction.
 
@@ -394,6 +396,9 @@ without a new active phase contract or explicit direction.
 11. [x] Replaced block-like dense-jungle art with organic canopy texture and
         165 oversized tree silhouettes while preserving collision and routes
         (session 73).
+12. [x] Added 170 deterministic broad-leaf shrub props across remaining solid
+        vegetation cells, with three procedural variants and no route changes
+        (session 74).
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

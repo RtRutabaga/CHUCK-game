@@ -98,6 +98,47 @@ def jungle_tree(variant: int) -> Image.Image:
     return image
 
 
+def jungle_shrub(variant: int) -> Image.Image:
+    """Low, overlapping broad leaves inspired by dense tropical understory."""
+    image = Image.new("RGBA", (28, 24), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    shadow = (22, 34, 22, 190)
+    leaf_dark = (14, 57, 29, 255)
+    leaf_mid = (27, 94, 40, 255)
+    leaf = (51, 125, 52, 255)
+    leaf_light = (91, 151, 64, 255)
+    vein = (25, 70, 36, 255)
+    stem = (44, 67, 32, 255)
+
+    center_x = 14 + (-1, 0, 1)[variant]
+    center_y = 19
+    draw.ellipse((2, 19, 26, 23), fill=shadow)
+    draw.line((center_x, 21, center_x, 8), fill=stem, width=2)
+
+    # Each leaf is a pointed four-corner polygon with a darker underside and
+    # single-pixel central vein. Overlap builds the compact reference shape.
+    leaves = (
+        ((center_x, 19), (2, 15), (1, 8), (11, 15)),
+        ((center_x, 18), (5, 9), (9, 2), (15, 14)),
+        ((center_x, 17), (10, 8), (14, 0), (19, 10)),
+        ((center_x, 18), (18, 8), (25, 4), (26, 13)),
+        ((center_x, 19), (21, 13), (27, 15), (20, 21)),
+        ((center_x, 20), (8, 15), (3, 20), (11, 23)),
+    )
+    order = ((0, 3, 1, 4, 2, 5), (3, 0, 4, 1, 5, 2), (1, 4, 0, 5, 3, 2))[variant]
+    palette = (leaf_dark, leaf_mid, leaf, leaf_mid, leaf_light, leaf)
+    for draw_index, leaf_index in enumerate(order):
+        points = leaves[leaf_index]
+        shifted = tuple((x + (variant - 1 if draw_index % 2 else 0), y)
+                        for x, y in points)
+        draw.polygon(shifted, fill=palette[leaf_index])
+        tip = shifted[2]
+        draw.line((center_x, center_y - 1, tip[0], tip[1]),
+                  fill=vein, width=1)
+    draw.rectangle((center_x - 1, 18, center_x + 1, 22), fill=leaf_dark)
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, image in (
@@ -106,6 +147,9 @@ def main() -> None:
         ("jungle_tree_1", jungle_tree(0)),
         ("jungle_tree_2", jungle_tree(1)),
         ("jungle_tree_3", jungle_tree(2)),
+        ("jungle_shrub_1", jungle_shrub(0)),
+        ("jungle_shrub_2", jungle_shrub(1)),
+        ("jungle_shrub_3", jungle_shrub(2)),
     ):
         path = OUT / f"{name}.png"
         image.save(path)

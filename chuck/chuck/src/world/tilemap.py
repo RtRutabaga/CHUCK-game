@@ -76,6 +76,7 @@ Terrain legend:
     '{'  expedition backpack (solid standing prop on jungle ground)
     '}'  abandoned boot      (solid standing prop on jungle ground)
     '/'  dense jungle tree   (solid tall prop over dense vegetation)
+    '\\' jungle shrub        (solid broad-leaf prop over dense vegetation)
 
 Marker legend (things ON a tile, not the tile itself — each marker
 declares the terrain underneath it, so no seams appear in the ground):
@@ -280,6 +281,8 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="abandoned_boot", under="."),
     "/": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="jungle_tree", under="#"),
+    "\\": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
+                  prop="jungle_shrub", under="#"),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {
