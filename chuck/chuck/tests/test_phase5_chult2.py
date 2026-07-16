@@ -106,6 +106,12 @@ def test_sailing_cog_is_one_oversized_solid_landmark() -> None:
     assert image.get_size() == (224, 152)
     assert image.get_width() >= config.CHUCK_FRAME_W * 18
     assert image.get_height() >= config.CHUCK_FRAME_H * 10
+    mask = pygame.mask.from_surface(image)
+    # The broad reference-style sail dominates the upper silhouette, while
+    # the southwest hull begins at a sharp prow and recedes below it.
+    assert sum(mask.get_at((x, 40)) for x in range(224)) >= 125
+    assert mask.get_at((7, 96))
+    assert not mask.get_at((7, 125))
 
 
 def test_astral_sea_scatter_reuses_fall_tiles_without_blocking_progress() -> None:

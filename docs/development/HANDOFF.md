@@ -3,18 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `6d9c3ec` (`Add Chult sailing cog discovery`)
-- Current work: larger three-quarter-view sailing cog revision
+- Base commit before this pass: `7b43fcb` (`Enlarge Chult cog in three-quarter view`)
+- Current work: reference-directed sailing cog redraw
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+Sean's supplied reference now directly informs the cog silhouette. The mast is
+a plain central wooden post exposed above and below one much broader, nearly
+rectangular cream sail. Two restrained sail seams and repair patches preserve
+the reference's readable panel language without adding rigging.
+
+The southwest end is redrawn as a tapered, upturned bow rather than a blunt
+face. The northwest deck box, rope ladder, rigging lines, and connecting rope
+rails were removed completely. Sparse wooden posts, the central hatch, open
+planked deck, portholes, and jungle growth remain. Scale, placement, collision,
+Astral framing, and safe routes are unchanged.
 
 Sean's requested visual revision replaces the 144x112 side-profile cog with a
 224x152 three-quarter-view landmark. The projection now sits between the
 top-down game camera and a street-level elevation: the player sees a broad
 diagonal deck, angled rails and planks, a foreshortened stern, a deep near hull,
-and a pointed bow. The sail, rigging, deck structures, portholes, rope ladder,
-and jungle growth were redrawn for that perspective rather than merely scaled.
+and a pointed bow. The sail, deck structures, portholes, and jungle growth were
+redrawn for that perspective rather than merely scaled.
 
 The authored collision footprint expanded from nine to fourteen tiles at its
 widest and follows the larger projected hull. The same 24 Astral substitutions
@@ -23,8 +34,8 @@ both sides. No new gameplay or Phase 5 content was introduced.
 
 The southern Chult Map 2 clearing contains its major discovery: one oversized
 three-quarter-view sailing cog. The procedural sprite clearly reads as a
-substantial one-masted human vessel through its weathered square sail, mast and
-rigging, raised deck rail, planked hull, portholes, rope ladder, and jungle
+substantial one-masted human vessel through its weathered square sail, mast,
+raised deck posts, planked hull, portholes, and jungle
 growth around the stranded base. One map-authored prop tile owns the sprite
 while a shaped solid hull footprint supplies collision through the established
 tile/prop architecture.
