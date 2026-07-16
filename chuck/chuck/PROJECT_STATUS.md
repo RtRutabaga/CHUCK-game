@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 83 (sailing cog mast/deck layering fix). This file is required by
+Updated: session 84 (full foreground sail visibility). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -279,8 +279,9 @@ the project rules and updated every session.
   three-quarter perspective. The reference-directed upper silhouette uses one
   wide rectangular cream sail on a plain exposed central mast. The deck remains
   open, with no northwest box, ladder, rigging, or rope details. The mast is
-  layered in two parts: the sail remains behind the hull while the lower
-  post and broad foot render over the deck planks, visibly anchoring it aboard.
+  layered for perspective: the complete sail renders over the rear deck so its
+  shape remains uninterrupted and occludes part of the boat, while the lower
+  post and broad foot render over both layers, visibly anchoring it aboard.
   Its shaped fourteen-tile-wide solid footprint matches the visible base while
   leaving safe routes around both sides. Twenty-four scattered `V` substitutions arc
   around the hull in small broken clusters, reusing the established animated
@@ -442,7 +443,7 @@ their behavior for the following bounded encounter slice.
        through the shared checkpoint loader (session 79).
 3. [x] Added the oversized three-quarter-view sailing cog landmark, shaped
        solid hull footprint, and 24 avoidable animated Astral Sea substitutions
-       around its base while preserving safe routes on both sides (sessions 80-82).
+       around its base while preserving safe routes on both sides (sessions 80-84).
 4. [ ] Add the sailor's exact three-box dialogue and two-raptor encounter.
 5. [ ] Author the thorn-maze route into Chult Map 3.
 6. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.

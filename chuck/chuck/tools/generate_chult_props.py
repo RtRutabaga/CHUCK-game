@@ -119,21 +119,6 @@ def sailing_cog() -> Image.Image:
     vine_dark = (19, 62, 34, 255)
     vine = (43, 104, 49, 255)
 
-    # A single central mast and broad rectangular sail follow the reference's
-    # simple silhouette. There is deliberately no rigging or rope detail.
-    draw.line((115, 104, 113, 7), fill=outline, width=9)
-    draw.line((115, 104, 114, 7), fill=wood_light, width=4)
-    draw.polygon(((44, 17), (176, 28), (184, 84), (42, 69)), fill=outline)
-    draw.polygon(((49, 21), (172, 32), (179, 79), (47, 65)), fill=sail)
-    draw.polygon(((114, 27), (171, 33), (177, 76), (115, 70)),
-                 fill=sail_light)
-    draw.line((48, 42, 176, 53), fill=sail_dark, width=2)
-    draw.line((46, 61, 179, 74), fill=sail_dark, width=2)
-    draw.polygon(((67, 27), (83, 29), (84, 43), (67, 41)),
-                 outline=sail_dark)
-    draw.line((67, 27, 84, 43), fill=sail_dark, width=1)
-    draw.polygon(((137, 55), (153, 57), (155, 70), (139, 68)),
-                 outline=sail_dark)
     # The visible deck is a broad diamond. Its depth is what moves the view
     # away from a street-level side profile while retaining a readable hull.
     deck_outline = ((7, 96), (21, 82), (145, 62), (216, 91),
@@ -173,8 +158,25 @@ def sailing_cog() -> Image.Image:
     draw.polygon(((133, 83), (151, 79), (165, 85), (147, 90)), fill=outline)
     draw.polygon(((137, 83), (151, 81), (160, 85), (147, 88)), fill=wood_dark)
 
-    # Draw the lower mast after the deck: it must visibly stand on the planks,
-    # not disappear behind the ship and make the sail read as background art.
+    # Paint the complete sail assembly after the hull. Its entire silhouette
+    # stays visible and correctly blocks the rear deck instead of being cut off
+    # by it. There is deliberately no rigging or rope detail.
+    draw.line((115, 104, 113, 7), fill=outline, width=9)
+    draw.line((115, 104, 114, 7), fill=wood_light, width=4)
+    draw.polygon(((44, 17), (176, 28), (184, 84), (42, 69)), fill=outline)
+    draw.polygon(((49, 21), (172, 32), (179, 79), (47, 65)), fill=sail)
+    draw.polygon(((114, 27), (171, 33), (177, 76), (115, 70)),
+                 fill=sail_light)
+    draw.line((48, 42, 176, 53), fill=sail_dark, width=2)
+    draw.line((46, 61, 179, 74), fill=sail_dark, width=2)
+    draw.polygon(((67, 27), (83, 29), (84, 43), (67, 41)),
+                 outline=sail_dark)
+    draw.line((67, 27, 84, 43), fill=sail_dark, width=1)
+    draw.polygon(((137, 55), (153, 57), (155, 70), (139, 68)),
+                 outline=sail_dark)
+
+    # The lower mast is redrawn over the sail and deck to remain visibly
+    # planted in its broad wooden foot on the planks.
     draw.line((115, 77, 115, 108), fill=outline, width=9)
     draw.line((115, 77, 115, 107), fill=wood_light, width=4)
     draw.polygon(((106, 105), (123, 105), (128, 112), (103, 112)),

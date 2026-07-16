@@ -112,6 +112,8 @@ def test_sailing_cog_is_one_oversized_solid_landmark() -> None:
     assert sum(mask.get_at((x, 40)) for x in range(224)) >= 125
     assert mask.get_at((7, 96))
     assert not mask.get_at((7, 125))
+    # The sail's lower overlap is foreground sail cloth, not deck planking.
+    assert image.get_at((140, 74))[:3] == (191, 177, 128)
     # The exposed lower mast is painted over the deck, visibly anchoring the
     # sail assembly to the ship instead of letting deck planks erase it.
     assert image.get_at((115, 100))[:3] == (146, 102, 56)

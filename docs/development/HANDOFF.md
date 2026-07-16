@@ -3,17 +3,24 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `3edbf36` (`Redraw Chult cog from visual reference`)
-- Current work: sailing cog mast/deck layering correction
+- Base commit before this pass: `7c4eae1` (`Anchor Chult cog mast to deck`)
+- Current work: full foreground sail visibility correction
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
 
-The sail assembly no longer reads as background scenery. The sail and upper
-mast remain behind the hull, but the exposed lower mast and its broad wooden
-foot now render after the deck. They visibly cross and terminate on the planks,
-matching the supplied reference's normal ship construction. No geometry,
-collision, route, or gameplay behavior changed.
+The complete sail assembly now renders after the hull and rear deck. Its full
+quadrilateral silhouette—including the lower edge—stays visible and correctly
+occludes part of the boat, matching Sean's latest reference. The exposed lower
+mast is redrawn last so it still connects the sail to its broad deck-mounted
+foot. This is a pure painter-order correction; art dimensions, map placement,
+collision, and gameplay remain unchanged.
+
+The sail assembly no longer reads as background scenery. Its full shape renders
+over the rear deck, then the exposed lower mast and broad wooden foot render
+over both. They visibly cross and terminate on the planks, matching the supplied
+reference's normal ship construction. No geometry, collision, route, or
+gameplay behavior changed.
 
 Sean's supplied reference now directly informs the cog silhouette. The mast is
 a plain central wooden post exposed above and below one much broader, nearly
