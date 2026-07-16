@@ -15,6 +15,9 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Claude Code and Codex use the same Git repository.
 - Only one coding agent edits at a time.
 - Each completed pass should be tested, handed off, and committed before switching agents.
+- Each newly authored gameplay map receives one physical Ashtray/checkpoint,
+  registered through the shared save/checkpoint loader rather than a separate
+  map-specific or development teleport path.
 - Phase 5 is active.
 - Phase 5 ends at the exterior of the jungle temple; do not begin the temple
   interior or dungeon during this phase.

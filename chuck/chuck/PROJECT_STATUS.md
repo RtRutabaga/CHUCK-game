@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 85 (Chult cog sailor). This file is required by
+Updated: session 86 (Chult Map 2 raptors and Ashtray). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -28,7 +28,7 @@ the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the two authored Ashtrays have
+  retain the established local retry behavior; the four authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
@@ -294,6 +294,20 @@ the project rules and updated every session.
   ground tile beside the hull. From there, the existing dialogue scene delivers
   the three exact sequential boxes: `Oi!`, `Look at that rat.`, and
   `Walkin' on the sea...`. No ship-specific dialogue or teleport path was added
+- Phase 5 raptor territory: exactly two large 36x24 Chultan raptors occupy the
+  broad central Map 2 clearing, well north of the cog. Their two-frame run,
+  24x12 footprint, 54 px/s pursuit, 152-pixel notice radius, and 25-Sanity
+  contact make them substantially larger, faster, and more dangerous than the
+  prior undead while leaving Chuck's 80 px/s movement and the clearing's wide
+  side routes as reliable escape options. Ten scratches can defeat one, but no
+  route or progression state requires either kill. They use shared collision,
+  scratch, Sanity/i-frame, painter-order, and enemy-respawn behavior
+- Chult Map 2 now has one physical Ashtray south of the cog. Its hidden
+  `chult_2_anchor` save definition is distinct from the development-visible
+  `Chult 2` map entry but uses the same registry and loader. Contact saves,
+  CONTINUE restores the Ashtray position, and Sanity-zero return rebuilds both
+  raptors there. The durable decision log now records one physical checkpoint
+  for each newly authored gameplay map
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -334,12 +348,13 @@ the project rules and updated every session.
 
 ## Tests
 
-29 suites (most pure Python/headless): collision, tilemap,
+30 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
 Chult terrain hazard, Chult route-deeper boundary,
-Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation
+Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
+Phase 5 raptors
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -397,9 +412,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Add exactly two raptors to the broad central Chult Map 2 encounter space using
-simple avoidable pursuit. Keep the thorn maze, Map 3, and temple for later
-bounded slices.
+Author the compact northern thorn maze and its readable route toward Chult Map
+3 using the existing thorn system. When Map 3 is created, include its one
+physical Ashtray and shared development checkpoint; do not begin its undead run
+in the same pass.
 
 ## Also open
 
@@ -454,7 +470,9 @@ bounded slices.
 4. [x] Added a human-scale sailor visibly on the solid cog deck, reachable from
        safe ground and using the exact three sequential dialogue boxes through
        the existing dialogue system (session 85).
-5. [ ] Add exactly two raptors in the broad central encounter space.
+5. [x] Added exactly two large, fast, scratchable raptors in the broad central
+       encounter space, with avoidable finite pursuit and normal respawn reset.
+       Added Map 2's single physical shared-loader Ashtray (session 86).
 6. [ ] Author the thorn-maze route into Chult Map 3.
 7. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.
 

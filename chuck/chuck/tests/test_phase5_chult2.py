@@ -74,6 +74,42 @@ def test_chult_2_checkpoint_uses_the_shared_loader_definition() -> None:
     assert arrivals["from_chult_1"] == (648.0, 1224.0)
 
 
+def test_chult_map_2_has_one_physical_save_checkpoint() -> None:
+    anchors = [entry for entry in _map().object_spawns
+               if entry[0].startswith("anchor:")]
+    assert anchors == [("anchor:chult_2_anchor", (648.0, 1160.0))]
+    checkpoint = CHECKPOINT_BY_ID["chult_2_anchor"]
+    assert checkpoint.map_name == "chult_cog"
+    assert checkpoint.position == (644.0, 1157.0)
+    assert checkpoint.saveable
+    assert not checkpoint.development_visible
+
+
+def test_chult_2_ashtray_saves_continue_and_sanity_return() -> None:
+    directory = tempfile.TemporaryDirectory()
+    save_path = Path(directory.name) / "save.json"
+    game = Game(save_path=save_path)
+    try:
+        scene = game.checkpoints.load_checkpoint("chult_2")
+        anchor, = scene.anchors
+        scene.player.x, scene.player.y = anchor.x, anchor.y
+        scene.update(0.01)
+        assert game.active_checkpoint_id == "chult_2_anchor"
+        assert scene.anchors_system.active_checkpoint_id == "chult_2_anchor"
+        assert game.saves.load().checkpoint_id == "chult_2_anchor"
+    finally:
+        game._shutdown()
+
+    resumed = Game(save_path=save_path)
+    try:
+        scene = resumed.checkpoints.continue_game()
+        assert resumed.active_checkpoint_id == "chult_2_anchor"
+        assert (scene.player.x, scene.player.y) == (644.0, 1157.0)
+    finally:
+        resumed._shutdown()
+        directory.cleanup()
+
+
 def test_chult_map_2_reuses_the_chult_visual_and_audio_language() -> None:
     assert tileset_for("chult_cog") is tileset_for("chult_jungle")
     assert AREA_MUSIC["chult_cog"] == AREA_MUSIC["chult_jungle"]

@@ -319,6 +319,8 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "}": MarkerDef(kind="breakable_grass", under="d"),
     "<": MarkerDef(kind="breakable_grass", under="."),
     "¿": MarkerDef(kind="elevated_npc:sailor", under="#", allow_solid=True),
+    "¡": MarkerDef(kind="raptor", under="."),
+    "§": MarkerDef(kind="anchor:chult_2_anchor", under="."),
 }
 
 _COMMENT_PREFIX = ";"

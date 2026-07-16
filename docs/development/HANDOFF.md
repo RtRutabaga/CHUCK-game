@@ -3,11 +3,28 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `ffd557b` (`Render Chult cog sail over deck`)
-- Current work: human-scale Chult cog sailor and exact dialogue
+- Base commit before this pass: `f80d0f8` (`Add sailor to Chult cog`)
+- Current work: two Chult Map 2 raptors and one physical map checkpoint
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+Exactly two large raptors now occupy the broad central Chult Map 2 clearing,
+well north of the cog. Each uses a 36x24 two-frame procedural running sprite and
+a 24x12 footprint, making it substantially larger than Chuck. The reusable
+`Raptor` entity follows existing collision, scratch, Sanity/i-frame,
+painter-order, and Astral-return reset contracts. Its 54 px/s finite-range
+pursuit is materially faster than skeletons but slower than Chuck's 80 px/s,
+so the map's wide side routes remain viable. Raptors inflict 25 Sanity and take
+ten scratches, but defeating either is optional and no route checks their state.
+
+Chult Map 2 now also contains one physical Ashtray south of the cog. The
+saveable, menu-hidden `chult_2_anchor` definition preserves the existing
+development-visible `Chult 2` entry while sharing the same checkpoint registry
+and loader. It saves on contact, restores correctly through CONTINUE, becomes
+the Sanity-zero return point, and rebuilds both raptors on return. Sean's rule
+that every newly authored gameplay map receives one physical checkpoint is now
+recorded in `DECISIONS.md` for future sessions.
 
 One human-scale sailor now stands visibly on the cog's deck in a pale cap,
 faded navy coat, and weathered trousers. The authored `elevated_npc:sailor`
@@ -203,8 +220,16 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
-- All 29 test modules pass through their standalone runners (pytest is not
+- All 30 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
+- New raptor coverage verifies exact authored count and spacing, large native
+  scale, two-frame asset dimensions, speed relative to skeletons and Chuck,
+  finite pursuit, collision, ten-hit scratch defeat, 25-Sanity contact,
+  avoidable full-notice-radius routing, and reset after Chuck's return. Phase 5
+  checkpoint coverage verifies the single physical Map 2 Ashtray, save record,
+  CONTINUE position, and shared-loader definition. Native 320x180 review
+  confirms the raptors read as long-tailed predators several Chuck-widths
+  across and remain separated from the cog encounter.
 - Phase 5 coverage now verifies the sailor's exact solid-deck marker and
   coordinates, standard 16x30 human sprite scale, exact three dialogue lines,
   painter order above the cog, and interaction from the walkable tile south of
@@ -339,9 +364,18 @@ as a convention for each future exterior Chult map.
     E, and confirm the dialogue advances through exactly `Oi!`, `Look at that
     rat.`, and `Walkin' on the sea...` before closing. Confirm Chuck still
     cannot walk through or onto the solid hull.
+26. Touch the Ashtray south of the cog, quit, and choose CONTINUE. Confirm Chuck
+    returns there with the saved Sanity. Then lose all Sanity in Map 2 and
+    confirm the same return point is used and both raptors reset.
+27. Continue north into the broad central clearing. Confirm exactly two large
+    raptors are present, noticeably outrun the undead, and animate while
+    pursuing. Circle the vegetation or sprint past them without fighting;
+    verify neither is a mandatory gate. If fighting, confirm repeated scratches
+    eventually defeat one and contact costs Sanity without bypassing i-frames.
 
 ## Next Bounded Task
 
-Add exactly two raptors to the broad central Chult Map 2 encounter space using
-simple avoidable pursuit. Do not begin the thorn maze, Map 3, or the temple in
-that pass.
+Author the compact northern thorn maze and its readable route toward Chult Map
+3 using the existing thorn system. When Map 3 is created, give it one physical
+Ashtray and a shared-loader development checkpoint. Do not begin the undead run
+or temple in that pass.

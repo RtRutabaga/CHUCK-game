@@ -87,6 +87,12 @@ CHECKPOINTS = (
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
     ),
+    CheckpointDefinition(
+        "chult_2_anchor", "Chult 2 Ashtray", "chult_cog",
+        position=(644.0, 1157.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
     # Internal return entries keep existing local retry positions, but do not
     # clutter the temporary test menu.
     CheckpointDefinition(
