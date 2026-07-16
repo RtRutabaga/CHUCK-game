@@ -123,7 +123,7 @@ def test_chult_3_run_is_connected_and_reuses_chult_language() -> None:
     }
     assert _flood(tilemap, (24, 34)) == walkable
     assert len([kind for kind, _ in tilemap.object_spawns
-                if kind.startswith("staged_undead:")]) == 15
+                if kind.startswith("staged_undead:")]) == 24
     assert len([kind for kind, _ in tilemap.object_spawns
                 if kind == "breakable_grass"]) == 6
     assert tileset_for("chult_run") is tileset_for("chult_cog")

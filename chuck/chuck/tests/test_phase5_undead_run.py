@@ -26,8 +26,8 @@ def test_openings_author_three_increasing_finite_groups() -> None:
     staged = _staged(tilemap)
     groups = Counter(int(kind.split(":")[1]) for kind, _position in staged)
     kinds = Counter(kind.rsplit(":", 1)[1] for kind, _position in staged)
-    assert groups == {1: 4, 2: 5, 3: 6}
-    assert kinds == {"zombie": 8, "skeleton": 7}
+    assert groups == {1: 6, 2: 8, 3: 10}
+    assert kinds == {"zombie": 12, "skeleton": 12}
 
     for _kind, (cx, cy) in staged:
         col, row = int(cx // config.TILE_SIZE), int(cy // config.TILE_SIZE)
@@ -44,28 +44,27 @@ def test_openings_author_three_increasing_finite_groups() -> None:
 def test_controller_releases_each_group_once_at_authored_rows() -> None:
     tilemap = _map()
     controller = UndeadReleaseController("chult_run", _staged(tilemap))
-    assert controller.total_count == 15
+    assert controller.total_count == 24
     assert controller.release_for_row(28) == []
-    assert len(controller.release_for_row(27)) == 4
+    assert len(controller.release_for_row(27)) == 6
     assert controller.release_for_row(27) == []
-    assert len(controller.release_for_row(20)) == 5
-    assert len(controller.release_for_row(13)) == 6
+    assert len(controller.release_for_row(20)) == 8
+    assert len(controller.release_for_row(13)) == 10
     assert controller.release_for_row(1) == []
     assert controller.released_groups == {1, 2, 3}
     controller.reset()
     assert controller.released_groups == set()
-    assert len(controller.release_for_row(13)) == 15
+    assert len(controller.release_for_row(13)) == 24
 
 
-def test_each_group_starts_close_enough_to_funnel_toward_chuck() -> None:
+def test_each_opening_reaches_the_run_lane_within_notice_range() -> None:
     tilemap = _map()
-    trigger_rows = {1: 27, 2: 20, 3: 13}
-    for kind, (cx, cy) in _staged(tilemap):
-        group = int(kind.split(":")[1])
-        player_cx = (24 + 0.5) * config.TILE_SIZE
-        player_cy = (trigger_rows[group] + 0.5) * config.TILE_SIZE
-        distance = ((cx - player_cx) ** 2 + (cy - player_cy) ** 2) ** 0.5
-        assert distance <= config.UNDEAD_NOTICE_RANGE
+    for _kind, (cx, _cy) in _staged(tilemap):
+        lane_centers = ((col + 0.5) * config.TILE_SIZE
+                        for col in range(23, 26))
+        distance_to_lane = min(abs(cx - lane_cx)
+                               for lane_cx in lane_centers)
+        assert distance_to_lane <= config.UNDEAD_NOTICE_RANGE
 
 
 def test_chult_3_scene_starts_quiet_then_releases_without_duplication() -> None:
@@ -75,7 +74,7 @@ def test_chult_3_scene_starts_quiet_then_releases_without_duplication() -> None:
         assert scene.map_name == "chult_run"
         assert scene.undead == []
 
-        for row, expected in ((27, 4), (20, 9), (13, 15)):
+        for row, expected in ((27, 6), (20, 14), (13, 24)):
             scene.player.x = 24 * config.TILE_SIZE
             scene.player.y = row * config.TILE_SIZE
             scene.update(0.0)
@@ -96,7 +95,7 @@ def test_released_undead_move_out_of_openings_toward_the_run_lane() -> None:
         scene.update(0.0)
         starts = {id(enemy): enemy.y for enemy in scene.undead}
         scene.update(0.5)
-        assert len(scene.undead) == 4
+        assert len(scene.undead) == 6
         assert all(enemy.y > starts[id(enemy)] for enemy in scene.undead)
     finally:
         game._shutdown()
@@ -109,7 +108,7 @@ def test_astral_return_rewinds_the_finite_run_to_checkpoint_state() -> None:
         scene.player.x = 24 * config.TILE_SIZE
         scene.player.y = 13 * config.TILE_SIZE
         scene.update(0.0)
-        assert len(scene.undead) == 15
+        assert len(scene.undead) == 24
 
         scene._begin_respawn()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)

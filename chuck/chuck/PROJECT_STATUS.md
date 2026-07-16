@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 91 (Chult Map 3 finite undead run). This file is required by
+Updated: session 92 (heavier Chult Map 3 undead pressure). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -327,10 +327,11 @@ the project rules and updated every session.
   canopy-framed north threshold transitions to `chult_run` through the ordinary
   walk-exit and named-arrival architecture
 - Chult Map 3 undead run: the 48x36 exterior starts quietly at its southern
-  Ashtray, then releases three finite groups of 4, 5, and 6 existing zombies
-  and skeletons as Chuck advances north. All 15 enemies originate beneath
-  flanking canopy arches rather than appearing in open ground, begin within
-  ordinary notice range, and funnel into three broad evasion spaces. Groups
+  Ashtray, then releases three finite groups of 6, 8, and 10 existing zombies
+  and skeletons as Chuck advances north. All 24 enemies originate beneath
+  flanking canopy arches rather than appearing in open ground, open directly
+  onto ordinary notice range of the lane, and funnel into three broad evasion
+  spaces. Groups
   release only once, no kill gate exists, and Astral return rebuilds the quiet
   pre-run state. Six reusable grass tufts continue the exterior-Chult convention.
   `Chult 3` remains development-visible through the shared loader; its separate
@@ -512,7 +513,8 @@ session.
        loops and wrong turns after playtesting (session 90).
 7. [x] Added three increasing, finite undead releases from readable jungle
        openings, preserving a run-through route, ordinary combat, and complete
-       encounter reset at the Chult 3 checkpoint (session 91).
+       encounter reset at the Chult 3 checkpoint (session 91), then expanded
+       the authored groups to 6/8/10 undead after playtesting (session 92).
 8. [ ] Build the Chuck-sized escape and Chult Map 4 temple exterior.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)

@@ -3,24 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `3c4eb4f` (`Increase Chult thorn maze difficulty`)
-- Current work: Chult Map 3 finite undead release pressure pass
+- Base commit before this pass: `4c77b7e` (`Add Chult undead run pressure pass`)
+- Current work: heavier Chult Map 3 undead-volume tuning
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
 
+Sean's pressure tuning expands the three existing finite releases from 4/5/6
+to 6/8/10 enemies. The run now authors 24 undead totalâ€”twelve zombies and
+twelve skeletonsâ€”across wider versions of the same flanking canopy openings.
+Trigger rows, AI, durability, damage, central route, checkpoint reset, finite
+one-shot behavior, and the northern phase boundary remain unchanged.
+
 Chult Map 3 now begins quietly at its existing southern Ashtray, then releases
-three finite groups of four, five, and six undead as Chuck crosses authored
-northward rows. Eight zombies and seven skeletons reuse their established human
+three finite groups of six, eight, and ten undead as Chuck crosses authored
+northward rows. Twelve zombies and twelve skeletons reuse their established human
 scale, durability, notice range, pursuit, scratch, damage, and reset behavior.
 There is no wave counter, kill requirement, unlimited spawning, or new enemy AI.
 
-All 15 staged markers sit beneath flanking jungle-canopy arches in three dense
-vegetation shelves. They spawn within ordinary notice range and visibly move
-out of those openings toward the broad run lane; the middle three-tile passages
-remain continuously walkable, so Chuck can keep moving without defeating an
-enemy. A small reusable `UndeadReleaseController` owns the data-driven row
-thresholds, one-shot group state, and reset. Astral return uses the existing
+All 24 staged markers sit beneath flanking jungle-canopy arches in three dense
+vegetation shelves. Their openings reach ordinary notice range as Chuck crosses
+each shelf, and they visibly move toward the broad run lane; the middle
+three-tile passages remain continuously walkable, so Chuck can keep moving
+without defeating an enemy. A small reusable `UndeadReleaseController` owns
+the data-driven row thresholds, one-shot group state, and reset. Astral return uses the existing
 enemy rebuild path to restore the quiet pre-encounter state at Chult 3.
 
 The northern Chuck-sized escape, Map 4, temple exterior, urgent music variation,
@@ -285,18 +291,20 @@ as a convention for each future exterior Chult map.
 
 - All 33 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
-- New undead-run coverage verifies the 4/5/6 group sizes, eight-zombie and
-  seven-skeleton mix, canopy-opening terrain, clear three-tile passages,
+- New undead-run coverage verifies the 6/8/10 group sizes, even twelve-zombie
+  and twelve-skeleton mix, canopy-opening terrain, clear three-tile passages,
   notice-range placement, exact trigger rows, one-shot finite release,
   visible movement into the run lane, connected no-kill route, development
   checkpoint startup, and full encounter rewind on Astral return. Native
   320x180 review confirms enemies visibly occupy and emerge from flanking
-  foliage openings while Chuck's central route remains readable.
+  foliage openings while Chuck's central route remains readable. A headless
+  stress smoke kept all 24 active through 600 fixed updates without duplication
+  or simulation failure.
 - New Phase 5 maze coverage verifies the 136-tile compact thorn bounds/count,
   single safe entrance, 120-plus-step thorn-free solution, at least five graph
   loops and twenty branching choices, the named Map 3 exit,
   non-bouncing transition, connected 48x36 run layout, quiet pre-trigger state,
-  15 staged undead, six grass tufts, Chult art/music reuse, the `Chult 3` development
+  24 staged undead, six grass tufts, Chult art/music reuse, the `Chult 3` development
   entry, single physical Ashtray, save record, and relaunch/CONTINUE position.
   Native 320x180 review confirms dense bright thorn barriers, visible safe
   corridors, and the established jungle dividers at gameplay scale.
@@ -474,8 +482,8 @@ as a convention for each future exterior Chult map.
     single nearby Ashtray, quit, and use CONTINUE; verify Chuck returns there.
     From DEV CHECKPOINTS, load Chult 3 directly and confirm the same quiet
     pre-run state initializes with no undead active yet.
-31. Run north through all three vegetation shelves. Confirm groups of four,
-    five, and six undead visibly emerge from the flanking canopy openings,
+31. Run north through all three vegetation shelves. Confirm groups of six,
+    eight, and ten undead visibly emerge from the flanking canopy openings,
     pressure increases without stuttering, and the central route never requires
     a kill. Stop and fight only to confirm ordinary scratch/damage behavior,
     then lose all Sanity and verify the entire run resets at the Chult 3 Ashtray.
