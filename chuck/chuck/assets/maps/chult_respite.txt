@@ -1,6 +1,6 @@
 ; CHULT MAP 4 - low-pressure jungle respite (64x56 tiles).
 ; The route meanders through dense vegetation after the undead escape.
-; Sixteen grass tufts provide optional cigarettes; this map has no enemies.
+; Sixteen grass tufts provide optional cigarettes; one slow dinosaur waits near the end.
 ; A one-tile jungle stream spans both edges and requires the existing jump.
 ; η is the stable future handoff toward the Chult Map 5 temple exterior.
 ################################################################
@@ -11,7 +11,7 @@
 #\##########/#\##########/#\##########/#\##########/.....#######
 ########/###\########/###\########/###\########/###\.....###/###
 ####################################################.<...#######
-#######\###/########.....................................##\####
+#######\###/########....................¶................##\####
 #####\#/##########\#.....................................\#/####
 ##########/##\######...................<.................#####/#
 ####\/###########\/#...................................../######

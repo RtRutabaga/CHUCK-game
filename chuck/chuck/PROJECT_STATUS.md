@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 94 (Chult Map 4 jumpable stream). This file is required by
+Updated: session 95 (Chult Map 4 massive dinosaur). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -341,10 +341,10 @@ the project rules and updated every session.
   human-sized undead treat as solid. It leads through the ordinary named walk
   transition into the 64x56 `chult_respite` map without deleting pursuers or
   requiring combat
-- Phase 5 Chult Map 4 jungle respite: an enemy-free, lower-pressure exterior
+- Phase 5 Chult Map 4 jungle respite: a mostly calm, lower-pressure exterior
   with dense vegetation masses, 295 authored tree/shrub decorations, a fully
-  connected winding route whose shortest arrival-to-exit path is 170 steps,
-  sixteen shared cigarette-grass tufts, and one physical Ashtray. `Chult 4`
+  authored winding route, sixteen shared cigarette-grass tufts, and one
+  physical Ashtray. `Chult 4`
   uses the shared development/save loader; the northern Map 5 temple boundary
   is authored but deliberately inert until the next session
 - Chult Map 4 stream crossing: a continuous 68-tile animated water ribbon
@@ -352,6 +352,10 @@ the project rules and updated every session.
   banks. Ordinary movement stops at the water; Chuck's established committed
   jump clears the one-tile crossing. It adds no swimming, drowning, new input,
   tutorial, enemy, or alternate endpoint bypass
+- Chult Map 4 northern clearing now contains exactly one reused massive slow
+  dinosaur at the open end of the route. Its existing scale, 14 px/s pursuit,
+  twenty-scratch durability, 40-Sanity contact, and checkpoint reset remain
+  unchanged; the clearing and alternate approach preserve a route around it
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -458,8 +462,9 @@ end-to-end headlessly with dummy SDL drivers.
 ## Next recommended session
 
 Author Chult Map 5 as the temple exterior and create its one physical
-Ashtray/shared development checkpoint. Preserve Map 4 as an enemy-free jungle
-respite and stop at the readable temple entrance without building the dungeon.
+Ashtray/shared development checkpoint. Preserve Map 4 as a low-pressure jungle
+respite with only its one massive dinosaur, and stop at the readable temple
+entrance without building the dungeon.
 
 ## Also open
 
@@ -536,6 +541,8 @@ respite and stop at the readable temple entrance without building the dungeon.
        (session 93).
    - [x] Added a map-spanning animated jungle stream with one required jump
          crossing, using the existing jump/collision behavior (session 94).
+   - [x] Added one existing massive slow dinosaur to the broad northern
+         clearing while preserving an optional route around it (session 95).
 9. [ ] Build Chult Map 5 as the temple exterior, add its checkpoint, and stop
        at the temple entrance without beginning the dungeon.
 

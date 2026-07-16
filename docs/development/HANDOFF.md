@@ -3,11 +3,22 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `870e62d` (`Add Chult jungle respite map`)
-- Current work: required jumpable stream through Chult Map 4
+- Base commit before this pass: `318e322` (`Add jumpable Chult stream crossing`)
+- Current work: one massive slow dinosaur in Chult Map 4's end clearing
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+The broad clearing near Chult Map 4's northern end now authors exactly one
+existing `MassiveDinosaur`. It reuses the established 72x60 art, 48x24
+footprint, very slow pursuit, heavy contact damage, twenty-scratch durability,
+ordinary collision/combat, and checkpoint rebuild behavior without a new
+variant or encounter controller.
+
+The spawn sits off-center at tile (40, 8). A three-tile exclusion envelope
+around its large body still leaves a connected route from the stream's north
+bank to the future temple boundary, so it can be circled or escaped and is not
+a combat gate. No other enemy or staged-release marker was added.
 
 Chult Map 4 now contains a continuous 68-tile jungle stream winding from the
 west boundary to the east boundary. It divides the arrival and temple-route
@@ -28,13 +39,12 @@ remain alive on the ambush side instead of being deleted, so the escape reads as
 a consequence of Chuck's one-foot scale. The normal walk-transition path loads
 the named southern arrival on Map 4 without bounce-back.
 
-New `chult_respite.txt` is a 64x56 enemy-free exterior intended as deliberate
+New `chult_respite.txt` is a 64x56 low-pressure exterior intended as deliberate
 decompression after the undead run. Dense vegetation blocks and 295 existing
-tree/shrub decorations shape a connected route whose shortest arrival-to-exit
-path is 170 steps rather than the 100-step Manhattan distance. Sixteen shared
+tree/shrub decorations shape a deliberately winding route. Sixteen shared
 scratchable grass tufts are scattered through its clearings and bends, with no
-Waterdeep/sewer tutorial. There are no enemy markers, staged releases, or combat
-gates.
+Waterdeep/sewer tutorial. The later requested massive dinosaur is its only
+enemy marker; there are no staged releases or combat gates.
 
 Map 4 has one physical `chult_4_anchor` Ashtray and one development-visible
 `Chult 4` entry. Both use the existing checkpoint registry and shared loader;
@@ -325,6 +335,11 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
+- Focused respite coverage verifies one exact Map 4 dinosaur spawn, the open
+  9x5 clearing around it, normal shared entity loading, established slow speed,
+  no other enemy type, and a route to the northern boundary even when a
+  three-tile envelope around the dinosaur is treated as blocked.
+
 - Focused jump, respite, tileset, and tilemap suites pass. Coverage verifies
   the stream's exact connected edge-to-edge span, the two separated walking
   banks, ordinary collision at the water, successful crossing through the
@@ -333,9 +348,9 @@ as a convention for each future exterior Chult map.
 
 - All focused escape/respite, undead-run, checkpoint, transition, collision,
   and tileset suites pass. New coverage proves Chuck crosses the low passage
-  while undead cannot, the named transition does not bounce, all Map 4 walkable
-  tiles are connected, its shortest route is meaningfully indirect, exactly 16
-  grass tufts and one Ashtray exist, no enemy or staged-enemy spawn exists, and
+  while undead cannot, the named transition does not bounce, both Map 4 banks
+  remain internally connected around the required jump, exactly 16
+  grass tufts and one Ashtray exist, no fast or staged-enemy spawn exists, and
   save/CONTINUE shares the registered `Chult 4` loader.
 
 - All 34 test modules pass through their standalone runners (pytest is not
@@ -541,11 +556,15 @@ as a convention for each future exterior Chult map.
     transition into Map 4 does not bounce. Activate its Ashtray and test both
     CONTINUE and Sanity-zero return. Explore to the northern boundary and check
     that the dense vegetation creates a relaxed meandering route, sixteen grass
-    tufts feel plentiful, and no enemies appear anywhere on the map.
+    tufts feel plentiful, and no fast or staged enemies appear on the map.
 33. Continue north until the stream crosses the route. Confirm walking stops
     cleanly at the bank, SPACE carries Chuck over the single water tile with
     the existing bounce cue, the stream visibly continues into vegetation on
     both sides, and there is no route around either endpoint.
+34. In the broad clearing near the end, confirm one massive dinosaur appears,
+    moves with the same deliberate slowness as the Map 2 creature, and can be
+    circled or escaped without fighting. Lose all Sanity and verify it returns
+    at the Map 4 Ashtray with the dinosaur restored.
 
 ## Next Bounded Task
 

@@ -32,7 +32,7 @@ By the end of Phase 5, the player should be able to:
     jungle openings.
 9.  Escape through a narrow route only Chuck can fit through.
 10. Enter Chult Map 4.
-11. Meander through a dense, enemy-free jungle respite with plentiful
+11. Meander through a dense, low-pressure jungle respite with plentiful
     cigarette grass.
 12. Enter Chult Map 5.
 13. Discover a pyramid/temple.
@@ -368,8 +368,10 @@ Chuck must use the existing jump to cross its one-tile width. Keep the
 water visually distinct from ordinary ground, prevent walking through
 it, and do not add swimming, drowning, or a stream-specific control.
 
-Do not place enemies or staged enemy releases on this map. The absence
-of combat is intentional pacing, not unfinished encounter content.
+Place exactly one existing massive, slow dinosaur in the broad clearing
+near the northern end. Keep it optional and leave enough space to circle
+or escape it. Do not add other enemies or staged releases; the map should
+remain a substantial reduction in pressure after the undead ambush.
 
 Give the map one physical Ashtray/checkpoint and a clear route toward
 the following temple exterior map.
@@ -471,7 +473,8 @@ Loads the undead run in a valid pre-encounter state.
 
 ## Chult 4
 
-Loads the enemy-free jungle respite in a valid state.
+Loads the low-pressure jungle respite and its one massive dinosaur in a valid
+state.
 
 ## Chult 5
 
@@ -656,7 +659,7 @@ Do not implement during Phase 5:
 Phase 5 is focused on:
 
 **the jungle cog, sailor interaction, two large raptors, thorn maze,
-undead jungle run, Chuck-sized escape route, enemy-free jungle respite,
+undead jungle run, Chuck-sized escape route, low-pressure jungle respite,
 and temple exterior.**
 
 ------------------------------------------------------------------------
@@ -723,7 +726,9 @@ and temple exterior.**
 
 ## Jungle Respite
 
--   [ ] Chult Map 4 contains no enemies or staged enemy releases.
+-   [ ] Chult Map 4 contains exactly one massive slow dinosaur and no
+    other enemies or staged releases.
+-   [ ] The dinosaur can be circled or escaped without defeating it.
 -   [ ] Dense vegetation creates a readable meandering route.
 -   [ ] The map provides a clear reduction in pressure after the undead
     run.
@@ -798,7 +803,7 @@ Play through:
 8.  undead run
 9.  Chuck-sized escape
 10. Chult Map 4
-11. enemy-free jungle respite
+11. low-pressure jungle respite and massive dinosaur
 12. Chult Map 5
 13. temple exterior
 14. temple entrance transition point
@@ -841,5 +846,5 @@ Check:
 
 Phase 5 is complete when Chuck has discovered the jungle cog, passed the
 raptors and thorn maze, escaped a large undead pursuit through a
-Chuck-sized route, crossed the enemy-free jungle respite, and reached
+Chuck-sized route, crossed the low-pressure jungle respite, and reached
 the Chult temple exterior ready for the next phase's dungeon crawl.

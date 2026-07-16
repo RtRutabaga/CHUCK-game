@@ -104,14 +104,15 @@ def test_escape_transitions_to_named_chult_4_arrival_without_bounce() -> None:
         assert scene.map_name == "chult_respite"
         assert game.active_checkpoint_id == "chult_4"
         assert scene._player_tile() == (3, 50)
-        assert scene.undead == [] and scene.raptors == [] and scene.dinosaurs == []
+        assert scene.undead == [] and scene.raptors == []
+        assert len(scene.dinosaurs) == 1
         scene.update(0.0)
         assert scene.map_name == "chult_respite"
     finally:
         game._shutdown()
 
 
-def test_respite_is_dense_meandering_connected_and_enemy_free() -> None:
+def test_respite_is_dense_meandering_and_free_of_fast_or_staged_enemies() -> None:
     tilemap = _map("chult_respite")
     assert (tilemap.width_tiles, tilemap.height_tiles) == (64, 56)
     walkable = {
@@ -130,8 +131,9 @@ def test_respite_is_dense_meandering_connected_and_enemy_free() -> None:
 
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert not any(kind in {
-        "zombie", "skeleton", "raptor", "massive_dinosaur",
+        "zombie", "skeleton", "raptor",
     } or kind.startswith("staged_undead:") for kind in kinds)
+    assert kinds.count("massive_dinosaur") == 1
     assert kinds.count("breakable_grass") == 16
     assert kinds.count("anchor:chult_4_anchor") == 1
     assert kinds.count("boundary:chult_temple") == 1
@@ -179,6 +181,58 @@ def test_stream_spans_the_map_and_requires_the_existing_jump() -> None:
     assert not player.jumping
     assert player.y < 39 * config.TILE_SIZE
     assert tileset_for("chult_respite").char_to_terrain["≈"] == "jungle_stream"
+
+
+def test_one_slow_dinosaur_occupies_the_open_end_clearing_without_a_gate() -> None:
+    tilemap = _map("chult_respite")
+    spawns = [
+        (int(cx // config.TILE_SIZE), int(cy // config.TILE_SIZE))
+        for kind, (cx, cy) in tilemap.object_spawns
+        if kind == "massive_dinosaur"
+    ]
+    assert spawns == [(40, 8)]
+    assert all(
+        not tilemap.is_solid(col, row)
+        for row in range(8, 13)
+        for col in range(36, 45)
+    )
+
+    # The north-bank route can circle a three-tile envelope around the body;
+    # fighting it is never required to reach the future temple boundary.
+    excluded = {
+        (col, row)
+        for row in range(tilemap.height_tiles)
+        for col in range(tilemap.width_tiles)
+        if (col - 40) ** 2 + (row - 8) ** 2 <= 3 ** 2
+    }
+    start = (44, 38)
+    reached = {start}
+    frontier = deque([start])
+    while frontier:
+        col, row = frontier.popleft()
+        for point in ((col - 1, row), (col + 1, row),
+                      (col, row - 1), (col, row + 1)):
+            if (point not in reached and point not in excluded
+                    and not tilemap.is_solid(*point)):
+                reached.add(point)
+                frontier.append(point)
+    assert (54, 1) in reached
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("chult_4")
+        assert len(scene.dinosaurs) == 1
+        original = scene.dinosaurs[0]
+        assert original.speed == config.DINOSAUR_SPEED
+        original.alive = False
+        scene.dinosaurs = []
+        scene._begin_respawn()
+        scene.update(config.RESPAWN_FADE_OUT + 0.01)
+        scene.update(config.RESPAWN_HOLD + 0.01)
+        assert len(scene.dinosaurs) == 1
+        assert scene.dinosaurs[0] is not original
+    finally:
+        game._shutdown()
 
 
 def test_chult_4_checkpoint_and_physical_ashtray_share_loader() -> None:
