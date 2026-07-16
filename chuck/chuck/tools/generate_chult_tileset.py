@@ -28,6 +28,9 @@ LOG_LIGHT = (78, 73, 42)
 LOG_DARK = (25, 34, 25)
 THORN = (66, 111, 47)
 THORN_LIGHT = (129, 143, 70)
+STREAM = (23, 68, 67)
+STREAM_LIGHT = (47, 111, 101)
+STREAM_DARK = (16, 47, 51)
 TRAIL = (47, 46, 29)
 TRAIL_LIGHT = (68, 62, 35)
 TRAIL_DARK = (30, 35, 24)
@@ -104,6 +107,23 @@ def draw_thorn_patch(surface, variant: int, _frame: int) -> None:
                          (tip_x + (1 if tip_x < base_x else -1), tip_y + 2), 1)
 
 
+def draw_jungle_stream(surface, variant: int, frame: int) -> None:
+    """Dark humid water with a restrained lateral pixel shimmer."""
+    surface.fill(STREAM)
+    offset = (frame * 2 + variant * 3) % 8
+    pygame.draw.rect(surface, STREAM_DARK, (0, 0, 16, 2))
+    pygame.draw.rect(surface, STREAM_DARK, (0, 14, 16, 2))
+    for y, length in ((4, 6), (9, 5), (12, 3)):
+        x = (offset + y + variant * 2) % 16
+        pygame.draw.line(surface, STREAM_LIGHT, (x, y),
+                         (min(15, x + length), y), 1)
+        if x + length > 15:
+            pygame.draw.line(surface, STREAM_LIGHT, (0, y),
+                             ((x + length) - 16, y), 1)
+    pygame.draw.line(surface, STREAM_DARK,
+                     ((offset + 10) % 16, 6), ((offset + 14) % 16, 6), 1)
+
+
 def draw_jungle_trail(surface, variant: int, _frame: int) -> None:
     """A restrained worn track that remains part of the humid ground."""
     surface.fill(TRAIL)
@@ -135,6 +155,7 @@ DRAW = {
     "dense_jungle": draw_dense_jungle,
     "fallen_log": draw_fallen_log,
     "thorn_patch": draw_thorn_patch,
+    "jungle_stream": draw_jungle_stream,
     "jungle_trail": draw_jungle_trail,
     "jungle_exit": draw_jungle_exit,
     "astral_void": draw_astral_void,

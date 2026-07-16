@@ -20,11 +20,17 @@ from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 
 class StillInput:
+    def __init__(self):
+        self.press_jump = False
+        self.movement = (0.0, 0.0)
+
     def was_pressed(self, _action):
-        return False
+        pressed = _action == "jump" and self.press_jump
+        self.press_jump = False
+        return pressed
 
     def movement_vector(self):
-        return (0.0, 0.0)
+        return self.movement
 
 
 def _map(name: str) -> TileMap:
@@ -114,9 +120,12 @@ def test_respite_is_dense_meandering_connected_and_enemy_free() -> None:
         for col in range(tilemap.width_tiles)
         if not tilemap.is_solid(col, row)
     }
-    assert _flood(tilemap, (3, 50)) == walkable
+    south_bank = _flood(tilemap, (3, 50))
+    north_bank = _flood(tilemap, (54, 1))
+    assert south_bank.isdisjoint(north_bank)
+    assert south_bank | north_bank == walkable
+    assert len(south_bank) > 250 and len(north_bank) > 500
     assert len(walkable) / (64 * 56) < 0.40
-    assert _distance(tilemap, (3, 50), (54, 1)) >= 160
     assert len(tilemap.prop_tiles) >= 275
 
     kinds = [kind for kind, _position in tilemap.object_spawns]
@@ -128,6 +137,48 @@ def test_respite_is_dense_meandering_connected_and_enemy_free() -> None:
     assert kinds.count("boundary:chult_temple") == 1
     assert tileset_for("chult_respite") is tileset_for("chult_jungle")
     assert AREA_MUSIC["chult_respite"] == "chult.wav"
+
+
+def test_stream_spans_the_map_and_requires_the_existing_jump() -> None:
+    tilemap = _map("chult_respite")
+    stream = {
+        (col, row)
+        for row in range(tilemap.height_tiles)
+        for col in range(tilemap.width_tiles)
+        if tilemap.terrain_at(col, row) == "≈"
+    }
+    assert len(stream) == 68
+    assert any(col == 0 for col, _row in stream)
+    assert any(col == tilemap.width_tiles - 1 for col, _row in stream)
+
+    reached = {next(point for point in stream if point[0] == 0)}
+    frontier = deque(reached)
+    while frontier:
+        col, row = frontier.popleft()
+        for point in ((col - 1, row), (col + 1, row),
+                      (col, row - 1), (col, row + 1)):
+            if point in stream and point not in reached:
+                reached.add(point)
+                frontier.append(point)
+    assert reached == stream
+
+    # The route crosses one tile of water at column 44. Walking stops at the
+    # bank; the existing committed jump clears it without a stream-only input.
+    controls = StillInput()
+    controls.movement = (0.0, -1.0)
+    player = Player(44 * config.TILE_SIZE + 3,
+                    40 * config.TILE_SIZE + 4, controls)
+    player.tilemap = tilemap
+    player.facing = "up"
+    player.update(0.2)
+    assert player.y >= 40 * config.TILE_SIZE
+
+    controls.press_jump = True
+    for _ in range(12):
+        player.update(0.03)
+    assert not player.jumping
+    assert player.y < 39 * config.TILE_SIZE
+    assert tileset_for("chult_respite").char_to_terrain["≈"] == "jungle_stream"
 
 
 def test_chult_4_checkpoint_and_physical_ashtray_share_loader() -> None:

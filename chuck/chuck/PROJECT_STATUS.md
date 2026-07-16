@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 93 (Chult Map 4 jungle respite). This file is required by
+Updated: session 94 (Chult Map 4 jumpable stream). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -347,6 +347,11 @@ the project rules and updated every session.
   sixteen shared cigarette-grass tufts, and one physical Ashtray. `Chult 4`
   uses the shared development/save loader; the northern Map 5 temple boundary
   is authored but deliberately inert until the next session
+- Chult Map 4 stream crossing: a continuous 68-tile animated water ribbon
+  winds from the west map edge to the east edge and splits the route into two
+  banks. Ordinary movement stops at the water; Chuck's established committed
+  jump clears the one-tile crossing. It adds no swimming, drowning, new input,
+  tutorial, enemy, or alternate endpoint bypass
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -529,6 +534,8 @@ respite and stop at the readable temple entrance without building the dungeon.
        vegetation, a deliberately meandering route, sixteen grass tufts, no
        enemies, one physical Ashtray, and shared `Chult 4` development loading
        (session 93).
+   - [x] Added a map-spanning animated jungle stream with one required jump
+         crossing, using the existing jump/collision behavior (session 94).
 9. [ ] Build Chult Map 5 as the temple exterior, add its checkpoint, and stop
        at the temple entrance without beginning the dungeon.
 

@@ -3,11 +3,23 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `3b23b21` (`Increase Chult undead pressure`)
-- Current work: Chult Map 3 Chuck-sized escape and Chult Map 4 jungle respite
+- Base commit before this pass: `870e62d` (`Add Chult jungle respite map`)
+- Current work: required jumpable stream through Chult Map 4
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+Chult Map 4 now contains a continuous 68-tile jungle stream winding from the
+west boundary to the east boundary. It divides the arrival and temple-route
+banks, and its endpoints cannot be walked around. The authored route meets a
+single-tile crossing near the middle of the map.
+
+New animated `jungle_stream` terrain uses three variants and three restrained
+lateral shimmer frames in the generated Chult sheet. Water is solid during
+ordinary movement, while Chuck's existing committed jump ignores exactly this
+terrain alongside established Astral gaps. This reuses SPACE, the bounce sound,
+normal collision, and jump animation; it adds no swimming, drowning, bespoke
+input, prompt, enemy, or stream-only state.
 
 The northern end of Chult Map 3 now narrows into a six-tile low passage before
 the named exit. Chuck crosses it using ordinary movement, while the shared
@@ -313,6 +325,12 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
+- Focused jump, respite, tileset, and tilemap suites pass. Coverage verifies
+  the stream's exact connected edge-to-edge span, the two separated walking
+  banks, ordinary collision at the water, successful crossing through the
+  existing jump, and Chult-sheet art registration. Native 320x180 review shows
+  dark teal animated water clearly dividing the vegetation-framed route.
+
 - All focused escape/respite, undead-run, checkpoint, transition, collision,
   and tileset suites pass. New coverage proves Chuck crosses the low passage
   while undead cannot, the named transition does not bounce, all Map 4 walkable
@@ -524,6 +542,10 @@ as a convention for each future exterior Chult map.
     CONTINUE and Sanity-zero return. Explore to the northern boundary and check
     that the dense vegetation creates a relaxed meandering route, sixteen grass
     tufts feel plentiful, and no enemies appear anywhere on the map.
+33. Continue north until the stream crosses the route. Confirm walking stops
+    cleanly at the bank, SPACE carries Chuck over the single water tile with
+    the existing bounce cue, the stream visibly continues into vegetation on
+    both sides, and there is no route around either endpoint.
 
 ## Next Bounded Task
 

@@ -363,6 +363,11 @@ Include a good amount of the established scratchable cigarette grass
 tufts. Use the shared breakable-grass behavior without adding the early
 Waterdeep/sewer proximity tutorial.
 
+A narrow jungle stream should run through the map and divide the route.
+Chuck must use the existing jump to cross its one-tile width. Keep the
+water visually distinct from ordinary ground, prevent walking through
+it, and do not add swimming, drowning, or a stream-specific control.
+
 Do not place enemies or staged enemy releases on this map. The absence
 of combat is intentional pacing, not unfinished encounter content.
 
@@ -724,6 +729,9 @@ and temple exterior.**
     run.
 -   [ ] A good amount of reusable cigarette grass is scattered through
     the map.
+-   [ ] A continuous jungle stream divides the route and requires one
+    existing jump to cross.
+-   [ ] Chuck cannot walk through the stream or bypass its endpoints.
 -   [ ] One physical Ashtray saves and respawns correctly.
 -   [ ] The route toward Chult Map 5 is readable.
 

@@ -132,7 +132,10 @@ class Player(Entity):
         if self.jumping:
             dx, dy = self._jump_direction
             move_speed = config.JUMP_SPEED
-            ignored_terrain = frozenset({"V"})
+            # Chuck's committed hop clears the established Astral gaps and
+            # one-tile jungle streams, while ordinary solid terrain remains
+            # impassable.
+            ignored_terrain = frozenset({"V", "≈"})
             self.jump_remaining = max(0.0, self.jump_remaining - dt)
         elif self.scratching:
             dx, dy = (0.0, 0.0)
