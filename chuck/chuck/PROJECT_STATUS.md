@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 72 (Phase 4 Chult exploration soundtrack). This file is required by
+Updated: session 73 (Phase 4 dense-jungle tree art pass). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -213,7 +213,7 @@ the project rules and updated every session.
   seconds with control and simulation locked. Direct Chult 1/CONTINUE loads do
   not replay this one-time arrival presentation
 
-- Phase 4 jungle layout: `chult_jungle.txt` is a 60x60 playable jungle space
+- Phase 4 jungle layout: `chult_jungle.txt` is a 64x60 padded playable jungle space
   with a dedicated procedural `chult.png` sheet derived from the cutscene's
   ground, canopy, trunk, vine, and leaf palette. Dense vegetation forms stable
   collision boundaries around the landing and large growth masses create a
@@ -261,6 +261,14 @@ the project rules and updated every session.
   a placeholder map or fake transition. Solid jungle beyond the threshold
   remains the deliberate Phase 4 edge
 
+- Phase 4 dense vegetation art: the former blocky green collision texture is
+  now an interlocked organic canopy of broad leaves, woody seams, and hanging
+  vines. Across the same solid vegetation cells, 165 deterministic y-sorted
+  tree props use three 34x46 silhouettes with layered tropical crowns, trunks,
+  and trailing vines. The trees rise above human NPC height and more than three
+  times Chuck's height, making each collision mass read as dense forest without
+  changing a single walkable tile or route
+
 ## Placeholder systems
 - Phase 4 implementation is feature-complete pending full-route human playtest
   and acceptance
@@ -289,11 +297,12 @@ the project rules and updated every session.
 
 ## Tests
 
-27 suites (most pure Python/headless): collision, tilemap,
+28 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
-Chult terrain hazard, previous-traveler scene, Chult route-deeper boundary
+Chult terrain hazard, previous-traveler scene, Chult route-deeper boundary,
+Chult dense vegetation
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -347,10 +356,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Human-playtest the complete Phase 4 route, with particular attention to Chult's
-new bass-forward theme, its loop, and audio behavior after death/CONTINUE. Tune
-only from concrete playtest feedback; do not begin Phase 5 without a new active
-phase contract or explicit direction.
+Human-playtest the new dense-tree art at native scale, checking path readability,
+occlusion, collision edges, and whether vegetation feels sufficiently dense.
+Then complete the broader Phase 4 acceptance playtest; do not begin Phase 5
+without a new active phase contract or explicit direction.
 
 ## Also open
 
@@ -367,7 +376,7 @@ phase contract or explicit direction.
        supports stable jungle-ground and dense-vegetation collision language.
 4. [x] `Chult 1` Ashtray is wired to save, CONTINUE, development selection, and
        Sanity-zero respawn through the existing shared architecture.
-5. [x] Expanded 60x60 connected exploration layout with a main route, optional
+5. [x] Expanded 64x60 padded connected exploration layout with a main route, optional
        branch, and overhead fallen-log passage sized for Chuck (session 65).
 6. [x] Added two human-scale durable zombies and two skeletons with simple
        collision-aware pursuit, avoidable placement, existing scratch/contact
@@ -382,6 +391,9 @@ phase contract or explicit direction.
 10. [x] Added an original 86-second bass-forward Chult exploration loop with
         syncopated percussion, layered groove, melodic identity, clean looping,
         and normal area/checkpoint audio integration (session 72).
+11. [x] Replaced block-like dense-jungle art with organic canopy texture and
+        165 oversized tree silhouettes while preserving collision and routes
+        (session 73).
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

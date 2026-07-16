@@ -48,6 +48,11 @@ _SPRITES = {
     "crate_orange": "objects/crate_orange.png",
     "expedition_backpack": "objects/expedition_backpack.png",
     "abandoned_boot": "objects/abandoned_boot.png",
+    "jungle_tree": (
+        "objects/jungle_tree_1.png",
+        "objects/jungle_tree_2.png",
+        "objects/jungle_tree_3.png",
+    ),
 }
 
 # Props that respond to the interact key with a line of dialogue
@@ -76,7 +81,12 @@ class Prop:
             raise ValueError(f"Unknown prop kind {kind!r}")
         self.kind = kind
         ts = config.TILE_SIZE
-        self._image = assets.image(_SPRITES[kind])
+        sprite = _SPRITES[kind]
+        if isinstance(sprite, tuple):
+            # Stable spatial variation: authored trees keep their silhouette
+            # between runs without requiring three separate map characters.
+            sprite = sprite[(col * 31 + row * 17) % len(sprite)]
+        self._image = assets.image(sprite)
         w, h = self._image.get_size()
         # Horizontally centered on the tile, bottom edges aligned.
         self._draw_x = col * ts + (ts - w) // 2

@@ -47,15 +47,35 @@ def draw_ground(surface, variant: int, _frame: int) -> None:
 
 
 def draw_dense_jungle(surface, variant: int, _frame: int) -> None:
-    surface.fill(CANOPY)
-    pygame.draw.rect(surface, TRUNK, (variant * 3 % 12, 0, 5, 16))
-    for index, (x, y) in enumerate(((1, 2), (8, 1), (4, 8), (11, 10))):
-        dx = (x + variant * 2) % 14
-        color = CANOPY_LIGHT if index % 2 else LEAF
-        pygame.draw.rect(surface, color, (dx, y, 6, 4))
-    vine_x = 3 + variant * 4
-    pygame.draw.line(surface, VINE, (vine_x, 0), (vine_x - 2, 15), 2)
-    pygame.draw.line(surface, GROUND_DARK, (0, 15), (15, 15))
+    """Tightly interlocked broad leaves instead of a brick-like green wall."""
+    surface.fill(GROUND_DARK)
+    clusters = (
+        ((-3, -2, 10, 9), (6, -3, 12, 10), (1, 6, 12, 11), (10, 7, 9, 11)),
+        ((-4, 3, 11, 10), (3, -4, 12, 11), (9, 1, 11, 12), (4, 9, 12, 9)),
+        ((-2, -3, 12, 11), (8, -2, 10, 10), (-3, 8, 11, 10), (7, 7, 12, 12)),
+        ((-4, -4, 11, 12), (5, -2, 13, 10), (0, 8, 11, 11), (10, 7, 9, 10)),
+    )[variant]
+    for index, rect in enumerate(clusters):
+        color = CANOPY if index % 2 == 0 else CANOPY_LIGHT
+        pygame.draw.ellipse(surface, color, rect)
+        x, y, w, h = rect
+        vein_start = (max(0, x + w // 2), max(0, y + h // 2))
+        vein_end = (min(15, x + w - 1), min(15, y + h - 1))
+        pygame.draw.line(surface, VINE, vein_start, vein_end, 1)
+    highlights = (
+        ((2, 3), (9, 1), (6, 11), (13, 9)),
+        ((1, 8), (7, 2), (12, 5), (8, 13)),
+        ((3, 2), (11, 3), (2, 12), (10, 10)),
+        ((1, 2), (8, 3), (4, 12), (13, 11)),
+    )[variant]
+    for x, y in highlights:
+        pygame.draw.rect(surface, LEAF, (x, y, 3, 2))
+    # Dark woody seams and hanging vines keep adjacent tiles from reading as
+    # one flat hedge while preserving a continuous impassable canopy.
+    pygame.draw.line(surface, TRUNK, (variant * 4 % 13, 0),
+                     ((variant * 4 + 3) % 16, 15), 2)
+    vine_x = 2 + variant * 4
+    pygame.draw.line(surface, VINE, (vine_x, 0), (max(0, vine_x - 2), 15), 1)
 
 
 def draw_fallen_log(surface, variant: int, _frame: int) -> None:

@@ -3,8 +3,8 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `8e3ef42` (`Add Chult traveler scene and deeper trail`)
-- Current work: Phase 4 implementation complete through the Chult soundtrack
+- Base commit before this pass: `1780ce3` (`Add Chult jungle exploration theme`)
+- Current work: Phase 4 complete through the dense-jungle tree art pass
 - Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
 
 ## Completed This Pass
@@ -14,7 +14,7 @@ the active scope referenced by the docs guide. Phase 3's final jungle tableau
 holds for two seconds after its authored completion, then loads a playable Chult
 landing through the shared checkpoint loader.
 
-`chult_jungle.txt` is now a contained 60x60 exploration area, slightly larger in
+`chult_jungle.txt` is now a contained 64x60 padded exploration area, slightly larger in
 authored tile area than the sewer. Its dedicated procedural
 tileset uses the cutscene's dark ground, canopy, trunk, vine, and leaf colors so
 normal gameplay continues the same visual language. Dense vegetation is solid;
@@ -87,9 +87,18 @@ and a short dry woodblock. `chult.wav` is cached at the established 22.05 kHz,
 16-bit mono format and `AREA_MUSIC` starts it for all normal Chult entry paths.
 No ambience subsystem or map/gameplay changes were added.
 
+Dense Chult collision masses no longer read as repeated green masonry. The
+`dense_jungle` tileset row now builds interlocking elliptical broad-leaf clusters
+over dark woody seams and vines. A new solid `/` terrain tile preserves `#`
+underneath while adding a y-sorted `jungle_tree` prop. The map authors 165 of
+these only where dense vegetation was already solid. Three deterministic 34x46
+tree variants layer broad tropical crowns, visible trunks, and hanging vines;
+they tower over Chuck and human NPCs and overlap into path edges without moving
+the collision boundary. No open tile, enemy, checkpoint, or route changed.
+
 ## Verification
 
-- All 27 test modules pass through their standalone runners (pytest is not
+- All 28 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
 - New Chult coverage verifies map dimensions/spawns, shared-loader cutscene
   handoff, required progression, Ashtray save data, and relaunch/CONTINUE.
@@ -125,6 +134,10 @@ No ambience subsystem or map/gameplay changes were added.
   format, peak headroom, and loop seam. The 85.7-second render peaks at 0.75;
   a diagnostic 220 Hz low-pass retained about 88% of total RMS, confirming the
   mix is materially low-end-led. Transition coverage verifies the file exists.
+- The 28th vegetation suite verifies 150-180 authored tree props, solid terrain
+  preservation, all three generated 34x46 sprites, scale above humans and more
+  than three Chuck heights, and deterministic use of every variant. Existing
+  Chult flood-fill and tileset coverage verify route/collision stability.
 
 ## Playtest Focus
 
@@ -168,10 +181,13 @@ No ambience subsystem or map/gameplay changes were added.
     the middle breakdown stays propulsive, and the full loop has no audible
     seam. Die and CONTINUE in Chult; confirm music remains stable and restarts
     appropriately on a fresh launch.
+17. Walk the entire Chult route at native scale. Confirm the former green blocks
+    now read as dense tropical tree masses, trunks and crowns layer naturally,
+    Chuck remains visible on paths, and no tree appears to open or close a route.
 
 ## Next Bounded Task
 
-Human-playtest the complete Phase 4 route and soundtrack against the active
-acceptance criteria. Make only targeted tuning or bug fixes from concrete
-feedback. Do not begin Phase 5 without an active Phase 5 contract or explicit
-direction.
+Human-playtest the dense-tree pass at native scale, then finish the complete
+Phase 4 route/soundtrack acceptance run. Make only targeted tuning or bug fixes
+from concrete feedback. Do not begin Phase 5 without an active Phase 5 contract
+or explicit direction.
