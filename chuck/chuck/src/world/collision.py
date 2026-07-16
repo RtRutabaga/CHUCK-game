@@ -38,6 +38,7 @@ def move_and_collide(
     dy: float,
     grid: SolidGrid,
     ignored_terrain: frozenset[str] = frozenset(),
+    extra_solid_terrain: frozenset[str] = frozenset(),
 ) -> tuple[float, float]:
     """Move a hitbox by (dx, dy), stopping flush against solid tiles.
 
@@ -48,19 +49,20 @@ def move_and_collide(
     Movement is swept: every tile the leading edge crosses is checked,
     so even a large dt (lag spike) can't tunnel through a thin wall.
     `ignored_terrain` is reserved for explicit traversal states such as
-    the sewer jump; the default preserves ordinary collision exactly.
+    the sewer jump. `extra_solid_terrain` lets large actors reject passages
+    that remain physically open to Chuck; both defaults preserve ordinary
+    collision exactly.
     """
     ts = config.TILE_SIZE
 
     def blocked(col: int, row: int) -> bool:
-        return (
-            grid.is_solid(col, row)
-            and (
-                not ignored_terrain
-                or not hasattr(grid, "terrain_at")
-                or grid.terrain_at(col, row) not in ignored_terrain
-            )
+        terrain = (
+            grid.terrain_at(col, row)
+            if hasattr(grid, "terrain_at")
+            else None
         )
+        solid = grid.is_solid(col, row) or terrain in extra_solid_terrain
+        return solid and terrain not in ignored_terrain
 
     # ----- X axis -----
     if dx != 0.0:

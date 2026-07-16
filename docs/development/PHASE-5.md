@@ -6,11 +6,11 @@ Phase 4 establishes the first playable Chult map, Chult
 ashtray/checkpoint, thorns, narrow Chuck-sized routes, and durable
 zombie and skeleton enemies.
 
-Phase 5 continues through the next three Chult maps.
+Phase 5 continues through the next four Chult maps.
 
 This phase introduces a sailing cog stranded in the jungle, two large
-raptors, a thorn maze, a high-pressure undead escape sequence, and the
-exterior of a pyramid/temple.
+raptors, a thorn maze, a high-pressure undead escape sequence, a
+low-pressure jungle respite, and the exterior of a pyramid/temple.
 
 Phase 5 ends at the temple. The temple dungeon crawl begins in the next
 phase.
@@ -32,8 +32,11 @@ By the end of Phase 5, the player should be able to:
     jungle openings.
 9.  Escape through a narrow route only Chuck can fit through.
 10. Enter Chult Map 4.
-11. Discover a pyramid/temple.
-12. Reach the temple entrance and the transition point for the next
+11. Meander through a dense, enemy-free jungle respite with plentiful
+    cigarette grass.
+12. Enter Chult Map 5.
+13. Discover a pyramid/temple.
+14. Reach the temple entrance and the transition point for the next
     phase.
 
 Do not build the temple dungeon interior during Phase 5.
@@ -347,7 +350,28 @@ The route leads to Chult Map 4.
 
 ------------------------------------------------------------------------
 
-# 10. Chult Map 4 --- Temple Exterior
+# 10. Chult Map 4 --- Jungle Respite
+
+Chult Map 4 deliberately releases the pressure after the undead ambush.
+
+It should feel similar to the exploratory language of Chult Map 1, but
+use more dense vegetation blocks to create a longer meandering route.
+The path should remain readable without a minimap while offering small
+clearings, bends, and optional-looking branches.
+
+Include a good amount of the established scratchable cigarette grass
+tufts. Use the shared breakable-grass behavior without adding the early
+Waterdeep/sewer proximity tutorial.
+
+Do not place enemies or staged enemy releases on this map. The absence
+of combat is intentional pacing, not unfinished encounter content.
+
+Give the map one physical Ashtray/checkpoint and a clear route toward
+the following temple exterior map.
+
+------------------------------------------------------------------------
+
+# 11. Chult Map 5 --- Temple Exterior
 
 The subsequent Chult map contains a pyramid/temple.
 
@@ -397,7 +421,7 @@ The temple is the focus.
 
 ------------------------------------------------------------------------
 
-# 11. Temple Entrance and Phase End
+# 12. Temple Entrance and Phase End
 
 Create the temple entrance and a clean transition boundary for the next
 phase.
@@ -415,7 +439,7 @@ The next phase will focus on dungeon crawling through the temple.
 
 ------------------------------------------------------------------------
 
-# 12. Ashtrays and Development Checkpoints
+# 13. Ashtrays and Development Checkpoints
 
 Use the existing ashtray/checkpoint and save architecture.
 
@@ -426,6 +450,7 @@ Recommended display names:
 -   `Chult 2`
 -   `Chult 3`
 -   `Chult 4`
+-   `Chult 5`
 
 Use the project's actual checkpoint ID naming conventions in code.
 
@@ -441,6 +466,10 @@ Loads the undead run in a valid pre-encounter state.
 
 ## Chult 4
 
+Loads the enemy-free jungle respite in a valid state.
+
+## Chult 5
+
 Loads the temple exterior in a valid state.
 
 Do not create separate debug teleport logic.
@@ -453,7 +482,7 @@ removing the intended pressure of the undead run.
 
 ------------------------------------------------------------------------
 
-# 13. State and Progression
+# 14. State and Progression
 
 Use only the state required for these maps.
 
@@ -465,6 +494,7 @@ Possible state includes:
 -   undead run triggered
 -   undead run completed
 -   Chult 4 reached
+-   Chult 5 reached
 -   temple exterior reached
 
 Only create flags that are technically necessary.
@@ -476,7 +506,7 @@ permanent combat upgrade.
 
 ------------------------------------------------------------------------
 
-# 14. Music and Audio
+# 15. Music and Audio
 
 Continue the Chult soundtrack identity established in Phase 4.
 
@@ -506,17 +536,20 @@ Chult.
 
 ## Chult Map 4
 
-The temple exterior may reduce the immediate pressure.
+The jungle respite should reduce the immediate pressure and return to
+the established Chult exploration identity.
 
-The music may become heavier, slower, or more spacious while retaining
-Chult's low-end identity.
+## Chult Map 5
+
+The temple exterior may become heavier, slower, or more spacious while
+retaining Chult's low-end identity.
 
 Prepare the player for the temple without beginning the dungeon
 soundtrack work prematurely.
 
 ------------------------------------------------------------------------
 
-# 15. Art Requirements
+# 16. Art Requirements
 
 New Phase 5 art may include:
 
@@ -548,7 +581,7 @@ Do not independently redesign Chult's palette or jungle style.
 
 ------------------------------------------------------------------------
 
-# 16. Architecture
+# 17. Architecture
 
 Use the systems established in earlier phases.
 
@@ -589,7 +622,7 @@ issue requires it.
 
 ------------------------------------------------------------------------
 
-# 17. Out of Scope
+# 18. Out of Scope
 
 Do not implement during Phase 5:
 
@@ -618,11 +651,12 @@ Do not implement during Phase 5:
 Phase 5 is focused on:
 
 **the jungle cog, sailor interaction, two large raptors, thorn maze,
-undead jungle run, Chuck-sized escape route, and temple exterior.**
+undead jungle run, Chuck-sized escape route, enemy-free jungle respite,
+and temple exterior.**
 
 ------------------------------------------------------------------------
 
-# 18. Acceptance Criteria
+# 19. Acceptance Criteria
 
 ## Chult Map 2 and Cog
 
@@ -682,9 +716,20 @@ undead jungle run, Chuck-sized escape route, and temple exterior.**
 -   [ ] The escape works because of Chuck's size rather than combat
     completion.
 
+## Jungle Respite
+
+-   [ ] Chult Map 4 contains no enemies or staged enemy releases.
+-   [ ] Dense vegetation creates a readable meandering route.
+-   [ ] The map provides a clear reduction in pressure after the undead
+    run.
+-   [ ] A good amount of reusable cigarette grass is scattered through
+    the map.
+-   [ ] One physical Ashtray saves and respawns correctly.
+-   [ ] The route toward Chult Map 5 is readable.
+
 ## Temple Exterior
 
--   [ ] Chult Map 4 contains a readable pyramid/temple.
+-   [ ] Chult Map 5 contains a readable pyramid/temple.
 -   [ ] The temple is the dominant landmark.
 -   [ ] The exterior matches established Chult.
 -   [ ] The temple feels large relative to Chuck.
@@ -698,6 +743,7 @@ undead jungle run, Chuck-sized escape route, and temple exterior.**
 -   [ ] `Chult 2` loads through the development checkpoint selector.
 -   [ ] `Chult 3` loads through the development checkpoint selector.
 -   [ ] `Chult 4` loads through the development checkpoint selector.
+-   [ ] `Chult 5` loads through the development checkpoint selector.
 -   [ ] All use the shared checkpoint loader.
 -   [ ] Each map initializes in a valid testable state.
 -   [ ] Save and respawn behavior remains stable.
@@ -726,7 +772,7 @@ undead jungle run, Chuck-sized escape route, and temple exterior.**
 
 ------------------------------------------------------------------------
 
-# 19. Final Playtest
+# 20. Final Playtest
 
 Test through normal progression and development checkpoints.
 
@@ -744,8 +790,10 @@ Play through:
 8.  undead run
 9.  Chuck-sized escape
 10. Chult Map 4
-11. temple exterior
-12. temple entrance transition point
+11. enemy-free jungle respite
+12. Chult Map 5
+13. temple exterior
+14. temple entrance transition point
 
 ## Development Checkpoints
 
@@ -754,6 +802,7 @@ Load:
 -   `Chult 2`
 -   `Chult 3`
 -   `Chult 4`
+-   `Chult 5`
 
 Check:
 
@@ -774,13 +823,15 @@ Check:
 11. Does enemy volume make stopping to fight impractical?
 12. Can the player identify and reach the narrow escape under pressure?
 13. Is it clear that Chuck fits and human-sized undead do not?
-14. Does the temple map provide a reduction in pressure?
-15. Does the pyramid/temple read clearly at native scale?
-16. Does the phase stop before the dungeon crawl?
-17. Do `Chult 2`, `Chult 3`, and `Chult 4` work as development
+14. Does Chult Map 4 feel exploratory, meandering, and clearly free of
+    combat pressure?
+15. Are the grass tufts plentiful without obscuring the route?
+16. Does the pyramid/temple read clearly at native scale on Map 5?
+17. Does the phase stop before the dungeon crawl?
+18. Do `Chult 2`, `Chult 3`, `Chult 4`, and `Chult 5` work as development
     checkpoints?
 
 Phase 5 is complete when Chuck has discovered the jungle cog, passed the
 raptors and thorn maze, escaped a large undead pursuit through a
-Chuck-sized route, and reached the Chult temple exterior ready for the
-next phase's dungeon crawl.
+Chuck-sized route, crossed the enemy-free jungle respite, and reached
+the Chult temple exterior ready for the next phase's dungeon crawl.

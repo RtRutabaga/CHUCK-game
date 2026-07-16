@@ -181,6 +181,7 @@ CHULT = Tileset(
     overhead_char_to_terrain={
         "_": "fallen_log",
         '"': "jungle_exit",
+        "ð": "jungle_exit",
     },
 )
 
@@ -201,6 +202,7 @@ MAP_TILESET: dict[str, str] = {
     "chult_jungle": "chult",
     "chult_cog": "chult",
     "chult_run": "chult",
+    "chult_respite": "chult",
 }
 
 

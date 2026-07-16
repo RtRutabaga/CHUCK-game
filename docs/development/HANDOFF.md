@@ -3,11 +3,33 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `4c77b7e` (`Add Chult undead run pressure pass`)
-- Current work: heavier Chult Map 3 undead-volume tuning
+- Base commit before this pass: `3b23b21` (`Increase Chult undead pressure`)
+- Current work: Chult Map 3 Chuck-sized escape and Chult Map 4 jungle respite
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+The northern end of Chult Map 3 now narrows into a six-tile low passage before
+the named exit. Chuck crosses it using ordinary movement, while the shared
+collision API lets human-sized undead treat that same terrain as solid. Pursuers
+remain alive on the ambush side instead of being deleted, so the escape reads as
+a consequence of Chuck's one-foot scale. The normal walk-transition path loads
+the named southern arrival on Map 4 without bounce-back.
+
+New `chult_respite.txt` is a 64x56 enemy-free exterior intended as deliberate
+decompression after the undead run. Dense vegetation blocks and 295 existing
+tree/shrub decorations shape a connected route whose shortest arrival-to-exit
+path is 170 steps rather than the 100-step Manhattan distance. Sixteen shared
+scratchable grass tufts are scattered through its clearings and bends, with no
+Waterdeep/sewer tutorial. There are no enemy markers, staged releases, or combat
+gates.
+
+Map 4 has one physical `chult_4_anchor` Ashtray and one development-visible
+`Chult 4` entry. Both use the existing checkpoint registry and shared loader;
+activation saves, CONTINUE restores it, and Sanity-zero return uses it. A named
+future boundary toward the temple is authored but intentionally has no
+transition until Chult Map 5 exists. `PHASE-5.md` and `DECISIONS.md` now record
+the revised order: Map 4 is the jungle respite and Map 5 is the temple exterior.
 
 Sean's pressure tuning expands the three existing finite releases from 4/5/6
 to 6/8/10 enemies. The run now authors 24 undead totalâ€”twelve zombies and
@@ -29,8 +51,10 @@ without defeating an enemy. A small reusable `UndeadReleaseController` owns
 the data-driven row thresholds, one-shot group state, and reset. Astral return uses the existing
 enemy rebuild path to restore the quiet pre-encounter state at Chult 3.
 
-The northern Chuck-sized escape, Map 4, temple exterior, urgent music variation,
-and any durable completion flag remain outside this pass.
+At the end of that earlier pressure pass, the northern Chuck-sized escape and
+Map 4 were still pending; the current pass described above completes both.
+The temple exterior, urgent music variation, and any durable completion flag
+remain future work.
 
 The compact northern Chult Map 2 maze now contains 136 existing `|` hazard
 tiles instead of 37. One southern entrance commits Chuck to a substantially
@@ -289,7 +313,14 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
-- All 33 test modules pass through their standalone runners (pytest is not
+- All focused escape/respite, undead-run, checkpoint, transition, collision,
+  and tileset suites pass. New coverage proves Chuck crosses the low passage
+  while undead cannot, the named transition does not bounce, all Map 4 walkable
+  tiles are connected, its shortest route is meaningfully indirect, exactly 16
+  grass tufts and one Ashtray exist, no enemy or staged-enemy spawn exists, and
+  save/CONTINUE shares the registered `Chult 4` loader.
+
+- All 34 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
 - New undead-run coverage verifies the 6/8/10 group sizes, even twelve-zombie
   and twelve-skeleton mix, canopy-opening terrain, clear three-tile passages,
@@ -487,10 +518,15 @@ as a convention for each future exterior Chult map.
     pressure increases without stuttering, and the central route never requires
     a kill. Stop and fight only to confirm ordinary scratch/damage behavior,
     then lose all Sanity and verify the entire run resets at the Chult 3 Ashtray.
+32. At the north end of the undead run, enter the low passage. Confirm Chuck
+    fits while pursuing zombies and skeletons remain outside, then verify the
+    transition into Map 4 does not bounce. Activate its Ashtray and test both
+    CONTINUE and Sanity-zero return. Explore to the northern boundary and check
+    that the dense vegetation creates a relaxed meandering route, sixteen grass
+    tufts feel plentiful, and no enemies appear anywhere on the map.
 
 ## Next Bounded Task
 
-Author the readable Chuck-sized escape at the north end of Chult Map 3 and
-transition into a safe Chult Map 4 staging foundation with its one physical
-Ashtray/shared development checkpoint. Do not build the temple exterior in the
-same pass.
+Author Chult Map 5 as the temple exterior with its one physical Ashtray/shared
+development checkpoint. Connect Map 4's existing named northern boundary and
+stop at a readable temple entrance; do not build the dungeon interior.

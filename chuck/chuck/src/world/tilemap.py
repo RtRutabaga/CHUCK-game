@@ -74,6 +74,7 @@ Terrain legend:
     ';'  sailing cog         (solid landmark over dense jungle footprint)
     "'"  beaten jungle trail (walkable route toward the next Chult area)
     '"'  jungle trailhead    (walkable trail, canopy drawn overhead)
+    'ð'  Chult area exit     (walkable trail, canopy drawn overhead)
     '/'  dense jungle tree   (solid tall prop over dense vegetation)
     '\\' jungle shrub        (solid broad-leaf prop over dense vegetation)
 
@@ -283,6 +284,8 @@ TILE_DEFS: dict[str, TileDef] = {
     "'": TileDef(solid=False, color=(44, 45, 29)),
     '"': TileDef(solid=False, color=(44, 45, 29),
                  under="'", overhead="jungle_exit"),
+    "ð": TileDef(solid=False, color=(44, 45, 29),
+                 under="'", overhead="jungle_exit"),
     "/": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="jungle_tree", under="#"),
     "\\": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
@@ -334,6 +337,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Β": MarkerDef(kind="staged_undead:2:skeleton", under='"'),
     "γ": MarkerDef(kind="staged_undead:3:zombie", under='"'),
     "Γ": MarkerDef(kind="staged_undead:3:skeleton", under='"'),
+    "δ": MarkerDef(kind="boundary:chult_respite", under="ð"),
+    "ε": MarkerDef(kind="arrival:from_chult_3", under="."),
+    "ζ": MarkerDef(kind="anchor:chult_4_anchor", under="."),
+    "η": MarkerDef(kind="boundary:chult_temple", under="ð"),
 }
 
 _COMMENT_PREFIX = ";"

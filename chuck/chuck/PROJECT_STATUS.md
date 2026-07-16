@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 92 (heavier Chult Map 3 undead pressure). This file is required by
+Updated: session 93 (Chult Map 4 jungle respite). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -336,7 +336,17 @@ the project rules and updated every session.
   pre-run state. Six reusable grass tufts continue the exterior-Chult convention.
   `Chult 3` remains development-visible through the shared loader; its separate
   physical Ashtray still saves, restores through CONTINUE, and becomes the
-  Sanity-zero return point. The Chuck-sized escape and Map 4 remain future work
+  Sanity-zero return point
+- Chult Map 3 now ends in a six-tile low passage that Chuck can traverse but
+  human-sized undead treat as solid. It leads through the ordinary named walk
+  transition into the 64x56 `chult_respite` map without deleting pursuers or
+  requiring combat
+- Phase 5 Chult Map 4 jungle respite: an enemy-free, lower-pressure exterior
+  with dense vegetation masses, 295 authored tree/shrub decorations, a fully
+  connected winding route whose shortest arrival-to-exit path is 170 steps,
+  sixteen shared cigarette-grass tufts, and one physical Ashtray. `Chult 4`
+  uses the shared development/save loader; the northern Map 5 temple boundary
+  is authored but deliberately inert until the next session
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -377,14 +387,14 @@ the project rules and updated every session.
 
 ## Tests
 
-33 suites (most pure Python/headless): collision, tilemap,
+34 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
 Chult terrain hazard, Chult route-deeper boundary,
 Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
 Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
-transition, and the finite Chult 3 undead run
+transition, the finite Chult 3 undead run, and the Chult Map 4 jungle respite
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -442,10 +452,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Author the readable jungle openings and controlled finite release structure for
-the Chult Map 3 undead run, then tune the first pressure pass with existing
-zombies and skeletons. Do not build the Chuck-sized escape or Map 4 in the same
-session.
+Author Chult Map 5 as the temple exterior and create its one physical
+Ashtray/shared development checkpoint. Preserve Map 4 as an enemy-free jungle
+respite and stop at the readable temple entrance without building the dungeon.
 
 ## Also open
 
@@ -515,7 +524,13 @@ session.
        openings, preserving a run-through route, ordinary combat, and complete
        encounter reset at the Chult 3 checkpoint (session 91), then expanded
        the authored groups to 6/8/10 undead after playtesting (session 92).
-8. [ ] Build the Chuck-sized escape and Chult Map 4 temple exterior.
+8. [x] Added a six-tile Chuck-sized escape that blocks human-sized undead, then
+       transitioned into a lower-pressure 64x56 Chult Map 4 with dense
+       vegetation, a deliberately meandering route, sixteen grass tufts, no
+       enemies, one physical Ashtray, and shared `Chult 4` development loading
+       (session 93).
+9. [ ] Build Chult Map 5 as the temple exterior, add its checkpoint, and stop
+       at the temple entrance without beginning the dungeon.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

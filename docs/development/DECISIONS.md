@@ -21,6 +21,9 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Phase 5 is active.
 - Phase 5 ends at the exterior of the jungle temple; do not begin the temple
   interior or dungeon during this phase.
+- Phase 5 map order after the undead ambush is Chult Map 4 as an enemy-free,
+  vegetation-dense jungle respite, followed by the temple exterior on Chult
+  Map 5. Do not merge the respite and temple maps.
 - Exterior Chult maps should include a restrained scatter of reusable
   scratchable grass tufts. They use the shared breakable/reward behavior, but
   the `Press F to scratch` proximity tutorial remains limited to Waterdeep and
