@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 89 (thorn maze and Chult Map 3 staging). This file is required by
+Updated: session 90 (denser, harder Chult Map 2 thorn maze). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -319,10 +319,11 @@ the project rules and updated every session.
   raptors there. The durable decision log now records one physical checkpoint
   for each newly authored gameplay map
 - Phase 5 thorn maze and Chult Map 3 handoff: Map 2's former open northern tip
-  is now an 11-row compact maze built entirely from established dense-jungle
-  collision and 37 existing thorn-hazard tiles. Solid dividers, thorn bands,
-  loops, and branching safe corridors create wrong turns and visual pressure,
-  while a fully thorn-free solution remains available without a minimap. The
+  is now a compact maze built entirely from established dense-jungle collision
+  and 136 existing thorn-hazard tiles. A single southern entrance commits Chuck
+  to a substantially longer winding route with multiple safe loops, many branching
+  choices, and dangerous thorn-cut shortcuts. A fully thorn-free solution
+  remains available without a minimap or unavoidable damage. The
   canopy-framed north threshold transitions to `chult_run` through the ordinary
   walk-exit and named-arrival architecture
 - Chult Map 3 staging: the new 48x36 exterior foundation opens into a connected
@@ -504,7 +505,9 @@ session.
          northern clearing, with optional combat and normal reset (session 88).
 6. [x] Added a compact branching thorn maze with a safe solution, transitioned
        it into a connected Chult Map 3 staging foundation, and added Map 3's
-       shared development entry and one physical Ashtray (session 89).
+       shared development entry and one physical Ashtray (session 89). Increased
+       the maze to 136 thorns, one entrance, a longer route, and more difficult
+       loops and wrong turns after playtesting (session 90).
 7. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)

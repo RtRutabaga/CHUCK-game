@@ -3,18 +3,19 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `e2a4047` (`Add massive Chult dinosaur`)
-- Current work: Chult Map 2 thorn maze and safe Chult Map 3 staging handoff
+- Base commit before this pass: `ff12df6` (`Add Chult thorn maze and Map 3 staging`)
+- Current work: denser, harder Chult Map 2 thorn-maze tuning
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
 
-The former open northern tip of Chult Map 2 is now a compact 11-row thorn maze.
-Thirty-seven existing `|` hazard tiles form bright pressure bands among solid
-dense-jungle dividers. The safe-ground graph contains multiple loops and many
-branch points, but one complete route from the dinosaur clearing to the exit
-touches no thorn. This reuses the established 10-Sanity, i-frame, and jump-safe
-thorn behavior without a maze-specific system or UI.
+The compact northern Chult Map 2 maze now contains 136 existing `|` hazard
+tiles instead of 37. One southern entrance commits Chuck to a substantially
+longer winding route with multiple safe loops, many branch points, and convincing
+wrong turns. Thorn barriers also offer dangerous player-chosen shortcuts, but
+one complete route from the dinosaur clearing to the exit still touches no
+thorn. This reuses the established 10-Sanity, i-frame, and jump-safe thorn
+behavior without a maze-specific system or UI.
 
 The canopy-framed north threshold now enters a new `chult_run` map at one named
 southern arrival through the ordinary walk-exit/checkpoint path. This 48x36
@@ -267,12 +268,14 @@ as a convention for each future exterior Chult map.
 
 - All 32 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
-- New Phase 5 maze coverage verifies exact compact thorn bounds/count, a
-  thorn-free solution, graph loops and branching choices, the named Map 3 exit,
+- New Phase 5 maze coverage verifies the 136-tile compact thorn bounds/count,
+  single safe entrance, 120-plus-step thorn-free solution, at least five graph
+  loops and twenty branching choices, the named Map 3 exit,
   non-bouncing transition, connected 48x36 staging layout, absence of premature
   undead, six grass tufts, Chult art/music reuse, the `Chult 3` development
   entry, single physical Ashtray, save record, and relaunch/CONTINUE position.
-  Native 320x180 review confirms readable thorn bands and dense-jungle dividers.
+  Native 320x180 review confirms dense bright thorn barriers, visible safe
+  corridors, and the established jungle dividers at gameplay scale.
 - New massive-dinosaur coverage verifies the single authored spawn, 72x60
   two-frame/three-facing asset, scale above the raptors, speed below zombies,
   twenty-hit durability, collision, 40-Sanity contact, a route around its body,
@@ -438,10 +441,11 @@ as a convention for each future exterior Chult map.
     green/yellow-eyed/plate-backed reference, and advances much more slowly
     than the other enemies. Circle around it without fighting, then verify
     contact costs heavy Sanity and death/return restores it to its authored spot.
-29. Continue north into the thorn maze. Confirm it feels compact, offers loops
-    and plausible wrong turns, and keeps thorn bands visually distinct from the
-    safe ground. Reach the north exit without touching thorns, then deliberately
-    test thorn damage and jumping over one narrow patch.
+29. Continue north into the thorn maze. Confirm the single entrance leads into
+    a compact but meaningfully difficult network, with dense thorn barriers,
+    loops, and plausible wrong turns that remain distinct from safe ground.
+    Reach the north exit without touching thorns, then deliberately test thorn
+    damage and jumping across one tempting shortcut.
 30. Cross into Chult Map 3 and confirm the transition does not bounce. Touch the
     single nearby Ashtray, quit, and use CONTINUE; verify Chuck returns there.
     From DEV CHECKPOINTS, load Chult 3 directly and confirm the same quiet

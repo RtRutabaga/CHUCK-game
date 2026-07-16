@@ -35,6 +35,25 @@ def _flood(tilemap: TileMap, start: tuple[int, int], blocked=()) -> set:
     return reached
 
 
+def _distance(tilemap: TileMap, start: tuple[int, int], goal: tuple[int, int],
+              blocked=()) -> int | None:
+    blocked = set(blocked)
+    frontier = deque([(start, 0)])
+    reached = {start}
+    while frontier:
+        point, distance = frontier.popleft()
+        if point == goal:
+            return distance
+        col, row = point
+        for neighbor in ((col - 1, row), (col + 1, row),
+                         (col, row - 1), (col, row + 1)):
+            if (neighbor not in reached and neighbor not in blocked
+                    and not tilemap.is_solid(*neighbor)):
+                reached.add(neighbor)
+                frontier.append((neighbor, distance + 1))
+    return None
+
+
 def test_northern_thorn_maze_is_compact_branching_and_safely_solvable() -> None:
     tilemap = _map("chult_cog")
     thorns = {
@@ -43,18 +62,21 @@ def test_northern_thorn_maze_is_compact_branching_and_safely_solvable() -> None:
         for col, char in enumerate(line)
         if char == "|"
     }
-    assert len(thorns) == 37
-    assert all(3 <= row <= 11 and 20 <= col <= 57
+    assert len(thorns) == 136
+    assert all(2 <= row <= 11 and 19 <= col <= 59
                for col, row in thorns)
 
-    start = (40, 13)
+    start = (40, 12)
     exit_tile = (40, 1)
     safe = _flood(tilemap, start, blocked=thorns)
     assert exit_tile in safe
+    # The sole safe entrance now commits Chuck to a substantial winding route;
+    # crossing a thorn barrier remains a dangerous player-chosen shortcut.
+    assert _distance(tilemap, start, exit_tile, blocked=thorns) >= 120
 
     maze_nodes = {
         point for point in safe
-        if 1 <= point[1] <= 12 and 18 <= point[0] <= 61
+        if 1 <= point[1] <= 11 and 18 <= point[0] <= 61
     }
     # More graph edges than a tree proves the safe route contains loops rather
     # than one disguised corridor; the many degree-3 nodes supply choices.
@@ -69,8 +91,8 @@ def test_northern_thorn_maze_is_compact_branching_and_safely_solvable() -> None:
                              (col, row - 1), (col, row + 1))) >= 3
         for col, row in maze_nodes
     )
-    assert edges >= len(maze_nodes)
-    assert branches >= 8
+    assert edges - len(maze_nodes) + 1 >= 5
+    assert branches >= 20
 
 
 def test_maze_exit_targets_one_named_chult_3_arrival() -> None:
