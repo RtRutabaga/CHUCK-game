@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 75 (Phase 4 thorn scatter and expedition-prop removal). This file is required by
+Updated: session 76 (Waterdeep breakable grass). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -101,6 +101,12 @@ the project rules and updated every session.
   she directs Chuck toward sewer scraps without a quest or marker
 - Ruined foundation ('R' walls / 'f' rubble): the mid-map block is a
   crumbling ruin with collapsed gaps; solid, style only
+- Breakable grass: one walkable 16x16 tuft sits at the ruined foundation's
+  southeast corner. The shared scratch dispatch shreds it into eight radial
+  leaf fragments over 0.42 seconds and reveals one cigarette at its center.
+  The former exposed cigarette south of the ruin was relocated into this
+  authored reward. Grass resets when the map reloads and is implemented as a
+  reusable entity/marker for later maps without adding persistent world state
 - Shared mathutil.approach() (camera follow + any future smoothing)
 - Crash logging: unhandled exceptions write crash_log.txt
 - Map transitions: WorldScene.load_map(name) (re)builds a whole area;
@@ -294,12 +300,12 @@ the project rules and updated every session.
 
 ## Tests
 
-27 suites (most pure Python/headless): collision, tilemap,
+28 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
 Chult terrain hazard, Chult route-deeper boundary,
-Chult dense vegetation
+Chult dense vegetation, breakable grass
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -350,6 +356,9 @@ end-to-end headlessly with dummy SDL drivers.
        until Chuck returns through the sewer outflow, then become a dark,
        walkable exterior threshold. No interior or Phase 3 transition is
        present (session 52)
+10. [x] Added reusable scratchable grass at the ruined foundation's southeast
+        corner; its brief leaf-debris animation reveals the cigarette that was
+        previously exposed south of the ruin (session 76).
 
 ## Next recommended session
 

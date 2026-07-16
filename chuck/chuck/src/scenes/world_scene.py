@@ -18,6 +18,7 @@ import pygame
 
 from src.core import config
 from src.entities.anchor import AstralAnchor
+from src.entities.breakable_grass import BreakableGrass
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.hazard import Cat
 from src.entities.npc import NPC
@@ -220,6 +221,7 @@ class WorldScene(Scene):
             for kind, col, row in self.tilemap.prop_tiles
         ]
         self.pickups: list[Cigarette] = []
+        self.breakables: list[BreakableGrass] = []
         self.hazards: list[Cat] = []
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
@@ -234,6 +236,10 @@ class WorldScene(Scene):
                 cig = Cigarette(cx, cy)
                 cig.load_sprite(self.game.assets)
                 self.pickups.append(cig)
+            elif kind == "breakable_grass":
+                grass = BreakableGrass(cx, cy)
+                grass.load_sprite(self.game.assets)
+                self.breakables.append(grass)
             elif kind == "cat":
                 continue  # rebuilt with all enemies below
             elif kind.startswith("anchor:"):
@@ -299,6 +305,9 @@ class WorldScene(Scene):
             rat.update(dt)
         for undead in self.undead:
             undead.update(dt, self.player)
+        for breakable in self.breakables:
+            breakable.update(dt)
+        self.breakables = [item for item in self.breakables if item.alive]
 
         if self._climb_t is not None:
             self._update_climb(dt)
@@ -348,8 +357,15 @@ class WorldScene(Scene):
         if self.player.scratch_just_started:
             self.game.audio.play_sfx("scratch")
             scratch_first_target(
-                self.player.scratch_hitbox(), [*self.rats, *self.undead]
+                self.player.scratch_hitbox(),
+                [*self.breakables, *self.rats, *self.undead],
             )
+            for breakable in self.breakables:
+                drop = breakable.take_drop_position()
+                if drop is not None:
+                    cig = Cigarette(*drop)
+                    cig.load_sprite(self.game.assets)
+                    self.pickups.append(cig)
         self.rats = [rat for rat in self.rats if rat.alive]
         self.undead = [enemy for enemy in self.undead if enemy.alive]
 
@@ -483,7 +499,8 @@ class WorldScene(Scene):
         front of and behind props, anchors, and each other. Chuck is
         one foot tall; this is where that finally SHOWS.
         """
-        drawables = [*self.props, *self.anchors, *self.hazards, *self.rats,
+        drawables = [*self.props, *self.breakables, *self.anchors,
+                     *self.hazards, *self.rats,
                      *self.undead, *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
 

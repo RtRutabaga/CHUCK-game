@@ -109,6 +109,7 @@ SEWER_SCRATCH_HINT_BOUNDS = (24, 39, 31, 36)
 # beyond Chuck's footprint so attacking never demands pixel-perfect contact.
 SCRATCH_DURATION = 0.18
 SCRATCH_REACH = 14
+BREAKABLE_GRASS_DURATION = 0.42
 
 # Chuck's sprite sheet (see tools/generate_chuck_sprites.py).
 CHUCK_SHEET = "chuck/chuck.png"

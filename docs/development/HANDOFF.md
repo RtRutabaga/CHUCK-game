@@ -3,8 +3,8 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `a24bc62` (`Add broad-leaf Chult shrubs`)
-- Current work: Phase 4 thorn scatter and requested expedition-prop removal
+- Base commit before this pass: `2201c12` (`Remove expedition props and scatter Chult thorns`)
+- Current work: reusable Waterdeep breakable-grass reward
 - Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
 
 ## Completed This Pass
@@ -100,9 +100,19 @@ pointed leaves, readable central veins, dark understory bases, and brighter
 tropical midtones. Each shrub is wider than two Chucks and taller than Chuck,
 filling the visual gap below the tall tree crowns without changing collision.
 
+Waterdeep now authors one reusable `breakable_grass` marker on ordinary stone
+at the ruined foundation's southeast corner. It replaces the exposed cigarette
+that previously sat just south of the ruin. The walkable 16x16 tuft joins the
+existing scratch target dispatch ahead of enemies; one swipe plays the normal
+scratch sound, shakes the tuft, sends eight deterministic leaf chips outward
+over 0.42 seconds, and creates exactly one ordinary cigarette pickup beneath it.
+The grass and reward reset with an ordinary map reload; no durable flag or new
+inventory state was added. `tools/generate_breakable_sprites.py` reproduces the
+native-scale procedural grass art for later map reuse.
+
 ## Verification
 
-- All 27 test modules pass through their standalone runners (pytest is not
+- All 28 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
 - New Chult coverage verifies map dimensions/spawns, shared-loader cutscene
   handoff, required progression, Ashtray save data, and relaunch/CONTINUE.
@@ -139,6 +149,10 @@ filling the visual gap below the tall tree crowns without changing collision.
   terrain preservation, all six generated variants, tree scale above humans,
   shrub scale above and wider than Chuck, and deterministic sprite selection.
   Existing Chult flood-fill and tileset coverage verify route/collision stability.
+- The 28th breakable-grass suite verifies exact southeast-ruin placement,
+  removal of the former exposed pickup, walkable underlying stone, one-shot
+  reward creation through WorldScene scratch dispatch, debris lifetime, and
+  native 16x16 sprite scale.
 
 ## Playtest Focus
 
@@ -187,6 +201,10 @@ filling the visual gap below the tall tree crowns without changing collision.
 18. Check the vegetation edges and interiors for broad-leaf shrubs. Confirm they
     read as distinct low understory beneath the trees, vary naturally, and do not
     imply any collision difference from the surrounding dense growth.
+19. In Waterdeep, find the grass at the ruined foundation's southeast corner.
+    Scratch it once and confirm the tuft bursts into quick outward leaf chips,
+    reveals one cigarette, and leaves no invisible collision. Leave and re-enter
+    Waterdeep to confirm the grass resets normally.
 
 ## Next Bounded Task
 

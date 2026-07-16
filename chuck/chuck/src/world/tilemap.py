@@ -101,6 +101,7 @@ declares the terrain underneath it, so no seams appear in the ground):
     '('  Chult zombie           (on jungle ground '.')
     ')'  Chult skeleton         (on jungle ground '.')
     '$'  Chult deeper boundary  (on jungle trailhead '"')
+    '{'  breakable grass        (on stone ',', conceals a cigarette)
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -307,6 +308,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "(": MarkerDef(kind="zombie", under="."),
     ")": MarkerDef(kind="skeleton", under="."),
     "$": MarkerDef(kind="boundary:chult_deeper", under='"'),
+    "{": MarkerDef(kind="breakable_grass", under=","),
 }
 
 _COMMENT_PREFIX = ";"
