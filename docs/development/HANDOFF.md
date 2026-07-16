@@ -3,17 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `f80d0f8` (`Add sailor to Chult cog`)
-- Current work: two Chult Map 2 raptors and one physical map checkpoint
+- Base commit before this pass: `3b6223e` (`Add Chult raptor encounter`)
+- Current work: larger and faster Chult Map 2 raptors
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
 
+Sean's playtest tuning enlarges each raptor from 36x24 to 44x30 and its
+collision footprint from 24x12 to 30x15. The generated art uses crisp
+nearest-neighbor enlargement, retaining the established procedural silhouette
+and two-frame run while making each predator more than three Chuck-widths
+across and more than twice his sprite height.
+
+Pursuit speed rises from 54 to 68 px/s. This is substantially more urgent than
+the 25 px/s skeleton, but remains below Chuck's 80 px/s movement so the broad
+authored clearing and finite 152-pixel notice radius still support escape.
+Raptor count, placement, damage, durability, behavior, checkpoints, and map
+geometry are unchanged.
+
 Exactly two large raptors now occupy the broad central Chult Map 2 clearing,
-well north of the cog. Each uses a 36x24 two-frame procedural running sprite and
-a 24x12 footprint, making it substantially larger than Chuck. The reusable
+well north of the cog. Each now uses a 44x30 two-frame procedural running sprite
+and a 30x15 footprint, making it substantially larger than Chuck. The reusable
 `Raptor` entity follows existing collision, scratch, Sanity/i-frame,
-painter-order, and Astral-return reset contracts. Its 54 px/s finite-range
+painter-order, and Astral-return reset contracts. Its 68 px/s finite-range
 pursuit is materially faster than skeletons but slower than Chuck's 80 px/s,
 so the map's wide side routes remain viable. Raptors inflict 25 Sanity and take
 ten scratches, but defeating either is optional and no route checks their state.
@@ -222,6 +234,9 @@ as a convention for each future exterior Chult map.
 
 - All 30 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
+- Focused raptor and Chult Map 2 suites pass after the scale/speed tuning. A
+  native 320x180 render confirms the 44x30 predator now reads decisively larger
+  than Chuck without obscuring the surrounding route.
 - New raptor coverage verifies exact authored count and spacing, large native
   scale, two-frame asset dimensions, speed relative to skeletons and Chuck,
   finite pursuit, collision, ten-hit scratch defeat, 25-Sanity contact,
@@ -368,9 +383,11 @@ as a convention for each future exterior Chult map.
     returns there with the saved Sanity. Then lose all Sanity in Map 2 and
     confirm the same return point is used and both raptors reset.
 27. Continue north into the broad central clearing. Confirm exactly two large
-    raptors are present, noticeably outrun the undead, and animate while
+    raptors are present, read as more than three Chuck-widths across, noticeably
+    outrun the undead, and animate while
     pursuing. Circle the vegetation or sprint past them without fighting;
-    verify neither is a mandatory gate. If fighting, confirm repeated scratches
+    verify their 68 px/s pursuit feels urgent but Chuck can still gain ground,
+    and neither is a mandatory gate. If fighting, confirm repeated scratches
     eventually defeat one and contact costs Sanity without bypassing i-frames.
 
 ## Next Bounded Task

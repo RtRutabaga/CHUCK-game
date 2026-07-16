@@ -176,11 +176,11 @@ THORN_SANITY_DAMAGE = 10
 
 # Chult raptors are visibly larger and more immediately dangerous than the
 # undead, but remain slower than Chuck so open-space evasion is reliable.
-RAPTOR_FRAME_W = 36
-RAPTOR_FRAME_H = 24
-RAPTOR_HITBOX_W = 24
-RAPTOR_HITBOX_H = 12
-RAPTOR_SPEED = 54.0
+RAPTOR_FRAME_W = 44
+RAPTOR_FRAME_H = 30
+RAPTOR_HITBOX_W = 30
+RAPTOR_HITBOX_H = 15
+RAPTOR_SPEED = 68.0
 RAPTOR_NOTICE_RANGE = 152.0
 RAPTOR_SANITY_DAMAGE = 25
 RAPTOR_SCRATCHES = 10

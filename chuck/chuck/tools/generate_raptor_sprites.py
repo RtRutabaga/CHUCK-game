@@ -5,11 +5,12 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 
-FRAME_W, FRAME_H = 36, 24
+BASE_W, BASE_H = 36, 24
+FRAME_W, FRAME_H = 44, 30
 
 
 def raptor_frame(facing: str, step: int) -> Image.Image:
-    image = Image.new("RGBA", (FRAME_W, FRAME_H), (0, 0, 0, 0))
+    image = Image.new("RGBA", (BASE_W, BASE_H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
     shadow = (18, 31, 24, 170)
     body_dark = (37, 67, 43, 255)
@@ -32,7 +33,7 @@ def raptor_frame(facing: str, step: int) -> Image.Image:
         draw.line((11 - step * 2, 22, 7 - step * 2, 22), fill=claw, width=1)
         draw.line((25 + step * 2, 22, 29 + step * 2, 22), fill=claw, width=1)
         draw.line((14, 9, 18, 5), fill=body_light, width=2)
-        return image
+        return image.resize((FRAME_W, FRAME_H), Image.Resampling.NEAREST)
 
     draw.ellipse((4, 20, 32, 23), fill=shadow)
     draw.polygon(((8, 15), (2, 11), (9, 8), (27, 8), (34, 11), (28, 15)),
@@ -51,7 +52,7 @@ def raptor_frame(facing: str, step: int) -> Image.Image:
     draw.line((22, 16, right_foot, 22), fill=belly, width=3)
     draw.line((left_foot, 22, left_foot - 4, 22), fill=claw, width=1)
     draw.line((right_foot, 22, right_foot + 4, 22), fill=claw, width=1)
-    return image
+    return image.resize((FRAME_W, FRAME_H), Image.Resampling.NEAREST)
 
 
 def main() -> None:

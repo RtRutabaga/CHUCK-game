@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 86 (Chult Map 2 raptors and Ashtray). This file is required by
+Updated: session 87 (larger, faster Chult raptors). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -294,13 +294,14 @@ the project rules and updated every session.
   ground tile beside the hull. From there, the existing dialogue scene delivers
   the three exact sequential boxes: `Oi!`, `Look at that rat.`, and
   `Walkin' on the sea...`. No ship-specific dialogue or teleport path was added
-- Phase 5 raptor territory: exactly two large 36x24 Chultan raptors occupy the
+- Phase 5 raptor territory: exactly two large 44x30 Chultan raptors occupy the
   broad central Map 2 clearing, well north of the cog. Their two-frame run,
-  24x12 footprint, 54 px/s pursuit, 152-pixel notice radius, and 25-Sanity
+  30x15 footprint, 68 px/s pursuit, 152-pixel notice radius, and 25-Sanity
   contact make them substantially larger, faster, and more dangerous than the
-  prior undead while leaving Chuck's 80 px/s movement and the clearing's wide
-  side routes as reliable escape options. Ten scratches can defeat one, but no
-  route or progression state requires either kill. They use shared collision,
+  prior undead. They are over three Chuck-widths across and more than twice his
+  sprite height; Chuck's 80 px/s movement and the clearing's wide side routes
+  still leave a narrow, reliable escape advantage. Ten scratches can defeat
+  one, but no route or progression state requires either kill. They use shared collision,
   scratch, Sanity/i-frame, painter-order, and enemy-respawn behavior
 - Chult Map 2 now has one physical Ashtray south of the cog. Its hidden
   `chult_2_anchor` save definition is distinct from the development-visible
@@ -472,7 +473,8 @@ in the same pass.
        the existing dialogue system (session 85).
 5. [x] Added exactly two large, fast, scratchable raptors in the broad central
        encounter space, with avoidable finite pursuit and normal respawn reset.
-       Added Map 2's single physical shared-loader Ashtray (session 86).
+       Added Map 2's single physical shared-loader Ashtray (session 86), then
+       enlarged the raptors and increased pursuit speed (session 87).
 6. [ ] Author the thorn-maze route into Chult Map 3.
 7. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.
 
