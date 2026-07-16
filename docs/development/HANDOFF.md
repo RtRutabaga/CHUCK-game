@@ -3,8 +3,8 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `2201c12` (`Remove expedition props and scatter Chult thorns`)
-- Current work: reusable Waterdeep breakable-grass reward
+- Base commit before this pass: `7fe8729` (`Add scratchable Waterdeep grass reward`)
+- Current work: Waterdeep/sewer grass expansion and proximity guidance
 - Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
 
 ## Completed This Pass
@@ -100,15 +100,20 @@ pointed leaves, readable central veins, dark understory bases, and brighter
 tropical midtones. Each shrub is wider than two Chucks and taller than Chuck,
 filling the visual gap below the tall tree crowns without changing collision.
 
-Waterdeep now authors one reusable `breakable_grass` marker on ordinary stone
-at the ruined foundation's southeast corner. It replaces the exposed cigarette
-that previously sat just south of the ruin. The walkable 16x16 tuft joins the
-existing scratch target dispatch ahead of enemies; one swipe plays the normal
-scratch sound, shakes the tuft, sends eight deterministic leaf chips outward
-over 0.42 seconds, and creates exactly one ordinary cigarette pickup beneath it.
-The grass and reward reset with an ordinary map reload; no durable flag or new
-inventory state was added. `tools/generate_breakable_sprites.py` reproduces the
-native-scale procedural grass art for later map reuse.
+Waterdeep now authors three reusable `breakable_grass` markers on ordinary
+stone, framing the ruined foundation at its northeast, southwest, and southeast
+corners. The southeast tuft replaces the exposed cigarette that previously sat
+just south of the ruin. Four more dirt-based instances are spaced through the
+sewer from its early descent into the late Astral maze. Each walkable 16x16 tuft
+joins the existing scratch target dispatch ahead of enemies; one swipe plays the
+normal scratch sound, shakes the tuft, sends eight deterministic leaf chips
+outward over 0.42 seconds, and creates exactly one ordinary cigarette beneath
+it. While Chuck is within two tiles of intact grass, Waterdeep and sewer reuse
+the exact `Press F to scratch` hint already established by the sewer rats. The
+check is explicitly map-scoped and never appears in tavern, pantry, Chult, or
+future areas. Grass and rewards reset with an ordinary map reload; no durable
+flag or inventory state was added. `tools/generate_breakable_sprites.py`
+reproduces the native-scale procedural art for later map reuse.
 
 ## Verification
 
@@ -150,9 +155,10 @@ native-scale procedural grass art for later map reuse.
   shrub scale above and wider than Chuck, and deterministic sprite selection.
   Existing Chult flood-fill and tileset coverage verify route/collision stability.
 - The 28th breakable-grass suite verifies exact southeast-ruin placement,
-  removal of the former exposed pickup, walkable underlying stone, one-shot
-  reward creation through WorldScene scratch dispatch, debris lifetime, and
-  native 16x16 sprite scale.
+  all three ruin placements, four safe dirt-based sewer placements, removal of
+  the former exposed pickup, one-shot reward creation through WorldScene scratch
+  dispatch, debris lifetime, native 16x16 scale, proximity behavior, and the
+  Waterdeep/sewer-only hint boundary.
 
 ## Playtest Focus
 
@@ -205,6 +211,10 @@ native-scale procedural grass art for later map reuse.
     Scratch it once and confirm the tuft bursts into quick outward leaf chips,
     reveals one cigarette, and leaves no invisible collision. Leave and re-enter
     Waterdeep to confirm the grass resets normally.
+20. Check all three ruin tufts and the four sewer tufts. Confirm `Press F to
+    scratch` appears only within roughly two tiles of intact grass, clears after
+    shredding it, still appears for the rat tutorial, and never follows Chuck
+    into the tavern, pantry, or Chult.
 
 ## Next Bounded Task
 

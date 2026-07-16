@@ -9,14 +9,15 @@
 ;
 ; '#' wall, ',' entrance stone, 'd' dirt, 'M' mud, '%' solid drainage,
 ; 'V' lethal Astral fall zone, 'E' player entrance, 'q' ordinary rat,
-; 'Y' dirt-based ashtray checkpoint, 'Z' interactive outflow center.
+; 'Y' dirt-based ashtray checkpoint, 'Z' interactive outflow center,
+; '}' scratchable grass over dirt with a concealed cigarette.
 ################################################
 #############################,,,,,,,,,,,,,,,####
 #############################,,,,,,,E,,,,,,,####
 #############################,,,,,,,,,,,,,,,####
 #############################,,,,,,,,,,,,,,,####
 #############################,,,,,,,,,,,,,,,####
-###############################ddddddddd%%######
+###############################ddd}ddddd%%######
 ###############################ddMMMdddd%%######
 ###############################ddddddddd%%######
 ###############################ddddddVVd%%######
@@ -33,7 +34,7 @@
 ############################%%ddddddddd#########
 ###########################dddddddddddd#########
 ###########################dVVddddddddd#########
-###########################ddddddMMMMdd#########
+###########################dd}dddMMMMdd#########
 ###########################dddddddddddd#########
 ###########################dddddddddddd#########
 #########################dddddddddVVddd#########
@@ -54,7 +55,7 @@
 #####%%ddVVVVdddddddVVVddddddd##################
 #####%%dddddddVVVVdddddVVVddd###################
 #####%%dVVVddddddVVVVdddddqdV###################
-#####%%ddddVVVVdddddVVVVddddd###################
+#####%%dd}dVVVVdddddVVVVddddd###################
 #####%%VVVdddddVVVVdddddddVVd###################
 ####dVVVVdddddVVVdddVVddd%######################
 ####dMMMdVVVVddddVVVVddd%%######################
@@ -73,7 +74,7 @@
 ####ddVVddddVVVVVVddVVVVVVd#####################
 ####dVVdqddVVVVVddVVVVVVdVV#####################
 ####ddVdddVVddVVVVVVMdVVVVV#####################
-######dVdddVddVVVVVVddVVVVVVddd#################
+######dVdddVddVVVVVVddVVVVVVd}d#################
 ######VVVdddVVVVVVddVVVVVVddVVV#################
 ######dVVVdddVddVVVVVVddVVVVVVd#################
 ######VVVVddddVVVddVVVVVVdVVVVV#################

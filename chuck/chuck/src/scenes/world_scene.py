@@ -558,7 +558,18 @@ class WorldScene(Scene):
         return False
 
     def _scratch_hint_visible(self) -> bool:
-        """Prompt only at the post-gap rat choke, until all rats are gone."""
+        """Prompt near grass in opening maps, or at the sewer rat choke."""
+        if self.map_name in config.GRASS_SCRATCH_HINT_MAPS:
+            player_cx = self.player.x + self.player.width / 2
+            player_cy = self.player.y + self.player.height / 2
+            reach = config.GRASS_SCRATCH_HINT_REACH
+            if any(
+                grass.intact
+                and abs(player_cx - (grass.x + grass.width / 2)) <= reach
+                and abs(player_cy - (grass.y + grass.height / 2)) <= reach
+                for grass in self.breakables
+            ):
+                return True
         if (
             self.map_name != "sewer"
             or not any(rat.alive for rat in self._scratch_tutorial_rats)

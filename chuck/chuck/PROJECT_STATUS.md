@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 76 (Waterdeep breakable grass). This file is required by
+Updated: session 77 (Waterdeep/sewer breakable-grass expansion). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -101,12 +101,14 @@ the project rules and updated every session.
   she directs Chuck toward sewer scraps without a quest or marker
 - Ruined foundation ('R' walls / 'f' rubble): the mid-map block is a
   crumbling ruin with collapsed gaps; solid, style only
-- Breakable grass: one walkable 16x16 tuft sits at the ruined foundation's
-  southeast corner. The shared scratch dispatch shreds it into eight radial
-  leaf fragments over 0.42 seconds and reveals one cigarette at its center.
-  The former exposed cigarette south of the ruin was relocated into this
-  authored reward. Grass resets when the map reloads and is implemented as a
-  reusable entity/marker for later maps without adding persistent world state
+- Breakable grass: three walkable 16x16 tufts frame the ruined foundation and
+  four more are scattered through the sewer on ordinary dirt. The shared
+  scratch dispatch shreds each into eight radial leaf fragments over 0.42
+  seconds and reveals one cigarette at its center. The former exposed
+  cigarette south of the ruin was relocated into the first authored reward.
+  Grass resets when the map reloads and uses one reusable entity with separate
+  stone/dirt markers. Within two tiles, Waterdeep and sewer reuse the exact
+  `Press F to scratch` tutorial line; the hint is explicitly absent elsewhere
 - Shared mathutil.approach() (camera follow + any future smoothing)
 - Crash logging: unhandled exceptions write crash_log.txt
 - Map transitions: WorldScene.load_map(name) (re)builds a whole area;
@@ -356,9 +358,10 @@ end-to-end headlessly with dummy SDL drivers.
        until Chuck returns through the sewer outflow, then become a dark,
        walkable exterior threshold. No interior or Phase 3 transition is
        present (session 52)
-10. [x] Added reusable scratchable grass at the ruined foundation's southeast
-        corner; its brief leaf-debris animation reveals the cigarette that was
-        previously exposed south of the ruin (session 76).
+10. [x] Added reusable scratchable grass: three tufts around the ruined
+        foundation and four through the sewer. Their brief leaf-debris animation
+        reveals cigarettes, while a two-tile Waterdeep/sewer-only proximity hint
+        repeats `Press F to scratch` (sessions 76-77).
 
 ## Next recommended session
 

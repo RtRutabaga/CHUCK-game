@@ -110,6 +110,8 @@ SEWER_SCRATCH_HINT_BOUNDS = (24, 39, 31, 36)
 SCRATCH_DURATION = 0.18
 SCRATCH_REACH = 14
 BREAKABLE_GRASS_DURATION = 0.42
+GRASS_SCRATCH_HINT_MAPS = {"waterdeep_docks", "sewer"}
+GRASS_SCRATCH_HINT_REACH = TILE_SIZE * 2
 
 # Chuck's sprite sheet (see tools/generate_chuck_sprites.py).
 CHUCK_SHEET = "chuck/chuck.png"
