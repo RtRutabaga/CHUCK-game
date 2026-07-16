@@ -3,8 +3,8 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `7fe8729` (`Add scratchable Waterdeep grass reward`)
-- Current work: Waterdeep/sewer grass expansion and proximity guidance
+- Base commit before this pass: `c7eb855` (`Expand breakable grass and scratch hints`)
+- Current work: Chult breakable-grass scatter and future-map convention
 - Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
 
 ## Completed This Pass
@@ -115,6 +115,15 @@ future areas. Grass and rewards reset with an ordinary map reload; no durable
 flag or inventory state was added. `tools/generate_breakable_sprites.py`
 reproduces the native-scale procedural art for later map reuse.
 
+The first Chult exterior now adds eight jungle-ground instances distributed
+from the southern landing clearings through the northern route. They avoid the
+Ashtray, undead markers, thorn patches, fallen-log tunnel, and deeper-route
+boundary while retaining ordinary walkability. They use the same sprite,
+scratch dispatch, leaf debris, cigarette reward, and map-reload reset as the
+Waterdeep/sewer instances. Chult deliberately does not show the proximity
+tutorial. `PHASE-4.md` and `DECISIONS.md` now record restrained scattered grass
+as a convention for each future exterior Chult map.
+
 ## Verification
 
 - All 28 test modules pass through their standalone runners (pytest is not
@@ -159,6 +168,9 @@ reproduces the native-scale procedural art for later map reuse.
   the former exposed pickup, one-shot reward creation through WorldScene scratch
   dispatch, debris lifetime, native 16x16 scale, proximity behavior, and the
   Waterdeep/sewer-only hint boundary.
+- That suite now also verifies all eight authored Chult positions remain on
+  walkable jungle ground and confirms that standing directly in Chult grass
+  never displays the opening-area scratch tutorial.
 
 ## Playtest Focus
 
@@ -215,6 +227,9 @@ reproduces the native-scale procedural art for later map reuse.
     scratch` appears only within roughly two tiles of intact grass, clears after
     shredding it, still appears for the rat tutorial, and never follows Chuck
     into the tavern, pantry, or Chult.
+21. Walk Chult from the landing to the northern route. Confirm the eight grass
+    tufts feel naturally scattered, remain distinct from damaging thorns, shred
+    and reveal cigarettes normally, and never summon a tutorial prompt.
 
 ## Next Bounded Task
 

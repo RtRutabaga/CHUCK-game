@@ -44,6 +44,18 @@ def test_sewer_grass_is_scattered_only_on_safe_dirt() -> None:
         assert not tilemap.is_solid(*tile)
 
 
+def test_chult_grass_is_scattered_only_on_jungle_ground() -> None:
+    tilemap = TileMap(config.MAPS_DIR / "chult_jungle.txt")
+    expected = [
+        (14, 14), (43, 15), (9, 20), (55, 24),
+        (47, 34), (22, 40), (55, 45), (14, 51),
+    ]
+    assert _grass_tiles(tilemap) == expected
+    for tile in expected:
+        assert tilemap.terrain_at(*tile) == "."
+        assert not tilemap.is_solid(*tile)
+
+
 def test_grass_breaks_once_and_finishes_its_debris_animation() -> None:
     grass = BreakableGrass(40, 40)
     assert grass.intact and grass.alive
@@ -102,6 +114,13 @@ def test_scratch_hint_tracks_nearby_intact_grass_only_in_opening_maps() -> None:
         game.scenes.replace(WorldScene(game, "waterdeep_tavern"))
         scene = game.scenes.current
         assert scene.map_name not in config.GRASS_SCRATCH_HINT_MAPS
+        assert not scene._scratch_hint_visible()
+
+        game.scenes.replace(WorldScene(game, "chult_jungle"))
+        scene = game.scenes.current
+        grass = scene.breakables[0]
+        scene.player.x = grass.x
+        scene.player.y = grass.y
         assert not scene._scratch_hint_visible()
         assert config.HINT_SCRATCH == "Press F to scratch"
     finally:

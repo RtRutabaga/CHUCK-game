@@ -17,3 +17,7 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Each completed pass should be tested, handed off, and committed before switching agents.
 - Phase 2 is active.
 - Do not implement the tavern interior, pantry/cheese sequence, or fall into Chult during Phase 2.
+- Exterior Chult maps should include a restrained scatter of reusable
+  scratchable grass tufts. They use the shared breakable/reward behavior, but
+  the `Press F to scratch` proximity tutorial remains limited to Waterdeep and
+  the sewer.

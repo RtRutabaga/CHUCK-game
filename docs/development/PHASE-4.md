@@ -65,6 +65,11 @@ thick grass, obscuring leaves, shallow water or mud, logs, rock gaps, animal
 tracks, vines, and oversized discarded expedition objects. Reuse movement,
 jumping, collision, interaction, and hazard systems where possible.
 
+Exterior Chult maps should include a restrained scatter of the shared
+scratchable grass tufts. They retain their ordinary break/reward behavior, but
+do not extend the Waterdeep/sewer `Press F to scratch` proximity tutorial into
+Chult.
+
 Include at least one route that exists because Chuck is approximately one foot
 tall—for example beneath a log or crate, between roots, or through a small rock
 opening. It may be a main route, shortcut, or optional discovery. Do not add a

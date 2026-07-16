@@ -103,6 +103,7 @@ declares the terrain underneath it, so no seams appear in the ground):
     '$'  Chult deeper boundary  (on jungle trailhead '"')
     '{'  breakable grass        (on stone ',', conceals a cigarette)
     '}'  breakable grass        (on sewer dirt 'd', conceals a cigarette)
+    '<'  breakable grass        (on jungle ground '.', conceals a cigarette)
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -311,6 +312,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "$": MarkerDef(kind="boundary:chult_deeper", under='"'),
     "{": MarkerDef(kind="breakable_grass", under=","),
     "}": MarkerDef(kind="breakable_grass", under="d"),
+    "<": MarkerDef(kind="breakable_grass", under="."),
 }
 
 _COMMENT_PREFIX = ";"

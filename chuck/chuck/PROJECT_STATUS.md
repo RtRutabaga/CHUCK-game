@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 77 (Waterdeep/sewer breakable-grass expansion). This file is required by
+Updated: session 78 (Chult breakable-grass scatter). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -107,8 +107,12 @@ the project rules and updated every session.
   seconds and reveals one cigarette at its center. The former exposed
   cigarette south of the ruin was relocated into the first authored reward.
   Grass resets when the map reloads and uses one reusable entity with separate
-  stone/dirt markers. Within two tiles, Waterdeep and sewer reuse the exact
-  `Press F to scratch` tutorial line; the hint is explicitly absent elsewhere
+  stone, dirt, and jungle-ground markers. Eight more tufts are distributed
+  across Chult's jungle ground without replacing thorns, enemies, routes, or
+  checkpoints. Within two tiles, Waterdeep and sewer reuse the exact
+  `Press F to scratch` tutorial line;
+  Chult remains prompt-free. Future exterior Chult maps should continue this
+  restrained grass scatter through the same shared implementation
 - Shared mathutil.approach() (camera follow + any future smoothing)
 - Crash logging: unhandled exceptions write crash_log.txt
 - Map transitions: WorldScene.load_map(name) (re)builds a whole area;
@@ -406,6 +410,9 @@ explicit direction.
 12. [x] Added 170 deterministic broad-leaf shrub props across remaining solid
         vegetation cells, with three procedural variants and no route changes
         (session 74).
+13. [x] Scattered eight reusable breakable-grass tufts across ordinary jungle
+        ground and established them as an exterior-Chult map convention without
+        extending the Waterdeep/sewer scratch tutorial (session 78).
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 
