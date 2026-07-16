@@ -88,16 +88,24 @@ def test_sailing_cog_is_one_oversized_solid_landmark() -> None:
     assert cogs == [("sailing_cog", 40, 64)]
     assert tilemap.terrain_at(40, 64) == ";"
     assert TILE_DEFS[";"].solid and TILE_DEFS[";"].under == "#"
-    for row in range(61, 65):
-        for col in range(36, 45):
+    footprint = {
+        59: range(40, 45),
+        60: range(36, 47),
+        61: range(34, 48),
+        62: range(34, 48),
+        63: range(35, 48),
+        64: range(36, 47),
+    }
+    for row, columns in footprint.items():
+        for col in columns:
             assert tilemap.is_solid(col, row)
 
     image = pygame.image.load(
         config.SPRITES_DIR / "objects" / "sailing_cog.png"
     )
-    assert image.get_size() == (144, 112)
-    assert image.get_width() >= config.CHUCK_FRAME_W * 12
-    assert image.get_height() >= config.CHUCK_FRAME_H * 8
+    assert image.get_size() == (224, 152)
+    assert image.get_width() >= config.CHUCK_FRAME_W * 18
+    assert image.get_height() >= config.CHUCK_FRAME_H * 10
 
 
 def test_astral_sea_scatter_reuses_fall_tiles_without_blocking_progress() -> None:
@@ -109,7 +117,7 @@ def test_astral_sea_scatter_reuses_fall_tiles_without_blocking_progress() -> Non
         if tilemap.terrain_at(col, row) == "V"
     }
     assert len(astral) == 24
-    assert all(58 <= row <= 66 and 29 <= col <= 50
+    assert all(58 <= row <= 65 and 27 <= col <= 51
                for col, row in astral)
     assert not TILE_DEFS["V"].solid
     assert tileset_for("chult_cog").char_to_terrain["V"] == "astral_void"

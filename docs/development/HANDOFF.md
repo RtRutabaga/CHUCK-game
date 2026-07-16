@@ -3,19 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `4df5e4b` (`Begin Phase 5 with Chult Map 2 foundation`)
-- Current work: Phase 5 sailing cog landmark and Astral scatter
+- Base commit before this pass: `6d9c3ec` (`Add Chult sailing cog discovery`)
+- Current work: larger three-quarter-view sailing cog revision
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
 
-The southern Chult Map 2 clearing now contains its major discovery: one
-144x112 side-view sailing cog, roughly twelve Chuck sprites wide and eight tall.
-The procedural sprite clearly reads as a substantial one-masted human vessel
-through its weathered square sail, mast and rigging, raised deck rail, planked
-hull, portholes, rope ladder, and jungle growth around the stranded base. One
-map-authored prop tile owns the sprite while a shaped nine-tile-wide solid hull
-footprint supplies collision through the established tile/prop architecture.
+Sean's requested visual revision replaces the 144x112 side-profile cog with a
+224x152 three-quarter-view landmark. The projection now sits between the
+top-down game camera and a street-level elevation: the player sees a broad
+diagonal deck, angled rails and planks, a foreshortened stern, a deep near hull,
+and a pointed bow. The sail, rigging, deck structures, portholes, rope ladder,
+and jungle growth were redrawn for that perspective rather than merely scaled.
+
+The authored collision footprint expanded from nine to fourteen tiles at its
+widest and follows the larger projected hull. The same 24 Astral substitutions
+were reframed outside that footprint, and safe non-Astral routes remain around
+both sides. No new gameplay or Phase 5 content was introduced.
+
+The southern Chult Map 2 clearing contains its major discovery: one oversized
+three-quarter-view sailing cog. The procedural sprite clearly reads as a
+substantial one-masted human vessel through its weathered square sail, mast and
+rigging, raised deck rail, planked hull, portholes, rope ladder, and jungle
+growth around the stranded base. One map-authored prop tile owns the sprite
+while a shaped solid hull footprint supplies collision through the established
+tile/prop architecture.
 
 Twenty-four `V` tiles form broken Astral Sea clusters around the cog's base.
 Chult's tileset now renders the exact established animated Astral material, and
@@ -157,8 +169,8 @@ as a convention for each future exterior Chult map.
 
 - All 29 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
-- Phase 5 coverage now verifies the single cog's authored position, 144x112
-  scale, shaped solid footprint, exact 24-tile Astral scatter, Chult tileset
+- Phase 5 coverage now verifies the single cog's authored position, 224x152
+  scale, expanded shaped footprint, exact 24-tile Astral scatter, Chult tileset
   reuse, and a non-Astral route from the southern entrance past the ship.
 - Native 320x180 render review confirms the full ship silhouette is readable
   beside Chuck, the Astral field looks like hard-edged wrong-map substitutions,

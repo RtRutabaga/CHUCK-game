@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 80 (Phase 5 sailing cog landmark). This file is required by
+Updated: session 81 (larger three-quarter-view sailing cog). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -272,10 +272,12 @@ the project rules and updated every session.
   Chult terrain, dense trees/shrubs, theme, camera, collision, and breakable
   grass language. The shared registry exposes its runtime entry as `Chult 2`;
   no separate debug teleport or new progression flag was added
-- Phase 5 sailing cog discovery: a single 144x112 procedural landmark dominates
-  the southern clearing, with a weathered square sail, mast and rigging, tall
-  planked hull, deck rail, portholes, rope ladder, and jungle growth. Its shaped
-  nine-tile-wide solid hull footprint matches the visible base while leaving
+- Phase 5 sailing cog discovery: a single 224x152 procedural landmark dominates
+  the southern clearing. Its shallow diagonal projection sits between the
+  game's bird's-eye view and a side elevation: a broad visible deck, angled
+  rails, foreshortened stern, deep near hull, and pointed bow establish the
+  three-quarter perspective beneath the weathered sail and rigging. Its shaped
+  fourteen-tile-wide solid footprint matches the visible base while leaving
   safe routes around both sides. Twenty-four scattered `V` substitutions arc
   around the hull in small broken clusters, reusing the established animated
   Astral art and ordinary fall/return behavior. They are avoidable on the main
@@ -434,9 +436,9 @@ their behavior for the following bounded encounter slice.
        Phase 4 north threshold to its named southern arrival, reused the Chult
        tileset/theme, scattered ten shared grass tufts, and registered `Chult 2`
        through the shared checkpoint loader (session 79).
-3. [x] Added the oversized sailing cog landmark, shaped solid hull footprint,
-       and 24 avoidable animated Astral Sea substitutions around its base while
-       preserving safe routes on both sides (session 80).
+3. [x] Added the oversized three-quarter-view sailing cog landmark, shaped
+       solid hull footprint, and 24 avoidable animated Astral Sea substitutions
+       around its base while preserving safe routes on both sides (sessions 80-81).
 4. [ ] Add the sailor's exact three-box dialogue and two-raptor encounter.
 5. [ ] Author the thorn-maze route into Chult Map 3.
 6. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.

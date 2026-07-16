@@ -104,8 +104,8 @@ def jungle_shrub(variant: int) -> Image.Image:
 
 
 def sailing_cog() -> Image.Image:
-    """A one-masted human vessel, dramatically oversized beside Chuck."""
-    image = Image.new("RGBA", (144, 112), (0, 0, 0, 0))
+    """A huge three-quarter-view cog between bird's-eye and side elevation."""
+    image = Image.new("RGBA", (224, 152), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
 
     outline = (24, 25, 22, 255)
@@ -120,65 +120,78 @@ def sailing_cog() -> Image.Image:
     vine_dark = (19, 62, 34, 255)
     vine = (43, 104, 49, 255)
 
-    # Mast and rigging rise first so the hull and rail sit naturally in front.
-    draw.rectangle((69, 10, 75, 79), fill=outline)
-    draw.rectangle((71, 10, 74, 79), fill=wood_light)
-    draw.line((18, 77, 72, 10), fill=rope, width=1)
-    draw.line((126, 79, 74, 10), fill=rope, width=1)
-    draw.rectangle((34, 24, 111, 28), fill=outline)
-    draw.rectangle((36, 25, 109, 26), fill=wood_light)
+    # Rigging and sail establish the shallow three-quarter angle before the
+    # hull is layered over them. The mast leans with the projected deck axis.
+    draw.line((113, 91, 110, 10), fill=outline, width=8)
+    draw.line((113, 91, 111, 10), fill=wood_light, width=3)
+    draw.line((15, 88, 111, 10), fill=rope, width=1)
+    draw.line((213, 93, 111, 10), fill=rope, width=1)
+    draw.polygon(((54, 25), (158, 32), (165, 69), (116, 87),
+                  (48, 62)), fill=outline)
+    draw.polygon(((57, 27), (155, 34), (161, 67), (116, 83),
+                  (52, 60)), fill=sail)
+    draw.polygon(((111, 31), (154, 35), (158, 64), (116, 79)),
+                 fill=sail_light)
+    draw.line((111, 29, 114, 82), fill=sail_dark, width=2)
+    draw.line((54, 43, 158, 49), fill=sail_dark, width=1)
+    draw.line((52, 57, 159, 64), fill=sail_dark, width=1)
+    draw.polygon(((70, 32), (84, 33), (85, 45), (69, 43)),
+                 outline=sail_dark)
+    draw.line((70, 32, 85, 45), fill=sail_dark, width=1)
+    draw.polygon(((128, 51), (143, 52), (145, 63), (130, 67)),
+                 outline=sail_dark)
 
-    # A broad, weathered square sail with an uneven lower edge.
-    draw.polygon(((39, 29), (106, 29), (110, 60), (99, 66),
-                  (75, 63), (54, 67), (36, 59)), fill=outline)
-    draw.polygon(((41, 30), (103, 30), (107, 58), (97, 63),
-                  (75, 60), (55, 64), (39, 57)), fill=sail)
-    draw.polygon(((74, 31), (101, 31), (104, 57), (96, 61),
-                  (76, 58)), fill=sail_light)
-    draw.line((72, 30, 73, 61), fill=sail_dark, width=2)
-    draw.line((43, 43, 105, 43), fill=sail_dark, width=1)
-    draw.line((46, 56, 101, 57), fill=sail_dark, width=1)
-    # Repairs keep the vessel used rather than storybook-pristine.
-    draw.rectangle((49, 35, 58, 43), outline=sail_dark)
-    draw.line((49, 35, 58, 43), fill=sail_dark, width=1)
-    draw.rectangle((84, 48, 94, 57), outline=sail_dark)
+    # The visible deck is a broad diamond. Its depth is what moves the view
+    # away from a street-level side profile while retaining a readable hull.
+    deck_outline = ((11, 84), (139, 61), (215, 91), (77, 121))
+    draw.polygon(deck_outline, fill=outline)
+    draw.polygon(((17, 84), (139, 66), (207, 92), (77, 115)), fill=wood_light)
+    for offset in range(0, 50, 8):
+        draw.line((29 + offset * 2, 84 - offset // 3,
+                   90 + offset * 2, 108 - offset // 3),
+                  fill=wood, width=2)
+    draw.line((21, 89, 139, 71, 197, 94), fill=wood_dark, width=3)
 
-    # High-sided cog hull, broad enough to dominate a native viewport.
-    hull = ((7, 75), (25, 69), (121, 69), (138, 80),
-            (126, 101), (104, 107), (30, 109), (13, 99))
-    draw.polygon(hull, fill=outline)
-    draw.polygon(((11, 77), (27, 73), (119, 73), (133, 81),
-                  (122, 97), (102, 103), (32, 105), (17, 96)), fill=wood)
-    draw.line((20, 82, 129, 82), fill=wood_light, width=3)
-    draw.line((23, 91, 126, 90), fill=wood_dark, width=3)
-    draw.line((31, 101, 116, 99), fill=wood_light, width=2)
-    for x in range(34, 121, 15):
-        draw.line((x, 75, x - 2, 102), fill=wood_dark, width=2)
-    for x in (43, 67, 91, 115):
-        draw.ellipse((x, 84, x + 6, 90), fill=iron)
-        draw.ellipse((x + 2, 86, x + 4, 88), fill=(16, 22, 27, 255))
+    # A tall starboard side and foreshortened stern make the hull substantial.
+    draw.polygon(((77, 115), (215, 91), (196, 132), (77, 149)), fill=outline)
+    draw.polygon(((80, 119), (208, 96), (191, 127), (80, 144)), fill=wood)
+    draw.polygon(((11, 84), (77, 115), (77, 149), (22, 126)), fill=outline)
+    draw.polygon(((17, 88), (73, 118), (73, 143), (27, 123)), fill=wood_dark)
+    draw.line((82, 126, 203, 105), fill=wood_light, width=3)
+    draw.line((81, 138, 196, 120), fill=wood_dark, width=3)
+    for x, y in ((101, 124), (128, 119), (155, 114), (181, 109)):
+        draw.ellipse((x, y, x + 8, y + 7), fill=iron)
+        draw.ellipse((x + 2, y + 2, x + 5, y + 5),
+                     fill=(16, 22, 27, 255))
+    for x in range(92, 196, 18):
+        draw.line((x, 116 + (196 - x) // 20,
+                   x - 2, 139 - (x - 92) // 10), fill=wood_dark, width=2)
 
-    # Deck, rails, raised stern, and a rope ladder readable at native scale.
-    draw.rectangle((23, 67, 124, 73), fill=outline)
-    draw.rectangle((25, 67, 122, 70), fill=wood_light)
-    for x in range(27, 123, 12):
-        draw.rectangle((x, 61, x + 2, 70), fill=wood_dark)
-    draw.line((27, 62, 121, 62), fill=rope, width=2)
-    draw.rectangle((105, 58, 126, 70), fill=outline)
-    draw.rectangle((108, 60, 124, 69), fill=wood)
-    draw.rectangle((111, 62, 120, 68), fill=(30, 31, 27, 255))
-    draw.line((28, 72, 28, 94), fill=rope, width=1)
-    draw.line((35, 72, 35, 93), fill=rope, width=1)
-    for y in range(76, 94, 5):
-        draw.line((28, y, 35, y), fill=rope, width=1)
+    # Railings follow all three visible deck edges; a raised stern cabin and
+    # hatch make the top plane usable visual space for the later sailor.
+    for x, y in ((20, 80), (43, 76), (68, 72), (94, 68), (139, 58),
+                 (165, 68), (190, 78), (211, 87), (57, 103), (76, 112)):
+        draw.line((x, y, x, y + 11), fill=wood_dark, width=3)
+    draw.line((19, 80, 139, 58, 213, 87), fill=rope, width=2)
+    draw.line((18, 86, 76, 116), fill=rope, width=2)
+    draw.polygon(((23, 76), (63, 69), (88, 79), (47, 88)), fill=outline)
+    draw.polygon(((28, 76), (62, 72), (81, 79), (47, 84)), fill=wood)
+    draw.polygon(((40, 75), (59, 73), (69, 78), (49, 81)),
+                 fill=(29, 30, 26, 255))
+    draw.polygon(((133, 83), (151, 79), (165, 85), (147, 90)), fill=outline)
+    draw.polygon(((137, 83), (151, 81), (160, 85), (147, 88)), fill=wood_dark)
 
-    # Jungle growth tangles around the stranded hull without hiding its shape.
-    draw.line((15, 96, 35, 104, 58, 101), fill=vine_dark, width=2)
-    draw.line((119, 96, 101, 104, 83, 102), fill=vine, width=2)
-    for x, y in ((20, 99), (40, 104), (91, 103), (113, 98)):
+    # Rope ladder on the near face and jungle growth around the stranded base.
+    draw.line((44, 106, 39, 132), fill=rope, width=2)
+    draw.line((53, 110, 49, 136), fill=rope, width=2)
+    for y in range(113, 134, 6):
+        draw.line((43, y, 51, y + 3), fill=rope, width=1)
+    draw.line((20, 125, 48, 143, 77, 139), fill=vine_dark, width=3)
+    draw.line((193, 128, 160, 144, 126, 141), fill=vine, width=3)
+    for x, y in ((26, 128), (53, 143), (132, 143), (184, 132)):
         draw.ellipse((x - 3, y - 5, x + 3, y + 1), fill=vine)
         draw.line((x, y, x + 5, y - 7), fill=vine_dark, width=1)
-    draw.line((71, 16, 79, 8, 89, 10), fill=vine_dark, width=1)
+    draw.line((111, 17, 120, 9, 130, 12), fill=vine_dark, width=1)
     return image
 
 
