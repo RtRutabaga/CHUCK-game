@@ -253,6 +253,15 @@ class WorldScene(Scene):
                 npc = NPC(cx, cy, npc_id=npc_id, dialogue_id=npc_id)
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
+            elif kind.startswith("elevated_npc:"):
+                npc_id = kind.split(":", 1)[1]
+                npc = NPC(
+                    cx, cy, npc_id=npc_id, dialogue_id=npc_id,
+                    interaction_extension_down=config.TILE_SIZE * 4,
+                    sort_y_override=cy + config.TILE_SIZE * 5,
+                )
+                npc.load_sprites(self.game.assets)
+                self.npcs.append(npc)
             elif kind in {"rat", "zombie", "skeleton"}:
                 continue  # rebuilt with all enemies below
             elif kind.startswith("choice:"):

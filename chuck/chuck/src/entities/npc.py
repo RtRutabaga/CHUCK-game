@@ -32,7 +32,9 @@ class NPC(Entity):
     """A character Chuck can talk to. Or rather: who talks at Chuck."""
 
     def __init__(
-        self, center_x: float, center_y: float, npc_id: str, dialogue_id: str
+        self, center_x: float, center_y: float, npc_id: str, dialogue_id: str,
+        *, interaction_extension_down: int = 0,
+        sort_y_override: float | None = None,
     ) -> None:
         super().__init__(
             center_x - config.NPC_HITBOX_W / 2,
@@ -44,6 +46,8 @@ class NPC(Entity):
         self.dialogue_id = dialogue_id
         self.facing = "down"
         self._frames: dict[str, object] = {}
+        self._interaction_extension_down = interaction_extension_down
+        self._sort_y_override = sort_y_override
 
     # ------------------------------------------------------------------
     # Sprites
@@ -76,10 +80,20 @@ class NPC(Entity):
         """
         pad = 3
         w = config.NPC_FRAME_W + 2 * pad
-        h = config.NPC_FRAME_H + 2 * pad
+        base_h = config.NPC_FRAME_H + 2 * pad
+        h = base_h + self._interaction_extension_down
         x = int(self.x + self.width / 2 - w / 2)
-        y = int(self.y + self.height - h + pad)
+        # Keep the standard zone over the visible person, then extend its
+        # bottom toward a safe approach tile for elevated scenery occupants.
+        y = int(self.y + self.height - base_h + pad)
         return (x, y, w, h)
+
+    @property
+    def sort_y(self) -> float:
+        """Elevated scenery occupants may render after their supporting prop."""
+        if self._sort_y_override is not None:
+            return self._sort_y_override
+        return super().sort_y
 
     def face_toward(self, other: Entity) -> None:
         """Turn to look at (down at, realistically) another entity."""

@@ -55,6 +55,11 @@ PALETTE = {
     "f": (151, 68, 27, 255),    # beard shadow
     "L": (167, 106, 48, 255),   # lute body / neck
     "l": (101, 63, 35, 255),    # lute shadow
+    # Chult cog sailor: ordinary human scale, practical faded shipboard dress.
+    "U": (205, 201, 174, 255),  # pale sailor cap
+    "Q": (55, 76, 103, 255),   # faded navy coat
+    "q": (38, 53, 75, 255),    # coat shadow
+    "Y": (116, 83, 54, 255),   # weathered brown trousers
 }
 
 WORKER_DOWN = """
@@ -290,6 +295,14 @@ PATRON_SHEET = [[
 ]]
 PATRON_NAMES = [["patron_down", "patron_up", "patron_left"]]
 
+_SAILOR_COLORS = str.maketrans({"H": "U", "O": "Q", "o": "q", "B": "Y"})
+SAILOR_SHEET = [[
+    WORKER_DOWN.translate(_SAILOR_COLORS),
+    WORKER_UP.translate(_SAILOR_COLORS),
+    WORKER_LEFT.translate(_SAILOR_COLORS),
+]]
+SAILOR_NAMES = [["sailor_down", "sailor_up", "sailor_left"]]
+
 MUSICIAN_DOWN = """
 .....GGGGGG.....
 ....GGGGGGGG....
@@ -405,6 +418,7 @@ def main() -> None:
         ("bartender", BARTENDER_SHEET, BARTENDER_NAMES),
         ("patron", PATRON_SHEET, PATRON_NAMES),
         ("musician", MUSICIAN_SHEET, MUSICIAN_NAMES),
+        ("sailor", SAILOR_SHEET, SAILOR_NAMES),
     ):
         out = npcs / f"{name}.png"
         render_sheet(sheet, names, FRAME_W, FRAME_H, PALETTE).save(out)

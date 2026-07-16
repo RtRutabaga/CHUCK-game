@@ -150,6 +150,7 @@ class MarkerDef(NamedTuple):
 
     kind: str        # "player" | "cigarette" | (more later: NPCs, anchors)
     under: str       # terrain char drawn/collided beneath the marker
+    allow_solid: bool = False  # elevated scenery occupants keep solid footing
 
 
 TILE_DEFS: dict[str, TileDef] = {
@@ -317,6 +318,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "{": MarkerDef(kind="breakable_grass", under=","),
     "}": MarkerDef(kind="breakable_grass", under="d"),
     "<": MarkerDef(kind="breakable_grass", under="."),
+    "¿": MarkerDef(kind="elevated_npc:sailor", under="#", allow_solid=True),
 }
 
 _COMMENT_PREFIX = ";"
@@ -363,7 +365,7 @@ class TileMap:
                         self.prop_tiles.append((tile.prop, col_i, row_i))
                 elif char in MARKER_DEFS:
                     marker = MARKER_DEFS[char]
-                    if TILE_DEFS[marker.under].solid:
+                    if TILE_DEFS[marker.under].solid and not marker.allow_solid:
                         raise ValueError(
                             f"Marker {char!r} ({marker.kind}) sits on solid "
                             f"terrain {marker.under!r} at row {row_i}, "

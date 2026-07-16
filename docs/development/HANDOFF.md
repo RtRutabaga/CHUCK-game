@@ -3,11 +3,23 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `7c4eae1` (`Anchor Chult cog mast to deck`)
-- Current work: full foreground sail visibility correction
+- Base commit before this pass: `ffd557b` (`Render Chult cog sail over deck`)
+- Current work: human-scale Chult cog sailor and exact dialogue
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+One human-scale sailor now stands visibly on the cog's deck in a pale cap,
+faded navy coat, and weathered trousers. The authored `elevated_npc:sailor`
+marker deliberately preserves the solid hull tile beneath him. A small reusable
+NPC configuration supplies the required painter-order override and extends his
+interaction zone downward to Chuck's safe approach tile beside the hull; it
+does not make the deck walkable or create a ship-specific interaction system.
+
+The existing dialogue scene reads the sailor's data-driven exchange as exactly
+three sequential boxes: `Oi!`, `Look at that rat.`, and
+`Walkin' on the sea...`. No raptor, thorn-maze, later-map, progression, route,
+or checkpoint content was included in this bounded pass.
 
 The complete sail assembly now renders after the hull and rear deck. Its full
 quadrilateral silhouette—including the lower edge—stays visible and correctly
@@ -193,6 +205,11 @@ as a convention for each future exterior Chult map.
 
 - All 29 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
+- Phase 5 coverage now verifies the sailor's exact solid-deck marker and
+  coordinates, standard 16x30 human sprite scale, exact three dialogue lines,
+  painter order above the cog, and interaction from the walkable tile south of
+  the hull. A native 320x180 render confirms he reads as standing on the deck
+  with Chuck below; `chult_2` also loads and draws headlessly without error.
 - Phase 5 coverage now verifies the single cog's authored position, 224x152
   scale, expanded shaped footprint, exact 24-tile Astral scatter, Chult tileset
   reuse, and a non-Astral route from the southern entrance past the ship.
@@ -317,9 +334,14 @@ as a convention for each future exterior Chult map.
 24. Walk into one purple block and confirm the established Astral fall/return.
     Jump across an isolated block, then verify a completely safe route remains
     around either side of the cog without crossing any Astral material.
+25. Approach the cog from the south and confirm the sailor is visibly standing
+    on its deck at human scale. Stand directly below him on safe ground, press
+    E, and confirm the dialogue advances through exactly `Oi!`, `Look at that
+    rat.`, and `Walkin' on the sea...` before closing. Confirm Chuck still
+    cannot walk through or onto the solid hull.
 
 ## Next Bounded Task
 
-Place the human-scale sailor visibly on the cog's deck and implement the exact
-three sequential dialogue boxes from Phase 5. Do not add raptors, thorn maze,
-Map 3, or the temple in that pass.
+Add exactly two raptors to the broad central Chult Map 2 encounter space using
+simple avoidable pursuit. Do not begin the thorn maze, Map 3, or the temple in
+that pass.

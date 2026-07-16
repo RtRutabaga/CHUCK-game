@@ -13,6 +13,7 @@ import pygame
 from src.core import config
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
+from src.systems.dialogue import DialogueSystem
 from src.world.tilemap import TILE_DEFS, TileMap
 from src.world.tileset_layout import tileset_for
 from src.world.transitions import AREA_MUSIC
@@ -117,6 +118,42 @@ def test_sailing_cog_is_one_oversized_solid_landmark() -> None:
     # The exposed lower mast is painted over the deck, visibly anchoring the
     # sail assembly to the ship instead of letting deck planks erase it.
     assert image.get_at((115, 100))[:3] == (146, 102, 56)
+
+
+def test_sailor_stands_on_the_solid_deck_and_uses_exact_dialogue() -> None:
+    tilemap = _map()
+    sailors = [entry for entry in tilemap.object_spawns
+               if entry[0] == "elevated_npc:sailor"]
+    assert sailors == [("elevated_npc:sailor", (696.0, 1000.0))]
+    assert tilemap.terrain_at(43, 62) == "#"
+    assert tilemap.is_solid(43, 62)
+    assert DialogueSystem().get("sailor") == [
+        "Oi!",
+        "Look at that rat.",
+        "Walkin' on the sea...",
+    ]
+
+    image = pygame.image.load(config.SPRITES_DIR / "npcs" / "sailor.png")
+    assert image.get_size() == (config.NPC_FRAME_W * 3, config.NPC_FRAME_H)
+
+
+def test_sailor_renders_over_the_cog_and_is_reachable_beside_the_hull() -> None:
+    directory = tempfile.TemporaryDirectory()
+    game = Game(save_path=Path(directory.name) / "save.json")
+    try:
+        scene = game.checkpoints.load_checkpoint("chult_2")
+        sailor, = [npc for npc in scene.npcs if npc.npc_id == "sailor"]
+        cog, = [prop for prop in scene.props if prop.kind == "sailing_cog"]
+        assert sailor.sort_y > cog.sort_y
+
+        # The deck remains impassable, so Chuck talks from the safe tile
+        # immediately south of the hull instead of walking onto the scenery.
+        safe_approach = (43 * config.TILE_SIZE + config.TILE_SIZE // 2,
+                         65 * config.TILE_SIZE + config.TILE_SIZE // 2)
+        assert pygame.Rect(sailor.interaction_bounds()).collidepoint(safe_approach)
+    finally:
+        game._shutdown()
+        directory.cleanup()
 
 
 def test_astral_sea_scatter_reuses_fall_tiles_without_blocking_progress() -> None:

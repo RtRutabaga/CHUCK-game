@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 84 (full foreground sail visibility). This file is required by
+Updated: session 85 (Chult cog sailor). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -19,7 +19,7 @@ the project rules and updated every session.
 - Swept, axis-separated tile collision (no tunneling at any dt)
 - Smooth frame-rate-independent follow camera, clamped to map bounds
 - Sprites from text grids (tools/): Chuck (idle/walk x4 facings), the
-  cat, six human NPCs, and the 75-glyph 5x9 pixel font
+  cat, seven human NPCs, and the 75-glyph 5x9 pixel font
 - Sanity with i-frames; cigarette pickups; HUD meter (a cigarette
   burning down); patrolling cat hazard; Astral Anchor checkpoints;
   quiet vanish -> starfield -> respawn (no game-over screen, ever); enemies
@@ -35,7 +35,7 @@ the project rules and updated every session.
   development-only checkpoint saves disable CONTINUE without crashing. Durable
   flags are `sewer_completed`, which restores the tavern's open exterior, and
   `chult_reached`, which restores the playable Chult state
-- Dialogue: JSON data files, typewriter box, six NPCs; choice
+- Dialogue: JSON data files, typewriter box, seven NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
   sequencer), offline rendering (tools/generate_audio.py +
@@ -287,6 +287,13 @@ the project rules and updated every session.
   around the hull in small broken clusters, reusing the established animated
   Astral art and ordinary fall/return behavior. They are avoidable on the main
   route, so the ship discovery does not become a mandatory jump gate
+- Phase 5 cog sailor: one ordinary human-scale sailor stands visibly on the
+  cog's deck in a faded navy coat, weathered trousers, and pale cap. A contained
+  elevated-NPC marker preserves the ship's solid hull while painter-ordering
+  him over the deck; only his normal interaction zone extends down to the safe
+  ground tile beside the hull. From there, the existing dialogue scene delivers
+  the three exact sequential boxes: `Oi!`, `Look at that rat.`, and
+  `Walkin' on the sea...`. No ship-specific dialogue or teleport path was added
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -390,9 +397,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Place the human-scale sailor visibly on the cog's deck and wire the exact three
-sequential dialogue boxes from the Phase 5 contract. Keep the two raptors and
-their behavior for the following bounded encounter slice.
+Add exactly two raptors to the broad central Chult Map 2 encounter space using
+simple avoidable pursuit. Keep the thorn maze, Map 3, and temple for later
+bounded slices.
 
 ## Also open
 
@@ -444,9 +451,12 @@ their behavior for the following bounded encounter slice.
 3. [x] Added the oversized three-quarter-view sailing cog landmark, shaped
        solid hull footprint, and 24 avoidable animated Astral Sea substitutions
        around its base while preserving safe routes on both sides (sessions 80-84).
-4. [ ] Add the sailor's exact three-box dialogue and two-raptor encounter.
-5. [ ] Author the thorn-maze route into Chult Map 3.
-6. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.
+4. [x] Added a human-scale sailor visibly on the solid cog deck, reachable from
+       safe ground and using the exact three sequential dialogue boxes through
+       the existing dialogue system (session 85).
+5. [ ] Add exactly two raptors in the broad central encounter space.
+6. [ ] Author the thorn-maze route into Chult Map 3.
+7. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 
