@@ -38,6 +38,9 @@ from src.systems.dialogue import DialogueSystem
 from src.systems.fall import fall_zone_kind
 from src.systems.interaction import find_target
 from src.systems.terrain_hazard import touching_terrain_hazard
+from src.systems.undead_release import (
+    UndeadReleaseController, is_staged_undead,
+)
 from src.ui.tutorial_hint import TutorialHint
 from src.systems.sanity import SanitySystem
 from src.ui.hud import HUD
@@ -236,6 +239,14 @@ class WorldScene(Scene):
                 "massive_dinosaur",
             }
         ]
+        self._staged_undead_spawns = [
+            (kind, position)
+            for kind, position in self.tilemap.object_spawns
+            if is_staged_undead(kind)
+        ]
+        self.undead_release = UndeadReleaseController(
+            self.map_name, self._staged_undead_spawns
+        )
         for kind, (cx, cy) in self.tilemap.object_spawns:
             if kind == "cigarette":
                 cig = Cigarette(cx, cy)
@@ -280,6 +291,8 @@ class WorldScene(Scene):
                 # Authored handoff metadata for a future destination.  It is
                 # deliberately inert until that destination map exists.
                 continue
+            elif is_staged_undead(kind):
+                continue  # released in finite groups as Chuck advances
             else:
                 raise ValueError(f"No spawner for object kind {kind!r}")
         self._reset_enemies()
@@ -319,6 +332,10 @@ class WorldScene(Scene):
             cat.update(dt)
         for rat in self.rats:
             rat.update(dt)
+        for kind, position in self.undead_release.release_for_row(
+            self._player_tile()[1]
+        ):
+            self._spawn_undead(kind, position)
         for undead in self.undead:
             undead.update(dt, self.player)
         for raptor in self.raptors:
@@ -684,6 +701,7 @@ class WorldScene(Scene):
         self.raptors = []
         self.dinosaurs = []
         self._scratch_tutorial_rats = []
+        self.undead_release.reset()
         rat_spawn_tiles = {
             (int(cx // config.TILE_SIZE), int(cy // config.TILE_SIZE))
             for kind, (cx, cy) in self._enemy_spawns
@@ -713,10 +731,7 @@ class WorldScene(Scene):
                 if self.map_name == "sewer" and rat_tile in tutorial_tiles:
                     self._scratch_tutorial_rats.append(rat)
             elif kind in {"zombie", "skeleton"}:
-                enemy = UndeadEnemy(cx, cy, kind)
-                enemy.tilemap = self.tilemap
-                enemy.load_sprites(self.game.assets)
-                self.undead.append(enemy)
+                self._spawn_undead(kind, (cx, cy))
             elif kind == "raptor":
                 raptor = Raptor(cx, cy)
                 raptor.tilemap = self.tilemap
@@ -727,6 +742,14 @@ class WorldScene(Scene):
                 dinosaur.tilemap = self.tilemap
                 dinosaur.load_sprites(self.game.assets)
                 self.dinosaurs.append(dinosaur)
+
+    def _spawn_undead(
+        self, kind: str, position: tuple[float, float]
+    ) -> None:
+        enemy = UndeadEnemy(*position, kind)
+        enemy.tilemap = self.tilemap
+        enemy.load_sprites(self.game.assets)
+        self.undead.append(enemy)
 
     # ------------------------------------------------------------------
     # Astral fall hazard

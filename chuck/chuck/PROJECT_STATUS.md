@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 90 (denser, harder Chult Map 2 thorn maze). This file is required by
+Updated: session 91 (Chult Map 3 finite undead run). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -326,14 +326,16 @@ the project rules and updated every session.
   remains available without a minimap or unavoidable damage. The
   canopy-framed north threshold transitions to `chult_run` through the ordinary
   walk-exit and named-arrival architecture
-- Chult Map 3 staging: the new 48x36 exterior foundation opens into a connected
-  southern Ashtray clearing and broad reserve for the future undead run. It
-  deliberately contains no undead, release triggers, escape route, or phase-end
-  content yet. Six reusable grass tufts continue the exterior-Chult convention.
-  `Chult 3` is development-visible through the shared loader; one separate
-  hidden `chult_3_anchor` definition saves on physical Ashtray contact, restores
-  through CONTINUE, and becomes the Sanity-zero return point. Chult art, music,
-  camera, collision, and save behavior continue unchanged across the transition
+- Chult Map 3 undead run: the 48x36 exterior starts quietly at its southern
+  Ashtray, then releases three finite groups of 4, 5, and 6 existing zombies
+  and skeletons as Chuck advances north. All 15 enemies originate beneath
+  flanking canopy arches rather than appearing in open ground, begin within
+  ordinary notice range, and funnel into three broad evasion spaces. Groups
+  release only once, no kill gate exists, and Astral return rebuilds the quiet
+  pre-run state. Six reusable grass tufts continue the exterior-Chult convention.
+  `Chult 3` remains development-visible through the shared loader; its separate
+  physical Ashtray still saves, restores through CONTINUE, and becomes the
+  Sanity-zero return point. The Chuck-sized escape and Map 4 remain future work
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -374,14 +376,14 @@ the project rules and updated every session.
 
 ## Tests
 
-32 suites (most pure Python/headless): collision, tilemap,
+33 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
 Chult terrain hazard, Chult route-deeper boundary,
 Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
-Phase 5 raptors, the massive Chult dinosaur, and the Phase 5 thorn-maze/Chult 3
-staging transition
+Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
+transition, and the finite Chult 3 undead run
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -508,7 +510,10 @@ session.
        shared development entry and one physical Ashtray (session 89). Increased
        the maze to 136 thorns, one entrance, a longer route, and more difficult
        loops and wrong turns after playtesting (session 90).
-7. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.
+7. [x] Added three increasing, finite undead releases from readable jungle
+       openings, preserving a run-through route, ordinary combat, and complete
+       encounter reset at the Chult 3 checkpoint (session 91).
+8. [ ] Build the Chuck-sized escape and Chult Map 4 temple exterior.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

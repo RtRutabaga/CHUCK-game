@@ -105,6 +105,9 @@ declares the terrain underneath it, so no seams appear in the ground):
     '{'  breakable grass        (on stone ',', conceals a cigarette)
     '}'  breakable grass        (on sewer dirt 'd', conceals a cigarette)
     '<'  breakable grass        (on jungle ground '.', conceals a cigarette)
+    'α/Α' Map 3 wave 1 zombie/skeleton (under a jungle opening '"')
+    'β/Β' Map 3 wave 2 zombie/skeleton (under a jungle opening '"')
+    'γ/Γ' Map 3 wave 3 zombie/skeleton (under a jungle opening '"')
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -325,6 +328,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "¤": MarkerDef(kind="boundary:chult_run", under='"'),
     "µ": MarkerDef(kind="arrival:from_chult_2", under="."),
     "¥": MarkerDef(kind="anchor:chult_3_anchor", under="."),
+    "α": MarkerDef(kind="staged_undead:1:zombie", under='"'),
+    "Α": MarkerDef(kind="staged_undead:1:skeleton", under='"'),
+    "β": MarkerDef(kind="staged_undead:2:zombie", under='"'),
+    "Β": MarkerDef(kind="staged_undead:2:skeleton", under='"'),
+    "γ": MarkerDef(kind="staged_undead:3:zombie", under='"'),
+    "Γ": MarkerDef(kind="staged_undead:3:skeleton", under='"'),
 }
 
 _COMMENT_PREFIX = ";"

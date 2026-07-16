@@ -112,7 +112,7 @@ def test_maze_exit_targets_one_named_chult_3_arrival() -> None:
     assert arrivals == [("arrival:from_chult_2", (392.0, 552.0))]
 
 
-def test_chult_3_staging_is_connected_safe_and_reuses_chult_language() -> None:
+def test_chult_3_run_is_connected_and_reuses_chult_language() -> None:
     tilemap = _map("chult_run")
     assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 36)
     walkable = {
@@ -122,8 +122,8 @@ def test_chult_3_staging_is_connected_safe_and_reuses_chult_language() -> None:
         if not tilemap.is_solid(col, row)
     }
     assert _flood(tilemap, (24, 34)) == walkable
-    assert not any(kind in {"zombie", "skeleton"}
-                   for kind, _ in tilemap.object_spawns)
+    assert len([kind for kind, _ in tilemap.object_spawns
+                if kind.startswith("staged_undead:")]) == 15
     assert len([kind for kind, _ in tilemap.object_spawns
                 if kind == "breakable_grass"]) == 6
     assert tileset_for("chult_run") is tileset_for("chult_cog")
