@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 87 (larger, faster Chult raptors). This file is required by
+Updated: session 88 (massive slow Chult dinosaur). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -303,6 +303,15 @@ the project rules and updated every session.
   still leave a narrow, reliable escape advantage. Ten scratches can defeat
   one, but no route or progression state requires either kill. They use shared collision,
   scratch, Sanity/i-frame, painter-order, and enemy-respawn behavior
+- Phase 5 massive dinosaur: one 72x60 tyrannosaur-like creature stands alone
+  in Map 2's broad northern clearing, separated from the two fast raptors. Its
+  reference-informed silhouette uses a huge blunt green head, yellow eyes,
+  olive dorsal plates and belly, tiny forearms, heavy legs, and pale square
+  claws. A 48x24 footprint reinforces its scale while its 14 px/s pursuit is
+  slower than a zombie. Contact costs 40 Sanity and twenty scratches can defeat
+  it, but the wide clearing preserves a route around its body and no progression
+  state requires combat. It reuses collision, scratch, i-frames, painter order,
+  and enemy reset after Chuck's return
 - Chult Map 2 now has one physical Ashtray south of the cog. Its hidden
   `chult_2_anchor` save definition is distinct from the development-visible
   `Chult 2` map entry but uses the same registry and loader. Contact saves,
@@ -349,13 +358,13 @@ the project rules and updated every session.
 
 ## Tests
 
-30 suites (most pure Python/headless): collision, tilemap,
+31 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
 Chult terrain hazard, Chult route-deeper boundary,
 Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
-Phase 5 raptors
+Phase 5 raptors, and the massive Chult dinosaur
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -475,6 +484,8 @@ in the same pass.
        encounter space, with avoidable finite pursuit and normal respawn reset.
        Added Map 2's single physical shared-loader Ashtray (session 86), then
        enlarged the raptors and increased pursuit speed (session 87).
+   - [x] Added one reference-informed massive but slower dinosaur in the broad
+         northern clearing, with optional combat and normal reset (session 88).
 6. [ ] Author the thorn-maze route into Chult Map 3.
 7. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.
 

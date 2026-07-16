@@ -321,6 +321,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "¿": MarkerDef(kind="elevated_npc:sailor", under="#", allow_solid=True),
     "¡": MarkerDef(kind="raptor", under="."),
     "§": MarkerDef(kind="anchor:chult_2_anchor", under="."),
+    "¶": MarkerDef(kind="massive_dinosaur", under="."),
 }
 
 _COMMENT_PREFIX = ";"

@@ -21,6 +21,7 @@ from src.entities.anchor import AstralAnchor
 from src.entities.breakable_grass import BreakableGrass
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.hazard import Cat
+from src.entities.massive_dinosaur import MassiveDinosaur
 from src.entities.npc import NPC
 from src.entities.pickup import Cigarette
 from src.entities.player import Player
@@ -230,7 +231,10 @@ class WorldScene(Scene):
         self._enemy_spawns = [
             (kind, position)
             for kind, position in self.tilemap.object_spawns
-            if kind in {"cat", "rat", "zombie", "skeleton", "raptor"}
+            if kind in {
+                "cat", "rat", "zombie", "skeleton", "raptor",
+                "massive_dinosaur",
+            }
         ]
         for kind, (cx, cy) in self.tilemap.object_spawns:
             if kind == "cigarette":
@@ -263,7 +267,9 @@ class WorldScene(Scene):
                 )
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
-            elif kind in {"rat", "zombie", "skeleton", "raptor"}:
+            elif kind in {
+                "rat", "zombie", "skeleton", "raptor", "massive_dinosaur"
+            }:
                 continue  # rebuilt with all enemies below
             elif kind.startswith("choice:"):
                 choice_id = kind.split(":", 1)[1]
@@ -317,6 +323,8 @@ class WorldScene(Scene):
             undead.update(dt, self.player)
         for raptor in self.raptors:
             raptor.update(dt, self.player)
+        for dinosaur in self.dinosaurs:
+            dinosaur.update(dt, self.player)
         for breakable in self.breakables:
             breakable.update(dt)
         self.breakables = [item for item in self.breakables if item.alive]
@@ -370,7 +378,8 @@ class WorldScene(Scene):
             self.game.audio.play_sfx("scratch")
             scratch_first_target(
                 self.player.scratch_hitbox(),
-                [*self.breakables, *self.rats, *self.undead, *self.raptors],
+                [*self.breakables, *self.rats, *self.undead, *self.raptors,
+                 *self.dinosaurs],
             )
             for breakable in self.breakables:
                 drop = breakable.take_drop_position()
@@ -381,6 +390,8 @@ class WorldScene(Scene):
         self.rats = [rat for rat in self.rats if rat.alive]
         self.undead = [enemy for enemy in self.undead if enemy.alive]
         self.raptors = [raptor for raptor in self.raptors if raptor.alive]
+        self.dinosaurs = [dinosaur for dinosaur in self.dinosaurs
+                          if dinosaur.alive]
 
         blocking_rat = next(
             (rat for rat in self.rats if overlaps(self.player.hitbox, rat.hitbox)),
@@ -410,6 +421,17 @@ class WorldScene(Scene):
         )
         if blocking_raptor is not None:
             if self.sanity.damage(blocking_raptor.damage):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+            self.player.x, self.player.y = old_player_position
+
+        blocking_dinosaur = next(
+            (dinosaur for dinosaur in self.dinosaurs
+             if overlaps(self.player.hitbox, dinosaur.hitbox)),
+            None,
+        )
+        if blocking_dinosaur is not None:
+            if self.sanity.damage(blocking_dinosaur.damage):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
             self.player.x, self.player.y = old_player_position
@@ -525,7 +547,8 @@ class WorldScene(Scene):
         """
         drawables = [*self.props, *self.breakables, *self.anchors,
                      *self.hazards, *self.rats,
-                     *self.undead, *self.raptors, *self.npcs, self.player]
+                     *self.undead, *self.raptors, *self.dinosaurs,
+                     *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
 
     def _on_choice(self, option) -> None:
@@ -659,6 +682,7 @@ class WorldScene(Scene):
         self.rats = []
         self.undead = []
         self.raptors = []
+        self.dinosaurs = []
         self._scratch_tutorial_rats = []
         rat_spawn_tiles = {
             (int(cx // config.TILE_SIZE), int(cy // config.TILE_SIZE))
@@ -698,6 +722,11 @@ class WorldScene(Scene):
                 raptor.tilemap = self.tilemap
                 raptor.load_sprites(self.game.assets)
                 self.raptors.append(raptor)
+            elif kind == "massive_dinosaur":
+                dinosaur = MassiveDinosaur(cx, cy)
+                dinosaur.tilemap = self.tilemap
+                dinosaur.load_sprites(self.game.assets)
+                self.dinosaurs.append(dinosaur)
 
     # ------------------------------------------------------------------
     # Astral fall hazard

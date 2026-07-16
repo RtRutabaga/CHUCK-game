@@ -186,6 +186,18 @@ RAPTOR_SANITY_DAMAGE = 25
 RAPTOR_SCRATCHES = 10
 RAPTOR_FRAME_DURATION = 0.13
 
+# One enormous dinosaur occupies the northern Map 2 clearing. It is slower
+# than even a zombie; its danger is its screen presence and heavy contact.
+DINOSAUR_FRAME_W = 72
+DINOSAUR_FRAME_H = 60
+DINOSAUR_HITBOX_W = 48
+DINOSAUR_HITBOX_H = 24
+DINOSAUR_SPEED = 14.0
+DINOSAUR_NOTICE_RANGE = 128.0
+DINOSAUR_SANITY_DAMAGE = 40
+DINOSAUR_SCRATCHES = 20
+DINOSAUR_FRAME_DURATION = 0.30
+
 # ---------------------------------------------------------------------------
 # Astral Anchor respawn (Game Bible: quiet, quick, never punishing)
 # ---------------------------------------------------------------------------

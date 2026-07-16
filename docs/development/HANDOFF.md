@@ -3,11 +3,26 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `3b6223e` (`Add Chult raptor encounter`)
-- Current work: larger and faster Chult Map 2 raptors
+- Base commit before this pass: `e0f59a2` (`Enlarge and accelerate Chult raptors`)
+- Current work: one massive, slow Chult Map 2 dinosaur
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+One massive dinosaur now occupies the broad northern Chult Map 2 clearing,
+separate from the two central raptors. Sean's supplied reference directly
+informs its 72x60 procedural sprite: a huge blunt green head and body, two
+yellow eyes, olive dorsal plates and belly, tiny clawed forearms, heavy legs,
+and pale square foot claws. Two restrained step frames and three facings keep it
+readable during ordinary top-down movement without making it nimble.
+
+The reusable `MassiveDinosaur` joins the existing enemy lifecycle rather than a
+map-specific hazard path. It has a 48x24 footprint, 128-pixel notice range,
+40-Sanity contact, and twenty-scratch durability. At 14 px/s it is slower than
+the 18 px/s zombie; its threat comes from scale and weight. The clearing remains
+wide enough to circle its body, defeating it is optional, and Astral return
+rebuilds it from its single authored marker. The cog, Ashtray, raptors, and
+authored map geometry are otherwise unchanged.
 
 Sean's playtest tuning enlarges each raptor from 36x24 to 44x30 and its
 collision footprint from 24x12 to 30x15. The generated art uses crisp
@@ -232,8 +247,13 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
-- All 30 test modules pass through their standalone runners (pytest is not
+- All 31 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
+- New massive-dinosaur coverage verifies the single authored spawn, 72x60
+  two-frame/three-facing asset, scale above the raptors, speed below zombies,
+  twenty-hit durability, collision, 40-Sanity contact, a route around its body,
+  and rebuild after Chuck's return. Native 320x180 review confirms the supplied
+  green, yellow-eyed, plate-backed visual language and decisive scale contrast.
 - Focused raptor and Chult Map 2 suites pass after the scale/speed tuning. A
   native 320x180 render confirms the 44x30 predator now reads decisively larger
   than Chuck without obscuring the surrounding route.
@@ -389,6 +409,11 @@ as a convention for each future exterior Chult map.
     verify their 68 px/s pursuit feels urgent but Chuck can still gain ground,
     and neither is a mandatory gate. If fighting, confirm repeated scratches
     eventually defeat one and contact costs Sanity without bypassing i-frames.
+28. Continue into the broad northern clearing and find the single massive
+    dinosaur. Confirm it visibly dwarfs Chuck and the raptors, matches the
+    green/yellow-eyed/plate-backed reference, and advances much more slowly
+    than the other enemies. Circle around it without fighting, then verify
+    contact costs heavy Sanity and death/return restores it to its authored spot.
 
 ## Next Bounded Task
 
