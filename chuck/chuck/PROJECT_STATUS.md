@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 82 (reference-directed sailing cog redraw). This file is required by
+Updated: session 83 (sailing cog mast/deck layering fix). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -278,9 +278,11 @@ the project rules and updated every session.
   wooden posts, deep near hull, and sharply tapered southwest bow establish the
   three-quarter perspective. The reference-directed upper silhouette uses one
   wide rectangular cream sail on a plain exposed central mast. The deck remains
-  open, with no northwest box, ladder, rigging, or rope details. Its shaped
-  fourteen-tile-wide solid footprint matches the visible base while leaving
-  safe routes around both sides. Twenty-four scattered `V` substitutions arc
+  open, with no northwest box, ladder, rigging, or rope details. The mast is
+  layered in two parts: the sail remains behind the hull while the lower
+  post and broad foot render over the deck planks, visibly anchoring it aboard.
+  Its shaped fourteen-tile-wide solid footprint matches the visible base while
+  leaving safe routes around both sides. Twenty-four scattered `V` substitutions arc
   around the hull in small broken clusters, reusing the established animated
   Astral art and ordinary fall/return behavior. They are avoidable on the main
   route, so the ship discovery does not become a mandatory jump gate

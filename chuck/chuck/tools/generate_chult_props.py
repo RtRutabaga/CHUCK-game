@@ -134,14 +134,6 @@ def sailing_cog() -> Image.Image:
     draw.line((67, 27, 84, 43), fill=sail_dark, width=1)
     draw.polygon(((137, 55), (153, 57), (155, 70), (139, 68)),
                  outline=sail_dark)
-    # The exposed lower mast and broad foot remain visible against the deck.
-    draw.line((115, 78, 115, 107), fill=outline, width=9)
-    draw.line((115, 78, 115, 106), fill=wood_light, width=4)
-    draw.polygon(((106, 105), (123, 105), (128, 111), (103, 111)),
-                 fill=outline)
-    draw.polygon(((109, 104), (121, 104), (123, 108), (107, 108)),
-                 fill=wood)
-
     # The visible deck is a broad diamond. Its depth is what moves the view
     # away from a street-level side profile while retaining a readable hull.
     deck_outline = ((7, 96), (21, 82), (145, 62), (216, 91),
@@ -180,6 +172,15 @@ def sailing_cog() -> Image.Image:
         draw.line((x, y, x, y + 11), fill=wood_dark, width=3)
     draw.polygon(((133, 83), (151, 79), (165, 85), (147, 90)), fill=outline)
     draw.polygon(((137, 83), (151, 81), (160, 85), (147, 88)), fill=wood_dark)
+
+    # Draw the lower mast after the deck: it must visibly stand on the planks,
+    # not disappear behind the ship and make the sail read as background art.
+    draw.line((115, 77, 115, 108), fill=outline, width=9)
+    draw.line((115, 77, 115, 107), fill=wood_light, width=4)
+    draw.polygon(((106, 105), (123, 105), (128, 112), (103, 112)),
+                 fill=outline)
+    draw.polygon(((109, 104), (121, 104), (123, 109), (107, 109)),
+                 fill=wood)
 
     # Jungle growth tangles around the stranded base; there is no ladder.
     draw.line((20, 125, 48, 143, 77, 139), fill=vine_dark, width=3)
