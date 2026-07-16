@@ -56,6 +56,7 @@ _SPRITES = {
         "objects/jungle_shrub_2.png",
         "objects/jungle_shrub_3.png",
     ),
+    "sailing_cog": "objects/sailing_cog.png",
 }
 
 # Props that respond to the interact key with a line of dialogue

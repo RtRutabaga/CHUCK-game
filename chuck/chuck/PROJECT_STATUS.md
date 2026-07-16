@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 79 (Phase 5 Chult Map 2 foundation). This file is required by
+Updated: session 80 (Phase 5 sailing cog landmark). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -272,6 +272,14 @@ the project rules and updated every session.
   Chult terrain, dense trees/shrubs, theme, camera, collision, and breakable
   grass language. The shared registry exposes its runtime entry as `Chult 2`;
   no separate debug teleport or new progression flag was added
+- Phase 5 sailing cog discovery: a single 144x112 procedural landmark dominates
+  the southern clearing, with a weathered square sail, mast and rigging, tall
+  planked hull, deck rail, portholes, rope ladder, and jungle growth. Its shaped
+  nine-tile-wide solid hull footprint matches the visible base while leaving
+  safe routes around both sides. Twenty-four scattered `V` substitutions arc
+  around the hull in small broken clusters, reusing the established animated
+  Astral art and ordinary fall/return behavior. They are avoidable on the main
+  route, so the ship discovery does not become a mandatory jump gate
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -375,10 +383,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build the sailing cog landmark and its surrounding Astral substitution field in
-the southern Chult Map 2 clearing. Keep that pass environmental: reserve the
-sailor's exact three-box dialogue and the two-raptor encounter for their own
-following slice.
+Place the human-scale sailor visibly on the cog's deck and wire the exact three
+sequential dialogue boxes from the Phase 5 contract. Keep the two raptors and
+their behavior for the following bounded encounter slice.
 
 ## Also open
 
@@ -427,7 +434,9 @@ following slice.
        Phase 4 north threshold to its named southern arrival, reused the Chult
        tileset/theme, scattered ten shared grass tufts, and registered `Chult 2`
        through the shared checkpoint loader (session 79).
-3. [ ] Add the sailing cog landmark and surrounding Astral blocks.
+3. [x] Added the oversized sailing cog landmark, shaped solid hull footprint,
+       and 24 avoidable animated Astral Sea substitutions around its base while
+       preserving safe routes on both sides (session 80).
 4. [ ] Add the sailor's exact three-box dialogue and two-raptor encounter.
 5. [ ] Author the thorn-maze route into Chult Map 3.
 6. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.

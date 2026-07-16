@@ -1,13 +1,19 @@
 """Phase 5 Chult Map 2 foundation and shared checkpoint contract."""
 
 from collections import deque
+import os
 import tempfile
 from pathlib import Path
+
+os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+
+import pygame
 
 from src.core import config
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
-from src.world.tilemap import TileMap
+from src.world.tilemap import TILE_DEFS, TileMap
 from src.world.tileset_layout import tileset_for
 from src.world.transitions import AREA_MUSIC
 
@@ -73,6 +79,55 @@ def test_chult_map_2_reuses_the_chult_visual_and_audio_language() -> None:
     grass = [kind for kind, _ in _map().object_spawns
              if kind == "breakable_grass"]
     assert len(grass) == 10
+
+
+def test_sailing_cog_is_one_oversized_solid_landmark() -> None:
+    tilemap = _map()
+    cogs = [entry for entry in tilemap.prop_tiles
+            if entry[0] == "sailing_cog"]
+    assert cogs == [("sailing_cog", 40, 64)]
+    assert tilemap.terrain_at(40, 64) == ";"
+    assert TILE_DEFS[";"].solid and TILE_DEFS[";"].under == "#"
+    for row in range(61, 65):
+        for col in range(36, 45):
+            assert tilemap.is_solid(col, row)
+
+    image = pygame.image.load(
+        config.SPRITES_DIR / "objects" / "sailing_cog.png"
+    )
+    assert image.get_size() == (144, 112)
+    assert image.get_width() >= config.CHUCK_FRAME_W * 12
+    assert image.get_height() >= config.CHUCK_FRAME_H * 8
+
+
+def test_astral_sea_scatter_reuses_fall_tiles_without_blocking_progress() -> None:
+    tilemap = _map()
+    astral = {
+        (col, row)
+        for row in range(tilemap.height_tiles)
+        for col in range(tilemap.width_tiles)
+        if tilemap.terrain_at(col, row) == "V"
+    }
+    assert len(astral) == 24
+    assert all(58 <= row <= 66 and 29 <= col <= 50
+               for col, row in astral)
+    assert not TILE_DEFS["V"].solid
+    assert tileset_for("chult_cog").char_to_terrain["V"] == "astral_void"
+
+    # Astral fragments pressure the ship approach, but neither side is a
+    # mandatory fall crossing on the route deeper into the map.
+    start = (40, 76)
+    reached = {start}
+    frontier = deque([start])
+    while frontier:
+        col, row = frontier.popleft()
+        for point in ((col - 1, row), (col + 1, row),
+                      (col, row - 1), (col, row + 1)):
+            if (point not in reached and not tilemap.is_solid(*point)
+                    and tilemap.terrain_at(*point) != "V"):
+                reached.add(point)
+                frontier.append(point)
+    assert (40, 40) in reached
 
 
 def test_phase_4_boundary_enters_chult_2_without_a_transition_bounce() -> None:

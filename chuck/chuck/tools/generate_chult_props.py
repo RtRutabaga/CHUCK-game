@@ -103,6 +103,85 @@ def jungle_shrub(variant: int) -> Image.Image:
     return image
 
 
+def sailing_cog() -> Image.Image:
+    """A one-masted human vessel, dramatically oversized beside Chuck."""
+    image = Image.new("RGBA", (144, 112), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+
+    outline = (24, 25, 22, 255)
+    wood_dark = (57, 43, 29, 255)
+    wood = (105, 73, 42, 255)
+    wood_light = (146, 102, 56, 255)
+    rope = (157, 137, 89, 255)
+    sail_dark = (135, 127, 96, 255)
+    sail = (191, 177, 128, 255)
+    sail_light = (213, 197, 146, 255)
+    iron = (45, 49, 45, 255)
+    vine_dark = (19, 62, 34, 255)
+    vine = (43, 104, 49, 255)
+
+    # Mast and rigging rise first so the hull and rail sit naturally in front.
+    draw.rectangle((69, 10, 75, 79), fill=outline)
+    draw.rectangle((71, 10, 74, 79), fill=wood_light)
+    draw.line((18, 77, 72, 10), fill=rope, width=1)
+    draw.line((126, 79, 74, 10), fill=rope, width=1)
+    draw.rectangle((34, 24, 111, 28), fill=outline)
+    draw.rectangle((36, 25, 109, 26), fill=wood_light)
+
+    # A broad, weathered square sail with an uneven lower edge.
+    draw.polygon(((39, 29), (106, 29), (110, 60), (99, 66),
+                  (75, 63), (54, 67), (36, 59)), fill=outline)
+    draw.polygon(((41, 30), (103, 30), (107, 58), (97, 63),
+                  (75, 60), (55, 64), (39, 57)), fill=sail)
+    draw.polygon(((74, 31), (101, 31), (104, 57), (96, 61),
+                  (76, 58)), fill=sail_light)
+    draw.line((72, 30, 73, 61), fill=sail_dark, width=2)
+    draw.line((43, 43, 105, 43), fill=sail_dark, width=1)
+    draw.line((46, 56, 101, 57), fill=sail_dark, width=1)
+    # Repairs keep the vessel used rather than storybook-pristine.
+    draw.rectangle((49, 35, 58, 43), outline=sail_dark)
+    draw.line((49, 35, 58, 43), fill=sail_dark, width=1)
+    draw.rectangle((84, 48, 94, 57), outline=sail_dark)
+
+    # High-sided cog hull, broad enough to dominate a native viewport.
+    hull = ((7, 75), (25, 69), (121, 69), (138, 80),
+            (126, 101), (104, 107), (30, 109), (13, 99))
+    draw.polygon(hull, fill=outline)
+    draw.polygon(((11, 77), (27, 73), (119, 73), (133, 81),
+                  (122, 97), (102, 103), (32, 105), (17, 96)), fill=wood)
+    draw.line((20, 82, 129, 82), fill=wood_light, width=3)
+    draw.line((23, 91, 126, 90), fill=wood_dark, width=3)
+    draw.line((31, 101, 116, 99), fill=wood_light, width=2)
+    for x in range(34, 121, 15):
+        draw.line((x, 75, x - 2, 102), fill=wood_dark, width=2)
+    for x in (43, 67, 91, 115):
+        draw.ellipse((x, 84, x + 6, 90), fill=iron)
+        draw.ellipse((x + 2, 86, x + 4, 88), fill=(16, 22, 27, 255))
+
+    # Deck, rails, raised stern, and a rope ladder readable at native scale.
+    draw.rectangle((23, 67, 124, 73), fill=outline)
+    draw.rectangle((25, 67, 122, 70), fill=wood_light)
+    for x in range(27, 123, 12):
+        draw.rectangle((x, 61, x + 2, 70), fill=wood_dark)
+    draw.line((27, 62, 121, 62), fill=rope, width=2)
+    draw.rectangle((105, 58, 126, 70), fill=outline)
+    draw.rectangle((108, 60, 124, 69), fill=wood)
+    draw.rectangle((111, 62, 120, 68), fill=(30, 31, 27, 255))
+    draw.line((28, 72, 28, 94), fill=rope, width=1)
+    draw.line((35, 72, 35, 93), fill=rope, width=1)
+    for y in range(76, 94, 5):
+        draw.line((28, y, 35, y), fill=rope, width=1)
+
+    # Jungle growth tangles around the stranded hull without hiding its shape.
+    draw.line((15, 96, 35, 104, 58, 101), fill=vine_dark, width=2)
+    draw.line((119, 96, 101, 104, 83, 102), fill=vine, width=2)
+    for x, y in ((20, 99), (40, 104), (91, 103), (113, 98)):
+        draw.ellipse((x - 3, y - 5, x + 3, y + 1), fill=vine)
+        draw.line((x, y, x + 5, y - 7), fill=vine_dark, width=1)
+    draw.line((71, 16, 79, 8, 89, 10), fill=vine_dark, width=1)
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, image in (
@@ -112,6 +191,7 @@ def main() -> None:
         ("jungle_shrub_1", jungle_shrub(0)),
         ("jungle_shrub_2", jungle_shrub(1)),
         ("jungle_shrub_3", jungle_shrub(2)),
+        ("sailing_cog", sailing_cog()),
     ):
         path = OUT / f"{name}.png"
         image.save(path)

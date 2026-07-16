@@ -169,12 +169,14 @@ CHULT = Tileset(
         ("thorn_patch", 3, 1),
         ("jungle_trail", 3, 1),
         ("jungle_exit", 3, 1),
+        ("astral_void", 2, 3),
     ],
     char_to_terrain={
         ".": "jungle_ground",
         "#": "dense_jungle",
         "|": "thorn_patch",
         "'": "jungle_trail",
+        "V": "astral_void",
     },
     overhead_char_to_terrain={
         "_": "fallen_log",

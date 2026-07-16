@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 import pygame
 
 from src.world.tileset_layout import CHULT, TILE_PX
+from generate_sewer_tileset import draw_astral_void
 
 GROUND = (37, 44, 28)
 GROUND_LIGHT = (65, 69, 38)
@@ -136,6 +137,7 @@ DRAW = {
     "thorn_patch": draw_thorn_patch,
     "jungle_trail": draw_jungle_trail,
     "jungle_exit": draw_jungle_exit,
+    "astral_void": draw_astral_void,
 }
 
 

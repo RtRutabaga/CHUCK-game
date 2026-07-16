@@ -3,11 +3,26 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `a4cde0e` (`Scatter breakable grass across Chult`)
-- Current work: Phase 5 Chult Map 2 foundation
+- Base commit before this pass: `4df5e4b` (`Begin Phase 5 with Chult Map 2 foundation`)
+- Current work: Phase 5 sailing cog landmark and Astral scatter
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+The southern Chult Map 2 clearing now contains its major discovery: one
+144x112 side-view sailing cog, roughly twelve Chuck sprites wide and eight tall.
+The procedural sprite clearly reads as a substantial one-masted human vessel
+through its weathered square sail, mast and rigging, raised deck rail, planked
+hull, portholes, rope ladder, and jungle growth around the stranded base. One
+map-authored prop tile owns the sprite while a shaped nine-tile-wide solid hull
+footprint supplies collision through the established tile/prop architecture.
+
+Twenty-four `V` tiles form broken Astral Sea clusters around the cog's base.
+Chult's tileset now renders the exact established animated Astral material, and
+the existing fall-zone system supplies the same on-foot fall, jump safety, and
+Astral return without a map-specific branch. Both sides of the ship retain a
+fully ordinary non-Astral route toward the central jungle. No sailor, dialogue,
+raptor, thorn maze, progression flag, or later map content was added.
 
 Phase 5 is now active. Its first bounded dependency is in place: the established
 Phase 4 `chult_deeper` threshold now enters a new 80x80 `chult_cog` exterior at
@@ -142,6 +157,12 @@ as a convention for each future exterior Chult map.
 
 - All 29 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
+- Phase 5 coverage now verifies the single cog's authored position, 144x112
+  scale, shaped solid footprint, exact 24-tile Astral scatter, Chult tileset
+  reuse, and a non-Astral route from the southern entrance past the ship.
+- Native 320x180 render review confirms the full ship silhouette is readable
+  beside Chuck, the Astral field looks like hard-edged wrong-map substitutions,
+  and vegetation frames the hull without obscuring it.
 - New Phase 5 coverage verifies the 80x80 dimensions, more-than-50-percent area
   increase over Chult Map 1, complete walkable flood-fill, three connected
   authored zones, shared `Chult 2` definition, Chult tileset/theme reuse, named
@@ -254,9 +275,15 @@ as a convention for each future exterior Chult map.
     same southern position, the Chult theme and art remain continuous, all
     three broad zones are walkably connected, and the ten grass tufts behave
     like those in the first jungle.
+23. Walk north from Chult 2 until the cog emerges. Circle both sides and confirm
+    the hull reads as a large human vessel, its solid footprint matches the
+    visible base, and the mast/sail remain clearly legible at native scale.
+24. Walk into one purple block and confirm the established Astral fall/return.
+    Jump across an isolated block, then verify a completely safe route remains
+    around either side of the cog without crossing any Astral material.
 
 ## Next Bounded Task
 
-Build the sailing cog landmark and its nearby Astral substitution field in the
-southern clearing. Do not add the sailor dialogue, raptors, thorn maze, Map 3,
-or temple yet; each is a subsequent bounded Phase 5 slice.
+Place the human-scale sailor visibly on the cog's deck and implement the exact
+three sequential dialogue boxes from Phase 5. Do not add raptors, thorn maze,
+Map 3, or the temple in that pass.

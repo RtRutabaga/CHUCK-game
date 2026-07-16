@@ -71,6 +71,7 @@ Terrain legend:
     'V'  Astral wrong-map    (walkable fall hazard; never a portal)
     '_'  beneath fallen log  (walkable jungle ground, log drawn overhead)
     '|'  thorny undergrowth  (walkable Chult Sanity hazard)
+    ';'  sailing cog         (solid landmark over dense jungle footprint)
     "'"  beaten jungle trail (walkable route toward the next Chult area)
     '"'  jungle trailhead    (walkable trail, canopy drawn overhead)
     '/'  dense jungle tree   (solid tall prop over dense vegetation)
@@ -273,6 +274,8 @@ TILE_DEFS: dict[str, TileDef] = {
     "_": TileDef(solid=False, color=config.COLOR_FLOOR_PLACEHOLDER,
                  under=".", overhead="fallen_log"),
     "|": TileDef(solid=False, color=(48, 84, 39)),
+    ";": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
+                 prop="sailing_cog", under="#"),
     "'": TileDef(solid=False, color=(44, 45, 29)),
     '"': TileDef(solid=False, color=(44, 45, 29),
                  under="'", overhead="jungle_exit"),
