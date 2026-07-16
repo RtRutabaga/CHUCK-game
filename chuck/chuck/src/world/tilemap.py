@@ -306,6 +306,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "*": MarkerDef(kind="player", under="p"),
     "0": MarkerDef(kind="arrival:pantry_entry", under="p"),
     "@": MarkerDef(kind="player", under="."),
+    "`": MarkerDef(kind="arrival:from_chult_1", under="."),
     "&": MarkerDef(kind="anchor:chult_anchor", under="."),
     "(": MarkerDef(kind="zombie", under="."),
     ")": MarkerDef(kind="skeleton", under="."),

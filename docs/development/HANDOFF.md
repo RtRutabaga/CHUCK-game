@@ -3,14 +3,28 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `c7eb855` (`Expand breakable grass and scratch hints`)
-- Current work: Chult breakable-grass scatter and future-map convention
-- Active phase: Phase 4 — Chult Jungle (`PHASE-4.md`)
+- Base commit before this pass: `a4cde0e` (`Scatter breakable grass across Chult`)
+- Current work: Phase 5 Chult Map 2 foundation
+- Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
 
-The complete Phase 4 contract now lives at `docs/development/PHASE-4.md` and is
-the active scope referenced by the docs guide. Phase 3's final jungle tableau
+Phase 5 is now active. Its first bounded dependency is in place: the established
+Phase 4 `chult_deeper` threshold now enters a new 80x80 `chult_cog` exterior at
+a safe named southern arrival. The map's one connected exploration network
+reserves a broad southern cog clearing, central raptor territory, and northern
+thorn-maze region without prematurely implementing those content slices.
+
+The new exterior reuses the Chult tileset, theme, collision/camera systems, and
+procedural vegetation language. Ten reusable scratchable grass tufts continue
+the documented exterior-Chult convention without a tutorial prompt. The shared
+checkpoint registry now exposes `chult_2` / `Chult 2`; normal arrival and the
+development selector use the same loader, required flags, and runtime respawn
+initialization. The selector layout is now two columns so Phase 5 checkpoints
+remain legible at native 320x180 resolution.
+
+The complete Phase 4 contract remains at `docs/development/PHASE-4.md` as the
+previous phase record. Phase 3's final jungle tableau
 holds for two seconds after its authored completion, then loads a playable Chult
 landing through the shared checkpoint loader.
 
@@ -126,8 +140,14 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
-- All 28 test modules pass through their standalone runners (pytest is not
+- All 29 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
+- New Phase 5 coverage verifies the 80x80 dimensions, more-than-50-percent area
+  increase over Chult Map 1, complete walkable flood-fill, three connected
+  authored zones, shared `Chult 2` definition, Chult tileset/theme reuse, named
+  arrival, and ten grass spawns.
+- A headless native 320x180 launch loaded and drew `chult_2` successfully at its
+  named arrival with the expected map and active checkpoint.
 - New Chult coverage verifies map dimensions/spawns, shared-loader cutscene
   handoff, required progression, Ashtray save data, and relaunch/CONTINUE.
 - Existing tileset coverage now requires every used Chult terrain to have art.
@@ -205,9 +225,9 @@ as a convention for each future exterior Chult map.
     it without damage, then confirm the main route can bypass it entirely.
 14. Revisit the northern clearing and confirm the backpack and boot are gone,
     with no invisible collision or leftover interaction prompt where they stood.
-15. Continue north onto the darker worn trail. Confirm it reads as the route
-    deeper, the canopy closes over Chuck at the threshold, and the stable edge
-    stops him cleanly without a broken transition or missing-map error.
+15. Continue north onto the darker worn trail. Confirm it transitions cleanly
+    into the much larger Chult Map 2 and places Chuck at the southern entrance
+    facing north without immediately bouncing back.
 16. Listen through the Chult theme from Chult 1. Confirm the bass hook is
     immediately memorable, percussion feels jungle-oriented and syncopated,
     the middle breakdown stays propulsive, and the full loop has no audible
@@ -230,9 +250,13 @@ as a convention for each future exterior Chult map.
 21. Walk Chult from the landing to the northern route. Confirm the eight grass
     tufts feel naturally scattered, remain distinct from damaging thorns, shred
     and reveal cigarettes normally, and never summon a tutorial prompt.
+22. From DEV CHECKPOINTS choose Chult 2. Confirm the shared loader enters the
+    same southern position, the Chult theme and art remain continuous, all
+    three broad zones are walkably connected, and the ten grass tufts behave
+    like those in the first jungle.
 
 ## Next Bounded Task
 
-Choose a replacement previous-traveler environmental scene that does not restore
-the removed backpack or boot, then finish the complete Phase 4 acceptance run.
-Do not begin Phase 5 without an active Phase 5 contract or explicit direction.
+Build the sailing cog landmark and its nearby Astral substitution field in the
+southern clearing. Do not add the sailor dialogue, raptors, thorn maze, Map 3,
+or temple yet; each is a subsequent bounded Phase 5 slice.

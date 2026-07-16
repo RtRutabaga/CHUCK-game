@@ -18,7 +18,7 @@ from pathlib import Path
 
 REAL_MAPS = (
     "waterdeep_docks", "sewer", "waterdeep_tavern", "waterdeep_pantry",
-    "chult_jungle",
+    "chult_jungle", "chult_cog",
 )
 
 

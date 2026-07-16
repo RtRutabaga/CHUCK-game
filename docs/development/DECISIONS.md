@@ -15,8 +15,9 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Claude Code and Codex use the same Git repository.
 - Only one coding agent edits at a time.
 - Each completed pass should be tested, handed off, and committed before switching agents.
-- Phase 2 is active.
-- Do not implement the tavern interior, pantry/cheese sequence, or fall into Chult during Phase 2.
+- Phase 5 is active.
+- Phase 5 ends at the exterior of the jungle temple; do not begin the temple
+  interior or dungeon during this phase.
 - Exterior Chult maps should include a restrained scatter of reusable
   scratchable grass tufts. They use the shared breakable/reward behavior, but
   the `Press F to scratch` proximity tutorial remains limited to Waterdeep and

@@ -197,6 +197,7 @@ MAP_TILESET: dict[str, str] = {
     "waterdeep_tavern": "tavern",
     "waterdeep_pantry": "pantry",
     "chult_jungle": "chult",
+    "chult_cog": "chult",
 }
 
 

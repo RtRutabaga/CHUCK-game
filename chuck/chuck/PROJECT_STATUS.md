@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 78 (Chult breakable-grass scatter). This file is required by
+Updated: session 79 (Phase 5 Chult Map 2 foundation). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -34,7 +34,7 @@ the project rules and updated every session.
   durable progression flags. Invalid, missing, outdated, unknown, or forged
   development-only checkpoint saves disable CONTINUE without crashing. Durable
   flags are `sewer_completed`, which restores the tavern's open exterior, and
-  `chult_reached`, which restores the playable Phase 4 landing state
+  `chult_reached`, which restores the playable Chult state
 - Dialogue: JSON data files, typewriter box, six NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
@@ -262,10 +262,16 @@ the project rules and updated every session.
 
 - Phase 4 route deeper: a three-tile-wide worn track now leads out of the
   existing northern clearing and terminates beneath a dense canopy arch. The
-  walkable threshold carries one inert `boundary:chult_deeper` map marker,
-  giving the next authored Chult area a stable handoff point without inventing
-  a placeholder map or fake transition. Solid jungle beyond the threshold
-  remains the deliberate Phase 4 edge
+  walkable threshold carries the named `boundary:chult_deeper` marker. Phase 5
+  now binds that existing threshold to `chult_cog`, entering at its safe named
+  southern arrival through the ordinary walk-exit/checkpoint path
+- Phase 5 Chult Map 2 foundation: `chult_cog.txt` is an 80x80 authored exterior,
+  substantially larger than the 64x60 first jungle. One connected exploration
+  network joins a broad southern future-cog clearing, central future-raptor
+  territory, and northern future-thorn-maze reserve. It reuses the established
+  Chult terrain, dense trees/shrubs, theme, camera, collision, and breakable
+  grass language. The shared registry exposes its runtime entry as `Chult 2`;
+  no separate debug teleport or new progression flag was added
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -306,12 +312,12 @@ the project rules and updated every session.
 
 ## Tests
 
-28 suites (most pure Python/headless): collision, tilemap,
+29 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
 Chult terrain hazard, Chult route-deeper boundary,
-Chult dense vegetation, breakable grass
+Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -369,10 +375,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Choose and implement a replacement previous-traveler environmental scene that
-does not restore the removed backpack or boot. Then complete the broader Phase 4
-acceptance playtest; do not begin Phase 5 without a new active phase contract or
-explicit direction.
+Build the sailing cog landmark and its surrounding Astral substitution field in
+the southern Chult Map 2 clearing. Keep that pass environmental: reserve the
+sailor's exact three-box dialogue and the two-raptor encounter for their own
+following slice.
 
 ## Also open
 
@@ -413,6 +419,18 @@ explicit direction.
 13. [x] Scattered eight reusable breakable-grass tufts across ordinary jungle
         ground and established them as an exterior-Chult map convention without
         extending the Waterdeep/sewer scratch tutorial (session 78).
+
+## Phase 5 progress (deeper into Chult)
+
+1. [x] Added the Phase 5 contract and made it the active development scope.
+2. [x] Added the 80x80 connected Chult Map 2 foundation, linked the established
+       Phase 4 north threshold to its named southern arrival, reused the Chult
+       tileset/theme, scattered ten shared grass tufts, and registered `Chult 2`
+       through the shared checkpoint loader (session 79).
+3. [ ] Add the sailing cog landmark and surrounding Astral blocks.
+4. [ ] Add the sailor's exact three-box dialogue and two-raptor encounter.
+5. [ ] Author the thorn-maze route into Chult Map 3.
+6. [ ] Build the undead run, Chuck-sized escape, and Chult Map 4 temple exterior.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

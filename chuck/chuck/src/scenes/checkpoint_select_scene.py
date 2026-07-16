@@ -48,10 +48,12 @@ class CheckpointSelectScene(Scene):
         note.set_alpha(120)
         surface.blit(note, ((320 - note.get_width()) // 2, 44))
 
+        rows_per_column = 6
         for index, checkpoint in enumerate(self.checkpoints):
             caret = ">" if index == self._selected else " "
             label = self._font.render(f"{caret} {checkpoint.display_name}")
-            surface.blit(label, (72, 64 + index * 13))
+            column, row = divmod(index, rows_per_column)
+            surface.blit(label, (42 + column * 124, 64 + row * 13))
 
         back = self._font.render("ESC BACK")
         back.set_alpha(140)
