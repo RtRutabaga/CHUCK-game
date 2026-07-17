@@ -3,89 +3,75 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `40533f3` (`Add worn-trail approaches before the Chult vine exits`)
-- Current work: breakable temple urns spilling cigarette cartons (session 110)
-- Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
+- Base commit before this pass: `ef9c9f6` (`Make temple urns scratch-breakables that spill cigarette cartons`)
+- Current work: jungle densification across all Chult exteriors (session 111)
+- Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`); this pass is a
+  playtest-directed density improvement in the completed Chult exteriors.
 
 ## Completed This Pass
 
-All 26 dressed temple urns (map chars '¦' wall-base and '¢' floor, across
-Temple Maps 1-6) are now scratch-breakables instead of static props. One
-scratch shatters one urn into terracotta shards — the breakable-grass
-lifecycle with a clay palette — and spills a full cigarette carton.
+All five Chult exterior maps (chult_jungle, chult_cog, chult_run,
+chult_respite, chult_temple) gained additional organic dense-jungle blobs so
+there is visibly less open ground: 576 new solid vegetation cells total
+(172/211/29/69/65 per map, ~8-10% of each map's plain open ground). New
+masses match the existing session-73 language exactly — interlocked canopy
+terrain studded with oversized trees ('/') and broad-leaf shrubs ('\\') at
+the canonical density — and merge organically with existing masses.
 
-The carton is a new pickup (`CigaretteCarton`, 12x8 cream box with a red
-band and visible filter tips) worth exactly `CARTON_CIGARETTE_COUNT` (20)
-cigarettes: `restore_amount = 20 * CIGARETTE_SANITY_RESTORE`, clamped at
-full sanity today. THE NUMBER IS THE CONTRACT — a later session adds a
-cigarette counter, and a carton must bank exactly 20 into it; the config
-comment and the pickup's `cigarette_count` attribute carry that intent.
+Placement was generated, not hand-authored, under strict guards, and every
+candidate blob was rejected unless ALL held:
 
-Wall-base urns spill their carton onto the guaranteed floor tile beneath
-them; floor urns spill in place. Breaking clears the urn's tile to its
-declared under-terrain via the new `TileMap.clear_tile`: floor urns open
-for walking, wall-base tiles remain the solid wall they always were. Urns,
-tiles, and cartons all rebuild on checkpoint reload, matching the enemy
-lifecycle. Idols, stelae, and fallen columns remain static mute dressing.
+- cells were plain open jungle ground ('.') only;
+- a 2-tile buffer kept blobs away from every object spawn (enemies, grass,
+  anchors, arrivals, boundaries, staged undead, the player spawn) and every
+  special terrain (thorns, stream, log passage, trails, vine exits, the cog,
+  skull stakes, pyramid, Astral cells);
+- full walkable connectivity re-verified after each blob (with the jungle
+  stream treated as jump-crossable, matching gameplay);
+- the undead run's central lane (cols 22-26) wholly excluded;
+- the respite's north/south bank walkable minimums held with margin;
+- the cog's south-entry-to-north-reserve route remained open even with both
+  raptors' full notice radii treated as impassable (the raptor suite's
+  design assertion, encoded directly into the generator).
 
 ## Files Changed
 
-- src/entities/breakable_urn.py (new): the BreakableUrn entity — same
-  positional-variant formula as the old prop so each urn looks unchanged,
-  scratch-once behavior, terracotta debris, on_break tile-clear callback.
-- src/entities/pickup.py: CigaretteCarton.
-- src/entities/breakable_grass.py: create_pickup() (grass yields its
-  cigarette); the scene drop loop is now polymorphic over breakables.
-- src/world/tilemap.py: clear_tile(col, row) — swaps a prop tile's grid
-  char for its declared under-terrain, loud error if it has none.
-- src/scenes/world_scene.py: temple_urn prop tiles build as BreakableUrn
-  breakables (excluded from static props); drop loop delegates to each
-  breakable's create_pickup.
-- src/core/config.py: CARTON_CIGARETTE_COUNT = 20 with the counter note.
-- tools/generate_breakable_sprites.py + assets/.../cigarette_carton.png:
-  the carton sprite.
-- tests/test_temple_urns.py (new, 7 tests): carton counts/clamping,
-  break-once + debris lifecycle, wall-vs-floor spill positions, tile
-  clearing both ways, an end-to-end scratch through a real scene, per-map
-  breakable counts (7/2/9/2/3/3), and full checkpoint-reload reset.
-- tests/test_phase6_temple_dressing.py: docstring updated (urns are
-  breakables now; still no dialogue).
+- assets/maps/chult_jungle.txt, chult_cog.txt, chult_run.txt,
+  chult_respite.txt, chult_temple.txt: the new vegetation cells.
+- tests/test_chult_vegetation.py: Chult 1's tree/shrub count band widened
+  (150-240 / 160-240) with a comment — the map's vegetation mass grew, so
+  the decoration band grew with it. All other assertions unchanged.
+- PROJECT_STATUS.md: session note; the Phase 4 art bullet no longer quotes
+  exact decoration counts.
 
 ## Systems Added or Changed
 
-- TileMap.clear_tile is the only schema-level addition: the first runtime
-  tile mutation, deliberately restricted to prop tiles with an authored
-  under-terrain, resetting naturally on map reload.
+- None. Map data only (plus the one test-band widening).
 
 ## Verification Performed
 
-- All 43 test suites pass (42 prior + the new urn suite).
-- Headless end-to-end: standing beneath a wall urn and scratching breaks
-  it, spills the carton onto Chuck's tile, and collects it the same frame
-  (sanity 10 -> 100); floor urn tiles open; checkpoint reload restores
-  all urns and tiles.
-- Screenshot confirmed the shatter debris and the carton read clearly at
-  native scale.
+- All 43 test suites pass — including the thorn-maze structure metrics,
+  staged undead releases, respite banks/dinosaur clearing, raptor territory
+  and notice-radius bypass, temple approach, and every connectivity check.
+- Screenshots across the maps confirm new masses read identically to the
+  authored ones (canopy + trees + shrubs, no bare green blocks) and open
+  areas are visibly reduced.
 
 ## Known Issues
 
-- Balance flag for playtest: 26 cartons across the temple is a generous
-  sanity economy while the counter doesn't exist yet (each carton is
-  effectively a full heal). The count/placement is data if tuning wants
-  fewer urns to hold cartons later.
+- None known from this pass. If playtest wants even less open space, the
+  generator's per-map budget fractions are the only knob; the guards scale.
 
 ## Scope Notes
 
-- No future-phase work was intentionally implemented; the cigarette
-  counter itself is explicitly deferred, with the 20-per-carton contract
-  recorded in config and on the pickup.
+- No future-phase work was intentionally implemented.
 - No documented creative rules were intentionally changed.
 
 ## Recommended Next Bounded Task
 
 - Build Temple Map 7 as the next broad/open room east of the narrow Astral
-  wind connector, continuing the recurring arches (east/west arches
-  anchored on the bottom opening row), torches, dressing language —
-  including breakable urns — one physical Ashtray, and shared-loader
-  entry. Keep the slice distinct from the final chamber, Fireball, rubble
-  escape, and Phase 7 ship.
+  wind connector, continuing the recurring arches (east/west arches anchored
+  on the bottom opening row), torches, dressing language — including
+  breakable urns — one physical Ashtray, and shared-loader entry. Keep the
+  slice distinct from the final chamber, Fireball, rubble escape, and
+  Phase 7 ship.

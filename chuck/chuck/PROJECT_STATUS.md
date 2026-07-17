@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 110 (temple urns are scratch-breakables that spill cartons).
+Updated: session 111 (all five Chult exteriors densified with new jungle blobs).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -476,13 +476,24 @@ This file is required by the project rules and updated every session.
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
-  vines. Across the same solid vegetation cells, 165 deterministic y-sorted
+  vines. Across the same solid vegetation cells, deterministic y-sorted
   tree props use three 34x46 silhouettes with layered tropical crowns, trunks,
-  and trailing vines. A second solid vegetation decoration adds 170 broad-leaf
+  and trailing vines. A second solid vegetation decoration adds broad-leaf
   shrubs across the same masses using three 28x24 variants: overlapping pointed
   leaves, central veins, and brighter tropical midtones. Trees rise above human
   NPC height while shrubs are wider than two Chucks, making each collision mass
   read as dense forest and understory without changing a walkable tile or route
+- Jungle densification (session 111): all five Chult exteriors gained new
+  organic vegetation blobs (~8-10% of each map's plain open ground — 576 new
+  cells total: 172/211/29/69/65) so the jungle presses closer around the
+  routes. New masses use the same canopy terrain studded with trees and shrubs
+  at the established session-73 density. Placement was generated under strict
+  guards: 2-tile buffers around every spawn/marker/special terrain, full
+  walkable connectivity (the stream treated as jump-crossable) re-verified
+  after every blob, the undead run's central lane excluded, the respite's
+  bank-size minimums held, and the cog's raptor-notice-radius bypass route
+  preserved. The Chult 1 tree/shrub test band widened (150-240/160-240) to
+  cover the larger mass area
 
 ## Placeholder systems
 - Phase 4 previous-traveler evidence needs a replacement environmental scene

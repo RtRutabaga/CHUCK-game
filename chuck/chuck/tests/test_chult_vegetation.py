@@ -33,7 +33,10 @@ def test_chult_dense_masses_layer_solid_trees_and_shrubs() -> None:
         for kind, col, row in tilemap.prop_tiles
         if kind == "jungle_tree"
     ]
-    assert 150 <= len(trees) <= 180
+    # The session-111 densification pass grew the map's vegetation mass
+    # (~10% of open ground became new blobs), so the decoration band
+    # widened with it.
+    assert 150 <= len(trees) <= 240
     for col, row in trees:
         assert tilemap.terrain_at(col, row) == "/"
         assert tilemap.is_solid(col, row)
@@ -42,7 +45,7 @@ def test_chult_dense_masses_layer_solid_trees_and_shrubs() -> None:
         for kind, col, row in tilemap.prop_tiles
         if kind == "jungle_shrub"
     ]
-    assert 160 <= len(shrubs) <= 180
+    assert 160 <= len(shrubs) <= 240
     for col, row in shrubs:
         assert tilemap.terrain_at(col, row) == "\\"
         assert tilemap.is_solid(col, row)
