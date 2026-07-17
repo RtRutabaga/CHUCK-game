@@ -3,11 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `318e322` (`Add jumpable Chult stream crossing`)
-- Current work: one massive slow dinosaur in Chult Map 4's end clearing
+- Base commit before this pass: `9c98839` (`Add massive dinosaur to Chult respite`)
+- Current work: Chult Map 5 temple exterior and Phase 5 boundary
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+Chult Map 5 now exists as a 64x48 enemy-free temple exterior. The ordinary Map
+4 walk exit loads its named southern arrival and the existing Chult music/art
+identity continues without a transition bounce. Eight reusable grass tufts
+remain optional along the jungle approach.
+
+The pyramid is authored as reusable Chult terrain rather than a one-off screen
+overlay: five masonry tiers widen from 18 to 42 tiles, totaling 468 solid stone
+tiles around a six-tile-wide walkable central stair. New procedural sheet rows
+provide four weathered/mossy stone variants, three stair variants, and two dark
+entrance variants. At native scale the approach first reveals the enormous
+base, while climbing exposes the full central stair and black entrance.
+
+One development-visible `chult_5` entry and one menu-hidden, saveable
+`chult_5_anchor` definition share the normal checkpoint loader. The physical
+Ashtray saves, CONTINUE restores its position/Sanity, and Sanity-zero return
+uses it. The dark `temple_interior` boundary is authored and reachable but has
+no transition, map, or dungeon content; Phase 5 stops there as documented.
 
 The broad clearing near Chult Map 4's northern end now authors exactly one
 existing `MassiveDinosaur`. It reuses the established 72x60 art, 48x24
@@ -48,10 +66,10 @@ enemy marker; there are no staged releases or combat gates.
 
 Map 4 has one physical `chult_4_anchor` Ashtray and one development-visible
 `Chult 4` entry. Both use the existing checkpoint registry and shared loader;
-activation saves, CONTINUE restores it, and Sanity-zero return uses it. A named
-future boundary toward the temple is authored but intentionally has no
-transition until Chult Map 5 exists. `PHASE-5.md` and `DECISIONS.md` now record
-the revised order: Map 4 is the jungle respite and Map 5 is the temple exterior.
+activation saves, CONTINUE restores it, and Sanity-zero return uses it. Its
+named northern boundary now enters Map 5 through the ordinary transition path.
+`PHASE-5.md` and `DECISIONS.md` record the revised order: Map 4 is the jungle
+respite and Map 5 is the temple exterior.
 
 Sean's pressure tuning expands the three existing finite releases from 4/5/6
 to 6/8/10 enemies. The run now authors 24 undead totalâ€”twelve zombies and
@@ -335,6 +353,14 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
+- New temple-exterior coverage verifies the exact 64x48 map, connected
+  arrival-to-entrance route, no enemy markers, eight grass tufts, one Ashtray,
+  five strictly widening pyramid tiers, 468 solid masonry tiles, 110 stair
+  tiles, Chult art/music reuse, non-bouncing Map 4 transition, shared `Chult 5`
+  development loading, save/CONTINUE/respawn, and inert dungeon boundary.
+  Native 320x180 review confirms the pyramid dominates the approach and its
+  broad stair/dark entrance remain readable at gameplay scale.
+
 - Focused respite coverage verifies one exact Map 4 dinosaur spawn, the open
   9x5 clearing around it, normal shared entity loading, established slow speed,
   no other enemy type, and a route to the northern boundary even when a
@@ -353,7 +379,7 @@ as a convention for each future exterior Chult map.
   grass tufts and one Ashtray exist, no fast or staged-enemy spawn exists, and
   save/CONTINUE shares the registered `Chult 4` loader.
 
-- All 34 test modules pass through their standalone runners (pytest is not
+- All 35 test modules pass through their standalone runners (pytest is not
   installed in the bundled runtime).
 - New undead-run coverage verifies the 6/8/10 group sizes, even twelve-zombie
   and twelve-skeleton mix, canopy-opening terrain, clear three-tile passages,
@@ -565,9 +591,15 @@ as a convention for each future exterior Chult map.
     moves with the same deliberate slowness as the Map 2 creature, and can be
     circled or escaped without fighting. Lose all Sanity and verify it returns
     at the Map 4 Ashtray with the dinosaur restored.
+35. Cross Map 4's north boundary and confirm Map 5 enters without bouncing.
+    Activate its Ashtray, then approach the pyramid: verify its widening tiers
+    feel enormous relative to Chuck, the central stair is clearly walkable,
+    eight grass tufts remain optional, and no enemies distract from the temple.
+    Test CONTINUE and Sanity-zero return, then climb to the dark entrance and
+    confirm Phase 5 stops cleanly without loading a dungeon.
 
 ## Next Bounded Task
 
-Author Chult Map 5 as the temple exterior with its one physical Ashtray/shared
-development checkpoint. Connect Map 4's existing named northern boundary and
-stop at a readable temple entrance; do not build the dungeon interior.
+Playtest the complete Phase 5 route through the inert temple entrance and tune
+only verified exterior readability, collision, transition, or checkpoint
+issues. Do not begin the dungeon without the next phase contract.

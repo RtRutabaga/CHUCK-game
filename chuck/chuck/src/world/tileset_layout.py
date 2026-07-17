@@ -170,6 +170,9 @@ CHULT = Tileset(
         ("jungle_stream", 3, 3),
         ("jungle_trail", 3, 1),
         ("jungle_exit", 3, 1),
+        ("temple_stone", 4, 1),
+        ("temple_stairs", 3, 1),
+        ("temple_entrance", 2, 1),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -178,6 +181,9 @@ CHULT = Tileset(
         "|": "thorn_patch",
         "≈": "jungle_stream",
         "'": "jungle_trail",
+        "π": "temple_stone",
+        "τ": "temple_stairs",
+        "Ω": "temple_entrance",
         "V": "astral_void",
     },
     overhead_char_to_terrain={
@@ -205,6 +211,7 @@ MAP_TILESET: dict[str, str] = {
     "chult_cog": "chult",
     "chult_run": "chult",
     "chult_respite": "chult",
+    "chult_temple": "chult",
 }
 
 

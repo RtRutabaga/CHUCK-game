@@ -52,6 +52,7 @@ def test_area_music_is_a_real_file_or_deliberate_silence() -> None:
     assert AREA_MUSIC["chult_cog"] == "chult.wav"
     assert AREA_MUSIC["chult_run"] == "chult.wav"
     assert AREA_MUSIC["chult_respite"] == "chult.wav"
+    assert AREA_MUSIC["chult_temple"] == "chult.wav"
     for name, music in AREA_MUSIC.items():
         if music is not None:
             assert (config.MUSIC_DIR / music).is_file(), (name, music)
@@ -73,6 +74,7 @@ def test_every_walk_exit_targets_a_real_named_arrival() -> None:
     assert AREA_WALK_EXITS[("chult_jungle", '"')].destination == "chult_cog"
     assert AREA_WALK_EXITS[("chult_cog", '"')].destination == "chult_run"
     assert AREA_WALK_EXITS[("chult_run", "ð")].destination == "chult_respite"
+    assert AREA_WALK_EXITS[("chult_respite", "ð")].destination == "chult_temple"
     for (source, terrain), exit_config in AREA_WALK_EXITS.items():
         source_map = TileMap(config.MAPS_DIR / f"{source}.txt")
         if (source, terrain) == ("waterdeep_docks", "v"):

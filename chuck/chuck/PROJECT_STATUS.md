@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 95 (Chult Map 4 massive dinosaur). This file is required by
+Updated: session 96 (Chult Map 5 temple exterior). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -356,6 +356,13 @@ the project rules and updated every session.
   dinosaur at the open end of the route. Its existing scale, 14 px/s pursuit,
   twenty-scratch durability, 40-Sanity contact, and checkpoint reset remain
   unchanged; the clearing and alternate approach preserve a route around it
+- Phase 5 Chult Map 5 temple exterior: a 64x48 enemy-free approach centers a
+  huge five-tier stepped pyramid, 42 tiles wide at its base, with 468 solid
+  weathered masonry tiles, a six-tile-wide walkable stair, moss/vine variation,
+  and a dark readable entrance. Eight grass tufts continue the Chult exterior
+  convention. Map 4 now enters its named southern arrival; `Chult 5` and its
+  one physical Ashtray use the shared loader/save/respawn path. The entrance is
+  an authored but inert next-phase boundary; no dungeon interior exists
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -396,14 +403,15 @@ the project rules and updated every session.
 
 ## Tests
 
-34 suites (most pure Python/headless): collision, tilemap,
+35 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
 Chult terrain hazard, Chult route-deeper boundary,
 Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
 Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
-transition, the finite Chult 3 undead run, and the Chult Map 4 jungle respite
+transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
+and the Chult Map 5 temple exterior
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -461,10 +469,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Author Chult Map 5 as the temple exterior and create its one physical
-Ashtray/shared development checkpoint. Preserve Map 4 as a low-pressure jungle
-respite with only its one massive dinosaur, and stop at the readable temple
-entrance without building the dungeon.
+Playtest the full Phase 5 route through the Map 5 temple entrance boundary and
+tune only verified readability, collision, or checkpoint issues. Do not begin
+the dungeon interior without the next phase contract.
 
 ## Also open
 
@@ -543,8 +550,11 @@ entrance without building the dungeon.
          crossing, using the existing jump/collision behavior (session 94).
    - [x] Added one existing massive slow dinosaur to the broad northern
          clearing while preserving an optional route around it (session 95).
-9. [ ] Build Chult Map 5 as the temple exterior, add its checkpoint, and stop
-       at the temple entrance without beginning the dungeon.
+9. [x] Added the 64x48 Chult Map 5 exterior with a dominant five-tier stepped
+       pyramid, broad walkable stair, dark inert dungeon boundary, eight grass
+       tufts, no enemies, shared `Chult 5` development loading, and one physical
+       Ashtray. Connected Map 4 through its existing named boundary without
+       beginning the dungeon (session 96).
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

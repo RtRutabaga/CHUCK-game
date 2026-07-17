@@ -269,13 +269,15 @@ def test_chult_4_checkpoint_and_physical_ashtray_share_loader() -> None:
         directory.cleanup()
 
 
-def test_future_temple_boundary_is_stable_but_inert() -> None:
+def test_temple_boundary_is_stable_and_targets_chult_5() -> None:
     tilemap = _map("chult_respite")
     boundaries = [entry for entry in tilemap.object_spawns
                   if entry[0].startswith("boundary:")]
     assert boundaries == [("boundary:chult_temple", (872.0, 24.0))]
     assert tilemap.terrain_at(54, 1) == "ð"
-    assert ("chult_respite", "ð") not in AREA_WALK_EXITS
+    exit_config = AREA_WALK_EXITS[("chult_respite", "ð")]
+    assert exit_config.destination == "chult_temple"
+    assert exit_config.arrival == "from_chult_4"
 
 
 def _run_all() -> None:

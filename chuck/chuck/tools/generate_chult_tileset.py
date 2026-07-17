@@ -31,6 +31,10 @@ THORN_LIGHT = (129, 143, 70)
 STREAM = (23, 68, 67)
 STREAM_LIGHT = (47, 111, 101)
 STREAM_DARK = (16, 47, 51)
+TEMPLE = (73, 83, 65)
+TEMPLE_LIGHT = (112, 119, 84)
+TEMPLE_DARK = (45, 57, 49)
+TEMPLE_MOSS = (39, 82, 48)
 TRAIL = (47, 46, 29)
 TRAIL_LIGHT = (68, 62, 35)
 TRAIL_DARK = (30, 35, 24)
@@ -150,6 +154,41 @@ def draw_jungle_exit(surface, variant: int, _frame: int) -> None:
     pygame.draw.line(surface, VINE, (14 - variant, 0), (12 - variant, 10), 1)
 
 
+def draw_temple_stone(surface, variant: int, _frame: int) -> None:
+    """Weathered blockwork with restrained moss and stepped edge shading."""
+    surface.fill(TEMPLE)
+    pygame.draw.line(surface, TEMPLE_DARK, (0, 7), (15, 7), 1)
+    pygame.draw.line(surface, TEMPLE_DARK, (0, 15), (15, 15), 1)
+    seam = (variant * 5 + 3) % 14
+    pygame.draw.line(surface, TEMPLE_DARK, (seam, 0), (seam, 7), 1)
+    pygame.draw.line(surface, TEMPLE_LIGHT, (1, 1), (14, 1), 1)
+    if variant in (1, 3):
+        pygame.draw.rect(surface, TEMPLE_MOSS, (variant, 3, 6, 2))
+        pygame.draw.line(surface, TEMPLE_MOSS,
+                         (variant + 2, 4), (variant + 1, 11), 1)
+    if variant == 2:
+        pygame.draw.line(surface, TEMPLE_DARK, (11, 8), (7, 13), 1)
+
+
+def draw_temple_stairs(surface, variant: int, _frame: int) -> None:
+    surface.fill(TEMPLE)
+    for y in (3, 7, 11, 15):
+        pygame.draw.line(surface, TEMPLE_DARK, (0, y), (15, y), 1)
+        if y < 15:
+            pygame.draw.line(surface, TEMPLE_LIGHT, (0, y + 1), (15, y + 1), 1)
+    if variant:
+        pygame.draw.rect(surface, TEMPLE_MOSS, (variant * 5, 12, 4, 2))
+
+
+def draw_temple_entrance(surface, variant: int, _frame: int) -> None:
+    surface.fill((10, 17, 17))
+    pygame.draw.rect(surface, TEMPLE_DARK, (0, 0, 16, 3))
+    pygame.draw.rect(surface, TEMPLE_DARK, (0, 0, 3, 16))
+    pygame.draw.rect(surface, TEMPLE_DARK, (13, 0, 3, 16))
+    pygame.draw.line(surface, TEMPLE_MOSS,
+                     (2 + variant * 8, 0), (3 + variant * 7, 10), 1)
+
+
 DRAW = {
     "jungle_ground": draw_ground,
     "dense_jungle": draw_dense_jungle,
@@ -158,6 +197,9 @@ DRAW = {
     "jungle_stream": draw_jungle_stream,
     "jungle_trail": draw_jungle_trail,
     "jungle_exit": draw_jungle_exit,
+    "temple_stone": draw_temple_stone,
+    "temple_stairs": draw_temple_stairs,
+    "temple_entrance": draw_temple_entrance,
     "astral_void": draw_astral_void,
 }
 
