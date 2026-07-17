@@ -201,6 +201,7 @@ TEMPLE = Tileset(
         ("temple_doorway", 2, 1),
         ("temple_spikes", 3, 1),
         ("temple_torch", 1, 2),
+        ("temple_dart_wall", 2, 1),
     ],
     char_to_terrain={
         "·": "temple_floor",
@@ -209,6 +210,7 @@ TEMPLE = Tileset(
         "∇": "temple_doorway",
         "♠": "temple_spikes",
         "i": "temple_torch",
+        "W": "temple_dart_wall",
     },
     overhead_char_to_terrain={},
 )
@@ -236,6 +238,7 @@ MAP_TILESET: dict[str, str] = {
     "temple_entrance": "temple",
     "temple_spikes": "temple",
     "temple_skeletons": "temple",
+    "temple_darts": "temple",
 }
 
 

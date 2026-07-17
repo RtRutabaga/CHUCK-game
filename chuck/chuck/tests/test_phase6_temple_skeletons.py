@@ -137,10 +137,12 @@ def test_temple_3_ashtray_saves_continues_and_respawns_enemies() -> None:
         directory.cleanup()
 
 
-def test_skeleton_chamber_uses_temple_art_and_turns_west() -> None:
+def test_skeleton_chamber_uses_temple_art_and_turns_west_to_map_4() -> None:
     assert tileset_for("temple_skeletons").sheet == "temple.png"
     assert AREA_MUSIC["temple_skeletons"] == "temple.wav"
-    assert ("temple_skeletons", "∇") not in AREA_WALK_EXITS
+    assert AREA_WALK_EXITS[("temple_skeletons", "∇")].destination == (
+        "temple_darts"
+    )
     boundary = next(
         position for kind, position in _map().object_spawns
         if kind == "boundary:temple_4"

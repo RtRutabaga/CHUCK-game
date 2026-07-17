@@ -3,11 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `039d43e` (`Add temple skeleton chamber`)
-- Current work: Phase 6 temple torch and route-shape revision
+- Base commit before this pass: `88f634f` (`Vary temple route and add wall torches`)
+- Current work: Phase 6 Temple Map 4 dart corridor
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+Temple Map 4 is now a reversible 72x24 west-running connector reached through
+Map 3's west doorway. Its eight-tile-high walkable lane keeps both torch walls
+visible together at native 320x180, while the full 72-tile length provides the
+requested long transition between open rooms. Eleven animated torches preserve
+the established temple visual language. The west threshold is inert until the
+next broad room exists.
+
+Eight wall apertures alternate between the north and south walls. A reusable
+`DartTrap` controller staggers their cadence deterministically and emits narrow
+`TempleDart` entities into fixed vertical timing lanes. Darts outrun Chuck,
+deal 15 Sanity through the normal i-frame path, disappear against masonry or on
+contact, and reset with the existing return lifecycle. The room adds no enemies,
+tutorial, new input, progression flag, or music switch.
+
+The map contains exactly one physical Ashtray. Development-visible `Temple 4`,
+menu-hidden `temple_4_anchor`, and the Map 3 return entry all use the shared
+checkpoint registry. Activation saves, CONTINUE restores saved Sanity and
+position, and Sanity-zero return clears active darts and resets all eight
+launchers. Both map transitions use safe named arrivals without bounce.
 
 The three authored temple maps now share a reusable animated wall-torch tile.
 The generated temple sheet adds a compact two-frame orange flame over existing
@@ -36,7 +56,7 @@ the room encourages evasion and never becomes a kill gate.
 The chamber keeps the existing temple art and louder temple loop; movement
 between Maps 2 and 3 therefore does not restart playback. It adds no enemy
 variant, encounter controller, progression flag, or new combat mechanic. Its
-west threshold is deliberately inert for the next bounded interior slice.
+west threshold now enters the dart connector described above.
 
 The map contains exactly one physical Ashtray. Development-visible `Temple 3`,
 menu-hidden `temple_3_anchor`, and the Map 2 return entry all use the shared
@@ -462,7 +482,7 @@ as a convention for each future exterior Chult map.
 
 - New Temple Map 2 coverage verifies the exact 48x44 layout, 100 spikes in five
   complete required-jump bands, disconnected on-foot regions, ordinary jump
-  traversal, one Ashtray, no enemies, reversible non-bouncing transition,
+  traversal, one Ashtray, five skeletons, reversible non-bouncing transition,
   uninterrupted music identity, `Temple 2` development loading, save/CONTINUE/
   respawn, dedicated sheet registration, and Map 3 north transition. Focused
   entrance, jump, checkpoint, tileset, and transition suites pass. Native
@@ -478,7 +498,13 @@ as a convention for each future exterior Chult map.
   shared development loading, save/CONTINUE, and full enemy rebuild on return.
   Native 320x180 review confirms the monumental pier lanes and human-scale
   skeleton silhouettes remain readable against Chuck.
-- All 38 standalone test modules pass, and a clean dummy-driver launch reaches
+- New Temple Map 4 coverage verifies the exact 72x24 geometry, eight launchers,
+  eleven torches, connected east-to-west route, projectile cadence/movement/
+  masonry collision/Sanity damage, one Ashtray, save/CONTINUE, full dart reset,
+  reversible Map 3 transition, same-track audio, and stable west boundary.
+  Native review confirms both torch/aperture walls and moving darts remain
+  visible together at 320x180.
+- All 39 standalone test modules pass, and a clean dummy-driver launch reaches
   the 320x180 title scene.
 
 - Rendered loudness now measures Chult at -17.13 dBFS RMS and the deliberately
@@ -760,14 +786,20 @@ as a convention for each future exterior Chult map.
 39. In Temple Map 3, confirm all twelve skeletons are visibly human-scale and
     dangerous but can be routed around without killing them. Activate the one
     Ashtray, test CONTINUE and Sanity-zero return, and verify all defeated or
-    displaced skeletons reset. Return south without bounce; the west threshold
-    should stop cleanly at the west-wall boundary. Across all three temple maps,
+    displaced skeletons reset. Return south without bounce, then cross the west
+    threshold into Map 4. Across the first three temple maps,
     confirm the wall torches are visible and flicker subtly. In Map 2, confirm
     the five skeletons pressure separate spike landings and reset on return.
+40. Enter Temple Map 4 through the west wall. Confirm the route turns west,
+    both torch-lined launcher walls remain visible, and the eight staggered dart
+    lanes can be read and crossed by timing ordinary movement. Get hit once and
+    verify normal Sanity/i-frames, activate the Ashtray, then test CONTINUE and
+    Sanity-zero return with all active darts cleared. Return east without bounce;
+    the far west threshold should stop at the next open-room boundary.
 
 ## Next Bounded Task
 
-Build Temple Map 4 as a long, narrow west-running dart-wall connector with
-animated wall torches, its own physical Ashtray, and shared-loader entry. Keep
-it to that single trap family and leave the next open room, snake room, final
+Build Temple Map 5 as the next broad/open room and the dedicated one-hit snake
+chamber. Include recurring wall torches, one physical Ashtray, shared-loader
+entry, and an onward turn that does not simply continue west. Leave the final
 chamber, rubble escape, and ship for later bounded passes.

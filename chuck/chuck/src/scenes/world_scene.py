@@ -20,6 +20,7 @@ from src.core import config
 from src.entities.anchor import AstralAnchor
 from src.entities.breakable_grass import BreakableGrass
 from src.entities.choice_trigger import ChoiceTrigger
+from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.hazard import Cat
 from src.entities.massive_dinosaur import MassiveDinosaur
 from src.entities.npc import NPC
@@ -231,6 +232,11 @@ class WorldScene(Scene):
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
         self.choice_triggers: list[ChoiceTrigger] = []
+        self._dart_trap_spawns = [
+            (kind.split(":", 1)[1], position)
+            for kind, position in self.tilemap.object_spawns
+            if kind.startswith("dart_trap:")
+        ]
         self._enemy_spawns = [
             (kind, position)
             for kind, position in self.tilemap.object_spawns
@@ -291,6 +297,8 @@ class WorldScene(Scene):
                 # Authored handoff metadata for a future destination.  It is
                 # deliberately inert until that destination map exists.
                 continue
+            elif kind.startswith("dart_trap:"):
+                continue  # rebuilt with projectiles by _reset_enemies()
             elif is_staged_undead(kind):
                 continue  # released in finite groups as Chuck advances
             else:
@@ -342,6 +350,13 @@ class WorldScene(Scene):
             raptor.update(dt, self.player)
         for dinosaur in self.dinosaurs:
             dinosaur.update(dt, self.player)
+        for trap in self.dart_traps:
+            dart = trap.update(dt)
+            if dart is not None:
+                self.darts.append(dart)
+        for dart in self.darts:
+            dart.update(dt, self.tilemap)
+        self.darts = [dart for dart in self.darts if dart.alive]
         for breakable in self.breakables:
             breakable.update(dt)
         self.breakables = [item for item in self.breakables if item.alive]
@@ -484,6 +499,14 @@ class WorldScene(Scene):
 
         player_box = self.player.hitbox
 
+        for dart in self.darts:
+            if dart.alive and overlaps(player_box, dart.hitbox):
+                dart.alive = False
+                if self.sanity.damage(dart.damage):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+        self.darts = [dart for dart in self.darts if dart.alive]
+
         terrain_hazard = touching_terrain_hazard(
             self.tilemap, player_box, self.player.jumping
         )
@@ -565,7 +588,7 @@ class WorldScene(Scene):
         drawables = [*self.props, *self.breakables, *self.anchors,
                      *self.hazards, *self.rats,
                      *self.undead, *self.raptors, *self.dinosaurs,
-                     *self.npcs, self.player]
+                     *self.darts, *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
 
     def _on_choice(self, option) -> None:
@@ -700,6 +723,11 @@ class WorldScene(Scene):
         self.undead = []
         self.raptors = []
         self.dinosaurs = []
+        self.dart_traps = [
+            DartTrap(cx, cy, direction)
+            for direction, (cx, cy) in self._dart_trap_spawns
+        ]
+        self.darts: list[TempleDart] = []
         self._scratch_tutorial_rats = []
         self.undead_release.reset()
         rat_spawn_tiles = {

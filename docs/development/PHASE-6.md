@@ -14,7 +14,10 @@ Implemented so far:
   skeletons, repeated committed jumps, and one Ashtray.
 - Temple Map 3: broad torch-lit chamber with twelve avoidable, durable
   skeletons, looping routes around monumental piers, and one Ashtray. Its
-  onward boundary turns west toward the next narrow connector.
+  onward boundary turns west into Temple Map 4.
+- Temple Map 4: long, narrow west-running connector with eight staggered dart
+  launchers, recurring wall torches, and one Ashtray. Its west boundary is
+  reserved for the next open room.
 
 ------------------------------------------------------------------------
 
@@ -228,7 +231,7 @@ The phase ends immediately after Chuck reaches the ship.
 -   [ ] Skeletons are the primary enemy.
 -   [ ] Snakes are one-hit enemies.
 -   [ ] Jumping and hazards are central throughout the temple.
--   [ ] Dart walls and spike pits are
+-   [x] Dart walls and spike pits are
     implemented.
 -   [ ] The final chamber contains the fighter, wizard, ranger,
     beholder, and skeletons.

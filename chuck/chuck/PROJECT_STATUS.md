@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 103 (temple torch and route-shape pass). This file is required by
+Updated: session 104 (Temple Map 4 dart corridor). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -28,7 +28,7 @@ the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the ten authored Ashtrays have
+  retain the established local retry behavior; the eleven authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
@@ -404,7 +404,17 @@ the project rules and updated every session.
   west to break the dungeon's straight-line rhythm. The map
   contains exactly one physical Ashtray, exposes `Temple 3` through the shared
   development/checkpoint loader, rebuilds all twelve enemies on Sanity-zero
-  return, and leaves its west threshold inert for the next bounded slice
+  return, and turns west into Temple Map 4
+- Phase 6 Temple Map 4: a reversible 72x24 west-running connector alternates
+  the open skeleton chamber with a long, narrow trap passage. Eight reusable
+  wall launchers fire staggered vertical darts through visible timing lanes;
+  darts travel faster than Chuck, deal 15 Sanity through normal i-frames, and
+  disappear against masonry or after a hit. Eleven animated torches and eight
+  dark wall apertures remain visible together at native 320x180. The room is
+  enemy-free, contains exactly one physical Ashtray, exposes `Temple 4` through
+  the shared loader, resets all active darts on Sanity-zero return, preserves
+  uninterrupted temple music, and leaves its west threshold inert for the next
+  open room
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -445,7 +455,7 @@ the project rules and updated every session.
 
 ## Tests
 
-38 suites (most pure Python/headless): collision, tilemap,
+39 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
@@ -454,7 +464,8 @@ Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
 Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
 transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
 the Chult Map 5 temple exterior, the Phase 6 temple entrance hall, the Temple
-Map 2 spike corridor, and the Temple Map 3 skeleton chamber
+Map 2 spike corridor, the Temple Map 3 skeleton chamber, and the Temple Map 4
+dart corridor
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -512,10 +523,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build Temple Map 4 as a long, narrow west-running dart-wall connector with
-animated wall torches, one physical Ashtray, and shared-loader entry. Keep it
-to that single trap family; leave the next open room, snakes, the final chamber,
-and escape content for later bounded passes.
+Build Temple Map 5 as the next broad/open room, using the dedicated one-hit
+snake chamber from the Phase 6 contract. Give it recurring wall torches, one
+physical Ashtray, a shared-loader entry, and an onward turn that does not simply
+continue west. Leave the final chamber and escape content for later passes.
 
 ## Also open
 
@@ -612,14 +623,19 @@ and escape content for later bounded passes.
 3. [x] Added a reversible 48x44 Temple Map 2 with five mandatory one-tile
        spike-pit jumps, five skeletons on alternating landings, fourteen wall
        torches, dedicated temple art, uninterrupted temple music, one
-       physical shared-loader Ashtray, development-visible `Temple 2`, and an
+       physical shared-loader Ashtray, development-visible `Temple 2`, and a
        north boundary leading into the next room (session 101).
 4. [x] Added a reversible 56x44 Temple Map 3 with twelve durable skeletons in
        avoidable side lanes, broad looping routes, twelve wall torches,
        uninterrupted temple music, one shared-loader Ashtray,
-       development-visible `Temple 3`, and an inert west boundary for the next
+       development-visible `Temple 3`, and a west boundary entering the next
        narrow connector (sessions 102-103).
-5. [ ] Continue the multi-map dungeon, dart corridor, snake chamber, final
+5. [x] Added a reversible 72x24 Temple Map 4 west-running connector with eight
+       staggered reusable dart launchers, eleven wall torches, one physical
+       shared-loader Ashtray, development-visible `Temple 4`, uninterrupted
+       temple music, and an inert west boundary for the next open room
+       (session 104).
+6. [ ] Continue the multi-map dungeon, snake chamber, final
        battle, Fireball transition, rubble crawlspace, and ship escape in
        bounded slices without beginning Phase 7 gameplay.
 

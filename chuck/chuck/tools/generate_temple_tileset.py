@@ -103,12 +103,21 @@ def draw_torch(surface, variant: int, frame: int) -> None:
     surface.set_at((8, 7), FLAME_LIGHT)
 
 
+def draw_dart_wall(surface, variant: int, frame: int) -> None:
+    """Masonry launcher aperture; marker orientation supplies direction."""
+    draw_wall(surface, variant, frame)
+    pygame.draw.rect(surface, STONE_DARK, (4, 5, 8, 7))
+    pygame.draw.rect(surface, PIT, (6, 7, 4, 4))
+    pygame.draw.line(surface, STONE_LIGHT, (5, 5), (10, 5), 1)
+
+
 DRAW = {
     "temple_floor": draw_floor,
     "temple_wall": draw_wall,
     "temple_doorway": draw_doorway,
     "temple_spikes": draw_spikes,
     "temple_torch": draw_torch,
+    "temple_dart_wall": draw_dart_wall,
 }
 
 

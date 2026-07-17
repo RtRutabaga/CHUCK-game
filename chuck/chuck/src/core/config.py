@@ -174,6 +174,14 @@ SKELETON_SCRATCHES = 6
 UNDEAD_NOTICE_RANGE = 112.0
 THORN_SANITY_DAMAGE = 10
 
+# Temple wall launchers fire narrow, readable projectiles across trap corridors.
+# Darts outrun Chuck but their authored spacing and cadence leave timing windows.
+DART_SPEED = 112.0
+DART_SANITY_DAMAGE = 15
+DART_INTERVAL = 1.75
+DART_HITBOX_SHORT = 2
+DART_HITBOX_LONG = 7
+
 # Chult raptors are visibly larger and more immediately dangerous than the
 # undead, but remain slower than Chuck so open-space evasion is reliable.
 RAPTOR_FRAME_W = 44

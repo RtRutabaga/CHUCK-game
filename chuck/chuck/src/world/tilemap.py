@@ -81,6 +81,7 @@ Terrain legend:
     'Δ'  temple doorway      (walkable dark threshold)
     '∇'  deeper doorway      (walkable inert phase boundary)
     '♠'  temple spike pit    (solid on foot, jumpable)
+    'W'  temple dart aperture (solid wall in temple maps)
     ';'  sailing cog         (solid landmark over dense jungle footprint)
     "'"  beaten jungle trail (walkable route toward the next Chult area)
     '"'  jungle trailhead    (walkable trail, canopy drawn overhead)
@@ -119,6 +120,7 @@ declares the terrain underneath it, so no seams appear in the ground):
     'α/Α' Map 3 wave 1 zombie/skeleton (under a jungle opening '"')
     'β/Β' Map 3 wave 2 zombie/skeleton (under a jungle opening '"')
     'γ/Γ' Map 3 wave 3 zombie/skeleton (under a jungle opening '"')
+    '↓/↑' temple dart launcher (solid wall aperture, fires into corridor)
 
 Design notes:
     * TILE_SIZE (config) is the world grid; entity positions are in
@@ -378,6 +380,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Φ": MarkerDef(kind="anchor:temple_3_anchor", under="·"),
     "Ψ": MarkerDef(kind="skeleton", under="·"),
     "Π": MarkerDef(kind="boundary:temple_4", under="∇"),
+    "Σ": MarkerDef(kind="arrival:from_temple_4", under="·"),
+    "Ρ": MarkerDef(kind="arrival:from_temple_3", under="·"),
+    "Τ": MarkerDef(kind="anchor:temple_4_anchor", under="·"),
+    "Υ": MarkerDef(kind="boundary:temple_5", under="∇"),
+    "↓": MarkerDef(kind="dart_trap:down", under="W", allow_solid=True),
+    "↑": MarkerDef(kind="dart_trap:up", under="W", allow_solid=True),
 }
 
 _COMMENT_PREFIX = ";"
