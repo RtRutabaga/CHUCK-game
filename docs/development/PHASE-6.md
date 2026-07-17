@@ -20,7 +20,12 @@ Implemented so far:
   Temple Map 5.
 - Temple Map 5: broad torch-lit snake chamber with twenty one-hit snakes,
   looping lanes around masonry piers, and one Ashtray. Its onward route turns
-  south and is reserved for the next narrow connector.
+  south into Temple Map 6.
+- Temple Map 6: very narrow torch-lit winding connector with eight one-tile
+  Astral Sea fall cuts requiring committed jumps, one Ashtray, and an eastward
+  boundary reserved for the next broad room.
+- Every Temple Map 1-6 threshold now uses a narrowed three-tile opening and a
+  reusable human-scale stone arch instead of repeated doorway bars.
 
 ------------------------------------------------------------------------
 
@@ -230,10 +235,10 @@ The phase ends immediately after Chuck reaches the ship.
 
 # 10. Acceptance Criteria
 
--   [ ] Multiple connected temple maps exist.
+-   [x] Multiple connected temple maps exist.
 -   [ ] Skeletons are the primary enemy.
 -   [x] Snakes are one-hit enemies.
--   [ ] Jumping and hazards are central throughout the temple.
+-   [x] Jumping and hazards are central throughout the temple.
 -   [x] Dart walls and spike pits are
     implemented.
 -   [ ] The final chamber contains the fighter, wizard, ranger,

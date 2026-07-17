@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 105 (Temple Map 5 snake chamber). This file is required by
+Updated: session 106 (temple arches and Map 6 Astral wind). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -28,7 +28,7 @@ the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the twelve authored Ashtrays have
+  retain the established local retry behavior; the thirteen authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
@@ -424,7 +424,21 @@ the project rules and updated every session.
   the south threshold remains reachable through connected open space. The map
   contains exactly one physical Ashtray, exposes `Temple 5` through the shared
   loader, rebuilds all snakes on Sanity-zero return, preserves uninterrupted
-  temple music, and holds its inert south threshold for the next narrow map
+  temple music, and enters the next narrow map through its south threshold
+- Temple thresholds: all twelve entrances/exits across Temple Maps 1-6 now use
+  narrowed three-tile openings centered beneath reusable procedural stone arch
+  props. North/south arches are 48x38 and east/west arches are 38x48, both
+  taller than a human NPC and enormous beside Chuck. Continuous dark doorway
+  ground replaces the old repeated vertical-frame pattern while the existing
+  transition terrain and safe named arrivals remain authoritative
+- Phase 6 Temple Map 6: a reversible 48x60 connector winds through four major
+  direction changes in a five-tile-wide passage. Eight full-width, one-tile
+  Astral Sea cuts require Chuck's established committed jump; stepping onto
+  them reuses the quiet Astral fall and checkpoint-return behavior. Twenty-seven
+  animated wall torches trace the winding route. The enemy-free map contains
+  exactly one physical Ashtray, exposes `Temple 6` through the shared loader,
+  preserves uninterrupted temple music, returns safely to Map 5, and holds an
+  inert east boundary for the next broad room
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -465,7 +479,7 @@ the project rules and updated every session.
 
 ## Tests
 
-40 suites (most pure Python/headless): collision, tilemap,
+41 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
@@ -475,7 +489,7 @@ Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
 transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
 the Chult Map 5 temple exterior, the Phase 6 temple entrance hall, the Temple
 Map 2 spike corridor, the Temple Map 3 skeleton chamber, the Temple Map 4
-dart corridor, and the Temple Map 5 snake chamber
+dart corridor, the Temple Map 5 snake chamber, and the Temple Map 6 Astral wind
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -533,10 +547,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build Temple Map 5 as the next broad/open room, using the dedicated one-hit
-snake chamber from the Phase 6 contract. Give it recurring wall torches, one
-physical Ashtray, a shared-loader entry, and an onward turn that does not simply
-continue west. Leave the final chamber and escape content for later passes.
+Build Temple Map 7 as the next broad/open room east of the narrow Astral wind.
+Continue the recurring stone arches, wall torches, one physical Ashtray, and
+shared-loader entry. Keep the slice distinct from the final chamber, Fireball,
+rubble escape, and Phase 7 ship gameplay.
 
 ## Also open
 
@@ -649,7 +663,12 @@ continue west. Leave the final chamber and escape content for later passes.
        looping lanes, eighteen recurring wall torches, one physical shared-
        loader Ashtray, development-visible `Temple 5`, uninterrupted temple
        music, and an inert south boundary for the next connector (session 105).
-7. [ ] Continue the multi-map dungeon, final
+7. [x] Reworked all Temple Map 1-6 thresholds into human-scale procedural stone
+       arches over narrowed three-tile openings, then added a reversible 48x60
+       Temple Map 6 winding connector with eight mandatory Astral Sea jumps,
+       twenty-seven wall torches, one shared-loader Ashtray, development-visible
+       `Temple 6`, and an inert east boundary (session 106).
+8. [ ] Continue the multi-map dungeon, final
        battle, Fireball transition, rubble crawlspace, and ship escape in
        bounded slices without beginning Phase 7 gameplay.
 

@@ -49,29 +49,68 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_entrance", "Δ"): AreaExit(
         "chult_temple", "from_temple_interior", "down"
     ),
+    ("temple_entrance", "⌄"): AreaExit(
+        "chult_temple", "from_temple_interior", "down"
+    ),
     ("temple_entrance", "∇"): AreaExit(
+        "temple_spikes", "from_temple_1", "up"
+    ),
+    ("temple_entrance", "⌂"): AreaExit(
         "temple_spikes", "from_temple_1", "up"
     ),
     ("temple_spikes", "Δ"): AreaExit(
         "temple_entrance", "from_temple_2", "down"
     ),
+    ("temple_spikes", "⌄"): AreaExit(
+        "temple_entrance", "from_temple_2", "down"
+    ),
     ("temple_spikes", "∇"): AreaExit(
+        "temple_skeletons", "from_temple_2", "up"
+    ),
+    ("temple_spikes", "⌂"): AreaExit(
         "temple_skeletons", "from_temple_2", "up"
     ),
     ("temple_skeletons", "Δ"): AreaExit(
         "temple_spikes", "from_temple_3", "down"
     ),
+    ("temple_skeletons", "⌄"): AreaExit(
+        "temple_spikes", "from_temple_3", "down"
+    ),
     ("temple_skeletons", "∇"): AreaExit(
+        "temple_darts", "from_temple_3", "left"
+    ),
+    ("temple_skeletons", "«"): AreaExit(
         "temple_darts", "from_temple_3", "left"
     ),
     ("temple_darts", "Δ"): AreaExit(
         "temple_skeletons", "from_temple_4", "right"
     ),
+    ("temple_darts", "»"): AreaExit(
+        "temple_skeletons", "from_temple_4", "right"
+    ),
     ("temple_darts", "∇"): AreaExit(
+        "temple_snakes", "from_temple_4", "left"
+    ),
+    ("temple_darts", "«"): AreaExit(
         "temple_snakes", "from_temple_4", "left"
     ),
     ("temple_snakes", "Δ"): AreaExit(
         "temple_darts", "from_temple_5", "right"
+    ),
+    ("temple_snakes", "»"): AreaExit(
+        "temple_darts", "from_temple_5", "right"
+    ),
+    ("temple_snakes", "∇"): AreaExit(
+        "temple_astral_wind", "from_temple_5", "down"
+    ),
+    ("temple_snakes", "⌂"): AreaExit(
+        "temple_astral_wind", "from_temple_5", "down"
+    ),
+    ("temple_astral_wind", "Δ"): AreaExit(
+        "temple_snakes", "from_temple_6", "up"
+    ),
+    ("temple_astral_wind", "⌄"): AreaExit(
+        "temple_snakes", "from_temple_6", "up"
     ),
 }
 
@@ -95,4 +134,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "temple_skeletons": "temple.wav",
     "temple_darts": "temple.wav",
     "temple_snakes": "temple.wav",
+    "temple_astral_wind": "temple.wav",
 }

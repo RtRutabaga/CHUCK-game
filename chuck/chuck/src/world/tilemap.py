@@ -301,6 +301,16 @@ TILE_DEFS: dict[str, TileDef] = {
     "·": TileDef(solid=False, color=(71, 76, 61)),
     "Δ": TileDef(solid=False, color=(10, 16, 15)),
     "∇": TileDef(solid=False, color=(10, 16, 15)),
+    # Human-scale temple arches. The walkable transition terrain remains
+    # underneath; the spanning prop supplies a clear architectural silhouette.
+    "⌂": TileDef(solid=False, color=(10, 16, 15),
+                 prop="temple_arch_ns", under="∇"),
+    "⌄": TileDef(solid=False, color=(10, 16, 15),
+                 prop="temple_arch_ns", under="Δ"),
+    "«": TileDef(solid=False, color=(10, 16, 15),
+                 prop="temple_arch_ew", under="∇"),
+    "»": TileDef(solid=False, color=(10, 16, 15),
+                 prop="temple_arch_ew", under="Δ"),
     "♠": TileDef(solid=True, color=(20, 25, 24)),
     ";": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="sailing_cog", under="#"),
@@ -389,6 +399,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Θ": MarkerDef(kind="anchor:temple_5_anchor", under="·"),
     "Ο": MarkerDef(kind="boundary:temple_6", under="∇"),
     "ς": MarkerDef(kind="snake", under="·"),
+    "Μ": MarkerDef(kind="arrival:from_temple_6", under="·"),
+    "Ζ": MarkerDef(kind="arrival:from_temple_5", under="·"),
+    "ϑ": MarkerDef(kind="anchor:temple_6_anchor", under="·"),
+    "ϖ": MarkerDef(kind="boundary:temple_7", under="∇"),
     "↓": MarkerDef(kind="dart_trap:down", under="W", allow_solid=True),
     "↑": MarkerDef(kind="dart_trap:up", under="W", allow_solid=True),
 }

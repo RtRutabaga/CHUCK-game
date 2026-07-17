@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 import pygame
 
 from src.world.tileset_layout import TEMPLE, TILE_PX
+from generate_sewer_tileset import draw_astral_void
 
 FLOOR = (65, 70, 57)
 FLOOR_LIGHT = (86, 87, 65)
@@ -64,12 +65,12 @@ def draw_wall(surface, variant: int, _frame: int) -> None:
 
 
 def draw_doorway(surface, variant: int, _frame: int) -> None:
+    """Continuous darkness beneath the spanning human-scale arch prop."""
     surface.fill((8, 14, 14))
-    pygame.draw.rect(surface, STONE_DARK, (0, 0, 3, 16))
-    pygame.draw.rect(surface, STONE_DARK, (13, 0, 3, 16))
-    pygame.draw.rect(surface, STONE, (0, 0, 16, 3))
-    pygame.draw.line(surface, MOSS,
-                     (2 + variant * 8, 1), (3 + variant * 7, 10), 1)
+    # A sparse floor-edge fracture avoids a flat placeholder look without
+    # recreating the repeated vertical bars the arch system replaces.
+    if variant:
+        pygame.draw.line(surface, STONE_DARK, (1, 14), (6, 12), 1)
 
 
 def draw_spikes(surface, variant: int, _frame: int) -> None:
@@ -118,6 +119,7 @@ DRAW = {
     "temple_spikes": draw_spikes,
     "temple_torch": draw_torch,
     "temple_dart_wall": draw_dart_wall,
+    "astral_void": draw_astral_void,
 }
 
 

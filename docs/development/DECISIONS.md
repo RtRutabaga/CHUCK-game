@@ -27,6 +27,9 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Phase 6 temple maps use recurring animated wall torches. Broad/open rooms
   alternate with long, narrow connector maps, and successive routes vary among
   cardinal directions instead of forming a single straight northward chain.
+- Temple gameplay-map thresholds use reusable human-NPC-scale stone arch props
+  over narrowed three-tile walkable openings. Transition terrain and named
+  arrivals remain authoritative beneath the presentation.
 - Phase 5 map order after the undead ambush is Chult Map 4 as a vegetation-dense,
   low-pressure jungle respite with exactly one massive slow dinosaur, followed
   by the temple exterior on Chult Map 5. Do not merge the respite and temple

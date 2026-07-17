@@ -3,11 +3,37 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `91a519a` (`Add temple dart corridor`)
-- Current work: Phase 6 Temple Map 5 snake chamber
+- Base commit before this pass: `893a052` (`Add temple snake chamber`)
+- Current work: Phase 6 temple arches and Temple Map 6 Astral wind
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+All gameplay thresholds across Temple Maps 1-6 now read as architectural
+entrances rather than repeated barred ground tiles. Each opening is narrowed to
+three walkable tiles and centered beneath one reusable procedural stone arch:
+48x38 for north/south walls and 38x48 for east/west walls. Both are taller than
+the 30-pixel human NPC scale, with stepped masonry, a continuous black opening,
+restrained moss, and enough width to dwarf Chuck. The ordinary transition
+terrain, map-specific exit table, and safe named-arrival system remain
+authoritative beneath these y-sorted visual props.
+
+Temple Map 6 is now a reversible 48x60 enemy-free connector reached through
+Map 5's south arch. A five-tile-wide passage turns east, south, west, south,
+east, south, and finally east again instead of reading as a straight corridor.
+Eight one-tile Astral Sea cuts span the full local width of successive legs, so
+there is no walking route around them; Chuck's existing committed jump crosses
+each, while stepping onto one reuses the established quiet Astral fall and
+checkpoint return. Twenty-seven animated wall torches trace the turns without
+adding a new hazard, input, tutorial, or progression system.
+
+The map contains exactly one physical Ashtray. Development-visible `Temple 6`,
+menu-hidden `temple_6_anchor`, and the Map 5 return entry all use the shared
+checkpoint registry. Activation saves, CONTINUE restores saved Sanity and
+position, and Sanity-zero/Astral return uses the same anchor. Both map
+transitions use safe named arrivals without bounce, temple music continues
+without restarting, and the final east arch remains inert for the next broad
+room.
 
 Temple Map 5 is now a reversible 60x44 broad chamber reached through Map 4's
 former west boundary. The route enters from the east, loops around spaced
@@ -502,6 +528,17 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
+- New arch/Map 6 coverage verifies exactly two human-scale arches on each of
+  Temple Maps 1-6, no threshold wider than three repeated transition tiles,
+  exact 48x60 winding geometry, eight full-width Astral cuts, disconnected
+  walking-only progression, established airborne/fall rules, twenty-seven wall
+  torches, one Ashtray, save/CONTINUE/respawn, reversible Map 5 transition,
+  same-track audio, shared development loading, and stable future east boundary.
+  Native 320x180 review confirms one continuous dark arch opening and the first
+  Astral cut are readable beside Chuck without the former barred pattern.
+- All 41 standalone test modules pass, and a clean dummy-driver launch reaches
+  the native title scene.
+
 - New Temple Map 5 coverage verifies the exact 60x44 broad layout, twenty
   one-hit snakes, finite pursuit/contact/Sanity behavior, connected east-to-
   south route, eighteen wall torches, one Ashtray, save/CONTINUE, full snake
@@ -833,13 +870,19 @@ as a convention for each future exterior Chult map.
     pursuit and contact damage remain readable, but that the room can be crossed
     without clearing it. Activate the single Ashtray, then test CONTINUE and
     Sanity-zero return with all twenty snakes restored. Return east without
-    bounce and confirm the onward route now turns south; the south threshold
-    should stop at the next connector boundary.
+    bounce and confirm the onward route now turns south into Map 6.
+42. Across Temple Maps 1-6, confirm every threshold reads as one human-scale
+    stone arch with a continuous dark opening rather than a repeated barred
+    texture. In Map 6, activate the nearby Ashtray, then follow the very narrow
+    winding route and jump all eight one-tile Astral cuts. Confirm there is no
+    walking bypass, failed jumps use the existing fall/return sequence, temple
+    music remains uninterrupted, and the route eventually turns east. Test
+    CONTINUE and return north to Map 5 without transition bounce; the far east
+    arch should stop at the next broad-room boundary.
 
 ## Next Bounded Task
 
-Build Temple Map 6 as the next long, narrow connector continuing south from the
-snake chamber. Include recurring wall torches, one physical Ashtray, and the
-shared-loader entry; select one remaining documented movement/hazard idea for a
-tightly bounded traversal slice. Leave the final chamber, Fireball transition,
-rubble escape, and ship for later bounded passes.
+Build Temple Map 7 as the next broad/open room east of the winding connector.
+Continue the established stone arches, recurring wall torches, one physical
+Ashtray, and shared-loader entry. Keep this bounded room distinct from the final
+chamber, Fireball transition, rubble escape, and ship.

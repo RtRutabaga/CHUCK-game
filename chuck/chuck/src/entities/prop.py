@@ -58,6 +58,8 @@ _SPRITES = {
     ),
     "sailing_cog": "objects/sailing_cog.png",
     "skull_stake": "objects/skull_stake.png",
+    "temple_arch_ns": "objects/temple_arch_ns.png",
+    "temple_arch_ew": "objects/temple_arch_ew.png",
 }
 
 # Props that respond to the interact key with a line of dialogue

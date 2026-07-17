@@ -143,7 +143,9 @@ def test_snake_room_uses_temple_identity_and_holds_future_exit() -> None:
     assert tileset_for("temple_snakes").sheet == "temple.png"
     assert AREA_MUSIC["temple_snakes"] == "temple.wav"
     assert AREA_MUSIC["temple_snakes"] == AREA_MUSIC["temple_darts"]
-    assert ("temple_snakes", "∇") not in AREA_WALK_EXITS
+    assert AREA_WALK_EXITS[("temple_snakes", "∇")].destination == (
+        "temple_astral_wind"
+    )
     assert AREA_WALK_EXITS[("temple_snakes", "Δ")].destination == (
         "temple_darts"
     )
