@@ -80,6 +80,7 @@ Terrain legend:
     '·'  temple floor        (walkable interior stone)
     'Δ'  temple doorway      (walkable dark threshold)
     '∇'  deeper doorway      (walkable inert phase boundary)
+    '♠'  temple spike pit    (solid on foot, jumpable)
     ';'  sailing cog         (solid landmark over dense jungle footprint)
     "'"  beaten jungle trail (walkable route toward the next Chult area)
     '"'  jungle trailhead    (walkable trail, canopy drawn overhead)
@@ -298,6 +299,7 @@ TILE_DEFS: dict[str, TileDef] = {
     "·": TileDef(solid=False, color=(71, 76, 61)),
     "Δ": TileDef(solid=False, color=(10, 16, 15)),
     "∇": TileDef(solid=False, color=(10, 16, 15)),
+    "♠": TileDef(solid=True, color=(20, 25, 24)),
     ";": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="sailing_cog", under="#"),
     "'": TileDef(solid=False, color=(44, 45, 29)),
@@ -367,6 +369,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "κ": MarkerDef(kind="arrival:from_temple_exterior", under="·"),
     "ρ": MarkerDef(kind="anchor:temple_1_anchor", under="·"),
     "σ": MarkerDef(kind="boundary:temple_deeper", under="∇"),
+    "υ": MarkerDef(kind="arrival:from_temple_2", under="·"),
+    "φ": MarkerDef(kind="arrival:from_temple_1", under="·"),
+    "χ": MarkerDef(kind="anchor:temple_2_anchor", under="·"),
+    "ω": MarkerDef(kind="boundary:temple_3", under="∇"),
 }
 
 _COMMENT_PREFIX = ";"

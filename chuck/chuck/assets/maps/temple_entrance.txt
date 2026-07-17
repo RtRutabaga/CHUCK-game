@@ -1,10 +1,10 @@
-; PHASE 6 - TEMPLE MAP 1 (48x36 tiles).
+; PHASE 6 - TEMPLE MAP 1 (48x37 tiles).
 ; Monumental entrance hall. One Ashtray sits near the exterior doorway.
-; The north threshold is an inert boundary for the next dungeon room.
+; The north threshold enters the spike corridor; a safe return waits below it.
 ████████████████████████████████████████████████
 ████████████████████████████████████████████████
 █████████████████████∇∇σ∇∇∇█████████████████████
-████████································████████
+████████···············υ················████████
 ████████································████████
 ████████································████████
 ████████······██················██······████████

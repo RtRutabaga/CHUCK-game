@@ -3,11 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `bdc986c` (`Match temple music loudness to Chult`)
-- Current work: additional temple music playback lift after playtest
+- Base commit before this pass: `3d1816b` (`Increase temple music volume`)
+- Current work: Phase 6 Temple Map 2 spike corridor
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+Temple Map 2 is now a reversible 48x44 interior corridor reached through Map
+1's former north boundary. Five complete twenty-tile spike bands split the
+narrow hall into six safe stone landings. Walking stops flush at every band;
+Chuck's established committed jump alone ignores the solid spike terrain and
+clears one row. This adds no new control, tutorial, damage model, fall sequence,
+or map-specific movement path.
+
+Three deterministic spike variants extend the procedural temple sheet with a
+dark trench, stone lips, and large pale points readable at native 320x180.
+Temple Map 2 reuses the same louder temple track, so crossing between the rooms
+does not restart playback. It is deliberately enemy-free so the pass introduces
+only the spike-pit hazard family. Its north `temple_3` boundary is reachable and
+inert until the next authored map exists.
+
+The new map contains exactly one physical Ashtray. Development-visible
+`Temple 2`, menu-hidden `temple_2_anchor`, and the Map 1 return entry all use
+the shared checkpoint registry. Activation saves, CONTINUE restores saved
+Sanity and position, and Sanity-zero return uses the same anchor. The south
+door returns to a safe named Map 1 arrival without bounce.
 
 Sean's second listening pass found the measured loudness match still too quiet
 in play. The temple render now deliberately uses 0.90 peak headroom instead of
@@ -34,8 +54,8 @@ arrival on the exterior stair without immediately bouncing in either direction.
 Temple Map 1 is a quiet, monumental threshold room rather than an encounter.
 Its connected open hall, sparse paired masonry piers, thick walls, and dark
 north/south thresholds establish the dungeon scale while leaving traps and
-enemies for later rooms. The north `temple_deeper` boundary is authored,
-reachable, visually readable, and deliberately inert until Temple Map 2 exists.
+enemies for later rooms. The north `temple_deeper` boundary now enters Temple
+Map 2 through the shared transition described above.
 
 A dedicated procedural `temple.png` tileset supplies four cracked floor-slab
 variants, four mossy blockwork variants with restrained eye/serpent glyphs, and
@@ -405,6 +425,16 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
+- New Temple Map 2 coverage verifies the exact 48x44 layout, 100 spikes in five
+  complete required-jump bands, disconnected on-foot regions, ordinary jump
+  traversal, one Ashtray, no enemies, reversible non-bouncing transition,
+  uninterrupted music identity, `Temple 2` development loading, save/CONTINUE/
+  respawn, dedicated sheet registration, and inert north boundary. Focused
+  entrance, jump, checkpoint, tileset, and transition suites pass. Native
+  320x180 review confirms the trench and pale spike silhouettes are readable.
+- All 37 standalone test modules pass, and a clean dummy-driver launch reaches
+  the 320x180 title scene.
+
 - Rendered loudness now measures Chult at -17.13 dBFS RMS and the deliberately
   louder temple track at -15.36 dBFS RMS. Temple peaks safely at 0.90 versus
   Chult's 0.75. Music, audio, and transition suites pass with a direct
@@ -675,12 +705,15 @@ as a convention for each future exterior Chult map.
 37. Enter the pyramid and confirm the Chult track gives way to the mysterious
     temple theme, the hall reads as an interior at native scale, and the nearby
     Ashtray saves/respawns correctly. Walk back out and re-enter to verify both
-    transitions are stable, then cross the quiet hall and confirm the north
-    threshold stops cleanly without loading unfinished Temple Map 2 content.
+    transitions are stable, then cross the quiet hall to its north threshold.
+38. Cross Temple Map 1's north threshold into Temple Map 2. Confirm the music
+    continues without restarting, activate the single Ashtray, and walk into a
+    spike band to verify it blocks Chuck. Jump across all five bands, return
+    south without bounce, then verify CONTINUE and Sanity-zero return restore
+    Temple 2. The north threshold should stop cleanly at the next map boundary.
 
 ## Next Bounded Task
 
-Build Temple Map 2 as one jump-centered hazard corridor with its own physical
-Ashtray and shared-loader entry. Introduce only one temple hazard family in
-that pass; leave the snake room, final chamber, rubble escape, and ship for
-later bounded sessions.
+Build Temple Map 3 as one skeleton-focused chamber with its own physical
+Ashtray and shared-loader entry. Keep its combat avoidable and leave dart walls,
+the snake room, final chamber, rubble escape, and ship for later bounded passes.

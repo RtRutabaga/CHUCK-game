@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 100 (temple music playback lift). This file is required by
+Updated: session 101 (Temple Map 2 spike corridor). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -28,7 +28,7 @@ the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the eight authored Ashtrays have
+  retain the established local retry behavior; the nine authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
@@ -382,6 +382,14 @@ the project rules and updated every session.
   `Temple 1` is development-visible, while the room's single physical Ashtray
   saves, restores through CONTINUE, and receives Sanity-zero returns through
   the existing shared checkpoint architecture
+- Phase 6 Temple Map 2: the entrance hall's former inert north threshold now
+  enters a reversible 48x44 stone corridor without transition bounce or music
+  restart. Five full-width rows of large pale spikes divide the route into six
+  safe landings. Spike terrain is solid during ordinary movement and ignored
+  only by Chuck's existing committed jump, so each band requires SPACE without
+  adding new input, damage, fall, or tutorial systems. The map is enemy-free,
+  contains exactly one physical Ashtray, exposes `Temple 2` through the shared
+  development/checkpoint loader, and ends at an inert Temple Map 3 boundary
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -422,7 +430,7 @@ the project rules and updated every session.
 
 ## Tests
 
-36 suites (most pure Python/headless): collision, tilemap,
+37 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
@@ -430,7 +438,8 @@ Chult terrain hazard, Chult route-deeper boundary,
 Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
 Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
 transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
-the Chult Map 5 temple exterior, and the Phase 6 temple entrance hall
+the Chult Map 5 temple exterior, the Phase 6 temple entrance hall, and the
+Temple Map 2 spike corridor
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -488,9 +497,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build Temple Map 2 as the first focused hazard corridor, introducing one
-readable jump-centered temple hazard while preserving a route back to Temple 1.
-Do not combine dart walls, spike pits, snakes, or the final chamber in one pass.
+Build Temple Map 3 as the first skeleton-focused chamber with its own physical
+Ashtray and shared-loader entry. Keep combat avoidable and do not combine it
+with darts, snakes, the final chamber, or escape content in one pass.
 
 ## Also open
 
@@ -584,7 +593,10 @@ Do not combine dart walls, spike pits, snakes, or the final chamber in one pass.
        entrance hall with dedicated procedural interior art, one physical
        shared-loader Ashtray, development-visible `Temple 1`, and an original
        80-second ancient/shamanic exploration loop (session 98).
-3. [ ] Add Temple Map 2 as the first jump/hazard-focused interior room.
+3. [x] Added a reversible 48x44 Temple Map 2 with five mandatory one-tile
+       spike-pit jumps, dedicated temple art, uninterrupted temple music, one
+       physical shared-loader Ashtray, development-visible `Temple 2`, and an
+       inert north boundary for the next room (session 101).
 4. [ ] Continue the multi-map dungeon, skeleton rooms, snake chamber, final
        battle, Fireball transition, rubble crawlspace, and ship escape in
        bounded slices without beginning Phase 7 gameplay.

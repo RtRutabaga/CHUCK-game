@@ -22,6 +22,9 @@ STONE_LIGHT = (76, 81, 61)
 STONE_DARK = (27, 38, 37)
 MOSS = (35, 72, 43)
 GLYPH = (108, 100, 62)
+PIT = (10, 17, 17)
+SPIKE = (148, 145, 111)
+SPIKE_DARK = (79, 83, 70)
 
 
 def draw_floor(surface, variant: int, _frame: int) -> None:
@@ -65,10 +68,24 @@ def draw_doorway(surface, variant: int, _frame: int) -> None:
                      (2 + variant * 8, 1), (3 + variant * 7, 10), 1)
 
 
+def draw_spikes(surface, variant: int, _frame: int) -> None:
+    """A deep black groove with large, immediately readable stone spikes."""
+    surface.fill(PIT)
+    pygame.draw.rect(surface, STONE_DARK, (0, 0, 16, 3))
+    pygame.draw.line(surface, STONE_LIGHT, (0, 0), (15, 0), 1)
+    pygame.draw.rect(surface, STONE_DARK, (0, 13, 16, 3))
+    offsets = ((1, 7, 12), (0, 6, 11), (2, 8, 13))[variant]
+    for x in offsets:
+        pygame.draw.polygon(surface, SPIKE_DARK,
+                            ((x - 2, 13), (x, 5 + variant % 2), (x + 2, 13)))
+        pygame.draw.line(surface, SPIKE, (x, 6 + variant % 2), (x, 11), 1)
+
+
 DRAW = {
     "temple_floor": draw_floor,
     "temple_wall": draw_wall,
     "temple_doorway": draw_doorway,
+    "temple_spikes": draw_spikes,
 }
 
 

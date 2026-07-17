@@ -113,17 +113,20 @@ def test_temple_1_ashtray_saves_continues_and_respawns() -> None:
         directory.cleanup()
 
 
-def test_temple_has_dedicated_art_music_and_inert_deeper_boundary() -> None:
+def test_temple_has_dedicated_art_music_and_map_2_boundary() -> None:
     tileset = tileset_for("temple_entrance")
     assert tileset.sheet == "temple.png"
     assert tileset.char_to_terrain == {
         "·": "temple_floor", "█": "temple_wall",
         "Δ": "temple_doorway", "∇": "temple_doorway",
+        "♠": "temple_spikes",
     }
     assert (config.TILESETS_DIR / tileset.sheet).is_file()
     assert AREA_MUSIC["temple_entrance"] == "temple.wav"
     assert (config.MUSIC_DIR / "temple.wav").is_file()
-    assert ("temple_entrance", "∇") not in AREA_WALK_EXITS
+    assert AREA_WALK_EXITS[("temple_entrance", "∇")].destination == (
+        "temple_spikes"
+    )
     assert AREA_WALK_EXITS[("temple_entrance", "Δ")].destination == (
         "chult_temple"
     )

@@ -7,6 +7,12 @@ Phase 5 ends at the temple entrance.
 Phase 6 is a full dungeon crawl through the temple interior and ends
 with Chuck escaping onto a ship at sea. Phase 7 begins aboard that ship.
 
+Implemented so far:
+
+- Temple Map 1: reversible entrance hall and first Ashtray.
+- Temple Map 2: five-band spike corridor, repeated committed jumps, and one
+  Ashtray. Its north boundary is reserved for the next interior map.
+
 ------------------------------------------------------------------------
 
 # Phase Goal

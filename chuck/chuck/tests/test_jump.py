@@ -108,6 +108,22 @@ def test_jump_clears_one_jungle_stream_tile_but_walking_does_not() -> None:
     assert player.y > 3 * config.TILE_SIZE
 
 
+def test_jump_clears_one_temple_spike_band_but_walking_does_not() -> None:
+    controls = FakeInput()
+    controls.movement_vector = lambda: (0.0, -1.0)
+    player = Player(19.0, 3 * config.TILE_SIZE + 4, controls)
+    player.tilemap = _map("###\n#.#\n#♠#\n#.#\n###\n")
+    player.facing = "up"
+    player.update(0.2)
+    assert player.y == 3 * config.TILE_SIZE
+
+    controls.press_jump = True
+    for _ in range(12):
+        player.update(0.03)
+    assert not player.jumping
+    assert player.y < 2 * config.TILE_SIZE
+
+
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):
