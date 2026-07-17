@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 108 (east/west temple arches realigned with their doorways).
+Updated: session 109 (worn-trail approaches added before the Chult vine exits).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -271,6 +271,14 @@ This file is required by the project rules and updated every session.
   walkable threshold carries the named `boundary:chult_deeper` marker. Phase 5
   now binds that existing threshold to `chult_cog`, entering at its safe named
   southern arrival through the ordinary walk-exit/checkpoint path
+- Vine-exit readability (playtest, session 109): every hanging-vine jungle
+  exit now shows Map 1's worn-trail approach so it reads as "head this way" —
+  a short beaten-trail strip before the Chult 2 north exit (one clear row;
+  the thorn maze sits directly beneath), the Chult 3 log-crawl approach
+  corridor, and the Chult 4 north exit (whose canopy also widened from one
+  vine tile to the full five-tile gap). Trail terrain is walkable like the
+  ground it replaced, so no route, thorn, grass, or enemy data changed. New
+  exits should include a trail approach from the start
 - Phase 5 Chult Map 2 foundation: `chult_cog.txt` is an 80x80 authored exterior,
   substantially larger than the 64x60 first jungle. One connected exploration
   network joins a broad southern future-cog clearing, central future-raptor

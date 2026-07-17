@@ -3,56 +3,60 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `696cab4` (`Dress temple interiors with idols, stelae, urns, and columns`)
-- Current work: east/west temple arch alignment fix (session 108)
-- Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
+- Base commit before this pass: `5216ecc` (`Align east/west temple arches with their doorways`)
+- Current work: worn-trail approaches before the Chult vine exits (session 109)
+- Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`); this pass is a
+  playtest-directed readability fix in the completed Chult exteriors.
 
 ## Completed This Pass
 
-Playtest found every east/west temple doorway's arch sitting one tile above
-its walkable opening: the dark void read above the path instead of around it.
+Playtest found the hanging-vine jungle exits unclear: only Chult Map 1's
+northern exit had the worn-trail approach, so on later maps the vine gap read
+as ordinary jungle wall. Every vine exit now carries Map 1's language — a
+short beaten-trail strip (`'` terrain, the existing worn-board trail art)
+leading into the canopy gap:
 
-Root cause: props draw upward from their anchor tile's bottom edge. The
-38x48 east/west arch is exactly three tiles tall, and each side threshold is
-a three-row opening — but the arch chars ('«'/'»') were authored on the
-opening's MIDDLE row, so the sprite spanned the middle row and the two rows
-above it, one tile too high. (North/south arches were unaffected: their
-48-wide sprite centers horizontally over a middle-column anchor.)
+- Chult 2 (chult_cog) north exit: a three-wide trail row directly beneath the
+  vines. One row is all the clear ground there is — the thorn maze begins on
+  the very next row — but with the threshold's own trail-under tiles it reads
+  as a distinct brown path into the gap.
+- Chult 3 (chult_run) exit: the two-wide approach corridor to the Chuck-sized
+  log crawl is now trail for three rows, pointing at the passage.
+- Chult 4 (chult_respite) north exit: a three-wide, five-row trail strip up
+  the approach corridor. Its canopy was also only ONE vine tile wide in a
+  five-tile wall gap; the four flanking cells became vine-exit terrain too,
+  so the whole opening reads as one canopy doorway.
 
-Fix: moved all five east/west arch chars down one row, onto the bottom row of
-their openings — temple_darts west and east, temple_skeletons west,
-temple_snakes east, and temple_astral_wind east. The vacated middle cell
-became its plain threshold terrain ('∇'/'Δ'), so the doorway footprint,
-collision, and exits are unchanged. In temple_astral_wind the cell below was
-ordinary floor; the arch char's own `under="∇"` repaints that single cell as
-walkable dark threshold, which reads as the doorway's shadow.
+Trail and vine-exit terrain are walkable exactly like the ground they
+replaced, so no route, thorn count, grass tuft, enemy spawn, or checkpoint
+changed anywhere.
 
 ## Files Changed
 
-- assets/maps/temple_darts.txt, temple_skeletons.txt, temple_snakes.txt,
-  temple_astral_wind.txt: the one-row arch moves (applied by an
-  assertion-checked script; no other cells touched).
-- PROJECT_STATUS.md: session note plus a durable statement of the anchoring
-  rule — east/west arches anchor on the BOTTOM row of their three-row
-  openings — so future temple maps don't reintroduce the misalignment.
+- assets/maps/chult_cog.txt, chult_run.txt, chult_respite.txt: the trail and
+  canopy cells (applied by an assertion-checked script; 28 cells total, no
+  other changes).
+- PROJECT_STATUS.md: session note plus the forward rule that new exits should
+  include a trail approach from the start.
 
 ## Systems Added or Changed
 
-- None. Map data only.
+- None. Map data only; both terrains already existed.
 
 ## Verification Performed
 
-- All 42 test suites pass.
-- Screenshots at all five east/west doorways confirm the dark opening now
-  centers on the walkable path row (including the exact skeleton-chamber
-  west door from the playtest report).
-- Headless walk-through: stepping onto each MOVED arch tile still fires its
-  transition — darts west -> snakes, darts east -> skeletons, skeletons
-  west -> darts, snakes east -> darts.
+- All 42 test suites pass (route flood-fills, thorn-maze solution, staged
+  undead, respite/temple boundaries, checkpoints all unchanged).
+- Screenshots at all three exits confirm the trail reads at native scale:
+  a brown worn-board strip leading into each vine gap, and the respite
+  canopy now spans its full opening.
 
 ## Known Issues
 
-- None known from this pass.
+- The Chult 2 exit's trail is necessarily short (one row) because the thorn
+  maze abuts the threshold. If playtest still finds it subtle, options are
+  widening the vine gap or re-authoring the maze's first row — both bigger
+  decisions than this pass should take alone.
 
 ## Scope Notes
 
