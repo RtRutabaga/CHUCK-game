@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 98 (Phase 6 temple entrance hall). This file is required by
+Updated: session 99 (temple music loudness match). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -49,7 +49,8 @@ the project rules and updated every session.
   breakdown. It enters immediately on either cutscene arrival or Chult 1 load.
   The Phase 6 entrance hall switches to an original 80s temple loop built from
   low drones, uneven hand drums, dry wood clicks, sparse bells, and restrained
-  Phrygian-colored flute phrases;
+  Phrygian-colored flute phrases. Its sustained voices are mastered to match
+  the Chult theme's average loudness while retaining the shared peak headroom;
   SFX for pickup, interact, hurt, vanish, respawn, anchor
   chime, a quiet rounded jump bounce, scratch scrape, and per-surface footsteps.
   Re-requesting the same looping track is idempotent, so movement among the

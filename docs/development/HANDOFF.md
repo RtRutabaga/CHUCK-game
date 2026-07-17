@@ -3,11 +3,21 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `38e7550` (`Add skull stakes to temple approach`)
-- Current work: Phase 6 Temple Map 1 entrance-hall vertical slice
+- Base commit before this pass: `a3b422b` (`Begin Phase 6 temple interior`)
+- Current work: temple/Chult perceived-loudness match
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+The temple theme now matches the Chult jungle theme's average rendered
+loudness. Both already reached the same 0.75 peak, but the temple track's short
+ritual-tom transients consumed more of that ceiling and left its sustained body
+perceptibly quieter. The existing mix now favors drone, pulse, and flute while
+slightly reducing transient bell/percussion levels; composition, duration,
+instrumentation, global music volume, and every other area remain unchanged.
+Automated coverage compares rendered RMS directly and requires the two tracks
+to remain within five percent while preserving the existing headroom and loop
+seam gates.
 
 Phase 6 is now active. The four-tile pyramid entrance on Chult Map 5 uses the
 ordinary walk-transition path to load a dedicated 48x37 `temple_entrance` map
@@ -387,6 +397,10 @@ tutorial. `PHASE-4.md` and `DECISIONS.md` now record restrained scattered grass
 as a convention for each future exterior Chult map.
 
 ## Verification
+
+- Rendered loudness measures Chult at -17.13 dBFS RMS and the revised temple
+  track at -16.94 dBFS RMS; both peak at 0.75. Music, audio, and transition
+  suites pass with the new direct five-percent loudness-matching regression.
 
 - New Phase 6 entrance coverage verifies the exact 48x37 map, connected
   arrival-to-deeper-boundary route, one Ashtray, no enemies, reversible named

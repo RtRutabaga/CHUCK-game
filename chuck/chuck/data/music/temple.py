@@ -64,11 +64,13 @@ def build_tracks() -> list[Track]:
     ]
 
     return [
-        Track("drone", ins.round_bass, .62, _notes(drone)),
-        Track("pulse", ins.round_bass, .72, _notes(pulse)),
-        Track("flute", ins.flute, .66, _notes(flute)),
-        Track("bells", ins.bell, .52, _notes(bells)),
-        Track("ritual_toms", ins.jungle_tom, .92, _notes(toms)),
-        Track("wood", ins.woodblock, .72, _notes(wood)),
-        Track("dust", ins.hat, .45, _notes(hats)),
+        # Favor sustained body over transient peaks so the normalized render
+        # has the same perceived level as Chult instead of sounding quieter.
+        Track("drone", ins.round_bass, .76, _notes(drone)),
+        Track("pulse", ins.round_bass, .82, _notes(pulse)),
+        Track("flute", ins.flute, .74, _notes(flute)),
+        Track("bells", ins.bell, .40, _notes(bells)),
+        Track("ritual_toms", ins.jungle_tom, .78, _notes(toms)),
+        Track("wood", ins.woodblock, .62, _notes(wood)),
+        Track("dust", ins.hat, .42, _notes(hats)),
     ]

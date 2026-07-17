@@ -208,6 +208,18 @@ def test_rendered_temple_theme_respects_loop_quality_gates() -> None:
     assert max(abs(sample) for sample in samples) <= 0.9
     assert abs(samples[-1] - samples[0]) < 0.15
 
+    with wave.open(str(config.MUSIC_DIR / "chult.wav")) as f:
+        chult_raw = f.readframes(f.getnframes())
+    chult_samples = [x / 32767
+                     for (x,) in struct.iter_unpack("<h", chult_raw)]
+    temple_rms = (sum(sample * sample for sample in samples)
+                  / len(samples)) ** 0.5
+    chult_rms = (sum(sample * sample for sample in chult_samples)
+                 / len(chult_samples)) ** 0.5
+    assert 0.95 <= temple_rms / chult_rms <= 1.05, (
+        temple_rms, chult_rms
+    )
+
 
 def _run_all() -> None:
     failures = 0
