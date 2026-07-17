@@ -33,7 +33,7 @@ def _flood(tilemap: TileMap, start: tuple[int, int]) -> set[tuple[int, int]]:
     return reached
 
 
-def test_spike_corridor_has_five_required_jump_bands_and_one_ashtray() -> None:
+def test_spike_corridor_has_five_jump_bands_skeletons_and_one_ashtray() -> None:
     tilemap = _map()
     assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 44)
     spikes = {(col, row) for row, line in enumerate(tilemap._grid)
@@ -52,9 +52,17 @@ def test_spike_corridor_has_five_required_jump_bands_and_one_ashtray() -> None:
     assert kinds.count("arrival:from_temple_1") == 1
     assert kinds.count("anchor:temple_2_anchor") == 1
     assert kinds.count("boundary:temple_3") == 1
+    assert kinds.count("skeleton") == 5
+    assert sum(row.count("i") for row in tilemap._grid) == 14
     assert not any(kind in {
-        "zombie", "skeleton", "rat", "raptor", "massive_dinosaur",
+        "zombie", "rat", "raptor", "massive_dinosaur",
     } for kind in kinds)
+
+    skeleton_rows = {
+        int(y // config.TILE_SIZE)
+        for kind, (_x, y) in tilemap.object_spawns if kind == "skeleton"
+    }
+    assert skeleton_rows == {9, 15, 21, 27, 34}
 
 
 def test_temple_maps_connect_both_ways_without_bounce_or_music_restart() -> None:
@@ -98,6 +106,7 @@ def test_temple_2_ashtray_saves_continues_and_respawns() -> None:
     game = Game(save_path=save_path)
     try:
         scene = game.checkpoints.load_checkpoint("temple_2")
+        assert len(scene.undead) == 5
         anchor, = scene.anchors
         scene.player.x, scene.player.y = anchor.x, anchor.y
         scene.sanity.current = 64
@@ -107,6 +116,7 @@ def test_temple_2_ashtray_saves_continues_and_respawns() -> None:
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
         assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+        assert len(scene.undead) == 5
     finally:
         game._shutdown()
 
@@ -125,6 +135,7 @@ def test_spikes_use_temple_art_and_north_boundary_enters_map_3() -> None:
     tileset = tileset_for("temple_spikes")
     assert tileset.sheet == "temple.png"
     assert tileset.char_to_terrain["♠"] == "temple_spikes"
+    assert tileset.char_to_terrain["i"] == "temple_torch"
     assert AREA_MUSIC["temple_spikes"] == "temple.wav"
     assert AREA_WALK_EXITS[("temple_spikes", "∇")].destination == (
         "temple_skeletons"

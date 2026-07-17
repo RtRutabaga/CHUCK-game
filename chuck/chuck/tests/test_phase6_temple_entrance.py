@@ -47,6 +47,7 @@ def test_first_temple_map_is_connected_and_has_one_checkpoint() -> None:
     assert not any(kind in {
         "zombie", "skeleton", "rat", "raptor", "massive_dinosaur",
     } for kind in kinds)
+    assert sum(row.count("i") for row in tilemap._grid) == 10
 
 
 def test_exterior_and_entrance_hall_connect_without_bouncing() -> None:
@@ -119,7 +120,7 @@ def test_temple_has_dedicated_art_music_and_map_2_boundary() -> None:
     assert tileset.char_to_terrain == {
         "·": "temple_floor", "█": "temple_wall",
         "Δ": "temple_doorway", "∇": "temple_doorway",
-        "♠": "temple_spikes",
+        "♠": "temple_spikes", "i": "temple_torch",
     }
     assert (config.TILESETS_DIR / tileset.sheet).is_file()
     assert AREA_MUSIC["temple_entrance"] == "temple.wav"

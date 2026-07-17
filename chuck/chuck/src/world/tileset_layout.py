@@ -200,6 +200,7 @@ TEMPLE = Tileset(
         ("temple_wall", 4, 1),
         ("temple_doorway", 2, 1),
         ("temple_spikes", 3, 1),
+        ("temple_torch", 1, 2),
     ],
     char_to_terrain={
         "·": "temple_floor",
@@ -207,6 +208,7 @@ TEMPLE = Tileset(
         "Δ": "temple_doorway",
         "∇": "temple_doorway",
         "♠": "temple_spikes",
+        "i": "temple_torch",
     },
     overhead_char_to_terrain={},
 )

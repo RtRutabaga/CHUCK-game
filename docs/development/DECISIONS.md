@@ -24,6 +24,9 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - The first Phase 6 room is a dedicated, reversible temple entrance hall with
   one physical Ashtray and a development-visible `Temple 1` entry through the
   shared checkpoint loader.
+- Phase 6 temple maps use recurring animated wall torches. Broad/open rooms
+  alternate with long, narrow connector maps, and successive routes vary among
+  cardinal directions instead of forming a single straight northward chain.
 - Phase 5 map order after the undead ambush is Chult Map 4 as a vegetation-dense,
   low-pressure jungle respite with exactly one massive slow dinosaur, followed
   by the temple exterior on Chult Map 5. Do not merge the respite and temple

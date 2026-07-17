@@ -43,10 +43,11 @@ def test_skeleton_chamber_is_broad_connected_and_combat_is_avoidable() -> None:
     tilemap = _map()
     assert (tilemap.width_tiles, tilemap.height_tiles) == (56, 44)
     kinds = [kind for kind, _position in tilemap.object_spawns]
-    assert kinds.count("skeleton") == 6
+    assert kinds.count("skeleton") == 12
     assert kinds.count("anchor:temple_3_anchor") == 1
     assert kinds.count("arrival:from_temple_2") == 1
     assert kinds.count("boundary:temple_4") == 1
+    assert sum(row.count("i") for row in tilemap._grid) == 12
     assert not any(kind in {
         "zombie", "rat", "raptor", "massive_dinosaur",
     } for kind in kinds)
@@ -63,7 +64,7 @@ def test_skeleton_chamber_is_broad_connected_and_combat_is_avoidable() -> None:
         for dx in (-1, 0, 1) for dy in (-1, 0, 1)
     }
     reached = _flood(tilemap, (27, 39), blocked)
-    assert (27, 2) in reached
+    assert (2, 20) in reached
 
 
 def test_temple_maps_2_and_3_connect_both_ways_without_bounce() -> None:
@@ -107,7 +108,7 @@ def test_temple_3_ashtray_saves_continues_and_respawns_enemies() -> None:
     game = Game(save_path=save_path)
     try:
         scene = game.checkpoints.load_checkpoint("temple_3")
-        assert len(scene.undead) == 6
+        assert len(scene.undead) == 12
         assert all(enemy.kind == "skeleton" for enemy in scene.undead)
         scene.undead[0].alive = False
         scene.undead = [enemy for enemy in scene.undead if enemy.alive]
@@ -120,7 +121,7 @@ def test_temple_3_ashtray_saves_continues_and_respawns_enemies() -> None:
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
         assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
-        assert len(scene.undead) == 6
+        assert len(scene.undead) == 12
     finally:
         game._shutdown()
 
@@ -130,16 +131,21 @@ def test_temple_3_ashtray_saves_continues_and_respawns_enemies() -> None:
         assert scene.map_name == "temple_skeletons"
         assert resumed.active_checkpoint_id == "temple_3_anchor"
         assert scene.sanity.current == 63
-        assert len(scene.undead) == 6
+        assert len(scene.undead) == 12
     finally:
         resumed._shutdown()
         directory.cleanup()
 
 
-def test_skeleton_chamber_uses_temple_art_and_has_stable_north_boundary() -> None:
+def test_skeleton_chamber_uses_temple_art_and_turns_west() -> None:
     assert tileset_for("temple_skeletons").sheet == "temple.png"
     assert AREA_MUSIC["temple_skeletons"] == "temple.wav"
     assert ("temple_skeletons", "∇") not in AREA_WALK_EXITS
+    boundary = next(
+        position for kind, position in _map().object_spawns
+        if kind == "boundary:temple_4"
+    )
+    assert boundary == (40.0, 328.0)
     assert AREA_WALK_EXITS[("temple_skeletons", "Δ")].destination == (
         "temple_spikes"
     )

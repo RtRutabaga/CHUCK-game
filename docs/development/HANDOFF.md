@@ -3,14 +3,32 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `ef4b5b5` (`Add temple spike corridor`)
-- Current work: Phase 6 Temple Map 3 skeleton chamber
+- Base commit before this pass: `039d43e` (`Add temple skeleton chamber`)
+- Current work: Phase 6 temple torch and route-shape revision
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
+The three authored temple maps now share a reusable animated wall-torch tile.
+The generated temple sheet adds a compact two-frame orange flame over existing
+masonry: Map 1 has ten torches, Map 2 has fourteen, and Map 3 has twelve. The
+same torch terrain is now a documented convention for all future temple maps.
+
+Temple Map 2 remains the long, narrow connector between the two open rooms, but
+now adds five existing durable skeletons on alternating safe landings between
+its spike bands. The full-width spike jumps, Ashtray, reversible transitions,
+collision rules, and uninterrupted temple music are unchanged. Sanity-zero
+return rebuilds all five skeletons through the existing enemy lifecycle.
+
+Temple Map 3 now contains twelve skeletons rather than six. Its route remains
+connected even when tests reserve a 3x3 avoidance envelope around every spawn,
+so the added pressure does not create a kill gate. The inert onward threshold
+has moved from the north wall to a six-tile passage through the west wall.
+Future temple sequencing now alternates broad/open rooms with long narrow
+connectors and varies cardinal direction instead of defaulting north.
+
 Temple Map 3 is now a reversible 56x44 skeleton chamber reached through Map
-2's former north boundary. Six existing durable, human-scale skeletons occupy
+2's former north boundary. Twelve existing durable, human-scale skeletons occupy
 spaced side lanes around monumental masonry piers. Even treating a full 3x3
 area around every spawn as blocked leaves a connected south-to-north route, so
 the room encourages evasion and never becomes a kill gate.
@@ -18,12 +36,12 @@ the room encourages evasion and never becomes a kill gate.
 The chamber keeps the existing temple art and louder temple loop; movement
 between Maps 2 and 3 therefore does not restart playback. It adds no enemy
 variant, encounter controller, progression flag, or new combat mechanic. Its
-north threshold is deliberately inert for the next bounded interior slice.
+west threshold is deliberately inert for the next bounded interior slice.
 
 The map contains exactly one physical Ashtray. Development-visible `Temple 3`,
 menu-hidden `temple_3_anchor`, and the Map 2 return entry all use the shared
 checkpoint registry. Activation saves, CONTINUE restores saved Sanity and
-position, and Sanity-zero return rebuilds all six authored skeletons. The south
+position, and Sanity-zero return rebuilds all twelve authored skeletons. The south
 door returns to a safe named Map 2 arrival without bounce.
 
 Temple Map 2 is now a reversible 48x44 interior corridor reached through Map
@@ -36,9 +54,9 @@ or map-specific movement path.
 Three deterministic spike variants extend the procedural temple sheet with a
 dark trench, stone lips, and large pale points readable at native 320x180.
 Temple Map 2 reuses the same louder temple track, so crossing between the rooms
-does not restart playback. It is deliberately enemy-free so the pass introduces
-only the spike-pit hazard family. Its north `temple_3` boundary is reachable and
-inert until the next authored map exists.
+does not restart playback. Five existing skeletons now pressure alternating
+safe landings without changing the spike-pit hazard family. Its north
+`temple_3` boundary enters the open skeleton chamber.
 
 The new map contains exactly one physical Ashtray. Development-visible
 `Temple 2`, menu-hidden `temple_2_anchor`, and the Map 1 return entry all use
@@ -449,7 +467,12 @@ as a convention for each future exterior Chult map.
   respawn, dedicated sheet registration, and Map 3 north transition. Focused
   entrance, jump, checkpoint, tileset, and transition suites pass. Native
   320x180 review confirms the trench and pale spike silhouettes are readable.
-- New Temple Map 3 coverage verifies the exact 56x44 layout, six skeleton-only
+- Temple route-shape coverage now verifies ten/fourteen/twelve wall torches,
+  five Map 2 skeletons with checkpoint rebuild, twelve Map 3 skeletons, the
+  buffered no-kill route, and the exact west-wall onward boundary. Native
+  320x180 review confirms the animated flames, spike silhouettes, skeleton
+  scale, and west doorway remain readable.
+- New Temple Map 3 coverage verifies the exact 56x44 layout, twelve skeleton-only
   enemy spawns, a route that remains connected with 3x3 avoidance envelopes,
   one Ashtray, reversible non-bouncing Map 2 transition, uninterrupted music,
   shared development loading, save/CONTINUE, and full enemy rebuild on return.
@@ -734,14 +757,17 @@ as a convention for each future exterior Chult map.
     spike band to verify it blocks Chuck. Jump across all five bands, return
     south without bounce, then verify CONTINUE and Sanity-zero return restore
     Temple 2, then cross its north threshold into Temple Map 3.
-39. In Temple Map 3, confirm all six skeletons are visibly human-scale and
+39. In Temple Map 3, confirm all twelve skeletons are visibly human-scale and
     dangerous but can be routed around without killing them. Activate the one
     Ashtray, test CONTINUE and Sanity-zero return, and verify all defeated or
-    displaced skeletons reset. Return south without bounce; the north threshold
-    should stop cleanly at the next map boundary.
+    displaced skeletons reset. Return south without bounce; the west threshold
+    should stop cleanly at the west-wall boundary. Across all three temple maps,
+    confirm the wall torches are visible and flicker subtly. In Map 2, confirm
+    the five skeletons pressure separate spike landings and reset on return.
 
 ## Next Bounded Task
 
-Build Temple Map 4 as one dart-wall corridor with its own physical Ashtray and
-shared-loader entry. Keep it to that single trap family and leave the snake
-room, final chamber, rubble escape, and ship for later bounded passes.
+Build Temple Map 4 as a long, narrow west-running dart-wall connector with
+animated wall torches, its own physical Ashtray, and shared-loader entry. Keep
+it to that single trap family and leave the next open room, snake room, final
+chamber, rubble escape, and ship for later bounded passes.

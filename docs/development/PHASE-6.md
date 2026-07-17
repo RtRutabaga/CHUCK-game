@@ -9,12 +9,12 @@ with Chuck escaping onto a ship at sea. Phase 7 begins aboard that ship.
 
 Implemented so far:
 
-- Temple Map 1: reversible entrance hall and first Ashtray.
-- Temple Map 2: five-band spike corridor, repeated committed jumps, and one
-  Ashtray.
-- Temple Map 3: broad skeleton chamber with six avoidable, durable skeletons,
-  looping routes around monumental piers, and one Ashtray. Its north boundary
-  is reserved for the next interior map.
+- Temple Map 1: reversible torch-lit entrance hall and first Ashtray.
+- Temple Map 2: long, narrow torch-lit connector with five spike bands, five
+  skeletons, repeated committed jumps, and one Ashtray.
+- Temple Map 3: broad torch-lit chamber with twelve avoidable, durable
+  skeletons, looping routes around monumental piers, and one Ashtray. Its
+  onward boundary turns west toward the next narrow connector.
 
 ------------------------------------------------------------------------
 
@@ -52,6 +52,11 @@ Possible rooms include:
 -   final chamber
 
 Maintain the established procedural pixel-art style.
+
+Alternate broad/open rooms with long, narrow connector maps. Temple wall
+torches should recur in every authored temple gameplay map. Do not arrange the
+dungeon as one continuous northward line: vary the cardinal direction of
+successive exits and connectors so the route turns through the structure.
 
 ------------------------------------------------------------------------
 

@@ -25,6 +25,10 @@ GLYPH = (108, 100, 62)
 PIT = (10, 17, 17)
 SPIKE = (148, 145, 111)
 SPIKE_DARK = (79, 83, 70)
+WOOD = (74, 48, 31)
+FLAME_DARK = (180, 68, 24)
+FLAME = (239, 145, 45)
+FLAME_LIGHT = (255, 224, 105)
 
 
 def draw_floor(surface, variant: int, _frame: int) -> None:
@@ -81,11 +85,30 @@ def draw_spikes(surface, variant: int, _frame: int) -> None:
         pygame.draw.line(surface, SPIKE, (x, 6 + variant % 2), (x, 11), 1)
 
 
+def draw_torch(surface, variant: int, frame: int) -> None:
+    """Wall masonry with a compact two-frame brazier flame."""
+    draw_wall(surface, variant, frame)
+    pygame.draw.rect(surface, WOOD, (7, 7, 2, 7))
+    pygame.draw.line(surface, STONE_DARK, (5, 13), (10, 13), 1)
+    if frame == 0:
+        pygame.draw.polygon(surface, FLAME_DARK,
+                            ((5, 8), (8, 2), (11, 8), (8, 10)))
+        pygame.draw.polygon(surface, FLAME,
+                            ((6, 8), (8, 4), (10, 8), (8, 9)))
+    else:
+        pygame.draw.polygon(surface, FLAME_DARK,
+                            ((6, 8), (9, 1), (11, 7), (8, 10)))
+        pygame.draw.polygon(surface, FLAME,
+                            ((7, 8), (9, 3), (10, 7), (8, 9)))
+    surface.set_at((8, 7), FLAME_LIGHT)
+
+
 DRAW = {
     "temple_floor": draw_floor,
     "temple_wall": draw_wall,
     "temple_doorway": draw_doorway,
     "temple_spikes": draw_spikes,
+    "temple_torch": draw_torch,
 }
 
 

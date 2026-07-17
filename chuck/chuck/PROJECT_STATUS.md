@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 102 (Temple Map 3 skeleton chamber). This file is required by
+Updated: session 103 (temple torch and route-shape pass). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -377,7 +377,9 @@ the project rules and updated every session.
   48x37 monumental entrance hall and can be crossed back without transition
   bounce. Weathered floor slabs, mossy/glyph-marked solid masonry, sparse
   structural piers, and dark thresholds establish a distinct interior visual
-  language at native scale. The room is deliberately enemy- and trap-free; its
+  language at native scale. Five matched pairs of animated wall torches now
+  establish the recurring temple lighting language. The room is deliberately
+  enemy- and trap-free; its
   north doorway is the stable inert boundary for the next dungeon slice.
   `Temple 1` is development-visible, while the room's single physical Ashtray
   saves, restores through CONTINUE, and receives Sanity-zero returns through
@@ -385,19 +387,24 @@ the project rules and updated every session.
 - Phase 6 Temple Map 2: the entrance hall's former inert north threshold now
   enters a reversible 48x44 stone corridor without transition bounce or music
   restart. Five full-width rows of large pale spikes divide the route into six
-  safe landings. Spike terrain is solid during ordinary movement and ignored
+  safe landings. Five durable skeletons occupy alternating landings while
+  fourteen animated wall torches reinforce the long, narrow connector shape.
+  Spike terrain is solid during ordinary movement and ignored
   only by Chuck's existing committed jump, so each band requires SPACE without
-  adding new input, damage, fall, or tutorial systems. The map is enemy-free,
+  adding new input, damage, fall, or tutorial systems. The map uses only five
+  existing durable skeletons,
   contains exactly one physical Ashtray, exposes `Temple 2` through the shared
   development/checkpoint loader, and connects north to Temple Map 3
 - Phase 6 Temple Map 3: a reversible 56x44 chamber continues the temple without
-  restarting its music. Six existing human-scale skeletons occupy spaced side
+  restarting its music. Twelve existing human-scale skeletons occupy spaced side
   lanes around monumental masonry piers; a connected route still reaches the
-  north boundary while reserving a three-by-three avoidance envelope around
-  every enemy, so combat is possible but never a progression gate. The map
+  west boundary while reserving a three-by-three avoidance envelope around
+  every enemy, so combat is possible but never a progression gate. Twelve
+  animated wall torches frame the room, and the former north exit now turns
+  west to break the dungeon's straight-line rhythm. The map
   contains exactly one physical Ashtray, exposes `Temple 3` through the shared
-  development/checkpoint loader, rebuilds all six enemies on Sanity-zero
-  return, and leaves its north threshold inert for the next bounded slice
+  development/checkpoint loader, rebuilds all twelve enemies on Sanity-zero
+  return, and leaves its west threshold inert for the next bounded slice
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -505,9 +512,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build Temple Map 4 as a focused dart-wall corridor with one physical Ashtray
-and shared-loader entry. Keep it to that single trap family; leave snakes, the
-final chamber, and escape content for later bounded passes.
+Build Temple Map 4 as a long, narrow west-running dart-wall connector with
+animated wall torches, one physical Ashtray, and shared-loader entry. Keep it
+to that single trap family; leave the next open room, snakes, the final chamber,
+and escape content for later bounded passes.
 
 ## Also open
 
@@ -602,13 +610,15 @@ final chamber, and escape content for later bounded passes.
        shared-loader Ashtray, development-visible `Temple 1`, and an original
        80-second ancient/shamanic exploration loop (session 98).
 3. [x] Added a reversible 48x44 Temple Map 2 with five mandatory one-tile
-       spike-pit jumps, dedicated temple art, uninterrupted temple music, one
+       spike-pit jumps, five skeletons on alternating landings, fourteen wall
+       torches, dedicated temple art, uninterrupted temple music, one
        physical shared-loader Ashtray, development-visible `Temple 2`, and an
        north boundary leading into the next room (session 101).
-4. [x] Added a reversible 56x44 Temple Map 3 with six durable skeletons in
-       avoidable side lanes, broad looping routes, uninterrupted temple music,
-       one shared-loader Ashtray, development-visible `Temple 3`, and an inert
-       north boundary for the next room (session 102).
+4. [x] Added a reversible 56x44 Temple Map 3 with twelve durable skeletons in
+       avoidable side lanes, broad looping routes, twelve wall torches,
+       uninterrupted temple music, one shared-loader Ashtray,
+       development-visible `Temple 3`, and an inert west boundary for the next
+       narrow connector (sessions 102-103).
 5. [ ] Continue the multi-map dungeon, dart corridor, snake chamber, final
        battle, Fireball transition, rubble crawlspace, and ship escape in
        bounded slices without beginning Phase 7 gameplay.
