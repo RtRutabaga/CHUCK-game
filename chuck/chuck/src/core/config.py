@@ -182,6 +182,16 @@ DART_INTERVAL = 1.75
 DART_HITBOX_SHORT = 2
 DART_HITBOX_LONG = 7
 
+# Temple snakes are a brief pressure-release encounter: quick enough to make
+# the open chamber lively, but deliberately defeated by a single scratch.
+SNAKE_FRAME_W = 18
+SNAKE_FRAME_H = 10
+SNAKE_HITBOX_W = 14
+SNAKE_HITBOX_H = 6
+SNAKE_SPEED = 32.0
+SNAKE_NOTICE_RANGE = 96.0
+SNAKE_SANITY_DAMAGE = 10
+
 # Chult raptors are visibly larger and more immediately dangerous than the
 # undead, but remain slower than Chuck so open-space evasion is reliable.
 RAPTOR_FRAME_W = 44

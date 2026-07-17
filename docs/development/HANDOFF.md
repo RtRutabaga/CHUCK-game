@@ -3,11 +3,33 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `88f634f` (`Vary temple route and add wall torches`)
-- Current work: Phase 6 Temple Map 4 dart corridor
+- Base commit before this pass: `91a519a` (`Add temple dart corridor`)
+- Current work: Phase 6 Temple Map 5 snake chamber
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+Temple Map 5 is now a reversible 60x44 broad chamber reached through Map 4's
+former west boundary. The route enters from the east, loops around spaced
+monumental masonry piers, and turns south at the inert boundary for the next
+narrow connector. Eighteen animated wall torches continue the established
+temple language around all four sides, while the open floor prevents the
+encounter from becoming a mandatory kill gate.
+
+Twenty authored `TempleSnake` enemies reuse the ordinary enemy lifecycle:
+finite direct pursuit, tile collision, Sanity contact damage with existing
+i-frames, scratch targeting, y-sorted drawing, and full checkpoint reset. Their
+compact 18x10 procedural sprite uses a low coiled silhouette and restrained
+green temple palette. Each snake intentionally takes exactly one scratch, as
+required by the Phase 6 power-release beat; no weapon, upgrade, tutorial, drop,
+encounter controller, or progression flag was added.
+
+The map contains exactly one physical Ashtray. Development-visible `Temple 5`,
+menu-hidden `temple_5_anchor`, and the Map 4 return entry all use the shared
+checkpoint registry. Activation saves, CONTINUE restores saved Sanity and
+position, and Sanity-zero return rebuilds all twenty snakes. Both map
+transitions use safe named arrivals without bounce, and temple music continues
+without restarting.
 
 Temple Map 4 is now a reversible 72x24 west-running connector reached through
 Map 3's west doorway. Its eight-tile-high walkable lane keeps both torch walls
@@ -480,6 +502,16 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
+- New Temple Map 5 coverage verifies the exact 60x44 broad layout, twenty
+  one-hit snakes, finite pursuit/contact/Sanity behavior, connected east-to-
+  south route, eighteen wall torches, one Ashtray, save/CONTINUE, full snake
+  reset, reversible Map 4 transition, same-track audio, shared development
+  loading, temple art registration, and stable future south boundary. Native
+  320x180 review confirms Chuck, the low green snake silhouettes, Ashtray,
+  torches, masonry piers, and east doorway remain readable together.
+- All 40 standalone test modules pass, and a clean dummy-driver launch reaches
+  the native title scene.
+
 - New Temple Map 2 coverage verifies the exact 48x44 layout, 100 spikes in five
   complete required-jump bands, disconnected on-foot regions, ordinary jump
   traversal, one Ashtray, five skeletons, reversible non-bouncing transition,
@@ -794,12 +826,20 @@ as a convention for each future exterior Chult map.
     both torch-lined launcher walls remain visible, and the eight staggered dart
     lanes can be read and crossed by timing ordinary movement. Get hit once and
     verify normal Sanity/i-frames, activate the Ashtray, then test CONTINUE and
-    Sanity-zero return with all active darts cleared. Return east without bounce;
-    the far west threshold should stop at the next open-room boundary.
+    Sanity-zero return with all active darts cleared. Return east without bounce,
+    then cross the far west threshold into the next open room.
+41. In Temple Map 5, confirm the route opens into a broad torch-lined chamber
+    and every low green snake disappears after one scratch. Verify their short
+    pursuit and contact damage remain readable, but that the room can be crossed
+    without clearing it. Activate the single Ashtray, then test CONTINUE and
+    Sanity-zero return with all twenty snakes restored. Return east without
+    bounce and confirm the onward route now turns south; the south threshold
+    should stop at the next connector boundary.
 
 ## Next Bounded Task
 
-Build Temple Map 5 as the next broad/open room and the dedicated one-hit snake
-chamber. Include recurring wall torches, one physical Ashtray, shared-loader
-entry, and an onward turn that does not simply continue west. Leave the final
-chamber, rubble escape, and ship for later bounded passes.
+Build Temple Map 6 as the next long, narrow connector continuing south from the
+snake chamber. Include recurring wall torches, one physical Ashtray, and the
+shared-loader entry; select one remaining documented movement/hazard idea for a
+tightly bounded traversal slice. Leave the final chamber, Fireball transition,
+rubble escape, and ship for later bounded passes.

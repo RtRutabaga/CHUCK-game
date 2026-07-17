@@ -384,6 +384,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ρ": MarkerDef(kind="arrival:from_temple_3", under="·"),
     "Τ": MarkerDef(kind="anchor:temple_4_anchor", under="·"),
     "Υ": MarkerDef(kind="boundary:temple_5", under="∇"),
+    "Ξ": MarkerDef(kind="arrival:from_temple_5", under="·"),
+    "Η": MarkerDef(kind="arrival:from_temple_4", under="·"),
+    "Θ": MarkerDef(kind="anchor:temple_5_anchor", under="·"),
+    "Ο": MarkerDef(kind="boundary:temple_6", under="∇"),
+    "ς": MarkerDef(kind="snake", under="·"),
     "↓": MarkerDef(kind="dart_trap:down", under="W", allow_solid=True),
     "↑": MarkerDef(kind="dart_trap:up", under="W", allow_solid=True),
 }

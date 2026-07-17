@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 104 (Temple Map 4 dart corridor). This file is required by
+Updated: session 105 (Temple Map 5 snake chamber). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -28,7 +28,7 @@ the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the eleven authored Ashtrays have
+  retain the established local retry behavior; the twelve authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
@@ -413,8 +413,18 @@ the project rules and updated every session.
   dark wall apertures remain visible together at native 320x180. The room is
   enemy-free, contains exactly one physical Ashtray, exposes `Temple 4` through
   the shared loader, resets all active darts on Sanity-zero return, preserves
-  uninterrupted temple music, and leaves its west threshold inert for the next
-  open room
+  uninterrupted temple music, and enters the next open room through its west
+  threshold
+- Phase 6 Temple Map 5: a reversible 60x44 broad chamber turns the dungeon
+  south after the west-running connector. Twenty compact temple snakes occupy
+  open looping lanes around monumental masonry piers. They pursue only within
+  a finite 96-pixel range, deal 10 Sanity through normal contact/i-frames, and
+  intentionally disappear after one scratch. Eighteen animated wall torches
+  carry the recurring visual language around the chamber. Combat is not a gate;
+  the south threshold remains reachable through connected open space. The map
+  contains exactly one physical Ashtray, exposes `Temple 5` through the shared
+  loader, rebuilds all snakes on Sanity-zero return, preserves uninterrupted
+  temple music, and holds its inert south threshold for the next narrow map
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -455,7 +465,7 @@ the project rules and updated every session.
 
 ## Tests
 
-39 suites (most pure Python/headless): collision, tilemap,
+40 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
@@ -464,8 +474,8 @@ Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
 Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
 transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
 the Chult Map 5 temple exterior, the Phase 6 temple entrance hall, the Temple
-Map 2 spike corridor, the Temple Map 3 skeleton chamber, and the Temple Map 4
-dart corridor
+Map 2 spike corridor, the Temple Map 3 skeleton chamber, the Temple Map 4
+dart corridor, and the Temple Map 5 snake chamber
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -633,9 +643,13 @@ continue west. Leave the final chamber and escape content for later passes.
 5. [x] Added a reversible 72x24 Temple Map 4 west-running connector with eight
        staggered reusable dart launchers, eleven wall torches, one physical
        shared-loader Ashtray, development-visible `Temple 4`, uninterrupted
-       temple music, and an inert west boundary for the next open room
+       temple music, and a west boundary now connected to the next open room
        (session 104).
-6. [ ] Continue the multi-map dungeon, snake chamber, final
+6. [x] Added a reversible 60x44 broad Temple Map 5 with twenty one-hit snakes,
+       looping lanes, eighteen recurring wall torches, one physical shared-
+       loader Ashtray, development-visible `Temple 5`, uninterrupted temple
+       music, and an inert south boundary for the next connector (session 105).
+7. [ ] Continue the multi-map dungeon, final
        battle, Fireball transition, rubble crawlspace, and ship escape in
        bounded slices without beginning Phase 7 gameplay.
 

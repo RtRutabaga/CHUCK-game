@@ -162,7 +162,9 @@ def test_dart_room_uses_temple_art_and_has_stable_west_boundary() -> None:
     assert tileset.sheet == "temple.png"
     assert tileset.char_to_terrain["W"] == "temple_dart_wall"
     assert AREA_MUSIC["temple_darts"] == "temple.wav"
-    assert ("temple_darts", "∇") not in AREA_WALK_EXITS
+    assert AREA_WALK_EXITS[("temple_darts", "∇")].destination == (
+        "temple_snakes"
+    )
     assert AREA_WALK_EXITS[("temple_darts", "Δ")].destination == (
         "temple_skeletons"
     )

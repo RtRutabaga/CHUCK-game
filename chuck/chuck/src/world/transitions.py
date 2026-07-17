@@ -67,6 +67,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_darts", "Δ"): AreaExit(
         "temple_skeletons", "from_temple_4", "right"
     ),
+    ("temple_darts", "∇"): AreaExit(
+        "temple_snakes", "from_temple_4", "left"
+    ),
+    ("temple_snakes", "Δ"): AreaExit(
+        "temple_darts", "from_temple_5", "right"
+    ),
 }
 
 
@@ -88,4 +94,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "temple_spikes": "temple.wav",
     "temple_skeletons": "temple.wav",
     "temple_darts": "temple.wav",
+    "temple_snakes": "temple.wav",
 }

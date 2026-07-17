@@ -29,6 +29,7 @@ from src.entities.player import Player
 from src.entities.prop import Prop
 from src.entities.rat import SewerRat
 from src.entities.raptor import Raptor
+from src.entities.snake import TempleSnake
 from src.entities.undead import UndeadEnemy
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
@@ -242,7 +243,7 @@ class WorldScene(Scene):
             for kind, position in self.tilemap.object_spawns
             if kind in {
                 "cat", "rat", "zombie", "skeleton", "raptor",
-                "massive_dinosaur",
+                "massive_dinosaur", "snake",
             }
         ]
         self._staged_undead_spawns = [
@@ -285,7 +286,8 @@ class WorldScene(Scene):
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
             elif kind in {
-                "rat", "zombie", "skeleton", "raptor", "massive_dinosaur"
+                "rat", "zombie", "skeleton", "raptor", "massive_dinosaur",
+                "snake",
             }:
                 continue  # rebuilt with all enemies below
             elif kind.startswith("choice:"):
@@ -350,6 +352,8 @@ class WorldScene(Scene):
             raptor.update(dt, self.player)
         for dinosaur in self.dinosaurs:
             dinosaur.update(dt, self.player)
+        for snake in self.snakes:
+            snake.update(dt, self.player)
         for trap in self.dart_traps:
             dart = trap.update(dt)
             if dart is not None:
@@ -411,7 +415,7 @@ class WorldScene(Scene):
             scratch_first_target(
                 self.player.scratch_hitbox(),
                 [*self.breakables, *self.rats, *self.undead, *self.raptors,
-                 *self.dinosaurs],
+                 *self.dinosaurs, *self.snakes],
             )
             for breakable in self.breakables:
                 drop = breakable.take_drop_position()
@@ -424,6 +428,7 @@ class WorldScene(Scene):
         self.raptors = [raptor for raptor in self.raptors if raptor.alive]
         self.dinosaurs = [dinosaur for dinosaur in self.dinosaurs
                           if dinosaur.alive]
+        self.snakes = [snake for snake in self.snakes if snake.alive]
 
         blocking_rat = next(
             (rat for rat in self.rats if overlaps(self.player.hitbox, rat.hitbox)),
@@ -464,6 +469,17 @@ class WorldScene(Scene):
         )
         if blocking_dinosaur is not None:
             if self.sanity.damage(blocking_dinosaur.damage):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+            self.player.x, self.player.y = old_player_position
+
+        blocking_snake = next(
+            (snake for snake in self.snakes
+             if overlaps(self.player.hitbox, snake.hitbox)),
+            None,
+        )
+        if blocking_snake is not None:
+            if self.sanity.damage(blocking_snake.damage):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
             self.player.x, self.player.y = old_player_position
@@ -588,6 +604,7 @@ class WorldScene(Scene):
         drawables = [*self.props, *self.breakables, *self.anchors,
                      *self.hazards, *self.rats,
                      *self.undead, *self.raptors, *self.dinosaurs,
+                     *self.snakes,
                      *self.darts, *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
 
@@ -723,6 +740,7 @@ class WorldScene(Scene):
         self.undead = []
         self.raptors = []
         self.dinosaurs = []
+        self.snakes = []
         self.dart_traps = [
             DartTrap(cx, cy, direction)
             for direction, (cx, cy) in self._dart_trap_spawns
@@ -770,6 +788,11 @@ class WorldScene(Scene):
                 dinosaur.tilemap = self.tilemap
                 dinosaur.load_sprites(self.game.assets)
                 self.dinosaurs.append(dinosaur)
+            elif kind == "snake":
+                snake = TempleSnake(cx, cy)
+                snake.tilemap = self.tilemap
+                snake.load_sprites(self.game.assets)
+                self.snakes.append(snake)
 
     def _spawn_undead(
         self, kind: str, position: tuple[float, float]

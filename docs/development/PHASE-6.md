@@ -16,8 +16,11 @@ Implemented so far:
   skeletons, looping routes around monumental piers, and one Ashtray. Its
   onward boundary turns west into Temple Map 4.
 - Temple Map 4: long, narrow west-running connector with eight staggered dart
-  launchers, recurring wall torches, and one Ashtray. Its west boundary is
-  reserved for the next open room.
+  launchers, recurring wall torches, and one Ashtray. Its west boundary enters
+  Temple Map 5.
+- Temple Map 5: broad torch-lit snake chamber with twenty one-hit snakes,
+  looping lanes around masonry piers, and one Ashtray. Its onward route turns
+  south and is reserved for the next narrow connector.
 
 ------------------------------------------------------------------------
 
@@ -229,7 +232,7 @@ The phase ends immediately after Chuck reaches the ship.
 
 -   [ ] Multiple connected temple maps exist.
 -   [ ] Skeletons are the primary enemy.
--   [ ] Snakes are one-hit enemies.
+-   [x] Snakes are one-hit enemies.
 -   [ ] Jumping and hazards are central throughout the temple.
 -   [x] Dart walls and spike pits are
     implemented.

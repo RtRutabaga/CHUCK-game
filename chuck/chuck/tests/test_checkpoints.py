@@ -224,7 +224,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             "Waterdeep 1", "Waterdeep Ashtray", "Sewer 1", "Sewer 2",
             "Waterdeep 2", "Tavern 1", "Pantry 1",
             "Chult 1", "Chult 2", "Chult 3", "Chult 4", "Chult 5",
-            "Temple 1", "Temple 2", "Temple 3", "Temple 4",
+            "Temple 1", "Temple 2", "Temple 3", "Temple 4", "Temple 5",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)
@@ -250,6 +250,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
                 "chult_temple", "temple_entrance", "temple_spikes",
                 "temple_skeletons",
                 "temple_darts",
+                "temple_snakes",
             }:
                 assert game.progress.has("chult_reached")
         assert len(CHECKPOINTS) > len(selector.checkpoints)  # internal returns
