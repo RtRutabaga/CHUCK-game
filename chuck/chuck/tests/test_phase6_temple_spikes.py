@@ -121,12 +121,14 @@ def test_temple_2_ashtray_saves_continues_and_respawns() -> None:
         directory.cleanup()
 
 
-def test_spikes_use_temple_art_and_north_boundary_is_stable() -> None:
+def test_spikes_use_temple_art_and_north_boundary_enters_map_3() -> None:
     tileset = tileset_for("temple_spikes")
     assert tileset.sheet == "temple.png"
     assert tileset.char_to_terrain["♠"] == "temple_spikes"
     assert AREA_MUSIC["temple_spikes"] == "temple.wav"
-    assert ("temple_spikes", "∇") not in AREA_WALK_EXITS
+    assert AREA_WALK_EXITS[("temple_spikes", "∇")].destination == (
+        "temple_skeletons"
+    )
     assert AREA_WALK_EXITS[("temple_spikes", "Δ")].destination == (
         "temple_entrance"
     )

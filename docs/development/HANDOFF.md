@@ -3,11 +3,28 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `3d1816b` (`Increase temple music volume`)
-- Current work: Phase 6 Temple Map 2 spike corridor
+- Base commit before this pass: `ef4b5b5` (`Add temple spike corridor`)
+- Current work: Phase 6 Temple Map 3 skeleton chamber
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+Temple Map 3 is now a reversible 56x44 skeleton chamber reached through Map
+2's former north boundary. Six existing durable, human-scale skeletons occupy
+spaced side lanes around monumental masonry piers. Even treating a full 3x3
+area around every spawn as blocked leaves a connected south-to-north route, so
+the room encourages evasion and never becomes a kill gate.
+
+The chamber keeps the existing temple art and louder temple loop; movement
+between Maps 2 and 3 therefore does not restart playback. It adds no enemy
+variant, encounter controller, progression flag, or new combat mechanic. Its
+north threshold is deliberately inert for the next bounded interior slice.
+
+The map contains exactly one physical Ashtray. Development-visible `Temple 3`,
+menu-hidden `temple_3_anchor`, and the Map 2 return entry all use the shared
+checkpoint registry. Activation saves, CONTINUE restores saved Sanity and
+position, and Sanity-zero return rebuilds all six authored skeletons. The south
+door returns to a safe named Map 2 arrival without bounce.
 
 Temple Map 2 is now a reversible 48x44 interior corridor reached through Map
 1's former north boundary. Five complete twenty-tile spike bands split the
@@ -429,10 +446,16 @@ as a convention for each future exterior Chult map.
   complete required-jump bands, disconnected on-foot regions, ordinary jump
   traversal, one Ashtray, no enemies, reversible non-bouncing transition,
   uninterrupted music identity, `Temple 2` development loading, save/CONTINUE/
-  respawn, dedicated sheet registration, and inert north boundary. Focused
+  respawn, dedicated sheet registration, and Map 3 north transition. Focused
   entrance, jump, checkpoint, tileset, and transition suites pass. Native
   320x180 review confirms the trench and pale spike silhouettes are readable.
-- All 37 standalone test modules pass, and a clean dummy-driver launch reaches
+- New Temple Map 3 coverage verifies the exact 56x44 layout, six skeleton-only
+  enemy spawns, a route that remains connected with 3x3 avoidance envelopes,
+  one Ashtray, reversible non-bouncing Map 2 transition, uninterrupted music,
+  shared development loading, save/CONTINUE, and full enemy rebuild on return.
+  Native 320x180 review confirms the monumental pier lanes and human-scale
+  skeleton silhouettes remain readable against Chuck.
+- All 38 standalone test modules pass, and a clean dummy-driver launch reaches
   the 320x180 title scene.
 
 - Rendered loudness now measures Chult at -17.13 dBFS RMS and the deliberately
@@ -710,10 +733,15 @@ as a convention for each future exterior Chult map.
     continues without restarting, activate the single Ashtray, and walk into a
     spike band to verify it blocks Chuck. Jump across all five bands, return
     south without bounce, then verify CONTINUE and Sanity-zero return restore
-    Temple 2. The north threshold should stop cleanly at the next map boundary.
+    Temple 2, then cross its north threshold into Temple Map 3.
+39. In Temple Map 3, confirm all six skeletons are visibly human-scale and
+    dangerous but can be routed around without killing them. Activate the one
+    Ashtray, test CONTINUE and Sanity-zero return, and verify all defeated or
+    displaced skeletons reset. Return south without bounce; the north threshold
+    should stop cleanly at the next map boundary.
 
 ## Next Bounded Task
 
-Build Temple Map 3 as one skeleton-focused chamber with its own physical
-Ashtray and shared-loader entry. Keep its combat avoidable and leave dart walls,
-the snake room, final chamber, rubble escape, and ship for later bounded passes.
+Build Temple Map 4 as one dart-wall corridor with its own physical Ashtray and
+shared-loader entry. Keep it to that single trap family and leave the snake
+room, final chamber, rubble escape, and ship for later bounded passes.

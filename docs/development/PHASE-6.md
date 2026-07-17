@@ -11,7 +11,10 @@ Implemented so far:
 
 - Temple Map 1: reversible entrance hall and first Ashtray.
 - Temple Map 2: five-band spike corridor, repeated committed jumps, and one
-  Ashtray. Its north boundary is reserved for the next interior map.
+  Ashtray.
+- Temple Map 3: broad skeleton chamber with six avoidable, durable skeletons,
+  looping routes around monumental piers, and one Ashtray. Its north boundary
+  is reserved for the next interior map.
 
 ------------------------------------------------------------------------
 

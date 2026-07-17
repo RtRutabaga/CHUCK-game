@@ -1,10 +1,10 @@
 ; PHASE 6 - TEMPLE MAP 2 (48x44 tiles).
 ; Five full-width spike bands teach repeated committed jumps.
-; One Ashtray serves the map; the north threshold is the next stable boundary.
+; One Ashtray serves the map; the north threshold enters the skeleton chamber.
 ████████████████████████████████████████████████
 ████████████████████████████████████████████████
 █████████████████████∇∇ω∇∇∇█████████████████████
-██████████████····················██████████████
+██████████████·········Ι··········██████████████
 ██████████████····················██████████████
 ██████████████····················██████████████
 ██████████████♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠♠██████████████

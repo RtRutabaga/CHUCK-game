@@ -373,6 +373,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "φ": MarkerDef(kind="arrival:from_temple_1", under="·"),
     "χ": MarkerDef(kind="anchor:temple_2_anchor", under="·"),
     "ω": MarkerDef(kind="boundary:temple_3", under="∇"),
+    "Ι": MarkerDef(kind="arrival:from_temple_3", under="·"),
+    "Λ": MarkerDef(kind="arrival:from_temple_2", under="·"),
+    "Φ": MarkerDef(kind="anchor:temple_3_anchor", under="·"),
+    "Ψ": MarkerDef(kind="skeleton", under="·"),
+    "Π": MarkerDef(kind="boundary:temple_4", under="∇"),
 }
 
 _COMMENT_PREFIX = ";"
