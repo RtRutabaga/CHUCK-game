@@ -26,6 +26,10 @@ Implemented so far:
   boundary reserved for the next broad room.
 - Every Temple Map 1-6 threshold now uses a narrowed three-tile opening and a
   reusable human-scale stone arch instead of repeated doorway bars.
+- All six temple interiors carry mute procedural dressing in the game's
+  established style-add-on language: coiled serpent idols, glyph stelae,
+  terracotta urns, and fallen column drums, none of which change any route,
+  count, or hazard.
 
 ------------------------------------------------------------------------
 

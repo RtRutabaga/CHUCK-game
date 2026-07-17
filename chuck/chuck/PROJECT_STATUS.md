@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: session 106 (temple arches and Map 6 Astral wind). This file is required by
-the project rules and updated every session.
+Updated: session 107 (temple interior dressing: idols, stelae, urns, columns).
+This file is required by the project rules and updated every session.
 
 ## Working systems
 
@@ -439,6 +439,18 @@ the project rules and updated every session.
   exactly one physical Ashtray, exposes `Temple 6` through the shared loader,
   preserves uninterrupted temple music, returns safely to Map 5, and holds an
   inert east boundary for the next broad room
+- Temple interior dressing: all six temple maps carry the game's established
+  style-add-on language (the docks' three-quarter buildings, walls/gates, and
+  market stall; the jungle's cog, trees, and shrubs) translated into ancient
+  temple pieces — coiled serpent idols (26x44, gold-eyed, taller than a human
+  NPC), rounded glyph stelae (20x34), terracotta urns (14x18: whole, cracked,
+  toppled), and low fallen column drums (24x16). All are mute, y-sorted
+  procedural props from tools/generate_temple_props.py with stable positional
+  variants. Wall pieces ('†','‡','¦') keep the wall's solidity against its
+  face, so no route, torch count, spike band, or dart lane changed; floor
+  pieces ('¢','¬') occupy single tiles in the broad rooms only, and a
+  dedicated suite locks the per-map placement counts and re-verifies every
+  arrival-to-boundary route
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -479,7 +491,7 @@ the project rules and updated every session.
 
 ## Tests
 
-41 suites (most pure Python/headless): collision, tilemap,
+42 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
@@ -489,7 +501,8 @@ Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
 transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
 the Chult Map 5 temple exterior, the Phase 6 temple entrance hall, the Temple
 Map 2 spike corridor, the Temple Map 3 skeleton chamber, the Temple Map 4
-dart corridor, the Temple Map 5 snake chamber, and the Temple Map 6 Astral wind
+dart corridor, the Temple Map 5 snake chamber, the Temple Map 6 Astral wind,
+and the temple interior dressing
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -668,7 +681,11 @@ rubble escape, and Phase 7 ship gameplay.
        Temple Map 6 winding connector with eight mandatory Astral Sea jumps,
        twenty-seven wall torches, one shared-loader Ashtray, development-visible
        `Temple 6`, and an inert east boundary (session 106).
-8. [ ] Continue the multi-map dungeon, final
+8. [x] Dressed all six temple interiors with the established style-add-on
+       language: serpent idols, glyph stelae, terracotta urns, and fallen
+       column drums — 54 mute y-sorted procedural props that change no route,
+       count, or hazard, locked by a dedicated test suite (session 107).
+9. [ ] Continue the multi-map dungeon, final
        battle, Fireball transition, rubble crawlspace, and ship escape in
        bounded slices without beginning Phase 7 gameplay.
 

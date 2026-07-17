@@ -60,6 +60,25 @@ _SPRITES = {
     "skull_stake": "objects/skull_stake.png",
     "temple_arch_ns": "objects/temple_arch_ns.png",
     "temple_arch_ew": "objects/temple_arch_ew.png",
+    # Temple interior dressing (mute, y-sorted; the temple's version of
+    # the docks' stall and the jungle's trees). Tuples vary by position.
+    "temple_idol": (
+        "objects/temple_idol_1.png",
+        "objects/temple_idol_2.png",
+    ),
+    "temple_stela": (
+        "objects/temple_stela_1.png",
+        "objects/temple_stela_2.png",
+    ),
+    "temple_urn": (
+        "objects/temple_urn_1.png",
+        "objects/temple_urn_2.png",
+        "objects/temple_urn_3.png",
+    ),
+    "temple_column": (
+        "objects/temple_column_1.png",
+        "objects/temple_column_2.png",
+    ),
 }
 
 # Props that respond to the interact key with a line of dialogue

@@ -1,4 +1,12 @@
-"""Generate reusable human-scale stone arches for temple thresholds."""
+"""Generate reusable temple props: threshold arches and interior dressing.
+
+The dressing set (serpent idols, glyph stelae, cracked urns, fallen
+column drums) continues the game's style-add-on convention — the
+three-quarter Waterdeep buildings, the market stall, the jungle cog,
+trees, and shrubs — translated into ancient temple interior language.
+All pieces are mute, y-sorted scenery drawn from the same restrained
+temple masonry palette, plus a muted terracotta for the pottery.
+"""
 
 from pathlib import Path
 
@@ -11,6 +19,10 @@ STONE_DARK = (27, 38, 37, 255)
 STONE = (52, 64, 55, 255)
 STONE_LIGHT = (87, 91, 68, 255)
 MOSS = (36, 76, 44, 255)
+CLAY = (139, 90, 58, 255)
+CLAY_DARK = (104, 66, 44, 255)
+CLAY_LIGHT = (166, 116, 76, 255)
+EYE = (216, 178, 96, 255)
 
 
 def _blocks(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int]) -> None:
@@ -64,13 +76,147 @@ def east_west_arch() -> Image.Image:
     return image
 
 
+def serpent_idol(variant: int) -> Image.Image:
+    """A 26x44 coiled-serpent idol on a stepped pedestal.
+
+    Taller than the 30px human NPC scale: to Chuck, a monument. Variant
+    0 faces left, variant 1 faces right; both keep the same silhouette
+    weight so paired placements read as deliberate temple symmetry.
+    """
+    image = Image.new("RGBA", (26, 44), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    flip = variant % 2 == 1
+    # Stepped pedestal (widest at the base, like the pyramid outside).
+    draw.rectangle((1, 38, 24, 43), fill=STONE)
+    draw.rectangle((3, 33, 22, 38), fill=STONE)
+    draw.line((1, 38, 24, 38), fill=STONE_DARK)
+    draw.line((3, 33, 22, 33), fill=STONE_LIGHT)
+    draw.line((1, 43, 24, 43), fill=STONE_DARK)
+    # Coiled body: three stacked stone coils, narrowing upward.
+    draw.rectangle((4, 26, 21, 33), fill=STONE)
+    draw.rectangle((6, 19, 19, 26), fill=STONE)
+    draw.rectangle((8, 13, 17, 19), fill=STONE)
+    for y in (26, 19, 13):
+        draw.line((5, y, 20, y), fill=STONE_DARK)
+    draw.line((4, 29, 21, 29), fill=STONE_DARK)
+    draw.line((6, 22, 19, 22), fill=STONE_DARK)
+    # Raised head with open jaw, feathered crest, and a gold eye.
+    head_x = 3 if flip else 13
+    draw.rectangle((head_x, 3, head_x + 9, 13), fill=STONE)
+    jaw_x = head_x - 2 if flip else head_x + 9
+    draw.rectangle((jaw_x, 8, jaw_x + 2, 12), fill=STONE_DARK)
+    crest_x = head_x + 7 if flip else head_x
+    draw.rectangle((crest_x, 0, crest_x + 2, 4), fill=STONE_LIGHT)
+    draw.rectangle((crest_x - 3 if flip else crest_x + 3, 1,
+                    crest_x - 1 if flip else crest_x + 5, 4),
+                   fill=STONE_LIGHT)
+    eye_x = head_x + 2 if flip else head_x + 6
+    draw.rectangle((eye_x, 6, eye_x + 1, 7), fill=EYE)
+    # Weathering: highlight along one flank, moss at the base coils.
+    draw.line((4, 27, 4, 33), fill=STONE_LIGHT)
+    draw.line((21 if flip else 4, 39, 24 if flip else 7, 39), fill=MOSS)
+    draw.line((6, 20, 6, 25) if not flip else (19, 20, 19, 25), fill=MOSS)
+    return image
+
+
+def glyph_stela(variant: int) -> Image.Image:
+    """A 20x34 rounded-top carved slab with rows of worn glyphs."""
+    image = Image.new("RGBA", (20, 34), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    # Base plinth, slab body, rounded crown.
+    draw.rectangle((1, 30, 18, 33), fill=STONE)
+    draw.rectangle((3, 6, 16, 30), fill=STONE)
+    draw.rectangle((5, 3, 14, 6), fill=STONE)
+    draw.rectangle((7, 1, 12, 3), fill=STONE)
+    draw.line((3, 6, 3, 30), fill=STONE_LIGHT)
+    draw.line((16, 6, 16, 30), fill=STONE_DARK)
+    draw.line((1, 30, 18, 30), fill=STONE_DARK)
+    # Glyph rows: short dark strokes and dots, staggered per variant.
+    for row, y in enumerate(range(8, 28, 4)):
+        offset = (row + variant) % 2 * 2
+        draw.line((5 + offset, y, 8 + offset, y), fill=STONE_DARK)
+        draw.point((11 + offset, y), fill=STONE_DARK)
+        draw.line((10 + offset, y + 1, 12 + offset, y + 1), fill=STONE_DARK)
+    # A chipped corner and a thread of moss keep it ancient, not new.
+    if variant % 2 == 0:
+        draw.rectangle((13, 3, 16, 7), fill=TRANSPARENT)
+        draw.line((4, 24, 4, 29), fill=MOSS)
+    else:
+        draw.rectangle((3, 25, 5, 30), fill=TRANSPARENT)
+        draw.line((15, 8, 15, 13), fill=MOSS)
+    return image
+
+
+def cracked_urn(variant: int) -> Image.Image:
+    """A 14x18 terracotta urn; the third variant lies toppled."""
+    image = Image.new("RGBA", (14, 18), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    if variant % 3 == 2:
+        # Toppled: the urn on its side, mouth spilling shadow.
+        draw.rectangle((1, 10, 12, 16), fill=CLAY)
+        draw.rectangle((0, 11, 2, 15), fill=CLAY_DARK)
+        draw.ellipse((10, 10, 13, 16), fill=CLAY_DARK)
+        draw.line((3, 11, 9, 11), fill=CLAY_LIGHT)
+        draw.line((2, 16, 11, 16), fill=STONE_DARK)
+        draw.line((5, 12, 7, 15), fill=CLAY_DARK)  # crack
+        return image
+    # Standing: narrow foot, swollen belly, lipped mouth.
+    draw.rectangle((4, 15, 9, 17), fill=CLAY_DARK)
+    draw.rectangle((2, 6, 11, 15), fill=CLAY)
+    draw.rectangle((1, 8, 12, 12), fill=CLAY)
+    draw.rectangle((3, 3, 10, 6), fill=CLAY_DARK)
+    draw.rectangle((2, 1, 11, 3), fill=CLAY)
+    draw.line((2, 1, 11, 1), fill=CLAY_LIGHT)
+    draw.line((2, 8, 2, 12), fill=CLAY_LIGHT)
+    # Painted band, then a crack on the second variant.
+    draw.line((2, 7, 11, 7), fill=STONE_DARK)
+    if variant % 3 == 1:
+        draw.line((8, 8, 6, 12), fill=CLAY_DARK)
+        draw.line((6, 12, 7, 15), fill=CLAY_DARK)
+    return image
+
+
+def fallen_column(variant: int) -> Image.Image:
+    """A 24x16 pair of collapsed column drums, low and wide."""
+    image = Image.new("RGBA", (24, 16), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    lean = variant % 2
+    # Larger drum lying across, smaller drum tipped against it.
+    draw.rectangle((1, 7, 15, 14), fill=STONE)
+    draw.ellipse((13, 7, 18, 14), fill=STONE_DARK)
+    draw.ellipse((14, 8, 17, 13), fill=STONE)
+    draw.line((2, 8, 12, 8), fill=STONE_LIGHT)
+    draw.line((1, 14, 15, 14), fill=STONE_DARK)
+    draw.line((5, 7, 5, 14), fill=STONE_DARK)
+    draw.line((10, 7, 10, 14), fill=STONE_DARK)
+    small_x = 16 + lean * 2
+    draw.rectangle((small_x, 3 + lean, small_x + 6, 10 + lean), fill=STONE)
+    draw.line((small_x, 4 + lean, small_x + 6, 4 + lean), fill=STONE_LIGHT)
+    draw.line((small_x, 10 + lean, small_x + 6, 10 + lean), fill=STONE_DARK)
+    # Rubble crumbs and moss at the break.
+    draw.point((17, 15), fill=STONE_DARK)
+    draw.point((3, 15), fill=STONE_DARK)
+    draw.line((1, 10, 1, 13), fill=MOSS)
+    return image
+
+
 def main() -> None:
     out_dir = Path(__file__).resolve().parents[1] / "assets" / "sprites" / "objects"
     out_dir.mkdir(parents=True, exist_ok=True)
-    for name, image in (
-        ("temple_arch_ns", north_south_arch()),
-        ("temple_arch_ew", east_west_arch()),
-    ):
+    images = {
+        "temple_arch_ns": north_south_arch(),
+        "temple_arch_ew": east_west_arch(),
+        "temple_idol_1": serpent_idol(0),
+        "temple_idol_2": serpent_idol(1),
+        "temple_stela_1": glyph_stela(0),
+        "temple_stela_2": glyph_stela(1),
+        "temple_urn_1": cracked_urn(0),
+        "temple_urn_2": cracked_urn(1),
+        "temple_urn_3": cracked_urn(2),
+        "temple_column_1": fallen_column(0),
+        "temple_column_2": fallen_column(1),
+    }
+    for name, image in images.items():
         out = out_dir / f"{name}.png"
         image.save(out)
         print(f"Wrote {out}")

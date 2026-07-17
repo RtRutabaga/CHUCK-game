@@ -81,6 +81,11 @@ Terrain legend:
     'Δ'  temple doorway      (walkable dark threshold)
     '∇'  deeper doorway      (walkable inert phase boundary)
     '♠'  temple spike pit    (solid on foot, jumpable)
+    '†'  serpent idol        (solid dressing prop over temple wall)
+    '‡'  glyph stela         (solid dressing prop over temple wall)
+    '¦'  cracked urn         (solid dressing prop over temple wall base)
+    '¢'  cracked urn         (solid dressing prop on temple floor)
+    '¬'  fallen column       (solid dressing prop on temple floor)
     'W'  temple dart aperture (solid wall in temple maps)
     ';'  sailing cog         (solid landmark over dense jungle footprint)
     "'"  beaten jungle trail (walkable route toward the next Chult area)
@@ -312,6 +317,20 @@ TILE_DEFS: dict[str, TileDef] = {
     "»": TileDef(solid=False, color=(10, 16, 15),
                  prop="temple_arch_ew", under="Δ"),
     "♠": TileDef(solid=True, color=(20, 25, 24)),
+    # Temple interior dressing — the temple's style add-ons, matching the
+    # docks' stall/walls and the jungle's trees. Wall pieces keep the
+    # wall's solidity and draw y-sorted against its face; floor pieces
+    # occupy one floor tile each (broad rooms only, never on a route).
+    "†": TileDef(solid=True, color=(52, 62, 54),
+                 prop="temple_idol", under="█"),
+    "‡": TileDef(solid=True, color=(52, 62, 54),
+                 prop="temple_stela", under="█"),
+    "¦": TileDef(solid=True, color=(52, 62, 54),
+                 prop="temple_urn", under="█"),
+    "¢": TileDef(solid=True, color=(71, 76, 61),
+                 prop="temple_urn", under="·"),
+    "¬": TileDef(solid=True, color=(71, 76, 61),
+                 prop="temple_column", under="·"),
     ";": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="sailing_cog", under="#"),
     "'": TileDef(solid=False, color=(44, 45, 29)),
