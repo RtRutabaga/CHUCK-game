@@ -403,6 +403,7 @@ Possible elements include:
 -   partially obscured masonry
 -   a dark entrance
 -   simple carved shapes or repeated stone patterns
+-   skulls mounted on stakes lining the approach path
 
 Keep the art consistent with the game's simple procedural pixel-art
 presentation.
@@ -747,6 +748,7 @@ and temple exterior.**
 -   [ ] The exterior matches established Chult.
 -   [ ] The temple feels large relative to Chuck.
 -   [ ] The player has space to approach and inspect it.
+-   [ ] Skull stakes clearly line the path before the central staircase.
 -   [ ] The entrance is readable.
 -   [ ] The phase reaches a clean temple dungeon transition point.
 -   [ ] The temple dungeon interior is not implemented.

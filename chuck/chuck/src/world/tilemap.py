@@ -75,6 +75,7 @@ Terrain legend:
     'π'  temple masonry     (solid weathered stepped stone)
     'τ'  temple stair       (walkable broad stone stair)
     'Ω'  temple entrance    (walkable dark phase boundary)
+    'ψ'  skull stake        (solid prop over jungle ground)
     ';'  sailing cog         (solid landmark over dense jungle footprint)
     "'"  beaten jungle trail (walkable route toward the next Chult area)
     '"'  jungle trailhead    (walkable trail, canopy drawn overhead)
@@ -287,6 +288,8 @@ TILE_DEFS: dict[str, TileDef] = {
     "π": TileDef(solid=True, color=(77, 87, 67)),
     "τ": TileDef(solid=False, color=(91, 96, 72)),
     "Ω": TileDef(solid=False, color=(12, 20, 18)),
+    "ψ": TileDef(solid=True, color=config.COLOR_FLOOR_PLACEHOLDER,
+                 prop="skull_stake", under="."),
     ";": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="sailing_cog", under="#"),
     "'": TileDef(solid=False, color=(44, 45, 29)),

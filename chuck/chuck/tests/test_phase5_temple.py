@@ -47,6 +47,14 @@ def test_temple_map_is_a_connected_enemy_free_exterior() -> None:
     assert kinds.count("anchor:chult_5_anchor") == 1
     assert kinds.count("arrival:from_chult_4") == 1
     assert kinds.count("boundary:temple_interior") == 1
+    stakes = {(col, row) for kind, col, row in tilemap.prop_tiles
+              if kind == "skull_stake"}
+    assert stakes == {
+        (27, 24), (36, 24), (27, 27), (36, 27),
+        (27, 30), (36, 30), (27, 33), (36, 33),
+    }
+    assert all((col, row) in reached
+               for row in range(23, 34) for col in range(28, 36))
 
 
 def test_pyramid_is_large_stepped_and_has_a_broad_readable_stair() -> None:

@@ -3,11 +3,22 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `9c98839` (`Add massive dinosaur to Chult respite`)
-- Current work: Chult Map 5 temple exterior and Phase 5 boundary
+- Base commit before this pass: `9472dac` (`Add Chult temple exterior`)
+- Current work: skull stakes lining the Map 5 temple approach
 - Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
 
 ## Completed This Pass
+
+Four evenly spaced pairs of skull stakes now line the route immediately before
+the pyramid staircase. The eight authored placements sit at columns 27 and 36
+across rows 24, 27, 30, and 33, preserving a clear eight-tile corridor that
+narrows naturally into the six-tile temple stair.
+
+The new reusable `skull_stake` prop uses a 12x30 procedural sprite: weathered
+wood, a large human skull, dark sockets, and restrained bone highlights. Its
+one-tile solid jungle-ground footprint and normal painter-order anchoring let
+Chuck pass in front of or behind each stake. The stakes are mute scenery with
+no interaction, damage, state, or enemy behavior.
 
 Chult Map 5 now exists as a 64x48 enemy-free temple exterior. The ordinary Map
 4 walk exit loads its named southern arrival and the existing Chult music/art
@@ -353,6 +364,12 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
+- Focused temple/prop/tileset coverage verifies all eight exact placements,
+  intact arrival-to-entrance connectivity, the unobstructed central corridor,
+  valid tall mute-prop registration, source-generated sprite output, and normal
+  native-scale anchoring. Native 320x180 review confirms four readable pairs
+  frame Chuck and lead the eye directly toward the staircase.
+
 - New temple-exterior coverage verifies the exact 64x48 map, connected
   arrival-to-entrance route, no enemy markers, eight grass tufts, one Ashtray,
   five strictly widening pyramid tiers, 468 solid masonry tiles, 110 stair
@@ -597,6 +614,9 @@ as a convention for each future exterior Chult map.
     eight grass tufts remain optional, and no enemies distract from the temple.
     Test CONTINUE and Sanity-zero return, then climb to the dark entrance and
     confirm Phase 5 stops cleanly without loading a dungeon.
+36. Walk the final approach and confirm four matched pairs of skull stakes line
+    both sides of the path, remain much taller than Chuck, lead the eye into the
+    central stair, and never narrow or snag the broad walkable corridor.
 
 ## Next Bounded Task
 

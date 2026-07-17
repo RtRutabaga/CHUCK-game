@@ -65,6 +65,14 @@ def test_chimney_is_a_valid_mute_prop() -> None:
     assert p._draw_y == 10 * TS - 22  # rises above its roof tile
 
 
+def test_skull_stake_is_a_tall_mute_prop() -> None:
+    stake = Prop("skull_stake", col=27, row=24, assets=FakeAssets(12, 30))
+    assert stake.dialogue_id is None and stake.choice_id is None
+    assert stake.sort_y == 25 * TS
+    assert stake._draw_y == 25 * TS - 30
+    assert stake._draw_y < 24 * TS
+
+
 def test_house_door_is_a_valid_closed_interactable() -> None:
     p = Prop("house_door", col=14, row=4, assets=FakeAssets(14, 20))
     assert p.dialogue_id == "closed_door"

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 96 (Chult Map 5 temple exterior). This file is required by
+Updated: session 97 (temple skull-stake approach). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -363,6 +363,10 @@ the project rules and updated every session.
   convention. Map 4 now enters its named southern arrival; `Chult 5` and its
   one physical Ashtray use the shared loader/save/respawn path. The entrance is
   an authored but inert next-phase boundary; no dungeon interior exists
+- Temple approach dressing: four matched pairs of reusable 12x30 skull stakes
+  line the path immediately before the pyramid staircase. Their solid native
+  footprints preserve an eight-tile central corridor and normal painter order;
+  they are mute environmental storytelling rather than enemies or interactables
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -555,6 +559,8 @@ the dungeon interior without the next phase contract.
        tufts, no enemies, shared `Chult 5` development loading, and one physical
        Ashtray. Connected Map 4 through its existing named boundary without
        beginning the dungeon (session 96).
+   - [x] Lined the pre-stair approach with eight reusable, human-scale skull
+         stakes while preserving the broad central route (session 97).
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

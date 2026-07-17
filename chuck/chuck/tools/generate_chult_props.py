@@ -194,6 +194,34 @@ def sailing_cog() -> Image.Image:
     return image
 
 
+def skull_stake() -> Image.Image:
+    """A restrained human skull on a weathered stake, enormous to Chuck."""
+    image = Image.new("RGBA", (12, 30), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    outline = (29, 29, 25, 255)
+    wood_dark = (53, 42, 28, 255)
+    wood = (91, 66, 38, 255)
+    bone_dark = (116, 111, 83, 255)
+    bone = (181, 173, 128, 255)
+    bone_light = (211, 199, 149, 255)
+
+    draw.polygon(((5, 29), (7, 29), (7, 10), (6, 7), (5, 10)), fill=outline)
+    draw.rectangle((5, 11, 6, 28), fill=wood)
+    draw.line((7, 12, 7, 27), fill=wood_dark, width=1)
+    draw.rectangle((3, 2, 9, 9), fill=outline)
+    draw.rectangle((2, 3, 10, 7), fill=outline)
+    draw.rectangle((3, 1, 8, 9), fill=bone)
+    draw.rectangle((2, 3, 9, 7), fill=bone)
+    draw.rectangle((4, 1, 7, 2), fill=bone_light)
+    draw.rectangle((3, 5, 4, 6), fill=outline)
+    draw.rectangle((7, 5, 8, 6), fill=outline)
+    draw.point((6, 7), fill=bone_dark)
+    draw.rectangle((4, 8, 8, 10), fill=bone_dark)
+    draw.point((5, 9), fill=bone_light)
+    draw.point((7, 9), fill=bone_light)
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, image in (
@@ -204,6 +232,7 @@ def main() -> None:
         ("jungle_shrub_2", jungle_shrub(1)),
         ("jungle_shrub_3", jungle_shrub(2)),
         ("sailing_cog", sailing_cog()),
+        ("skull_stake", skull_stake()),
     ):
         path = OUT / f"{name}.png"
         image.save(path)
