@@ -134,6 +134,11 @@ SANITY_MAX = 100
 # pickups visible on the meter before hazards exist to drain it.)
 SANITY_START = 60
 CIGARETTE_SANITY_RESTORE = 25  # TODO: tune during Phase One playtesting
+# A carton (found by breaking a temple urn) counts as consuming exactly
+# this many cigarettes. The number matters beyond the capped sanity
+# refill: a later session adds a cigarette counter, and a carton must
+# bank exactly 20 into it.
+CARTON_CIGARETTE_COUNT = 20
 
 # Seconds of invulnerability after taking a hit, so one cat brush
 # doesn't drain everything in a single overlap.

@@ -538,6 +538,25 @@ class TileMap:
             return "#"
         return self._grid[row][col]
 
+    def clear_tile(self, col: int, row: int) -> None:
+        """Replace a prop tile with its declared under-terrain.
+
+        Used when a breakable prop (a temple urn) is destroyed at
+        runtime: a floor urn's tile opens for walking, a wall-base urn's
+        tile stays the wall it always was. Loud error if the tile has no
+        under-terrain — clearing a plain tile is always a logic mistake.
+        Map reload re-parses the file, so cleared tiles reset naturally.
+        """
+        char = self._grid[row][col]
+        under = TILE_DEFS[char].under
+        if under is None:
+            raise ValueError(
+                f"Tile {char!r} at col {col}, row {row} has no "
+                f"under-terrain to clear to in {self.map_path.name}"
+            )
+        line = self._grid[row]
+        self._grid[row] = line[:col] + under + line[col + 1:]
+
     # ------------------------------------------------------------------
     # Drawing
     # ------------------------------------------------------------------

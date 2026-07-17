@@ -2,9 +2,11 @@
 
 The temple's version of the game's established style add-ons (the
 three-quarter Waterdeep buildings, market stall, jungle cog, trees, and
-shrubs): mute, y-sorted, procedural scenery. Wall pieces keep the wall's
+shrubs): y-sorted, procedural set pieces. Wall pieces keep the wall's
 solidity so no route, torch count, or hazard lane changes; floor pieces
-occupy single tiles in broad rooms only.
+occupy single tiles in broad rooms only. Idols, stelae, and columns are
+mute scenery; urns are scratch-breakables (see test_temple_urns) but
+still speak no dialogue and are placed by the same dressing chars.
 """
 
 from collections import Counter, deque

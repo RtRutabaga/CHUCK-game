@@ -56,6 +56,14 @@ class BreakableGrass(Entity):
         self._drop_pending = False
         return self._center
 
+    def create_pickup(self, drop: tuple[float, float], assets):
+        """The reward this breakable conceals: one cigarette."""
+        from src.entities.pickup import Cigarette
+
+        pickup = Cigarette(*drop)
+        pickup.load_sprite(assets)
+        return pickup
+
     def update(self, dt: float) -> None:
         if self.intact:
             return

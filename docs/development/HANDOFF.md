@@ -3,70 +3,89 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `5216ecc` (`Align east/west temple arches with their doorways`)
-- Current work: worn-trail approaches before the Chult vine exits (session 109)
-- Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`); this pass is a
-  playtest-directed readability fix in the completed Chult exteriors.
+- Base commit before this pass: `40533f3` (`Add worn-trail approaches before the Chult vine exits`)
+- Current work: breakable temple urns spilling cigarette cartons (session 110)
+- Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-Playtest found the hanging-vine jungle exits unclear: only Chult Map 1's
-northern exit had the worn-trail approach, so on later maps the vine gap read
-as ordinary jungle wall. Every vine exit now carries Map 1's language — a
-short beaten-trail strip (`'` terrain, the existing worn-board trail art)
-leading into the canopy gap:
+All 26 dressed temple urns (map chars '¦' wall-base and '¢' floor, across
+Temple Maps 1-6) are now scratch-breakables instead of static props. One
+scratch shatters one urn into terracotta shards — the breakable-grass
+lifecycle with a clay palette — and spills a full cigarette carton.
 
-- Chult 2 (chult_cog) north exit: a three-wide trail row directly beneath the
-  vines. One row is all the clear ground there is — the thorn maze begins on
-  the very next row — but with the threshold's own trail-under tiles it reads
-  as a distinct brown path into the gap.
-- Chult 3 (chult_run) exit: the two-wide approach corridor to the Chuck-sized
-  log crawl is now trail for three rows, pointing at the passage.
-- Chult 4 (chult_respite) north exit: a three-wide, five-row trail strip up
-  the approach corridor. Its canopy was also only ONE vine tile wide in a
-  five-tile wall gap; the four flanking cells became vine-exit terrain too,
-  so the whole opening reads as one canopy doorway.
+The carton is a new pickup (`CigaretteCarton`, 12x8 cream box with a red
+band and visible filter tips) worth exactly `CARTON_CIGARETTE_COUNT` (20)
+cigarettes: `restore_amount = 20 * CIGARETTE_SANITY_RESTORE`, clamped at
+full sanity today. THE NUMBER IS THE CONTRACT — a later session adds a
+cigarette counter, and a carton must bank exactly 20 into it; the config
+comment and the pickup's `cigarette_count` attribute carry that intent.
 
-Trail and vine-exit terrain are walkable exactly like the ground they
-replaced, so no route, thorn count, grass tuft, enemy spawn, or checkpoint
-changed anywhere.
+Wall-base urns spill their carton onto the guaranteed floor tile beneath
+them; floor urns spill in place. Breaking clears the urn's tile to its
+declared under-terrain via the new `TileMap.clear_tile`: floor urns open
+for walking, wall-base tiles remain the solid wall they always were. Urns,
+tiles, and cartons all rebuild on checkpoint reload, matching the enemy
+lifecycle. Idols, stelae, and fallen columns remain static mute dressing.
 
 ## Files Changed
 
-- assets/maps/chult_cog.txt, chult_run.txt, chult_respite.txt: the trail and
-  canopy cells (applied by an assertion-checked script; 28 cells total, no
-  other changes).
-- PROJECT_STATUS.md: session note plus the forward rule that new exits should
-  include a trail approach from the start.
+- src/entities/breakable_urn.py (new): the BreakableUrn entity — same
+  positional-variant formula as the old prop so each urn looks unchanged,
+  scratch-once behavior, terracotta debris, on_break tile-clear callback.
+- src/entities/pickup.py: CigaretteCarton.
+- src/entities/breakable_grass.py: create_pickup() (grass yields its
+  cigarette); the scene drop loop is now polymorphic over breakables.
+- src/world/tilemap.py: clear_tile(col, row) — swaps a prop tile's grid
+  char for its declared under-terrain, loud error if it has none.
+- src/scenes/world_scene.py: temple_urn prop tiles build as BreakableUrn
+  breakables (excluded from static props); drop loop delegates to each
+  breakable's create_pickup.
+- src/core/config.py: CARTON_CIGARETTE_COUNT = 20 with the counter note.
+- tools/generate_breakable_sprites.py + assets/.../cigarette_carton.png:
+  the carton sprite.
+- tests/test_temple_urns.py (new, 7 tests): carton counts/clamping,
+  break-once + debris lifecycle, wall-vs-floor spill positions, tile
+  clearing both ways, an end-to-end scratch through a real scene, per-map
+  breakable counts (7/2/9/2/3/3), and full checkpoint-reload reset.
+- tests/test_phase6_temple_dressing.py: docstring updated (urns are
+  breakables now; still no dialogue).
 
 ## Systems Added or Changed
 
-- None. Map data only; both terrains already existed.
+- TileMap.clear_tile is the only schema-level addition: the first runtime
+  tile mutation, deliberately restricted to prop tiles with an authored
+  under-terrain, resetting naturally on map reload.
 
 ## Verification Performed
 
-- All 42 test suites pass (route flood-fills, thorn-maze solution, staged
-  undead, respite/temple boundaries, checkpoints all unchanged).
-- Screenshots at all three exits confirm the trail reads at native scale:
-  a brown worn-board strip leading into each vine gap, and the respite
-  canopy now spans its full opening.
+- All 43 test suites pass (42 prior + the new urn suite).
+- Headless end-to-end: standing beneath a wall urn and scratching breaks
+  it, spills the carton onto Chuck's tile, and collects it the same frame
+  (sanity 10 -> 100); floor urn tiles open; checkpoint reload restores
+  all urns and tiles.
+- Screenshot confirmed the shatter debris and the carton read clearly at
+  native scale.
 
 ## Known Issues
 
-- The Chult 2 exit's trail is necessarily short (one row) because the thorn
-  maze abuts the threshold. If playtest still finds it subtle, options are
-  widening the vine gap or re-authoring the maze's first row — both bigger
-  decisions than this pass should take alone.
+- Balance flag for playtest: 26 cartons across the temple is a generous
+  sanity economy while the counter doesn't exist yet (each carton is
+  effectively a full heal). The count/placement is data if tuning wants
+  fewer urns to hold cartons later.
 
 ## Scope Notes
 
-- No future-phase work was intentionally implemented.
+- No future-phase work was intentionally implemented; the cigarette
+  counter itself is explicitly deferred, with the 20-per-carton contract
+  recorded in config and on the pickup.
 - No documented creative rules were intentionally changed.
 
 ## Recommended Next Bounded Task
 
 - Build Temple Map 7 as the next broad/open room east of the narrow Astral
-  wind connector, continuing the recurring arches (east/west arches anchored
-  on the bottom opening row), torches, dressing language, one physical
-  Ashtray, and shared-loader entry. Keep the slice distinct from the final
-  chamber, Fireball, rubble escape, and Phase 7 ship.
+  wind connector, continuing the recurring arches (east/west arches
+  anchored on the bottom opening row), torches, dressing language —
+  including breakable urns — one physical Ashtray, and shared-loader
+  entry. Keep the slice distinct from the final chamber, Fireball, rubble
+  escape, and Phase 7 ship.

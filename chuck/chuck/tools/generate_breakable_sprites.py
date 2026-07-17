@@ -31,11 +31,39 @@ def breakable_grass() -> Image.Image:
     return image
 
 
+def cigarette_carton() -> Image.Image:
+    """A full carton of cigarettes — the temple urns' reward.
+
+    12x8: to one-foot Chuck this is a crate of riches. Cream card with
+    a warm red band and a row of filter tips showing at the open end.
+    """
+    image = Image.new("RGBA", (12, 8), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    card = (226, 220, 202, 255)
+    card_shade = (196, 188, 168, 255)
+    band = (170, 62, 48, 255)
+    tip = (214, 168, 110, 255)
+    paper = (240, 238, 230, 255)
+    outline = (94, 84, 70, 255)
+    draw.rectangle((0, 1, 11, 7), fill=card, outline=outline)
+    draw.rectangle((1, 5, 10, 6), fill=card_shade)
+    draw.rectangle((1, 2, 10, 3), fill=band)
+    # The open flap end: three cigarette tips peeking out on top.
+    for x in (2, 5, 8):
+        draw.rectangle((x, 0, x + 1, 0), fill=paper)
+        draw.point((x + 1, 0), fill=tip)
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    path = OUT / "breakable_grass.png"
-    breakable_grass().save(path)
-    print(f"Wrote {path}")
+    for name, image in (
+        ("breakable_grass", breakable_grass()),
+        ("cigarette_carton", cigarette_carton()),
+    ):
+        path = OUT / f"{name}.png"
+        image.save(path)
+        print(f"Wrote {path}")
 
 
 if __name__ == "__main__":

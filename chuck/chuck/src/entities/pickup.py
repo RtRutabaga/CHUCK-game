@@ -64,3 +64,56 @@ class Cigarette(Entity):
         pygame.draw.rect(
             surface, config.COLOR_CIG_EMBER, pygame.Rect(x + CIG_W - 1, y, 1, CIG_H)
         )
+
+
+# A carton on the ground is 12x8 world pixels — to Chuck, a crate.
+CARTON_W, CARTON_H = 12, 8
+
+
+class CigaretteCarton(Entity):
+    """A full carton found in a temple urn: twenty cigarettes at once.
+
+    Collecting it counts as consuming CARTON_CIGARETTE_COUNT cigarettes
+    — sanity clamps at the maximum, but `cigarette_count` carries the
+    exact number for the cigarette counter a later session adds.
+    """
+
+    def __init__(self, center_x: float, center_y: float) -> None:
+        super().__init__(
+            center_x - CARTON_W / 2, center_y - CARTON_H / 2,
+            width=CARTON_W, height=CARTON_H,
+        )
+        self.cigarette_count = config.CARTON_CIGARETTE_COUNT
+        self.restore_amount = (
+            self.cigarette_count * config.CIGARETTE_SANITY_RESTORE
+        )
+        self._image = None  # set by load_sprite(); rects otherwise
+
+    def load_sprite(self, assets) -> None:
+        self._image = assets.image("objects/cigarette_carton.png")
+
+    def on_collect(self, sanity_system) -> None:
+        """Twenty cigarettes at once; sanity simply clamps at full.
+
+        TODO (cigarette counter session): also bank cigarette_count.
+        """
+        sanity_system.restore(self.restore_amount)
+        self.alive = False
+
+    def draw(self, surface, camera_offset: tuple[int, int]) -> None:
+        import pygame
+
+        ox, oy = camera_offset
+        if self._image is not None:
+            fw, fh = self._image.get_size()
+            surface.blit(
+                self._image,
+                (int(self.x + self.width / 2 - fw / 2) - ox,
+                 int(self.y + self.height - fh) - oy),
+            )
+            return
+        pygame.draw.rect(
+            surface, config.COLOR_CIG_PAPER,
+            pygame.Rect(int(self.x) - ox, int(self.y) - oy,
+                        CARTON_W, CARTON_H),
+        )

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 109 (worn-trail approaches added before the Chult vine exits).
+Updated: session 110 (temple urns are scratch-breakables that spill cartons).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -463,6 +463,16 @@ This file is required by the project rules and updated every session.
   pieces ('¢','¬') occupy single tiles in the broad rooms only, and a
   dedicated suite locks the per-map placement counts and re-verifies every
   arrival-to-boundary route
+- Temple urns are scratch-breakables (session 110): all 26 dressed urns build
+  as living BreakableUrn entities (same positions/variants; idols, stelae,
+  and columns stay static). One scratch shatters one urn into terracotta
+  shards and spills a full cigarette carton — a new pickup worth exactly
+  CARTON_CIGARETTE_COUNT (20) cigarettes (config comment marks the number
+  as the contract for the future cigarette counter; sanity simply clamps at
+  full today). Wall-base urns spill onto the floor tile beneath them; a
+  broken urn's tile clears to its under-terrain through the new
+  TileMap.clear_tile, so floor urns open for walking while wall tiles stay
+  wall. Urns and tiles rebuild on checkpoint reload like every enemy
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -503,7 +513,7 @@ This file is required by the project rules and updated every session.
 
 ## Tests
 
-42 suites (most pure Python/headless): collision, tilemap,
+43 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
@@ -514,7 +524,7 @@ transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
 the Chult Map 5 temple exterior, the Phase 6 temple entrance hall, the Temple
 Map 2 spike corridor, the Temple Map 3 skeleton chamber, the Temple Map 4
 dart corridor, the Temple Map 5 snake chamber, the Temple Map 6 Astral wind,
-and the temple interior dressing
+the temple interior dressing, and the breakable temple urns
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.

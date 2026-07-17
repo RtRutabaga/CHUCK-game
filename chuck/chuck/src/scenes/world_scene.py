@@ -19,6 +19,7 @@ import pygame
 from src.core import config
 from src.entities.anchor import AstralAnchor
 from src.entities.breakable_grass import BreakableGrass
+from src.entities.breakable_urn import BreakableUrn
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.hazard import Cat
@@ -223,12 +224,28 @@ class WorldScene(Scene):
         self.dialogue = DialogueSystem()
         self.choices = ChoiceSystem()
         self.last_choice: str | None = None  # what Chuck last decided
+        # Temple urns are living breakables (see below), not static props.
         self.props = [
             Prop(kind, col, row, self.game.assets)
             for kind, col, row in self.tilemap.prop_tiles
+            if kind != "temple_urn"
         ]
         self.pickups: list[Cigarette] = []
-        self.breakables: list[BreakableGrass] = []
+        self.breakables: list[BreakableGrass | BreakableUrn] = []
+        # Each dressed urn becomes a scratchable entity concealing a
+        # cigarette carton. Breaking clears its tile to the declared
+        # under-terrain: floor urns open up, wall-base urns stay wall.
+        for kind, col, row in self.tilemap.prop_tiles:
+            if kind != "temple_urn":
+                continue
+            wall_mounted = self.tilemap.terrain_at(col, row) == "¦"
+            urn = BreakableUrn(
+                col, row, wall_mounted=wall_mounted,
+                on_break=(lambda c=col, r=row:
+                          self.tilemap.clear_tile(c, r)),
+            )
+            urn.load_sprite(self.game.assets)
+            self.breakables.append(urn)
         self.hazards: list[Cat] = []
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
@@ -420,9 +437,11 @@ class WorldScene(Scene):
             for breakable in self.breakables:
                 drop = breakable.take_drop_position()
                 if drop is not None:
-                    cig = Cigarette(*drop)
-                    cig.load_sprite(self.game.assets)
-                    self.pickups.append(cig)
+                    # Each breakable knows its own reward: grass conceals
+                    # one cigarette, a temple urn a full carton.
+                    self.pickups.append(
+                        breakable.create_pickup(drop, self.game.assets)
+                    )
         self.rats = [rat for rat in self.rats if rat.alive]
         self.undead = [enemy for enemy in self.undead if enemy.alive]
         self.raptors = [raptor for raptor in self.raptors if raptor.alive]
