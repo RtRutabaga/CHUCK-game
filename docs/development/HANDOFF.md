@@ -3,83 +3,66 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `9655694` (`Add temple arches and Astral wind connector`)
-- Current work: temple interior dressing (session 107)
+- Base commit before this pass: `696cab4` (`Dress temple interiors with idols, stelae, urns, and columns`)
+- Current work: east/west temple arch alignment fix (session 108)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-All six temple interior maps now carry the game's established style-add-on
-language — the three-quarter Waterdeep buildings, walls/gates, and market
-stall; the jungle's sailing cog, trees, and shrubs — translated into ancient
-temple pieces. Four new procedural prop families were added to
-`tools/generate_temple_props.py` using the existing temple masonry palette
-plus a muted terracotta:
+Playtest found every east/west temple doorway's arch sitting one tile above
+its walkable opening: the dark void read above the path instead of around it.
 
-- Coiled serpent idols (26x44, two mirrored variants, gold-eyed, stepped
-  pedestals echoing the pyramid outside; taller than the 30px human NPC).
-- Rounded-top glyph stelae (20x34, two variants with staggered worn glyph
-  rows, chipped corners, moss threads).
-- Terracotta urns (14x18, three variants: whole, cracked, toppled).
-- Low fallen column drums (24x16, two variants).
+Root cause: props draw upward from their anchor tile's bottom edge. The
+38x48 east/west arch is exactly three tiles tall, and each side threshold is
+a three-row opening — but the arch chars ('«'/'»') were authored on the
+opening's MIDDLE row, so the sprite spanned the middle row and the two rows
+above it, one tile too high. (North/south arches were unaffected: their
+48-wide sprite centers horizontally over a middle-column anchor.)
 
-Fifty-four dressing props are authored across Temple Maps 1-6 (15/6/15/5/8/5).
-Wall pieces ('†' idol, '‡' stela, '¦' urn) sit over solid wall cells and keep
-the wall's collision, so no torch count, route, spike band, dart lane, or
-Astral cut changed anywhere. Floor pieces ('¢' urn, '¬' fallen column) occupy
-single floor tiles in the broad rooms (Maps 1/3/5) only. Idols flank the Map 1
-and Map 5 thresholds in matched pairs; urns sit at pier bases; stelae line
-side walls between torches. All pieces are mute, y-sorted scenery using the
-existing Prop machinery with stable positional variants.
+Fix: moved all five east/west arch chars down one row, onto the bottom row of
+their openings — temple_darts west and east, temple_skeletons west,
+temple_snakes east, and temple_astral_wind east. The vacated middle cell
+became its plain threshold terrain ('∇'/'Δ'), so the doorway footprint,
+collision, and exits are unchanged. In temple_astral_wind the cell below was
+ordinary floor; the arch char's own `under="∇"` repaints that single cell as
+walkable dark threshold, which reads as the doorway's shadow.
 
 ## Files Changed
 
-- tools/generate_temple_props.py: four new generators + palette additions;
-  emits nine new PNGs alongside the two arches.
-- assets/sprites/objects/temple_idol_[12].png, temple_stela_[12].png,
-  temple_urn_[123].png, temple_column_[12].png (new).
-- src/entities/prop.py: four new tuple-variant prop kinds.
-- src/world/tilemap.py: five new dressing TILE_DEFS ('†','‡','¦' over '█';
-  '¢','¬' over '·') and legend entries.
-- assets/maps/temple_*.txt (all six): authored placements.
-- tests/test_phase6_temple_dressing.py (new): locks per-map placement counts,
-  terrain/solidity rules, mute-scenery status, sprite scale bands, and
-  re-verifies every arrival-to-boundary route with jump-crossable terrain.
-- PROJECT_STATUS.md, docs/development/PHASE-6.md: documented.
+- assets/maps/temple_darts.txt, temple_skeletons.txt, temple_snakes.txt,
+  temple_astral_wind.txt: the one-row arch moves (applied by an
+  assertion-checked script; no other cells touched).
+- PROJECT_STATUS.md: session note plus a durable statement of the anchoring
+  rule — east/west arches anchor on the BOTTOM row of their three-row
+  openings — so future temple maps don't reintroduce the misalignment.
 
 ## Systems Added or Changed
 
-- None mechanical: the dressing reuses the existing prop/tile machinery. The
-  five new map characters are the only schema addition.
+- None. Map data only.
 
 ## Verification Performed
 
-- All 42 test suites pass (41 prior + the new dressing suite), including the
-  strict Phase 6 suites (exact torch counts, dart lanes, skeleton envelopes,
-  Astral cuts, checkpoint round-trips).
-- Eleven in-game screenshots across all six maps confirmed the pieces read
-  correctly at native scale: idols rise past the wall face with visible gold
-  eyes, urns sit at pier bases, stelae fit between torches, floor drums read
-  as collapse debris, and y-sorting behaves around Chuck.
-- Placements were applied by an assertion-checked script (expected old char +
-  floor-beneath verification), so no map cell was changed blind.
+- All 42 test suites pass.
+- Screenshots at all five east/west doorways confirm the dark opening now
+  centers on the walkable path row (including the exact skeleton-chamber
+  west door from the playtest report).
+- Headless walk-through: stepping onto each MOVED arch tile still fires its
+  transition — darts west -> snakes, darts east -> skeletons, skeletons
+  west -> darts, snakes east -> darts.
 
 ## Known Issues
 
-- None known from this pass. The idols deliberately share the temple masonry
-  palette, so they read as carved stone rather than a separate material; if
-  playtest wants them to pop more, brightening the eye or adding a second
-  accent color is a one-line generator change.
+- None known from this pass.
 
 ## Scope Notes
 
 - No future-phase work was intentionally implemented.
-- No documented creative rules were intentionally changed. The dressing is
-  environmental storytelling only — no interactions, enemies, or systems.
+- No documented creative rules were intentionally changed.
 
 ## Recommended Next Bounded Task
 
 - Build Temple Map 7 as the next broad/open room east of the narrow Astral
-  wind connector, continuing the recurring arches, torches, dressing
-  language, one physical Ashtray, and shared-loader entry. Keep the slice
-  distinct from the final chamber, Fireball, rubble escape, and Phase 7 ship.
+  wind connector, continuing the recurring arches (east/west arches anchored
+  on the bottom opening row), torches, dressing language, one physical
+  Ashtray, and shared-loader entry. Keep the slice distinct from the final
+  chamber, Fireball, rubble escape, and Phase 7 ship.

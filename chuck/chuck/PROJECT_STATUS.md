@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 107 (temple interior dressing: idols, stelae, urns, columns).
+Updated: session 108 (east/west temple arches realigned with their doorways).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -430,7 +430,11 @@ This file is required by the project rules and updated every session.
   props. North/south arches are 48x38 and east/west arches are 38x48, both
   taller than a human NPC and enormous beside Chuck. Continuous dark doorway
   ground replaces the old repeated vertical-frame pattern while the existing
-  transition terrain and safe named arrivals remain authoritative
+  transition terrain and safe named arrivals remain authoritative. East/west
+  arch chars anchor on the BOTTOM row of their three-row openings (props draw
+  upward from their tile's bottom edge, so a 48px side arch spans its opening
+  exactly from there; a middle-row anchor sits one tile too high — playtest
+  caught exactly that misalignment in session 108)
 - Phase 6 Temple Map 6: a reversible 48x60 connector winds through four major
   direction changes in a five-tile-wide passage. Eight full-width, one-tile
   Astral Sea cuts require Chuck's established committed jump; stepping onto
