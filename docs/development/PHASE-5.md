@@ -2,6 +2,9 @@
 
 ## Status
 
+Phase 5 is complete. The temple exterior now connects to the Phase 6 entrance
+hall; all dungeon content remains governed by `PHASE-6.md`.
+
 Phase 4 establishes the first playable Chult map, Chult
 ashtray/checkpoint, thorns, narrow Chuck-sized routes, and durable
 zombie and skeleton enemies.

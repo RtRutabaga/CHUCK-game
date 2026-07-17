@@ -3,11 +3,35 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `9472dac` (`Add Chult temple exterior`)
-- Current work: skull stakes lining the Map 5 temple approach
-- Active phase: Phase 5 — Deeper into Chult (`PHASE-5.md`)
+- Base commit before this pass: `38e7550` (`Add skull stakes to temple approach`)
+- Current work: Phase 6 Temple Map 1 entrance-hall vertical slice
+- Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+Phase 6 is now active. The four-tile pyramid entrance on Chult Map 5 uses the
+ordinary walk-transition path to load a dedicated 48x37 `temple_entrance` map
+at a safe named arrival. A matching south threshold returns Chuck to a new safe
+arrival on the exterior stair without immediately bouncing in either direction.
+
+Temple Map 1 is a quiet, monumental threshold room rather than an encounter.
+Its connected open hall, sparse paired masonry piers, thick walls, and dark
+north/south thresholds establish the dungeon scale while leaving traps and
+enemies for later rooms. The north `temple_deeper` boundary is authored,
+reachable, visually readable, and deliberately inert until Temple Map 2 exists.
+
+A dedicated procedural `temple.png` tileset supplies four cracked floor-slab
+variants, four mossy blockwork variants with restrained eye/serpent glyphs, and
+two dark doorway variants. Entering the hall switches from the Chult theme to
+an original 80-second temple loop: low drones, uneven ritual toms, dry wood
+clicks, sparse bells, and a restrained minor/Phrygian flute line. Returning
+outside correctly restores Chult music.
+
+The room contains exactly one physical Ashtray. Development-visible `Temple 1`,
+menu-hidden `temple_1_anchor`, and the exterior return entry all use the shared
+checkpoint registry and loader. Activation persists the existing compact save,
+CONTINUE restores Temple 1 with saved Sanity, and Sanity-zero return uses the
+same physical Ashtray. No new progression flag or debug teleport was added.
 
 Four evenly spaced pairs of skull stakes now line the route immediately before
 the pyramid staircase. The eight authored placements sit at columns 27 and 36
@@ -35,8 +59,8 @@ base, while climbing exposes the full central stair and black entrance.
 One development-visible `chult_5` entry and one menu-hidden, saveable
 `chult_5_anchor` definition share the normal checkpoint loader. The physical
 Ashtray saves, CONTINUE restores its position/Sanity, and Sanity-zero return
-uses it. The dark `temple_interior` boundary is authored and reachable but has
-no transition, map, or dungeon content; Phase 5 stops there as documented.
+uses it. The dark `temple_interior` boundary now performs the Phase 6 handoff
+described at the start of this document.
 
 The broad clearing near Chult Map 4's northern end now authors exactly one
 existing `MassiveDinosaur`. It reuses the established 72x60 art, 48x24
@@ -364,6 +388,16 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
+- New Phase 6 entrance coverage verifies the exact 48x37 map, connected
+  arrival-to-deeper-boundary route, one Ashtray, no enemies, reversible named
+  transition without bounce, `Temple 1` development loading, save/CONTINUE/
+  respawn, dedicated source-generated art, distinct music, and inert north
+  boundary. Focused Phase 5 exterior and full music suites pass. Native 320x180
+  review confirms the threshold, monumental slab floor, Ashtray, and Chuck's
+  small scale remain readable in the first gameplay view.
+- All 36 standalone test modules pass. A clean dummy-driver launch reaches the
+  320x180 TitleScene, and direct `Temple 1` loading/drawing completes normally.
+
 - Focused temple/prop/tileset coverage verifies all eight exact placements,
   intact arrival-to-entrance connectivity, the unobstructed central corridor,
   valid tall mute-prop registration, source-generated sprite output, and normal
@@ -612,14 +646,19 @@ as a convention for each future exterior Chult map.
     Activate its Ashtray, then approach the pyramid: verify its widening tiers
     feel enormous relative to Chuck, the central stair is clearly walkable,
     eight grass tufts remain optional, and no enemies distract from the temple.
-    Test CONTINUE and Sanity-zero return, then climb to the dark entrance and
-    confirm Phase 5 stops cleanly without loading a dungeon.
+    Test CONTINUE and Sanity-zero return, then climb to the dark entrance.
 36. Walk the final approach and confirm four matched pairs of skull stakes line
     both sides of the path, remain much taller than Chuck, lead the eye into the
     central stair, and never narrow or snag the broad walkable corridor.
+37. Enter the pyramid and confirm the Chult track gives way to the mysterious
+    temple theme, the hall reads as an interior at native scale, and the nearby
+    Ashtray saves/respawns correctly. Walk back out and re-enter to verify both
+    transitions are stable, then cross the quiet hall and confirm the north
+    threshold stops cleanly without loading unfinished Temple Map 2 content.
 
 ## Next Bounded Task
 
-Playtest the complete Phase 5 route through the inert temple entrance and tune
-only verified exterior readability, collision, transition, or checkpoint
-issues. Do not begin the dungeon without the next phase contract.
+Build Temple Map 2 as one jump-centered hazard corridor with its own physical
+Ashtray and shared-loader entry. Introduce only one temple hazard family in
+that pass; leave the snake room, final chamber, rubble escape, and ship for
+later bounded sessions.

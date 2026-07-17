@@ -18,9 +18,12 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Each newly authored gameplay map receives one physical Ashtray/checkpoint,
   registered through the shared save/checkpoint loader rather than a separate
   map-specific or development teleport path.
-- Phase 5 is active.
-- Phase 5 ends at the exterior of the jungle temple; do not begin the temple
-  interior or dungeon during this phase.
+- Phase 5 is complete. Phase 6 is active and is governed by `PHASE-6.md`.
+- Phase 6 begins at the jungle-temple interior and ends when Chuck reaches the
+  ship; ship gameplay remains Phase 7 content.
+- The first Phase 6 room is a dedicated, reversible temple entrance hall with
+  one physical Ashtray and a development-visible `Temple 1` entry through the
+  shared checkpoint loader.
 - Phase 5 map order after the undead ambush is Chult Map 4 as a vegetation-dense,
   low-pressure jungle respite with exactly one massive slow dinosaur, followed
   by the temple exterior on Chult Map 5. Do not merge the respite and temple

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 97 (temple skull-stake approach). This file is required by
+Updated: session 98 (Phase 6 temple entrance hall). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -28,7 +28,7 @@ the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the five authored Ashtrays have
+  retain the established local retry behavior; the eight authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
@@ -40,13 +40,16 @@ the project rules and updated every session.
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
   sequencer), offline rendering (tools/generate_audio.py +
   tools/generate_music.py <name>), AudioSystem with graceful no-device
-  fallback; four composed pieces (data/music/, 7-10 voices) —
+  fallback; five composed pieces (data/music/, 7-10 voices) —
   the 95s warm Waterdeep Docks theme and the 83s eerie/funky D-minor
   Sewer theme loop seamlessly, while the 36s one-shot fall-to-Chult cue drives
   the Phase 3 cutscene. Chult now has an original 86s D-Dorian exploration loop:
   a persistent syncopated deep-bass hook, pitched hand drums, woody offbeats,
   layered retro percussion, a compact plucked melody, flute answers, and a humid
-  breakdown. It enters immediately on either cutscene arrival or Chult 1 load;
+  breakdown. It enters immediately on either cutscene arrival or Chult 1 load.
+  The Phase 6 entrance hall switches to an original 80s temple loop built from
+  low drones, uneven hand drums, dry wood clicks, sparse bells, and restrained
+  Phrygian-colored flute phrases;
   SFX for pickup, interact, hurt, vanish, respawn, anchor
   chime, a quiet rounded jump bounce, scratch scrape, and per-surface footsteps.
   Re-requesting the same looping track is idempotent, so movement among the
@@ -65,7 +68,7 @@ the project rules and updated every session.
   its terrain rows + char maps; tileset_for(map) picks one) with stable
   per-position variants, animated frames, view culling, and a flat-
   color fallback when a sheet is missing. docks.png, sewer.png, tavern.png,
-  and pantry.png
+  pantry.png, chult.png, and temple.png
 - Bobert asleep in his barrel at spawn (solid scenery, tile 'B');
   cigarette is a drawn sprite; the Astral Anchor presents as an
   ashtray (cold ash dormant / live ember + smoke when attuned), with
@@ -361,12 +364,21 @@ the project rules and updated every session.
   weathered masonry tiles, a six-tile-wide walkable stair, moss/vine variation,
   and a dark readable entrance. Eight grass tufts continue the Chult exterior
   convention. Map 4 now enters its named southern arrival; `Chult 5` and its
-  one physical Ashtray use the shared loader/save/respawn path. The entrance is
-  an authored but inert next-phase boundary; no dungeon interior exists
+  one physical Ashtray use the shared loader/save/respawn path. The entrance
+  now hands off into the first Phase 6 interior through a safe named arrival
 - Temple approach dressing: four matched pairs of reusable 12x30 skull stakes
   line the path immediately before the pyramid staircase. Their solid native
   footprints preserve an eight-tile central corridor and normal painter order;
   they are mute environmental storytelling rather than enemies or interactables
+- Phase 6 Temple Map 1: the former exterior boundary now enters a dedicated
+  48x37 monumental entrance hall and can be crossed back without transition
+  bounce. Weathered floor slabs, mossy/glyph-marked solid masonry, sparse
+  structural piers, and dark thresholds establish a distinct interior visual
+  language at native scale. The room is deliberately enemy- and trap-free; its
+  north doorway is the stable inert boundary for the next dungeon slice.
+  `Temple 1` is development-visible, while the room's single physical Ashtray
+  saves, restores through CONTINUE, and receives Sanity-zero returns through
+  the existing shared checkpoint architecture
 
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
@@ -407,7 +419,7 @@ the project rules and updated every session.
 
 ## Tests
 
-35 suites (most pure Python/headless): collision, tilemap,
+36 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
@@ -415,7 +427,7 @@ Chult terrain hazard, Chult route-deeper boundary,
 Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
 Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
 transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
-and the Chult Map 5 temple exterior
+the Chult Map 5 temple exterior, and the Phase 6 temple entrance hall
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.
@@ -473,9 +485,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Playtest the full Phase 5 route through the Map 5 temple entrance boundary and
-tune only verified readability, collision, or checkpoint issues. Do not begin
-the dungeon interior without the next phase contract.
+Build Temple Map 2 as the first focused hazard corridor, introducing one
+readable jump-centered temple hazard while preserving a route back to Temple 1.
+Do not combine dart walls, spike pits, snakes, or the final chamber in one pass.
 
 ## Also open
 
@@ -561,6 +573,18 @@ the dungeon interior without the next phase contract.
        beginning the dungeon (session 96).
    - [x] Lined the pre-stair approach with eight reusable, human-scale skull
          stakes while preserving the broad central route (session 97).
+
+## Phase 6 progress (jungle temple)
+
+1. [x] Added the Phase 6 contract and made it the active development scope.
+2. [x] Connected the Map 5 pyramid entrance to a reversible 48x37 Temple Map 1
+       entrance hall with dedicated procedural interior art, one physical
+       shared-loader Ashtray, development-visible `Temple 1`, and an original
+       80-second ancient/shamanic exploration loop (session 98).
+3. [ ] Add Temple Map 2 as the first jump/hazard-focused interior room.
+4. [ ] Continue the multi-map dungeon, skeleton rooms, snake chamber, final
+       battle, Fireball transition, rubble crawlspace, and ship escape in
+       bounded slices without beginning Phase 7 gameplay.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

@@ -138,13 +138,15 @@ def test_chult_5_ashtray_saves_continue_and_respawns_through_shared_loader() -> 
         directory.cleanup()
 
 
-def test_temple_entrance_is_a_stable_inert_next_phase_boundary() -> None:
+def test_temple_entrance_is_the_phase_6_handoff() -> None:
     tilemap = _map()
     boundaries = [entry for entry in tilemap.object_spawns
                   if entry[0].startswith("boundary:")]
     assert boundaries == [("boundary:temple_interior", (504.0, 72.0))]
     assert tilemap.terrain_at(31, 4) == "Ω"
-    assert ("chult_temple", "Ω") not in AREA_WALK_EXITS
+    exit_config = AREA_WALK_EXITS[("chult_temple", "Ω")]
+    assert exit_config.destination == "temple_entrance"
+    assert exit_config.arrival == "from_temple_exterior"
     assert AREA_MUSIC["chult_temple"] == "chult.wav"
 
 

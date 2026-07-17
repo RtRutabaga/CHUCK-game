@@ -193,12 +193,29 @@ CHULT = Tileset(
     },
 )
 
+TEMPLE = Tileset(
+    sheet="temple.png",
+    order=[
+        ("temple_floor", 4, 1),
+        ("temple_wall", 4, 1),
+        ("temple_doorway", 2, 1),
+    ],
+    char_to_terrain={
+        "·": "temple_floor",
+        "█": "temple_wall",
+        "Δ": "temple_doorway",
+        "∇": "temple_doorway",
+    },
+    overhead_char_to_terrain={},
+)
+
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
     "sewer": SEWER,
     "tavern": TAVERN,
     "pantry": PANTRY,
     "chult": CHULT,
+    "temple": TEMPLE,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -212,6 +229,7 @@ MAP_TILESET: dict[str, str] = {
     "chult_run": "chult",
     "chult_respite": "chult",
     "chult_temple": "chult",
+    "temple_entrance": "temple",
 }
 
 

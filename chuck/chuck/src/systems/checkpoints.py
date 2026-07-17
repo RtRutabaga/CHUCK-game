@@ -129,6 +129,24 @@ CHECKPOINTS = (
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         saveable=True, development_visible=False,
     ),
+    CheckpointDefinition(
+        "temple_1", "Temple 1", "temple_entrance",
+        arrival="from_temple_exterior", facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "temple_1_anchor", "Temple 1 Ashtray", "temple_entrance",
+        position=(372.0, 501.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "chult_temple_return", "Chult Temple Return", "chult_temple",
+        arrival="from_temple_interior", facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True,
+    ),
     # Internal return entries keep existing local retry positions, but do not
     # clutter the temporary test menu.
     CheckpointDefinition(

@@ -14,6 +14,7 @@ import wave
 
 from data.music import fall_to_chult as fall_song
 from data.music import chult as chult_song
+from data.music import temple as temple_song
 from data.music import sewer as sewer_song
 from data.music import waterdeep_docks as song
 from src.audio.sequencer import Note, Track, note_to_freq, render_song
@@ -180,6 +181,32 @@ def test_rendered_chult_theme_respects_loop_quality_gates() -> None:
     peak = max(abs(sample) for sample in samples)
     assert peak <= 0.9, f"clipping risk: peak {peak:.2f}"
     assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
+
+
+def test_temple_theme_is_ancient_shamanic_and_exploratory() -> None:
+    tracks = temple_song.build_tracks()
+    duration = temple_song.TOTAL_BEATS * 60.0 / temple_song.TEMPO_BPM
+    assert duration >= 75.0
+    assert len([track for track in tracks if track.notes]) >= 7
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < temple_song.TOTAL_BEATS
+    toms = next(track for track in tracks if track.name == "ritual_toms")
+    flute = next(track for track in tracks if track.name == "flute")
+    assert len(toms.notes) >= temple_song.TOTAL_BARS * 4
+    assert len(flute.notes) < temple_song.TOTAL_BARS * 2
+    assert any(note.pitch.startswith("Eb") for note in flute.notes)
+
+
+def test_rendered_temple_theme_respects_loop_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "temple.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 75 * SAMPLE_RATE
+    assert max(abs(sample) for sample in samples) <= 0.9
+    assert abs(samples[-1] - samples[0]) < 0.15
 
 
 def _run_all() -> None:
