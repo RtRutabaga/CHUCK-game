@@ -3,11 +3,18 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `a3b422b` (`Begin Phase 6 temple interior`)
-- Current work: temple/Chult perceived-loudness match
+- Base commit before this pass: `bdc986c` (`Match temple music loudness to Chult`)
+- Current work: additional temple music playback lift after playtest
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+Sean's second listening pass found the measured loudness match still too quiet
+in play. The temple render now deliberately uses 0.90 peak headroom instead of
+the soundtrack generator's 0.75 default, producing a clear twenty-percent
+amplitude lift without changing the global mixer, Chult, any other track, or
+the composition. `generate_music.py` reads an optional composition-owned
+`MASTER_HEADROOM` value and otherwise preserves its exact former default.
 
 The temple theme now matches the Chult jungle theme's average rendered
 loudness. Both already reached the same 0.75 peak, but the temple track's short
@@ -398,9 +405,10 @@ as a convention for each future exterior Chult map.
 
 ## Verification
 
-- Rendered loudness measures Chult at -17.13 dBFS RMS and the revised temple
-  track at -16.94 dBFS RMS; both peak at 0.75. Music, audio, and transition
-  suites pass with the new direct five-percent loudness-matching regression.
+- Rendered loudness now measures Chult at -17.13 dBFS RMS and the deliberately
+  louder temple track at -15.36 dBFS RMS. Temple peaks safely at 0.90 versus
+  Chult's 0.75. Music, audio, and transition suites pass with a direct
+  regression requiring the temple's average output to remain 15-30% higher.
 
 - New Phase 6 entrance coverage verifies the exact 48x37 map, connected
   arrival-to-deeper-boundary route, one Ashtray, no enemies, reversible named

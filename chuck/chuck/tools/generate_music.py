@@ -34,7 +34,10 @@ def main() -> None:
     print(f"Rendering {name}: {song.TOTAL_BARS} bars at {song.TEMPO_BPM} "
           f"BPM, {len(tracks)} voices, "
           f"{sum(len(t.notes) for t in tracks)} notes...")
-    master = render_song(song.TEMPO_BPM, song.TOTAL_BEATS, tracks)
+    headroom = getattr(song, "MASTER_HEADROOM", 0.75)
+    master = render_song(
+        song.TEMPO_BPM, song.TOTAL_BEATS, tracks, headroom=headroom
+    )
     out = ROOT / "assets" / "audio" / "music" / f"{name}.wav"
     write_wav(out, master)
     print(f"Wrote {out} ({len(master) / SAMPLE_RATE:.1f}s "

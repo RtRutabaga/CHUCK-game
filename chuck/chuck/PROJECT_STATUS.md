@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 99 (temple music loudness match). This file is required by
+Updated: session 100 (temple music playback lift). This file is required by
 the project rules and updated every session.
 
 ## Working systems
@@ -50,7 +50,9 @@ the project rules and updated every session.
   The Phase 6 entrance hall switches to an original 80s temple loop built from
   low drones, uneven hand drums, dry wood clicks, sparse bells, and restrained
   Phrygian-colored flute phrases. Its sustained voices are mastered to match
-  the Chult theme's average loudness while retaining the shared peak headroom;
+  the Chult theme's perceived in-game strength. After direct playtest found the
+  matched-RMS mix still too restrained, the temple render alone now uses 0.90
+  peak headroom instead of the soundtrack default 0.75;
   SFX for pickup, interact, hurt, vanish, respawn, anchor
   chime, a quiet rounded jump bounce, scratch scrape, and per-surface footsteps.
   Re-requesting the same looping track is idempotent, so movement among the

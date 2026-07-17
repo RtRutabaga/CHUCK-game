@@ -216,7 +216,9 @@ def test_rendered_temple_theme_respects_loop_quality_gates() -> None:
                   / len(samples)) ** 0.5
     chult_rms = (sum(sample * sample for sample in chult_samples)
                  / len(chult_samples)) ** 0.5
-    assert 0.95 <= temple_rms / chult_rms <= 1.05, (
+    # The sparse arrangement needs a deliberate lift above the dense jungle
+    # mix to read equally strongly during actual gameplay.
+    assert 1.15 <= temple_rms / chult_rms <= 1.30, (
         temple_rms, chult_rms
     )
 
