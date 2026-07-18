@@ -26,6 +26,10 @@ Implemented so far:
   boundary reserved for the next broad room.
 - Every Temple Map 1-6 threshold now uses a narrowed three-tile opening and a
   reusable human-scale stone arch instead of repeated doorway bars.
+- Temple Map 7: broad reversible shrine hall east of the Astral wind — twelve
+  avoidable skeletons, alternating skull/serpent guardian monument rows, the
+  full dressing and threshold kit, one Ashtray, and an inert north boundary
+  reserved for Map 8.
 - All six temple interiors carry mute procedural dressing in the game's
   established style-add-on language: coiled serpent idols, glyph stelae,
   terracotta urns, and fallen column drums, none of which change any route,

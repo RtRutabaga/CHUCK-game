@@ -451,6 +451,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ζ": MarkerDef(kind="arrival:from_temple_5", under="≡"),
     "ϑ": MarkerDef(kind="anchor:temple_6_anchor", under="·"),
     "ϖ": MarkerDef(kind="boundary:temple_7", under="∇"),
+    # Temple Map 7, the shrine hall (session 121).
+    "ϒ": MarkerDef(kind="arrival:from_temple_6", under="≡"),
+    "ϰ": MarkerDef(kind="anchor:temple_7_anchor", under="·"),
+    "ϱ": MarkerDef(kind="boundary:temple_8", under="∇"),
+    "ϵ": MarkerDef(kind="arrival:from_temple_7", under="≡"),
     "↓": MarkerDef(kind="dart_trap:down", under="W", allow_solid=True),
     "↑": MarkerDef(kind="dart_trap:up", under="W", allow_solid=True),
 }

@@ -19,6 +19,7 @@ from src.world.tilemap import MARKER_DEFS, TILE_DEFS, TileMap
 TEMPLE_MAPS = (
     "temple_entrance", "temple_spikes", "temple_skeletons",
     "temple_darts", "temple_snakes", "temple_astral_wind",
+    "temple_shrine",
 )
 DRESSING_KINDS = ("temple_idol", "temple_stela", "temple_urn",
                   "temple_column")
@@ -39,6 +40,8 @@ EXPECTED = {
     "temple_snakes": {"temple_idol": 2, "temple_stela": 2,
                       "temple_urn": 3, "temple_column": 1},
     "temple_astral_wind": {"temple_stela": 2, "temple_urn": 3},
+    "temple_shrine": {"temple_stela": 2, "temple_urn": 3,
+                      "temple_column": 1},
 }
 
 
@@ -153,6 +156,8 @@ def test_guardian_monuments_stand_in_rows_through_the_open_halls() -> None:
         "temple_darts": {"temple_monument": 1,
                          "temple_serpent_monument": 1},
         "temple_snakes": {"temple_serpent_monument": 4},
+        "temple_shrine": {"temple_monument": 4,
+                          "temple_serpent_monument": 4},
     }
     monument_kinds = ("temple_monument", "temple_serpent_monument")
     for name, counts in expected.items():
@@ -191,7 +196,7 @@ def test_every_temple_door_has_a_centered_path_stub() -> None:
     at its mouth into the open room (session 120)."""
     expected = {"temple_spikes": 18, "temple_skeletons": 23,
                 "temple_darts": 21, "temple_snakes": 15,
-                "temple_astral_wind": 18}
+                "temple_astral_wind": 18, "temple_shrine": 33}
     for name, count in expected.items():
         tilemap = _map(name)
         path = sum(row.count("≡") for row in tilemap._grid)

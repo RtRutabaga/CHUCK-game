@@ -46,6 +46,7 @@ def test_every_temple_threshold_has_one_human_scale_stone_arch() -> None:
     maps = (
         "temple_entrance", "temple_spikes", "temple_skeletons",
         "temple_darts", "temple_snakes", "temple_astral_wind",
+        "temple_shrine",
     )
     for name in maps:
         tilemap = _map(name)
@@ -215,14 +216,15 @@ def test_temple_6_checkpoint_saves_continues_and_respawns() -> None:
         directory.cleanup()
 
 
-def test_map_6_uses_temple_art_music_and_holds_future_east_exit() -> None:
+def test_map_6_uses_temple_art_music_and_enters_map_7_east() -> None:
     tileset = tileset_for(MAP_NAME)
     assert tileset.sheet == "temple.png"
     assert tileset.char_to_terrain["V"] == "astral_void"
     assert AREA_MUSIC[MAP_NAME] == "temple.wav"
     assert AREA_MUSIC[MAP_NAME] == AREA_MUSIC["temple_snakes"]
-    assert (MAP_NAME, "∇") not in AREA_WALK_EXITS
-    assert (MAP_NAME, "«") not in AREA_WALK_EXITS
+    # Session 121: the former inert east boundary now enters Map 7.
+    assert AREA_WALK_EXITS[(MAP_NAME, "∇")].destination == "temple_shrine"
+    assert AREA_WALK_EXITS[(MAP_NAME, "«")].destination == "temple_shrine"
     assert AREA_WALK_EXITS[(MAP_NAME, "Δ")].destination == "temple_snakes"
     assert AREA_WALK_EXITS[(MAP_NAME, "⌄")].destination == "temple_snakes"
 

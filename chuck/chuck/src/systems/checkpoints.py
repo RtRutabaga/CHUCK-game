@@ -202,6 +202,24 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "temple_7", "Temple 7", "temple_shrine",
+        arrival="from_temple_6", facing="right",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "temple_7_anchor", "Temple 7 Ashtray", "temple_shrine",
+        position=(420.0, 581.0), facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "temple_6_return", "Temple 6 Return", "temple_astral_wind",
+        arrival="from_temple_7", facing="left",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "temple_5_return", "Temple 5 Return", "temple_snakes",
         arrival="from_temple_6", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),

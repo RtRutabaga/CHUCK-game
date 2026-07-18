@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 120 (narrow door lanes bloom into full-width path landings).
+Updated: session 121 (Temple Map 7: the broad shrine hall east of the wind).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -542,6 +542,17 @@ This file is required by the project rules and updated every session.
   TileMap.clear_tile, so floor urns open for walking while wall tiles stay
   wall. Urns and tiles rebuild on checkpoint reload like every enemy
 
+- Phase 6 Temple Map 7 (session 121): a reversible 56x44 shrine hall east
+  of the Astral wind connector, entered through a west-wall arch onto a
+  full-width paved landing. Twelve avoidable skeletons occupy the side
+  lanes (a permanent test proves every tile reachable even with 3x3
+  avoidance envelopes around all of them); four skull and four serpent
+  guardian monuments flank the aisle to the north door, which carries the
+  full threshold kit — arch, path stub, flanking braziers and carved
+  skulls — and stays inert until Map 8. Breakable urns, stelae, a fallen
+  column, twelve torches, one physical Ashtray (`Temple 7` via the shared
+  loader), uninterrupted temple music, and both-ways transitions with
+  Map 6 (whose formerly inert east boundary is now live)
 - Phase 4 dense vegetation art: the former blocky green collision texture is
   now an interlocked organic canopy of broad leaves, woody seams, and hanging
   vines. Across the same solid vegetation cells, deterministic y-sorted
@@ -592,7 +603,7 @@ This file is required by the project rules and updated every session.
 
 ## Tests
 
-44 suites (most pure Python/headless): collision, tilemap,
+45 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,

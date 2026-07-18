@@ -3,61 +3,56 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `2cc041b` (Astral scatter)
-- Current work: centered path stubs before every temple door, with full-width landings at the narrow lanes (sessions 119-120)
+- Base commit before this pass: `5bb273e` (path landings)
+- Current work: Temple Map 7, the shrine hall (session 121)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-Playtest direction: short runs of the entrance hall's processional path
-('≡') before each temple door, centered.
+Temple Map 7 (`temple_shrine`, 56x44): the next broad room east of the
+Astral wind connector, generated with full validation and carrying the
+complete established kit from its first commit:
 
-Every doorway across Temple Maps 2-6 now carries a centered stub of the
-path (Map 1's full aisle already connects both of its doors):
-
-- temple_spikes: 3x3 stubs inside the north and south doors.
-- temple_skeletons: a 3x3 stub at the south door; the west door's
-  single-row lane gets a 3-long stub (its outer rows dead-end into
-  wall, so the lane IS the door's center).
-- temple_darts: 3-long single-row lanes at both side doors.
-- temple_snakes: a 3x3 stub at the east door; the south door's stub is
-  3x2 because a snake spawn sits on the row above.
-- temple_astral_wind: 3x3 stubs at the north and east doors. The
-  east-door stub area contained one session-118 scatter cell, which
-  moved one leg south — the 36-cell scatter contract and the
-  walk-and-hop course invariant both still hold.
-
-Seven door markers (Ι φ Λ Ρ Η Μ Ζ — each exclusive to its map,
-verified) now declare the path as their under-terrain, so stubs render
-seamlessly under arrivals and anchors, matching the Map 1 convention.
+- West door: a 3x3 threshold block with the E/W arch anchored on its
+  bottom row (the session-108 rule), opening onto a fully paved
+  full-height lane that blooms into a landing (the session-120 rule).
+- North door: inert boundary for Map 8 under an NS arch, with a
+  centered path stub, flanking pedestal braziers, and carved skulls.
+- Eight guardian monuments (4 skull / 4 serpent, alternating) flanking
+  the aisle; twelve torches; two wall urns + one floor urn (all carton
+  breakables), two stelae, a fallen column, one floor urn piece.
+- Twelve skeletons in the side lanes. The map's own test floods with
+  full 3x3 avoidance envelopes around every skeleton blocked and still
+  reaches everything — combat can never gate progress.
+- One physical Ashtray (`temple_7_anchor`, saves/continues/respawns —
+  verified end-to-end including a save-file relaunch) and the
+  development-visible `Temple 7` entry through the shared loader.
+- Map 6's formerly inert east boundary is live both ways with named
+  arrivals and no transition bounce; temple music carries across.
 
 ## Files Changed
 
-- assets/maps/temple_spikes.txt, temple_skeletons.txt,
-  temple_darts.txt, temple_snakes.txt, temple_astral_wind.txt:
-  62 painted path cells + the relocated V.
-- src/world/tilemap.py: the seven marker under-terrain changes.
-- tests/test_phase6_temple_dressing.py: a new test locking per-map
-  path counts (18/12/6/15/18) and every path cell walkable.
+- assets/maps/temple_shrine.txt (new, generator-validated).
+- assets/maps/temple_astral_wind.txt: the return arrival on its east
+  path stub.
+- src/world/tilemap.py: four new markers (ϒ arrival, ϰ anchor,
+  ϱ boundary:temple_8, ϵ return arrival).
+- src/world/transitions.py: four walk-exit bindings + AREA_MUSIC.
+- src/world/tileset_layout.py: MAP_TILESET entry.
+- src/systems/checkpoints.py: temple_7, temple_7_anchor,
+  temple_6_return definitions.
+- tests/test_phase6_temple_shrine.py (new, 5 tests) plus deliberate
+  contract updates: the wind suite's east exit is live now, the
+  dressing/monument/path/urn suites and the dev-selector list cover the
+  seventh map.
 
 ## Verification Performed
 
-- All 44 suites pass — including the wind map's walk-and-hop course
-  invariant re-validating around the moved scatter cell.
-- Screenshots confirm the stubs read as centered paved approaches at
-  native scale (spike corridor north door, snake chamber east door).
-
-## Session 120 Addendum: full-width landings at the narrow lanes
-
-Playtest found the single-row lane stubs too thin where they meet the
-open rooms. The path now fills each narrow lane completely and blooms
-into a full three-tall paved landing at the lane's mouth: the skeleton
-chamber's west door (lane cols 3-7 plus a 3x3 mouth at cols 8-10) and
-the dart corridor's west door (mouth cols 6-8). The dart corridor's
-east door approach is fully open, so its under-sized single-row stub
-became the complete 3x3. The two mouth markers (Σ, Ξ — both exclusive
-to their maps) now declare the path as their under-terrain. The
-path-count contract is 18/23/21/15/18; all 44 suites pass.
+- All 45 suites pass.
+- Headless round trip: Map 6 east -> Map 7 arrival (4,21) -> west door
+  -> Map 6 arrival (43,52), no bounce either way.
+- Screenshots confirm the west landing and the north-aisle composition
+  (braziers, skulls, monument pair) at native scale.
 
 ## Known Issues
 
@@ -65,12 +60,12 @@ path-count contract is 18/23/21/15/18; all 44 suites pass.
 
 ## Scope Notes
 
-- No future-phase work; no documented creative rules changed.
+- No future-phase work: the final chamber, Fireball, rubble escape, and
+  ship remain untouched; Map 7's north boundary is authored but inert.
 
 ## Recommended Next Bounded Task
 
-- Build Temple Map 7 as the next broad/open room east of the Astral wind
-  connector, continuing arches (E/W anchored on the bottom opening row),
-  torches, dressing — urns, skulls/braziers, guardian monument rows, and
-  a centered path stub at each threshold — one physical Ashtray, and
-  shared-loader entry.
+- Temple Map 8 north of the shrine hall — either the last connector
+  before the final chamber or the final chamber's antechamber. Continue
+  the full kit; keep the adventurers/beholder battle, Fireball, rubble,
+  and ship as their own later slices.

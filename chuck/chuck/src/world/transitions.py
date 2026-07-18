@@ -111,6 +111,19 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_astral_wind", "Δ"): AreaExit(
         "temple_snakes", "from_temple_6", "up"
     ),
+    # Map 6's east boundary is live now: the shrine hall beyond it.
+    ("temple_astral_wind", "∇"): AreaExit(
+        "temple_shrine", "from_temple_6", "right"
+    ),
+    ("temple_astral_wind", "«"): AreaExit(
+        "temple_shrine", "from_temple_6", "right"
+    ),
+    ("temple_shrine", "Δ"): AreaExit(
+        "temple_astral_wind", "from_temple_7", "left"
+    ),
+    ("temple_shrine", "»"): AreaExit(
+        "temple_astral_wind", "from_temple_7", "left"
+    ),
     ("temple_astral_wind", "⌄"): AreaExit(
         "temple_snakes", "from_temple_6", "up"
     ),
@@ -137,4 +150,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "temple_darts": "temple.wav",
     "temple_snakes": "temple.wav",
     "temple_astral_wind": "temple.wav",
+    "temple_shrine": "temple.wav",
 }
