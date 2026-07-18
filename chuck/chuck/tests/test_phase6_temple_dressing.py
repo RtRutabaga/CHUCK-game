@@ -180,6 +180,25 @@ def test_guardian_monuments_stand_in_rows_through_the_open_halls() -> None:
         assert isinstance(_SPRITES[kind], tuple)
 
 
+def test_every_temple_door_has_a_centered_path_stub() -> None:
+    """Session 119: short runs of the processional path sit centered
+    before every temple doorway (the entrance hall's full aisle already
+    connects both of its doors). Door arrivals/anchors inside a stub
+    declare the path as their under-terrain, so the counts below are
+    grid counts — markers included, seamless."""
+    expected = {"temple_spikes": 18, "temple_skeletons": 12,
+                "temple_darts": 6, "temple_snakes": 15,
+                "temple_astral_wind": 18}
+    for name, count in expected.items():
+        tilemap = _map(name)
+        path = sum(row.count("≡") for row in tilemap._grid)
+        assert path == count, (name, path)
+        for row_i, row in enumerate(tilemap._grid):
+            for col_i, char in enumerate(row):
+                if char == "≡":
+                    assert not tilemap.is_solid(col_i, row_i)
+
+
 def test_floor_dressing_never_seals_a_route() -> None:
     """Each dressed map's arrival still reaches its onward boundary
     (jump-only terrain treated as crossable, matching gameplay)."""

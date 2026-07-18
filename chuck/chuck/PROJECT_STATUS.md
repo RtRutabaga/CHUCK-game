@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 118 (Astral scatter fractures the winding jump connector).
+Updated: session 119 (centered path stubs mark every temple doorway).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -438,7 +438,16 @@ This file is required by the project rules and updated every session.
   smoother slabs a shade lighter than the floor, with rare worn gold
   flecks) running unbroken from the exterior door to the deeper gate. The
   aisle's three markers (arrivals + Ashtray) declare it as their
-  under-terrain, and a test asserts the path spans every aisle row
+  under-terrain, and a test asserts the path spans every aisle row.
+  Session 119 extended the language: a short centered stub of the same
+  path sits before every other temple doorway (3-wide by up to 3 deep,
+  shaped to each door's approach — single-row lanes at the side doors of
+  the corridor maps, 2 deep at the snake chamber's south door where a
+  snake spawn bounds it). Door arrivals/anchors inside a stub declare
+  the path as their under-terrain (Ι φ Λ Ρ Η Μ Ζ), and a test locks the
+  per-map path counts (18/12/6/15/18). One Astral scatter cell moved one
+  leg south, out of the wind map's east-door stub, preserving the
+  36-cell scatter contract and the walk-and-hop course invariant
 - Guardian monuments (sessions 115-117, reference-directed): twenty-seven large
   ziggurat statues (48x64 props, two alternating weathering variants each —
   stepped tiers, thin green painted bands, gold diamond plaques, a tiny base

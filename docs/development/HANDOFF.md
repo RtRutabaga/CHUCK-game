@@ -3,52 +3,49 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `cfb12d2` (entrance path + corridor rows)
-- Current work: Astral scatter in the winding jump map (session 118)
+- Base commit before this pass: `2cc041b` (Astral scatter)
+- Current work: centered path stubs before every temple door (session 119)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-Playtest direction: more scattered Astral Sea blocks in Temple Map 6,
-serving both the broken-reality look and a more complex jump trial.
+Playtest direction: short runs of the entrance hall's processional path
+('≡') before each temple door, centered.
 
-Thirty-six additional single 'V' blocks now fracture the connector's
-legs around the eight mandatory full-width cuts: nibbled chamber
-corners, slaloms through the two long east legs, a dense weave through
-the broad west leg, and pinches in every narrow south leg. The final
-approach to the east boundary keeps its last columns clear.
+Every doorway across Temple Maps 2-6 now carries a centered stub of the
+path (Map 1's full aisle already connects both of its doors):
 
-Safety rules enforced by the placement script AND now locked as
-permanent test invariants:
+- temple_spikes: 3x3 stubs inside the north and south doors.
+- temple_skeletons: a 3x3 stub at the south door; the west door's
+  single-row lane gets a 3-long stub (its outer rows dead-end into
+  wall, so the lane IS the door's center).
+- temple_darts: 3-long single-row lanes at both side doors.
+- temple_snakes: a 3x3 stub at the east door; the south door's stub is
+  3x2 because a snake spawn sits on the row above.
+- temple_astral_wind: 3x3 stubs at the north and east doors. The
+  east-door stub area contained one session-118 scatter cell, which
+  moved one leg south — the 36-cell scatter contract and the
+  walk-and-hop course invariant both still hold.
 
-- No scatter cell is cardinally adjacent to a mandatory cut — nothing
-  widens a required crossing beyond the ~2.3-tile committed jump
-  (JUMP_DURATION x JUMP_SPEED = 37.4px).
-- The whole course is completable with walking plus SINGLE-tile hops
-  (a jump clears exactly one Astral cell onto safe floor): a
-  walk+hop flood from the arrival must reach EVERY safe cell and the
-  east boundary, so the scatter can never strand Chuck or gate
-  progress behind an impossible jump.
-- Scatter replaced plain floor only; markers, spawns, and the exact
-  27-torch count are untouched.
-
-The map-6 test was restructured deliberately: the old exact
-40-cell V-set assertion became mandatory-cuts-as-subset + a locked
-scatter count (36) + the adjacency rule + the walk-and-hop course
-invariant, which is the stronger contract.
+Seven door markers (Ι φ Λ Ρ Η Μ Ζ — each exclusive to its map,
+verified) now declare the path as their under-terrain, so stubs render
+seamlessly under arrivals and anchors, matching the Map 1 convention.
 
 ## Files Changed
 
-- assets/maps/temple_astral_wind.txt: the 36 scatter cells.
-- tests/test_phase6_temple_astral_wind.py: the restructured contract.
+- assets/maps/temple_spikes.txt, temple_skeletons.txt,
+  temple_darts.txt, temple_snakes.txt, temple_astral_wind.txt:
+  62 painted path cells + the relocated V.
+- src/world/tilemap.py: the seven marker under-terrain changes.
+- tests/test_phase6_temple_dressing.py: a new test locking per-map
+  path counts (18/12/6/15/18) and every path cell walkable.
 
 ## Verification Performed
 
-- All 44 suites pass.
-- The placement validator confirmed all 579 remaining safe cells stay
-  reachable under walk+single-hop movement before writing.
-- Screenshots confirm the fractured-reality look: scattered starfield
-  blocks breaking the floor around the tall mandatory cuts.
+- All 44 suites pass — including the wind map's walk-and-hop course
+  invariant re-validating around the moved scatter cell.
+- Screenshots confirm the stubs read as centered paved approaches at
+  native scale (spike corridor north door, snake chamber east door).
 
 ## Known Issues
 
@@ -62,5 +59,6 @@ invariant, which is the stronger contract.
 
 - Build Temple Map 7 as the next broad/open room east of the Astral wind
   connector, continuing arches (E/W anchored on the bottom opening row),
-  torches, dressing — urns, skulls/braziers, guardian monument rows —
-  one physical Ashtray, and shared-loader entry.
+  torches, dressing — urns, skulls/braziers, guardian monument rows, and
+  a centered path stub at each threshold — one physical Ashtray, and
+  shared-loader entry.
