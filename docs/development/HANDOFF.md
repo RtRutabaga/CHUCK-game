@@ -4,7 +4,7 @@
 
 - Branch: main
 - Base commit before this pass: `2cc041b` (Astral scatter)
-- Current work: centered path stubs before every temple door (session 119)
+- Current work: centered path stubs before every temple door, with full-width landings at the narrow lanes (sessions 119-120)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
@@ -46,6 +46,18 @@ seamlessly under arrivals and anchors, matching the Map 1 convention.
   invariant re-validating around the moved scatter cell.
 - Screenshots confirm the stubs read as centered paved approaches at
   native scale (spike corridor north door, snake chamber east door).
+
+## Session 120 Addendum: full-width landings at the narrow lanes
+
+Playtest found the single-row lane stubs too thin where they meet the
+open rooms. The path now fills each narrow lane completely and blooms
+into a full three-tall paved landing at the lane's mouth: the skeleton
+chamber's west door (lane cols 3-7 plus a 3x3 mouth at cols 8-10) and
+the dart corridor's west door (mouth cols 6-8). The dart corridor's
+east door approach is fully open, so its under-sized single-row stub
+became the complete 3x3. The two mouth markers (Σ, Ξ — both exclusive
+to their maps) now declare the path as their under-terrain. The
+path-count contract is 18/23/21/15/18; all 44 suites pass.
 
 ## Known Issues
 

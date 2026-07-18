@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 119 (centered path stubs mark every temple doorway).
+Updated: session 120 (narrow door lanes bloom into full-width path landings).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -443,9 +443,13 @@ This file is required by the project rules and updated every session.
   path sits before every other temple doorway (3-wide by up to 3 deep,
   shaped to each door's approach — single-row lanes at the side doors of
   the corridor maps, 2 deep at the snake chamber's south door where a
-  snake spawn bounds it). Door arrivals/anchors inside a stub declare
-  the path as their under-terrain (Ι φ Λ Ρ Η Μ Ζ), and a test locks the
-  per-map path counts (18/12/6/15/18). One Astral scatter cell moved one
+  snake spawn bounds it). Where a door's approach is a narrow lane (the
+  skeleton chamber's west door, the dart corridor's west door), the path
+  fills the whole lane and blooms into a full three-tall landing at its
+  mouth into the open room; the dart corridor's fully-open east door
+  carries a complete 3x3 stub (session 120). Door arrivals/anchors inside
+  a stub declare the path as their under-terrain (Ι φ Λ Ρ Η Μ Ζ Σ Ξ), and
+  a test locks the per-map path counts (18/23/21/15/18). One Astral scatter cell moved one
   leg south, out of the wind map's east-door stub, preserving the
   36-cell scatter contract and the walk-and-hop course invariant
 - Guardian monuments (sessions 115-117, reference-directed): twenty-seven large

@@ -185,9 +185,12 @@ def test_every_temple_door_has_a_centered_path_stub() -> None:
     before every temple doorway (the entrance hall's full aisle already
     connects both of its doors). Door arrivals/anchors inside a stub
     declare the path as their under-terrain, so the counts below are
-    grid counts — markers included, seamless."""
-    expected = {"temple_spikes": 18, "temple_skeletons": 12,
-                "temple_darts": 6, "temple_snakes": 15,
+    grid counts — markers included, seamless. Where a door's approach
+    is a narrow lane (the skeleton chamber's and dart corridor's side
+    doors), the path fills the lane and blooms to full three-tall width
+    at its mouth into the open room (session 120)."""
+    expected = {"temple_spikes": 18, "temple_skeletons": 23,
+                "temple_darts": 21, "temple_snakes": 15,
                 "temple_astral_wind": 18}
     for name, count in expected.items():
         tilemap = _map(name)
