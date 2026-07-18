@@ -84,6 +84,8 @@ Terrain legend:
     '£'  temple gate         (walkable threshold under the monumental facade)
     'Ϙ'  skull monument      (solid anchor of a 3x2 wall-cell footprint; the
                               48x64 guardian statue rises from its center)
+    'Ϟ'  serpent monument    (same footprint/anchor rule; a coiled serpent
+                              in the ziggurat niche instead of the skull)
     '€'  carved stone skull  (solid dressing prop over temple wall)
     'ø'  pedestal brazier    (solid; animated ceremonial fire on the floor)
     '†'  serpent idol        (solid dressing prop over temple wall)
@@ -337,6 +339,8 @@ TILE_DEFS: dict[str, TileDef] = {
     # wall cells; the statue sprite spans the block and rises above it.
     "Ϙ": TileDef(solid=True, color=(52, 62, 54),
                  prop="temple_monument", under="█"),
+    "Ϟ": TileDef(solid=True, color=(52, 62, 54),
+                 prop="temple_serpent_monument", under="█"),
     # Freestanding pedestal brazier: animated tileset terrain (like the
     # wall torch 'i'), solid on the floor it stands on.
     "ø": TileDef(solid=True, color=(48, 59, 51)),

@@ -66,6 +66,10 @@ _SPRITES = {
         "objects/temple_monument_1.png",
         "objects/temple_monument_2.png",
     ),
+    "temple_serpent_monument": (
+        "objects/temple_serpent_monument_1.png",
+        "objects/temple_serpent_monument_2.png",
+    ),
     # Temple interior dressing (mute, y-sorted; the temple's version of
     # the docks' stall and the jungle's trees). Tuples vary by position.
     "temple_idol": (

@@ -288,13 +288,14 @@ def temple_skull() -> Image.Image:
     return image
 
 
-def temple_monument(variant: int) -> Image.Image:
-    """A 48x64 skull ziggurat monument (reference-directed).
+def temple_monument(variant: int, face: str = "skull") -> Image.Image:
+    """A 48x64 ziggurat monument (reference-directed), in two faces.
 
     Stepped stone tiers with green painted bands and gold diamond
-    glyphs, a broad carved skull at its heart, stepped shoulders, and a
-    tiny ceremonial stair at the base. Stands on a 3x2 solid footprint
-    and rises two tiles above it — placed in guardian rows through the
+    glyphs, a carved figure at its heart — a broad skull, or a coiled
+    serpent in the same niche — stepped shoulders, and a tiny
+    ceremonial stair at the base. Stands on a 3x2 solid footprint and
+    rises two tiles above it, placed in guardian rows through the
     temple's open halls. Variant 1 puts the stair front-center; variant
     2 offsets it and weathers differently, so alternating statues in a
     row don't read as copies.
@@ -321,14 +322,33 @@ def temple_monument(variant: int) -> Image.Image:
     _blocks(draw, (2, 28, 11, 44))
     _blocks(draw, (36, 28, 45, 44))
     draw.rectangle((12, 20, 35, 44), fill=STONE_DARK)  # niche shadow
-    draw.rectangle((13, 21, 34, 43), fill=STONE_LIGHT)  # the skull itself
-    draw.rectangle((13, 40, 34, 43), fill=STONE)     # jaw underside
-    draw.rectangle((15, 26, 21, 33), fill=VOID)      # eye sockets
-    draw.rectangle((26, 26, 32, 33), fill=VOID)
-    draw.rectangle((23, 34, 24, 37), fill=VOID)      # nasal notch
-    for x in range(15, 33, 3):                       # tooth row
-        draw.line((x, 39, x, 43), fill=STONE_DARK)
-    draw.line((13, 38, 34, 38), fill=STONE_DARK)
+    if face == "skull":
+        draw.rectangle((13, 21, 34, 43), fill=STONE_LIGHT)  # the skull
+        draw.rectangle((13, 40, 34, 43), fill=STONE)   # jaw underside
+        draw.rectangle((15, 26, 21, 33), fill=VOID)    # eye sockets
+        draw.rectangle((26, 26, 32, 33), fill=VOID)
+        draw.rectangle((23, 34, 24, 37), fill=VOID)    # nasal notch
+        for x in range(15, 33, 3):                     # tooth row
+            draw.line((x, 39, x, 43), fill=STONE_DARK)
+        draw.line((13, 38, 34, 38), fill=STONE_DARK)
+    else:
+        # A serpent coiled in the same niche: three stacked coils, the
+        # head rising over them with a gold eye and forked tongue.
+        for top, bottom, inset in ((38, 43, 1), (32, 37, 3), (27, 31, 5)):
+            draw.rectangle((13 + inset, top, 34 - inset, bottom),
+                           fill=STONE_LIGHT)
+            draw.line((13 + inset, top, 34 - inset, top), fill=STONE)
+            draw.line((13 + inset, bottom, 34 - inset, bottom),
+                      fill=STONE_DARK)
+        draw.rectangle((19, 21, 28, 28), fill=STONE_LIGHT)  # raised head
+        draw.line((19, 21, 28, 21), fill=STONE)
+        draw.rectangle((21, 23, 22, 25), fill=VOID)    # eye sockets
+        draw.rectangle((25, 23, 26, 25), fill=VOID)
+        draw.point((21, 23), fill=EYE)                 # a gold glint
+        draw.point((25, 23), fill=EYE)
+        draw.line((23, 29, 23, 31), fill=STONE_DARK)   # forked tongue
+        draw.line((22, 32, 22, 33), fill=STONE_DARK)
+        draw.line((24, 32, 24, 33), fill=STONE_DARK)
     # Upper tier with its stripe, diamond plaque, and the cap block.
     draw.rectangle((8, 8, 39, 20), fill=STONE)
     draw.line((8, 8, 39, 8), fill=STONE_LIGHT)
@@ -365,6 +385,8 @@ def main() -> None:
         "temple_skull": temple_skull(),
         "temple_monument_1": temple_monument(0),
         "temple_monument_2": temple_monument(1),
+        "temple_serpent_monument_1": temple_monument(0, face="serpent"),
+        "temple_serpent_monument_2": temple_monument(1, face="serpent"),
         "temple_idol_1": serpent_idol(0),
         "temple_idol_2": serpent_idol(1),
         "temple_stela_1": glyph_stela(0),

@@ -129,16 +129,26 @@ def test_deeper_door_is_a_monumental_facade_with_fires_and_skulls() -> None:
 
 
 def test_guardian_monuments_stand_in_rows_through_the_open_halls() -> None:
-    """Session 115: large skull-ziggurat statues (48x64 props on 3x2
-    solid wall footprints, 'Ϙ' anchors) close down the broad rooms'
-    open space in aligned guardian rows."""
-    expected = {"temple_entrance": 6, "temple_skeletons": 4,
-                "temple_snakes": 2}
-    for name, count in expected.items():
+    """Sessions 115-116: large ziggurat statues (48x64 props on 3x2
+    solid wall footprints; 'Ϙ' skull and 'Ϟ' serpent anchors) close
+    down the broad rooms' open space in dense alternating guardian
+    rows. The snake chamber's guardians are all serpents — its statues
+    match its inhabitants."""
+    expected = {
+        "temple_entrance": {"temple_monument": 6,
+                            "temple_serpent_monument": 4},
+        "temple_skeletons": {"temple_monument": 4,
+                             "temple_serpent_monument": 2},
+        "temple_snakes": {"temple_serpent_monument": 4},
+    }
+    monument_kinds = ("temple_monument", "temple_serpent_monument")
+    for name, counts in expected.items():
         tilemap = _map(name)
+        kinds = Counter(kind for kind, _c, _r in tilemap.prop_tiles
+                        if kind in monument_kinds)
+        assert dict(kinds) == counts, (name, dict(kinds))
         anchors = [(c, r) for kind, c, r in tilemap.prop_tiles
-                   if kind == "temple_monument"]
-        assert len(anchors) == count, (name, anchors)
+                   if kind in monument_kinds]
         for col, row in anchors:
             # The full 3x2 footprint is solid; the anchor carries the prop.
             for c in (col - 1, col, col + 1):
@@ -149,9 +159,12 @@ def test_guardian_monuments_stand_in_rows_through_the_open_halls() -> None:
         for col, row in anchors:
             assert any((c == col or r == row) and (c, r) != (col, row)
                        for c, r in anchors), (name, (col, row))
-    tile = TILE_DEFS["Ϙ"]
-    assert tile.solid and tile.under == "█"
-    assert isinstance(_SPRITES["temple_monument"], tuple)
+    for char, kind in (("Ϙ", "temple_monument"),
+                       ("Ϟ", "temple_serpent_monument")):
+        tile = TILE_DEFS[char]
+        assert tile.solid and tile.under == "█"
+        assert tile.prop == kind
+        assert isinstance(_SPRITES[kind], tuple)
 
 
 def test_floor_dressing_never_seals_a_route() -> None:

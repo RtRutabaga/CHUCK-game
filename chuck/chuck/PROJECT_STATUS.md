@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 115 (guardian skull monuments close down the temple's open halls).
+Updated: session 116 (denser guardian rows; serpent monuments join the skulls).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -433,18 +433,21 @@ This file is required by the project rules and updated every session.
   contains exactly one physical Ashtray, exposes `Temple 5` through the shared
   loader, rebuilds all snakes on Sanity-zero return, preserves uninterrupted
   temple music, and enters the next narrow map through its south threshold
-- Guardian monuments (session 115, reference-directed): twelve large skull
-  ziggurats (48x64 temple_monument props, two alternating variants — stepped
-  tiers, thin green painted bands, gold diamond plaques, a pale carved skull
-  in a shadowed niche, a tiny base stair) stand in aligned rows through the
-  broad rooms' open space: six lining the entrance hall's aisle, four in the
-  skeleton chamber's side lanes, two as the snake chamber's southern row.
-  Each stands on a 3x2 solid footprint of temple wall cells with the 'Ϙ'
-  anchor at bottom-center carrying the y-sorted prop. Placement was
-  assertion-validated (plain-floor footprints, clearance rings free of
-  spawns/thresholds/hazards, full connectivity and the entrance's walkable
-  minimum re-verified per statue) and a dedicated test locks the counts,
-  footprints, and row formations
+- Guardian monuments (sessions 115-116, reference-directed): twenty large
+  ziggurat statues (48x64 props, two alternating weathering variants each —
+  stepped tiers, thin green painted bands, gold diamond plaques, a tiny base
+  stair) stand in dense aligned rows through the broad rooms: ten lining the
+  entrance hall's aisle, six in the skeleton chamber's side lanes, four in
+  the snake chamber. Two faces share the frame: the pale carved skull ('Ϙ'
+  anchors) and a coiled serpent with gold-glint eyes and forked tongue ('Ϟ'
+  anchors); rows alternate skull/serpent, and the snake chamber's guardians
+  are all serpents — its statues match its inhabitants. Each stands on a
+  3x2 solid footprint of temple wall cells with the anchor at bottom-center
+  carrying the y-sorted prop. Placement was assertion-validated (plain-floor
+  footprints, clearance rings free of spawns/thresholds/hazards, full
+  connectivity and the entrance's walkable minimum re-verified per statue)
+  and a dedicated test locks the per-kind counts, footprints, and row
+  formations
 - Deeper-door facade (session 114, reference-directed): Temple Map 1's north
   threshold is now a monumental composition — an 80x48 temple_gate prop
   (stepped corbelled crown, tall dark opening, flanking pillars, moss, gold
