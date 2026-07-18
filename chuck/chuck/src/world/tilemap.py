@@ -82,6 +82,8 @@ Terrain legend:
     '∇'  deeper doorway      (walkable inert phase boundary)
     '♠'  temple spike pit    (solid on foot, jumpable)
     '£'  temple gate         (walkable threshold under the monumental facade)
+    'Ϙ'  skull monument      (solid anchor of a 3x2 wall-cell footprint; the
+                              48x64 guardian statue rises from its center)
     '€'  carved stone skull  (solid dressing prop over temple wall)
     'ø'  pedestal brazier    (solid; animated ceremonial fire on the floor)
     '†'  serpent idol        (solid dressing prop over temple wall)
@@ -331,6 +333,10 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="temple_gate", under="∇"),
     "€": TileDef(solid=True, color=(52, 62, 54),
                  prop="temple_skull", under="█"),
+    # Guardian monument anchor: bottom-center of a 3x2 block of temple
+    # wall cells; the statue sprite spans the block and rises above it.
+    "Ϙ": TileDef(solid=True, color=(52, 62, 54),
+                 prop="temple_monument", under="█"),
     # Freestanding pedestal brazier: animated tileset terrain (like the
     # wall torch 'i'), solid on the floor it stands on.
     "ø": TileDef(solid=True, color=(48, 59, 51)),

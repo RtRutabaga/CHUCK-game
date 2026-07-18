@@ -24,6 +24,8 @@ CLAY_DARK = (104, 66, 44, 255)
 CLAY_LIGHT = (166, 116, 76, 255)
 EYE = (216, 178, 96, 255)
 GOLD = (198, 166, 74, 255)
+BAND = (52, 92, 48, 255)
+BAND_DARK = (36, 66, 38, 255)
 
 
 def _blocks(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int]) -> None:
@@ -286,6 +288,73 @@ def temple_skull() -> Image.Image:
     return image
 
 
+def temple_monument(variant: int) -> Image.Image:
+    """A 48x64 skull ziggurat monument (reference-directed).
+
+    Stepped stone tiers with green painted bands and gold diamond
+    glyphs, a broad carved skull at its heart, stepped shoulders, and a
+    tiny ceremonial stair at the base. Stands on a 3x2 solid footprint
+    and rises two tiles above it — placed in guardian rows through the
+    temple's open halls. Variant 1 puts the stair front-center; variant
+    2 offsets it and weathers differently, so alternating statues in a
+    row don't read as copies.
+    """
+    image = Image.new("RGBA", (48, 64), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    offset = variant % 2
+    # Base plinth with a thin painted band.
+    draw.rectangle((0, 52, 47, 63), fill=STONE)
+    draw.line((0, 52, 47, 52), fill=STONE_LIGHT)
+    draw.rectangle((1, 60, 46, 61), fill=BAND)
+    draw.line((14, 55, 14, 58), fill=STONE_DARK)
+    draw.line((33, 55, 33, 58), fill=STONE_DARK)
+    # Second tier: a green stripe and the gold diamond plaque.
+    draw.rectangle((3, 44, 44, 52), fill=STONE)
+    draw.line((3, 44, 44, 44), fill=STONE_LIGHT)
+    draw.rectangle((4, 48, 43, 49), fill=BAND)
+    draw.line((4, 50, 43, 50), fill=BAND_DARK)
+    draw.rectangle((20, 45, 27, 51), fill=STONE_DARK)
+    _diamond(draw, 23, 48)
+    # The skull heart between stepped shoulders.
+    draw.rectangle((2, 28, 11, 44), fill=STONE)      # shoulders
+    draw.rectangle((36, 28, 45, 44), fill=STONE)
+    _blocks(draw, (2, 28, 11, 44))
+    _blocks(draw, (36, 28, 45, 44))
+    draw.rectangle((12, 20, 35, 44), fill=STONE_DARK)  # niche shadow
+    draw.rectangle((13, 21, 34, 43), fill=STONE_LIGHT)  # the skull itself
+    draw.rectangle((13, 40, 34, 43), fill=STONE)     # jaw underside
+    draw.rectangle((15, 26, 21, 33), fill=VOID)      # eye sockets
+    draw.rectangle((26, 26, 32, 33), fill=VOID)
+    draw.rectangle((23, 34, 24, 37), fill=VOID)      # nasal notch
+    for x in range(15, 33, 3):                       # tooth row
+        draw.line((x, 39, x, 43), fill=STONE_DARK)
+    draw.line((13, 38, 34, 38), fill=STONE_DARK)
+    # Upper tier with its stripe, diamond plaque, and the cap block.
+    draw.rectangle((8, 8, 39, 20), fill=STONE)
+    draw.line((8, 8, 39, 8), fill=STONE_LIGHT)
+    draw.rectangle((9, 13, 38, 14), fill=BAND)
+    draw.line((9, 15, 38, 15), fill=BAND_DARK)
+    draw.rectangle((19, 10, 28, 18), fill=STONE_DARK)
+    _diamond(draw, 23, 14)
+    draw.rectangle((14, 0, 33, 8), fill=STONE)
+    draw.line((14, 0, 33, 0), fill=STONE_LIGHT)
+    # The tiny stair, and weathering that differs per variant.
+    stair_x = 20 if not offset else 30
+    draw.rectangle((stair_x, 56, stair_x + 7, 57), fill=STONE_LIGHT)
+    draw.rectangle((stair_x, 58, stair_x + 7, 63), fill=STONE)
+    draw.line((stair_x, 60, stair_x + 7, 60), fill=STONE_DARK)
+    if offset:
+        draw.line((4, 30, 4, 38), fill=MOSS)
+        draw.line((10, 53, 16, 53), fill=MOSS)
+        draw.line((38, 22, 41, 22), fill=MOSS)
+    else:
+        draw.line((43, 30, 43, 38), fill=MOSS)
+        draw.line((30, 53, 37, 53), fill=MOSS)
+        draw.line((6, 22, 9, 22), fill=MOSS)
+        draw.line((36, 45, 41, 45), fill=MOSS)
+    return image
+
+
 def main() -> None:
     out_dir = Path(__file__).resolve().parents[1] / "assets" / "sprites" / "objects"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -294,6 +363,8 @@ def main() -> None:
         "temple_arch_ew": east_west_arch(),
         "temple_gate": temple_gate(),
         "temple_skull": temple_skull(),
+        "temple_monument_1": temple_monument(0),
+        "temple_monument_2": temple_monument(1),
         "temple_idol_1": serpent_idol(0),
         "temple_idol_2": serpent_idol(1),
         "temple_stela_1": glyph_stela(0),

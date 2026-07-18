@@ -128,6 +128,32 @@ def test_deeper_door_is_a_monumental_facade_with_fires_and_skulls() -> None:
     assert sum(row.count("ø") for row in snakes._grid) == 2
 
 
+def test_guardian_monuments_stand_in_rows_through_the_open_halls() -> None:
+    """Session 115: large skull-ziggurat statues (48x64 props on 3x2
+    solid wall footprints, 'Ϙ' anchors) close down the broad rooms'
+    open space in aligned guardian rows."""
+    expected = {"temple_entrance": 6, "temple_skeletons": 4,
+                "temple_snakes": 2}
+    for name, count in expected.items():
+        tilemap = _map(name)
+        anchors = [(c, r) for kind, c, r in tilemap.prop_tiles
+                   if kind == "temple_monument"]
+        assert len(anchors) == count, (name, anchors)
+        for col, row in anchors:
+            # The full 3x2 footprint is solid; the anchor carries the prop.
+            for c in (col - 1, col, col + 1):
+                for r in (row - 1, row):
+                    assert tilemap.is_solid(c, r), (name, (c, r))
+        # Rows: every monument shares its anchor column or row with
+        # another — statues stand in formation, never scattered singly.
+        for col, row in anchors:
+            assert any((c == col or r == row) and (c, r) != (col, row)
+                       for c, r in anchors), (name, (col, row))
+    tile = TILE_DEFS["Ϙ"]
+    assert tile.solid and tile.under == "█"
+    assert isinstance(_SPRITES["temple_monument"], tuple)
+
+
 def test_floor_dressing_never_seals_a_route() -> None:
     """Each dressed map's arrival still reaches its onward boundary
     (jump-only terrain treated as crossable, matching gameplay)."""
