@@ -118,6 +118,15 @@ def test_deeper_door_is_a_monumental_facade_with_fires_and_skulls() -> None:
     assert skull.solid and skull.under == "█"
     assert TILE_DEFS["ø"].solid
     assert sum(row.count("ø") for row in entrance._grid) == 2
+    # The processional path runs unbroken down the aisle to the gate:
+    # every aisle row between the doors carries walkable path (the
+    # three center markers sit ON it via their under-terrain).
+    assert not TILE_DEFS["≡"].solid
+    for row_i in range(3, 35):
+        aisle = [entrance.terrain_at(c, row_i) for c in (21, 22, 23, 24)]
+        assert any(ch in "≡υρκ" for ch in aisle), (row_i, aisle)
+        assert all(not entrance.is_solid(c, row_i)
+                   for c in (21, 22, 23, 24)), row_i
     # The chambers continue the language: skulls in the skeleton hall,
     # braziers beside the snake chamber's serpent idols.
     skeletons = _map("temple_skeletons")
@@ -137,8 +146,12 @@ def test_guardian_monuments_stand_in_rows_through_the_open_halls() -> None:
     expected = {
         "temple_entrance": {"temple_monument": 6,
                             "temple_serpent_monument": 4},
+        "temple_spikes": {"temple_monument": 3,
+                          "temple_serpent_monument": 2},
         "temple_skeletons": {"temple_monument": 4,
                              "temple_serpent_monument": 2},
+        "temple_darts": {"temple_monument": 1,
+                         "temple_serpent_monument": 1},
         "temple_snakes": {"temple_serpent_monument": 4},
     }
     monument_kinds = ("temple_monument", "temple_serpent_monument")

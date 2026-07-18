@@ -128,6 +128,24 @@ def draw_brazier(surface, variant: int, frame: int) -> None:
     surface.set_at((8, 6), FLAME_LIGHT)
 
 
+def draw_path(surface, variant: int, _frame: int) -> None:
+    """The processional path: smooth paved slabs, a shade lighter than
+    the worn floor, with clean long joints — the walkway the guardian
+    rows flank on the approach to the deeper door."""
+    surface.fill((78, 82, 66))
+    pygame.draw.line(surface, (95, 97, 76), (1, 1), (14, 1), 1)
+    pygame.draw.line(surface, STONE_DARK, (0, 15), (15, 15), 1)
+    pygame.draw.line(surface, STONE_DARK, (0, 7), (15, 7), 1)
+    seam = (variant * 9 + 4) % 14
+    pygame.draw.line(surface, STONE_DARK, (seam, 8), (seam, 15), 1)
+    pygame.draw.line(surface, STONE_DARK, ((seam + 7) % 14, 0),
+                     ((seam + 7) % 14, 7), 1)
+    if variant == 1:
+        # A worn gold fleck: the diamond glyph nearly polished away.
+        surface.set_at((11, 4), GLYPH)
+        surface.set_at((12, 4), GLYPH)
+
+
 def draw_dart_wall(surface, variant: int, frame: int) -> None:
     """Masonry launcher aperture; marker orientation supplies direction."""
     draw_wall(surface, variant, frame)
@@ -145,6 +163,7 @@ DRAW = {
     "temple_dart_wall": draw_dart_wall,
     "astral_void": draw_astral_void,
     "temple_brazier": draw_brazier,
+    "temple_path": draw_path,
 }
 
 

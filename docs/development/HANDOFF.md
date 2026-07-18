@@ -3,59 +3,58 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `7a86877` (guardian monument rows)
-- Current work: denser guardian rows with serpent monuments (session 116)
+- Base commit before this pass: `617bdc5` (serpent monuments)
+- Current work: entrance path + corridor guardian rows (session 117)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-Playtest direction: denser monument rows, with some statues styled as
-serpents in the same language as the skulls.
+Playtest direction: a path down the center of Temple Map 1 to the door,
+and monuments in the remaining open maps so nowhere feels too empty.
 
-The monument builder now renders two faces from one shared ziggurat
-frame (tiers, green bands, gold diamond plaques, base stair): the skull,
-and a coiled serpent — stacked stone coils with a raised head,
-gold-glint eyes, and a forked tongue, kin to the snake chamber's small
-serpent idols. New 'Ϟ' anchor char (same 3x2 solid-footprint rule as
-'Ϙ') places `temple_serpent_monument` with two weathering variants.
+1. Processional path: a new walkable temple terrain '≡' (two variants —
+   smooth paved slabs a shade lighter than the worn floor, clean long
+   joints, a rare worn gold fleck) paints the entrance hall's central
+   aisle four tiles wide (cols 21-24) from the exterior door to the
+   deeper gate: 125 cells plus the three aisle markers (both arrivals
+   and the Ashtray), whose under-terrain is now the path so no seams
+   appear. The guardian rows and braziers flank it; the facade
+   composition now reads as a true processional approach.
 
-The guardian formations grew from twelve to twenty, alternating
-skull/serpent down each row:
-
-- Entrance hall: each side row grew from three to five (anchors every
-  ~4 rows down cols 11 and 36) — ten statues lining the aisle.
-- Skeleton chamber: three per side (a serpent added mid-row each side).
-- Snake chamber: four serpents — the two existing skulls CONVERTED to
-  serpents (its guardians should match its inhabitants), plus a third
-  southern statue and a northern one aligned on the same column.
-
-Same validation discipline as session 115, applied per statue:
-plain-floor footprints, clearance rings (no spawns, thresholds,
-hazards, or other monuments), full connectivity plus every
-spawn/arrival/boundary reachable, and the entrance hall's walkable
-margin (941 tiles remain against the 850 test floor). The validator
-rejected two initial coordinates (a skeleton-spawn adjacency and a
-formation-rule violation for a lone northern serpent, which was
-relocated onto a shared column).
+2. Corridor guardians: the two remaining maps with open space gained
+   monument rows under the established validation discipline —
+   - temple_spikes: five statues alternating skull/serpent on the
+     landings, each placed opposite that landing's skeleton (anchors
+     share cols 28/18, satisfying the formation rule). Connectivity was
+     checked with spike bands treated as jump-crossable, exactly as the
+     map's own tests do.
+   - temple_darts: one skull and one serpent inside the corridor,
+     anchored at row 12 in the dart-free columns (17-19 and 41-43,
+     between the down-lanes at 15/27/39/51 and up-lanes at 21/33/45/57)
+     so NO timing lane gains cover and dart gameplay is unchanged.
+   - temple_astral_wind: deliberately left undressed — its five-wide
+     winding passage has no open space.
 
 ## Files Changed
 
-- tools/generate_temple_props.py: temple_monument(variant, face) +
-  serpent niche; regenerated temple_serpent_monument_1/2.png.
-- src/world/tilemap.py: 'Ϟ' tile def + legend.
-- src/entities/prop.py: temple_serpent_monument variant tuple.
-- assets/maps/temple_entrance.txt, temple_skeletons.txt,
-  temple_snakes.txt: eight new footprints + two conversions.
-- tests/test_phase6_temple_dressing.py: the guardian test now locks
-  per-kind counts (6+4 / 4+2 / 0+4), both anchors' tile shapes, and the
-  formation rule across both kinds.
+- src/world/tileset_layout.py, tools/generate_temple_tileset.py, and
+  the regenerated temple.png: the temple_path row.
+- src/world/tilemap.py: '≡' tile def + legend; the three entrance aisle
+  markers' under-terrain is now the path.
+- assets/maps/temple_entrance.txt (path), temple_spikes.txt,
+  temple_darts.txt (monument footprints).
+- tests: the entrance tileset dict includes temple_path; the guardian
+  test's EXPECTED covers all five dressed maps (6+4 / 3+2 / 4+2 / 1+1 /
+  0+4 skull+serpent); a new facade assertion locks the path spanning
+  every aisle row, walkable end to end.
 
 ## Verification Performed
 
-- All 44 suites pass (skeleton envelope routes, snake threshold route,
-  entrance walkable floor included).
-- Screenshots confirm the alternating rows at native scale and the
-  serpent face reading clearly beside living snakes.
+- All 44 suites pass (spike-corridor route, dart counts/behavior,
+  entrance walkable floor among them).
+- Screenshots confirm the paved path running into the facade between
+  the flanking rows, and the corridor monuments sitting clear of spike
+  bands and dart lanes at native scale.
 
 ## Known Issues
 
@@ -69,5 +68,6 @@ relocated onto a shared column).
 
 - Build Temple Map 7 as the next broad/open room east of the Astral wind
   connector, continuing arches (E/W anchored on the bottom opening row),
-  torches, dressing — urns, skulls/braziers, and dense alternating
-  guardian monument rows — one physical Ashtray, and shared-loader entry.
+  torches, dressing — urns, skulls/braziers, guardian monument rows, and
+  optionally a processional path at its threshold — one physical
+  Ashtray, and shared-loader entry.

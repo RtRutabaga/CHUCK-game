@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 116 (denser guardian rows; serpent monuments join the skulls).
+Updated: session 117 (processional path to the gate; corridor guardian rows).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -433,12 +433,22 @@ This file is required by the project rules and updated every session.
   contains exactly one physical Ashtray, exposes `Temple 5` through the shared
   loader, rebuilds all snakes on Sanity-zero return, preserves uninterrupted
   temple music, and enters the next narrow map through its south threshold
-- Guardian monuments (sessions 115-116, reference-directed): twenty large
+- Processional path (session 117): the entrance hall's central aisle is a
+  four-wide paved walkway ('≡', a new walkable two-variant temple terrain —
+  smoother slabs a shade lighter than the floor, with rare worn gold
+  flecks) running unbroken from the exterior door to the deeper gate. The
+  aisle's three markers (arrivals + Ashtray) declare it as their
+  under-terrain, and a test asserts the path spans every aisle row
+- Guardian monuments (sessions 115-117, reference-directed): twenty-seven large
   ziggurat statues (48x64 props, two alternating weathering variants each —
   stepped tiers, thin green painted bands, gold diamond plaques, a tiny base
-  stair) stand in dense aligned rows through the broad rooms: ten lining the
-  entrance hall's aisle, six in the skeleton chamber's side lanes, four in
-  the snake chamber. Two faces share the frame: the pale carved skull ('Ϙ'
+  stair) stand in dense aligned rows through every map with open space: ten
+  lining the entrance hall's aisle, five on the spike corridor's landings
+  (opposite each landing's skeleton), six in the skeleton chamber's side
+  lanes, two between the dart corridor's timing lanes (placed strictly in
+  the dart-free columns so no lane gains cover), and four in the snake
+  chamber. Only the Astral wind connector stays undressed — its five-wide
+  winding passage has no open space to fill. Two faces share the frame: the pale carved skull ('Ϙ'
   anchors) and a coiled serpent with gold-glint eyes and forked tongue ('Ϟ'
   anchors); rows alternate skull/serpent, and the snake chamber's guardians
   are all serpents — its statues match its inhabitants. Each stands on a

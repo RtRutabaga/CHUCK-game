@@ -88,6 +88,7 @@ Terrain legend:
                               in the ziggurat niche instead of the skull)
     '€'  carved stone skull  (solid dressing prop over temple wall)
     'ø'  pedestal brazier    (solid; animated ceremonial fire on the floor)
+    '≡'  processional path   (walkable paved slabs down the entrance aisle)
     '†'  serpent idol        (solid dressing prop over temple wall)
     '‡'  glyph stela         (solid dressing prop over temple wall)
     '¦'  cracked urn         (solid dressing prop over temple wall base)
@@ -344,6 +345,9 @@ TILE_DEFS: dict[str, TileDef] = {
     # Freestanding pedestal brazier: animated tileset terrain (like the
     # wall torch 'i'), solid on the floor it stands on.
     "ø": TileDef(solid=True, color=(48, 59, 51)),
+    # Processional path: walkable paved slabs down the entrance hall's
+    # central aisle, from the exterior door to the deeper gate.
+    "≡": TileDef(solid=False, color=(78, 82, 66)),
     "†": TileDef(solid=True, color=(52, 62, 54),
                  prop="temple_idol", under="█"),
     "‡": TileDef(solid=True, color=(52, 62, 54),
@@ -420,10 +424,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "λ": MarkerDef(kind="anchor:chult_5_anchor", under="."),
     "ξ": MarkerDef(kind="boundary:temple_interior", under="Ω"),
     "ν": MarkerDef(kind="arrival:from_temple_interior", under="τ"),
-    "κ": MarkerDef(kind="arrival:from_temple_exterior", under="·"),
-    "ρ": MarkerDef(kind="anchor:temple_1_anchor", under="·"),
+    # The entrance hall's three center-aisle markers sit ON the
+    # processional path, so their under-terrain matches it (no seams).
+    "κ": MarkerDef(kind="arrival:from_temple_exterior", under="≡"),
+    "ρ": MarkerDef(kind="anchor:temple_1_anchor", under="≡"),
     "σ": MarkerDef(kind="boundary:temple_deeper", under="∇"),
-    "υ": MarkerDef(kind="arrival:from_temple_2", under="·"),
+    "υ": MarkerDef(kind="arrival:from_temple_2", under="≡"),
     "φ": MarkerDef(kind="arrival:from_temple_1", under="·"),
     "χ": MarkerDef(kind="anchor:temple_2_anchor", under="·"),
     "ω": MarkerDef(kind="boundary:temple_3", under="∇"),

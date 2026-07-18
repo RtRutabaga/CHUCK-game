@@ -204,6 +204,7 @@ TEMPLE = Tileset(
         ("temple_dart_wall", 2, 1),
         ("astral_void", 2, 3),
         ("temple_brazier", 1, 2),
+        ("temple_path", 2, 1),
     ],
     char_to_terrain={
         "·": "temple_floor",
@@ -215,6 +216,7 @@ TEMPLE = Tileset(
         "W": "temple_dart_wall",
         "V": "astral_void",
         "ø": "temple_brazier",
+        "≡": "temple_path",
     },
     overhead_char_to_terrain={},
 )
