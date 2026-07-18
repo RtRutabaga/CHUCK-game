@@ -3,58 +3,52 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `617bdc5` (serpent monuments)
-- Current work: entrance path + corridor guardian rows (session 117)
+- Base commit before this pass: `cfb12d2` (entrance path + corridor rows)
+- Current work: Astral scatter in the winding jump map (session 118)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-Playtest direction: a path down the center of Temple Map 1 to the door,
-and monuments in the remaining open maps so nowhere feels too empty.
+Playtest direction: more scattered Astral Sea blocks in Temple Map 6,
+serving both the broken-reality look and a more complex jump trial.
 
-1. Processional path: a new walkable temple terrain '≡' (two variants —
-   smooth paved slabs a shade lighter than the worn floor, clean long
-   joints, a rare worn gold fleck) paints the entrance hall's central
-   aisle four tiles wide (cols 21-24) from the exterior door to the
-   deeper gate: 125 cells plus the three aisle markers (both arrivals
-   and the Ashtray), whose under-terrain is now the path so no seams
-   appear. The guardian rows and braziers flank it; the facade
-   composition now reads as a true processional approach.
+Thirty-six additional single 'V' blocks now fracture the connector's
+legs around the eight mandatory full-width cuts: nibbled chamber
+corners, slaloms through the two long east legs, a dense weave through
+the broad west leg, and pinches in every narrow south leg. The final
+approach to the east boundary keeps its last columns clear.
 
-2. Corridor guardians: the two remaining maps with open space gained
-   monument rows under the established validation discipline —
-   - temple_spikes: five statues alternating skull/serpent on the
-     landings, each placed opposite that landing's skeleton (anchors
-     share cols 28/18, satisfying the formation rule). Connectivity was
-     checked with spike bands treated as jump-crossable, exactly as the
-     map's own tests do.
-   - temple_darts: one skull and one serpent inside the corridor,
-     anchored at row 12 in the dart-free columns (17-19 and 41-43,
-     between the down-lanes at 15/27/39/51 and up-lanes at 21/33/45/57)
-     so NO timing lane gains cover and dart gameplay is unchanged.
-   - temple_astral_wind: deliberately left undressed — its five-wide
-     winding passage has no open space.
+Safety rules enforced by the placement script AND now locked as
+permanent test invariants:
+
+- No scatter cell is cardinally adjacent to a mandatory cut — nothing
+  widens a required crossing beyond the ~2.3-tile committed jump
+  (JUMP_DURATION x JUMP_SPEED = 37.4px).
+- The whole course is completable with walking plus SINGLE-tile hops
+  (a jump clears exactly one Astral cell onto safe floor): a
+  walk+hop flood from the arrival must reach EVERY safe cell and the
+  east boundary, so the scatter can never strand Chuck or gate
+  progress behind an impossible jump.
+- Scatter replaced plain floor only; markers, spawns, and the exact
+  27-torch count are untouched.
+
+The map-6 test was restructured deliberately: the old exact
+40-cell V-set assertion became mandatory-cuts-as-subset + a locked
+scatter count (36) + the adjacency rule + the walk-and-hop course
+invariant, which is the stronger contract.
 
 ## Files Changed
 
-- src/world/tileset_layout.py, tools/generate_temple_tileset.py, and
-  the regenerated temple.png: the temple_path row.
-- src/world/tilemap.py: '≡' tile def + legend; the three entrance aisle
-  markers' under-terrain is now the path.
-- assets/maps/temple_entrance.txt (path), temple_spikes.txt,
-  temple_darts.txt (monument footprints).
-- tests: the entrance tileset dict includes temple_path; the guardian
-  test's EXPECTED covers all five dressed maps (6+4 / 3+2 / 4+2 / 1+1 /
-  0+4 skull+serpent); a new facade assertion locks the path spanning
-  every aisle row, walkable end to end.
+- assets/maps/temple_astral_wind.txt: the 36 scatter cells.
+- tests/test_phase6_temple_astral_wind.py: the restructured contract.
 
 ## Verification Performed
 
-- All 44 suites pass (spike-corridor route, dart counts/behavior,
-  entrance walkable floor among them).
-- Screenshots confirm the paved path running into the facade between
-  the flanking rows, and the corridor monuments sitting clear of spike
-  bands and dart lanes at native scale.
+- All 44 suites pass.
+- The placement validator confirmed all 579 remaining safe cells stay
+  reachable under walk+single-hop movement before writing.
+- Screenshots confirm the fractured-reality look: scattered starfield
+  blocks breaking the floor around the tall mandatory cuts.
 
 ## Known Issues
 
@@ -68,6 +62,5 @@ and monuments in the remaining open maps so nowhere feels too empty.
 
 - Build Temple Map 7 as the next broad/open room east of the Astral wind
   connector, continuing arches (E/W anchored on the bottom opening row),
-  torches, dressing — urns, skulls/braziers, guardian monument rows, and
-  optionally a processional path at its threshold — one physical
-  Ashtray, and shared-loader entry.
+  torches, dressing — urns, skulls/braziers, guardian monument rows —
+  one physical Ashtray, and shared-loader entry.

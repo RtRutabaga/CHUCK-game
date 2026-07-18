@@ -73,7 +73,7 @@ def test_map_6_is_a_connected_narrow_winding_route_with_eight_jump_cuts() -> Non
     assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 60)
     assert (47, 52) in _flood(tilemap, (17, 5))
 
-    expected_astral = (
+    mandatory_cuts = (
         {(col, 9) for col in range(15, 20)}
         | {(25, row) for row in range(10, 15)}
         | {(col, 19) for col in range(33, 38)}
@@ -87,9 +87,46 @@ def test_map_6_is_a_connected_narrow_winding_route_with_eight_jump_cuts() -> Non
         (col, row) for row, line in enumerate(tilemap._grid)
         for col, char in enumerate(line) if char == "V"
     }
-    assert actual_astral == expected_astral
+    # The eight full-width mandatory cuts remain, and session 118's
+    # broken-reality scatter fractures the legs around them.
+    assert mandatory_cuts <= actual_astral
+    scatter = actual_astral - mandatory_cuts
+    assert len(scatter) == 36
+    # Scatter never widens a mandatory crossing beyond the ~2.3-tile
+    # committed jump: no scatter cell touches a cut cardinally.
+    for col, row in scatter:
+        for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            assert (col + dc, row + dr) not in mandatory_cuts, (col, row)
     assert (47, 52) not in _flood(tilemap, (17, 5), block_astral=True)
     assert sum(row.count("i") for row in tilemap._grid) == 27
+
+    # The whole course stays completable with walking plus SINGLE-tile
+    # hops (a jump clears exactly one Astral cell and lands on safe
+    # floor) — and every safe cell stays reachable, so the scatter can
+    # never strand Chuck or gate progress behind a longer jump.
+    safe = {
+        (col, row)
+        for row in range(tilemap.height_tiles)
+        for col in range(tilemap.width_tiles)
+        if not tilemap.is_solid(col, row)
+        and (col, row) not in actual_astral
+    }
+    reached = {(17, 5)}
+    frontier = deque([(17, 5)])
+    while frontier:
+        col, row = frontier.popleft()
+        for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            walk = (col + dc, row + dr)
+            if walk in safe and walk not in reached:
+                reached.add(walk)
+                frontier.append(walk)
+            over = (col + dc, row + dr)
+            land = (col + 2 * dc, row + 2 * dr)
+            if over in actual_astral and land in safe and land not in reached:
+                reached.add(land)
+                frontier.append(land)
+    assert reached == safe
+    assert (47, 52) in reached
 
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_temple_5") == 1

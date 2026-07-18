@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 117 (processional path to the gate; corridor guardian rows).
+Updated: session 118 (Astral scatter fractures the winding jump connector).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -482,7 +482,13 @@ This file is required by the project rules and updated every session.
 - Phase 6 Temple Map 6: a reversible 48x60 connector winds through four major
   direction changes in a five-tile-wide passage. Eight full-width, one-tile
   Astral Sea cuts require Chuck's established committed jump; stepping onto
-  them reuses the quiet Astral fall and checkpoint-return behavior. Twenty-seven
+  them reuses the quiet Astral fall and checkpoint-return behavior. Session
+  118 scattered 36 additional single Astral blocks through the legs — a
+  broken-reality fracture that doubles as a harder jump slalom. No scatter
+  cell touches a mandatory cut cardinally (nothing widens past the
+  ~2.3-tile committed jump), and a permanent test walks the whole course
+  with single-tile hops only, proving every safe cell reachable and the
+  east boundary attainable. Twenty-seven
   animated wall torches trace the winding route. The enemy-free map contains
   exactly one physical Ashtray, exposes `Temple 6` through the shared loader,
   preserves uninterrupted temple music, returns safely to Map 5, and holds an
