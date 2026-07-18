@@ -4,7 +4,7 @@
 
 - Branch: main
 - Base commit before this pass: `c201d35` (`Densify all Chult exteriors with additional jungle blobs`)
-- Current work: pantry jar shelves as carton breakables (session 112)
+- Current work: pantry jar shelves and floor jars as carton breakables (sessions 112-113)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`); this pass extends
   the session-110 breakable/carton language back into the Phase 3 pantry.
 
@@ -62,6 +62,20 @@ lands one tile aside; the right lands directly below.
   carton on safe board beside the Astral tiles.
 - test_pantry's exact prop counter reads parse-level prop_tiles, which is
   unchanged — no existing test needed modification.
+
+## Session 113 Addendum: the round floor jars
+
+Playtest clarified the request meant the pantry's four round floor vessels
+(map char 'z', the grain-sack sprite that reads as a big-bellied jar) —
+those are now breakables too, alongside the shelves. `PantryJar`
+subclasses `BreakableUrn` (whose shard palette became an overridable
+class attribute): one scratch shatters the jar into crockery-toned
+shards, clears its tile to open walkable board via the same
+`clear_tile` callback the temple floor urns use, and spills a carton
+where it stood. Jars vanish after their debris pass (unlike the
+persistent shelves) and restock on reload. Two more tests cover the four
+jar positions, the tile opening, carton collection, and reload; the
+suite is at 44 passing.
 
 ## Known Issues
 

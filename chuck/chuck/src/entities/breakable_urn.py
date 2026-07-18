@@ -42,7 +42,13 @@ _SPRITES = (
 
 
 class BreakableUrn(Entity):
-    """One dressed temple urn; a scratch shatters it and spills a carton."""
+    """One dressed temple urn; a scratch shatters it and spills a carton.
+
+    Subclasses may restyle the vessel (FRAGMENTS shard palette and the
+    sprite path) — the pantry's floor jars reuse this whole lifecycle.
+    """
+
+    FRAGMENTS = _FRAGMENTS
 
     def __init__(self, col: int, row: int, wall_mounted: bool,
                  on_break: Callable[[], None] | None = None) -> None:
@@ -133,7 +139,7 @@ class BreakableUrn(Entity):
         progress = min(1.0, self._break_time / config.BREAKABLE_GRASS_DURATION)
         cy = bottom - 8
         arc = math.sin(progress * math.pi) * 5.0
-        for dx, dy, w, h, color in _FRAGMENTS:
+        for dx, dy, w, h, color in self.FRAGMENTS:
             x = int(cx + dx * progress - w / 2) - ox
             y = int(cy + dy * progress - arc - h / 2) - oy
             pygame.draw.rect(surface, color, pygame.Rect(x, y, w, h))

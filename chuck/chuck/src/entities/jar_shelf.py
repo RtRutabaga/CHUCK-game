@@ -22,7 +22,31 @@ from __future__ import annotations
 import math
 
 from src.core import config
+from src.entities.breakable_urn import BreakableUrn
 from src.entities.entity import Entity
+
+
+class PantryJar(BreakableUrn):
+    """One round floor jar (the map's 'z' tiles): the temple urn's whole
+    scratch-break lifecycle, restyled — a big-bellied tan vessel that
+    shatters into cream crockery shards and spills a carton where it
+    stood. Its tile clears to walkable board through the same on_break
+    callback the temple's floor urns use."""
+
+    FRAGMENTS = (
+        (-12, -4, 2, 2, (182, 142, 88)),
+        (-8, 8, 2, 1, (150, 112, 66)),
+        (-4, -11, 1, 3, (204, 168, 110)),
+        (3, -13, 2, 2, (182, 142, 88)),
+        (9, -7, 1, 2, (112, 82, 48)),
+        (13, 4, 2, 2, (204, 168, 110)),
+        (6, 11, 2, 1, (150, 112, 66)),
+        (-7, 12, 1, 2, (112, 82, 48)),
+    )
+
+    def __init__(self, col: int, row: int, on_break=None) -> None:
+        super().__init__(col, row, wall_mounted=False, on_break=on_break)
+        self._sprite_path = "objects/grain_sack.png"
 
 
 # Glazed ceramic shards, matching the jar colors on the stocked sprite.

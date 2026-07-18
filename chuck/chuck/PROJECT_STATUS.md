@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 112 (pantry shelf jars are scratch-breakables spilling cartons).
+Updated: session 113 (pantry floor jars join the shelf jars as carton breakables).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -471,7 +471,11 @@ This file is required by the project rules and updated every session.
   a dedicated bare sprite (pantry_shelf_empty.png). The scene picks each
   carton's drop tile because only the map knows which neighboring board is
   safe: the left shelf stands directly above an Astral fall tile, so its
-  carton lands one tile aside. Shelves restock on reload
+  carton lands one tile aside. Shelves restock on reload. The pantry's four
+  round floor jars (the 'z' vessels, session 113) are breakables too:
+  PantryJar subclasses the temple urn's lifecycle with crockery-toned
+  shards — one scratch shatters the jar, clears its tile to open board,
+  and spills a carton where it stood
 - Temple urns are scratch-breakables (session 110): all 26 dressed urns build
   as living BreakableUrn entities (same positions/variants; idols, stelae,
   and columns stay static). One scratch shatters one urn into terracotta

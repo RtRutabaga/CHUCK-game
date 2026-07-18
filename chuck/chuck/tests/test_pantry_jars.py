@@ -16,7 +16,7 @@ import pygame
 
 from src.core import config
 from src.core.game import Game
-from src.entities.jar_shelf import PantryJarShelf
+from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.pickup import CigaretteCarton
 
 
@@ -108,6 +108,56 @@ def test_shelves_restock_on_reload() -> None:
         shelves = [b for b in scene.breakables
                    if isinstance(b, PantryJarShelf)]
         assert len(shelves) == 2 and all(s.intact for s in shelves)
+    finally:
+        game._shutdown()
+
+
+def test_pantry_builds_all_four_floor_jars_as_breakables() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("pantry_default")
+        scene._arrival_fade_t = None
+        jars = [b for b in scene.breakables if isinstance(b, PantryJar)]
+        ts = config.TILE_SIZE
+        tiles = sorted((int(j._center_x // ts), int(j._bottom // ts) - 1)
+                       for j in jars)
+        assert tiles == [(4, 13), (6, 2), (19, 2), (21, 13)]
+        assert not any(p.kind == "grain_sack" for p in scene.props)
+    finally:
+        game._shutdown()
+
+
+def test_scratching_a_floor_jar_opens_its_tile_and_spills_a_carton() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("pantry_default")
+        scene._arrival_fade_t = None
+        ts = config.TILE_SIZE
+        assert scene.tilemap.is_solid(6, 2)
+        scene.player.x, scene.player.y = 6 * ts + 3, 3 * ts + 1
+        scene.player.facing = "up"
+        scene.sanity.current = 15
+        game.input._actions_just_pressed.add("scratch")
+        scene.update(0.01)
+        jar = next(j for j in scene.breakables
+                   if isinstance(j, PantryJar)
+                   and int(j._center_x // ts) == 6)
+        assert not jar.intact
+        assert not scene.tilemap.is_solid(6, 2)  # crockery gone, board open
+        carton = scene.pickups[-1]
+        assert isinstance(carton, CigaretteCarton)
+        # Walk onto the opened tile: twenty cigarettes, clamped at full.
+        scene.player.x, scene.player.y = 6 * ts + 3, 2 * ts + 4
+        scene.update(0.01)
+        assert scene.sanity.current == scene.sanity.maximum
+        # Unlike a shelf, a shattered jar leaves the room entirely.
+        scene.update(config.BREAKABLE_GRASS_DURATION + 0.1)
+        assert jar not in scene.breakables
+        # And reload restores jar, tile, and solidity together.
+        scene = game.checkpoints.load_checkpoint("pantry_default")
+        assert scene.tilemap.is_solid(6, 2)
+        assert sum(isinstance(b, PantryJar)
+                   for b in scene.breakables) == 4
     finally:
         game._shutdown()
 

@@ -20,7 +20,7 @@ from src.core import config
 from src.entities.anchor import AstralAnchor
 from src.entities.breakable_grass import BreakableGrass
 from src.entities.breakable_urn import BreakableUrn
-from src.entities.jar_shelf import PantryJarShelf
+from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.hazard import Cat
@@ -225,12 +225,12 @@ class WorldScene(Scene):
         self.dialogue = DialogueSystem()
         self.choices = ChoiceSystem()
         self.last_choice: str | None = None  # what Chuck last decided
-        # Temple urns and pantry jar shelves are living breakables (see
-        # below), not static props.
+        # Temple urns, pantry jar shelves, and pantry floor jars are
+        # living breakables (see below), not static props.
         self.props = [
             Prop(kind, col, row, self.game.assets)
             for kind, col, row in self.tilemap.prop_tiles
-            if kind not in ("temple_urn", "pantry_shelf")
+            if kind not in ("temple_urn", "pantry_shelf", "grain_sack")
         ]
         self.pickups: list[Cigarette] = []
         self.breakables: list[BreakableGrass | BreakableUrn] = []
@@ -271,6 +271,19 @@ class WorldScene(Scene):
             )
             shelf.load_sprite(self.game.assets)
             self.breakables.append(shelf)
+        # Pantry floor jars (the round 'z' vessels): the temple floor
+        # urns' lifecycle in crockery — shatter, spill a carton in
+        # place, and clear the tile to open board.
+        for kind, col, row in self.tilemap.prop_tiles:
+            if kind != "grain_sack":
+                continue
+            jar = PantryJar(
+                col, row,
+                on_break=(lambda c=col, r=row:
+                          self.tilemap.clear_tile(c, r)),
+            )
+            jar.load_sprite(self.game.assets)
+            self.breakables.append(jar)
         self.hazards: list[Cat] = []
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
