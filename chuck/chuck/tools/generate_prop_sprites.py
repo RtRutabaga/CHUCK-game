@@ -532,8 +532,9 @@ def _build_pantry_open() -> str:
     return "\n".join("".join(row) for row in grid)
 
 
-def _build_pantry_shelf() -> str:
-    """Human storage shelves with jars looming above Chuck."""
+def _build_pantry_shelf(with_jars: bool = True) -> str:
+    """Human storage shelves looming above Chuck — full of jars, or
+    stripped bare after he has scratched them all down and broken them."""
     width, height = 28, 24
     grid = [["." for _ in range(width)] for _ in range(height)]
     for y in range(2, height):
@@ -543,6 +544,8 @@ def _build_pantry_shelf() -> str:
         for x in range(1, width - 1):
             grid[shelf_y][x] = "T" if shelf_y == 3 else "C"
             grid[shelf_y + 1][x] = "c"
+    if not with_jars:
+        return "\n".join("".join(row) for row in grid)
     for base_x, jar in ((5, "q"), (10, "S"), (16, "O"), (21, "q")):
         for y in range(6, 11):
             for x in range(base_x, base_x + 4):
@@ -611,6 +614,8 @@ def main() -> None:
     _write("pantry_door", _build_pantry_door(), 24, 30)
     _write("pantry_open", _build_pantry_open(), 24, 30)
     _write("pantry_shelf", _build_pantry_shelf(), 28, 24)
+    _write("pantry_shelf_empty", _build_pantry_shelf(with_jars=False),
+           28, 24)
     _write("grain_sack", _build_grain_sack(), 12, 16)
     _write("chimney", CHIMNEY, 12, 22)
     _write("sewer_grate", SEWER_GRATE, 16, 13)

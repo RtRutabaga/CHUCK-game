@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 111 (all five Chult exteriors densified with new jungle blobs).
+Updated: session 112 (pantry shelf jars are scratch-breakables spilling cartons).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -463,6 +463,15 @@ This file is required by the project rules and updated every session.
   pieces ('¢','¬') occupy single tiles in the broad rooms only, and a
   dedicated suite locks the per-map placement counts and re-verifies every
   arrival-to-boundary route
+- Pantry jar shelves are scratch-breakables (session 112): the two Waterdeep
+  pantry shelves build as PantryJarShelf entities. The furniture stands
+  forever — solid, human-scale — but one scratch rattles its JARS down into
+  glazed ceramic shards and spills a cigarette carton (the same 20-count
+  CigaretteCarton the temple urns use). The emptied shelf keeps drawing with
+  a dedicated bare sprite (pantry_shelf_empty.png). The scene picks each
+  carton's drop tile because only the map knows which neighboring board is
+  safe: the left shelf stands directly above an Astral fall tile, so its
+  carton lands one tile aside. Shelves restock on reload
 - Temple urns are scratch-breakables (session 110): all 26 dressed urns build
   as living BreakableUrn entities (same positions/variants; idols, stelae,
   and columns stay static). One scratch shatters one urn into terracotta
@@ -524,7 +533,7 @@ This file is required by the project rules and updated every session.
 
 ## Tests
 
-43 suites (most pure Python/headless): collision, tilemap,
+44 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
@@ -535,7 +544,8 @@ transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
 the Chult Map 5 temple exterior, the Phase 6 temple entrance hall, the Temple
 Map 2 spike corridor, the Temple Map 3 skeleton chamber, the Temple Map 4
 dart corridor, the Temple Map 5 snake chamber, the Temple Map 6 Astral wind,
-the temple interior dressing, and the breakable temple urns
+the temple interior dressing, the breakable temple urns, and the
+pantry jar shelves
 (`python -m tests.test_<name>` from the project root, or `pytest`).
 The map-transition flow (grate YES -> sewer) is also verified
 end-to-end headlessly with dummy SDL drivers.

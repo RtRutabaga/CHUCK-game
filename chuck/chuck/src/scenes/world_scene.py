@@ -20,6 +20,7 @@ from src.core import config
 from src.entities.anchor import AstralAnchor
 from src.entities.breakable_grass import BreakableGrass
 from src.entities.breakable_urn import BreakableUrn
+from src.entities.jar_shelf import PantryJarShelf
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.hazard import Cat
@@ -224,11 +225,12 @@ class WorldScene(Scene):
         self.dialogue = DialogueSystem()
         self.choices = ChoiceSystem()
         self.last_choice: str | None = None  # what Chuck last decided
-        # Temple urns are living breakables (see below), not static props.
+        # Temple urns and pantry jar shelves are living breakables (see
+        # below), not static props.
         self.props = [
             Prop(kind, col, row, self.game.assets)
             for kind, col, row in self.tilemap.prop_tiles
-            if kind != "temple_urn"
+            if kind not in ("temple_urn", "pantry_shelf")
         ]
         self.pickups: list[Cigarette] = []
         self.breakables: list[BreakableGrass | BreakableUrn] = []
@@ -246,6 +248,29 @@ class WorldScene(Scene):
             )
             urn.load_sprite(self.game.assets)
             self.breakables.append(urn)
+        # Pantry shelves: the furniture stands forever, but its JARS are
+        # scratch-breakable and spill a carton. The scene picks the drop
+        # tile because only the map knows which neighbor is safe plain
+        # board — the left shelf stands directly above an Astral fall
+        # tile, and a carton must never land where collecting it kills.
+        for kind, col, row in self.tilemap.prop_tiles:
+            if kind != "pantry_shelf":
+                continue
+            ts = config.TILE_SIZE
+            drop_tile = next(
+                (c, r)
+                for c, r in ((col, row + 1), (col - 1, row + 1),
+                             (col + 1, row + 1), (col - 1, row),
+                             (col + 1, row))
+                if self.tilemap.terrain_at(c, r) == "p"
+            )
+            shelf = PantryJarShelf(
+                col, row,
+                drop=(drop_tile[0] * ts + ts / 2,
+                      drop_tile[1] * ts + ts / 2),
+            )
+            shelf.load_sprite(self.game.assets)
+            self.breakables.append(shelf)
         self.hazards: list[Cat] = []
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
