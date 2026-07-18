@@ -79,9 +79,10 @@ suite is at 44 passing.
 
 ## Known Issues
 
-- None known from this pass. (Balance note: the pantry now offers 40
-  banked cigarettes pre-fall; flagged alongside the temple's carton
-  economy for the eventual counter session.)
+- None known from this pass. (Balance note: with two shelves and four
+  floor jars the pantry now offers six cartons — 120 banked cigarettes
+  pre-fall; flagged alongside the temple's carton economy for the
+  eventual counter session.)
 
 ## Scope Notes
 
