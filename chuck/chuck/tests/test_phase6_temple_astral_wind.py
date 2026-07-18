@@ -49,16 +49,17 @@ def test_every_temple_threshold_has_one_human_scale_stone_arch() -> None:
     )
     for name in maps:
         tilemap = _map(name)
-        arches = [kind for kind, _col, _row in tilemap.prop_tiles
-                  if kind.startswith("temple_arch_")]
-        assert arches.count("temple_arch_ns") + arches.count(
-            "temple_arch_ew"
-        ) == 2
+        # Every map's two thresholds carry a monument: a stone arch, or
+        # (Map 1's deeper door, session 114) the monumental gate facade.
+        monuments = [kind for kind, _col, _row in tilemap.prop_tiles
+                     if kind.startswith("temple_arch_")
+                     or kind == "temple_gate"]
+        assert len(monuments) == 2
         # No threshold remains a six- or eight-tile-wide repeated doorway.
         for row in tilemap._grid:
             run = 0
             for char in row:
-                run = run + 1 if char in "Δ∇⌂⌄«»" else 0
+                run = run + 1 if char in "Δ∇⌂⌄«»£" else 0
                 assert run <= 3
 
     ns = Image.open(config.SPRITES_DIR / "objects" / "temple_arch_ns.png")

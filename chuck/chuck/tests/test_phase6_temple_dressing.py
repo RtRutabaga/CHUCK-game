@@ -25,9 +25,11 @@ DRESSING_KINDS = ("temple_idol", "temple_stela", "temple_urn",
 WALL_CHARS = ("†", "‡", "¦")
 FLOOR_CHARS = ("¢", "¬")
 
-# Locked placements: dressing per map, by prop kind.
+# Locked placements: dressing per map, by prop kind. (The entrance
+# hall's two north-wall idols became the facade's carved skulls in
+# session 114; its other dressing is unchanged.)
 EXPECTED = {
-    "temple_entrance": {"temple_idol": 2, "temple_stela": 4,
+    "temple_entrance": {"temple_stela": 4,
                         "temple_urn": 7, "temple_column": 2},
     "temple_spikes": {"temple_stela": 4, "temple_urn": 2},
     "temple_skeletons": {"temple_idol": 2, "temple_stela": 3,
@@ -98,6 +100,32 @@ def test_dressing_scale_matches_the_temple_language() -> None:
         for relative in _SPRITES[kind]:
             w, h = png_size(config.SPRITES_DIR / relative)
             assert h <= 18, (kind, "stays low to the floor")
+
+
+def test_deeper_door_is_a_monumental_facade_with_fires_and_skulls() -> None:
+    """Session 114 showcase: Temple Map 1's north door is the reference
+    facade — one spanning gate over the walkable threshold, carved
+    skulls flanking it on the wall, and two animated pedestal braziers
+    burning before it. The broad chambers carry the language onward."""
+    entrance = _map("temple_entrance")
+    kinds = Counter(kind for kind, _c, _r in entrance.prop_tiles)
+    assert kinds["temple_gate"] == 1
+    assert kinds["temple_skull"] == 2
+    assert kinds["temple_arch_ns"] == 1  # the south arch remains
+    gate = TILE_DEFS["£"]
+    assert not gate.solid and gate.under == "∇"  # still a threshold
+    skull = TILE_DEFS["€"]
+    assert skull.solid and skull.under == "█"
+    assert TILE_DEFS["ø"].solid
+    assert sum(row.count("ø") for row in entrance._grid) == 2
+    # The chambers continue the language: skulls in the skeleton hall,
+    # braziers beside the snake chamber's serpent idols.
+    skeletons = _map("temple_skeletons")
+    assert Counter(k for k, _c, _r in skeletons.prop_tiles)[
+        "temple_skull"] == 2
+    assert sum(row.count("ø") for row in skeletons._grid) == 2
+    snakes = _map("temple_snakes")
+    assert sum(row.count("ø") for row in snakes._grid) == 2
 
 
 def test_floor_dressing_never_seals_a_route() -> None:

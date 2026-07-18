@@ -23,6 +23,7 @@ CLAY = (139, 90, 58, 255)
 CLAY_DARK = (104, 66, 44, 255)
 CLAY_LIGHT = (166, 116, 76, 255)
 EYE = (216, 178, 96, 255)
+GOLD = (198, 166, 74, 255)
 
 
 def _blocks(draw: ImageDraw.ImageDraw, box: tuple[int, int, int, int]) -> None:
@@ -200,12 +201,99 @@ def fallen_column(variant: int) -> Image.Image:
     return image
 
 
+def _diamond(draw: ImageDraw.ImageDraw, cx: int, cy: int) -> None:
+    """The recurring gold diamond glyph from the temple's stonework."""
+    draw.polygon(((cx, cy - 2), (cx + 2, cy), (cx, cy + 2), (cx - 2, cy)),
+                 outline=GOLD)
+
+
+def temple_gate() -> Image.Image:
+    """An 80x48 monumental facade for the entrance hall's deeper door.
+
+    Reference-directed: a stepped corbelled crown over a tall dark
+    opening, flanking engaged pillars with capitals, moss threads, and
+    the gold diamond glyphs. Spans the full three-tile doorway plus a
+    pillar's width to either side; nearly three tiles tall.
+    """
+    image = Image.new("RGBA", (80, 48), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    # Stepped crown: three corbelled tiers narrowing upward.
+    draw.rectangle((28, 0, 51, 7), fill=STONE)
+    draw.rectangle((20, 6, 59, 15), fill=STONE)
+    draw.rectangle((12, 14, 67, 23), fill=STONE)
+    # The tall dark opening beneath the lintel.
+    draw.rectangle((24, 18, 55, 47), fill=VOID)
+    draw.rectangle((16, 22, 23, 47), fill=STONE)   # inner jambs
+    draw.rectangle((56, 22, 63, 47), fill=STONE)
+    # Flanking engaged pillars with capitals.
+    for x0 in (2, 68):
+        draw.rectangle((x0, 20, x0 + 9, 25), fill=STONE_LIGHT)
+        draw.rectangle((x0 + 1, 25, x0 + 8, 47), fill=STONE)
+        for y in range(31, 47, 6):
+            draw.line((x0 + 1, y, x0 + 8, y), fill=STONE_DARK)
+    # Masonry seams across crown and jambs.
+    _blocks(draw, (12, 14, 67, 18))
+    _blocks(draw, (16, 22, 23, 47))
+    _blocks(draw, (56, 22, 63, 47))
+    draw.line((28, 0, 51, 0), fill=STONE_LIGHT)
+    draw.line((20, 6, 59, 6), fill=STONE_LIGHT)
+    draw.line((12, 14, 67, 14), fill=STONE_LIGHT)
+    draw.line((24, 18, 55, 18), fill=STONE_DARK, width=2)
+    # Gold diamond glyphs: crown center and both pillar capitals.
+    _diamond(draw, 39, 3)
+    _diamond(draw, 6, 22)
+    _diamond(draw, 73, 22)
+    # Moss threads working through the joints.
+    draw.line((14, 16, 20, 16), fill=MOSS, width=2)
+    draw.line((60, 15, 66, 15), fill=MOSS, width=2)
+    draw.line((17, 30, 17, 38), fill=MOSS)
+    draw.line((62, 26, 62, 34), fill=MOSS)
+    draw.line((4, 40, 4, 46), fill=MOSS)
+    draw.line((75, 36, 75, 43), fill=MOSS)
+    return image
+
+
+def temple_skull() -> Image.Image:
+    """A 28x36 carved stone skull on a stepped plinth (the reference's
+    flanking guardians). Mute environmental storytelling, like the
+    approach's skull stakes — but monumental, carved, and mossy."""
+    image = Image.new("RGBA", (28, 36), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    # Stepped plinth.
+    draw.rectangle((1, 31, 26, 35), fill=STONE)
+    draw.rectangle((3, 27, 24, 31), fill=STONE)
+    draw.line((1, 31, 26, 31), fill=STONE_DARK)
+    draw.line((3, 27, 24, 27), fill=STONE_LIGHT)
+    _diamond(draw, 13, 33)
+    # Cranium: broad and rounded, jaw narrowing below.
+    draw.rectangle((4, 4, 23, 21), fill=STONE)
+    draw.rectangle((6, 1, 21, 4), fill=STONE)
+    draw.rectangle((6, 21, 21, 26), fill=STONE)
+    draw.line((6, 1, 21, 1), fill=STONE_LIGHT)
+    draw.line((4, 4, 4, 21), fill=STONE_LIGHT)
+    # Eye sockets: deep, square-ish voids.
+    draw.rectangle((7, 9, 12, 15), fill=VOID)
+    draw.rectangle((15, 9, 20, 15), fill=VOID)
+    # Nasal cavity and the tooth row.
+    draw.polygon(((13, 17), (14, 17), (14, 20), (13, 20)), fill=VOID)
+    for x in range(7, 21, 3):
+        draw.line((x, 23, x, 25), fill=STONE_DARK)
+    draw.line((6, 22, 21, 22), fill=STONE_DARK)
+    # Weathering: moss creeping up one side of the plinth and brow.
+    draw.line((2, 32, 2, 35), fill=MOSS)
+    draw.line((5, 5, 5, 8), fill=MOSS)
+    draw.line((19, 2, 22, 2), fill=MOSS)
+    return image
+
+
 def main() -> None:
     out_dir = Path(__file__).resolve().parents[1] / "assets" / "sprites" / "objects"
     out_dir.mkdir(parents=True, exist_ok=True)
     images = {
         "temple_arch_ns": north_south_arch(),
         "temple_arch_ew": east_west_arch(),
+        "temple_gate": temple_gate(),
+        "temple_skull": temple_skull(),
         "temple_idol_1": serpent_idol(0),
         "temple_idol_2": serpent_idol(1),
         "temple_stela_1": glyph_stela(0),

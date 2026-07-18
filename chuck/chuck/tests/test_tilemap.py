@@ -67,11 +67,13 @@ def test_ragged_lines_pad_solid() -> None:
 
 
 def test_unknown_character_raises_with_location() -> None:
+    # '‰' is deliberately absent from both TILE_DEFS and MARKER_DEFS
+    # (each previous sentinel eventually became a real char).
     try:
-        TileMap(_write_map("..\n.€\n"))
+        TileMap(_write_map("..\n.‰\n"))
     except ValueError as exc:
         msg = str(exc)
-        assert "'€'" in msg and "row 1" in msg and "col 1" in msg, msg
+        assert "'‰'" in msg and "row 1" in msg and "col 1" in msg, msg
     else:
         raise AssertionError("expected ValueError for unknown tile char")
 

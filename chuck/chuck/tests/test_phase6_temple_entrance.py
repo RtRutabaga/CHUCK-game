@@ -123,6 +123,7 @@ def test_temple_has_dedicated_art_music_and_map_2_boundary() -> None:
         "♠": "temple_spikes", "i": "temple_torch",
         "W": "temple_dart_wall",
         "V": "astral_void",
+        "ø": "temple_brazier",
     }
     assert (config.TILESETS_DIR / tileset.sheet).is_file()
     assert AREA_MUSIC["temple_entrance"] == "temple.wav"

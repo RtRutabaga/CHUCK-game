@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 113 (pantry floor jars join the shelf jars as carton breakables).
+Updated: session 114 (the deeper door is a monumental facade; braziers and skulls).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -433,6 +433,17 @@ This file is required by the project rules and updated every session.
   contains exactly one physical Ashtray, exposes `Temple 5` through the shared
   loader, rebuilds all snakes on Sanity-zero return, preserves uninterrupted
   temple music, and enters the next narrow map through its south threshold
+- Deeper-door facade (session 114, reference-directed): Temple Map 1's north
+  threshold is now a monumental composition — an 80x48 temple_gate prop
+  (stepped corbelled crown, tall dark opening, flanking pillars, moss, gold
+  diamond glyphs) spanning the walkable doorway, two 28x36 carved-stone
+  temple_skull reliefs flanking it on the wall (replacing that wall's two
+  idols), and two freestanding pedestal braziers ('ø': a new animated
+  two-frame tileset terrain like the wall torch, solid on the floor)
+  burning before it. The gate tile ('£', under '∇') transitions exactly as
+  the arch char it replaced. The broad chambers carry the language onward:
+  skull pairs + braziers on the skeleton chamber's north wall, braziers
+  beside the snake chamber's serpent idols
 - Temple thresholds: all twelve entrances/exits across Temple Maps 1-6 now use
   narrowed three-tile openings centered beneath reusable procedural stone arch
   props. North/south arches are 48x38 and east/west arches are 38x48, both

@@ -81,6 +81,9 @@ Terrain legend:
     'Δ'  temple doorway      (walkable dark threshold)
     '∇'  deeper doorway      (walkable inert phase boundary)
     '♠'  temple spike pit    (solid on foot, jumpable)
+    '£'  temple gate         (walkable threshold under the monumental facade)
+    '€'  carved stone skull  (solid dressing prop over temple wall)
+    'ø'  pedestal brazier    (solid; animated ceremonial fire on the floor)
     '†'  serpent idol        (solid dressing prop over temple wall)
     '‡'  glyph stela         (solid dressing prop over temple wall)
     '¦'  cracked urn         (solid dressing prop over temple wall base)
@@ -321,6 +324,16 @@ TILE_DEFS: dict[str, TileDef] = {
     # docks' stall/walls and the jungle's trees. Wall pieces keep the
     # wall's solidity and draw y-sorted against its face; floor pieces
     # occupy one floor tile each (broad rooms only, never on a route).
+    # The entrance hall's monumental deeper-door facade and its flanking
+    # carved skulls (reference-directed showcase; session 114). The gate
+    # spans the walkable threshold like the arches; skulls dress walls.
+    "£": TileDef(solid=False, color=(10, 16, 15),
+                 prop="temple_gate", under="∇"),
+    "€": TileDef(solid=True, color=(52, 62, 54),
+                 prop="temple_skull", under="█"),
+    # Freestanding pedestal brazier: animated tileset terrain (like the
+    # wall torch 'i'), solid on the floor it stands on.
+    "ø": TileDef(solid=True, color=(48, 59, 51)),
     "†": TileDef(solid=True, color=(52, 62, 54),
                  prop="temple_idol", under="█"),
     "‡": TileDef(solid=True, color=(52, 62, 54),

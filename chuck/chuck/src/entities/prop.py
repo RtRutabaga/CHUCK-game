@@ -60,6 +60,8 @@ _SPRITES = {
     "skull_stake": "objects/skull_stake.png",
     "temple_arch_ns": "objects/temple_arch_ns.png",
     "temple_arch_ew": "objects/temple_arch_ew.png",
+    "temple_gate": "objects/temple_gate.png",
+    "temple_skull": "objects/temple_skull.png",
     # Temple interior dressing (mute, y-sorted; the temple's version of
     # the docks' stall and the jungle's trees). Tuples vary by position.
     "temple_idol": (

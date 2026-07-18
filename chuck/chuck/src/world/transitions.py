@@ -55,7 +55,9 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_entrance", "∇"): AreaExit(
         "temple_spikes", "from_temple_1", "up"
     ),
-    ("temple_entrance", "⌂"): AreaExit(
+    # The deeper door's monumental gate tile (session 114) transitions
+    # exactly as the arch char it replaced.
+    ("temple_entrance", "£"): AreaExit(
         "temple_spikes", "from_temple_1", "up"
     ),
     ("temple_spikes", "Δ"): AreaExit(

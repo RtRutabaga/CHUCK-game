@@ -104,6 +104,30 @@ def draw_torch(surface, variant: int, frame: int) -> None:
     surface.set_at((8, 7), FLAME_LIGHT)
 
 
+def draw_brazier(surface, variant: int, frame: int) -> None:
+    """A freestanding pedestal brazier on the floor — the facade's
+    ceremonial fire, flickering on the same two-frame cadence as the
+    wall torches."""
+    draw_floor(surface, variant, frame)
+    # Stepped stone pedestal with a shallow bowl.
+    pygame.draw.rect(surface, STONE_DARK, (4, 14, 8, 2))
+    pygame.draw.rect(surface, STONE, (5, 10, 6, 4))
+    pygame.draw.rect(surface, STONE_LIGHT, (4, 9, 8, 2))
+    pygame.draw.rect(surface, STONE_DARK, (3, 8, 10, 1))
+    surface.set_at((5, 11), GLYPH)  # a worn gold fleck on the stem
+    if frame == 0:
+        pygame.draw.polygon(surface, FLAME_DARK,
+                            ((4, 8), (8, 1), (12, 8)))
+        pygame.draw.polygon(surface, FLAME,
+                            ((6, 8), (8, 3), (10, 8)))
+    else:
+        pygame.draw.polygon(surface, FLAME_DARK,
+                            ((5, 8), (9, 0), (12, 7)))
+        pygame.draw.polygon(surface, FLAME,
+                            ((6, 8), (9, 2), (10, 7)))
+    surface.set_at((8, 6), FLAME_LIGHT)
+
+
 def draw_dart_wall(surface, variant: int, frame: int) -> None:
     """Masonry launcher aperture; marker orientation supplies direction."""
     draw_wall(surface, variant, frame)
@@ -120,6 +144,7 @@ DRAW = {
     "temple_torch": draw_torch,
     "temple_dart_wall": draw_dart_wall,
     "astral_void": draw_astral_void,
+    "temple_brazier": draw_brazier,
 }
 
 
