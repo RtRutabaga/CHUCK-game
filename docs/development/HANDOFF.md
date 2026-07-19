@@ -4,7 +4,7 @@
 
 - Branch: main
 - Base commit before this pass: `56b3251` (Temple Map 7)
-- Current work: Temple Map 8, the gauntlet (session 122)
+- Current work: Temple Map 8 + the shrine hall's winding rework (sessions 122-123)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
@@ -50,6 +50,22 @@ written (connectivity, the hop-course invariant, exact counts).
 - Screenshots confirm both legs at native scale: the spike climb with
   its monuments and skeletons, and the dart corridor with Astral
   fractures, braziers, and the dark west door.
+
+## Session 123 Addendum: the shrine hall winds
+
+Playtest direction: interior walls in Map 7 to wind the player around —
+past the skeletons, onto the Ashtray, then back up to the exit.
+
+Two wall spines (150 cells) now grow from the monument columns: the
+west spine seals the central aisle except a south gap, so the west
+entry is forced south through the west chamber past its skeletons and
+emerges directly at the Ashtray; the aisle then runs north between the
+walls — guardian statues embedded in both spines — to the north door.
+The east chamber is an optional pocket through a north gap. All
+contract counts are untouched (walls only); the envelope route
+invariant (entry -> Ashtray -> boundary with 3x3 skeleton envelopes
+blocked) was validated before writing and holds in the suite. All 46
+suites pass.
 
 ## Known Issues
 

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 122 (Temple Map 8: the gauntlet before the final chamber).
+Updated: session 123 (interior walls wind the shrine hall's route).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -553,6 +553,15 @@ This file is required by the project rules and updated every session.
   until Map 9), nine torches, two carton urns, stelae, a fallen column, and
   one shared-loader Ashtray (`Temple 8`). Map 7's north boundary is live
   both ways
+- Shrine hall winding rework (session 123): 150 interior wall cells grow
+  two spines out of the shrine hall's monument columns, transforming the
+  open room into a wound route — the west entry is forced south through
+  the west chamber past its six skeletons, a south gap opens directly at
+  the Ashtray, and the central aisle (walled both sides, guardian statues
+  embedded in the spines) runs back north to the exit. The east chamber
+  becomes an optional pocket entered through a north gap. The envelope
+  invariant still holds: entry -> Ashtray -> boundary remains walkable
+  with 3x3 avoidance envelopes around every skeleton blocked
 - Phase 6 Temple Map 7 (session 121): a reversible 56x44 shrine hall east
   of the Astral wind connector, entered through a west-wall arch onto a
   full-width paved landing. Twelve avoidable skeletons occupy the side
