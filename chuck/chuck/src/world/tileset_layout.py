@@ -249,6 +249,7 @@ MAP_TILESET: dict[str, str] = {
     "temple_astral_wind": "temple",
     "temple_shrine": "temple",
     "temple_gauntlet": "temple",
+    "temple_sanctum": "temple",
 }
 
 

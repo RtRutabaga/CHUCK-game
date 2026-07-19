@@ -128,6 +128,19 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_gauntlet", "Δ"): AreaExit(
         "temple_shrine", "from_temple_8", "down"
     ),
+    # The gauntlet's west boundary is live now: the final chamber.
+    ("temple_gauntlet", "∇"): AreaExit(
+        "temple_sanctum", "from_temple_8", "left"
+    ),
+    ("temple_gauntlet", "«"): AreaExit(
+        "temple_sanctum", "from_temple_8", "left"
+    ),
+    ("temple_sanctum", "Δ"): AreaExit(
+        "temple_gauntlet", "from_temple_9", "right"
+    ),
+    ("temple_sanctum", "»"): AreaExit(
+        "temple_gauntlet", "from_temple_9", "right"
+    ),
     ("temple_gauntlet", "⌄"): AreaExit(
         "temple_shrine", "from_temple_8", "down"
     ),
@@ -165,4 +178,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "temple_astral_wind": "temple.wav",
     "temple_shrine": "temple.wav",
     "temple_gauntlet": "temple.wav",
+    "temple_sanctum": "temple.wav",
 }

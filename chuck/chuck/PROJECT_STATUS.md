@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 129 (continuous cigarette count; death rewinds it).
+Updated: session 130 (Temple Map 9: the final chamber, structurally).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -617,6 +617,17 @@ This file is required by the project rules and updated every session.
   becomes an optional pocket entered through a north gap. The envelope
   invariant still holds: entry -> Ashtray -> boundary remains walkable
   with 3x3 avoidance envelopes around every skeleton blocked
+- Phase 6 Temple Map 9 (session 130): `temple_sanctum`, the final chamber
+  structurally — the temple's widest hall (64x48, 2032 walkable tiles). A
+  138-cell paved processional runs from the east door (the room's ONLY
+  threshold; per the phase contract the scripted Fireball, a later slice,
+  is the only way onward) between eight alternating guardian colonnade
+  monuments to the western dais, where carved wall skulls and six braziers
+  stage the coming battle. Fourteen torches, three carton urns, four
+  stelae, two fallen columns, one Ashtray (`Temple 9`), reversible
+  east-door transitions with the gauntlet (whose west boundary is now
+  live), and deliberately no enemies and no onward exit — the
+  adventurers/beholder battle and Fireball are their own next slices
 - Phase 6 Temple Map 7 (session 121): a reversible 56x44 shrine hall east
   of the Astral wind connector, entered through a west-wall arch onto a
   full-width paved landing. Twelve avoidable skeletons occupy the side
@@ -678,7 +689,7 @@ This file is required by the project rules and updated every session.
 
 ## Tests
 
-47 suites (most pure Python/headless): collision, tilemap,
+48 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,

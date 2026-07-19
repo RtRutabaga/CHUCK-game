@@ -158,8 +158,9 @@ def test_gauntlet_uses_temple_art_music_and_holds_future_west_exit() -> None:
     assert AREA_WALK_EXITS[(MAP_NAME, "Δ")].destination == "temple_shrine"
     assert AREA_WALK_EXITS[(MAP_NAME, "⌄")].destination == "temple_shrine"
     # The west boundary stays inert until Map 9 exists.
-    assert (MAP_NAME, "∇") not in AREA_WALK_EXITS
-    assert (MAP_NAME, "«") not in AREA_WALK_EXITS
+    # Session 130: the former inert west boundary now enters Map 9.
+    assert AREA_WALK_EXITS[(MAP_NAME, "∇")].destination == "temple_sanctum"
+    assert AREA_WALK_EXITS[(MAP_NAME, "«")].destination == "temple_sanctum"
 
 
 def _run_all() -> None:
