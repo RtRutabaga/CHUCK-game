@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 125 (the dev checkpoint selector pages with side arrows).
+Updated: session 126 (falls glide Chuck onto the hazard tile's center).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -557,6 +557,15 @@ This file is required by the project rules and updated every session.
   until Map 9), nine torches, two carton urns, stelae, a fallen column, and
   one shared-loader Ashtray (`Temple 8`). Map 7's north boundary is live
   both ways
+- Fall centering (session 126): a fall begins the moment Chuck's
+  footprint center crosses a hazard tile, which used to leave his sprite
+  mostly over the safe neighbor when entering from the north or a side —
+  the sink read as dropping into ordinary ground. The choreography now
+  glides him onto the triggering tile's center over the fall's first 40%
+  (control is already locked), so he always visibly drops INTO the hole
+  from every approach direction, for Astral, spikes, and the pantry sky
+  alike. A test enters a cut from the side and asserts the mid-fall
+  centering
 - Spike pits are fall hazards (session 124): '♠' is walkable now and
   classifies as the exact Astral fall — lethal underfoot with the same
   quiet vanish and checkpoint return, safe only under the committed jump.

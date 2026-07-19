@@ -149,6 +149,32 @@ def test_map_6_is_a_connected_narrow_winding_route_with_eight_jump_cuts() -> Non
     } for kind in kinds)
 
 
+def test_falling_always_centers_chuck_on_the_hazard_tile() -> None:
+    """Session 126: the fall triggers when Chuck's center crosses the
+    hazard, which can leave his sprite mostly over the safe neighbor.
+    The choreography glides him onto the hazard tile so the sink always
+    reads as dropping INTO it — from every approach direction."""
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("temple_6")
+        scene._arrival_fade_t = None
+        ts = config.TILE_SIZE
+        # Enter the vertical cut at (25, 12) from its WEST side: center
+        # just across the tile edge, sprite mostly over safe floor.
+        scene.player.x = 25 * ts - scene.player.width / 2 + 1
+        scene.player.y = 12 * ts + 4
+        scene.update(0.01)
+        assert scene._fall_t is not None  # the fall began
+        # By the end of the glide window he is centered on the hazard.
+        scene.update(config.FALL_DURATION * 0.4)
+        center_x = scene.player.x + scene.player.width / 2
+        center_y = scene.player.y + scene.player.height / 2
+        assert abs(center_x - (25 * ts + ts / 2)) < 0.6
+        assert abs(center_y - (12 * ts + ts / 2)) < 0.6
+    finally:
+        game._shutdown()
+
+
 def test_astral_cuts_use_the_existing_fall_and_airborne_rules() -> None:
     tilemap = _map()
 

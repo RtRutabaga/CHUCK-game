@@ -102,6 +102,18 @@ triangle arrows appear on whichever side has another page, and a
 loading the last entry from the last page through the real loader).
 All 46 suites pass; both pages verified by screenshot.
 
+## Session 126 Addendum: falls center on the hazard
+
+Playtest: falling south into a hazard looked right, but entering from
+other directions read as sinking into the ground BESIDE it — the fall
+triggers on footprint-center crossing, leaving the sprite mostly over
+the safe neighbor. `_begin_fall` now records the triggering hazard
+tile and the choreography glides Chuck onto its center across the
+fall's first 40% (control is locked anyway), so the shrink-and-sink
+always lands inside the hole from every approach direction. Applies
+uniformly to Astral, spike, and sky falls. A new test enters a cut
+from the west and asserts mid-fall centering. All 46 suites pass.
+
 ## Known Issues
 
 - None known from this pass.

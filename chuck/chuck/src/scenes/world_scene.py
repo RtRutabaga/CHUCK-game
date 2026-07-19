@@ -871,12 +871,33 @@ class WorldScene(Scene):
         self.player.scratch_remaining = 0.0
         self.player.hurt_blink = 0.0
         self._step_timer = 0.0
+        # The fall triggers the moment Chuck's footprint center crosses
+        # the hazard tile, so entering from the north or a side leaves
+        # most of his sprite over the safe neighbor — sinking there reads
+        # as falling into ordinary ground. Glide him onto the hazard
+        # tile's center during the fall so he always visibly drops INTO
+        # the hole, whichever way he stepped in.
+        ts = config.TILE_SIZE
+        center_x = self.player.x + self.player.width / 2
+        center_y = self.player.y + self.player.height / 2
+        col, row = int(center_x // ts), int(center_y // ts)
+        self._fall_start = (self.player.x, self.player.y)
+        self._fall_target = (
+            col * ts + ts / 2 - self.player.width / 2,
+            row * ts + ts / 2 - self.player.height / 2,
+        )
 
     def _update_fall(self, dt: float) -> None:
         """Shrink and sink Chuck, then hand off to ordinary respawn."""
         assert self._fall_t is not None
         self._fall_t += dt
         self.player.fall_progress = min(1.0, self._fall_t / config.FALL_DURATION)
+        # Slide onto the hazard tile over the fall's first stretch.
+        glide = min(1.0, self._fall_t / (config.FALL_DURATION * 0.4))
+        start_x, start_y = self._fall_start
+        target_x, target_y = self._fall_target
+        self.player.x = start_x + (target_x - start_x) * glide
+        self.player.y = start_y + (target_y - start_y) * glide
         if self._fall_t >= config.FALL_DURATION:
             kind = self._fall_kind
             self._fall_t = None
