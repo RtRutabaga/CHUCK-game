@@ -67,6 +67,29 @@ invariant (entry -> Ashtray -> boundary with 3x3 skeleton envelopes
 blocked) was validated before writing and holds in the suite. All 46
 suites pass.
 
+## Session 124 Addendum: loudness, lethal spikes, and the mixed trial
+
+Three playtest directions in one pass:
+
+1. Temple soundtrack louder: data/music/temple.py MASTER_HEADROOM
+   0.90 -> 0.98; temple.wav re-rendered. The music suite's temple peak
+   gate is 0.99 and the temple/Chult RMS band moved to 1.25-1.45
+   (measured 1.335).
+2. Spike pits are now fall hazards exactly like the Astral sea: '♠' is
+   walkable (TILE_DEFS) and fall_zone_kind classifies it as "astral" —
+   same control lock, vanish, and checkpoint return; airborne remains
+   safe, and the player's jump terrain set already listed '♠'. The
+   spikes-suite contract now asserts possible-but-lethal walking and
+   safe-flood blocking; the jump suite samples the fall kind mid-band
+   and after landing.
+3. Map 6 gained an 18-cell spike layer: a mixed spike/Astral trench
+   across the entry chamber (hop lands beside the Ashtray), a
+   full-width band after the final cut, nine singles in the slaloms.
+   The walk-and-hop course invariant now treats both hazard kinds as
+   the jumpable family and still proves every safe cell reachable.
+
+All 46 suites pass.
+
 ## Known Issues
 
 - None known from this pass.

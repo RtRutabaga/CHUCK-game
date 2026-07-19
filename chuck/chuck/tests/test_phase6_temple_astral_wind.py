@@ -101,16 +101,27 @@ def test_map_6_is_a_connected_narrow_winding_route_with_eight_jump_cuts() -> Non
     assert (47, 52) not in _flood(tilemap, (17, 5), block_astral=True)
     assert sum(row.count("i") for row in tilemap._grid) == 27
 
+    # Session 124: spike pits joined the trial as the same fall family —
+    # two bands (the entry chamber's mixed spike/Astral trench, and one
+    # after the final cut) plus singles through the leg slaloms.
+    spikes = {
+        (col, row) for row, line in enumerate(tilemap._grid)
+        for col, char in enumerate(line) if char == "♠"
+    }
+    assert len(spikes) == 18
+
     # The whole course stays completable with walking plus SINGLE-tile
-    # hops (a jump clears exactly one Astral cell and lands on safe
-    # floor) — and every safe cell stays reachable, so the scatter can
-    # never strand Chuck or gate progress behind a longer jump.
+    # hops (a jump clears exactly one hazard cell — Astral or spike —
+    # and lands on safe floor), and every safe cell stays reachable, so
+    # the hazards can never strand Chuck or gate progress behind a
+    # longer jump.
+    hazards = actual_astral | spikes
     safe = {
         (col, row)
         for row in range(tilemap.height_tiles)
         for col in range(tilemap.width_tiles)
         if not tilemap.is_solid(col, row)
-        and (col, row) not in actual_astral
+        and (col, row) not in hazards
     }
     reached = {(17, 5)}
     frontier = deque([(17, 5)])
@@ -123,7 +134,7 @@ def test_map_6_is_a_connected_narrow_winding_route_with_eight_jump_cuts() -> Non
                 frontier.append(walk)
             over = (col + dc, row + dr)
             land = (col + 2 * dc, row + 2 * dr)
-            if over in actual_astral and land in safe and land not in reached:
+            if over in hazards and land in safe and land not in reached:
                 reached.add(land)
                 frontier.append(land)
     assert reached == safe

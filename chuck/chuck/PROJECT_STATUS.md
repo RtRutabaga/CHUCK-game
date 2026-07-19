@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 123 (interior walls wind the shrine hall's route).
+Updated: session 124 (louder temple; spikes are Astral-family fall hazards).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -553,6 +553,24 @@ This file is required by the project rules and updated every session.
   until Map 9), nine torches, two carton urns, stelae, a fallen column, and
   one shared-loader Ashtray (`Temple 8`). Map 7's north boundary is live
   both ways
+- Spike pits are fall hazards (session 124): '♠' is walkable now and
+  classifies as the exact Astral fall — lethal underfoot with the same
+  quiet vanish and checkpoint return, safe only under the committed jump.
+  The spike corridor's and gauntlet's bands, and every future pit, share
+  one hazard family with the wrong-map material. Tests updated to the new
+  contract: walking onto a band is possible-but-death (fall kind
+  asserted), safe on-foot floods treat spikes as blocked, and the jump
+  suite verifies the hop still clears a band onto safe floor
+- Astral wind spike trial (session 124): eighteen spike cells joined Map
+  6's course — a mixed spike/Astral trench across the entry chamber (the
+  hop lands beside the Ashtray), a full-width band between the final cut
+  and the east leg, and nine singles threaded through the leg slaloms.
+  The walk-and-hop invariant now spans both hazard kinds: every safe cell
+  reachable, the east boundary attainable, single hops only
+- Temple loudness (session 124): playtest asked for the temple louder
+  again — its render now uses 0.98 peak headroom (RMS ratio vs Chult
+  ~1.33; the music suite's band moved to 1.25-1.45 and the temple's peak
+  gate to 0.99)
 - Shrine hall winding rework (session 123): 150 interior wall cells grow
   two spines out of the shrine hall's monument columns, transforming the
   open room into a wound route — the west entry is forced south through

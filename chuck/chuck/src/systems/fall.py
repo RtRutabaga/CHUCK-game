@@ -12,7 +12,9 @@ def fall_zone_kind(tilemap, player_box, airborne: bool) -> str | None:
     terrain = tilemap.terrain_at(
         int(cx // config.TILE_SIZE), int(cy // config.TILE_SIZE)
     )
-    return {"V": "astral", "s": "sky"}.get(terrain)
+    # Spike pits share the Astral fall exactly (session 124): lethal
+    # underfoot, safe while airborne, same quiet vanish and return.
+    return {"V": "astral", "s": "sky", "♠": "astral"}.get(terrain)
 
 
 def touches_astral_fall_zone(tilemap, player_box, airborne: bool) -> bool:

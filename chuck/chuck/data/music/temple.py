@@ -15,7 +15,7 @@ TOTAL_BEATS = TOTAL_BARS * BEATS_PER_BAR
 # Sean's in-game listening pass found the sparse temple arrangement still
 # perceptually quiet at the soundtrack's default 0.75 master. Its own render
 # uses the remaining safe ceiling; other area themes keep the shared default.
-MASTER_HEADROOM = 0.90
+MASTER_HEADROOM = 0.98
 
 
 def _notes(events) -> list[Note]:

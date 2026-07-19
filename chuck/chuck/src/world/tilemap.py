@@ -80,7 +80,8 @@ Terrain legend:
     '·'  temple floor        (walkable interior stone)
     'Δ'  temple doorway      (walkable dark threshold)
     '∇'  deeper doorway      (walkable inert phase boundary)
-    '♠'  temple spike pit    (solid on foot, jumpable)
+    '♠'  temple spike pit    (walkable fall hazard on foot, like Astral;
+                              cleared safely only by the committed jump)
     '£'  temple gate         (walkable threshold under the monumental facade)
     'Ϙ'  skull monument      (solid anchor of a 3x2 wall-cell footprint; the
                               48x64 guardian statue rises from its center)
@@ -324,7 +325,7 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="temple_arch_ew", under="∇"),
     "»": TileDef(solid=False, color=(10, 16, 15),
                  prop="temple_arch_ew", under="Δ"),
-    "♠": TileDef(solid=True, color=(20, 25, 24)),
+    "♠": TileDef(solid=False, color=(20, 25, 24)),
     # Temple interior dressing — the temple's style add-ons, matching the
     # docks' stall/walls and the jungle's trees. Wall pieces keep the
     # wall's solidity and draw y-sorted against its face; floor pieces

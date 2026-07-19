@@ -20,14 +20,16 @@ def _map() -> TileMap:
     return TileMap(config.MAPS_DIR / "temple_spikes.txt")
 
 
-def _flood(tilemap: TileMap, start: tuple[int, int]) -> set[tuple[int, int]]:
+def _flood(tilemap: TileMap, start: tuple[int, int],
+           blocked: frozenset = frozenset()) -> set[tuple[int, int]]:
     reached = {start}
     frontier = deque([start])
     while frontier:
         col, row = frontier.popleft()
         for point in ((col - 1, row), (col + 1, row),
                       (col, row - 1), (col, row + 1)):
-            if point not in reached and not tilemap.is_solid(*point):
+            if (point not in reached and point not in blocked
+                    and not tilemap.is_solid(*point)):
                 reached.add(point)
                 frontier.append(point)
     return reached
@@ -42,11 +44,23 @@ def test_spike_corridor_has_five_jump_bands_skeletons_and_one_ashtray() -> None:
         (col, row) for row in (6, 12, 18, 24, 30)
         for col in range(14, 34)
     }
-    # The southern walkable region cannot bypass even the first complete band;
-    # progress requires the established committed jump.
-    reached = _flood(tilemap, (23, 40))
-    assert (23, 31) in reached
-    assert (23, 29) not in reached
+    # Spikes are walkable fall hazards now (session 124): stepping on a
+    # band on foot is the Astral fall, so SAFE on-foot progress cannot
+    # pass even the first band — the committed jump remains the answer.
+    from src.systems.fall import fall_zone_kind
+
+    class Box:
+        x = 23 * config.TILE_SIZE + 3
+        y = 30 * config.TILE_SIZE + 4
+        width = config.PLAYER_HITBOX_W
+        height = config.PLAYER_HITBOX_H
+
+    assert not tilemap.is_solid(23, 30)
+    assert fall_zone_kind(tilemap, Box(), airborne=False) == "astral"
+    assert fall_zone_kind(tilemap, Box(), airborne=True) is None
+    safe_reached = _flood(tilemap, (23, 40), blocked=spikes)
+    assert (23, 31) in safe_reached
+    assert (23, 29) not in safe_reached
 
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_temple_1") == 1

@@ -205,7 +205,9 @@ def test_rendered_temple_theme_respects_loop_quality_gates() -> None:
         raw = f.readframes(f.getnframes())
     samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
     assert len(samples) >= 75 * SAMPLE_RATE
-    assert max(abs(sample) for sample in samples) <= 0.9
+    # Session 124: playtest asked for the temple louder again; its render
+    # alone uses 0.98 peak headroom (still never clipping).
+    assert max(abs(sample) for sample in samples) <= 0.99
     assert abs(samples[-1] - samples[0]) < 0.15
 
     with wave.open(str(config.MUSIC_DIR / "chult.wav")) as f:
@@ -218,7 +220,7 @@ def test_rendered_temple_theme_respects_loop_quality_gates() -> None:
                  / len(chult_samples)) ** 0.5
     # The sparse arrangement needs a deliberate lift above the dense jungle
     # mix to read equally strongly during actual gameplay.
-    assert 1.15 <= temple_rms / chult_rms <= 1.30, (
+    assert 1.25 <= temple_rms / chult_rms <= 1.45, (
         temple_rms, chult_rms
     )
 

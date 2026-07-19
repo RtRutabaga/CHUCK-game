@@ -108,20 +108,32 @@ def test_jump_clears_one_jungle_stream_tile_but_walking_does_not() -> None:
     assert player.y > 3 * config.TILE_SIZE
 
 
-def test_jump_clears_one_temple_spike_band_but_walking_does_not() -> None:
+def test_jump_clears_one_temple_spike_band_walking_means_falling() -> None:
+    # Session 124: spikes are Astral-style fall hazards — walking is no
+    # longer stopped by them, it walks Chuck into the fall; only the
+    # committed jump crosses safely.
+    from src.systems.fall import fall_zone_kind
+
     controls = FakeInput()
     controls.movement_vector = lambda: (0.0, -1.0)
     player = Player(19.0, 3 * config.TILE_SIZE + 4, controls)
     player.tilemap = _map("###\n#.#\n#♠#\n#.#\n###\n")
     player.facing = "up"
-    player.update(0.2)
-    assert player.y == 3 * config.TILE_SIZE
+    player.update(0.2)  # one stride carries him onto the band
+    assert player.y < 3 * config.TILE_SIZE  # nothing blocks the walk...
+    assert fall_zone_kind(player.tilemap, player.hitbox,
+                          airborne=False) == "astral"  # ...but it is death
 
+    player = Player(19.0, 3 * config.TILE_SIZE + 4, controls)
+    player.tilemap = _map("###\n#.#\n#♠#\n#.#\n###\n")
+    player.facing = "up"
     controls.press_jump = True
     for _ in range(12):
         player.update(0.03)
     assert not player.jumping
     assert player.y < 2 * config.TILE_SIZE
+    assert fall_zone_kind(player.tilemap, player.hitbox,
+                          airborne=False) is None  # landed on safe floor
 
 
 def _run_all() -> None:
