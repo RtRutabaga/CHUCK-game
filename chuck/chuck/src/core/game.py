@@ -31,6 +31,7 @@ from src.systems.audio import AudioSystem
 from src.systems.checkpoints import (
     OPENING_CHECKPOINT_ID, CheckpointLoader, ProgressState,
 )
+from src.systems.cigarettes import CigaretteLedger
 from src.systems.save import SaveSystem
 from src.scenes.boot_scene import BootScene
 
@@ -66,6 +67,7 @@ class Game:
         self.audio = AudioSystem(self.assets)
         self.scenes = SceneManager(self)
         self.progress = ProgressState()
+        self.cigarettes = CigaretteLedger()
         self.active_checkpoint_id = OPENING_CHECKPOINT_ID
         self.saves = SaveSystem(save_path)
         self.checkpoints = CheckpointLoader(self, self.saves)

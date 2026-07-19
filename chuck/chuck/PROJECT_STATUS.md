@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 127 (enemies cannot cross fall hazards).
+Updated: session 128 (the overall-game cigarette counter).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -557,6 +557,16 @@ This file is required by the project rules and updated every session.
   until Map 9), nine torches, two carton urns, stelae, a fallen column, and
   one shared-loader Ashtray (`Temple 8`). Map 7's north boundary is live
   both ways
+- Cigarette counter (session 128): Chuck's coin counter. A CigaretteLedger
+  on Game accumulates every cigarette ever collected — loose pickups bank
+  one, cartons bank exactly CARTON_CIGARETTE_COUNT (20), settling the
+  contract carried since session 110. The total survives map walks and
+  Astral respawns (coins surviving a lost life), persists in the save slot
+  as a tolerant new field (pre-counter saves stay valid and resume with
+  zero; forged/negative totals invalidate the save), restores on CONTINUE,
+  and resets only with NEW GAME. The HUD shows it quietly top-right: a
+  tiny cigarette pictogram beside xN in the pixel font, opposite the
+  sanity cigarette. No spending exists yet — the ledger only accumulates
 - Enemies respect fall hazards (session 127): a shared
   collision.FALL_HAZARD_TERRAIN set ('V', '♠', 's') is extra-solid for
   every pursuing enemy — undead, snakes, raptors, the massive dinosaur,
@@ -662,7 +672,7 @@ This file is required by the project rules and updated every session.
 
 ## Tests
 
-46 suites (most pure Python/headless): collision, tilemap,
+47 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,

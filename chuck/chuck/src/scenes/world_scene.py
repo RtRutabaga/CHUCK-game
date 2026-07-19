@@ -191,7 +191,8 @@ class WorldScene(Scene):
             on_depleted=self._begin_respawn,
             start=sanity_start,
         )
-        self.hud = HUD(self.sanity)
+        self.hud = HUD(self.sanity, self.game.assets.bitmap_font(),
+               self.game.cigarettes)
         self._hint = (
             TutorialHint(self.game.assets)
             if self.map_name in config.TUTORIAL_MAPS
@@ -592,7 +593,7 @@ class WorldScene(Scene):
         # Pickups: collect on overlap, then drop dead ones.
         for pickup in self.pickups:
             if pickup.alive and overlaps(player_box, pickup.hitbox):
-                pickup.on_collect(self.sanity)
+                pickup.on_collect(self.sanity, self.game.cigarettes)
                 self.game.audio.play_sfx("pickup")
         self.pickups = [p for p in self.pickups if p.alive]
 

@@ -36,11 +36,12 @@ class Cigarette(Entity):
         """Use the drawn sprite (smoke wisp included)."""
         self._image = assets.image("objects/cigarette.png")
 
-    def on_collect(self, sanity_system) -> None:
+    def on_collect(self, sanity_system, ledger=None) -> None:
         """Apply the pickup's effect and remove it from the world."""
         sanity_system.restore(self.restore_amount)
+        if ledger is not None:
+            ledger.add(1)
         self.alive = False
-        # TODO (audio session): soft pickup sound.
         # TODO (effects, later): a single small puff of smoke.
 
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
@@ -74,8 +75,8 @@ class CigaretteCarton(Entity):
     """A full carton found in a temple urn: twenty cigarettes at once.
 
     Collecting it counts as consuming CARTON_CIGARETTE_COUNT cigarettes
-    — sanity clamps at the maximum, but `cigarette_count` carries the
-    exact number for the cigarette counter a later session adds.
+    — sanity clamps at the maximum, while the overall-game ledger banks
+    the exact number.
     """
 
     def __init__(self, center_x: float, center_y: float) -> None:
@@ -92,12 +93,12 @@ class CigaretteCarton(Entity):
     def load_sprite(self, assets) -> None:
         self._image = assets.image("objects/cigarette_carton.png")
 
-    def on_collect(self, sanity_system) -> None:
-        """Twenty cigarettes at once; sanity simply clamps at full.
-
-        TODO (cigarette counter session): also bank cigarette_count.
-        """
+    def on_collect(self, sanity_system, ledger=None) -> None:
+        """Twenty cigarettes at once; sanity simply clamps at full,
+        while the ledger banks the exact carton count."""
         sanity_system.restore(self.restore_amount)
+        if ledger is not None:
+            ledger.add(self.cigarette_count)
         self.alive = False
 
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:

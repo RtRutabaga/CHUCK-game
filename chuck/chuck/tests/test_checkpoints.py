@@ -44,6 +44,7 @@ def test_save_format_is_readable_versioned_and_atomic() -> None:
             "checkpoint_id": "sewer_anchor",
             "sanity": 47,
             "progress_flags": ["sewer_completed"],
+            "cigarettes": 0,
         }
         assert saves.load() == record
         assert not path.with_suffix(".json.tmp").exists()
@@ -165,7 +166,8 @@ def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
         scene = game.scenes.current
         assert calls == [(
             "waterdeep_anchor",
-            {"progress_flags": ("sewer_completed",), "sanity": 47},
+            {"progress_flags": ("sewer_completed",), "sanity": 47,
+             "cigarettes": 0},
         )]
         assert scene.map_name == "waterdeep_docks"
         assert scene.sanity.current == 47

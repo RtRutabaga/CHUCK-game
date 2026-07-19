@@ -26,12 +26,28 @@ _EMBER_W = 2
 class HUD:
     """Draws overlay UI on top of the world. Owned by the WorldScene."""
 
-    def __init__(self, sanity_system) -> None:
+    def __init__(self, sanity_system, font=None, cigarettes=None) -> None:
         self.sanity = sanity_system
+        self._font = font
+        self.cigarettes = cigarettes
 
     def draw(self, surface) -> None:
         """Draw the cigarette meter in screen space (ignores camera)."""
         import pygame
+
+        # The overall-game cigarette count (session 128), top-right and
+        # quiet: a tiny unlit cigarette pictogram beside the total.
+        if self.cigarettes is not None and self._font is not None:
+            label = self._font.render(f"x{self.cigarettes.total}")
+            label.set_alpha(200)
+            x = config.NATIVE_WIDTH - _MARGIN_X - label.get_width()
+            surface.blit(label, (x, _MARGIN_Y))
+            icon_x = x - 12
+            icon_y = _MARGIN_Y + 3
+            pygame.draw.rect(surface, config.COLOR_CIG_PAPER,
+                             pygame.Rect(icon_x, icon_y, 7, 3))
+            pygame.draw.rect(surface, config.COLOR_CIG_FILTER,
+                             pygame.Rect(icon_x, icon_y, 2, 3))
 
         frac = max(0.0, min(1.0, self.sanity.fraction))
         paper_w = round(_PAPER_MAX_W * frac)

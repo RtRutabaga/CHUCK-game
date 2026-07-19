@@ -365,6 +365,7 @@ class CheckpointLoader:
         *,
         progress_flags=None,
         sanity: int | None = None,
+        cigarettes: int | None = None,
     ):
         """Rebuild a checkpoint identically for NEW, CONTINUE, or development."""
         from src.scenes.world_scene import WorldScene
@@ -374,6 +375,7 @@ class CheckpointLoader:
         if progress_flags is not None:
             flags.update(progress_flags)
         self.game.progress.replace(flags)
+        self.game.cigarettes.replace(0 if cigarettes is None else cigarettes)
         self.game.active_checkpoint_id = checkpoint_id
         scene = WorldScene(
             self.game,
@@ -416,6 +418,7 @@ class CheckpointLoader:
             record.checkpoint_id,
             progress_flags=record.progress_flags,
             sanity=record.sanity,
+            cigarettes=record.cigarettes,
         )
 
     def activate_checkpoint(self, checkpoint_id: str, sanity: int) -> bool:
@@ -428,5 +431,6 @@ class CheckpointLoader:
             checkpoint_id=checkpoint_id,
             sanity=sanity,
             progress_flags=tuple(sorted(self.game.progress.flags)),
+            cigarettes=self.game.cigarettes.total,
         )
         return self.saves.write(record)

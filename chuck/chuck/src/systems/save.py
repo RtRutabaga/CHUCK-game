@@ -31,6 +31,9 @@ class SaveRecord:
     checkpoint_id: str
     sanity: int
     progress_flags: tuple[str, ...]
+    # The overall-game cigarette total (session 128). Defaults keep
+    # pre-counter saves valid — they simply resume with zero banked.
+    cigarettes: int = 0
 
     def to_json(self) -> dict:
         return {
@@ -38,6 +41,7 @@ class SaveRecord:
             "checkpoint_id": self.checkpoint_id,
             "sanity": self.sanity,
             "progress_flags": list(self.progress_flags),
+            "cigarettes": self.cigarettes,
         }
 
 
@@ -70,7 +74,13 @@ class SaveSystem:
             or len(set(flags)) != len(flags)
         ):
             return None
-        return SaveRecord(checkpoint_id, sanity, tuple(sorted(flags)))
+        cigarettes = raw.get("cigarettes", 0)
+        if isinstance(cigarettes, bool) or not isinstance(cigarettes, int):
+            return None
+        if cigarettes < 0:
+            return None
+        return SaveRecord(checkpoint_id, sanity, tuple(sorted(flags)),
+                          cigarettes)
 
     def write(self, record: SaveRecord) -> bool:
         """Atomically replace the save; return False if storage is unavailable."""
