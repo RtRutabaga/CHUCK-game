@@ -933,6 +933,9 @@ class WorldScene(Scene):
             )
             self._reset_enemies()
             self.sanity.refill()
+            # Death rewinds the cigarette count to the respawn point's
+            # committed value — the run since the checkpoint is undone.
+            self.game.cigarettes.rollback()
             self.camera.follow(self.player)  # snap, no cross-map pan
             self.player.visible = True
             self._respawn_phase, self._respawn_t = "in", 0.0

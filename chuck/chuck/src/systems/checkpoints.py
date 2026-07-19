@@ -358,6 +358,9 @@ class CheckpointLoader:
         checkpoint = self.definition(checkpoint_id)
         self.game.progress.flags.update(checkpoint.required_flags)
         self.game.active_checkpoint_id = checkpoint_id
+        # A new respawn point: bank the running cigarette total so a
+        # later death rewinds exactly to here.
+        self.game.cigarettes.commit()
 
     def load_checkpoint(
         self,
@@ -375,7 +378,13 @@ class CheckpointLoader:
         if progress_flags is not None:
             flags.update(progress_flags)
         self.game.progress.replace(flags)
-        self.game.cigarettes.replace(0 if cigarettes is None else cigarettes)
+        if cigarettes is not None:
+            self.game.cigarettes.replace(cigarettes)
+        else:
+            # The count is continuous across the whole run: cutscene
+            # handoffs and development jumps carry it forward, banking
+            # it as the new respawn-point value.
+            self.game.cigarettes.commit()
         self.game.active_checkpoint_id = checkpoint_id
         scene = WorldScene(
             self.game,
@@ -393,7 +402,7 @@ class CheckpointLoader:
 
     def new_game(self):
         self.saves.delete()
-        return self.load_checkpoint(OPENING_CHECKPOINT_ID)
+        return self.load_checkpoint(OPENING_CHECKPOINT_ID, cigarettes=0)
 
     def valid_save(self) -> SaveRecord | None:
         record = self.saves.load()

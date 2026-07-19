@@ -49,6 +49,23 @@ The long-deferred cigarette counter, Mario-coin style — settling the
 - Screenshot confirms the top-right counter (pictogram + x47) balanced
   against the sanity cigarette at native scale.
 
+## Session 129 Addendum: continuous count + death rewind
+
+Playtest found the Chult arrival zeroing the counter: the cutscene
+hands off through load_checkpoint, whose default reset the ledger. The
+count is now continuous for the whole run — load_checkpoint carries the
+running total forward (committing it as the new respawn value); only
+NEW GAME passes an explicit zero and CONTINUE the saved total.
+
+Second direction: death rewinds the count to the active respawn point.
+The ledger gained commit/rollback semantics — set_runtime_checkpoint
+(every map entry and Ashtray attunement) commits, and the Astral
+respawn completion rolls back beside the sanity refill, so cigarettes
+gathered past the checkpoint are lost with Chuck. Tests: a regression
+for the handoff carry, and a full death-rewind walk (map-entry rewind,
+Ashtray commit, post-Ashtray loss, cross-map carry+recommit). All 47
+suites pass.
+
 ## Known Issues
 
 - None known. Balance note: with the counter live, the carton economy

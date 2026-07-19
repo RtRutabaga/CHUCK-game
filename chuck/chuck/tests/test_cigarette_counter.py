@@ -55,25 +55,61 @@ def test_cigarette_banks_one_and_carton_banks_exactly_twenty() -> None:
     assert ledger.total == 1 + config.CARTON_CIGARETTE_COUNT == 21
 
 
-def test_collection_banks_in_a_real_scene_and_survives_respawn() -> None:
+def test_count_is_continuous_across_checkpoint_handoffs() -> None:
+    """Regression (session 129): the fall-to-Chult cutscene hands off
+    through load_checkpoint, which used to zero the ledger mid-run. The
+    count is continuous for the whole game — only NEW GAME resets it."""
+    game = Game()
+    try:
+        game.checkpoints.load_checkpoint("waterdeep_start")
+        game.cigarettes.add(9)
+        game.checkpoints.load_checkpoint("chult_landing")
+        assert game.cigarettes.total == 9  # carried through the handoff
+        assert game.cigarettes.checkpoint_total == 9  # and committed
+        game.checkpoints.new_game()
+        assert game.cigarettes.total == 0  # only NEW GAME resets
+    finally:
+        game._shutdown()
+
+
+def test_death_rewinds_the_count_to_the_respawn_point() -> None:
+    """Cigarettes gathered past the active respawn point are lost with
+    Chuck: map entry and Ashtray contact both commit the total, and the
+    quiet Astral respawn rolls back to the committed value."""
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint("waterdeep_start")
-        assert game.cigarettes.total == 0
         pickup = scene.pickups[0]
-        scene.player.x = pickup.x
-        scene.player.y = pickup.y
+        scene.player.x, scene.player.y = pickup.x, pickup.y
         scene.update(0.01)
         assert game.cigarettes.total == 1
-        # The count survives the quiet Astral respawn, like coins
-        # surviving a lost life.
+        # Death before any save point: back to the map-entry value.
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        assert game.cigarettes.total == 1
-        # And survives an ordinary walk to another map.
+        assert game.cigarettes.total == 0
+        scene.update(config.RESPAWN_FADE_IN + 0.01)  # finish the fade
+
+        # Bank some, attune the Ashtray (commit + save), bank more, die:
+        # the count rewinds exactly to the Ashtray's value.
+        game.cigarettes.add(5)
+        anchor = scene.anchors[0]
+        scene.player.x, scene.player.y = anchor.x, anchor.y
+        scene.update(0.01)
+        assert game.cigarettes.checkpoint_total == 5
+        game.cigarettes.add(3)
+        assert game.cigarettes.total == 8
+        scene.sanity.deplete()
+        scene.update(config.RESPAWN_FADE_OUT + 0.01)
+        scene.update(config.RESPAWN_HOLD + 0.01)
+        assert game.cigarettes.total == 5
+        scene.update(config.RESPAWN_FADE_IN + 0.01)  # finish the fade
+
+        # An ordinary walk into another map carries and re-commits.
+        game.cigarettes.add(2)
         scene.load_map("sewer")
-        assert game.cigarettes.total == 1
+        assert game.cigarettes.total == 7
+        assert game.cigarettes.checkpoint_total == 7
     finally:
         game._shutdown()
 

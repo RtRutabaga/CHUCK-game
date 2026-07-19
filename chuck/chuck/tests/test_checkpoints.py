@@ -97,7 +97,7 @@ def test_title_without_save_disables_continue_and_new_game_uses_loader() -> None
         title._selected = 0
         title._choose()
         scene = game.scenes.current
-        assert calls == [(OPENING_CHECKPOINT_ID, {})]
+        assert calls == [(OPENING_CHECKPOINT_ID, {"cigarettes": 0})]
         assert isinstance(scene, WorldScene)
         assert scene.map_name == "waterdeep_docks"
         assert game.active_checkpoint_id == OPENING_CHECKPOINT_ID

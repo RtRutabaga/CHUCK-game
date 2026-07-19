@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 128 (the overall-game cigarette counter).
+Updated: session 129 (continuous cigarette count; death rewinds it).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -564,9 +564,15 @@ This file is required by the project rules and updated every session.
   Astral respawns (coins surviving a lost life), persists in the save slot
   as a tolerant new field (pre-counter saves stay valid and resume with
   zero; forged/negative totals invalidate the save), restores on CONTINUE,
-  and resets only with NEW GAME. The HUD shows it quietly top-right: a
-  tiny cigarette pictogram beside xN in the pixel font, opposite the
-  sanity cigarette. No spending exists yet — the ledger only accumulates
+  and resets only with NEW GAME. Session 129 fixed the fall-to-Chult
+  handoff zeroing the count (load_checkpoint now carries the running total
+  forward; only NEW GAME and CONTINUE set it explicitly) and added death
+  rewind: entering a map or attuning an Ashtray commits the total, and the
+  quiet Astral respawn rolls back to the committed value — cigarettes
+  gathered past the checkpoint are lost with Chuck. The HUD shows the
+  count quietly top-right: a tiny cigarette pictogram beside xN in the
+  pixel font, opposite the sanity cigarette. No spending exists yet — the
+  ledger only accumulates
 - Enemies respect fall hazards (session 127): a shared
   collision.FALL_HAZARD_TERRAIN set ('V', '♠', 's') is extra-solid for
   every pursuing enemy — undead, snakes, raptors, the massive dinosaur,
