@@ -65,6 +65,24 @@ def test_undead_pursue_slowly_and_respect_jungle_collision() -> None:
     assert zombie.x + zombie.width <= 3 * config.TILE_SIZE
 
 
+def test_undead_never_cross_fall_hazards() -> None:
+    """Session 127: fall hazards are walkable for Chuck (the fall system
+    owns the consequence) but enemies have no fall choreography — their
+    movement treats spikes, Astral cells, and sky as walls, so a
+    skeleton can never stroll across a spike pit toward Chuck."""
+    for hazard in ("♠", "V"):
+        tilemap = _map("#######\n#." + hazard + "..#\n#######\n")
+        player = Player(72, 20, StillInput())
+        skeleton = UndeadEnemy(20, 24, "skeleton")
+        skeleton.tilemap = tilemap
+        start = skeleton.x
+        skeleton.update(1.0, player)
+        assert skeleton.x >= start  # pursuit engaged eastward
+        skeleton.update(10.0, player)
+        # Stopped flush against the hazard column, never on or past it.
+        assert skeleton.x + skeleton.width <= 2 * config.TILE_SIZE + 0.01
+
+
 def test_chult_encounter_is_spaced_and_avoidable() -> None:
     tilemap = TileMap(config.MAPS_DIR / "chult_jungle.txt")
     spawns = [

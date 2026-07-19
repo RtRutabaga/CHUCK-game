@@ -72,6 +72,7 @@ class MassiveDinosaur(Entity):
         self.x, self.y = collision.move_and_collide(
             self.x, self.y, self.width, self.height,
             dx * step, dy * step, self.tilemap,
+            extra_solid_terrain=collision.FALL_HAZARD_TERRAIN,
         )
         self.moving = (self.x, self.y) != old_position
         if self.moving:

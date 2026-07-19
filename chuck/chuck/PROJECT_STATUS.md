@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 126 (falls glide Chuck onto the hazard tile's center).
+Updated: session 127 (enemies cannot cross fall hazards).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -557,6 +557,14 @@ This file is required by the project rules and updated every session.
   until Map 9), nine torches, two carton urns, stelae, a fallen column, and
   one shared-loader Ashtray (`Temple 8`). Map 7's north boundary is live
   both ways
+- Enemies respect fall hazards (session 127): a shared
+  collision.FALL_HAZARD_TERRAIN set ('V', '♠', 's') is extra-solid for
+  every pursuing enemy — undead, snakes, raptors, the massive dinosaur,
+  and the cat all treat spike pits, Astral cells, and the pantry sky as
+  walls, since only Chuck has fall choreography. Skeletons stop flush at
+  a band's edge instead of strolling across (verified in the gauntlet:
+  20 seconds of pursuit never crosses the row-42 band). Rats keep their
+  spawn-validated fixed patrols
 - Fall centering (session 126): a fall begins the moment Chuck's
   footprint center crosses a hazard tile, which used to leave his sprite
   mostly over the safe neighbor when entering from the north or a side —

@@ -75,7 +75,8 @@ class Cat(Entity):
         dx = self.direction * self.speed * dt
         intended_x = self.x + dx
         self.x, self.y = collision.move_and_collide(
-            self.x, self.y, self.width, self.height, dx, 0.0, self.tilemap
+            self.x, self.y, self.width, self.height, dx, 0.0, self.tilemap,
+            extra_solid_terrain=collision.FALL_HAZARD_TERRAIN,
         )
         if abs(self.x - intended_x) > 1e-6:  # blocked: about-face
             self.direction *= -1

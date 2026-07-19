@@ -114,6 +114,20 @@ always lands inside the hole from every approach direction. Applies
 uniformly to Astral, spike, and sky falls. A new test enters a cut
 from the west and asserts mid-fall centering. All 46 suites pass.
 
+## Session 127 Addendum: enemies cannot cross fall hazards
+
+Playtest: gauntlet skeletons walked over spike pits (walkable terrain
+since session 124). A shared `collision.FALL_HAZARD_TERRAIN` frozenset
+('V', '♠', 's') is now passed as extra-solid by every pursuing enemy's
+move_and_collide call — undead (unioned with their fallen-log block),
+snakes, raptors, the massive dinosaur, and the cat. Chuck's own
+movement is untouched: he may step onto hazards (the fall system owns
+the consequence) and his jump crosses them. Rats need no change (fixed
+spawn-validated patrols). A unit test drives a skeleton at Chuck across
+both a spike and an Astral cell and asserts it stops flush at the
+column; a live gauntlet run confirms 20 seconds of pursuit never
+crosses the band. All 46 suites pass.
+
 ## Known Issues
 
 - None known from this pass.

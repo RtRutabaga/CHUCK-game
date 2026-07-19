@@ -29,6 +29,14 @@ class SolidGrid(Protocol):
     def is_solid(self, col: int, row: int) -> bool: ...
 
 
+# Terrain that swallows whoever stands on it. Chuck may step onto these
+# (the fall system owns the consequence) and his jump crosses them, but
+# enemies have no fall choreography — their movement treats every fall
+# hazard as a wall, so a skeleton never strolls across a spike pit or
+# the Astral sea (session 127).
+FALL_HAZARD_TERRAIN = frozenset({"V", "♠", "s"})
+
+
 def move_and_collide(
     x: float,
     y: float,
