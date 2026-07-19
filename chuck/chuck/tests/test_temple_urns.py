@@ -120,7 +120,7 @@ def test_every_temple_map_builds_its_urns_as_breakables() -> None:
         expected = {
             "temple_1": 7, "temple_2": 2, "temple_3": 9,
             "temple_4": 2, "temple_5": 3, "temple_6": 3,
-            "temple_7": 3,
+            "temple_7": 3, "temple_8": 2,
         }
         for checkpoint, count in expected.items():
             scene = game.checkpoints.load_checkpoint(checkpoint)

@@ -3,56 +3,53 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `5bb273e` (path landings)
-- Current work: Temple Map 7, the shrine hall (session 121)
+- Base commit before this pass: `56b3251` (Temple Map 7)
+- Current work: Temple Map 8, the gauntlet (session 122)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-Temple Map 7 (`temple_shrine`, 56x44): the next broad room east of the
-Astral wind connector, generated with full validation and carrying the
-complete established kit from its first commit:
+Temple Map 8 (`temple_gauntlet`, 40x52): the last connector before the
+final chamber, where the temple's established defenses concentrate. An
+L-shaped run entered from Map 7's north boundary (now live both ways):
 
-- West door: a 3x3 threshold block with the E/W arch anchored on its
-  bottom row (the session-108 rule), opening onto a fully paved
-  full-height lane that blooms into a landing (the session-120 rule).
-- North door: inert boundary for Map 8 under an NS arch, with a
-  centered path stub, flanking pedestal braziers, and carved skulls.
-- Eight guardian monuments (4 skull / 4 serpent, alternating) flanking
-  the aisle; twelve torches; two wall urns + one floor urn (all carton
-  breakables), two stelae, a fallen column, one floor urn piece.
-- Twelve skeletons in the side lanes. The map's own test floods with
-  full 3x3 avoidance envelopes around every skeleton blocked and still
-  reaches everything — combat can never gate progress.
-- One physical Ashtray (`temple_7_anchor`, saves/continues/respawns —
-  verified end-to-end including a save-file relaunch) and the
-  development-visible `Temple 7` entry through the shared loader.
-- Map 6's formerly inert east boundary is live both ways with named
-  arrivals and no transition bounce; temple music carries across.
+- The vertical leg: a seven-wide climb crossed by three full-width
+  spike bands, skeletons on the landings, and a skull/serpent guardian
+  monument pair narrowing the passage.
+- The west leg: a five-tall dart corridor (two down-launchers, two
+  up-launchers, apertures kept out of each other's columns) seeded
+  with three single Astral cells.
+- Full kit: NS arch + paved stub at the south door, EW arch (bottom-row
+  anchored) + stub + flanking braziers at the inert west boundary
+  (boundary:temple_9), nine torches, two carton urns, two stelae, a
+  fallen column, and one Ashtray (`temple_8_anchor` — save/continue/
+  respawn verified across a relaunch, darts and skeletons resetting).
+- A permanent test floods the course with walking plus single-tile hops
+  over spikes and Astral cells and requires the Ashtray and boundary
+  reachable — the concentrated defenses can never demand a longer jump.
+
+All established validation ran in the generator before the map was
+written (connectivity, the hop-course invariant, exact counts).
 
 ## Files Changed
 
-- assets/maps/temple_shrine.txt (new, generator-validated).
-- assets/maps/temple_astral_wind.txt: the return arrival on its east
-  path stub.
-- src/world/tilemap.py: four new markers (ϒ arrival, ϰ anchor,
-  ϱ boundary:temple_8, ϵ return arrival).
-- src/world/transitions.py: four walk-exit bindings + AREA_MUSIC.
-- src/world/tileset_layout.py: MAP_TILESET entry.
-- src/systems/checkpoints.py: temple_7, temple_7_anchor,
-  temple_6_return definitions.
-- tests/test_phase6_temple_shrine.py (new, 5 tests) plus deliberate
-  contract updates: the wind suite's east exit is live now, the
-  dressing/monument/path/urn suites and the dev-selector list cover the
-  seventh map.
+- assets/maps/temple_gauntlet.txt (new, generator-validated);
+  temple_shrine.txt (return arrival on its north stub).
+- src/world/tilemap.py (markers ϴ Ϲ Ϸ Ϻ), transitions.py (four
+  bindings + music), tileset_layout.py (MAP_TILESET),
+  checkpoints.py (temple_8, temple_8_anchor, temple_7_return).
+- tests/test_phase6_temple_gauntlet.py (new, 5 tests); deliberate
+  contract updates: the shrine's north exit is live, TEMPLE_MAPS and
+  the dressing/monument/path/urn/selector contracts cover the eighth
+  map.
 
 ## Verification Performed
 
-- All 45 suites pass.
-- Headless round trip: Map 6 east -> Map 7 arrival (4,21) -> west door
-  -> Map 6 arrival (43,52), no bounce either way.
-- Screenshots confirm the west landing and the north-aisle composition
-  (braziers, skulls, monument pair) at native scale.
+- All 46 suites pass.
+- Headless round trip Map 7 <-> Map 8 with named arrivals, no bounce.
+- Screenshots confirm both legs at native scale: the spike climb with
+  its monuments and skeletons, and the dart corridor with Astral
+  fractures, braziers, and the dark west door.
 
 ## Known Issues
 
@@ -60,12 +57,14 @@ complete established kit from its first commit:
 
 ## Scope Notes
 
-- No future-phase work: the final chamber, Fireball, rubble escape, and
-  ship remain untouched; Map 7's north boundary is authored but inert.
+- No future-phase work: the final chamber (adventurers/beholder),
+  Fireball, rubble escape, and ship remain their own slices; the west
+  boundary is authored but inert.
 
 ## Recommended Next Bounded Task
 
-- Temple Map 8 north of the shrine hall — either the last connector
-  before the final chamber or the final chamber's antechamber. Continue
-  the full kit; keep the adventurers/beholder battle, Fireball, rubble,
-  and ship as their own later slices.
+- The final chamber (Temple Map 9) west of the gauntlet: the
+  adventurers' battle with the beholder per PHASE-6.md section 4 —
+  likely split across sessions (room + NPCs/dialogue first, then the
+  battle hazards, then the scripted Fireball). Its own bold heroic
+  music track is also required and could be a separate session.

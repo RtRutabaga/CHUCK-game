@@ -150,7 +150,7 @@ def test_temple_7_checkpoint_saves_continues_and_respawns() -> None:
         directory.cleanup()
 
 
-def test_shrine_uses_temple_art_music_and_holds_future_north_exit() -> None:
+def test_shrine_uses_temple_art_music_and_enters_map_8_north() -> None:
     tileset = tileset_for(MAP_NAME)
     assert tileset.sheet == "temple.png"
     assert AREA_MUSIC[MAP_NAME] == "temple.wav"
@@ -160,9 +160,9 @@ def test_shrine_uses_temple_art_music_and_holds_future_north_exit() -> None:
     assert AREA_WALK_EXITS[(MAP_NAME, "»")].destination == (
         "temple_astral_wind"
     )
-    # The north boundary stays inert until Map 8 exists.
-    assert (MAP_NAME, "∇") not in AREA_WALK_EXITS
-    assert (MAP_NAME, "⌂") not in AREA_WALK_EXITS
+    # Session 122: the north boundary now enters the gauntlet.
+    assert AREA_WALK_EXITS[(MAP_NAME, "∇")].destination == "temple_gauntlet"
+    assert AREA_WALK_EXITS[(MAP_NAME, "⌂")].destination == "temple_gauntlet"
 
 
 def _run_all() -> None:

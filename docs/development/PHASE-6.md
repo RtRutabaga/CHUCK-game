@@ -30,6 +30,10 @@ Implemented so far:
   avoidable skeletons, alternating skull/serpent guardian monument rows, the
   full dressing and threshold kit, one Ashtray, and an inert north boundary
   reserved for Map 8.
+- Temple Map 8: the gauntlet — a narrow L-shaped connector concentrating the
+  established defenses (spike bands, dart lanes, Astral cells) with a
+  monument pair, full kit, one Ashtray, and an inert west boundary reserved
+  for Map 9 (the final-chamber approach).
 - All six temple interiors carry mute procedural dressing in the game's
   established style-add-on language: coiled serpent idols, glyph stelae,
   terracotta urns, and fallen column drums, none of which change any route,

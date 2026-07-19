@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 121 (Temple Map 7: the broad shrine hall east of the wind).
+Updated: session 122 (Temple Map 8: the gauntlet before the final chamber).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -542,6 +542,17 @@ This file is required by the project rules and updated every session.
   TileMap.clear_tile, so floor urns open for walking while wall tiles stay
   wall. Urns and tiles rebuild on checkpoint reload like every enemy
 
+- Phase 6 Temple Map 8 (session 122): `temple_gauntlet`, a reversible 40x52
+  L-shaped connector where the temple's defenses concentrate — a narrow
+  vertical climb crossed by three full-width spike bands with skeletons on
+  the landings and a skull/serpent monument pair, turning west into a
+  five-tall dart corridor (two down + two up launchers in the dart-free
+  pattern) seeded with three single Astral cells. A permanent test proves
+  the whole run completable with walking plus single-tile hops. Full kit:
+  arches on both doors, paved stubs, braziers at the west boundary (inert
+  until Map 9), nine torches, two carton urns, stelae, a fallen column, and
+  one shared-loader Ashtray (`Temple 8`). Map 7's north boundary is live
+  both ways
 - Phase 6 Temple Map 7 (session 121): a reversible 56x44 shrine hall east
   of the Astral wind connector, entered through a west-wall arch onto a
   full-width paved landing. Twelve avoidable skeletons occupy the side
@@ -603,7 +614,7 @@ This file is required by the project rules and updated every session.
 
 ## Tests
 
-45 suites (most pure Python/headless): collision, tilemap,
+46 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
@@ -798,7 +809,11 @@ rubble escape, and Phase 7 ship gameplay.
        language: serpent idols, glyph stelae, terracotta urns, and fallen
        column drums — 54 mute y-sorted procedural props that change no route,
        count, or hazard, locked by a dedicated test suite (session 107).
-9. [ ] Continue the multi-map dungeon, final
+9. [x] Added the reversible 40x52 Temple Map 8 gauntlet: spike climb,
+       dart corridor, Astral seeds, monument pair, full kit, one
+       shared-loader Ashtray, and an inert west boundary for Map 9
+       (session 122).
+10. [ ] Continue the multi-map dungeon, final
        battle, Fireball transition, rubble crawlspace, and ship escape in
        bounded slices without beginning Phase 7 gameplay.
 

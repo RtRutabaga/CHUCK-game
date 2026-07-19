@@ -46,7 +46,7 @@ def test_every_temple_threshold_has_one_human_scale_stone_arch() -> None:
     maps = (
         "temple_entrance", "temple_spikes", "temple_skeletons",
         "temple_darts", "temple_snakes", "temple_astral_wind",
-        "temple_shrine",
+        "temple_shrine", "temple_gauntlet",
     )
     for name in maps:
         tilemap = _map(name)
