@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 124 (louder temple; spikes are Astral-family fall hazards).
+Updated: session 125 (the dev checkpoint selector pages with side arrows).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -12,7 +12,10 @@ This file is required by the project rules and updated every session.
   opening; CONTINUE is visibly disabled unless a valid current-version save can
   be restored. A config-gated DEV CHECKPOINTS option opens the temporary test
   selector and disappears entirely when `ENABLE_DEV_CHECKPOINT_SELECTOR` is
-  false
+  false. The selector pages in twelve-slot screenfuls (session 125): the
+  page follows the up/down caret, left/right leap a whole page with
+  wraparound, side arrows mark further pages, and a PAGE X OF Y label
+  shows the position
 - Input: keys -> named actions, normalized 8-way movement vector
 - Text maps (assets/maps/): terrain legend + marker system (spawns and
   objects declare their under-terrain); loud errors on any bad data

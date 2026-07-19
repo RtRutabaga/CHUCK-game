@@ -215,6 +215,59 @@ def test_normal_map_entries_preserve_sanity_and_use_registry_checkpoints() -> No
         directory.cleanup()
 
 
+def test_development_selector_pages_follow_and_leap_the_selection() -> None:
+    """Session 125: the registry outgrew one screen, so the selector
+    pages in twelve-slot screenfuls — the page follows the up/down
+    caret, and left/right leap a whole page with wraparound."""
+    directory, path = _temp_save()
+    game = Game(save_path=path)
+    try:
+        selector = CheckpointSelectScene(game)
+
+        def press(action):
+            game.input.begin_frame()
+            game.input._actions_just_pressed.add(action)
+            selector.update(0.0)
+
+        count = len(selector.checkpoints)
+        assert count > selector.PAGE_SIZE  # it genuinely overflows now
+        assert selector.pages == (count + selector.PAGE_SIZE - 1) // (
+            selector.PAGE_SIZE
+        )
+        assert selector.page == 0
+
+        # The page follows the caret as it walks past the fold...
+        selector._selected = selector.PAGE_SIZE - 1
+        press("move_down")
+        assert selector._selected == selector.PAGE_SIZE
+        assert selector.page == 1
+
+        # ...and wraps from the last entry back to the first page.
+        selector._selected = count - 1
+        press("move_down")
+        assert selector._selected == 0 and selector.page == 0
+
+        # Left/right leap a full page, clamped to real entries.
+        press("move_right")
+        assert selector.page == 1
+        assert selector._selected == min(selector.PAGE_SIZE, count - 1)
+        press("move_right")
+        assert selector.page == 0  # wrapped around
+        press("move_left")
+        assert selector.page == selector.pages - 1
+        assert selector._selected <= count - 1
+
+        # Every entry still loads through the real loader from any page.
+        selector._selected = count - 1
+        press("interact")
+        assert game.active_checkpoint_id == (
+            selector.checkpoints[-1].checkpoint_id
+        )
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def test_development_selector_lists_and_loads_all_authored_test_entries() -> None:
     directory, path = _temp_save()
     game = Game(save_path=path)

@@ -90,6 +90,18 @@ Three playtest directions in one pass:
 
 All 46 suites pass.
 
+## Session 125 Addendum: the selector pages
+
+With twenty registry entries the development checkpoint selector
+outgrew its two-column screen. It now pages in twelve-slot screenfuls:
+up/down walk the whole list and the page follows the caret (wrapping
+end-to-start), left/right leap a full page with wraparound, drawn
+triangle arrows appear on whichever side has another page, and a
+"PAGE X OF Y" label sits beside ESC BACK. A new test drives the paging
+(caret-follow past the fold, end wrap, page leaps both directions, and
+loading the last entry from the last page through the real loader).
+All 46 suites pass; both pages verified by screenshot.
+
 ## Known Issues
 
 - None known from this pass.
