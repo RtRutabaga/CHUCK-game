@@ -51,8 +51,9 @@ This file is required by the project rules and updated every session.
   low drones, uneven hand drums, dry wood clicks, sparse bells, and restrained
   Phrygian-colored flute phrases. Its sustained voices are mastered to match
   the Chult theme's perceived in-game strength. After direct playtest found the
-  matched-RMS mix still too restrained, the temple render alone now uses 0.90
-  peak headroom instead of the soundtrack default 0.75;
+  matched-RMS mix still too restrained, the temple render alone now uses 0.98
+  peak headroom instead of the soundtrack default 0.75 (raised again in
+  session 124);
   SFX for pickup, interact, hurt, vanish, respawn, anchor
   chime, a quiet rounded jump bounce, scratch scrape, and per-surface footsteps.
   Re-requesting the same looping track is idempotent, so movement among the
