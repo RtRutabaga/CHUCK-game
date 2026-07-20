@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 131 (the battle tableau: four actors and entrance lines).
+Updated: session 132 (the battle in motion: attack hazards and skeletons).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -617,6 +617,22 @@ This file is required by the project rules and updated every session.
   becomes an optional pocket entered through a north gap. The envelope
   invariant still holds: entry -> Ashtray -> boundary remains walkable
   with 3x3 avoidance envelopes around every skeleton blocked
+- The battle in motion (session 132): the sanctum tableau now fights on
+  fixed cadences Chuck cannot influence (src/entities/battle_hazards.py).
+  The beholder's eye rays cycle the three adventurers' lanes in a
+  learnable order and dissipate at BATTLE_RAY_RANGE (320px), keeping the
+  arrival aisle survivable; the ranger's arrows and the wizard's bolts
+  streak west at the beholder and die on the west wall; the fighter's
+  slash pulses west of him where three new skeletons (ordinary Ψ
+  markers, the room's only conventional enemies) press his line. Every
+  attack is a BattleProjectile or slash zone that costs Sanity through
+  the ordinary i-frame path; the shot is spent on impact. The
+  BattleChoreographer rebuilds with _reset_enemies(), so death restarts
+  the cadences and re-presses the skeletons. Actors animate in place:
+  the beholder's hover breathes on a sine, adventurers sway on offset
+  phases, and each actor lunges toward its target for a beat
+  (attack_flash) when its attack fires. Suite:
+  tests/test_phase6_sanctum_battle.py (7 tests)
 - Battle tableau, first slice (session 131): four procedural actors hold
   the sanctum's western arena as static y-sorted presences — the armored
   fighter (16x30, sword and shield), the blue-robed wizard (gem staff),

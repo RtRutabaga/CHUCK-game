@@ -186,6 +186,28 @@ DART_INTERVAL = 1.75
 DART_HITBOX_SHORT = 2
 DART_HITBOX_LONG = 7
 
+# The sanctum battle in motion: the combatants' attacks are timed hazards
+# Chuck must dodge, not aimed at him. Rays sweep the three adventurers'
+# lanes in a fixed cycle and dissipate at range, so the east half of the
+# hall stays survivable; arrows and bolts fly west at the beholder; the
+# fighter's slash pulses where the skeletons press him.
+BATTLE_RAY_SPEED = 88.0
+BATTLE_RAY_SANITY_DAMAGE = 20
+BATTLE_RAY_INTERVAL = 2.1
+BATTLE_RAY_RANGE = 320.0
+BATTLE_RAY_HITBOX_LONG = 12
+BATTLE_RAY_HITBOX_SHORT = 3
+BATTLE_ARROW_SPEED = 168.0
+BATTLE_ARROW_SANITY_DAMAGE = 10
+BATTLE_ARROW_INTERVAL = 1.9
+BATTLE_BOLT_SPEED = 72.0
+BATTLE_BOLT_SANITY_DAMAGE = 15
+BATTLE_BOLT_INTERVAL = 2.6
+BATTLE_SLASH_INTERVAL = 1.5
+BATTLE_SLASH_ACTIVE = 0.22
+BATTLE_SLASH_SANITY_DAMAGE = 12
+BATTLE_ATTACK_FLASH = 0.18
+
 # Temple snakes are a brief pressure-release encounter: quick enough to make
 # the open chamber lively, but deliberately defeated by a single scratch.
 SNAKE_FRAME_W = 18

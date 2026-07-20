@@ -23,6 +23,7 @@ from src.entities.breakable_grass import BreakableGrass
 from src.entities.breakable_urn import BreakableUrn
 from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.choice_trigger import ChoiceTrigger
+from src.entities.battle_hazards import BattleChoreographer, BattleProjectile
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.hazard import Cat
 from src.entities.massive_dinosaur import MassiveDinosaur
@@ -437,6 +438,15 @@ class WorldScene(Scene):
         for dart in self.darts:
             dart.update(dt, self.tilemap)
         self.darts = [dart for dart in self.darts if dart.alive]
+        for actor in self.battle_actors:
+            actor.update(dt)
+        if self.battle is not None:
+            self.battle_projectiles.extend(self.battle.update(dt))
+            for shot in self.battle_projectiles:
+                shot.update(dt, self.tilemap)
+            self.battle_projectiles = [
+                shot for shot in self.battle_projectiles if shot.alive
+            ]
         for breakable in self.breakables:
             breakable.update(dt)
         self.breakables = [item for item in self.breakables if item.alive]
@@ -601,6 +611,22 @@ class WorldScene(Scene):
                     self.game.audio.play_sfx("hurt")
         self.darts = [dart for dart in self.darts if dart.alive]
 
+        for shot in self.battle_projectiles:
+            if shot.alive and overlaps(player_box, shot.hitbox):
+                shot.alive = False
+                if self.sanity.damage(shot.damage):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+        self.battle_projectiles = [
+            shot for shot in self.battle_projectiles if shot.alive
+        ]
+        if self.battle is not None:
+            slash = self.battle.slash_hitbox()
+            if slash is not None and overlaps(player_box, slash):
+                if self.sanity.damage(config.BATTLE_SLASH_SANITY_DAMAGE):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+
         terrain_hazard = touching_terrain_hazard(
             self.tilemap, player_box, self.player.jumping
         )
@@ -684,7 +710,8 @@ class WorldScene(Scene):
                      *self.hazards, *self.rats,
                      *self.undead, *self.raptors, *self.dinosaurs,
                      *self.snakes,
-                     *self.darts, *self.npcs, self.player]
+                     *self.darts, *self.battle_projectiles,
+                     *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
 
     def _on_choice(self, option) -> None:
@@ -825,6 +852,10 @@ class WorldScene(Scene):
             for direction, (cx, cy) in self._dart_trap_spawns
         ]
         self.darts: list[TempleDart] = []
+        # The sanctum battle restarts its cadences whenever the room does.
+        self.battle = (BattleChoreographer(self.battle_actors)
+                       if self.battle_actors else None)
+        self.battle_projectiles: list[BattleProjectile] = []
         self._scratch_tutorial_rats = []
         self.undead_release.reset()
         rat_spawn_tiles = {

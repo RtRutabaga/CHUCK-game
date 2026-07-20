@@ -4,7 +4,8 @@ The temple's widest hall: a long paved processional between guardian
 colonnades to the western dais where the adventurers' battle will be
 staged in a later slice. Its east door is the room's ONLY threshold —
 per the phase contract there is no way forward; the scripted Fireball
-(later) is the only exit. Enemy-free until the battle session.
+(later) is the only exit. Session 132 added the battle's skeletons:
+the only conventional enemies, pressed against the fighter's line.
 """
 
 from collections import deque
@@ -36,11 +37,13 @@ def test_sanctum_is_the_widest_hall_with_one_threshold_and_no_exit() -> None:
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_temple_8") == 1
     assert kinds.count("anchor:temple_9_anchor") == 1
-    # No onward boundary and no enemies: the battle and the Fireball
-    # are their own later slices, and there is no way forward on foot.
+    # No onward boundary: the Fireball is a later slice, and there is
+    # no way forward on foot. The battle's skeletons (session 132) are
+    # the room's only conventional enemies.
     assert not any(kind.startswith("boundary:") for kind in kinds)
+    assert kinds.count("skeleton") == 3
     assert not any(kind in {
-        "rat", "zombie", "skeleton", "raptor", "massive_dinosaur", "snake",
+        "rat", "zombie", "raptor", "massive_dinosaur", "snake",
     } for kind in kinds)
     arches = [kind for kind, _c, _r in tilemap.prop_tiles
               if kind.startswith("temple_arch_")]

@@ -1,14 +1,17 @@
-"""The final chamber's battle actors (session 131, tableau slice).
+"""The final chamber's battle actors (sessions 131-132).
 
 Chuck has wandered into someone else's climactic battle. The three
-adventurers and the beholder stand as static presences for now — placed,
-y-sorted, deliberately NON-interactive (they never respond to E; their
-entrance lines play automatically, and Chuck cannot help them). Combat
-behavior, attacks, and animation are the next slice. Do not explain who
-they are: the phase contract forbids it.
+adventurers and the beholder hold their ground — placed, y-sorted,
+deliberately NON-interactive (they never respond to E; their entrance
+lines play automatically, and Chuck cannot help them). Session 132 set
+them in motion in place: the beholder's hover breathes, and each actor
+lunges toward its target for a beat when the BattleChoreographer fires
+its attack. Do not explain who they are: the phase contract forbids it.
 """
 
 from __future__ import annotations
+
+import math
 
 from src.core import config
 from src.entities.entity import Entity
@@ -35,9 +38,25 @@ class BattleActor(Entity):
         super().__init__(center_x - width / 2, center_y - height / 2,
                          width, height)
         self._image = None
+        # Deterministic per-actor phase so the tableau never moves in
+        # lockstep; attack_flash is set by the BattleChoreographer.
+        self._time = (sum(map(ord, kind)) % 100) / 100.0 * math.tau
+        self.attack_flash = 0.0
 
     def load_sprite(self, assets) -> None:
         self._image = assets.image(_SPRITES[self.kind])
+
+    def update(self, dt: float) -> None:
+        self._time += dt
+        self.attack_flash = max(0.0, self.attack_flash - dt)
+
+    @property
+    def center_x(self) -> float:
+        return self.x + self.width / 2
+
+    @property
+    def center_y(self) -> float:
+        return self.y + self.height / 2
 
     @property
     def sort_y(self) -> float:
@@ -61,9 +80,16 @@ class BattleActor(Entity):
                             self.width, self.height))
             return
         fw, fh = self._image.get_size()
-        lift = _BEHOLDER_HOVER if self.kind == "beholder" else 0
+        if self.kind == "beholder":
+            # The hover breathes; a firing beat pushes the orb east.
+            lift = _BEHOLDER_HOVER + round(2 * math.sin(self._time * 2.2))
+            lunge = 2 if self.attack_flash > 0.0 else 0
+        else:
+            # A subtle in-place sway; attacks lunge west at the beholder.
+            lift = round(0.5 + 0.5 * math.sin(self._time * 3.1))
+            lunge = -2 if self.attack_flash > 0.0 else 0
         surface.blit(
             self._image,
-            (int(self.x + self.width / 2 - fw / 2) - ox,
+            (int(self.x + self.width / 2 - fw / 2) + lunge - ox,
              int(foot_y - fh - lift) - oy),
         )
