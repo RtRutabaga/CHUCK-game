@@ -1,0 +1,29 @@
+Traceback (most recent call last):
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\main.py", line 32, in main
+    game.run()
+    ~~~~~~~~^^
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\core\game.py", line 90, in run
+    self._update(dt)
+    ~~~~~~~~~~~~^^^^
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\core\game.py", line 113, in _update
+    self.scenes.update(dt)
+    ~~~~~~~~~~~~~~~~~~^^^^
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\core\scene_manager.py", line 72, in update
+    self.current.update(dt)
+    ~~~~~~~~~~~~~~~~~~~^^^^
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\scenes\world_scene.py", line 461, in update
+    self.player.update(dt)
+        ^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        self.tilemap, self.player.hitbox, self.player.jumping
+        ^
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\scenes\world_scene.py", line 129, in load_map
+    self._pending_climb_from_water = False
+                   ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\world\tilemap.py", line 530, in __init__
+    if marker.kind == "player":
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        self.object_spawns.append((marker.kind, center))
+    
+ValueError: Unknown tile character 'Ѐ' at row 15, col 17 in temple_sanctum.txt

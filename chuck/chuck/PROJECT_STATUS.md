@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 130 (Temple Map 9: the final chamber, structurally).
+Updated: session 131 (the battle tableau: four actors and entrance lines).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -617,6 +617,17 @@ This file is required by the project rules and updated every session.
   becomes an optional pocket entered through a north gap. The envelope
   invariant still holds: entry -> Ashtray -> boundary remains walkable
   with 3x3 avoidance envelopes around every skeleton blocked
+- Battle tableau, first slice (session 131): four procedural actors hold
+  the sanctum's western arena as static y-sorted presences — the armored
+  fighter (16x30, sword and shield), the blue-robed wizard (gem staff),
+  the clearly female ranger (long auburn ponytail, longbow), and the
+  beholder (40x40, five eye stalks, one vast glaring eye, floating on a
+  hover offset over a ground shadow). Entering from the gauntlet plays
+  three heroic non-interactive entrance lines (data/dialogue/
+  temple_sanctum.json) through the ordinary dialogue box before control
+  returns. The actors answer nothing: E gets no response, scratches pass
+  through them, their identities are never explained (phase contract).
+  Combat behavior, attacks, and the Fireball are the next slices
 - Phase 6 Temple Map 9 (session 130): `temple_sanctum`, the final chamber
   structurally — the temple's widest hall (64x48, 2032 walkable tiles). A
   138-cell paved processional runs from the east door (the room's ONLY
@@ -689,7 +700,7 @@ This file is required by the project rules and updated every session.
 
 ## Tests
 
-48 suites (most pure Python/headless): collision, tilemap,
+49 suites (most pure Python/headless): collision, tilemap,
 camera, animation, sanity, hazard, dialogue, audio, props, tileset,
 tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
 tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,

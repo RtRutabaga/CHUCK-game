@@ -108,6 +108,8 @@ def test_temple_9_checkpoint_saves_continues_and_respawns() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("temple_9")
         scene._arrival_fade_t = None
+        # The entrance lines are the tableau suite's concern.
+        scene._pending_entrance_dialogue = None
         anchor, = scene.anchors
         scene.player.x, scene.player.y = anchor.x, anchor.y
         scene.sanity.current = 52

@@ -3,50 +3,51 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `a84a99c` (counter semantics)
-- Current work: Temple Map 9, the final chamber structurally (session 130)
+- Base commit before this pass: `d18fc13` (the sanctum)
+- Current work: the battle tableau, first slice (session 131)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-`temple_sanctum` (64x48): the final chamber built structurally, ready to
-receive the adventurers' battle:
+The final chamber's battle tableau, actors-and-lines slice:
 
-- The temple's widest hall. A 138-cell paved processional runs from the
-  east door between two guardian colonnades (eight monuments, skull and
-  serpent alternating) to the western dais — carved wall skulls flank
-  the aisle's end and six braziers mark the arena mouth and corners.
-- The east door is the room's ONLY threshold, per the phase contract:
-  "for a period of time there is no way forward." No onward boundary
-  exists — the scripted Fireball (a later slice) is the only exit. The
-  suite asserts exactly one arch, no boundary markers, and no forward
-  walk-exit bindings.
-- Deliberately enemy-free: the adventurers, beholder, skeletons, and
-  battle hazards are the next slice. The room, its Ashtray
-  (`temple_9_anchor`, saves/continues/respawns — verified across a
-  relaunch), full dressing kit, and reversible gauntlet transitions land
-  first, per the established room-then-behavior pattern.
-- Map 8's west boundary is live both ways with named arrivals and no
-  bounce; temple music carries across.
+- tools/generate_adventurer_sprites.py (new): the male fighter, the
+  wizard, and the clearly female ranger at the established 16x30
+  human-NPC scale (facing west toward the enemy), plus the 40x40
+  beholder — mauve orb, five eye stalks, one vast red eye glaring east,
+  a crescent of fangs. Written to assets/sprites/npcs/.
+- src/entities/battle_actor.py (new): BattleActor — static, y-sorted,
+  non-solid, deliberately NON-interactive; the beholder draws lifted on
+  a hover offset above a soft ground shadow.
+- Placement markers (Ͼ fighter on the aisle, Ͽ wizard, Ѐ ranger,
+  Ё beholder) stage the fight at the western dais: the beholder over
+  the aisle's end, the three adventurers east of it, facing it.
+- Entrance lines: entering the sanctum from the gauntlet queues one
+  automatic DialogueScene with three heroic lines (fighter, wizard,
+  ranger — data/dialogue/temple_sanctum.json), playing over the frozen
+  world before control returns. Chuck says nothing, helps nobody.
+- The actors answer nothing afterward: E finds no target on them and
+  scratches pass through — asserted by the new suite. Identities are
+  never explained, per the phase contract.
 
 ## Files Changed
 
-- assets/maps/temple_sanctum.txt (new, generator-validated) and the
-  gauntlet's west-stub return arrival.
-- src/world/tilemap.py (ϻ/ϼ/Ͻ markers), transitions, tileset map,
-  checkpoints (temple_9, temple_9_anchor, temple_8_return).
-- tests/test_phase6_temple_sanctum.py (new, 4 tests) + deliberate
-  contract updates: the gauntlet's west exit is live; dressing/monument/
-  path/urn suites and the dev selector cover the ninth map. The
-  sanctum is deliberately absent from the two-thresholds arch rule —
-  it is the temple's single-threshold room by design.
+- New: the sprite tool + four PNGs, battle_actor.py,
+  data/dialogue/temple_sanctum.json,
+  tests/test_phase6_sanctum_tableau.py (5 tests).
+- src/world/tilemap.py (four battle markers),
+  assets/maps/temple_sanctum.txt (four placements),
+  src/scenes/world_scene.py (spawn + draw + entrance-dialogue queue).
+- tests/test_phase6_temple_sanctum.py: the checkpoint test clears the
+  pending entrance dialogue (the tableau suite owns that path).
 
 ## Verification Performed
 
-- All 48 suites pass.
-- Headless round trip Map 8 <-> Map 9 with named arrivals, no bounce.
-- Screenshots confirm the processional, colonnades, dais skulls, and
-  braziers at native scale.
+- All 49 suites pass.
+- Headless: walking in from the gauntlet spawns all four actors and
+  plays the three lines exactly once; E and scratch are inert on them.
+- Screenshot confirms the tableau composition and the scale story —
+  the humans tower over Chuck on the processional.
 
 ## Known Issues
 
@@ -54,14 +55,12 @@ receive the adventurers' battle:
 
 ## Scope Notes
 
-- No future-phase work. The battle, Fireball, rubble map, and ship
-  remain unbuilt; the sanctum simply stages them.
+- No future-phase work. The battle's motion, attacks-as-hazards,
+  survival period, Fireball, rubble map, and ship remain unbuilt.
 
 ## Recommended Next Bounded Task
 
-- The final battle tableau: the three adventurers (fighter, wizard,
-  clearly female ranger) and the beholder as scripted combatants in the
-  sanctum, with their entrance lines and attack hazards — or a smaller
-  first slice: the four actors' sprites and static placement with
-  entrance dialogue only. The Fireball transition and rubble map stay
-  separate slices either way.
+- The battle in motion: the adventurers' and beholder's attack hazards
+  (fighter melee flashes, ranger arrows, wizard bolts, beholder eye
+  rays) as timed dangers Chuck must dodge, with the actors animating in
+  place. Keep the Fireball transition and rubble map as later slices.

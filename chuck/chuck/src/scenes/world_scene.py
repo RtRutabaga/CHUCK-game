@@ -18,6 +18,7 @@ import pygame
 
 from src.core import config
 from src.entities.anchor import AstralAnchor
+from src.entities.battle_actor import BattleActor
 from src.entities.breakable_grass import BreakableGrass
 from src.entities.breakable_urn import BreakableUrn
 from src.entities.jar_shelf import PantryJar, PantryJarShelf
@@ -168,6 +169,14 @@ class WorldScene(Scene):
             self.player.facing = "up"
         self.player.tilemap = self.tilemap
         self.player.load_sprites(self.game.assets)
+        # The adventurers' entrance lines (session 131): entering the
+        # final chamber from the gauntlet, each delivers one heroic,
+        # non-interactive line before control returns.
+        self._pending_entrance_dialogue = (
+            "sanctum_entrance"
+            if map_name == "temple_sanctum" and arrival == "from_temple_8"
+            else None
+        )
         self._climb_t: float | None = 0.0 if climb_from_water else None
         self._climb_from_y = self.player.y
         self._climb_target_y = target_player_y
@@ -289,6 +298,7 @@ class WorldScene(Scene):
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
         self.choice_triggers: list[ChoiceTrigger] = []
+        self.battle_actors: list[BattleActor] = []
         self._dart_trap_spawns = [
             (kind.split(":", 1)[1], position)
             for kind, position in self.tilemap.object_spawns
@@ -346,6 +356,10 @@ class WorldScene(Scene):
                 "snake",
             }:
                 continue  # rebuilt with all enemies below
+            elif kind.startswith("battle:"):
+                actor = BattleActor(cx, cy, kind.split(":", 1)[1])
+                actor.load_sprite(self.game.assets)
+                self.battle_actors.append(actor)
             elif kind.startswith("choice:"):
                 choice_id = kind.split(":", 1)[1]
                 self.choice_triggers.append(ChoiceTrigger(cx, cy, choice_id))
@@ -371,6 +385,12 @@ class WorldScene(Scene):
 
     def update(self, dt: float) -> None:
         """Advance the world simulation."""
+        if self._pending_entrance_dialogue is not None:
+            lines = self.dialogue.get(self._pending_entrance_dialogue)
+            self._pending_entrance_dialogue = None
+            self.game.scenes.push(DialogueScene(self.game, lines))
+            return
+
         # A transition chosen during a conversation waits until that
         # conversation has closed and control returns here — only then
         # is this scene the top of the stack again — so the descent
@@ -660,6 +680,7 @@ class WorldScene(Scene):
         one foot tall; this is where that finally SHOWS.
         """
         drawables = [*self.props, *self.breakables, *self.anchors,
+                     *self.battle_actors,
                      *self.hazards, *self.rats,
                      *self.undead, *self.raptors, *self.dinosaurs,
                      *self.snakes,

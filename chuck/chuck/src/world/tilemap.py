@@ -461,6 +461,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ϻ": MarkerDef(kind="arrival:from_temple_8", under="≡"),
     "ϼ": MarkerDef(kind="anchor:temple_9_anchor", under="·"),
     "Ͻ": MarkerDef(kind="arrival:from_temple_9", under="≡"),
+    # The final chamber's battle tableau (session 131).
+    "Ͼ": MarkerDef(kind="battle:fighter", under="≡"),
+    "Ͽ": MarkerDef(kind="battle:wizard", under="·"),
+    "Ѐ": MarkerDef(kind="battle:ranger", under="·"),
+    "Ё": MarkerDef(kind="battle:beholder", under="·"),
     # Temple Map 8, the gauntlet (session 122).
     "ϴ": MarkerDef(kind="arrival:from_temple_7", under="≡"),
     "Ϲ": MarkerDef(kind="anchor:temple_8_anchor", under="·"),
