@@ -37,17 +37,26 @@ away from:
   the seal), sparing the center sight-line (rows 14-30). At 7-tile
   notice range they stay dormant until Chuck flees a wall to dodge the
   rays, then herd him back toward the fight — 27 skeletons total.
+- The entrance establishing shot: the heroes' three lines fire at the
+  far-east door, ~40 tiles from the fight, so the camera now cuts to
+  the battle for them (Camera.focus_on holds a fixed point while the
+  dialogue freezes the world) and hard-cuts back to Chuck afterward
+  (WorldScene._battle_establishing_focus + _restore_camera_to_player;
+  SANCTUM_ESTABLISH_LIFT lifts the group clear of the dialogue panel).
+  The trio was reclustered into a tight arc — ranger (18,20), fighter
+  (16,22), wizard (19,25), beholder (10,23) — so all four fit one
+  frame; the aisle path (138 tiles) is untouched.
 
 ## Files Changed
 
 - src/entities/battle_hazards.py (AstralBreach), src/core/config.py
   (BREACH_* block), src/world/tilemap.py (set_terrain),
   src/scenes/world_scene.py (trigger + update + draw + reset-restore).
-- tests/test_phase6_sanctum_battle.py: five new tests (seal +
+- tests/test_phase6_sanctum_battle.py: six new tests (seal +
   two-thickness + unreachable east door, no-break-under-Chuck,
   death-heals-and-rearms, no-trigger-out-of-sight, wall-skeletons-
-  line-the-fringes) — 12 total. test_phase6_temple_sanctum.py's
-  skeleton contract went 3 -> 27.
+  line-the-fringes, entrance-camera-cuts-to-the-battle-and-back) — 13
+  total. test_phase6_temple_sanctum.py's skeleton contract went 3 -> 27.
 
 ## Verification Performed
 

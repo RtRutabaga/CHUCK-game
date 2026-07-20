@@ -180,6 +180,7 @@ class WorldScene(Scene):
             if map_name == "temple_sanctum" and arrival == "from_temple_8"
             else None
         )
+        self._restore_camera_to_player = False
         self._climb_t: float | None = 0.0 if climb_from_water else None
         self._climb_from_y = self.player.y
         self._climb_target_y = target_player_y
@@ -391,8 +392,18 @@ class WorldScene(Scene):
         if self._pending_entrance_dialogue is not None:
             lines = self.dialogue.get(self._pending_entrance_dialogue)
             self._pending_entrance_dialogue = None
+            if self.battle_actors:
+                # Cut to the battle so the heroes' lines land on them,
+                # not on the empty aisle Chuck entered by. The camera
+                # returns to Chuck once the conversation closes.
+                cx, cy = self._battle_establishing_focus()
+                self.camera.focus_on(cx, cy)
+                self._restore_camera_to_player = True
             self.game.scenes.push(DialogueScene(self.game, lines))
             return
+        if self._restore_camera_to_player:
+            self._restore_camera_to_player = False
+            self.camera.follow(self.player)
 
         # A transition chosen during a conversation waits until that
         # conversation has closed and control returns here — only then
@@ -709,6 +720,21 @@ class WorldScene(Scene):
                 self._hint.draw(surface, config.HINT_INTERACT)
         self._draw_respawn_overlay(surface)
         self._draw_arrival_fade(surface)
+
+    def _battle_establishing_focus(self) -> tuple[float, float]:
+        """The camera center that frames the whole battle for its lines.
+
+        Horizontally centered on the actors' span; vertically lifted so
+        the group's feet clear the dialogue panel at the screen bottom.
+        """
+        actors = self.battle_actors
+        center_x = (min(a.x for a in actors)
+                    + max(a.x + a.width for a in actors)) / 2
+        # Put the group's feet a little below screen-center, leaving the
+        # bottom of the frame (the dialogue panel) clear of the actors.
+        group_bottom = max(a.y + a.height for a in actors)
+        center_y = group_bottom - config.SANCTUM_ESTABLISH_LIFT
+        return center_x, center_y
 
     def _sorted_drawables(self):
         """Everything that stands in the world, painter-ordered by feet.

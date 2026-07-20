@@ -44,6 +44,20 @@ class Camera:
         self._target = target
         self._snap_next = True
 
+    def focus_on(self, center_x: float, center_y: float) -> None:
+        """Cut immediately to a fixed world point and hold there.
+
+        An establishing shot: with no target, update() is a no-op, so
+        the view stays put (even while a dialogue freezes the world)
+        until follow() resumes tracking. Positioned now, not on the
+        next update, so the very first frame drawn is already framed.
+        """
+        self._target = None
+        self.x = center_x - self.view_width / 2
+        self.y = center_y - self.view_height / 2
+        self._snap_next = False
+        self._clamp()
+
     # ------------------------------------------------------------------
     # Per-frame
     # ------------------------------------------------------------------

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 133 (the Astral breach seals the sanctum behind Chuck).
+Updated: session 133 (Astral breach + the entrance establishing shot).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -636,6 +636,18 @@ This file is required by the project rules and updated every session.
   the central sight-line to the beholder and trio: at 7-tile notice
   range they lie dormant until Chuck flees a wall to escape the eye
   rays, then rouse and herd him back to center — 27 skeletons in all
+- The entrance establishing shot (session 133): entering the sanctum
+  from the gauntlet queues the heroes' three lines at the far-east door,
+  ~40 tiles from the battle. The camera now cuts to the fight for those
+  lines (Camera.focus_on holds a fixed point while the dialogue freezes
+  the world) so they land on the trio, not the empty aisle, then hard-
+  cuts back to Chuck when the conversation closes
+  (WorldScene._battle_establishing_focus centers on the actors' span and
+  lifts their feet clear of the dialogue panel; SANCTUM_ESTABLISH_LIFT).
+  The trio was reclustered into a tight arc around the beholder — ranger
+  (18,20), fighter (16,22), wizard (19,25), beholder (10,23) — so all
+  four frame in one shot; the ranger and wizard were the old vertical
+  outliers (rows 15 and 26). The aisle path (138 ≡) is untouched
 - The battle in motion (session 132): the sanctum tableau now fights on
   fixed cadences Chuck cannot influence (src/entities/battle_hazards.py).
   The beholder's eye rays cycle the three adventurers' lanes in a

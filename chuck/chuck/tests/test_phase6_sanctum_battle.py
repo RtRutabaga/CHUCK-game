@@ -65,6 +65,56 @@ def test_wall_skeletons_line_the_fringes_and_spare_the_sight_line() -> None:
     assert any(r >= 40 for _c, r in fringe)
 
 
+def test_entrance_cuts_the_camera_to_the_battle_then_back_to_chuck() -> None:
+    import pygame
+
+    from src.scenes.dialogue_scene import DialogueScene
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("temple_8")
+        scene._arrival_fade_t = None
+        scene.player.x = 3 * config.TILE_SIZE + 3
+        scene.player.y = 25 * config.TILE_SIZE + 4
+        scene.update(0.0)
+        assert scene.map_name == "temple_sanctum"
+        scene._arrival_fade_t = None
+        scene.update(0.01)  # consume entrance dialogue -> establishing shot
+        assert isinstance(game.scenes.current, DialogueScene)
+
+        ox, oy = scene.camera.offset
+        view = pygame.Rect(ox, oy, config.NATIVE_WIDTH, config.NATIVE_HEIGHT)
+        # Every combatant is framed; the trio's feet clear the dialogue
+        # panel (the bottom ~46px), so their lines land on them.
+        panel_top = config.NATIVE_HEIGHT - 46
+        for actor in scene.battle_actors:
+            box = pygame.Rect(int(actor.x), int(actor.y),
+                              actor.width, actor.height)
+            assert view.colliderect(box), actor.kind
+            if actor.kind != "beholder":
+                assert (actor.y + actor.height) - oy <= panel_top, actor.kind
+        # The camera has LEFT Chuck at the far-east door: he is off-screen.
+        player = pygame.Rect(int(scene.player.x), int(scene.player.y),
+                             scene.player.width, scene.player.height)
+        assert not view.colliderect(player)
+
+        # Play through the lines; the camera returns to Chuck.
+        for _ in range(6):
+            game.input.begin_frame()
+            game.input._actions_just_pressed.add("interact")
+            game.scenes.update(0.01)
+            game.scenes.update(0.3)
+        assert game.scenes.current is scene
+        scene.update(0.01)
+        ox, oy = scene.camera.offset
+        view = pygame.Rect(ox, oy, config.NATIVE_WIDTH, config.NATIVE_HEIGHT)
+        player = pygame.Rect(int(scene.player.x), int(scene.player.y),
+                             scene.player.width, scene.player.height)
+        assert view.colliderect(player)
+    finally:
+        game._shutdown()
+
+
 def test_the_choreographer_fires_every_attack_on_cadence() -> None:
     game = Game()
     try:

@@ -219,6 +219,12 @@ BREACH_INSTANT_RADIUS = 7
 BREACH_STEP = 0.06
 BREACH_FLASH = 0.35
 
+# The entrance establishing shot cuts the camera to the battle so the
+# trio's heroic lines land on the trio, not the empty aisle Chuck
+# walked in by. The group's feet sit this far below screen-center, so
+# the actors ride in the upper frame clear of the dialogue panel.
+SANCTUM_ESTABLISH_LIFT = 30
+
 # Temple snakes are a brief pressure-release encounter: quick enough to make
 # the open chamber lively, but deliberately defeated by a single scratch.
 SNAKE_FRAME_W = 18
