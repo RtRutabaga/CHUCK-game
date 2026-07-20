@@ -630,7 +630,12 @@ This file is required by the project rules and updated every session.
   waits for him to step off). Built on the new TileMap.set_terrain
   runtime mutator; _reset_enemies() restores every mutated tile and
   re-arms the trigger, so death (including falling into the seal)
-  heals the floor with the rest of the room
+  heals the floor with the rest of the room. Twenty-four more skeletons
+  (Ψ) line the sealed chamber's north and south fringes in two
+  staggered rows each (rows 5/7 and 40/42, west of the seal), sparing
+  the central sight-line to the beholder and trio: at 7-tile notice
+  range they lie dormant until Chuck flees a wall to escape the eye
+  rays, then rouse and herd him back to center — 27 skeletons in all
 - The battle in motion (session 132): the sanctum tableau now fights on
   fixed cadences Chuck cannot influence (src/entities/battle_hazards.py).
   The beholder's eye rays cycle the three adventurers' lanes in a

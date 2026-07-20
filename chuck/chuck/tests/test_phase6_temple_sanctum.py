@@ -38,10 +38,11 @@ def test_sanctum_is_the_widest_hall_with_one_threshold_and_no_exit() -> None:
     assert kinds.count("arrival:from_temple_8") == 1
     assert kinds.count("anchor:temple_9_anchor") == 1
     # No onward boundary: the Fireball is a later slice, and there is
-    # no way forward on foot. The battle's skeletons (session 132) are
-    # the room's only conventional enemies.
+    # no way forward on foot. The battle's skeletons (sessions 132-133)
+    # are the room's only conventional enemies: three press the
+    # fighter's line, twenty-four more line the north and south fringes.
     assert not any(kind.startswith("boundary:") for kind in kinds)
-    assert kinds.count("skeleton") == 3
+    assert kinds.count("skeleton") == 27
     assert not any(kind in {
         "rat", "zombie", "raptor", "massive_dinosaur", "snake",
     } for kind in kinds)

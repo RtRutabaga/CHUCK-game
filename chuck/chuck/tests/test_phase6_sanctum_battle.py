@@ -29,19 +29,40 @@ def _sanctum_scene(game):
 def test_three_skeletons_press_the_fighters_line() -> None:
     tilemap = TileMap(config.MAPS_DIR / "temple_sanctum.txt")
     ts = config.TILE_SIZE
-    skeletons = sorted(
-        (int(x // ts), int(y // ts))
-        for kind, (x, y) in tilemap.object_spawns if kind == "skeleton")
-    assert skeletons == [(13, 20), (13, 26), (15, 18)]
+    skeletons = {(int(x // ts), int(y // ts))
+                 for kind, (x, y) in tilemap.object_spawns
+                 if kind == "skeleton"}
     fighter = next((int(x // ts), int(y // ts))
                    for kind, (x, y) in tilemap.object_spawns
                    if kind == "battle:fighter")
     beholder = next((int(x // ts), int(y // ts))
                     for kind, (x, y) in tilemap.object_spawns
                     if kind == "battle:beholder")
-    # They press the fighter from the west: between him and the beholder.
-    for col, row in skeletons:
+    # Three stand in the fighter's rows, between him and the beholder.
+    pressing = {(13, 20), (13, 26), (15, 18)}
+    assert pressing <= skeletons
+    for col, row in pressing:
         assert beholder[0] <= col <= fighter[0], (col, row)
+
+
+def test_wall_skeletons_line_the_fringes_and_spare_the_sight_line() -> None:
+    tilemap = TileMap(config.MAPS_DIR / "temple_sanctum.txt")
+    ts = config.TILE_SIZE
+    skeletons = [(int(x // ts), int(y // ts))
+                 for kind, (x, y) in tilemap.object_spawns
+                 if kind == "skeleton"]
+    assert len(skeletons) == 27
+    # All stay west of the seal, so they never wall off the aisle Chuck
+    # enters by, and never end up on the battle's east side.
+    assert all(col < config.BREACH_COLS[0] for col, _row in skeletons)
+    fringe = [(c, r) for c, r in skeletons if r <= 8 or r >= 40]
+    assert len(fringe) == 24  # the wall lines
+    # The central sight-line to the beholder and trio stays clear: no
+    # wall skeleton stands across the rows where the fight is fought.
+    assert not any(14 <= r <= 30 for c, r in fringe)
+    # They line BOTH walls, herding Chuck away from either fringe.
+    assert any(r <= 8 for _c, r in fringe)
+    assert any(r >= 40 for _c, r in fringe)
 
 
 def test_the_choreographer_fires_every_attack_on_cadence() -> None:
@@ -156,7 +177,7 @@ def test_death_resets_the_battle_with_the_room() -> None:
         scene.update(config.RESPAWN_HOLD + 0.01)
         assert scene.battle_projectiles == []
         assert scene.battle is not old_battle  # cadences restart
-        assert len(scene.undead) == 3  # the skeletons re-press the line
+        assert len(scene.undead) == 27  # every skeleton re-forms
     finally:
         game._shutdown()
 

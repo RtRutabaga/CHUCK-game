@@ -32,15 +32,22 @@ away from:
   re-arms the trigger: death — including falling into the seal —
   heals the floor with the rest of the room, and the respawn point
   (arrival or Ashtray) is always east of where the seal re-forms.
+- 24 more skeletons (Ψ) line the sealed chamber's north and south
+  fringes (two staggered rows each, rows 5/7 and 40/42, all west of
+  the seal), sparing the center sight-line (rows 14-30). At 7-tile
+  notice range they stay dormant until Chuck flees a wall to dodge the
+  rays, then herd him back toward the fight — 27 skeletons total.
 
 ## Files Changed
 
 - src/entities/battle_hazards.py (AstralBreach), src/core/config.py
   (BREACH_* block), src/world/tilemap.py (set_terrain),
   src/scenes/world_scene.py (trigger + update + draw + reset-restore).
-- tests/test_phase6_sanctum_battle.py: four new tests (seal +
+- tests/test_phase6_sanctum_battle.py: five new tests (seal +
   two-thickness + unreachable east door, no-break-under-Chuck,
-  death-heals-and-rearms, no-trigger-out-of-sight) — 11 total.
+  death-heals-and-rearms, no-trigger-out-of-sight, wall-skeletons-
+  line-the-fringes) — 12 total. test_phase6_temple_sanctum.py's
+  skeleton contract went 3 -> 27.
 
 ## Verification Performed
 
