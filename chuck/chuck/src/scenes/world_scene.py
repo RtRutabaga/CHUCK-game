@@ -23,7 +23,9 @@ from src.entities.breakable_grass import BreakableGrass
 from src.entities.breakable_urn import BreakableUrn
 from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.choice_trigger import ChoiceTrigger
-from src.entities.battle_hazards import BattleChoreographer, BattleProjectile
+from src.entities.battle_hazards import (
+    AstralBreach, BattleChoreographer, BattleProjectile,
+)
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.hazard import Cat
 from src.entities.massive_dinosaur import MassiveDinosaur
@@ -447,6 +449,14 @@ class WorldScene(Scene):
             self.battle_projectiles = [
                 shot for shot in self.battle_projectiles if shot.alive
             ]
+        if self.breach is not None:
+            if (not self.breach.triggered
+                    and self._player_tile()[0] <= config.BREACH_TRIGGER_COL):
+                # Chuck is in sight of the battle: the Astral Sea breaks
+                # through behind him. There is no walking away now.
+                self.breach.trigger(self._player_tile())
+                self.game.audio.play_sfx("vanish")
+            self.breach.update(dt, self.player.hitbox)
         for breakable in self.breakables:
             breakable.update(dt)
         self.breakables = [item for item in self.breakables if item.alive]
@@ -677,6 +687,8 @@ class WorldScene(Scene):
             pickup.draw(surface, offset)
         for drawable in self._sorted_drawables():
             drawable.draw(surface, offset)
+        if self.breach is not None:
+            self.breach.draw(surface, offset)
         self.tilemap.draw_overhead(surface, offset, self._world_time)
         self.hud.draw(surface)
         # Tutorial hint (temporary; Waterdeep + sewer only). Hidden
@@ -852,10 +864,15 @@ class WorldScene(Scene):
             for direction, (cx, cy) in self._dart_trap_spawns
         ]
         self.darts: list[TempleDart] = []
-        # The sanctum battle restarts its cadences whenever the room does.
+        # The sanctum battle restarts its cadences whenever the room does,
+        # and the Astral breach heals shut and re-arms with it.
         self.battle = (BattleChoreographer(self.battle_actors)
                        if self.battle_actors else None)
         self.battle_projectiles: list[BattleProjectile] = []
+        if getattr(self, "breach", None) is not None:
+            self.breach.restore()
+        self.breach = (AstralBreach(self.tilemap)
+                       if self.battle is not None else None)
         self._scratch_tutorial_rats = []
         self.undead_release.reset()
         rat_spawn_tiles = {

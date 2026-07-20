@@ -161,12 +161,129 @@ def test_death_resets_the_battle_with_the_room() -> None:
         game._shutdown()
 
 
+def _walk_to(scene, col: int, row: int) -> None:
+    scene.player.x = col * config.TILE_SIZE + 3
+    scene.player.y = row * config.TILE_SIZE + 4
+
+
+def test_the_astral_sea_seals_the_hall_behind_chuck() -> None:
+    from collections import deque
+
+    from src.world.collision import FALL_HAZARD_TERRAIN
+
+    game = Game()
+    try:
+        scene = _sanctum_scene(game)
+        assert scene.breach is not None and not scene.breach.triggered
+        # Walking the aisle to the trigger column breaks reality open.
+        _walk_to(scene, config.BREACH_TRIGGER_COL, 23)
+        scene.update(0.01)
+        assert scene.breach.triggered
+        for _ in range(40):
+            scene.update(0.05)  # the cascade reaches both walls
+        barrier = [(col, row)
+                   for col in config.BREACH_COLS
+                   for row in range(scene.tilemap.height_tiles)
+                   if scene.tilemap.terrain_at(col, row) == "V"]
+        assert len(barrier) >= 60  # a band, not a scatter
+        # On foot (fall hazards lethal), the east door is unreachable:
+        # Chuck is sealed in with the battle.
+        tilemap = scene.tilemap
+        start = scene._player_tile()
+        reached = {start}
+        frontier = deque([start])
+        while frontier:
+            col, row = frontier.popleft()
+            for nxt in ((col - 1, row), (col + 1, row),
+                        (col, row - 1), (col, row + 1)):
+                c, r = nxt
+                if nxt in reached or tilemap.is_solid(c, r):
+                    continue
+                if tilemap.terrain_at(c, r) in FALL_HAZARD_TERRAIN:
+                    continue
+                reached.add(nxt)
+                frontier.append(nxt)
+        assert (56, 23) not in reached  # the arrival aisle is cut off
+        # ...and a single jump cannot cross: the band is two tiles thick
+        # everywhere it landed, so any hop lands in the Astral Sea.
+        for col, row in barrier:
+            partner = (config.BREACH_COLS[0]
+                       if col == config.BREACH_COLS[1]
+                       else config.BREACH_COLS[1])
+            assert (scene.tilemap.terrain_at(partner, row) == "V"
+                    or scene.tilemap.is_solid(partner, row)), (col, row)
+        # The battle stays in sight: every actor is west of the seal.
+        assert all(a.x < config.BREACH_COLS[0] * config.TILE_SIZE
+                   for a in scene.battle_actors)
+    finally:
+        game._shutdown()
+
+
+def test_the_breach_never_breaks_through_under_chuck() -> None:
+    game = Game()
+    try:
+        scene = _sanctum_scene(game)
+        # Chuck parked ON the barrier line when the trigger is forced:
+        # his tile must wait for him to move, never dropping him.
+        _walk_to(scene, config.BREACH_COLS[0], 23)
+        scene.breach.trigger((config.BREACH_TRIGGER_COL, 23))
+        for _ in range(40):
+            scene.breach.update(0.05, scene.player.hitbox)
+        col, row = scene._player_tile()
+        assert scene.tilemap.terrain_at(col, row) != "V"
+        # The moment he steps off, reality takes the tile.
+        _walk_to(scene, config.BREACH_TRIGGER_COL, 23)
+        scene.breach.update(0.05, scene.player.hitbox)
+        assert scene.tilemap.terrain_at(col, row) == "V"
+    finally:
+        game._shutdown()
+
+
+def test_death_heals_the_breach_and_rearms_it() -> None:
+    game = Game()
+    try:
+        scene = _sanctum_scene(game)
+        before = {(col, row): scene.tilemap.terrain_at(col, row)
+                  for col in config.BREACH_COLS
+                  for row in range(scene.tilemap.height_tiles)}
+        _walk_to(scene, config.BREACH_TRIGGER_COL, 23)
+        scene.update(0.01)
+        for _ in range(40):
+            scene.update(0.05)
+        assert any(scene.tilemap.terrain_at(c, r) == "V"
+                   for (c, r) in before)
+        scene.sanity.deplete()
+        scene.update(config.RESPAWN_FADE_OUT + 0.01)
+        scene.update(config.RESPAWN_HOLD + 0.01)
+        after = {(col, row): scene.tilemap.terrain_at(col, row)
+                 for (col, row) in before}
+        assert after == before  # the floor healed with the room
+        assert not scene.breach.triggered  # and the trigger re-armed
+    finally:
+        game._shutdown()
+
+
+def test_no_breach_while_chuck_stays_out_of_sight() -> None:
+    game = Game()
+    try:
+        scene = _sanctum_scene(game)
+        for _ in range(20):
+            scene.update(0.05)  # lingering at the arrival changes nothing
+        assert not scene.breach.triggered
+        assert all(scene.tilemap.terrain_at(col, row) != "V"
+                   for col in config.BREACH_COLS
+                   for row in range(scene.tilemap.height_tiles))
+    finally:
+        game._shutdown()
+
+
 def test_the_battle_exists_only_in_the_sanctum() -> None:
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint("temple_8")
         assert scene.battle is None
         assert scene.battle_projectiles == []
+        assert scene.breach is None
     finally:
         game._shutdown()
 

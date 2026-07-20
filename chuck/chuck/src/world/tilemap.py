@@ -606,6 +606,22 @@ class TileMap:
         line = self._grid[row]
         self._grid[row] = line[:col] + under + line[col + 1:]
 
+    def set_terrain(self, col: int, row: int, char: str) -> str:
+        """Swap one tile's terrain at runtime, returning the old char.
+
+        Used by scripted world changes (the sanctum's Astral breach):
+        the caller keeps the returned char to restore the tile when the
+        room resets. Only known terrain may be written — an unknown
+        char here is always a logic mistake, same as in a map file.
+        Map reload re-parses the file, so mutations reset naturally.
+        """
+        if char not in TILE_DEFS:
+            raise ValueError(f"Unknown terrain {char!r} for set_terrain")
+        line = self._grid[row]
+        old = line[col]
+        self._grid[row] = line[:col] + char + line[col + 1:]
+        return old
+
     # ------------------------------------------------------------------
     # Drawing
     # ------------------------------------------------------------------

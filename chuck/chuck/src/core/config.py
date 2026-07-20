@@ -208,6 +208,17 @@ BATTLE_SLASH_ACTIVE = 0.22
 BATTLE_SLASH_SANITY_DAMAGE = 12
 BATTLE_ATTACK_FLASH = 0.18
 
+# The Astral breach: once Chuck walks into sight of the battle, the
+# Astral Sea breaks through the floor behind him in a two-tile-thick
+# north-south band — unjumpable, uncrossable by enemies, lethal to walk
+# into — sealing the hall so the battle cannot be walked away from.
+# Death resets the room, so the seal restores with everything else.
+BREACH_TRIGGER_COL = 28
+BREACH_COLS = (32, 33)
+BREACH_INSTANT_RADIUS = 7
+BREACH_STEP = 0.06
+BREACH_FLASH = 0.35
+
 # Temple snakes are a brief pressure-release encounter: quick enough to make
 # the open chamber lively, but deliberately defeated by a single scratch.
 SNAKE_FRAME_W = 18

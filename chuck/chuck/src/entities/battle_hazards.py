@@ -155,3 +155,86 @@ class BattleChoreographer:
         return pygame.Rect(
             int(self._fighter.x) - 14, int(self._fighter.y) - 2, 14, 12
         )
+
+
+class AstralBreach:
+    """The Astral Sea seals the hall once Chuck has seen the battle.
+
+    When Chuck walks west of BREACH_TRIGGER_COL — into sight of the
+    fight — the floor behind him breaks through to the Astral Sea in a
+    two-tile-thick north-south band ('V' terrain: lethal to walk into,
+    unjumpable at this thickness, uncrossable by enemies). The band
+    lands instantly across the rows nearest Chuck so it cannot be
+    outrun, then cascades outward to the walls with a flash per tile.
+    There is no going back: only the battle, and whatever ends it.
+    Restored whenever the room resets, so death re-arms the trigger.
+    """
+
+    def __init__(self, tilemap) -> None:
+        self._tilemap = tilemap
+        self.triggered = False
+        self._pending: list[list] = []   # [delay, col, row]
+        self._restore: list[tuple[int, int, str]] = []
+        self.flashes: list[list] = []    # [col, row, age]
+
+    def trigger(self, player_tile: tuple[int, int]) -> None:
+        if self.triggered:
+            return
+        self.triggered = True
+        _col, player_row = player_tile
+        for col in config.BREACH_COLS:
+            for row in range(self._tilemap.height_tiles):
+                if self._tilemap.terrain_at(col, row) not in {"·", "≡"}:
+                    continue  # walls, monuments, dressing keep their place
+                spread = max(0, abs(row - player_row)
+                             - config.BREACH_INSTANT_RADIUS)
+                self._pending.append([spread * config.BREACH_STEP, col, row])
+        self._pending.sort()
+
+    def update(self, dt: float, player_hitbox=None) -> None:
+        for flash in self.flashes:
+            flash[2] += dt
+        self.flashes = [f for f in self.flashes if f[2] < config.BREACH_FLASH]
+        if not self._pending:
+            return
+        import pygame
+
+        remaining = []
+        for entry in self._pending:
+            entry[0] -= dt
+            _delay, col, row = entry
+            if entry[0] > 0.0:
+                remaining.append(entry)
+                continue
+            ts = config.TILE_SIZE
+            cell = pygame.Rect(col * ts, row * ts, ts, ts)
+            if player_hitbox is not None and cell.colliderect(player_hitbox):
+                remaining.append(entry)  # never break through under Chuck
+                continue
+            old = self._tilemap.set_terrain(col, row, "V")
+            self._restore.append((col, row, old))
+            self.flashes.append([col, row, 0.0])
+        self._pending = remaining
+
+    def restore(self) -> None:
+        """Heal the floor and re-arm the trigger (the room reset)."""
+        for col, row, char in reversed(self._restore):
+            self._tilemap.set_terrain(col, row, char)
+        self._restore = []
+        self._pending = []
+        self.flashes = []
+        self.triggered = False
+
+    def draw(self, surface, camera_offset: tuple[int, int]) -> None:
+        import pygame
+
+        ox, oy = camera_offset
+        ts = config.TILE_SIZE
+        for col, row, age in self.flashes:
+            fade = 1.0 - age / config.BREACH_FLASH
+            pad = round(3 * (1.0 - fade))
+            color = (round(150 + 90 * fade), round(160 + 86 * fade), 255)
+            pygame.draw.rect(
+                surface, color,
+                (col * ts + pad - ox, row * ts + pad - oy,
+                 ts - 2 * pad, ts - 2 * pad))

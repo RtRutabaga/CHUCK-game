@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 132 (the battle in motion: attack hazards and skeletons).
+Updated: session 133 (the Astral breach seals the sanctum behind Chuck).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -617,6 +617,20 @@ This file is required by the project rules and updated every session.
   becomes an optional pocket entered through a north gap. The envelope
   invariant still holds: entry -> Ashtray -> boundary remains walkable
   with 3x3 avoidance envelopes around every skeleton blocked
+- The Astral breach (session 133): once Chuck walks west of
+  BREACH_TRIGGER_COL (28) — into sight of the battle — the Astral Sea
+  breaks through the sanctum floor behind him (AstralBreach in
+  src/entities/battle_hazards.py): a two-tile-thick north-south band of
+  'V' terrain at BREACH_COLS (32, 33), landing instantly across the
+  rows nearest Chuck so it cannot be outrun, then cascading to the
+  walls with a per-tile flash and the vanish sfx. The band is lethal to
+  walk into, unjumpable at two tiles, and uncrossable by enemies —
+  there is no returning to the east door; the player is sealed in line
+  of sight of the fight. A tile never breaks through under Chuck (it
+  waits for him to step off). Built on the new TileMap.set_terrain
+  runtime mutator; _reset_enemies() restores every mutated tile and
+  re-arms the trigger, so death (including falling into the seal)
+  heals the floor with the rest of the room
 - The battle in motion (session 132): the sanctum tableau now fights on
   fixed cadences Chuck cannot influence (src/entities/battle_hazards.py).
   The beholder's eye rays cycle the three adventurers' lanes in a
