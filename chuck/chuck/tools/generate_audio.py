@@ -136,6 +136,32 @@ def sfx_beholder_blast() -> list[float]:
                      headroom=0.5)
 
 
+def sfx_fireball() -> list[float]:
+    """The scripted Fireball: a rising whoosh into a roaring detonation.
+
+    Bigger and brighter than the beholder's cone blast — the climactic
+    explosion that ends the fight and throws Chuck into the rubble."""
+    dur = 1.0
+    n = int(dur * SAMPLE_RATE)
+    # A swelling roar: broadband noise opening up over the first beat.
+    roar = []
+    for i in range(n):
+        t = i / SAMPLE_RATE
+        cutoff = 400.0 + 4200.0 * min(1.0, t / 0.35)  # filter sweeps open
+        roar.append(cutoff)
+    body = lowpass(noise(dur, seed=71), 5000)
+    body = envelope(body, 0.18, 0.7)  # slow attack (the whoosh), long tail
+    # A sub-bass thump at the moment of detonation.
+    thump = []
+    for i in range(n):
+        t = i / SAMPLE_RATE
+        freq = 90.0 - 55.0 * min(1.0, t / dur)
+        thump.append(math.sin(2.0 * math.pi * freq * t))
+    thump = _pad(envelope(gain(thump, 0.95), 0.001, 0.55), 0.22)
+    crackle = envelope(gain(noise(dur, seed=72), 0.5), 0.2, 0.7)
+    return normalize(mix(body, thump, gain(crackle, 0.4)), headroom=0.5)
+
+
 def sfx_respawn() -> list[float]:
     return normalize(
         mix(_pad(_bell(392.0, 0.5), 0.0), _pad(_bell(587.3, 0.6), 0.18)),
@@ -167,6 +193,7 @@ def main() -> None:
         "respawn.wav": sfx_respawn,
         "chime.wav": sfx_chime,
         "beholder_blast.wav": sfx_beholder_blast,
+        "fireball.wav": sfx_fireball,
     }
     for i, (hz, cut, dur) in enumerate(((150, 800, 0.07), (135, 750, 0.075))):
         sounds[f"footstep_wood_{i + 1}.wav"] = (

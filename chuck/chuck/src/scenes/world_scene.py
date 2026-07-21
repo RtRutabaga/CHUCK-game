@@ -90,6 +90,7 @@ class WorldScene(Scene):
         self._pending_map: str | None = None
         self._pending_arrival: str | None = None
         self._pending_climb_from_water = False
+        self._pending_fade_in = False
         self._sewer_completed = game.progress.has("sewer_completed")
 
     def on_enter(self) -> None:
@@ -130,6 +131,7 @@ class WorldScene(Scene):
         self._pending_map = None
         self._pending_arrival = None
         self._pending_climb_from_water = False
+        self._pending_fade_in = False
         self.tilemap = TileMap(config.MAPS_DIR / f"{self.map_name}.txt")
         if self.map_name == "waterdeep_docks" and self._sewer_completed:
             self.tilemap.open_tavern_entrance()
@@ -413,10 +415,12 @@ class WorldScene(Scene):
             destination = self._pending_map
             arrival = self._pending_arrival
             climb_from_water = self._pending_climb_from_water
+            fade_in = self._pending_fade_in
             self.load_map(
                 destination,
                 arrival=arrival,
                 climb_from_water=climb_from_water,
+                fade_in=fade_in,
             )
             return
 
@@ -426,6 +430,13 @@ class WorldScene(Scene):
             self._arrival_fade_t += dt
             if self._arrival_fade_t >= config.AREA_FADE_DURATION:
                 self._arrival_fade_t = None
+            self.camera.update(dt)
+            return
+
+        # The Fireball has been cast: the world freezes under the blast
+        # until it throws Chuck into the rubble.
+        if self._fireball_t is not None:
+            self._update_fireball(dt)
             self.camera.update(dt)
             return
         for cat in self.hazards:
@@ -477,6 +488,13 @@ class WorldScene(Scene):
                 self.breach.trigger(self._player_tile())
                 self.game.audio.play_sfx("vanish")
             self.breach.update(dt, self.player.hitbox)
+            # Sealed in and surviving: the wizard's Fireball is coming.
+            if (self.breach.triggered and self._fireball_t is None
+                    and self._respawn_phase is None):
+                self._survival_t += dt
+                if self._survival_t >= config.BATTLE_FIREBALL_DELAY:
+                    self._begin_fireball()
+                    return
         for breakable in self.breakables:
             breakable.update(dt)
         self.breakables = [item for item in self.breakables if item.alive]
@@ -737,6 +755,7 @@ class WorldScene(Scene):
                 self._hint.draw(surface, config.HINT_INTERACT)
         self._draw_respawn_overlay(surface)
         self._draw_arrival_fade(surface)
+        self._draw_fireball(surface)
 
     def _battle_establishing_focus(self) -> tuple[float, float]:
         """The camera center that frames the whole battle for its lines.
@@ -752,6 +771,62 @@ class WorldScene(Scene):
         group_bottom = max(a.y + a.height for a in actors)
         center_y = group_bottom - config.SANCTUM_ESTABLISH_LIFT
         return center_x, center_y
+
+    def _begin_fireball(self) -> None:
+        """The wizard casts Fireball: the fight ends, scripted."""
+        self._fireball_t = 0.0
+        self._fireball_halved = False
+        for actor in self.battle_actors:
+            actor.attack_flash = config.BATTLE_ATTACK_FLASH
+        self.camera.shake(config.FIREBALL_SHAKE)
+        self.game.audio.play_sfx(config.FIREBALL_SOUND)
+
+    def _update_fireball(self, dt: float) -> None:
+        """Advance the scripted explosion, then throw Chuck to the rubble."""
+        self._fireball_t += dt
+        if (not self._fireball_halved
+                and self._fireball_t >= config.FIREBALL_FLASH_PEAK):
+            # The blast lands: Chuck is cut to (at most) half Sanity. It
+            # never heals him — only the explosion's toll.
+            self._fireball_halved = True
+            capped = int(self.sanity.maximum * config.FIREBALL_SANITY_FRACTION)
+            self.sanity.current = min(self.sanity.current, capped)
+        if self._fireball_t >= config.FIREBALL_DURATION:
+            self._fireball_t = None
+            self._pending_map = "temple_rubble"
+            self._pending_arrival = "from_fireball"
+            self._pending_fade_in = True  # come to, dazed, in the rubble
+
+    def _draw_fireball(self, surface) -> None:
+        """The explosion: a bloom from the wizard, then a white-out."""
+        t = self._fireball_t
+        if t is None:
+            return
+        w, h = surface.get_size()
+        peak = config.FIREBALL_FLASH_PEAK
+        if t < peak:
+            frac = t / peak
+            wizard = next((a for a in self.battle_actors
+                           if a.kind == "wizard"), None)
+            ox, oy = self.camera.offset
+            if wizard is not None:
+                cx = int(wizard.center_x - ox)
+                cy = int(wizard.center_y - oy)
+            else:
+                cx, cy = w // 2, h // 2
+            radius = int(frac * max(w, h) * 1.4)
+            overlay = pygame.Surface((w, h), pygame.SRCALPHA)
+            pygame.draw.circle(overlay, (250, 150, 40, 230), (cx, cy), radius)
+            pygame.draw.circle(overlay, (255, 236, 190, 245),
+                               (cx, cy), int(radius * 0.6))
+            surface.blit(overlay, (0, 0))
+        else:
+            # The white-out that masks the throw into the rubble.
+            frac = (t - peak) / max(1e-4, config.FIREBALL_DURATION - peak)
+            overlay = pygame.Surface((w, h))
+            overlay.fill((255, 244, 224))
+            overlay.set_alpha(int(255 * min(1.0, 0.5 + frac)))
+            surface.blit(overlay, (0, 0))
 
     def _sorted_drawables(self):
         """Everything that stands in the world, painter-ordered by feet.
@@ -917,6 +992,12 @@ class WorldScene(Scene):
             self.breach.restore()
         self.breach = (AstralBreach(self.tilemap)
                        if self.battle is not None else None)
+        # The scripted Fireball: how long Chuck has survived sealed in,
+        # and the explosion once it fires. Reset with the room so death
+        # restarts the survival clock.
+        self._survival_t = 0.0
+        self._fireball_t: float | None = None
+        self._fireball_halved = False
         self._scratch_tutorial_rats = []
         self.undead_release.reset()
         rat_spawn_tiles = {

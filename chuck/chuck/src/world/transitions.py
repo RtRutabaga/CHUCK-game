@@ -179,4 +179,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "temple_shrine": "temple.wav",
     "temple_gauntlet": "temple.wav",
     "temple_sanctum": "temple.wav",
+    "temple_rubble": "temple.wav",
 }

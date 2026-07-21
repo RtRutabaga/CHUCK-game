@@ -236,6 +236,18 @@ BATTLE_ATTACK_FLASH = 0.18
 # Screen shake decays exponentially; the offset jitters within ±amount.
 CAMERA_SHAKE_DECAY = 9.0
 
+# The scripted Fireball ends the sanctum fight. Once Chuck has been
+# sealed in the battle (the breach triggered) and survived this long,
+# the wizard casts it: a flash and a heavy shake, Chuck cut to roughly
+# half Sanity, and then he is thrown into the collapsed rubble map. The
+# outcome is scripted — the player cannot prevent or hasten it.
+BATTLE_FIREBALL_DELAY = 24.0       # seconds of survival before it lands
+FIREBALL_FLASH_PEAK = 0.4          # the blast lands; Sanity is halved
+FIREBALL_DURATION = 1.2            # flash length before the rubble loads
+FIREBALL_SHAKE = 11.0
+FIREBALL_SANITY_FRACTION = 0.5     # cut to (at most) this fraction of max
+FIREBALL_SOUND = "fireball"
+
 # The Astral breach: once Chuck walks into sight of the battle, the
 # Astral Sea breaks through the floor behind him in a two-tile-thick
 # north-south band — unjumpable, uncrossable by enemies, lethal to walk

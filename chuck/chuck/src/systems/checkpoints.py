@@ -238,6 +238,18 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "temple_rubble", "Rubble 1", "temple_rubble",
+        arrival="from_fireball", facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True, fade_in=True,
+    ),
+    CheckpointDefinition(
+        "temple_rubble_anchor", "Rubble Ashtray", "temple_rubble",
+        position=(356.0, 389.0), facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
         "temple_8_return", "Temple 8 Return", "temple_gauntlet",
         arrival="from_temple_9", facing="right",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),

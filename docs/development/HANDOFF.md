@@ -3,58 +3,58 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `14b0cea` (the entrance establishing shot)
-- Current work: battle chaos (session 134)
+- Base commit before this pass: `eec455d` (the ranger's reworded line)
+- Current work: the scripted Fireball + the rubble map (session 135)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-The sanctum fight is now genuinely overwhelming and stressful:
+The sanctum fight now ends and hands off to the rubble map:
 
-- BattleProjectile carries a free velocity vector (dir_x, dir_y), not a
-  flat east/west sign, so shots can fly at any angle. Arrows draw as
-  oriented streaks.
-- The spinning archer: BattleActor.spin whirls the ranger's sprite
-  (BATTLE_RANGER_SPIN_SPEED); each fast arrow beat (BATTLE_ARROW_INTERVAL
-  0.3s) looses a BATTLE_ARROW_FAN whose aim advances BATTLE_ARROW_SPIN_STEP,
-  so arrows spray every compass direction and fill the room. Tested to
-  cover all four quadrants of travel.
-- More magic: the wizard hurls a westward BATTLE_BOLT_FAN of bolts every
-  ~1s; the beholder's rays fire faster (BATTLE_RAY_INTERVAL 1.4s).
-- BeholderCone (src/entities/battle_hazards.py): the beholder
-  occasionally charges a wedge of force east across the hall — a 0.9s
-  pulsing telegraph (fair warning), then a 0.4s lethal active window,
-  216px range and ±29° so an eastern refuge remains. On detonation the
-  camera shakes (new Camera.shake + jittered .offset, decaying at
-  CAMERA_SHAKE_DECAY) and a new deep beholder_blast sfx booms.
-- New sfx: tools/generate_audio.py sfx_beholder_blast (sub-bass drop +
-  filtered slam + low growl); rendered to assets/audio/sfx/. Only that
-  one wav was written (no byte-churn on the others).
-- Wiring: BattleChoreographer.update returns BattleTick(projectiles,
-  cones). WorldScene tracks self.battle_cones — updated each frame,
-  shake+sfx fired on cone.just_activated, damage via cone.contains
-  (BATTLE_CONE_SANITY_DAMAGE), drawn as a translucent wedge over the
-  world. Cones reset with the room in _reset_enemies().
+- The scripted Fireball. Once Chuck is sealed in (the Astral breach
+  triggered) and has survived BATTLE_FIREBALL_DELAY (24s), the wizard
+  casts it. WorldScene tracks `_survival_t` (reset with the room) and,
+  at the threshold, `_begin_fireball()` starts a scripted phase that
+  freezes the world (`_fireball_t` early-return in update):
+  `_update_fireball` blooms the explosion, at FIREBALL_FLASH_PEAK cuts
+  Chuck to at most half Sanity (FIREBALL_SANITY_FRACTION — never heals
+  a lower Chuck), and at FIREBALL_DURATION throws him to the rubble.
+  `_draw_fireball` blooms an orange-white disc from the wizard into a
+  white-out. FIREBALL_SHAKE kicks the camera; a new deep fireball sfx
+  booms.
+- New sfx: tools/generate_audio.py sfx_fireball (swelling roar + sub
+  thump + crackle); only fireball.wav was written.
+- temple_rubble map (tools/generate_temple_rubble.py, 48x30): a
+  collapsed chamber of 154 Astral Sea 'V' blocks in diamond blobs
+  around a guaranteed-clear central spine, from the `from_fireball`
+  arrival (top) to the rubble ashtray (bottom). Torches + toppled
+  columns/stelae for flavor. The generator asserts arrival→anchor
+  connectivity on foot before writing. No onward exit yet.
+- Wiring: new markers Ѣ (arrival:from_fireball) / Ѥ
+  (anchor:temple_rubble_anchor); MAP_TILESET + AREA_MUSIC → temple;
+  checkpoints "Rubble 1" (runtime, dev-visible, fade_in) + "Rubble
+  Ashtray" (saveable). New `_pending_fade_in` flag lets the scripted
+  transition fade in from black (Chuck comes to, dazed).
 
 ## Files Changed
 
-- src/entities/battle_hazards.py (velocity projectiles, spray + fan +
-  cone choreography, BeholderCone, BattleTick), src/entities/battle_actor.py
-  (spin + rotated draw), src/world/camera.py (shake), src/core/config.py
-  (BATTLE_* chaos block + CAMERA_SHAKE_DECAY), src/scenes/world_scene.py
-  (cone tracking/damage/draw/shake/sfx), tools/generate_audio.py
-  (sfx_beholder_blast), assets/audio/sfx/beholder_blast.wav (new).
-- tests/test_phase6_sanctum_battle.py: new projectile signature; new
-  tests for the spray, the cone (charge/detonate/refuge), the shake,
-  the cone damage, cone reset, and the sfx — 19 total.
+- src/scenes/world_scene.py (survival timer, fireball phase +
+  begin/update/draw, `_pending_fade_in`), src/core/config.py
+  (BATTLE_FIREBALL_DELAY + FIREBALL_* block), src/world/tilemap.py
+  (Ѣ/Ѥ markers), src/world/tileset_layout.py + src/world/transitions.py
+  (temple_rubble), src/systems/checkpoints.py (two rubble checkpoints),
+  tools/generate_audio.py (sfx_fireball), tools/generate_temple_rubble.py
+  (new). New assets: maps/temple_rubble.txt, audio/sfx/fireball.wav.
+- tests/test_phase6_fireball.py (6, new), test_phase6_temple_rubble.py
+  (5, new), test_checkpoints.py (expected_names += "Rubble 1").
 
 ## Verification Performed
 
-- All 50 suites pass (the battle suite ~8s; the full serial run is long
-  but nothing hangs — confirmed with per-suite timeouts).
-- Screenshots: the cone detonation (a screen-filling red wedge with an
-  eastern refuge clear of it), the pulsing telegraph, and arrows spraying
-  the room.
+- All 52 suites pass (per-suite timeouts; nothing hangs).
+- Headless: the full chain (walk in → seal → survive 24s → Fireball →
+  half Sanity → land at the rubble arrival, checkpoint temple_rubble).
+- Screenshots: the explosion bloom engulfing the hall, and the rubble
+  chamber's Astral fields at arrival.
 
 ## Known Issues
 
@@ -62,14 +62,13 @@ The sanctum fight is now genuinely overwhelming and stressful:
 
 ## Scope Notes
 
-- No future-phase work. The survival timer / scripted Fireball (which
-  reduces Chuck to ~half Sanity and throws him to the rubble map), the
-  rubble map, the escape cutscene, and the final-chamber battle music
-  remain unbuilt.
+- The rubble map has no exit yet. The narrow crawlspace exit, the escape
+  cutscene (crawl → light → wooden room → hole to the sea → the ship),
+  and the distinct boss/cutscene music remain unbuilt.
 
 ## Recommended Next Bounded Task
 
-- The scripted Fireball: after surviving the barrage for a set time, the
-  wizard's Fireball fills the room, cuts Chuck to roughly half Sanity,
-  and throws him into a new rubble map (author its first structural slice
-  with the crawlspace exit as a follow-up if it doesn't fit).
+- The rubble crawlspace + escape: add the narrow crawlspace exit to
+  temple_rubble and the escape cutscene that ends aboard the ship at sea
+  (the Phase 6 → Phase 7 boundary). Consider splitting: the crawlspace
+  exit and a first ship-deck arrival slice, then the cutscene polish.

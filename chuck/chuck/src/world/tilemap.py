@@ -473,6 +473,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ϻ": MarkerDef(kind="arrival:from_temple_8", under="≡"),
     "↓": MarkerDef(kind="dart_trap:down", under="W", allow_solid=True),
     "↑": MarkerDef(kind="dart_trap:up", under="W", allow_solid=True),
+    # The rubble map — where the scripted Fireball throws Chuck (session 135).
+    "Ѣ": MarkerDef(kind="arrival:from_fireball", under="·"),
+    "Ѥ": MarkerDef(kind="anchor:temple_rubble_anchor", under="·"),
 }
 
 _COMMENT_PREFIX = ";"

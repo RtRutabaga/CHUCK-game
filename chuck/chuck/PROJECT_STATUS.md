@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 134 (battle chaos: arrow spray, more magic, cone + shake).
+Updated: session 135 (the scripted Fireball + the rubble map).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -636,6 +636,24 @@ This file is required by the project rules and updated every session.
   the central sight-line to the beholder and trio: at 7-tile notice
   range they lie dormant until Chuck flees a wall to escape the eye
   rays, then rouse and herd him back to center — 27 skeletons in all
+- The scripted Fireball + the rubble map (session 135): the sanctum
+  fight now ends. Once Chuck is sealed in (the breach triggered) and has
+  survived BATTLE_FIREBALL_DELAY (24s), the wizard casts Fireball — a
+  scripted phase (WorldScene._begin_fireball/_update_fireball/
+  _draw_fireball) that freezes the world, blooms an orange-white
+  explosion from the wizard into a white-out, shakes the screen
+  (FIREBALL_SHAKE) and booms a new deep fireball sfx
+  (tools/generate_audio.py sfx_fireball), cuts Chuck to at most half his
+  Sanity (FIREBALL_SANITY_FRACTION, never healing), and throws him into
+  the new temple_rubble map (fade-in, via the _pending_map path with a
+  new _pending_fade_in flag). The survival clock resets with the room, so
+  dying before it lands simply restarts the wait. temple_rubble
+  (tools/generate_temple_rubble.py, 48x30): a collapsed chamber of 154
+  Astral Sea blocks around a clear central spine from the from_fireball
+  arrival to the rubble ashtray; temple art/music; new markers Ѣ/Ѥ;
+  checkpoints "Rubble 1" (runtime, dev-visible) + "Rubble Ashtray". No
+  onward exit yet — the crawlspace and escape cutscene are later slices.
+  Suites: test_phase6_fireball.py (6), test_phase6_temple_rubble.py (5)
 - Battle chaos (session 134): the sanctum fight was made genuinely
   overwhelming. BattleProjectile now carries a free velocity vector, and
   the ranger whirls (BattleActor.spin, drawn as a rotating sprite;
