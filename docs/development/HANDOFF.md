@@ -3,11 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `4667e3f` (big-block rubble)
-- Current work: chaotic, many-angled collapse rubble (session 143)
-- Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
+- Base commit before this pass: `7a64aec` (chaotic collapse rubble)
+- Current work: the ship's sea-shanty Irish-reel theme (session 144)
+- Active phase: Phase 6 → 7 boundary (`PHASE-6.md`); Phase 7 unstarted
 
 ## Completed This Pass
+
+Gave the ship (cutscene + deck) its own jaunty sea-shanty reel:
+
+- data/music/ship_shanty.py — built from the Waterdeep-docks rhythm (same
+  D mixolydian, flat-7 C-natural color, D/G/A groove) cranked to a fast
+  fiddle reel at 126 BPM, 40 bars (~76s), 11 voices: fiddle reel tune
+  (pluck_lead, near-continuous eighths), tin whistle ornaments (flute),
+  accordion offbeat chops + turn-swells (brass), driving root-fifth bass,
+  crew "hey!" shouts (choir) in the 2nd half, and a bodhran/backbeat kit.
+  Reuses the existing instrument palette; no new instruments.
+- Rendered to assets/audio/music/ship_shanty.wav (0.9 headroom; seam
+  0.000; RMS 0.174, between docks and temple). Per-section RMS confirms
+  the build (lighter A → fuller B turns → crew).
+- Wiring: AREA_MUSIC["ship_deck"] and EscapeCutsceneScene's SEA_MUSIC
+  both play ship_shanty.wav (idempotent, so the cutscene→deck handoff is
+  seamless).
+- Tests: test_music.py (reel character + rendered gates); the ship-deck
+  music test updated to ship_shanty.wav.
+
+## Previous Pass (session 143, commit 7a64aec)
 
 Made the rubble look like a genuine roof collapse, not rows of blocks:
 

@@ -77,7 +77,7 @@ class EscapeCutsceneScene(Scene):
             if previous < cue <= self.elapsed:
                 self.game.audio.play_sfx("scratch")
         if previous < SEA_MUSIC <= self.elapsed:
-            self.game.audio.play_music("waterdeep_docks.wav", loop=True)
+            self.game.audio.play_music("ship_shanty.wav", loop=True)
         if self.elapsed >= FADE_END and not self._handed_off:
             # Onto the playable deck, Sanity intact. Phase 6 ends here.
             self._handed_off = True

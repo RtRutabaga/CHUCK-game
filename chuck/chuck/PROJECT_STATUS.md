@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 143 (chaotic, many-angled rubble; collapse-pile layout).
+Updated: session 144 (the ship's sea-shanty Irish-reel theme).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,18 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- The ship's sea-shanty theme (session 144): the escape cutscene and the
+  ship deck (the Phase 7 doorstep) now share a jaunty sea-shanty Irish
+  reel instead of the borrowed docks loop. data/music/ship_shanty.py is
+  built from the docks rhythm — same D mixolydian, the same flat-seventh
+  (C natural) coastal color and D/G/A groove — but cranked to a fast
+  fiddle reel at 126 BPM, 40 bars, 11 voices: a plucked-fiddle reel tune
+  over a driving root-fifth bass and bodhran backbeat, a tin whistle
+  (flute) ornamenting, an accordion (reedy brass) chopping the offbeats
+  and swelling the turns, and the crew (choir) shouting "hey!" in the
+  second half. Renders at 0.9 headroom, seamless (seam 0.000), RMS 0.174
+  (between docks and temple). AREA_MUSIC["ship_deck"] and the cutscene's
+  SEA_MUSIC both point at ship_shanty.wav. Tests in test_music.py
 - Chaotic collapsed rubble (session 143): the big-block debris was made
   to look like the roof caved in, not tile in rows. temple_rubble_block
   is now 12 variants — each draws one or two chunks at a random offset

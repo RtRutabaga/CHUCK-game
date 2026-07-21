@@ -43,9 +43,9 @@ def test_the_deck_is_a_wooden_room_open_to_the_sea() -> None:
     assert not any(m == MAP_NAME for (m, _c) in AREA_WALK_EXITS)
 
 
-def test_the_deck_uses_the_docks_art_and_sea_theme() -> None:
+def test_the_deck_uses_the_docks_art_and_shanty_theme() -> None:
     assert tileset_for(MAP_NAME).sheet == "docks.png"
-    assert AREA_MUSIC[MAP_NAME] == "waterdeep_docks.wav"
+    assert AREA_MUSIC[MAP_NAME] == "ship_shanty.wav"
 
 
 def test_ship_checkpoints_are_registered() -> None:

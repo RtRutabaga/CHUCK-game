@@ -13,6 +13,7 @@ import struct
 import wave
 
 from data.music import boss_battle as boss_song
+from data.music import ship_shanty as shanty_song
 from data.music import fall_to_chult as fall_song
 from data.music import chult as chult_song
 from data.music import temple as temple_song
@@ -274,6 +275,43 @@ def test_rendered_boss_theme_respects_loop_quality_gates() -> None:
     boss_rms = (sum(s * s for s in samples) / len(samples)) ** 0.5
     temple_rms = (sum(s * s for s in tsamp) / len(tsamp)) ** 0.5
     assert boss_rms >= temple_rms * 0.9, (boss_rms, temple_rms)
+
+
+def test_ship_shanty_is_a_fast_jaunty_reel() -> None:
+    tracks = shanty_song.build_tracks()
+    duration = shanty_song.TOTAL_BEATS * 60.0 / shanty_song.TEMPO_BPM
+    assert duration >= 60.0
+    assert shanty_song.TEMPO_BPM >= 120  # a reel, not a harbor sway
+    voiced = [t for t in tracks if t.notes]
+    assert len(voiced) >= 8, "a pub band needs a full ensemble"
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < shanty_song.TOTAL_BEATS, (track.name, note)
+    # The fiddle drives a near-continuous stream of eighth notes (a reel).
+    fiddle = next(t for t in tracks if t.name == "fiddle")
+    assert len(fiddle.notes) >= shanty_song.TOTAL_BARS * 8 * 0.9
+    assert all(abs(n.dur - 0.5) < 1e-6 for n in fiddle.notes)  # eighths
+    # The mixolydian flat-seventh (C natural over D) keeps the folk color.
+    assert any(n.pitch.startswith("C") and not n.pitch.startswith("C#")
+               for n in fiddle.notes)
+    # The crew only joins in the second half (the shanty sing-along).
+    crew = next(t for t in tracks if t.name == "crew")
+    assert crew.notes and all(n.beat >= 16 * 4 for n in crew.notes)
+    # Accordion and whistle round out the band.
+    assert next(t for t in tracks if t.name == "accordion").notes
+    assert next(t for t in tracks if t.name == "whistle").notes
+
+
+def test_rendered_ship_shanty_respects_loop_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "ship_shanty.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 60 * SAMPLE_RATE
+    peak = max(abs(s) for s in samples)
+    assert peak <= 0.92, f"clipping risk: peak {peak:.2f}"
+    assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
 
 
 def _run_all() -> None:
