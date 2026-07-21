@@ -3,13 +3,27 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `ce32347` (the scripted Fireball + rubble)
-- Current work: the beholder boss-battle soundtrack (session 136)
+- Base commit before this pass: `a363710` (the boss-battle soundtrack)
+- Current work: the adventurers' argument before the Fireball (session 137)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-The sanctum's final fight gets its own climactic theme:
+A dialogue beat now precedes the Fireball: when the survival clock runs
+out, the camera cuts to the battle (reusing `_battle_establishing_focus`)
+and the adventurers argue over the ordinary dialogue box — "Wait, I know
+those sigils, you can't cast that here!" / "... we're too close to an
+astral rip, we don't know what will happen" / "I have to try, we're out
+of options!" / "......" / "FIREBALL!!" (data/dialogue/temple_sanctum.json
+"fireball_cast"). Only when the last line closes does `_begin_fireball`
+fire the blast. Two new WorldScene flags (`_fireball_dialogue_shown`,
+`_fireball_after_dialogue`) gate this and reset with the room, so death
+before the cast restarts everything. Covered by a new test in
+test_phase6_fireball.py (6 total).
+
+## Previous Pass (session 136, commit a363710)
+
+The sanctum's final fight got its own climactic theme:
 
 - data/music/boss_battle.py: an original ~80-second loop in D Phrygian
   at 144 BPM, 48 bars, 11 voices. A relentless choral ostinato grinds

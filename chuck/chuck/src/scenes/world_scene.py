@@ -407,6 +407,12 @@ class WorldScene(Scene):
             self._restore_camera_to_player = False
             self.camera.follow(self.player)
 
+        # The argument has closed on "FIREBALL!!": now it lands.
+        if self._fireball_after_dialogue and self._fireball_t is None:
+            self._fireball_after_dialogue = False
+            self._begin_fireball()
+            return
+
         # A transition chosen during a conversation waits until that
         # conversation has closed and control returns here — only then
         # is this scene the top of the stack again — so the descent
@@ -488,12 +494,20 @@ class WorldScene(Scene):
                 self.breach.trigger(self._player_tile())
                 self.game.audio.play_sfx("vanish")
             self.breach.update(dt, self.player.hitbox)
-            # Sealed in and surviving: the wizard's Fireball is coming.
-            if (self.breach.triggered and self._fireball_t is None
+            # Sealed in and surviving: once the clock runs out the wizard
+            # resolves to cast, over his companions' protests. The camera
+            # cuts to the desperate argument; the blast follows it.
+            if (self.breach.triggered and not self._fireball_dialogue_shown
+                    and self._fireball_t is None
                     and self._respawn_phase is None):
                 self._survival_t += dt
                 if self._survival_t >= config.BATTLE_FIREBALL_DELAY:
-                    self._begin_fireball()
+                    self._fireball_dialogue_shown = True
+                    self._fireball_after_dialogue = True
+                    self.camera.focus_on(*self._battle_establishing_focus())
+                    self.game.scenes.push(
+                        DialogueScene(self.game,
+                                      self.dialogue.get("fireball_cast")))
                     return
         for breakable in self.breakables:
             breakable.update(dt)
@@ -998,6 +1012,9 @@ class WorldScene(Scene):
         self._survival_t = 0.0
         self._fireball_t: float | None = None
         self._fireball_halved = False
+        # The adventurers argue before the cast, then the blast.
+        self._fireball_dialogue_shown = False
+        self._fireball_after_dialogue = False
         self._scratch_tutorial_rats = []
         self.undead_release.reset()
         rat_spawn_tiles = {

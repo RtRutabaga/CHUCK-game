@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 136 (the beholder boss-battle soundtrack).
+Updated: session 137 (the adventurers' argument before the Fireball).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,15 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- The Fireball argument (session 137): the cast is now preceded by a
+  dialogue beat. When the survival clock runs out, the camera cuts to the
+  battle (reusing the entrance establishing focus) and the adventurers
+  argue over the ordinary dialogue box — "you can't cast that here!" /
+  "we're too close to an astral rip" / "I have to try" / "......" /
+  "FIREBALL!!" (data/dialogue/temple_sanctum.json "fireball_cast").
+  Only when the line closes does _begin_fireball fire the blast
+  (WorldScene._fireball_dialogue_shown / _fireball_after_dialogue, reset
+  with the room). Tested in test_phase6_fireball.py
 - The scripted Fireball + the rubble map (session 135): the sanctum
   fight now ends. Once Chuck is sealed in (the breach triggered) and has
   survived BATTLE_FIREBALL_DELAY (24s), the wizard casts Fireball — a

@@ -3,5 +3,12 @@
     "Hold the line! It bleeds - I have seen it bleed!",
     "Keep its eye off me! The binding needs another minute!",
     "I'll cover you! We have to keep pushing forward!"
+  ],
+  "fireball_cast": [
+    "Wait, I know those sigils, you can't cast that here!",
+    "... we're too close to an astral rip, we don't know what will happen",
+    "I have to try, we're out of options!",
+    "......",
+    "FIREBALL!!"
   ]
 }

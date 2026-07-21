@@ -78,6 +78,45 @@ def test_no_fireball_until_chuck_is_sealed_in() -> None:
         game._shutdown()
 
 
+def test_the_adventurers_argue_before_the_cast() -> None:
+    from src.scenes.dialogue_scene import DialogueScene
+    from src.ui.bitmap_font import GLYPH_ORDER
+
+    lines = ["Wait, I know those sigils, you can't cast that here!",
+             "... we're too close to an astral rip, we don't know what "
+             "will happen",
+             "I have to try, we're out of options!",
+             "......", "FIREBALL!!"]
+    from src.systems.dialogue import DialogueSystem
+    assert DialogueSystem().get("fireball_cast") == lines
+    for line in lines:
+        assert set(line) <= set(GLYPH_ORDER), line
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("temple_9")
+        _seal_chuck_in(scene)
+        # At the brink of the delay: the argument opens, no blast yet.
+        scene._survival_t = config.BATTLE_FIREBALL_DELAY
+        scene.update(0.05)
+        assert isinstance(game.scenes.current, DialogueScene)
+        assert scene._fireball_t is None
+        # Advance through all five lines back to the world.
+        for _ in range(14):
+            game.input.begin_frame()
+            game.input._actions_just_pressed.add("interact")
+            game.scenes.update(0.01)
+            game.scenes.update(0.3)
+            if game.scenes.current is scene:
+                break
+        assert game.scenes.current is scene
+        # "FIREBALL!!" said, the blast now lands.
+        scene.update(0.01)
+        assert scene._fireball_t is not None
+    finally:
+        game._shutdown()
+
+
 def test_fireball_halves_sanity_and_throws_chuck_into_the_rubble() -> None:
     game = Game()
     try:
