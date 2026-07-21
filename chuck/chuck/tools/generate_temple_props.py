@@ -8,6 +8,7 @@ All pieces are mute, y-sorted scenery drawn from the same restrained
 temple masonry palette, plus a muted terracotta for the pottery.
 """
 
+import random
 from pathlib import Path
 
 from PIL import Image, ImageDraw
@@ -203,59 +204,59 @@ def fallen_column(variant: int) -> Image.Image:
     return image
 
 
-def rubble_block(variant: int) -> Image.Image:
-    """A big broken chunk of fallen ceiling masonry, ~30x24, 3/4 view.
-
-    A chunky angular slab with a lit top face, a shadowed side, cracks,
-    a broken-off corner, and crumbs at the base — the collapsed hall's
-    dominant debris (session 142)."""
-    w, h = 30, 24
-    image = Image.new("RGBA", (w, h), TRANSPARENT)
-    d = ImageDraw.Draw(image)
-    geoms = (
-        dict(x0=2, x1=26, top=4, mid=12, bot=21, dx=4, chip=("tl", 5)),
-        dict(x0=4, x1=28, top=6, mid=13, bot=22, dx=5, chip=("tr", 4)),
-        dict(x0=3, x1=25, top=3, mid=10, bot=19, dx=3, chip=("bl", 4)),
-        dict(x0=2, x1=27, top=7, mid=14, bot=22, dx=6, chip=("tr", 6)),
-    )
-    g = geoms[variant % len(geoms)]
-    x0, x1, top, mid, bot, dx = (g["x0"], g["x1"], g["top"], g["mid"],
-                                 g["bot"], g["dx"])
-    # Top face (lit), front face (mid), right side (shadow).
-    d.polygon([(x0 + dx, top), (x1, top), (x1 - dx, mid), (x0, mid)],
+def _stone_chunk(bw: int, bh: int, rng: random.Random) -> Image.Image:
+    """One 3/4-view broken masonry block, bw x bh footprint, lit from
+    above so it still reads right after a small tumble-rotation."""
+    depth = rng.randint(3, 6)
+    w, h = bw + depth + 2, bh + depth + 2
+    img = Image.new("RGBA", (w, h), TRANSPARENT)
+    d = ImageDraw.Draw(img)
+    x0, y0 = 1, 1
+    x1, yf = x0 + bw, y0 + depth          # yf: front face top
+    yb = yf + bh                          # front face bottom
+    # Front face, lit top face, shadowed right side.
+    d.rectangle((x0, yf, x1, yb), fill=STONE)
+    d.polygon([(x0, yf), (x0 + depth, y0), (x1 + depth, y0), (x1, yf)],
               fill=STONE_LIGHT)
-    d.polygon([(x0, mid), (x1 - dx, mid), (x1 - dx, bot), (x0, bot)],
-              fill=STONE)
-    d.polygon([(x1 - dx, mid), (x1, top), (x1, bot - dx), (x1 - dx, bot)],
-              fill=STONE_DARK)
-    # Crisp edges and the base shadow.
-    d.line([(x0 + dx, top), (x1, top)], fill=STONE_LIGHT)
-    d.line([(x0, mid), (x1 - dx, mid)], fill=STONE_DARK)
-    d.line([(x0, bot), (x1 - dx, bot)], fill=STONE_DARK)
-    d.line([(x0, mid), (x0, bot)], fill=STONE_DARK)
-    # A couple of fracture lines across the front face.
-    fcx = (x0 + x1 - dx) // 2 + (variant % 3 - 1) * 3
-    d.line([(fcx, mid + 1), (fcx - 1, bot - 1)], fill=STONE_DARK)
-    d.line([(x0 + 3, mid + 3), (fcx - 2, mid + 4)], fill=STONE_DARK)
-    # A broken-off corner (a transparent notch).
-    corner, size = g["chip"]
-    if corner == "tl":
-        d.polygon([(x0 + dx, top), (x0 + dx + size, top),
-                   (x0, mid), (x0, mid - size)], fill=TRANSPARENT)
-    elif corner == "tr":
-        d.polygon([(x1 - size, top), (x1, top), (x1, top + size)],
-                  fill=TRANSPARENT)
-    else:  # bl
-        d.polygon([(x0, bot - size), (x0 + size, bot), (x0, bot)],
-                  fill=TRANSPARENT)
-    # Crumbled rubble and moss at the base.
-    for cxp, cyp in ((x0 - 1, bot), (x1 - dx + 1, bot), (x0 + 5, bot + 1),
-                     (fcx + 2, bot)):
-        if 0 <= cxp < w and 0 <= cyp < h:
-            d.point((cxp, cyp), fill=STONE_DARK)
-    d.point((x0, mid + 2), fill=MOSS)
-    d.point((x0 + 1, bot - 1), fill=MOSS)
-    return image
+    d.polygon([(x1, yf), (x1 + depth, y0), (x1 + depth, yb - depth),
+               (x1, yb)], fill=STONE_DARK)
+    d.line((x0, yf, x1, yf), fill=STONE_DARK)
+    d.line((x0, yb, x1, yb), fill=STONE_DARK)
+    d.line((x0, yf, x0, yb), fill=STONE_DARK)
+    # A fracture or two down the front.
+    for _ in range(rng.randint(1, 2)):
+        cx = rng.randint(x0 + 2, x1 - 2)
+        d.line((cx, yf + 1, cx + rng.randint(-2, 2), yb - 1), fill=STONE_DARK)
+    # A broken-off corner and some moss.
+    if rng.random() < 0.7:
+        s = rng.randint(2, 4)
+        d.polygon([(x0, yf), (x0 + s, yf), (x0, yf + s)], fill=TRANSPARENT)
+    d.point((x0, yb - 1), fill=MOSS)
+    if rng.random() < 0.5:
+        d.point((x1 - 1, yb), fill=MOSS)
+    return img
+
+
+def rubble_block(variant: int) -> Image.Image:
+    """A tile-cell of fallen ceiling debris: one or two big broken blocks
+    dropped at random offsets and tumble-angles onto the floor, so a
+    field of them looks like chaotic collapse, not orderly rows.
+
+    Deterministic per variant; the map cycles ~12 of these across its
+    tiles for a scattered, many-angled rubble field (session 143)."""
+    rng = random.Random(variant * 97 + 13)
+    w, h = 44, 36
+    canvas = Image.new("RGBA", (w, h), TRANSPARENT)
+    for _ in range(rng.choice((1, 1, 2))):
+        chunk = _stone_chunk(rng.randint(12, 20), rng.randint(8, 14), rng)
+        chunk = chunk.rotate(rng.uniform(-24, 24), expand=True,
+                             resample=Image.NEAREST)
+        maxx = max(0, w - chunk.width)
+        maxy = max(0, h - chunk.height)
+        px = rng.randint(0, maxx)
+        py = rng.randint(max(0, maxy - 7), maxy)  # sitting on the floor
+        canvas.alpha_composite(chunk, (px, py))
+    return canvas
 
 
 def _diamond(draw: ImageDraw.ImageDraw, cx: int, cy: int) -> None:
@@ -451,10 +452,8 @@ def main() -> None:
         "temple_urn_3": cracked_urn(2),
         "temple_column_1": fallen_column(0),
         "temple_column_2": fallen_column(1),
-        "temple_rubble_block_1": rubble_block(0),
-        "temple_rubble_block_2": rubble_block(1),
-        "temple_rubble_block_3": rubble_block(2),
-        "temple_rubble_block_4": rubble_block(3),
+        **{f"temple_rubble_block_{i + 1}": rubble_block(i)
+           for i in range(12)},
     }
     for name, image in images.items():
         out = out_dir / f"{name}.png"

@@ -16,6 +16,7 @@ the map is written.
 """
 
 from collections import deque
+import math
 from pathlib import Path
 
 W, H = 48, 30
@@ -99,18 +100,24 @@ def build():
         if grid[r][c] == "·":
             grid[r][c] = "≡"
 
-    # Fallen ceiling: a dense field of big broken masonry blocks ('ß'),
-    # with a scattering of smaller toppled column drums ('¬') for scale.
-    # Thick enough to make the chamber almost impassable off the paved
-    # lane. Deterministic hash, so the render is reproducible.
+    # Fallen ceiling: the roof caved in patches. Big broken blocks ('ß',
+    # a scatter of column drums '¬' among them) pile up thickly where
+    # sections dropped and thin out between, rather than tiling the floor
+    # evenly — so it reads as chaotic collapse, not orderly rows. Density
+    # is a base scatter plus a bonus near each collapse centre.
+    piles = ((7, 6), (13, 14), (9, 24), (18, 9), (16, 23), (26, 5),
+             (11, 19), (41, 7), (36, 14), (42, 24), (30, 12), (33, 23),
+             (28, 26), (38, 19))
     rubble = 0
     for cy in range(2, H - 2):
         for cx in range(2, W - 2):
             if grid[cy][cx] != "·":       # skip the lane, Astral, border
                 continue
-            h = (cx * 37 + cy * 101 + cx * cy * 3) % 100
-            if h < 50:
-                grid[cy][cx] = "¬" if h % 6 == 0 else "ß"
+            near = min(math.hypot(cx - px, cy - py) for px, py in piles)
+            prob = 0.18 + 0.68 * max(0.0, 1.0 - near / 5.5)
+            if ((cx * 37 + cy * 101 + cx * cy * 7) % 100) / 100.0 < prob:
+                drum = ((cx * 13 + cy * 29) % 100) < 14
+                grid[cy][cx] = "¬" if drum else "ß"
                 rubble += 1
 
     # Carve the crawlspace mouth into the south wall at the lane's foot,

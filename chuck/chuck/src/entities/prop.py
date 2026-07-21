@@ -89,11 +89,8 @@ _SPRITES = {
         "objects/temple_column_1.png",
         "objects/temple_column_2.png",
     ),
-    "temple_rubble_block": (
-        "objects/temple_rubble_block_1.png",
-        "objects/temple_rubble_block_2.png",
-        "objects/temple_rubble_block_3.png",
-        "objects/temple_rubble_block_4.png",
+    "temple_rubble_block": tuple(
+        f"objects/temple_rubble_block_{i + 1}.png" for i in range(12)
     ),
 }
 

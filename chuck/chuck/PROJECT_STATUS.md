@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 142 (rubble map rebuilt from big broken masonry blocks).
+Updated: session 143 (chaotic, many-angled rubble; collapse-pile layout).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,16 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- Chaotic collapsed rubble (session 143): the big-block debris was made
+  to look like the roof caved in, not tile in rows. temple_rubble_block
+  is now 12 variants — each draws one or two chunks at a random offset
+  and tumble-rotation (±24°) within a 44x36 canvas (rubble_block seeds a
+  per-variant RNG; _stone_chunk lit from above so tilts still read).
+  Since props anchor bottom-center per tile, the off-centre chunks break
+  the grid alignment, and the per-tile variant index scatters the
+  angles. The generator now places debris in irregular collapse-piles
+  (a base scatter plus a bonus near ~14 collapse centres) so it heaps up
+  in patches and thins between, rather than an even field
 - Rubble map rebuilt from big broken blocks (session 142): a new
   temple_rubble_block prop (four chunky 3/4-view broken-masonry sprites,
   tools/generate_temple_props.py rubble_block(); tile 'ß', solid, under

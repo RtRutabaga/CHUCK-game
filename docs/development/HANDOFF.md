@@ -3,13 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `42c7208` (crevice prompt + portholes)
-- Current work: rubble map rebuilt from big broken masonry blocks (session 142)
+- Base commit before this pass: `4667e3f` (big-block rubble)
+- Current work: chaotic, many-angled collapse rubble (session 143)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-Per a playtest note, rebuilt the rubble map's debris as big broken blocks:
+Made the rubble look like a genuine roof collapse, not rows of blocks:
+
+- temple_rubble_block is now 12 variants. rubble_block(variant) seeds a
+  per-variant RNG and drops one or two broken chunks (_stone_chunk,
+  lit from above) at a random offset and tumble-rotation (±24°) inside a
+  44x36 canvas. Because props anchor bottom-center per tile, the
+  off-centre chunks break the grid, and the per-tile variant index
+  (col*31+row*17)%12 scatters the angles — so no orderly rows.
+- generate_temple_rubble.py places debris in irregular collapse-piles:
+  density is a 0.18 base scatter plus up to +0.68 near ~14 collapse
+  centres, so blocks heap thickly where the roof dropped and thin out
+  between. ~270 blocks + ~45 drums, 214 Astral, the paved lane still
+  clear (connectivity re-asserted).
+- 8 new block PNGs + 4 updated; no churn elsewhere. All 55 suites pass.
+
+## Previous Pass (session 142, commit 4667e3f)
+
+Rebuilt the rubble map's debris as big broken blocks:
 
 - New prop temple_rubble_block — four chunky 3/4-view broken-masonry
   sprites (tools/generate_temple_props.py rubble_block(); 30x24; lit top
