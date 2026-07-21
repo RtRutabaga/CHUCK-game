@@ -7,6 +7,7 @@ from src.core import config
 
 _TRIGGER_TILES = {
     "sewer_exit": (3, 1),
+    "crevice": (2, 2),
 }
 
 

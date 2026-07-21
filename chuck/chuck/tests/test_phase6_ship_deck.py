@@ -60,7 +60,7 @@ def test_ship_checkpoints_are_registered() -> None:
     assert anchor.saveable and not anchor.development_visible
 
 
-def test_crawling_out_of_the_rubble_plays_the_escape_then_reaches_the_ship() -> None:
+def test_saying_yes_to_the_crevice_plays_the_escape_then_reaches_the_ship() -> None:
     from src.scenes.escape_cutscene_scene import EscapeCutsceneScene
 
     game = Game()
@@ -68,14 +68,21 @@ def test_crawling_out_of_the_rubble_plays_the_escape_then_reaches_the_ship() -> 
         scene = game.checkpoints.load_checkpoint("temple_rubble")
         scene._arrival_fade_t = None
         scene.sanity.current = 40
-        # Stand on the crawlspace mouth in the rubble's south wall.
-        crawl = next((c, r) for r in range(scene.tilemap.height_tiles)
-                     for c in range(scene.tilemap.width_tiles)
-                     if scene.tilemap.terrain_at(c, r) == "∇")
-        scene.player.x = crawl[0] * config.TILE_SIZE + 3
-        scene.player.y = crawl[1] * config.TILE_SIZE + 4
+        # Stand at the crevice prompt and press E, facing the crawlspace.
+        trigger = scene.choice_triggers[0]
+        scene.player.x = trigger.x
+        scene.player.y = trigger.y
+        scene.player.facing = "down"
+        game.input.begin_frame()
+        game.input._actions_just_pressed.add("interact")
         scene.update(0.0)
-        # The crawlspace plays the escape cutscene, not a bare transition.
+        prompt = game.scenes.current
+        assert prompt is not scene  # the "Enter crevice?" choice opened
+        # Pick YES; control returns to the rubble, which fires the escape.
+        scene._on_choice(next(o for o in scene.choices.get("crevice").options
+                              if o.label == "YES"))
+        game.scenes.pop()  # the choice scene closes
+        scene.update(0.0)
         cutscene = game.scenes.current
         assert isinstance(cutscene, EscapeCutsceneScene)
         # Play it through; it hands off to the playable ship deck itself.

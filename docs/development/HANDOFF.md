@@ -3,11 +3,35 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `b1a2b1d` (the rubble collapse)
-- Current work: the escape cutscene — the Phase 6 → 7 boundary (session 140)
+- Base commit before this pass: `ce4c4f2` (the escape cutscene)
+- Current work: crevice prompt + wordless porthole cutscene (session 141)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+Reworked the rubble exit and the escape cutscene per playtest notes:
+
+- The rubble exit is now an "Enter crevice?" YES/NO interaction, not a
+  walk-over exit. data/choices/temple_rubble.json ("crevice": YES →
+  goto ship_deck, NO closes); ChoiceTrigger "crevice" (2x2); a marker
+  Ҏ on the paved lane one tile above the ∇ crawl mouth. The ∇ walk-exit
+  was removed from AREA_WALK_EXITS; YES's goto ship_deck is intercepted
+  in WorldScene's _pending_map handler to replace the world with the
+  escape cutscene (so the interception moved from the walk-exit block to
+  the pending-map load).
+- The escape cutscene is now wordless — the three narration captions and
+  the caption drawing were removed, shortening the timeline (HOLD_END
+  11.4, FADE_END 12.2).
+- Its emergence tableau was rebuilt: the open hull breach became a
+  wooden hull WALL set with three round brass-rimmed portholes, each
+  showing a sunlit, lighter-blue sea over a horizon — plainly a ship's
+  interior, the sea framed in circles. (_draw_hold / new _draw_porthole;
+  lighter sea palette.)
+- Tests: test_phase6_escape_cutscene.py now asserts wordlessness and the
+  shorter timeline; the rubble test asserts the crevice choice trigger
+  (no walk-exit); the ship-deck test drives YES → cutscene → deck.
+
+## Previous Pass (session 140, commit ce4c4f2)
 
 The escape cutscene, which ends Phase 6:
 

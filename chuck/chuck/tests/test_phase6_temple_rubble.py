@@ -84,14 +84,27 @@ def test_the_rubble_uses_temple_art_and_music() -> None:
     assert AREA_MUSIC[MAP_NAME] == "temple.wav"
 
 
-def test_the_crawlspace_is_the_one_way_out_to_the_ship() -> None:
-    exits = [(c, ex) for (m, c), ex in AREA_WALK_EXITS.items()
-             if m == MAP_NAME]
-    assert len(exits) == 1, exits
-    char, exit_ = exits[0]
-    assert char == "∇"
-    assert exit_.destination == "ship_deck"
-    assert exit_.arrival == "from_crawlspace"
+def test_the_crawlspace_is_an_enter_crevice_prompt_not_a_walk_exit() -> None:
+    # No walk-over exit: the way out is the "Enter crevice?" prompt.
+    assert not any(m == MAP_NAME for (m, _c) in AREA_WALK_EXITS)
+    tilemap = _map()
+    crevice = [pos for kind, pos in tilemap.object_spawns
+               if kind == "choice:crevice"]
+    assert len(crevice) == 1
+    # The prompt sits on the lane, just before the crawlspace mouth.
+    ts = config.TILE_SIZE
+    cx, cy = crevice[0]
+    tile = (int(cx // ts), int(cy // ts))
+    below = tilemap.terrain_at(tile[0], tile[1] + 1)
+    assert below == "∇", below
+
+    from src.systems.choice import ChoiceSystem
+    choice = ChoiceSystem().get("crevice")
+    assert choice.prompt == "Enter crevice?"
+    labels = [o.label for o in choice.options]
+    assert labels == ["YES", "NO"]
+    yes = next(o for o in choice.options if o.label == "YES")
+    assert yes.goto == "ship_deck"
 
 
 def test_rubble_checkpoints_are_registered() -> None:

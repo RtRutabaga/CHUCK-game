@@ -480,6 +480,8 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # The ship deck — where the crawlspace leads out (session 138).
     "Ҋ": MarkerDef(kind="arrival:from_crawlspace", under="="),
     "Ҍ": MarkerDef(kind="anchor:ship_deck_anchor", under="="),
+    # The rubble crawlspace's "Enter crevice?" prompt (session 141).
+    "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
 }
 
 _COMMENT_PREFIX = ";"

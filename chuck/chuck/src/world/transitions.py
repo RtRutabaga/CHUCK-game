@@ -141,11 +141,8 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_sanctum", "»"): AreaExit(
         "temple_gauntlet", "from_temple_9", "right"
     ),
-    # The rubble's one way out: the crawlspace mouth leads to the ship
-    # deck (session 138). There is no coming back.
-    ("temple_rubble", "∇"): AreaExit(
-        "ship_deck", "from_crawlspace", "up"
-    ),
+    # (The rubble's one way out is the "Enter crevice?" prompt at the
+    # crawlspace, not a walk-over exit — see the choice:crevice trigger.)
     ("temple_gauntlet", "⌄"): AreaExit(
         "temple_shrine", "from_temple_8", "down"
     ),

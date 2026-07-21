@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 140 (the escape cutscene — the Phase 6 -> 7 boundary).
+Updated: session 141 (crevice prompt + wordless porthole cutscene).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,18 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- Crevice prompt + wordless porthole cutscene (session 141): the rubble
+  exit is now an "Enter crevice?" YES/NO interaction (data/choices/
+  temple_rubble.json; ChoiceTrigger "crevice"; marker Ҏ on the lane just
+  above the ∇ mouth) rather than a walk-over exit — YES routes the goto
+  ship_deck through the escape cutscene (intercepted in WorldScene's
+  _pending_map handler), NO closes. The escape cutscene lost its
+  narration captions (it plays wordlessly), and its emergence tableau
+  was rebuilt: a sunlit, lighter-blue sea seen through three round
+  brass-rimmed portholes set in the ship's wooden hull wall — plainly a
+  ship interior, the sea framed in circles rather than an open breach.
+  Suite: test_phase6_escape_cutscene.py (wordless), plus the crevice/
+  crawl tests updated to the choice flow
 - The escape cutscene (session 140): the Phase 6 -> 7 boundary. Stepping
   onto the rubble crawlspace now replaces the world with
   EscapeCutsceneScene (src/scenes/escape_cutscene_scene.py, a contained

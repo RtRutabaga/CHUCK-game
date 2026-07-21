@@ -1,0 +1,9 @@
+{
+  "crevice": {
+    "prompt": "Enter crevice?",
+    "options": [
+      { "label": "YES", "goto": "ship_deck" },
+      { "label": "NO" }
+    ]
+  }
+}

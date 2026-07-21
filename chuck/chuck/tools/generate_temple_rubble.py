@@ -138,10 +138,13 @@ def build():
         if (c, r) not in lane:
             grid[r][c] = "i"
 
-    # Carve the crawlspace mouth into the south wall at the lane's foot.
+    # Carve the crawlspace mouth into the south wall at the lane's foot,
+    # with the "Enter crevice?" prompt on the lane just before it.
     cx, cy = CRAWL
     assert grid[cy][cx] == "█", grid[cy][cx]
     grid[cy][cx] = "∇"
+    assert grid[cy - 1][cx] == "≡", grid[cy - 1][cx]
+    grid[cy - 1][cx] = "Ҏ"
 
     # Place the markers last so they sit on the paved lane.
     for (mx, my), glyph in ((ARRIVAL, "Ѣ"), (ANCHOR, "Ѥ")):

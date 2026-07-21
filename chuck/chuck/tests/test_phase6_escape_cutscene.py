@@ -2,9 +2,9 @@
 
 A contained, input-free scene: Chuck crawls the tight stone passage
 toward a growing daylight, a whiteout, then he emerges into the wooden
-hold with the open sea beyond the hull breach. Three quiet narration
-lines land the moment before it hands off to the playable ship deck,
-carrying his Sanity across.
+hold whose hull is set with portholes onto the sunlit sea. It plays out
+wordlessly before handing off to the playable ship deck, carrying his
+Sanity across.
 """
 
 import os
@@ -16,19 +16,13 @@ import pygame
 
 from src.core import config
 from src.core.game import Game
-from src.scenes.escape_cutscene_scene import (
-    EscapeCutsceneScene, FADE_END, _CAPTIONS,
-)
+from src.scenes import escape_cutscene_scene
+from src.scenes.escape_cutscene_scene import EscapeCutsceneScene, FADE_END
 
 
-def test_the_captions_land_the_moment_and_all_render() -> None:
-    from src.ui.bitmap_font import GLYPH_ORDER
-
-    lines = [line for _t, line in _CAPTIONS]
-    assert len(lines) == 3
-    assert "ship" in lines[-1].lower()  # the phase-ending beat
-    for line in lines:
-        assert set(line) <= set(GLYPH_ORDER), line
+def test_the_escape_is_wordless() -> None:
+    # The narration captions were removed: the escape shows, never tells.
+    assert not hasattr(escape_cutscene_scene, "_CAPTIONS")
 
 
 def test_the_cutscene_is_input_free_and_draws_every_phase() -> None:
@@ -38,8 +32,9 @@ def test_the_cutscene_is_input_free_and_draws_every_phase() -> None:
         game.scenes.replace(scene)
         scene.on_enter()
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
-        # Draw across the crawl, the whiteout, and the reveal without error.
-        for target in (2.0, 5.3, 7.0, 9.5, 13.9):
+        # Draw across the crawl, the whiteout, the reveal, and the hold
+        # (all before the fade hands off) without error.
+        for target in (2.0, 5.3, 7.0, 10.0):
             while scene.elapsed < target:
                 scene.update(0.05)
             scene.draw(surface)  # must not raise
