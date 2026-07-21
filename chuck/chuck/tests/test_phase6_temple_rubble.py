@@ -7,7 +7,7 @@ crawlspace mouth ('∇') in the south wall that leads to the ship deck —
 all reachable on foot along the clear spine and the right-side lane.
 """
 
-from collections import deque
+from collections import Counter, deque
 import os
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
@@ -35,8 +35,16 @@ def test_the_rubble_is_a_broken_chamber_of_astral_hazards() -> None:
     assert kinds.count("anchor:temple_rubble_anchor") == 1
     # Numerous Astral Sea blocks, the collapsed reality of the map.
     astral = sum(row.count("V") for row in tilemap._grid)
-    assert astral >= 40, astral
-    # No way forward yet, and no conventional enemies.
+    assert astral >= 150, astral
+    # The ceiling has caved in: the chamber is choked with fallen-stone
+    # debris (toppled columns / cracked stelae), numerous enough to make
+    # it almost impassable off the route.
+    debris = Counter(kind for kind, _c, _r in tilemap.prop_tiles)
+    assert debris["temple_column"] + debris["temple_stela"] >= 250, debris
+    # One intact paved lane ('≡') threads through it, the obvious way out.
+    path = sum(row.count("≡") for row in tilemap._grid)
+    assert path >= 100, path
+    # No way forward yet (beyond the crawlspace), and no conventional enemies.
     assert not any(kind.startswith("boundary:") for kind in kinds)
     assert not any(kind in {
         "rat", "zombie", "skeleton", "raptor", "massive_dinosaur", "snake",

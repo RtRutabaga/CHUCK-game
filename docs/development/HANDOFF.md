@@ -3,14 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `bc2629e` (the Fireball argument)
-- Current work: the rubble crawlspace + the ship deck (session 138)
+- Base commit before this pass: `2968d01` (the crawlspace + ship deck)
+- Current work: the rubble map choked with debris + a paved lane (session 139)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-The rubble now has its one way out, leading to the ship — the Phase 6 →
-7 boundary:
+temple_rubble was rebuilt to look like the temple's ceiling has caved in:
+
+- The chamber is now choked with ~460 pieces of fallen-stone debris —
+  toppled columns ('¬') and cracked leaning stelae ('‡') scattered as
+  separate props at ~58% density off the route (so it reads as rubble
+  on the floor, not a wall), plus a few lone '█' boulders ringed by
+  floor. Split by 15 distinct blocks of Astral Sea (~213 'V'). Off the
+  route it is almost impassable.
+- One intact paved lane ('≡', the temple's own processional tile) winds
+  torch-lit from the from_fireball arrival, past the rubble ashtray, to
+  the crawlspace mouth. Against the debris the clean lane is unmistakably
+  the way out. The Ѣ/Ѥ marker unders changed to '≡' so they sit
+  seamlessly on it.
+- tools/generate_temple_rubble.py was rewritten (curated Astral blocks,
+  a lane-polyline clear + pave, a deterministic debris scatter, lone
+  boulders, flanking torches) and still asserts arrival → anchor →
+  crawlspace connectivity on foot before writing.
+
+## Previous Pass (session 138, commit 2968d01)
+
+The rubble got its one way out, leading to the ship — the Phase 6 → 7
+boundary:
 
 - The crawlspace exit: a narrow mouth ('∇', the established threshold
   tile) is carved into temple_rubble's south wall at the foot of a
@@ -31,23 +51,22 @@ The rubble now has its one way out, leading to the ship — the Phase 6 →
 
 ## Files Changed
 
-- tools/generate_temple_rubble.py (crawl lane + ∇ mouth + reachability
-  assert), assets/maps/temple_rubble.txt (regenerated),
-  assets/maps/ship_deck.txt (new), src/world/tilemap.py (Ҋ/Ҍ markers),
-  src/world/tileset_layout.py + src/world/transitions.py (ship_deck
-  tileset/music + the crawl walk-exit), src/systems/checkpoints.py
-  (two ship checkpoints).
-- tests/test_phase6_ship_deck.py (4, new), test_phase6_temple_rubble.py
-  (the no-exit test became a has-crawlspace-exit test; connectivity now
-  also proves the mouth), test_checkpoints.py (expected_names += "Ship 1").
+- tools/generate_temple_rubble.py (full rewrite: curated Astral blocks,
+  lane pave, debris scatter, boulders, torches),
+  assets/maps/temple_rubble.txt (regenerated), src/world/tilemap.py
+  (Ѣ/Ѥ marker unders → '≡'), tests/test_phase6_temple_rubble.py (the
+  broken-chamber test now locks in the debris count, the paved lane, and
+  the raised Astral count).
 
 ## Verification Performed
 
 - All 54 suites pass (per-suite timeouts; nothing hangs).
-- Headless: stepping onto the rubble's ∇ mouth transitions to ship_deck
-  at the from_crawlspace arrival with checkpoint "ship_deck".
-- Screenshots: the wooden hold from the arrival, and the sea reveal —
-  the open water seen through the hull breach with cargo on the deck.
+- Headless: the rubble loads with 463 debris props, 213 Astral, 159
+  paved-lane tiles; the lane connects arrival → anchor → crawlspace on
+  foot; the fireball→rubble and rubble→ship transitions still work.
+- Screenshots at the arrival, the mid-map, and the crawlspace: the
+  chamber choked with toppled columns and Astral rifts, with the clean
+  torch-lit paved lane threading through as the obvious route.
 
 ## Known Issues
 

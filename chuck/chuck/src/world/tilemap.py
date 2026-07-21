@@ -474,8 +474,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "↓": MarkerDef(kind="dart_trap:down", under="W", allow_solid=True),
     "↑": MarkerDef(kind="dart_trap:up", under="W", allow_solid=True),
     # The rubble map — where the scripted Fireball throws Chuck (session 135).
-    "Ѣ": MarkerDef(kind="arrival:from_fireball", under="·"),
-    "Ѥ": MarkerDef(kind="anchor:temple_rubble_anchor", under="·"),
+    # Its arrival and ashtray sit on the one intact paved lane (session 139).
+    "Ѣ": MarkerDef(kind="arrival:from_fireball", under="≡"),
+    "Ѥ": MarkerDef(kind="anchor:temple_rubble_anchor", under="≡"),
     # The ship deck — where the crawlspace leads out (session 138).
     "Ҋ": MarkerDef(kind="arrival:from_crawlspace", under="="),
     "Ҍ": MarkerDef(kind="anchor:ship_deck_anchor", under="="),

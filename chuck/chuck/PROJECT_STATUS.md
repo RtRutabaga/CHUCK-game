@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 138 (the rubble crawlspace + the ship deck).
+Updated: session 139 (the rubble map choked with debris + a paved lane).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,17 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- The rubble collapse (session 139): temple_rubble was rebuilt to look
+  like the temple's ceiling has caved in. The chamber is now choked with
+  ~460 pieces of fallen-stone debris (toppled columns '¬' and cracked
+  stelae '‡' props scattered at ~58% density off the route, plus lone
+  '█' boulders) and split by 15 distinct blocks of Astral Sea (~213 'V'
+  cells), making it almost impassable off the path. One intact paved
+  lane ('≡', the temple's processional tile — arrival/ashtray unders
+  changed to '≡') winds torch-lit from the from_fireball arrival, past
+  the ashtray, to the crawlspace mouth: against the debris it reads
+  unmistakably as the way out. Generator (tools/generate_temple_rubble.py)
+  still asserts the lane connects arrival → anchor → crawlspace on foot
 - The rubble crawlspace + the ship deck (session 138): the rubble now
   has its one way out. A narrow crawlspace mouth ('∇') is carved into
   temple_rubble's south wall at the foot of a clear right-side lane
