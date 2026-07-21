@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 137 (the adventurers' argument before the Fireball).
+Updated: session 138 (the rubble crawlspace + the ship deck).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,19 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- The rubble crawlspace + the ship deck (session 138): the rubble now
+  has its one way out. A narrow crawlspace mouth ('∇') is carved into
+  temple_rubble's south wall at the foot of a clear right-side lane
+  (tools/generate_temple_rubble.py now protects the lane and proves the
+  mouth reachable on foot). Walking onto it (AREA_WALK_EXITS
+  ["temple_rubble","∇"]) leads to the new ship_deck map: a 30x18 wooden
+  hold (docks tileset — planks, cargo crates/barrels) with a breach in
+  the hull opening onto the open sea (water), the Phase 6 → 7 boundary.
+  Chuck arrives at the crawl mouth in the deck floor (from_crawlspace)
+  and can walk up to the sea reveal. New markers Ҋ/Ҍ; checkpoints
+  "Ship 1" (runtime) + "Ship Ashtray"; sea theme (waterdeep_docks.wav).
+  No onward exit yet — the escape cutscene (crawl choreography, light,
+  the reveal beat) is the follow-up. Suites: test_phase6_ship_deck.py
 - The Fireball argument (session 137): the cast is now preceded by a
   dialogue beat. When the survival clock runs out, the camera cuts to the
   battle (reusing the entrance establishing focus) and the adventurers

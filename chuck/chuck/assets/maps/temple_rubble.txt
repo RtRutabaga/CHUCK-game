@@ -1,8 +1,8 @@
 ; PHASE 6 - RUBBLE MAP (48x30 tiles).
 ; Where the scripted Fireball throws Chuck: a collapsed chamber
 ; strewn with Astral Sea hazard blocks. He lands at the top with
-; half his Sanity; the rubble ashtray waits below. No way onward
-; yet - the crawlspace exit and escape cutscene are later slices.
+; half his Sanity; the rubble ashtray waits below. The one way out
+; is the crawlspace mouth in the south wall, down the right lane.
 ████████████████████████████████████████████████
 ██████████i████████████i█████████████i██████████
 ██············································██
@@ -28,8 +28,8 @@
 ██······V······························V······██
 ██·····VVV··········¬······¬··········VVV·····██
 ██····VVVVV···V········Ѥ·········V···VVVVV····██
-██·····VVV···VVV················VVV···VVV·····██
+██·····VVV···VVV················VV····VVV·····██
 ██······V·····V········‡·········V·····V······██
 ██············································██
-██████████i██████████████████████████i██████████
+██████████i███████████████████████∇██i██████████
 ████████████████████████████████████████████████

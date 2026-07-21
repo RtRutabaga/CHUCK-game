@@ -3,82 +3,67 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `a363710` (the boss-battle soundtrack)
-- Current work: the adventurers' argument before the Fireball (session 137)
+- Base commit before this pass: `bc2629e` (the Fireball argument)
+- Current work: the rubble crawlspace + the ship deck (session 138)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
 
-A dialogue beat now precedes the Fireball: when the survival clock runs
-out, the camera cuts to the battle (reusing `_battle_establishing_focus`)
-and the adventurers argue over the ordinary dialogue box — "Wait, I know
-those sigils, you can't cast that here!" / "... we're too close to an
-astral rip, we don't know what will happen" / "I have to try, we're out
-of options!" / "......" / "FIREBALL!!" (data/dialogue/temple_sanctum.json
-"fireball_cast"). Only when the last line closes does `_begin_fireball`
-fire the blast. Two new WorldScene flags (`_fireball_dialogue_shown`,
-`_fireball_after_dialogue`) gate this and reset with the room, so death
-before the cast restarts everything. Covered by a new test in
-test_phase6_fireball.py (6 total).
+The rubble now has its one way out, leading to the ship — the Phase 6 →
+7 boundary:
 
-## Previous Pass (session 136, commit a363710)
-
-The sanctum's final fight got its own climactic theme:
-
-- data/music/boss_battle.py: an original ~80-second loop in D Phrygian
-  at 144 BPM, 48 bars, 11 voices. A relentless choral ostinato grinds
-  the Phrygian flat-second (Eb over a D tonic) against a pounding octave
-  bass and orchestral timpani, while a horn section soars the theatrical
-  melody in the B section and the coda. SNES boss-battle drive with a
-  Duel-of-the-Fates processional menace, built from the temple's own
-  D/Eb/C modal world so the boss reads as the temple turned lethal.
-  Structure: A drive → A' with horn stabs → B melody + choir 'aahs' →
-  C dark timpani-roll build → A'' full return → climactic coda that
-  turns the loop back on itself.
-- Three reusable instrument voices added to src/audio/instruments.py:
-  `choir` (a vowel-formant massed voice with a swelled attack — the
-  chant), `brass` (a cutting horn for the melody and stabs), and
-  `timpani` (a tuned orchestral boom). Shared, never duplicated.
-- Rendered to assets/audio/music/boss_battle.wav via the existing
-  tools/generate_music.py pipeline. Loop seam is 0.000 (seamless); peak
-  0.95, RMS 0.181 — deliberately loud like the temple/jungle mixes
-  (MASTER_HEADROOM 0.95). Dynamic arc verified per-section.
-- Wired AREA_MUSIC["temple_sanctum"] = "boss_battle.wav" (the rest of
-  the temple, and the rubble map, keep temple.wav).
+- The crawlspace exit: a narrow mouth ('∇', the established threshold
+  tile) is carved into temple_rubble's south wall at the foot of a
+  cleared right-side lane. tools/generate_temple_rubble.py now protects
+  that lane (col 34, rows 20-27) and asserts the mouth is reachable on
+  foot before writing. Walking onto it transitions to the ship
+  (AREA_WALK_EXITS["temple_rubble","∇"] → ship_deck / from_crawlspace).
+- ship_deck (assets/maps/ship_deck.txt, 30x18): a cramped wooden hold
+  on the docks tileset — plank floor, lashed barrels and crates — with
+  a jagged breach in the hull (top) opening onto the open sea (water).
+  Chuck arrives at the crawl mouth in the deck floor and walks up toward
+  the sea reveal. No onward exit (Phase 7 is unbuilt).
+- Wiring: new markers Ҋ (arrival:from_crawlspace) / Ҍ
+  (anchor:ship_deck_anchor); MAP_TILESET["ship_deck"] = "docks";
+  AREA_MUSIC["ship_deck"] = "waterdeep_docks.wav" (the sea theme
+  returns); checkpoints "Ship 1" (runtime, dev-visible, fade_in) +
+  "Ship Ashtray".
 
 ## Files Changed
 
-- data/music/boss_battle.py (new), src/audio/instruments.py (choir +
-  brass + timpani), src/world/transitions.py (sanctum → boss_battle),
-  assets/audio/music/boss_battle.wav (new).
-- tests/test_music.py (boss character + rendered-gate tests),
-  tests/test_phase6_temple_sanctum.py (music assertion → boss_battle.wav).
+- tools/generate_temple_rubble.py (crawl lane + ∇ mouth + reachability
+  assert), assets/maps/temple_rubble.txt (regenerated),
+  assets/maps/ship_deck.txt (new), src/world/tilemap.py (Ҋ/Ҍ markers),
+  src/world/tileset_layout.py + src/world/transitions.py (ship_deck
+  tileset/music + the crawl walk-exit), src/systems/checkpoints.py
+  (two ship checkpoints).
+- tests/test_phase6_ship_deck.py (4, new), test_phase6_temple_rubble.py
+  (the no-exit test became a has-crawlspace-exit test; connectivity now
+  also proves the mouth), test_checkpoints.py (expected_names += "Ship 1").
 
 ## Verification Performed
 
-- All 52 suites pass (per-suite timeouts; nothing hangs).
-- Render analysis: 80.0s, peak 0.950, loop seam 0.0000, RMS 0.181
-  (matching temple ~0.186); B and coda sections are the loudest
-  (climaxes), the C build the quietest — the intended dynamic arc.
-- Smoke: loading the sanctum resolves and plays boss_battle.wav with no
-  asset error.
+- All 54 suites pass (per-suite timeouts; nothing hangs).
+- Headless: stepping onto the rubble's ∇ mouth transitions to ship_deck
+  at the from_crawlspace arrival with checkpoint "ship_deck".
+- Screenshots: the wooden hold from the arrival, and the sea reveal —
+  the open water seen through the hull breach with cargo on the deck.
 
 ## Known Issues
 
-- Rendered by ear-of-the-spec only (offline synth, no listening in this
-  environment). The composition passes every quality gate; a playtest
-  listen may still want small level/EQ tweaks (headroom is one knob).
+- None known from this pass.
 
 ## Scope Notes
 
-- The rubble map still has no exit. The narrow crawlspace exit, the
-  escape cutscene (crawl → light → wooden room → hole to the sea → the
-  ship), and the distinct escape-cutscene music remain unbuilt. The
-  boss/final-chamber music checklist item is now done.
+- This is the structural slice only. The escape *cutscene* — Chuck
+  crawling the tight passage, a light appearing ahead, the emergence,
+  and the camera revealing the sea to end the phase — is unbuilt, as is
+  any Phase 7 gameplay aboard the ship and a distinct escape-cutscene
+  music cue.
 
 ## Recommended Next Bounded Task
 
-- The rubble crawlspace + escape: add the narrow crawlspace exit to
-  temple_rubble and the escape cutscene that ends aboard the ship at sea
-  (the Phase 6 → Phase 7 boundary). Consider splitting: the crawlspace
-  exit and a first ship-deck arrival slice, then the cutscene polish.
+- The escape cutscene: on arriving at the ship deck, play the scripted
+  emergence — a brief crawl beat, a camera pan up to the sea through the
+  hull breach, and a caption/line landing the "he has reached a ship"
+  moment that ends Phase 6. Its own music cue can be a follow-up.

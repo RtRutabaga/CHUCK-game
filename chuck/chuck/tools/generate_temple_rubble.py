@@ -4,9 +4,11 @@ Where the scripted Fireball throws Chuck: a broken chamber strewn with
 Astral Sea hazard blocks ('V', the established walkable fall hazard).
 Chuck lands at the top on the `from_fireball` arrival; an Astral Anchor
 (the rubble ashtray) sits at the bottom. A clear central spine keeps
-the arrival connected to the anchor on foot; the crawlspace exit and
-escape cutscene are later slices, so there is deliberately no way
-forward yet. Assertion-checked: connectivity is proven before writing.
+the arrival connected to the anchor on foot, and a single narrow lane
+runs down the right side to the one way out: a crawlspace mouth ('∇')
+in the south wall that leads to the ship deck (session 138). Assertion-
+checked: connectivity to both the anchor and the crawlspace is proven
+before writing.
 """
 
 from collections import deque
@@ -17,13 +19,15 @@ OUT = Path(__file__).resolve().parents[1] / "assets" / "maps" / "temple_rubble.t
 
 ARRIVAL = (23, 5)      # where the blast throws Chuck in
 ANCHOR = (23, 24)      # the rubble ashtray
+CRAWL_COL = 34         # the escape lane runs down this column
+CRAWL = (CRAWL_COL, 28)  # the crawlspace mouth, carved into the south wall
 
 HEADER = [
     "; PHASE 6 - RUBBLE MAP (48x30 tiles).",
     "; Where the scripted Fireball throws Chuck: a collapsed chamber",
     "; strewn with Astral Sea hazard blocks. He lands at the top with",
-    "; half his Sanity; the rubble ashtray waits below. No way onward",
-    "; yet - the crawlspace exit and escape cutscene are later slices.",
+    "; half his Sanity; the rubble ashtray waits below. The one way out",
+    "; is the crawlspace mouth in the south wall, down the right lane.",
 ]
 
 
@@ -55,6 +59,10 @@ def build():
     # Two clear cross-bands so the spine isn't a lone corridor.
     for col in range(3, W - 3):
         protected |= {(col, 9), (col, 20)}
+    # The escape lane: a clear column from the lower cross-band down to
+    # the crawlspace mouth, so the one way out is always reachable.
+    for row in range(20, 28):
+        protected.add((CRAWL_COL, row))
 
     # Astral Sea fields — irregular diamond blobs of broken reality on
     # either side of the spine, avoiding the protected floor.
@@ -85,6 +93,11 @@ def build():
     for c, r in ((23, 3), (23, 26)):
         grid[r][c] = "‡"  # a standing stela at each end
 
+    # Carve the crawlspace mouth into the south wall at the lane's foot.
+    cx, cy = CRAWL
+    assert grid[cy][cx] == "█", grid[cy][cx]
+    grid[cy][cx] = "∇"
+
     # Place the markers last so they sit on known floor.
     ax, ay = ARRIVAL
     assert grid[ay][ax] == "·", grid[ay][ax]
@@ -98,13 +111,13 @@ def build():
 
 def solid(ch):
     # Border, dressing columns/stelae, and torches are solid; astral is
-    # a walkable fall hazard; markers sit on floor.
+    # a walkable fall hazard; markers and the crawl mouth sit on floor.
     return ch in "█¬‡i"
 
 
 def validate(grid):
-    # The arrival reaches the anchor on foot, treating Astral as a wall
-    # (walkable fall hazard, but you would die crossing it).
+    # The arrival reaches the anchor AND the crawlspace on foot, treating
+    # Astral as a wall (walkable fall hazard, but lethal to cross).
     def blocked(c, r):
         ch = grid[r][c]
         return solid(ch) or ch == "V"
@@ -120,6 +133,7 @@ def validate(grid):
                 seen.add((nc, nr))
                 q.append((nc, nr))
     assert ANCHOR in seen, "arrival cannot reach the anchor on foot!"
+    assert CRAWL in seen, "arrival cannot reach the crawlspace on foot!"
 
 
 def main():

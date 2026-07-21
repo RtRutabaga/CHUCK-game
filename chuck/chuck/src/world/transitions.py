@@ -141,6 +141,11 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_sanctum", "»"): AreaExit(
         "temple_gauntlet", "from_temple_9", "right"
     ),
+    # The rubble's one way out: the crawlspace mouth leads to the ship
+    # deck (session 138). There is no coming back.
+    ("temple_rubble", "∇"): AreaExit(
+        "ship_deck", "from_crawlspace", "up"
+    ),
     ("temple_gauntlet", "⌄"): AreaExit(
         "temple_shrine", "from_temple_8", "down"
     ),
@@ -181,4 +186,6 @@ AREA_MUSIC: dict[str, str | None] = {
     # The final chamber gets its own climactic boss theme (session 136).
     "temple_sanctum": "boss_battle.wav",
     "temple_rubble": "temple.wav",
+    # Out of the temple at last: the sea theme returns for the ship.
+    "ship_deck": "waterdeep_docks.wav",
 }

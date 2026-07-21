@@ -250,6 +250,18 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "ship_deck", "Ship 1", "ship_deck",
+        arrival="from_crawlspace", facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True, fade_in=True,
+    ),
+    CheckpointDefinition(
+        "ship_deck_anchor", "Ship Ashtray", "ship_deck",
+        position=(116.0, 117.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
         "temple_8_return", "Temple 8 Return", "temple_gauntlet",
         arrival="from_temple_9", facing="right",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),

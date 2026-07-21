@@ -476,6 +476,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # The rubble map — where the scripted Fireball throws Chuck (session 135).
     "Ѣ": MarkerDef(kind="arrival:from_fireball", under="·"),
     "Ѥ": MarkerDef(kind="anchor:temple_rubble_anchor", under="·"),
+    # The ship deck — where the crawlspace leads out (session 138).
+    "Ҋ": MarkerDef(kind="arrival:from_crawlspace", under="="),
+    "Ҍ": MarkerDef(kind="anchor:ship_deck_anchor", under="="),
 }
 
 _COMMENT_PREFIX = ";"

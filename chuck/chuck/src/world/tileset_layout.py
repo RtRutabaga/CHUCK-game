@@ -251,6 +251,7 @@ MAP_TILESET: dict[str, str] = {
     "temple_gauntlet": "temple",
     "temple_sanctum": "temple",
     "temple_rubble": "temple",
+    "ship_deck": "docks",
 }
 
 

@@ -1,10 +1,10 @@
-"""The rubble map (session 135).
+"""The rubble map (sessions 135, 138).
 
 Where the Fireball throws Chuck: a collapsed 48x30 chamber strewn with
 Astral Sea hazard blocks. He lands on the `from_fireball` arrival at the
-top; the rubble ashtray sits below, reachable on foot along a clear
-central spine. There is deliberately no way forward yet — the crawlspace
-exit and escape cutscene are later slices.
+top; the rubble ashtray sits below, and the one way out is a narrow
+crawlspace mouth ('∇') in the south wall that leads to the ship deck —
+all reachable on foot along the clear spine and the right-side lane.
 """
 
 from collections import deque
@@ -64,12 +64,26 @@ def test_the_arrival_reaches_the_ashtray_on_foot() -> None:
             reached.add((nc, nr))
             frontier.append((nc, nr))
     assert anchor in reached
+    # ...and so is the crawlspace mouth, the one way out.
+    crawl = next((c, r) for r in range(tilemap.height_tiles)
+                 for c in range(tilemap.width_tiles)
+                 if tilemap.terrain_at(c, r) == "∇")
+    assert crawl in reached
 
 
-def test_the_rubble_uses_temple_art_and_music_with_no_walk_exit() -> None:
+def test_the_rubble_uses_temple_art_and_music() -> None:
     assert tileset_for(MAP_NAME).sheet == "temple.png"
     assert AREA_MUSIC[MAP_NAME] == "temple.wav"
-    assert not any(m == MAP_NAME for (m, _c) in AREA_WALK_EXITS)
+
+
+def test_the_crawlspace_is_the_one_way_out_to_the_ship() -> None:
+    exits = [(c, ex) for (m, c), ex in AREA_WALK_EXITS.items()
+             if m == MAP_NAME]
+    assert len(exits) == 1, exits
+    char, exit_ = exits[0]
+    assert char == "∇"
+    assert exit_.destination == "ship_deck"
+    assert exit_.arrival == "from_crawlspace"
 
 
 def test_rubble_checkpoints_are_registered() -> None:
