@@ -73,9 +73,50 @@ def bell(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     return gain(envelope(lowpass(body, 4200), 0.003, dur * 0.9), vel * 0.4)
 
 
+def choir(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Massed voices on a vowel: the boss theme's ominous chant.
+
+    A wavering fundamental with an octave shimmer and a fifth for the
+    'ah' body, warmed by a formant-ish lowpass. The swelled attack lets
+    even a short chant syllable bloom, so a driving ostinato of these
+    reads as a choir hammering the room."""
+    body = mix(
+        _vibrato_sine(freq, dur, rate=5.2, depth=0.007),
+        gain(tone(freq * 2.0, dur), 0.30),   # octave shimmer
+        gain(tone(freq * 1.5, dur), 0.16),   # fifth -> vowel color
+        gain(tone(freq * 3.0, dur), 0.07),   # a breath of upper air
+    )
+    body = lowpass(body, 2300)
+    return gain(envelope(body, min(0.05, dur * 0.35),
+                         min(dur * 0.55, dur), sustain=0.95), vel * 0.5)
+
+
+def brass(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Cutting horn section: a bright pulse over a triangle body and a
+    sub for weight. Carries the theatrical melody and the stabs."""
+    body = mix(
+        tone(freq, dur, "square", duty=0.4),
+        gain(tone(freq, dur, "triangle"), 0.75),
+        gain(tone(freq / 2, dur, "triangle"), 0.28),
+    )
+    body = lowpass(body, 2700)
+    return gain(envelope(body, min(0.025, dur * 0.2),
+                         min(0.3, dur * 0.5), sustain=0.95), vel * 0.46)
+
+
 # ---------------------------------------------------------------------------
 # Percussion (freq is ignored or used loosely for tuning)
 # ---------------------------------------------------------------------------
+def timpani(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """A tuned orchestral boom: low sine body with a soft mallet thud
+    and a longer decay than the hand-tom. Big dramatic accents."""
+    f = max(48.0, freq)
+    body = mix(
+        envelope(tone(f, 0.45, "sine"), 0.002, 0.42),
+        gain(tone(f * 1.5, 0.2), 0.18),      # a faint tuned overtone
+        gain(envelope(noise(0.04, seed=31), 0.001, 0.038), 0.28),
+    )
+    return gain(lowpass(body, 420), vel * 0.85)
 def kick(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     body = mix(
         envelope(tone(max(55.0, freq / 4), 0.10), 0.001, 0.09),

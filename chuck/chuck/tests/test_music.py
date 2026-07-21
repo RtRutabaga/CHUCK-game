@@ -12,6 +12,7 @@ the Waterdeep theme into executable checks.
 import struct
 import wave
 
+from data.music import boss_battle as boss_song
 from data.music import fall_to_chult as fall_song
 from data.music import chult as chult_song
 from data.music import temple as temple_song
@@ -223,6 +224,56 @@ def test_rendered_temple_theme_respects_loop_quality_gates() -> None:
     assert 1.25 <= temple_rms / chult_rms <= 1.45, (
         temple_rms, chult_rms
     )
+
+
+def test_boss_theme_is_choral_climactic_and_looping() -> None:
+    tracks = boss_song.build_tracks()
+    duration = boss_song.TOTAL_BEATS * 60.0 / boss_song.TEMPO_BPM
+    assert duration >= 60.0, "boss theme must run 60+ seconds before repeating"
+    voiced = [t for t in tracks if t.notes]
+    assert len(voiced) >= 8, "a climactic boss theme wants a full ensemble"
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)  # every pitch must parse
+            assert 0 <= note.beat < boss_song.TOTAL_BEATS, (track.name, note)
+    # The chant is a relentless choral ostinato: eighth notes hammering
+    # through every drive bar, not an occasional phrase.
+    chant = next(t for t in tracks if t.name == "chant")
+    assert len(chant.notes) >= 44 * 8 * 0.8, len(chant.notes)
+    # Duel-of-the-Fates menace: the chant grinds the Phrygian flat-second
+    # (Eb over a D tonic) hard.
+    assert sum(1 for n in chant.notes if n.pitch.startswith("Eb")) >= 24
+    # The horns carry the theatrical melody up top in the B section...
+    horn = next(t for t in tracks if t.name == "horn")
+    b_start, b_end = 16 * 4, 24 * 4
+    assert any(b_start <= n.beat < b_end and n.pitch[-1] in "45"
+               for n in horn.notes), "the horn melody is missing from B"
+    # ...over sustained choir 'aahs'.
+    pad = next(t for t in tracks if t.name == "choir_pad")
+    assert any(b_start <= n.beat < b_end for n in pad.notes)
+    # Orchestral weight: timpani drive the low end throughout.
+    timp = next(t for t in tracks if t.name == "timpani")
+    assert len(timp.notes) >= boss_song.TOTAL_BARS
+
+
+def test_rendered_boss_theme_respects_loop_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "boss_battle.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 60 * SAMPLE_RATE
+    # The boss render, like the temple, earns a loud ceiling for its
+    # climactic mix (still safely short of clipping).
+    peak = max(abs(s) for s in samples)
+    assert peak <= 0.97, f"clipping risk: peak {peak:.2f}"
+    assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
+    # It must read at least as strongly as the loud temple/jungle themes.
+    with wave.open(str(config.MUSIC_DIR / "temple.wav")) as f:
+        traw = f.readframes(f.getnframes())
+    tsamp = [x / 32767 for (x,) in struct.iter_unpack("<h", traw)]
+    boss_rms = (sum(s * s for s in samples) / len(samples)) ** 0.5
+    temple_rms = (sum(s * s for s in tsamp) / len(tsamp)) ** 0.5
+    assert boss_rms >= temple_rms * 0.9, (boss_rms, temple_rms)
 
 
 def _run_all() -> None:

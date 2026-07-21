@@ -178,6 +178,7 @@ AREA_MUSIC: dict[str, str | None] = {
     "temple_astral_wind": "temple.wav",
     "temple_shrine": "temple.wav",
     "temple_gauntlet": "temple.wav",
-    "temple_sanctum": "temple.wav",
+    # The final chamber gets its own climactic boss theme (session 136).
+    "temple_sanctum": "boss_battle.wav",
     "temple_rubble": "temple.wav",
 }

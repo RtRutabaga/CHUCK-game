@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 135 (the scripted Fireball + the rubble map).
+Updated: session 136 (the beholder boss-battle soundtrack).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -636,6 +636,20 @@ This file is required by the project rules and updated every session.
   the central sight-line to the beholder and trio: at 7-tile notice
   range they lie dormant until Chuck flees a wall to escape the eye
   rays, then rouse and herd him back to center — 27 skeletons in all
+- The beholder boss-battle soundtrack (session 136): the sanctum now
+  gets its own climactic theme (AREA_MUSIC["temple_sanctum"] =
+  boss_battle.wav) instead of the ambient temple loop. data/music/
+  boss_battle.py: an original 80s loop in D Phrygian at 144 BPM, 48 bars,
+  11 voices. A relentless choral ostinato (the new ins.choir voice)
+  grinds the Phrygian flat-second Eb against a pounding octave bass and
+  orchestral timpani (new ins.timpani), while a horn section (new
+  ins.brass) soars the theatrical melody over the B section and the coda
+  — SNES boss-battle drive with a Duel-of-the-Fates processional menace,
+  built from the temple's own D/Eb/C modal world. Dynamic arc: drive →
+  soaring B → a dark timpani-roll build → full return → climactic
+  turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
+  match the loud temple/jungle mixes. Three reusable instrument voices
+  added to src/audio/instruments.py; tests in test_music.py
 - The scripted Fireball + the rubble map (session 135): the sanctum
   fight now ends. Once Chuck is sealed in (the breach triggered) and has
   survived BATTLE_FIREBALL_DELAY (24s), the wizard casts Fireball — a

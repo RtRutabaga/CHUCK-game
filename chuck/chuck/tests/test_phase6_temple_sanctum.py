@@ -140,7 +140,7 @@ def test_temple_9_checkpoint_saves_continues_and_respawns() -> None:
 def test_sanctum_uses_temple_art_music_and_has_no_walk_exit_forward() -> None:
     tileset = tileset_for(MAP_NAME)
     assert tileset.sheet == "temple.png"
-    assert AREA_MUSIC[MAP_NAME] == "temple.wav"
+    assert AREA_MUSIC[MAP_NAME] == "boss_battle.wav"  # the boss theme
     assert AREA_WALK_EXITS[(MAP_NAME, "Δ")].destination == "temple_gauntlet"
     assert AREA_WALK_EXITS[(MAP_NAME, "»")].destination == "temple_gauntlet"
     # There is deliberately NO other exit binding: the Fireball is the
