@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 141 (crevice prompt + wordless porthole cutscene).
+Updated: session 142 (rubble map rebuilt from big broken masonry blocks).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,16 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- Rubble map rebuilt from big broken blocks (session 142): a new
+  temple_rubble_block prop (four chunky 3/4-view broken-masonry sprites,
+  tools/generate_temple_props.py rubble_block(); tile 'ß', solid, under
+  '·') is now the rubble map's dominant debris. The generator fills the
+  chamber with a dense field of these big blocks (~360) plus a scatter
+  of smaller column drums (~45) for scale, and the torches, cracked
+  stelae, and flat wall-tile boulders were all removed — so it reads as
+  one consistent field of collapsed masonry with the clean paved lane
+  threading through. temple_column is unchanged, so the temple dressing
+  maps are untouched. Rubble test locks in blocks-dominate and no-torches
 - Crevice prompt + wordless porthole cutscene (session 141): the rubble
   exit is now an "Enter crevice?" YES/NO interaction (data/choices/
   temple_rubble.json; ChoiceTrigger "crevice"; marker Ҏ on the lane just

@@ -36,11 +36,13 @@ def test_the_rubble_is_a_broken_chamber_of_astral_hazards() -> None:
     # Numerous Astral Sea blocks, the collapsed reality of the map.
     astral = sum(row.count("V") for row in tilemap._grid)
     assert astral >= 150, astral
-    # The ceiling has caved in: the chamber is choked with fallen-stone
-    # debris (toppled columns / cracked stelae), numerous enough to make
-    # it almost impassable off the route.
+    # The ceiling has caved in: the chamber is choked with big broken
+    # masonry blocks (and a few column drums), numerous enough to make it
+    # almost impassable off the route. No torches.
     debris = Counter(kind for kind, _c, _r in tilemap.prop_tiles)
-    assert debris["temple_column"] + debris["temple_stela"] >= 250, debris
+    assert debris["temple_rubble_block"] + debris["temple_column"] >= 250, debris
+    assert debris["temple_rubble_block"] > debris["temple_column"]  # blocks dominate
+    assert sum(row.count("i") for row in tilemap._grid) == 0  # torches removed
     # One intact paved lane ('≡') threads through it, the obvious way out.
     path = sum(row.count("≡") for row in tilemap._grid)
     assert path >= 100, path

@@ -203,6 +203,61 @@ def fallen_column(variant: int) -> Image.Image:
     return image
 
 
+def rubble_block(variant: int) -> Image.Image:
+    """A big broken chunk of fallen ceiling masonry, ~30x24, 3/4 view.
+
+    A chunky angular slab with a lit top face, a shadowed side, cracks,
+    a broken-off corner, and crumbs at the base — the collapsed hall's
+    dominant debris (session 142)."""
+    w, h = 30, 24
+    image = Image.new("RGBA", (w, h), TRANSPARENT)
+    d = ImageDraw.Draw(image)
+    geoms = (
+        dict(x0=2, x1=26, top=4, mid=12, bot=21, dx=4, chip=("tl", 5)),
+        dict(x0=4, x1=28, top=6, mid=13, bot=22, dx=5, chip=("tr", 4)),
+        dict(x0=3, x1=25, top=3, mid=10, bot=19, dx=3, chip=("bl", 4)),
+        dict(x0=2, x1=27, top=7, mid=14, bot=22, dx=6, chip=("tr", 6)),
+    )
+    g = geoms[variant % len(geoms)]
+    x0, x1, top, mid, bot, dx = (g["x0"], g["x1"], g["top"], g["mid"],
+                                 g["bot"], g["dx"])
+    # Top face (lit), front face (mid), right side (shadow).
+    d.polygon([(x0 + dx, top), (x1, top), (x1 - dx, mid), (x0, mid)],
+              fill=STONE_LIGHT)
+    d.polygon([(x0, mid), (x1 - dx, mid), (x1 - dx, bot), (x0, bot)],
+              fill=STONE)
+    d.polygon([(x1 - dx, mid), (x1, top), (x1, bot - dx), (x1 - dx, bot)],
+              fill=STONE_DARK)
+    # Crisp edges and the base shadow.
+    d.line([(x0 + dx, top), (x1, top)], fill=STONE_LIGHT)
+    d.line([(x0, mid), (x1 - dx, mid)], fill=STONE_DARK)
+    d.line([(x0, bot), (x1 - dx, bot)], fill=STONE_DARK)
+    d.line([(x0, mid), (x0, bot)], fill=STONE_DARK)
+    # A couple of fracture lines across the front face.
+    fcx = (x0 + x1 - dx) // 2 + (variant % 3 - 1) * 3
+    d.line([(fcx, mid + 1), (fcx - 1, bot - 1)], fill=STONE_DARK)
+    d.line([(x0 + 3, mid + 3), (fcx - 2, mid + 4)], fill=STONE_DARK)
+    # A broken-off corner (a transparent notch).
+    corner, size = g["chip"]
+    if corner == "tl":
+        d.polygon([(x0 + dx, top), (x0 + dx + size, top),
+                   (x0, mid), (x0, mid - size)], fill=TRANSPARENT)
+    elif corner == "tr":
+        d.polygon([(x1 - size, top), (x1, top), (x1, top + size)],
+                  fill=TRANSPARENT)
+    else:  # bl
+        d.polygon([(x0, bot - size), (x0 + size, bot), (x0, bot)],
+                  fill=TRANSPARENT)
+    # Crumbled rubble and moss at the base.
+    for cxp, cyp in ((x0 - 1, bot), (x1 - dx + 1, bot), (x0 + 5, bot + 1),
+                     (fcx + 2, bot)):
+        if 0 <= cxp < w and 0 <= cyp < h:
+            d.point((cxp, cyp), fill=STONE_DARK)
+    d.point((x0, mid + 2), fill=MOSS)
+    d.point((x0 + 1, bot - 1), fill=MOSS)
+    return image
+
+
 def _diamond(draw: ImageDraw.ImageDraw, cx: int, cy: int) -> None:
     """The recurring gold diamond glyph from the temple's stonework."""
     draw.polygon(((cx, cy - 2), (cx + 2, cy), (cx, cy + 2), (cx - 2, cy)),
@@ -396,6 +451,10 @@ def main() -> None:
         "temple_urn_3": cracked_urn(2),
         "temple_column_1": fallen_column(0),
         "temple_column_2": fallen_column(1),
+        "temple_rubble_block_1": rubble_block(0),
+        "temple_rubble_block_2": rubble_block(1),
+        "temple_rubble_block_3": rubble_block(2),
+        "temple_rubble_block_4": rubble_block(3),
     }
     for name, image in images.items():
         out = out_dir / f"{name}.png"

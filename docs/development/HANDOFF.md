@@ -3,11 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `ce4c4f2` (the escape cutscene)
-- Current work: crevice prompt + wordless porthole cutscene (session 141)
+- Base commit before this pass: `42c7208` (crevice prompt + portholes)
+- Current work: rubble map rebuilt from big broken masonry blocks (session 142)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+Per a playtest note, rebuilt the rubble map's debris as big broken blocks:
+
+- New prop temple_rubble_block — four chunky 3/4-view broken-masonry
+  sprites (tools/generate_temple_props.py rubble_block(); 30x24; lit top
+  face, shadowed side, cracks, a broken-off corner, moss). Registered in
+  prop.py _SPRITES and as tile 'ß' (solid, under '·').
+- tools/generate_temple_rubble.py now fills the chamber with a dense
+  field of these big blocks (~360) plus a scatter of smaller column
+  drums (~45) for scale. Torches, cracked stelae ('‡'), and flat
+  wall-tile boulders ('█') were all removed, so it reads as one
+  consistent field of collapsed masonry with the clean paved '≡' lane
+  threading through. temple_column is unchanged → temple dressing maps
+  untouched.
+- Only the four new PNGs were written (no churn on the other prop art).
+- test_phase6_temple_rubble.py now asserts the blocks dominate and there
+  are no torches.
+
+## Previous Pass (session 141, commit 42c7208)
 
 Reworked the rubble exit and the escape cutscene per playtest notes:
 

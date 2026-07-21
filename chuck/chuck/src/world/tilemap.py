@@ -359,6 +359,9 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="temple_urn", under="·"),
     "¬": TileDef(solid=True, color=(71, 76, 61),
                  prop="temple_column", under="·"),
+    # Big broken masonry chunk — the rubble map's dominant debris (session 142).
+    "ß": TileDef(solid=True, color=(60, 68, 58),
+                 prop="temple_rubble_block", under="·"),
     ";": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="sailing_cog", under="#"),
     "'": TileDef(solid=False, color=(44, 45, 29)),

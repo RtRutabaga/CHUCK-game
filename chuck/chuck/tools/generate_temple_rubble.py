@@ -32,17 +32,11 @@ PATH_POINTS = [
     (20, 18), (20, 24), (34, 24), (34, 27),
 ]
 
-# Torches flanking the lane light the way to the crawlspace.
-TORCHES = [
-    (21, 8), (25, 8), (32, 13), (28, 15), (18, 21), (22, 20),
-    (31, 25), (36, 25), (23, 3),
-]
-
 HEADER = [
     "; PHASE 6 - RUBBLE MAP (48x30 tiles).",
-    "; The temple's ceiling has collapsed: the chamber is choked with",
-    "; fallen stone and split by blocks of Astral Sea. One torch-lit",
-    "; lane stays clear - from the arrival, past the ashtray, to the",
+    "; The temple's ceiling has caved in: the chamber is choked with big",
+    "; broken masonry blocks and split by blocks of Astral Sea. One clear",
+    "; paved lane stays open - from the arrival, past the ashtray, to the",
     "; crawlspace mouth in the south wall (the one way out, to the ship).",
 ]
 
@@ -105,38 +99,19 @@ def build():
         if grid[r][c] == "·":
             grid[r][c] = "≡"
 
-    # Fallen stone: a dense, numerous scatter of collapsed debris — mostly
-    # toppled columns ('¬') with cracked leaning stelae ('‡') among them,
-    # thick enough to make the chamber almost impassable off the paved
-    # lane, but left as separate pieces on the floor (not a solid wall) so
-    # it reads as rubble. Deterministic hash, so the render is reproducible.
+    # Fallen ceiling: a dense field of big broken masonry blocks ('ß'),
+    # with a scattering of smaller toppled column drums ('¬') for scale.
+    # Thick enough to make the chamber almost impassable off the paved
+    # lane. Deterministic hash, so the render is reproducible.
     rubble = 0
     for cy in range(2, H - 2):
         for cx in range(2, W - 2):
             if grid[cy][cx] != "·":       # skip the lane, Astral, border
                 continue
             h = (cx * 37 + cy * 101 + cx * cy * 3) % 100
-            if h < 58:
-                grid[cy][cx] = "‡" if h % 8 == 0 else "¬"
+            if h < 50:
+                grid[cy][cx] = "¬" if h % 6 == 0 else "ß"
                 rubble += 1
-
-    # A few lone masonry boulders — single stone blocks ringed by floor,
-    # so each reads as a fallen chunk, never a stretch of wall.
-    def _floor_ringed(c, r):
-        return all(grid[r + dr][c + dc] == "·"
-                   for dc, dr in ((0, 0), (-1, 0), (1, 0), (0, -1), (0, 1)))
-
-    for cy in range(3, H - 3):
-        for cx in range(3, W - 3):
-            if ((cx, cy) not in lane and (cx * 53 + cy * 17) % 19 == 0
-                    and _floor_ringed(cx, cy)):
-                grid[cy][cx] = "█"
-                rubble += 1
-
-    # Torches flanking the lane (and one at the entrance) light the route.
-    for c, r in TORCHES:
-        if (c, r) not in lane:
-            grid[r][c] = "i"
 
     # Carve the crawlspace mouth into the south wall at the lane's foot,
     # with the "Enter crevice?" prompt on the lane just before it.
@@ -155,9 +130,9 @@ def build():
 
 
 def solid(ch):
-    # Border, fallen stone/columns, and torches block; Astral is a
+    # Border and fallen masonry (blocks/columns) block; Astral is a
     # walkable fall hazard; markers and the crawl mouth sit on floor.
-    return ch in "█¬‡i"
+    return ch in "█¬ß"
 
 
 def validate(grid):
