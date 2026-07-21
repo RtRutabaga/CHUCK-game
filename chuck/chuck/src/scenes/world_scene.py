@@ -550,6 +550,15 @@ class WorldScene(Scene):
             (self.map_name, self.tilemap.terrain_at(*self._player_tile()))
         )
         if exit_config is not None:
+            if (self.map_name == "temple_rubble"
+                    and exit_config.destination == "ship_deck"):
+                # The crawlspace out plays the escape cutscene, which ends
+                # Phase 6 and hands off to the playable deck itself.
+                from src.scenes.escape_cutscene_scene import EscapeCutsceneScene
+                self.game.scenes.replace(
+                    EscapeCutsceneScene(self.game, sanity=self.sanity.current)
+                )
+                return
             self.load_map(
                 exit_config.destination,
                 arrival=exit_config.arrival,

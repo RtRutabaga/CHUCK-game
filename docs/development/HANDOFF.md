@@ -3,11 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `2968d01` (the crawlspace + ship deck)
-- Current work: the rubble map choked with debris + a paved lane (session 139)
+- Base commit before this pass: `b1a2b1d` (the rubble collapse)
+- Current work: the escape cutscene — the Phase 6 → 7 boundary (session 140)
 - Active phase: Phase 6 — The Jungle Temple (`PHASE-6.md`)
 
 ## Completed This Pass
+
+The escape cutscene, which ends Phase 6:
+
+- src/scenes/escape_cutscene_scene.py (new): EscapeCutsceneScene, a
+  contained input-free Scene modelled on FallingCutsceneScene. Chuck
+  crawls a tight stone tunnel toward a growing blade of daylight
+  (receding stone rings for forward motion, a corner vignette for
+  tightness, scrape sfx), the light whites out the screen, and he
+  emerges into the wooden hold with the open sea beyond the hull breach
+  (colours matched to the ship_deck map). The sea theme
+  (waterdeep_docks.wav) swells in at the emergence. Three timed
+  narration captions land the beat, then it fades to black and hands off
+  to the playable deck via load_checkpoint("ship_deck", sanity=...),
+  carrying Chuck's Sanity across.
+- src/scenes/world_scene.py: the rubble crawlspace walk-exit now
+  replaces the world with the cutscene instead of loading ship_deck
+  directly (mirrors the sky-fall → FallingCutsceneScene trigger).
+- PHASE-6.md: "The cutscene ends aboard a ship at sea" is now checked.
+- Tests: test_phase6_escape_cutscene.py (3, new — captions, draws every
+  phase input-free, hands off preserving Sanity); the ship-deck crawl
+  test now asserts it routes through the cutscene.
+
+## Previous Pass (session 139, commit b1a2b1d)
 
 temple_rubble was rebuilt to look like the temple's ceiling has caved in:
 
@@ -60,13 +83,13 @@ boundary:
 
 ## Verification Performed
 
-- All 54 suites pass (per-suite timeouts; nothing hangs).
-- Headless: the rubble loads with 463 debris props, 213 Astral, 159
-  paved-lane tiles; the lane connects arrival → anchor → crawlspace on
-  foot; the fireball→rubble and rubble→ship transitions still work.
-- Screenshots at the arrival, the mid-map, and the crawlspace: the
-  chamber choked with toppled columns and Astral rifts, with the clean
-  torch-lit paved lane threading through as the obvious route.
+- All 55 suites pass (per-suite timeouts; nothing hangs).
+- Headless: stepping onto the rubble crawlspace replaces the world with
+  EscapeCutsceneScene; playing it through hands off to ship_deck at the
+  from_crawlspace arrival with Sanity preserved (40 → 40).
+- Screenshots: the crawl (a receding stone tunnel to the daylight, Chuck
+  crawling, vignetted corners) and the emergence (the wooden hold, the
+  sea through the hull breach, Chuck looking up, a narration caption).
 
 ## Known Issues
 
@@ -74,15 +97,15 @@ boundary:
 
 ## Scope Notes
 
-- This is the structural slice only. The escape *cutscene* — Chuck
-  crawling the tight passage, a light appearing ahead, the emergence,
-  and the camera revealing the sea to end the phase — is unbuilt, as is
-  any Phase 7 gameplay aboard the ship and a distinct escape-cutscene
-  music cue.
+- Phase 6 is now content-complete end to end (entrance → temple maps →
+  boss battle → Fireball → rubble → crawlspace → escape cutscene →
+  ship). What remains is polish/handoff: a distinct escape-cutscene
+  music cue (it currently reuses the sea theme), and Phase 7 gameplay
+  aboard the ship (the deck is a free-roam room with no onward exit).
 
 ## Recommended Next Bounded Task
 
-- The escape cutscene: on arriving at the ship deck, play the scripted
-  emergence — a brief crawl beat, a camera pan up to the sea through the
-  hull breach, and a caption/line landing the "he has reached a ship"
-  moment that ends Phase 6. Its own music cue can be a follow-up.
+- Begin Phase 7 (see the Phase 7 doc when it exists): the first playable
+  beat aboard the ship — or, if staying in Phase 6, compose a dedicated
+  escape-cutscene music cue (a short one-shot like fall_to_chult.wav)
+  and swap EscapeCutsceneScene's SEA_MUSIC over to it.

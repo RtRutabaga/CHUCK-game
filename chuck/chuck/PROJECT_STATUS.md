@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 139 (the rubble map choked with debris + a paved lane).
+Updated: session 140 (the escape cutscene — the Phase 6 -> 7 boundary).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,20 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- The escape cutscene (session 140): the Phase 6 -> 7 boundary. Stepping
+  onto the rubble crawlspace now replaces the world with
+  EscapeCutsceneScene (src/scenes/escape_cutscene_scene.py, a contained
+  input-free Scene like FallingCutsceneScene): Chuck crawls a tight stone
+  tunnel toward a growing blade of daylight (receding stone rings +
+  vignette + scrape sfx), a whiteout, then he emerges into the wooden
+  hold with the open sea beyond the hull breach as the sea theme
+  (waterdeep_docks.wav) swells in. Three narration captions land the
+  moment ("Daylight, at last." / "Salt air..." / "Chuck has reached a
+  ship. He does not yet know it."), then it fades and hands off to the
+  playable ship deck via load_checkpoint, carrying his Sanity across.
+  Suite: test_phase6_escape_cutscene.py; the ship-deck crawl test now
+  goes through the cutscene. Phase 6 is content-complete but for its
+  distinct boss/cutscene-music polish and Phase 7 gameplay
 - The rubble collapse (session 139): temple_rubble was rebuilt to look
   like the temple's ceiling has caved in. The chamber is now choked with
   ~460 pieces of fallen-stone debris (toppled columns '¬' and cracked

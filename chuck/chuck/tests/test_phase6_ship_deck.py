@@ -60,11 +60,14 @@ def test_ship_checkpoints_are_registered() -> None:
     assert anchor.saveable and not anchor.development_visible
 
 
-def test_crawling_out_of_the_rubble_reaches_the_ship() -> None:
+def test_crawling_out_of_the_rubble_plays_the_escape_then_reaches_the_ship() -> None:
+    from src.scenes.escape_cutscene_scene import EscapeCutsceneScene
+
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint("temple_rubble")
         scene._arrival_fade_t = None
+        scene.sanity.current = 40
         # Stand on the crawlspace mouth in the rubble's south wall.
         crawl = next((c, r) for r in range(scene.tilemap.height_tiles)
                      for c in range(scene.tilemap.width_tiles)
@@ -72,12 +75,19 @@ def test_crawling_out_of_the_rubble_reaches_the_ship() -> None:
         scene.player.x = crawl[0] * config.TILE_SIZE + 3
         scene.player.y = crawl[1] * config.TILE_SIZE + 4
         scene.update(0.0)
-        assert scene.map_name == MAP_NAME
+        # The crawlspace plays the escape cutscene, not a bare transition.
+        cutscene = game.scenes.current
+        assert isinstance(cutscene, EscapeCutsceneScene)
+        # Play it through; it hands off to the playable ship deck itself.
+        for _ in range(int(16.0 / 0.05)):
+            cutscene.update(0.05)
+            if game.scenes.current is not cutscene:
+                break
+        deck = game.scenes.current
+        assert deck.map_name == MAP_NAME
         assert game.active_checkpoint_id == "ship_deck"
-        assert scene._player_tile() == (15, 14)  # the from_crawlspace arrival
-        assert len(scene.anchors) == 1
-        scene.update(0.0)
-        assert scene.map_name == MAP_NAME  # no transition bounce
+        assert deck._player_tile() == (15, 14)  # the from_crawlspace arrival
+        assert deck.sanity.current == 40  # Sanity carried across the escape
     finally:
         game._shutdown()
 

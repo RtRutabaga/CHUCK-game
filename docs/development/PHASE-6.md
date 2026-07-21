@@ -260,6 +260,6 @@ The phase ends immediately after Chuck reaches the ship.
 -   [x] The scripted Fireball transition works.
 -   [x] The rubble map uses Astral Sea hazards.
 -   [x] Chuck escapes through a narrow crawlspace.
--   [ ] The cutscene ends aboard a ship at sea.
+-   [x] The cutscene ends aboard a ship at sea.
 -   [ ] Temple, boss encounter, and cutscene each have distinct music.
 -   [ ] Phase 7 begins aboard the ship.
