@@ -277,13 +277,13 @@ def test_rendered_boss_theme_respects_loop_quality_gates() -> None:
     assert boss_rms >= temple_rms * 0.9, (boss_rms, temple_rms)
 
 
-def test_ship_shanty_is_a_fast_jaunty_reel() -> None:
+def test_ship_shanty_is_a_fast_dark_pirate_reel() -> None:
     tracks = shanty_song.build_tracks()
     duration = shanty_song.TOTAL_BEATS * 60.0 / shanty_song.TEMPO_BPM
     assert duration >= 60.0
     assert shanty_song.TEMPO_BPM >= 120  # a reel, not a harbor sway
     voiced = [t for t in tracks if t.notes]
-    assert len(voiced) >= 8, "a pub band needs a full ensemble"
+    assert len(voiced) >= 8, "a pirate crew needs a full band"
     for track in tracks:
         for note in track.notes:
             note_to_freq(note.pitch)
@@ -292,13 +292,17 @@ def test_ship_shanty_is_a_fast_jaunty_reel() -> None:
     fiddle = next(t for t in tracks if t.name == "fiddle")
     assert len(fiddle.notes) >= shanty_song.TOTAL_BARS * 8 * 0.9
     assert all(abs(n.dur - 0.5) < 1e-6 for n in fiddle.notes)  # eighths
-    # The mixolydian flat-seventh (C natural over D) keeps the folk color.
-    assert any(n.pitch.startswith("C") and not n.pitch.startswith("C#")
-               for n in fiddle.notes)
-    # The crew only joins in the second half (the shanty sing-along).
+    fp = [n.pitch for n in fiddle.notes]
+    # It's DARK now: D minor, not the old major reel. The minor third
+    # (F natural) is everywhere and the major third (F#) is gone...
+    assert any(p.startswith("F") and not p.startswith("F#") for p in fp)
+    assert not any(p.startswith("F#") for p in fp)
+    # ...while the raised-seventh C# supplies the swashbuckler cadence.
+    assert any(p.startswith("C#") for p in fp)
+    # The crew chants in the second half (the pirate sing-along).
     crew = next(t for t in tracks if t.name == "crew")
     assert crew.notes and all(n.beat >= 16 * 4 for n in crew.notes)
-    # Accordion and whistle round out the band.
+    # Accordion horns and the whistle round out the band.
     assert next(t for t in tracks if t.name == "accordion").notes
     assert next(t for t in tracks if t.name == "whistle").notes
 

@@ -3,13 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `7a64aec` (chaotic collapse rubble)
-- Current work: the ship's sea-shanty Irish-reel theme (session 144)
+- Base commit before this pass: `cff3007` (the ship's sea-shanty reel)
+- Current work: the ship theme turned dark pirate — D minor (session 145)
 - Active phase: Phase 6 → 7 boundary (`PHASE-6.md`); Phase 7 unstarted
 
 ## Completed This Pass
 
-Gave the ship (cutscene + deck) its own jaunty sea-shanty reel:
+Reworked the ship theme from a major reel into a dark pirate one:
+
+- data/music/ship_shanty.py went from D mixolydian to D MINOR. The
+  fiddle tune now hammers the classic minor pirate loop (i-bVI-bVII:
+  Dm-Bb-C), and the turns run the descending Andalusian cadence
+  (Dm-C-Bb-A) with a raised-seventh C# — the swashbuckler-movie sound.
+  The bass became a relentless galloping eighth-note ostinato; the
+  accordion (brass) is bolder (horns, louder, holding the C# colour over
+  the A); the crew chants lower and gruffer; the bright bells dropped to
+  low ship-bell tolls. Same 126 BPM, 40 bars, 11 voices.
+- Re-rendered ship_shanty.wav (peak 0.900, seam 0.000, RMS 0.175). No
+  new wiring needed — the cutscene and deck already play ship_shanty.wav.
+- The music test was renamed/strengthened to assert the minor tonality
+  (F natural present, no F#, and the C# raised-seventh cadence).
+
+## Previous Pass (session 144, commit cff3007)
+
+Gave the ship (cutscene + deck) its own sea-shanty reel:
 
 - data/music/ship_shanty.py — built from the Waterdeep-docks rhythm (same
   D mixolydian, flat-7 C-natural color, D/G/A groove) cranked to a fast
