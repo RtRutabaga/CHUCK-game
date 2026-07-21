@@ -454,12 +454,21 @@ class WorldScene(Scene):
         for actor in self.battle_actors:
             actor.update(dt)
         if self.battle is not None:
-            self.battle_projectiles.extend(self.battle.update(dt))
+            tick = self.battle.update(dt)
+            self.battle_projectiles.extend(tick.projectiles)
+            self.battle_cones.extend(tick.cones)
             for shot in self.battle_projectiles:
                 shot.update(dt, self.tilemap)
             self.battle_projectiles = [
                 shot for shot in self.battle_projectiles if shot.alive
             ]
+            for cone in self.battle_cones:
+                cone.update(dt)
+                if cone.just_activated:
+                    # The blast lands: the hall lurches and booms.
+                    self.camera.shake(config.BATTLE_CONE_SHAKE)
+                    self.game.audio.play_sfx(config.BATTLE_CONE_SOUND)
+            self.battle_cones = [c for c in self.battle_cones if c.alive]
         if self.breach is not None:
             if (not self.breach.triggered
                     and self._player_tile()[0] <= config.BREACH_TRIGGER_COL):
@@ -647,6 +656,12 @@ class WorldScene(Scene):
                 if self.sanity.damage(config.BATTLE_SLASH_SANITY_DAMAGE):
                     self.player.hurt_blink = config.HURT_COOLDOWN
                     self.game.audio.play_sfx("hurt")
+        for cone in self.battle_cones:
+            if cone.contains(player_box):
+                if self.sanity.damage(config.BATTLE_CONE_SANITY_DAMAGE):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+                break
 
         terrain_hazard = touching_terrain_hazard(
             self.tilemap, player_box, self.player.jumping
@@ -700,6 +715,8 @@ class WorldScene(Scene):
             drawable.draw(surface, offset)
         if self.breach is not None:
             self.breach.draw(surface, offset)
+        for cone in self.battle_cones:
+            cone.draw(surface, offset)
         self.tilemap.draw_overhead(surface, offset, self._world_time)
         self.hud.draw(surface)
         # Tutorial hint (temporary; Waterdeep + sewer only). Hidden
@@ -895,6 +912,7 @@ class WorldScene(Scene):
         self.battle = (BattleChoreographer(self.battle_actors)
                        if self.battle_actors else None)
         self.battle_projectiles: list[BattleProjectile] = []
+        self.battle_cones: list = []
         if getattr(self, "breach", None) is not None:
             self.breach.restore()
         self.breach = (AstralBreach(self.tilemap)

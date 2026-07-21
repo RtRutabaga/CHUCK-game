@@ -117,6 +117,25 @@ def sfx_vanish() -> list[float]:
     return normalize(mix(*notes), headroom=0.45)
 
 
+def sfx_beholder_blast() -> list[float]:
+    """A deep detonation: a sub-bass drop, a filtered slam, a low growl.
+
+    The beholder's cone of force landing — felt more than heard, meant
+    to pair with the screen shake as the wall of energy hits."""
+    dur = 0.7
+    n = int(dur * SAMPLE_RATE)
+    drop = []
+    for i in range(n):
+        t = i / SAMPLE_RATE
+        freq = 120.0 - 80.0 * (t / dur)  # 120 Hz sinking to 40 Hz
+        drop.append(math.sin(2.0 * math.pi * freq * t))
+    drop = envelope(gain(drop, 0.9), 0.005, 0.6)
+    slam = envelope(lowpass(noise(dur, seed=61), 900), 0.001, 0.5)
+    growl = envelope(lowpass(tone(70.0, dur, "square"), 520), 0.01, 0.6)
+    return normalize(mix(drop, gain(slam, 0.7), gain(growl, 0.5)),
+                     headroom=0.5)
+
+
 def sfx_respawn() -> list[float]:
     return normalize(
         mix(_pad(_bell(392.0, 0.5), 0.0), _pad(_bell(587.3, 0.6), 0.18)),
@@ -147,6 +166,7 @@ def main() -> None:
         "vanish.wav": sfx_vanish,
         "respawn.wav": sfx_respawn,
         "chime.wav": sfx_chime,
+        "beholder_blast.wav": sfx_beholder_blast,
     }
     for i, (hz, cut, dur) in enumerate(((150, 800, 0.07), (135, 750, 0.075))):
         sounds[f"footstep_wood_{i + 1}.wav"] = (

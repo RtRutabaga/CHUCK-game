@@ -16,6 +16,8 @@ Design notes (Game Bible: smooth follow, no fancy effects):
 
 from __future__ import annotations
 
+import random
+
 from src.core import config
 from src.core.mathutil import approach
 
@@ -31,6 +33,7 @@ class Camera:
         self._target = None  # anything with x, y, width, height (an Entity)
         self._bounds: tuple[int, int] | None = None  # map size in pixels
         self._snap_next = False
+        self._shake = 0.0  # current shake magnitude in pixels
 
     # ------------------------------------------------------------------
     # Setup
@@ -61,8 +64,17 @@ class Camera:
     # ------------------------------------------------------------------
     # Per-frame
     # ------------------------------------------------------------------
+    def shake(self, amount: float) -> None:
+        """Kick the view with a decaying jitter (an impact, a blast)."""
+        self._shake = max(self._shake, amount)
+
     def update(self, dt: float) -> None:
         """Move toward the target's center, then clamp to the map."""
+        if self._shake > 0.0:
+            self._shake = approach(self._shake, 0.0,
+                                   config.CAMERA_SHAKE_DECAY, dt)
+            if self._shake < 0.1:
+                self._shake = 0.0
         if self._target is None:
             return
 
@@ -101,4 +113,8 @@ class Camera:
     @property
     def offset(self) -> tuple[int, int]:
         """Pixel offset to subtract from world coordinates when drawing."""
+        if self._shake > 0.0:
+            jitter = self._shake
+            return (round(self.x + random.uniform(-jitter, jitter)),
+                    round(self.y + random.uniform(-jitter, jitter)))
         return (round(self.x), round(self.y))

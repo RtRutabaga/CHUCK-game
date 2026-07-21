@@ -122,23 +122,48 @@ def test_the_choreographer_fires_every_attack_on_cadence() -> None:
         assert scene.battle is not None
         seen: set[str] = set()
         slash_seen = False
+        cone_seen = False
         # Park Chuck at the arrival, far outside every hazard.
         for _ in range(int(6.0 / 0.05)):
             scene.update(0.05)
             seen.update(s.kind for s in scene.battle_projectiles)
             slash_seen = slash_seen or (
                 scene.battle.slash_hitbox() is not None)
+            cone_seen = cone_seen or bool(scene.battle_cones)
         assert seen == {"ray", "arrow", "bolt"}
         assert slash_seen
-        # Rays fly east from the beholder; arrows and bolts fly west.
-        directions = {s.kind: s.direction for s in scene.battle_projectiles}
-        for kind, expected in (("ray", 1), ("arrow", -1), ("bolt", -1)):
-            if kind in directions:
-                assert directions[kind] == expected, kind
-        # The arrival aisle stays survivable: rays dissipate at range,
-        # long before the east door where Chuck walks in.
-        assert all(s.x < 40 * config.TILE_SIZE
-                   for s in scene.battle_projectiles)
+        assert cone_seen  # the beholder's cone joins the barrage
+        # Rays still fly east from the beholder toward the hall.
+        rays = [s for s in scene.battle_projectiles if s.kind == "ray"]
+        assert all(s.direction == 1 for s in rays)
+        # Rays dissipate at range, well short of the far-east door.
+        assert all(s.x < 40 * config.TILE_SIZE for s in rays)
+    finally:
+        game._shutdown()
+
+
+def test_the_archer_sprays_arrows_all_around_as_she_spins() -> None:
+    import math
+
+    game = Game()
+    try:
+        scene = _sanctum_scene(game)
+        ranger = next(a for a in scene.battle_actors if a.kind == "ranger")
+        angles = []
+        for _ in range(80):
+            scene.update(0.05)
+            for s in scene.battle_projectiles:
+                if s.kind == "arrow":
+                    angles.append(math.atan2(s.vy, s.vx))
+        assert len(angles) > 20
+        # Arrows leave in every compass direction, not one lane: cover
+        # all four quadrants of travel.
+        assert any(a for a in angles if math.cos(a) > 0.3)   # east
+        assert any(a for a in angles if math.cos(a) < -0.3)  # west
+        assert any(a for a in angles if math.sin(a) > 0.3)   # south
+        assert any(a for a in angles if math.sin(a) < -0.3)  # north
+        # The ranger's body is visibly whirling.
+        assert ranger.spin != 0.0
     finally:
         game._shutdown()
 
@@ -146,14 +171,14 @@ def test_the_choreographer_fires_every_attack_on_cadence() -> None:
 def test_projectiles_die_on_masonry_and_at_range() -> None:
     tilemap = TileMap(config.MAPS_DIR / "temple_sanctum.txt")
     ts = config.TILE_SIZE
-    arrow = BattleProjectile(9 * ts, 15 * ts + 8, -1, "arrow")
+    arrow = BattleProjectile(9 * ts, 15 * ts + 8, -1, 0, "arrow")
     for _ in range(200):
         arrow.update(0.05, tilemap)
         if not arrow.alive:
             break
     assert not arrow.alive  # the west wall stopped it
     assert arrow.x > 4 * ts  # inside the hall, not out of bounds
-    ray = BattleProjectile(13 * ts, 23 * ts + 8, 1, "ray")
+    ray = BattleProjectile(13 * ts, 23 * ts + 8, 1, 0, "ray")
     traveled_from = ray.x
     for _ in range(400):
         ray.update(0.05, tilemap)
@@ -171,7 +196,7 @@ def test_a_hit_costs_sanity_once_and_spends_the_shot() -> None:
         before = scene.sanity.current
         shot = BattleProjectile(
             scene.player.hitbox.centerx, scene.player.hitbox.centery,
-            1, "ray")
+            1, 0, "ray")
         scene.battle_projectiles.append(shot)
         scene.update(0.01)
         assert scene.sanity.current == before - config.BATTLE_RAY_SANITY_DAMAGE
@@ -180,7 +205,7 @@ def test_a_hit_costs_sanity_once_and_spends_the_shot() -> None:
         # Invulnerability frames: an immediate second shot cannot land.
         second = BattleProjectile(
             scene.player.hitbox.centerx, scene.player.hitbox.centery,
-            1, "bolt")
+            1, 0, "bolt")
         scene.battle_projectiles.append(second)
         scene.update(0.01)
         assert scene.sanity.current == before - config.BATTLE_RAY_SANITY_DAMAGE
@@ -210,6 +235,103 @@ def test_the_fighters_slash_reaches_west_and_wounds_chuck() -> None:
         scene.update(0.01)
         assert scene.sanity.current == (
             before - config.BATTLE_SLASH_SANITY_DAMAGE)
+    finally:
+        game._shutdown()
+
+
+def test_the_beholder_cone_charges_then_detonates_east() -> None:
+    import pygame
+
+    from src.entities.battle_hazards import BeholderCone
+
+    game = Game()
+    try:
+        scene = _sanctum_scene(game)
+        beholder = next(a for a in scene.battle_actors
+                        if a.kind == "beholder")
+        cone = BeholderCone(beholder.center_x + beholder.width / 2,
+                            beholder.center_y)
+        assert cone.state == "charging" and not cone.active
+        # It harms no one while merely charging (a fair telegraph).
+        east = pygame.Rect(int(cone.apex_x + 40), int(cone.apex_y - 2), 4, 4)
+        assert not cone.contains(east)
+        cone.update(config.BATTLE_CONE_CHARGE + 0.01)
+        assert cone.active and cone.just_activated
+        # Now the wedge bites east, out to its range...
+        assert cone.contains(east)
+        # ...but never behind the beholder, nor beyond the range.
+        west = pygame.Rect(int(cone.apex_x - 40), int(cone.apex_y - 2), 4, 4)
+        assert not cone.contains(west)
+        far = pygame.Rect(
+            int(cone.apex_x + config.BATTLE_CONE_RANGE + 20),
+            int(cone.apex_y - 2), 4, 4)
+        assert not cone.contains(far)
+        cone.update(config.BATTLE_CONE_ACTIVE + 0.01)
+        assert not cone.alive
+    finally:
+        game._shutdown()
+
+
+def test_the_cone_detonation_shakes_the_screen() -> None:
+    game = Game()
+    try:
+        scene = _sanctum_scene(game)
+        scene.battle._cone_timer = 0.0  # force a cone this frame
+        scene.update(0.02)
+        assert scene.battle_cones
+        assert scene.camera._shake == 0.0  # still only charging
+        # Advance a frame at a time until it detonates.
+        shaken = False
+        for _ in range(int(config.BATTLE_CONE_CHARGE / 0.02) + 5):
+            scene.update(0.02)
+            if scene.camera._shake > 0.0:
+                shaken = True
+                break
+        assert shaken  # the blast kicked the camera
+    finally:
+        game._shutdown()
+
+
+def test_the_cone_wounds_chuck_when_it_catches_him() -> None:
+    from src.entities.battle_hazards import BeholderCone
+
+    game = Game()
+    try:
+        scene = _sanctum_scene(game)
+        beholder = next(a for a in scene.battle_actors
+                        if a.kind == "beholder")
+        cone = BeholderCone(beholder.center_x + beholder.width / 2,
+                            beholder.center_y)
+        cone.update(config.BATTLE_CONE_CHARGE + 0.01)  # already active
+        assert cone.active
+        scene.battle_cones = [cone]
+        scene.battle_projectiles = []  # isolate the cone's damage
+        scene.player.x = cone.apex_x + 60
+        scene.player.y = cone.apex_y - scene.player.height / 2
+        before = scene.sanity.current
+        scene.update(0.01)
+        assert scene.sanity.current == (
+            before - config.BATTLE_CONE_SANITY_DAMAGE)
+    finally:
+        game._shutdown()
+
+
+def test_the_beholder_blast_sound_exists() -> None:
+    path = config.SFX_DIR / f"{config.BATTLE_CONE_SOUND}.wav"
+    assert path.is_file(), path
+
+
+def test_cones_reset_with_the_room() -> None:
+    game = Game()
+    try:
+        scene = _sanctum_scene(game)
+        scene.battle._cone_timer = 0.0
+        scene.update(0.01)
+        assert scene.battle_cones
+        scene.sanity.deplete()
+        scene.update(config.RESPAWN_FADE_OUT + 0.01)
+        scene.update(config.RESPAWN_HOLD + 0.01)
+        assert scene.battle_cones == []
     finally:
         game._shutdown()
 

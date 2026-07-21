@@ -186,27 +186,55 @@ DART_INTERVAL = 1.75
 DART_HITBOX_SHORT = 2
 DART_HITBOX_LONG = 7
 
-# The sanctum battle in motion: the combatants' attacks are timed hazards
-# Chuck must dodge, not aimed at him. Rays sweep the three adventurers'
-# lanes in a fixed cycle and dissipate at range, so the east half of the
-# hall stays survivable; arrows and bolts fly west at the beholder; the
-# fighter's slash pulses where the skeletons press him.
-BATTLE_RAY_SPEED = 88.0
+# The sanctum battle in motion: a desperate, overwhelming fight Chuck
+# only has to survive. Rays sweep the adventurers' lanes; the ranger
+# spins loosing a rotating spray of arrows in every direction; the
+# wizard hurls fans of bolts; and the beholder occasionally charges a
+# screen-shaking cone of force east across the hall. None of it is
+# aimed at Chuck, but the air is thick with stray death.
+BATTLE_RAY_SPEED = 92.0
 BATTLE_RAY_SANITY_DAMAGE = 20
-BATTLE_RAY_INTERVAL = 2.1
+BATTLE_RAY_INTERVAL = 1.4
 BATTLE_RAY_RANGE = 320.0
 BATTLE_RAY_HITBOX_LONG = 12
 BATTLE_RAY_HITBOX_SHORT = 3
-BATTLE_ARROW_SPEED = 168.0
+
+# The spinning archer: a fan of arrows per beat, the aim whirling around
+# the compass so arrows spray the whole room over a couple of seconds.
+BATTLE_ARROW_SPEED = 150.0
 BATTLE_ARROW_SANITY_DAMAGE = 10
-BATTLE_ARROW_INTERVAL = 1.9
-BATTLE_BOLT_SPEED = 72.0
+BATTLE_ARROW_INTERVAL = 0.3
+BATTLE_ARROW_FAN = 2               # arrows loosed per beat
+BATTLE_ARROW_FAN_SPREAD = 0.42     # radians between fan arrows
+BATTLE_ARROW_SPIN_STEP = 0.85      # radians the aim whirls each beat
+BATTLE_RANGER_SPIN_SPEED = 8.0     # visual body spin, rad/s
+
+# The wizard's magic: a westward fan of bolts at the beholder, often.
+BATTLE_BOLT_SPEED = 76.0
 BATTLE_BOLT_SANITY_DAMAGE = 15
-BATTLE_BOLT_INTERVAL = 2.6
+BATTLE_BOLT_INTERVAL = 1.05
+BATTLE_BOLT_FAN = 3
+BATTLE_BOLT_FAN_SPREAD = 0.34      # radians between fan bolts
+
+# The beholder's cone: an occasional charged blast of force east across
+# the hall — a bright telegraph, then a wide lethal wedge that shakes
+# the screen and booms. Chuck must be clear of the wedge when it fires.
+BATTLE_CONE_INTERVAL = 6.0
+BATTLE_CONE_CHARGE = 0.9           # telegraph before the blast lands
+BATTLE_CONE_ACTIVE = 0.4           # the dangerous window
+BATTLE_CONE_HALF_ANGLE = 0.5       # ~29 degrees to each side
+BATTLE_CONE_RANGE = 216.0          # leaves an eastern refuge to flee to
+BATTLE_CONE_SANITY_DAMAGE = 30
+BATTLE_CONE_SHAKE = 6.0            # screen-shake impulse on detonation
+BATTLE_CONE_SOUND = "beholder_blast"
+
 BATTLE_SLASH_INTERVAL = 1.5
 BATTLE_SLASH_ACTIVE = 0.22
 BATTLE_SLASH_SANITY_DAMAGE = 12
 BATTLE_ATTACK_FLASH = 0.18
+
+# Screen shake decays exponentially; the offset jitters within ±amount.
+CAMERA_SHAKE_DECAY = 9.0
 
 # The Astral breach: once Chuck walks into sight of the battle, the
 # Astral Sea breaks through the floor behind him in a two-tile-thick

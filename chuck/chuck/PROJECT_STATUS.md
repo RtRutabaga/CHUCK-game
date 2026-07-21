@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 133 (Astral breach + the entrance establishing shot).
+Updated: session 134 (battle chaos: arrow spray, more magic, cone + shake).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -636,6 +636,23 @@ This file is required by the project rules and updated every session.
   the central sight-line to the beholder and trio: at 7-tile notice
   range they lie dormant until Chuck flees a wall to escape the eye
   rays, then rouse and herd him back to center — 27 skeletons in all
+- Battle chaos (session 134): the sanctum fight was made genuinely
+  overwhelming. BattleProjectile now carries a free velocity vector, and
+  the ranger whirls (BattleActor.spin, drawn as a rotating sprite;
+  BATTLE_RANGER_SPIN_SPEED) loosing a rotating fan of arrows whose aim
+  advances BATTLE_ARROW_SPIN_STEP each fast beat — arrows spray every
+  compass direction, filling the room. The wizard hurls a westward
+  BATTLE_BOLT_FAN of bolts far more often. Rays fire faster. New
+  BeholderCone: the beholder occasionally charges a telegraphed wedge of
+  force east across the hall (BATTLE_CONE_* — 0.9s pulsing telegraph,
+  0.4s lethal window, 216px range leaving an eastern refuge), and on
+  detonation the camera shakes (Camera.shake / .offset jitter, decaying
+  at CAMERA_SHAKE_DECAY) and a new deep beholder_blast sfx booms
+  (tools/generate_audio.py sfx_beholder_blast). BattleChoreographer.update
+  now returns a BattleTick(projectiles, cones); the scene tracks
+  battle_cones (damage via cone.contains, drawn as a translucent wedge),
+  and both reset with the room. Suite: 8 new/expanded tests in
+  test_phase6_sanctum_battle.py (19 total)
 - The entrance establishing shot (session 133): entering the sanctum
   from the gauntlet queues the heroes' three lines at the far-east door,
   ~40 tiles from the battle. The camera now cuts to the fight for those

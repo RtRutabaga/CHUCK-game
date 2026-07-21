@@ -42,6 +42,7 @@ class BattleActor(Entity):
         # lockstep; attack_flash is set by the BattleChoreographer.
         self._time = (sum(map(ord, kind)) % 100) / 100.0 * math.tau
         self.attack_flash = 0.0
+        self.spin = 0.0  # radians; the ranger whirls as she looses arrows
 
     def load_sprite(self, assets) -> None:
         self._image = assets.image(_SPRITES[self.kind])
@@ -88,8 +89,17 @@ class BattleActor(Entity):
             # A subtle in-place sway; attacks lunge west at the beholder.
             lift = round(0.5 + 0.5 * math.sin(self._time * 3.1))
             lunge = -2 if self.attack_flash > 0.0 else 0
+        image = self._image
+        if self.spin:
+            # The whirling archer: spin the sprite about its own center,
+            # keeping the body over the same spot on the floor.
+            image = pygame.transform.rotate(image, math.degrees(self.spin))
+        iw, ih = image.get_size()
+        # Center the (possibly rotated) image where the upright sprite's
+        # center would sit, so rotation pivots in place.
+        center_x = self.x + self.width / 2 + lunge
+        center_y = foot_y - fh / 2 - lift
         surface.blit(
-            self._image,
-            (int(self.x + self.width / 2 - fw / 2) + lunge - ox,
-             int(foot_y - fh - lift) - oy),
+            image,
+            (int(center_x - iw / 2) - ox, int(center_y - ih / 2) - oy),
         )
