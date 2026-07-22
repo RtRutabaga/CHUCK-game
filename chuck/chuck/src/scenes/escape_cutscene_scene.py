@@ -185,27 +185,41 @@ class EscapeCutsceneScene(Scene):
             surface.blit(img, (w // 2 - img.get_width() // 2, 128))
 
     def _draw_porthole(self, surface, cx: int, cy: int, r: int) -> None:
-        """One round window: sunlit sea and sky over a horizon, brass rim."""
-        glass = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
+        """One round window: sunlit sea with rolling waves under a sky,
+        brass rim."""
+        size = r * 2
+        glass = pygame.Surface((size, size), pygame.SRCALPHA)
         gx = r  # local center
-        horizon = round(r * 0.9)
+        horizon = round(r * 0.72)
         pygame.draw.circle(glass, _SKY, (gx, gx), r)
         # The sea fills the lower part of the circle, darker toward the rim.
-        for y in range(horizon, r * 2):
-            shade = y / (r * 2)
+        for y in range(horizon, size):
+            shade = (y - horizon) / max(1, size - horizon)
             col = tuple(round(a + (b - a) * shade)
                         for a, b in zip(_SEA, _SEA_DEEP))
-            pygame.draw.line(glass, col, (0, y), (r * 2, y))
-        # Re-mask to the circle so the sea lines don't spill to the corners.
-        mask = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
+            pygame.draw.line(glass, col, (0, y), (size, y))
+        # Rolling waves: several undulating crest lines that drift sideways,
+        # each with a shadow just beneath it for a bit of swell and depth.
+        span = size - horizon
+        for row in range(4):
+            base = horizon + 3 + round(row * span / 4.2)
+            phase = self.elapsed * 2.6 + row * 1.7
+            for x in range(size):
+                wy = base + round(math.sin(x * 0.55 - phase) * 1.8)
+                if horizon <= wy < size:
+                    glass.set_at((x, wy), _SEA_GLINT)
+                if horizon <= wy + 1 < size:
+                    glass.set_at((x, wy + 1), _SEA_DEEP)
+        # A brighter sun-glitter that shimmers on the nearest swell.
+        for i in range(4):
+            wx = gx + round(math.sin(self.elapsed * 1.3 + i * 1.9) * (r - 5))
+            wy = horizon + 6 + (i * 7) % max(1, span - 6)
+            if wy < size - 1:
+                glass.set_at((wx, wy), (255, 255, 255))
+        # Re-mask to the circle so nothing spills past the glass.
+        mask = pygame.Surface((size, size), pygame.SRCALPHA)
         pygame.draw.circle(mask, (255, 255, 255, 255), (gx, gx), r)
         glass.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
-        # A couple of moving glints on the water.
-        for i in range(3):
-            wx = gx + round(math.sin(self.elapsed * 0.9 + i * 2.1) * (r - 6))
-            wy = horizon + 4 + i * 5
-            if wy < r * 2 - 2:
-                glass.set_at((wx, wy), _SEA_GLINT)
         surface.blit(glass, (cx - r, cy - r))
         # Brass rim with rivets, sitting proud of the hull.
         pygame.draw.circle(surface, _RIM, (cx, cy), r + 2, 3)
