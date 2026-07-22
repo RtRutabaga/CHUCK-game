@@ -132,6 +132,7 @@ class WorldScene(Scene):
         self._pending_arrival = None
         self._pending_climb_from_water = False
         self._pending_fade_in = False
+        self._walk_choice_armed = True  # crevice-style walk-in prompts
         self.tilemap = TileMap(config.MAPS_DIR / f"{self.map_name}.txt")
         if self.map_name == "waterdeep_docks" and self._sewer_completed:
             self.tilemap.open_tavern_entrance()
@@ -554,6 +555,27 @@ class WorldScene(Scene):
         ):
             self._jump_tutorial_complete = True
 
+        # Walk-triggered choices (the rubble crevice): stepping into the
+        # zone pops the YES/NO prompt, no interact press. It arms on entry
+        # and re-arms only once Chuck has left, so a "NO" isn't re-asked
+        # while he still stands there.
+        player_box = self.player.hitbox
+        walk_choice = next(
+            (t for t in self.choice_triggers if t.walk_triggered
+             and overlaps(player_box, pygame.Rect(*t.interaction_bounds()))),
+            None,
+        )
+        if walk_choice is not None:
+            if self._walk_choice_armed:
+                self._walk_choice_armed = False
+                choice = self.choices.get(walk_choice.choice_id)
+                self.game.scenes.push(DialogueScene(
+                    self.game, [choice.prompt], choice=choice,
+                    dialogue=self.dialogue, on_choice=self._on_choice))
+                return
+        else:
+            self._walk_choice_armed = True
+
         exit_config = AREA_WALK_EXITS.get(
             (self.map_name, self.tilemap.terrain_at(*self._player_tile()))
         )
@@ -890,7 +912,8 @@ class WorldScene(Scene):
             self.player.interaction_probe(),
             self.player.hitbox,
             self.npcs,
-            [*self.props, *self.choice_triggers],
+            [*self.props,
+             *(t for t in self.choice_triggers if not t.walk_triggered)],
         )
 
     def _player_tile(self) -> tuple[int, int]:

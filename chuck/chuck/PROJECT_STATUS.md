@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 145 (the ship theme turned dark pirate — D minor).
+Updated: session 146 (the crevice prompt fires on walking in, no interact).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,15 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- Walk-in crevice prompt (session 146): the rubble "Enter crevice?"
+  YES/NO no longer needs the interact key — walking into the crevice
+  zone pops it. ChoiceTrigger gains a walk_triggered flag (a _WALK_TRIGGERS
+  set; "crevice"); WorldScene checks walk-triggered zones each frame
+  after movement and pushes the choice on entry, with a _walk_choice_armed
+  flag that only re-arms once Chuck leaves the zone (so a "NO" isn't
+  re-asked while he stands there). Walk-triggered choices are excluded
+  from the interact-range check, so the crevice is purely walk-driven
+  while the sewer grate keeps its interact prompt
 - The ship's pirate theme (sessions 144-145): the escape cutscene and
   the ship deck (the Phase 7 doorstep) share ship_shanty.wav
   (data/music/ship_shanty.py) instead of the borrowed docks loop. Built

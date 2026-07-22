@@ -10,6 +10,9 @@ _TRIGGER_TILES = {
     "crevice": (2, 2),
 }
 
+# Choices that pop by simply walking into the zone — no interact press.
+_WALK_TRIGGERS = {"crevice"}
+
 
 class ChoiceTrigger:
     """A non-drawing interaction target centered on a map marker."""
@@ -21,6 +24,7 @@ class ChoiceTrigger:
             raise ValueError(f"Unknown choice trigger {choice_id!r}")
         width_tiles, height_tiles = _TRIGGER_TILES[choice_id]
         self.choice_id = choice_id
+        self.walk_triggered = choice_id in _WALK_TRIGGERS
         self.width = width_tiles * config.TILE_SIZE
         self.height = height_tiles * config.TILE_SIZE
         self.x = center_x - self.width / 2

@@ -68,13 +68,11 @@ def test_saying_yes_to_the_crevice_plays_the_escape_then_reaches_the_ship() -> N
         scene = game.checkpoints.load_checkpoint("temple_rubble")
         scene._arrival_fade_t = None
         scene.sanity.current = 40
-        # Stand at the crevice prompt and press E, facing the crawlspace.
+        # Walk into the crevice zone — the prompt pops, no interact press.
         trigger = scene.choice_triggers[0]
-        scene.player.x = trigger.x
-        scene.player.y = trigger.y
-        scene.player.facing = "down"
-        game.input.begin_frame()
-        game.input._actions_just_pressed.add("interact")
+        assert trigger.walk_triggered
+        scene.player.x = trigger.x + trigger.width / 2 - scene.player.width / 2
+        scene.player.y = trigger.y + trigger.height / 2 - scene.player.height / 2
         scene.update(0.0)
         prompt = game.scenes.current
         assert prompt is not scene  # the "Enter crevice?" choice opened

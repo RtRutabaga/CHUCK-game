@@ -3,11 +3,27 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `cff3007` (the ship's sea-shanty reel)
-- Current work: the ship theme turned dark pirate — D minor (session 145)
+- Base commit before this pass: `185e890` (the dark pirate ship theme)
+- Current work: the crevice prompt fires on walk-in (session 146)
 - Active phase: Phase 6 → 7 boundary (`PHASE-6.md`); Phase 7 unstarted
 
 ## Completed This Pass
+
+Made the rubble crevice prompt pop by walking in, not by interact:
+
+- ChoiceTrigger gains `walk_triggered` (from a `_WALK_TRIGGERS = {"crevice"}`
+  set). WorldScene now checks walk-triggered choice zones every frame
+  after movement: on overlap it pushes the "Enter crevice?" DialogueScene
+  and returns. A `_walk_choice_armed` flag (reset in load_map) fires the
+  prompt once on entry and only re-arms after Chuck has left the zone —
+  so declining "NO" while still standing on it does not re-ask.
+- Walk-triggered choices are filtered out of `_interactable_in_range`, so
+  the crevice is purely walk-driven; the sewer grate (not walk-triggered)
+  keeps its interact prompt.
+- The ship-deck escape test now drives it by walking into the zone
+  (no interact press).
+
+## Previous Pass (session 145, commit 185e890)
 
 Reworked the ship theme from a major reel into a dark pirate one:
 
