@@ -1,23 +1,18 @@
-; PHASE 6 -> 7 BOUNDARY - SHIP DECK (30x18 tiles).
-; Chuck crawls out of the rubble into a cramped wooden hold. A
-; breach in the hull opens onto the open sea - he has, without
-; knowing it, reached a ship. First structural slice: the escape
-; cutscene and any onward (Phase 7) gameplay are later work.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-##########~~~~~~~~~~##########
-#============================#
-#=========o========o=========#
-#===x====================x===#
-#=======Ҍ====================#
-#============================#
-#============================#
-#============================#
-#============================#
-#====x==================x====#
-#============================#
-#==============Ҋ=============#
-#============================#
-##############################
-##############################
+; PHASE 6 -> 7 BOUNDARY - SHIP DECK (26x13 tiles).
+; Chuck crawls out of the rubble into a wooden ship compartment, its
+; hull set with brass portholes onto the sunlit, wavy sea (the same
+; look as the escape cutscene). First structural slice: the onward
+; Phase 7 gameplay is later work; there is no exit off the deck yet.
+##########################
+##########################
+#====Ø====Ø====Ø====Ø====#
+##########################
+#========o======o========#
+#===x================x===#
+Ø========================Ø
+#=======Ҍ================#
+#========================#
+Ø====x==============x====Ø
+#============Ҋ===========#
+##########################
+##########################

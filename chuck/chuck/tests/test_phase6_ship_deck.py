@@ -26,25 +26,32 @@ def _map() -> TileMap:
     return TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
 
 
-def test_the_deck_is_a_wooden_room_open_to_the_sea() -> None:
+def test_the_deck_is_a_wooden_compartment_with_portholes() -> None:
     tilemap = _map()
-    assert (tilemap.width_tiles, tilemap.height_tiles) == (30, 18)
+    assert (tilemap.width_tiles, tilemap.height_tiles) == (26, 13)
     kinds = [kind for kind, _pos in tilemap.object_spawns]
     assert kinds.count("arrival:from_crawlspace") == 1
     assert kinds.count("anchor:ship_deck_anchor") == 1
-    # A wooden deck (planks) with the open sea (water) beyond a hull hole.
+    # A wooden compartment (plank floor) whose hull is set with portholes
+    # onto the sea — matching the escape cutscene's look.
     planks = sum(row.count("=") for row in tilemap._grid)
-    water = sum(row.count("~") for row in tilemap._grid)
-    assert planks >= 200, planks
-    assert water >= 60, water
+    portholes = sum(row.count("Ø") for row in tilemap._grid)
+    assert planks >= 120, planks
+    assert portholes >= 6, portholes
+    # The portholes are solid hull, not walkable openings.
+    from src.world.tilemap import TILE_DEFS
+    assert TILE_DEFS["Ø"].solid
     # No enemies and no onward exit (the escape is a later slice).
     assert not any(k in {"rat", "zombie", "skeleton", "raptor",
                          "massive_dinosaur", "snake"} for k in kinds)
     assert not any(m == MAP_NAME for (m, _c) in AREA_WALK_EXITS)
 
 
-def test_the_deck_uses_the_docks_art_and_shanty_theme() -> None:
-    assert tileset_for(MAP_NAME).sheet == "docks.png"
+def test_the_deck_uses_the_ship_art_and_shanty_theme() -> None:
+    tileset = tileset_for(MAP_NAME)
+    assert tileset.sheet == "ship.png"
+    # The porthole row is animated (rolling waves), like the cutscene.
+    assert tileset.info()["porthole"][1] >= 2  # frames
     assert AREA_MUSIC[MAP_NAME] == "ship_shanty.wav"
 
 
@@ -91,7 +98,7 @@ def test_saying_yes_to_the_crevice_plays_the_escape_then_reaches_the_ship() -> N
         deck = game.scenes.current
         assert deck.map_name == MAP_NAME
         assert game.active_checkpoint_id == "ship_deck"
-        assert deck._player_tile() == (15, 14)  # the from_crawlspace arrival
+        assert deck._player_tile() == (13, 10)  # the from_crawlspace arrival
         assert deck.sanity.current == 40  # Sanity carried across the escape
     finally:
         game._shutdown()

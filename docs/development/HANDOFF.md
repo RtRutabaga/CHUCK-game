@@ -3,11 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `185e890` (the dark pirate ship theme)
-- Current work: the crevice prompt fires on walk-in (session 146)
+- Base commit before this pass: `9ef67d4` (walk-in crevice prompt)
+- Current work: ship deck rebuilt as a portholed compartment (session 147)
 - Active phase: Phase 6 → 7 boundary (`PHASE-6.md`); Phase 7 unstarted
 
 ## Completed This Pass
+
+Rebuilt the playable ship_deck to match the escape cutscene:
+
+- New dedicated ship tileset (tools/generate_ship_tileset.py -> ship.png):
+  plank floor, timber hull wall, and an animated 4-frame porthole tile.
+  The porthole's sky/sea/wave-crest colours are the cutscene's exact
+  palette (escape_cutscene_scene.py), and its frames roll the crests, so
+  the compartment and the cutscene read as the same place. Added SHIP to
+  tileset_layout (+ TILESETS + MAP_TILESET["ship_deck"]="ship") and the
+  'Ø' porthole tile to TILE_DEFS (solid hull).
+- assets/maps/ship_deck.txt rewritten (26x13): a wooden compartment
+  ringed with portholes (a band across the top hull + side-wall
+  portholes) over plank floor with cargo crates/barrels; arrival at the
+  bottom (from_crawlspace, now tile 13,10), the ashtray at (8,7) — the
+  checkpoint position (116,117) is unchanged.
+- Tests updated: the wooden-room test now checks the compartment
+  dims/portholes and that 'Ø' is solid; the art test asserts ship.png
+  with an animated porthole row; the crawl test's arrival tile is 13,10.
+
+## Previous Pass (session 146, commit 9ef67d4)
 
 Made the rubble crevice prompt pop by walking in, not by interact:
 

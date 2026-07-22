@@ -362,6 +362,9 @@ TILE_DEFS: dict[str, TileDef] = {
     # Big broken masonry chunk — the rubble map's dominant debris (session 142).
     "ß": TileDef(solid=True, color=(60, 68, 58),
                  prop="temple_rubble_block", under="·"),
+    # A porthole in the ship's hull — solid wall, the sea drawn by the
+    # animated ship tileset (session 147).
+    "Ø": TileDef(solid=True, color=(96, 164, 214)),
     ";": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="sailing_cog", under="#"),
     "'": TileDef(solid=False, color=(44, 45, 29)),

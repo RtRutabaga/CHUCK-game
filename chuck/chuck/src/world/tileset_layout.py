@@ -221,6 +221,26 @@ TEMPLE = Tileset(
     overhead_char_to_terrain={},
 )
 
+# --------------------------------------------------------------------------
+# The ship (assets/tilesets/ship.png). An internal wooden compartment whose
+# hull is set with brass portholes onto the sunlit sea — the animated wave
+# crests use the escape cutscene's exact palette so the two match.
+# --------------------------------------------------------------------------
+SHIP = Tileset(
+    sheet="ship.png",
+    order=[
+        ("ship_floor", 3, 1),
+        ("ship_wall", 3, 1),
+        ("porthole", 1, 4),   # brass window + sky + sea + rolling waves
+    ],
+    char_to_terrain={
+        "=": "ship_floor",
+        "#": "ship_wall",
+        "Ø": "porthole",
+    },
+    overhead_char_to_terrain={},
+)
+
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
     "sewer": SEWER,
@@ -228,6 +248,7 @@ TILESETS: dict[str, Tileset] = {
     "pantry": PANTRY,
     "chult": CHULT,
     "temple": TEMPLE,
+    "ship": SHIP,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -251,7 +272,7 @@ MAP_TILESET: dict[str, str] = {
     "temple_gauntlet": "temple",
     "temple_sanctum": "temple",
     "temple_rubble": "temple",
-    "ship_deck": "docks",
+    "ship_deck": "ship",
 }
 
 

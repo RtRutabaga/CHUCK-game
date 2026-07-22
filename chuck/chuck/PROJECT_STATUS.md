@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 146 (the crevice prompt fires on walking in, no interact).
+Updated: session 147 (ship deck rebuilt as a portholed compartment).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,6 +650,18 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
+- Ship compartment with portholes (session 147): the playable ship_deck
+  (26x13) is now an internal wooden hull compartment whose walls are set
+  with brass portholes onto the sunlit wavy sea — matching the escape
+  cutscene. A dedicated ship tileset (tools/generate_ship_tileset.py ->
+  ship.png; tileset_layout.SHIP; MAP_TILESET["ship_deck"]="ship") draws
+  plank floor, timber hull wall, and an animated 4-frame porthole tile
+  ('Ø', solid) whose sky/sea/crest colours are the cutscene's exact
+  palette and whose frames roll the wave crests. The map rings the
+  compartment with portholes (a band across the top hull + side-wall
+  portholes) over plank floor with cargo; Chuck arrives at the bottom
+  (from_crawlspace, tile 13,10) looking up at the sea, as in the
+  cutscene. Was a plain docks-tileset room with an open water band
 - Walk-in crevice prompt (session 146): the rubble "Enter crevice?"
   YES/NO no longer needs the interact key — walking into the crevice
   zone pops it. ChoiceTrigger gains a walk_triggered flag (a _WALK_TRIGGERS
