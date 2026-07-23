@@ -380,7 +380,10 @@ TILE_DEFS: dict[str, TileDef] = {
     "├": TileDef(solid=False, color=(24, 20, 19)),
     "┼": TileDef(solid=False, color=(24, 20, 19)),
     "┤": TileDef(solid=False, color=(24, 20, 19)),
+    # Human-scale ship ladder: a continuous 16x32 two-cell structure,
+    # matching the established 16x30 crew sprite scale.
     "ℓ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
+    "ɭ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
     # Exterior deck: animated open sea surrounds a broad wooden hull. The
     # rail pieces are solid perimeter geometry; their oriented tiles keep the
     # ship silhouette readable instead of treating the edge as an indoor wall.
@@ -546,7 +549,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
         kind="pirate_npc:seated_pirate:crew_pirate_met", under="="
     ),
     "Ҳ": MarkerDef(kind="boundary:captain_cabin", under="┃"),
-    "Һ": MarkerDef(kind="boundary:ship_deck", under="ℓ"),
+    "Һ": MarkerDef(kind="boundary:ship_deck", under="="),
     "Ҵ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
     "Ӏ": MarkerDef(kind="arrival:from_captain_cabin", under="="),
     "Ӂ": MarkerDef(kind="arrival:from_crew_quarters", under="="),

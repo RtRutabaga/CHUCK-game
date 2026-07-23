@@ -49,7 +49,18 @@ def test_the_deck_is_a_wooden_compartment_with_portholes() -> None:
     assert tilemap._grid[12] == "#" * tilemap.width_tiles
     for char in "╭│╰╮┃╯":
         assert not TILE_DEFS[char].solid
-    assert sum(row.count("ℓ") for row in tilemap._grid) == 2
+    # One continuous 16x32 ladder matches the crew's 16x30 sprite scale;
+    # it is no longer a pair of Chuck-height ladder icons.
+    ladder_top = next(
+        (col, row)
+        for row, line in enumerate(tilemap._grid)
+        for col, char in enumerate(line)
+        if char == "ℓ"
+    )
+    assert tilemap.terrain_at(ladder_top[0], ladder_top[1] + 1) == "ɭ"
+    assert sum(row.count("ℓ") for row in tilemap._grid) == 1
+    assert sum(row.count("ɭ") for row in tilemap._grid) == 1
+    assert not TILE_DEFS["ℓ"].solid and not TILE_DEFS["ɭ"].solid
     assert not any(k in {"rat", "zombie", "skeleton", "raptor",
                          "massive_dinosaur", "snake"} for k in kinds)
     lower_exit = AREA_WALK_EXITS[(MAP_NAME, "ℓ")]
@@ -108,7 +119,7 @@ def test_saying_yes_to_the_crevice_plays_the_escape_then_reaches_the_ship() -> N
         deck = game.scenes.current
         assert deck.map_name == MAP_NAME
         assert game.active_checkpoint_id == "ship_deck"
-        assert deck._player_tile() == (13, 9)  # the from_crawlspace arrival
+        assert deck._player_tile() == (13, 8)  # safely above the tall ladder
         assert deck.sanity.current == 40  # Sanity carried across the escape
     finally:
         game._shutdown()

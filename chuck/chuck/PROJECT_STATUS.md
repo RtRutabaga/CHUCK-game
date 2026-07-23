@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 166 (confirmed ship ladder traversal).
+Updated: session 167 (human-scale ship ladders).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1240,6 +1240,11 @@ bounded sessions.
          `Climb up ladder?`. YES uses the existing AreaExit destination,
          named arrival, and facing; NO closes silently and stays dismissed
          until Chuck leaves and reapproaches the ladder (session 166).
+   - [x] Rebuilt every ship ladder from a repeated 16x16 icon into one
+         continuous 16x32 top/bottom structure, matching the established
+         16x30 human NPC sprite scale. Both walkable halves share the same
+         YES/NO transition, and nearby named arrivals were kept safely off
+         the enlarged footprint (session 167).
 12. [ ] Add the moving Astral Sea and Hell blocks around the staged plank,
         including Jeffries' warning; stop before the captain's kick and fall.
 

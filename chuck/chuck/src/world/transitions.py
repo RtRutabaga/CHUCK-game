@@ -149,7 +149,15 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
         "ship_lower_hold", "from_ship_room", "down",
         "Climb down ladder?",
     ),
+    ("ship_deck", "ɭ"): AreaExit(
+        "ship_lower_hold", "from_ship_room", "down",
+        "Climb down ladder?",
+    ),
     ("ship_lower_hold", "ℓ"): AreaExit(
+        "ship_deck", "from_lower_hold", "up",
+        "Climb up ladder?",
+    ),
+    ("ship_lower_hold", "ɭ"): AreaExit(
         "ship_deck", "from_lower_hold", "up",
         "Climb up ladder?",
     ),
@@ -205,7 +213,15 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
         "ship_exterior_deck", "from_crew_quarters", "down",
         "Climb up ladder?",
     ),
+    ("ship_crew_quarters", "ɭ"): AreaExit(
+        "ship_exterior_deck", "from_crew_quarters", "down",
+        "Climb up ladder?",
+    ),
     ("ship_exterior_deck", "ℓ"): AreaExit(
+        "ship_crew_quarters", "from_exterior_deck", "down",
+        "Climb down ladder?",
+    ),
+    ("ship_exterior_deck", "ɭ"): AreaExit(
         "ship_crew_quarters", "from_exterior_deck", "down",
         "Climb down ladder?",
     ),

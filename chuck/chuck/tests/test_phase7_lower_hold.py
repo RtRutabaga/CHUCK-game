@@ -135,7 +135,7 @@ def test_ladder_transition_and_rat_respawn_use_existing_architecture() -> None:
         room.update(0.0)
         hold = game.scenes.current
         assert hold.map_name == MAP_NAME
-        assert hold._player_tile() == (19, 4)
+        assert hold._player_tile() == (19, 5)
         assert hold.player.facing == "down"
         assert len(hold.rats) == 16
 
@@ -158,7 +158,7 @@ def test_ladder_transition_and_rat_respawn_use_existing_architecture() -> None:
         hold.update(0.0)
         room = game.scenes.current
         assert room.map_name == "ship_deck"
-        assert room._player_tile() == (12, 9)
+        assert room._player_tile() == (12, 8)
         assert room.player.facing == "up"
     finally:
         game._shutdown()

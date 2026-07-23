@@ -85,9 +85,37 @@ def test_crew_ladder_is_reversible() -> None:
         "ship_crew_quarters", "from_exterior_deck"
     )
     assert inward.confirmation == "Climb down ladder?"
+    assert AREA_WALK_EXITS[("ship_crew_quarters", "ɭ")] == outward
+    assert AREA_WALK_EXITS[(MAP_NAME, "ɭ")] == inward
     crew = TileMap(config.MAPS_DIR / "ship_crew_quarters.txt")
     assert any(kind == "arrival:from_exterior_deck"
                for kind, _position in crew.object_spawns)
+
+
+def test_every_ship_ladder_is_one_continuous_human_height_structure() -> None:
+    for map_name in (
+        "ship_deck", "ship_lower_hold",
+        "ship_crew_quarters", "ship_exterior_deck",
+    ):
+        tilemap = TileMap(config.MAPS_DIR / f"{map_name}.txt")
+        tops = [
+            (col, row)
+            for row, line in enumerate(tilemap._grid)
+            for col, char in enumerate(line)
+            if char == "ℓ"
+        ]
+        bottoms = [
+            (col, row)
+            for row, line in enumerate(tilemap._grid)
+            for col, char in enumerate(line)
+            if char == "ɭ"
+        ]
+        assert len(tops) == len(bottoms) == 1
+        col, row = tops[0]
+        assert bottoms[0] == (col, row + 1)
+        assert AREA_WALK_EXITS[(map_name, "ɭ")] == (
+            AREA_WALK_EXITS[(map_name, "ℓ")]
+        )
 
 
 def test_exterior_ashtray_persists_and_continues_on_the_deck() -> None:

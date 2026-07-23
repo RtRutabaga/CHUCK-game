@@ -173,14 +173,27 @@ def draw_ship_door_s_bottom_right(surface, _variant: int, _frame: int) -> None:
     _draw_south_door(surface, "right", "bottom")
 
 
-def draw_ship_ladder(surface, _variant: int, _frame: int) -> None:
-    """A dark deck hatch with brass-edged wooden ladder rungs."""
+def _draw_ship_ladder_half(surface, top: bool) -> None:
+    """One half of a continuous crew-height deck ladder."""
     draw_ship_floor(surface, 1, 0)
-    pygame.draw.rect(surface, DARK, pygame.Rect(2, 1, 12, 14))
-    pygame.draw.line(surface, RIM_DARK, (3, 1), (3, 14), 2)
-    pygame.draw.line(surface, RIM_DARK, (12, 1), (12, 14), 2)
-    for y in (3, 7, 11):
+    pygame.draw.rect(surface, DARK, pygame.Rect(2, 0, 12, 16))
+    pygame.draw.line(surface, RIM_DARK, (3, 0), (3, 15), 2)
+    pygame.draw.line(surface, RIM_DARK, (12, 0), (12, 15), 2)
+    rung_rows = (2, 8, 14) if top else (4, 10)
+    for y in rung_rows:
         pygame.draw.line(surface, RIM, (4, y), (11, y), 2)
+    if top:
+        pygame.draw.line(surface, RIM, (1, 0), (14, 0), 1)
+    else:
+        pygame.draw.line(surface, RIM_DARK, (2, 15), (13, 15), 1)
+
+
+def draw_ship_ladder_top(surface, _variant: int, _frame: int) -> None:
+    _draw_ship_ladder_half(surface, True)
+
+
+def draw_ship_ladder_bottom(surface, _variant: int, _frame: int) -> None:
+    _draw_ship_ladder_half(surface, False)
 
 
 def draw_ship_ocean(surface, variant: int, frame: int) -> None:
@@ -271,7 +284,8 @@ DRAW = {
     "ship_door_s_bottom_left": draw_ship_door_s_bottom_left,
     "ship_door_s_bottom_middle": draw_ship_door_s_bottom_middle,
     "ship_door_s_bottom_right": draw_ship_door_s_bottom_right,
-    "ship_ladder": draw_ship_ladder,
+    "ship_ladder_top": draw_ship_ladder_top,
+    "ship_ladder_bottom": draw_ship_ladder_bottom,
     "ship_ocean": draw_ship_ocean,
     "ship_plank": draw_ship_plank,
     "ship_rail_h": draw_ship_rail_h,

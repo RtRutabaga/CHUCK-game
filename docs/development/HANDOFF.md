@@ -3,11 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `0b48103` (physical captain-chest reward)
-- Current work: confirmed ship ladder traversal (session 166)
+- Base commit before this pass: `02b84f4` (confirmed ship ladder traversal)
+- Current work: human-scale ship ladders (session 167)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Rebuilt the actual ladder geometry and art at human crew scale without
+changing any route or confirmation behavior:
+
+- Replaced the old complete 16x16 ladder icon (doubled side by side in two
+  rooms) with aligned top/bottom terrain pieces that form one continuous
+  16x32 ladder, matching the established 16x30 human NPC frame.
+- Updated the arrival compartment, lower hold, crew quarters, and exterior
+  deck so each contains exactly one two-cell ladder. Nearby arrivals remain on
+  safe floor rather than inside the enlarged footprint.
+- Both halves are walkable and carry the same direction-correct YES/NO
+  confirmation, destination, named arrival, and facing.
+- Regenerated the procedural ship tileset and added regression coverage for
+  the human-height pairing and shared top/bottom transition records.
+- All 63 standalone test scripts pass, compilation is clean, and the game
+  reaches its running title loop in the headless launch smoke check.
+
+## Previous Pass (session 166, commit 02b84f4)
 
 Added rubble-style YES/NO approach confirmation to every live ship ladder
 without creating a parallel route system:
