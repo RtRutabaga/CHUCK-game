@@ -158,6 +158,27 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("ship_galley", "╮"): AreaExit("ship_deck", "from_galley", "right"),
     ("ship_galley", "┃"): AreaExit("ship_deck", "from_galley", "right"),
     ("ship_galley", "╯"): AreaExit("ship_deck", "from_galley", "right"),
+    # The east passage leads to the crew quarters; its matching west doorway
+    # returns to the compartment. The quarters' deck hatch and captain route
+    # are intentionally visible but inert until those maps exist.
+    ("ship_deck", "╮"): AreaExit(
+        "ship_crew_quarters", "from_ship_room", "right"
+    ),
+    ("ship_deck", "┃"): AreaExit(
+        "ship_crew_quarters", "from_ship_room", "right"
+    ),
+    ("ship_deck", "╯"): AreaExit(
+        "ship_crew_quarters", "from_ship_room", "right"
+    ),
+    ("ship_crew_quarters", "╭"): AreaExit(
+        "ship_deck", "from_crew_quarters", "left"
+    ),
+    ("ship_crew_quarters", "│"): AreaExit(
+        "ship_deck", "from_crew_quarters", "left"
+    ),
+    ("ship_crew_quarters", "╰"): AreaExit(
+        "ship_deck", "from_crew_quarters", "left"
+    ),
     # (The rubble's one way out is the "Enter crevice?" prompt at the
     # crawlspace, not a walk-over exit — see the choice:crevice trigger.)
     ("temple_gauntlet", "⌄"): AreaExit(
@@ -204,4 +225,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "ship_deck": "ship_shanty.wav",
     "ship_lower_hold": "ship_shanty.wav",
     "ship_galley": "ship_shanty.wav",
+    "ship_crew_quarters": "ship_shanty.wav",
 }

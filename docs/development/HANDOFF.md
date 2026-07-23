@@ -3,11 +3,37 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `39ff813` (breakable hold crockery)
-- Current work: ship galley + chasing pirate chef (session 151)
+- Base commit before this pass: `d59344d` (ship galley chef pursuit)
+- Current work: ship crew quarters + seated pirate (session 152)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Built the second Phase 7 interior branch:
+
+- The arrival compartment's east three-tile black doorway now enters a
+  reversible 42x30 crew-quarters map. Its west doorway returns through a safe
+  named marker; all three threshold cells use the ordinary transition table.
+- Added eight tall hanging hammocks and one 34x25 round mess table as dedicated
+  procedural ship props. Their one-tile solid anchors and broad overhangs keep
+  the human furniture architectural at Chuck's scale. Cargo fills the corners
+  without obstructing the room's main routes.
+- Added one physical `Ship Crew Ashtray` and development-visible `Ship Crew
+  Quarters` entry through the shared checkpoint loader. The same ship shanty
+  continues uninterrupted.
+- Added a reusable animated `PirateNPC`: two frames per facing, rhythmic
+  update, authored first/repeat dialogue IDs, and a supplied durable progress
+  flag. The seated pirate raises his mug and sways, comments on Chuck's coat on
+  first interaction, and uses a shorter line thereafter. `crew_pirate_met`
+  survives Ashtray saving and CONTINUE.
+- The crew room visibly includes a deck hatch and black/open captain-cabin
+  doorway. Both are named inert boundaries until their maps are implemented;
+  no closed door was introduced and the exterior deck remains untouched.
+- Targeted tests cover room content, one-checkpoint policy, reversible route,
+  inert future boundaries, sprite animation, first/repeat dialogue, and save
+  restoration of the conversation state.
+
+## Previous Pass (session 151, commit d59344d)
 
 Built the first non-combat-focused Phase 7 interior branch:
 

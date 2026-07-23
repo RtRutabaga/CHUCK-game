@@ -32,6 +32,7 @@ from src.entities.massive_dinosaur import MassiveDinosaur
 from src.entities.npc import NPC
 from src.entities.pickup import Cigarette
 from src.entities.pirate_chef import PirateChef
+from src.entities.pirate_npc import PirateNPC
 from src.entities.player import Player
 from src.entities.prop import Prop
 from src.entities.rat import SewerRat
@@ -360,6 +361,15 @@ class WorldScene(Scene):
                 )
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
+            elif kind.startswith("pirate_npc:"):
+                npc_id, progress_flag = kind.split(":", 2)[1:]
+                npc = PirateNPC(
+                    cx, cy, npc_id=npc_id,
+                    progress=self.game.progress,
+                    progress_flag=progress_flag,
+                )
+                npc.load_sprites(self.game.assets)
+                self.npcs.append(npc)
             elif kind in {
                 "rat", "zombie", "skeleton", "raptor", "massive_dinosaur",
                 "snake", "pirate_chef",
@@ -493,6 +503,8 @@ class WorldScene(Scene):
             snake.update(dt, self.player)
         for chef in self.chefs:
             chef.update(dt, self.player)
+        for npc in self.npcs:
+            npc.update(dt)
         for trap in self.dart_traps:
             dart = trap.update(dt)
             if dart is not None:

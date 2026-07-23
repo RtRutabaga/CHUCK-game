@@ -283,6 +283,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             "Temple 1", "Temple 2", "Temple 3", "Temple 4", "Temple 5",
             "Temple 6", "Temple 7", "Temple 8", "Temple 9",
             "Rubble 1", "Ship 1", "Ship Hold", "Ship Galley",
+            "Ship Crew Quarters",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)

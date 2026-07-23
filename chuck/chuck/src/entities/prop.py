@@ -38,6 +38,8 @@ _SPRITES = {
     "pantry_open": "objects/pantry_open.png",
     "pantry_shelf": "objects/pantry_shelf.png",
     "grain_sack": "objects/grain_sack.png",
+    "ship_hammock": "objects/ship_hammock.png",
+    "ship_round_table": "objects/ship_round_table.png",
     "chimney": "objects/chimney.png",
     "sewer_grate": "objects/sewer_grate.png",
     "house_door": "objects/house_door.png",

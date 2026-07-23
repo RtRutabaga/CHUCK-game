@@ -17,7 +17,11 @@ if TYPE_CHECKING:
     from src.core.game import Game
 
 
-KNOWN_PROGRESS_FLAGS = frozenset({"sewer_completed", "chult_reached"})
+KNOWN_PROGRESS_FLAGS = frozenset({
+    "sewer_completed",
+    "chult_reached",
+    "crew_pirate_met",
+})
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
 
@@ -288,6 +292,24 @@ CHECKPOINTS = (
     CheckpointDefinition(
         "ship_deck_galley_return", "Ship Galley Return", "ship_deck",
         arrival="from_galley", facing="right",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "ship_crew_quarters", "Ship Crew Quarters", "ship_crew_quarters",
+        arrival="from_ship_room", facing="right",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "ship_crew_anchor", "Ship Crew Ashtray", "ship_crew_quarters",
+        position=(116.0, 229.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "ship_deck_crew_return", "Ship Crew Return", "ship_deck",
+        arrival="from_crew_quarters", facing="left",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         development_visible=False, runtime_entry=True,
     ),

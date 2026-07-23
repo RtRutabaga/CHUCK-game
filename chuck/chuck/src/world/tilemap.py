@@ -381,6 +381,12 @@ TILE_DEFS: dict[str, TileDef] = {
     "┼": TileDef(solid=False, color=(24, 20, 19)),
     "┤": TileDef(solid=False, color=(24, 20, 19)),
     "ℓ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
+    # Crew-quarters furniture. Both are human-scale props over ship planks;
+    # their single solid anchor tile leaves overhangs Chuck can scurry under.
+    "ɦ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_hammock", under="="),
+    "ɱ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_round_table", under="="),
     # Lower-hold reuse of the pantry's carton-filled breakable shelves/jars,
     # with ship planks beneath instead of pantry boards.
     "ƞ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
@@ -516,6 +522,14 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ҧ": MarkerDef(kind="arrival:from_ship_room", under="="),
     "Ҩ": MarkerDef(kind="anchor:ship_galley_anchor", under="="),
     "Ҫ": MarkerDef(kind="arrival:from_galley", under="="),
+    "Ҭ": MarkerDef(kind="arrival:from_ship_room", under="="),
+    "Ұ": MarkerDef(kind="anchor:ship_crew_anchor", under="="),
+    "Ү": MarkerDef(
+        kind="pirate_npc:seated_pirate:crew_pirate_met", under="="
+    ),
+    "Ҳ": MarkerDef(kind="boundary:captain_cabin", under="┃"),
+    "Һ": MarkerDef(kind="boundary:ship_deck", under="ℓ"),
+    "Ҵ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
     # The rubble crawlspace's "Enter crevice?" prompt (session 141).
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
 }

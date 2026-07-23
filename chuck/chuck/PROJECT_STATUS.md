@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 151 (ship galley + chasing pirate chef).
+Updated: session 152 (ship crew quarters + seated pirate).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -22,7 +22,7 @@ This file is required by the project rules and updated every session.
 - Swept, axis-separated tile collision (no tunneling at any dt)
 - Smooth frame-rate-independent follow camera, clamped to map bounds
 - Sprites from text grids (tools/): Chuck (idle/walk x4 facings), the
-  cat, seven human NPCs, and the 75-glyph 5x9 pixel font
+  cat, eight human NPCs, and the 75-glyph 5x9 pixel font
 - Sanity with i-frames; cigarette pickups; HUD meter (a cigarette
   burning down); patrolling cat hazard; Astral Anchor checkpoints;
   quiet vanish -> starfield -> respawn (no game-over screen, ever); enemies
@@ -31,14 +31,15 @@ This file is required by the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the thirteen authored Ashtrays have
+  retain the established local retry behavior; the 21 authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
   development-only checkpoint saves disable CONTINUE without crashing. Durable
-  flags are `sewer_completed`, which restores the tavern's open exterior, and
-  `chult_reached`, which restores the playable Chult state
-- Dialogue: JSON data files, typewriter box, seven NPCs; choice
+  flags are `sewer_completed`, which restores the tavern's open exterior,
+  `chult_reached`, which restores the playable Chult state, and
+  `crew_pirate_met`, which preserves the first/repeat pirate conversation
+- Dialogue: JSON data files, typewriter box, eight NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
   sequencer), offline rendering (tools/generate_audio.py +
@@ -995,11 +996,11 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build the Phase 7 crew quarters through the arrival compartment's remaining
-east open passage: hammocks, round table, seated pirate with first/subsequent
-dialogue, the future deck ladder, and the captain-cabin route. Give the map one
-physical Ashtray and shared-loader entry, preserve the uninterrupted ship
-music, and keep the exterior deck itself for its later dedicated session.
+Build the Phase 7 captain's cabin through the crew quarters' established open
+east passage. Add the treasure chest and one-time Premium Buhetian Halfling
+Leaf reward (+40 cigarettes), one physical Ashtray and shared-loader entry,
+and preserve uninterrupted ship music. Do not begin the exterior deck or
+captain accusation sequence in the same pass.
 
 ## Also open
 
@@ -1150,7 +1151,15 @@ music, and keep the exterior deck itself for its later dedicated session.
        costs 20 Sanity, and death rebuilds and re-arms the encounter. He is
        intentionally not scratchable, keeping this an escape slice (session
        151).
-5. [ ] Build the crew quarters and its seated pirate as the next bounded slice.
+5. [x] Added reversible 42x30 crew quarters through the arrival room's east
+       open passage: eight hanging human bunks, an oversized round mess table,
+       cargo, one physical Ashtray, development-visible `Ship Crew Quarters`,
+       and uninterrupted shanty playback. The seated pirate has a restrained
+       two-frame mug/sway animation and distinct first/repeat dialogue; meeting
+       him sets the durable `crew_pirate_met` flag, which survives checkpoint
+       save and CONTINUE. The visible deck ladder and open captain-cabin route
+       are authored boundaries but remain inert (session 152).
+6. [ ] Build the captain's cabin and one-time +40 cigarette chest next.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

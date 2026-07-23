@@ -22,6 +22,11 @@ Implemented so far:
   Ashtray. The pirate chef gives the authored warning, then begins a
   collision-aware, animated cleaver pursuit; Chuck cannot clear him by
   scratching, so the encounter remains an escape through galley lanes.
+- The east open passage leads to reversible crew quarters with hanging bunks,
+  an oversized round mess table, one physical Ashtray, and a seated pirate who
+  sways with his mug. His first greeting and shorter repeat line are selected
+  by a durable conversation flag. The deck hatch and open captain-cabin
+  passage are visible but remain inert pending their dedicated sessions.
 - `docs/design/pirate ship.png` is the authoritative composition reference
   for the later exterior deck map; that deck has not been built yet.
 
@@ -232,7 +237,7 @@ Do not fully explain the collided worlds.
 -   [ ] Ship interior is fully explorable.
 -   [x] Lower hold contains rats and reused pantry assets.
 -   [x] Galley chef chases Chuck.
--   [ ] Crew quarters contain the seated pirate.
+-   [x] Crew quarters contain the seated pirate.
 -   [ ] Captain's chest grants Premium Buhetian Halfling Leaf (+40
     cigarettes).
 -   [ ] Pirate animations are richer than previous NPCs.
