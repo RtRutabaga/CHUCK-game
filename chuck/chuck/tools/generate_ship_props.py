@@ -92,23 +92,38 @@ def captain_chest(opened: bool) -> Image.Image:
 
 def mast_sail() -> Image.Image:
     """A ship-scale hybrid-top-down mast and broad, fully visible sail."""
-    image = Image.new("RGBA", (176, 160), TRANSPARENT)
+    image = Image.new("RGBA", (224, 192), TRANSPARENT)
     draw = ImageDraw.Draw(image)
     # The sail is enormous beside Chuck and deliberately overlaps the deck.
-    sail = [(8, 16), (154, 26), (168, 114), (24, 103)]
+    sail = [(9, 18), (197, 31), (214, 137), (30, 124)]
     draw.polygon(sail, fill=DARK)
-    inner = [(12, 20), (150, 30), (163, 109), (28, 99)]
+    inner = [(14, 23), (191, 36), (207, 131), (35, 119)]
     draw.polygon(inner, fill=SAIL)
-    draw.line((14, 22, 149, 32), fill=SAIL_LIGHT, width=3)
-    draw.line((28, 94, 162, 105), fill=SAIL_DARK, width=3)
-    draw.line((86, 27, 92, 103), fill=SAIL_DARK, width=2)
-    draw.line((17, 57, 159, 67), fill=SAIL_DARK, width=2)
+    draw.line((16, 25, 190, 38), fill=SAIL_LIGHT, width=4)
+    draw.line((35, 113, 206, 127), fill=SAIL_DARK, width=4)
+    draw.line((109, 33, 117, 123), fill=SAIL_DARK, width=3)
+    draw.line((20, 68, 202, 81), fill=SAIL_DARK, width=3)
     # Mast remains visibly planted into the deck beneath the complete sail.
-    draw.rectangle((84, 2, 94, 150), fill=WOOD_DARK)
-    draw.rectangle((85, 2, 89, 150), fill=WOOD_LIGHT)
-    draw.rectangle((75, 147, 103, 157), fill=DARK)
-    draw.rectangle((79, 145, 99, 153), fill=WOOD)
-    draw.line((79, 146, 99, 146), fill=WOOD_LIGHT, width=2)
+    draw.rectangle((107, 2, 119, 181), fill=WOOD_DARK)
+    draw.rectangle((108, 2, 113, 181), fill=WOOD_LIGHT)
+    draw.rectangle((95, 178, 132, 189), fill=DARK)
+    draw.rectangle((100, 175, 127, 184), fill=WOOD)
+    draw.line((100, 176, 127, 176), fill=WOOD_LIGHT, width=2)
+    return image
+
+
+def bowsprit() -> Image.Image:
+    """A long timber spar projecting east from the center of the bow."""
+    image = Image.new("RGBA", (120, 32), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    # Blank space to the left places the spar's heel on the anchor tile while
+    # most of its length projects beyond the east rail and over open water.
+    draw.polygon([(45, 18), (115, 5), (118, 8), (48, 23)], fill=DARK)
+    draw.polygon([(47, 17), (114, 6), (115, 8), (49, 21)], fill=WOOD)
+    draw.line((49, 17, 113, 7), fill=WOOD_LIGHT, width=2)
+    draw.line((47, 23, 73, 18), fill=WOOD_DARK, width=3)
+    draw.rectangle((43, 15, 50, 25), fill=WOOD_DARK)
+    draw.line((117, 5, 119, 8), fill=BRASS, width=2)
     return image
 
 
@@ -118,6 +133,7 @@ def main() -> None:
         ("ship_hammock", hammock()),
         ("ship_round_table", round_table()),
         ("ship_mast_sail", mast_sail()),
+        ("ship_bowsprit", bowsprit()),
     ):
         path = OUT / f"{name}.png"
         image.save(path)

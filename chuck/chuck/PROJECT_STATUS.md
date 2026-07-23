@@ -1183,6 +1183,9 @@ bounded sessions.
          shortening it, moved the hatch/Ashtray safely inward, and enlarged
          both centerline mast-and-sail silhouettes again to 176x160 (session
          156).
+   - [x] Enlarged both centerline mast-and-sail silhouettes to a deck-spanning
+         224x192 and added a dedicated 120x32 east-facing bowsprit that plants
+         inside the bow rail and projects over open water (session 157).
 8. [ ] Populate the deck with its non-combat pirate cast and richer rhythmic
        animation next; defer the fencing hazard and ending sequence.
 

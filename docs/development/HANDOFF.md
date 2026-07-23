@@ -3,11 +3,27 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `28cc329` (corrected exterior deck masts)
-- Current work: narrower hull + larger mast/sails (session 156)
+- Base commit before this pass: `82e92be` (refined exterior ship proportions)
+- Current work: deck-spanning sails + bowsprit (session 157)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Completed another tightly scoped exterior silhouette pass:
+
+- Enlarged each centerline mast/sail from 176x160 to 224x192. The two bases
+  retain their exact row-22 east-west alignment, while each complete broad sail
+  now spans approximately the narrowed hull's full north-south beam.
+- Added one dedicated 120x32 `ship_bowsprit` prop at the eastern bow. Its heel
+  is planted on the final deck tile inside the rail and most of the tapered,
+  highlighted timber spar projects east over animated open water.
+- The bowsprit uses the same y-sorted procedural prop architecture and shares
+  the deck's presentation-only rocking offset. It changes no route, transition,
+  checkpoint, or hazard behavior.
+- Focused tests lock both larger sail dimensions and the sole bowsprit's
+  authored bow position and dimensions.
+
+## Previous Pass (session 156, commit 82e92be)
 
 Refined the exterior silhouette after a second visual playtest:
 
