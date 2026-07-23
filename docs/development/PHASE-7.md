@@ -18,6 +18,10 @@ Implemented so far:
   shelves and jars that scratch-break into cigarette cartons, sixteen ordinary
   rats, uninterrupted ship music, one physical Ashtray, and shared-loader
   `Ship Hold` development entry.
+- The west open passage leads to a reversible working galley with one physical
+  Ashtray. The pirate chef gives the authored warning, then begins a
+  collision-aware, animated cleaver pursuit; Chuck cannot clear him by
+  scratching, so the encounter remains an escape through galley lanes.
 - `docs/design/pirate ship.png` is the authoritative composition reference
   for the later exterior deck map; that deck has not been built yet.
 
@@ -227,7 +231,7 @@ Do not fully explain the collided worlds.
 
 -   [ ] Ship interior is fully explorable.
 -   [x] Lower hold contains rats and reused pantry assets.
--   [ ] Galley chef chases Chuck.
+-   [x] Galley chef chases Chuck.
 -   [ ] Crew quarters contain the seated pirate.
 -   [ ] Captain's chest grants Premium Buhetian Halfling Leaf (+40
     cigarettes).

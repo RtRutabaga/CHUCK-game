@@ -3,11 +3,35 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `bfa8ee6` (open ship passageways)
-- Current work: clean cutscene waves + breakable hold crockery (session 150)
+- Base commit before this pass: `39ff813` (breakable hold crockery)
+- Current work: ship galley + chasing pirate chef (session 151)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Built the first non-combat-focused Phase 7 interior branch:
+
+- The arrival compartment's west three-tile black doorway is now a live,
+  reversible passage to `ship_galley`; a safe named return marker preserves
+  the same open threshold and ordinary transition architecture.
+- Added a 40x26 working galley with pantry shelving, hearth, counters, tables,
+  cargo, broad escape lanes, one physical `Ship Galley Ashtray`, and a
+  development-visible `Ship Galley` checkpoint. The shanty remains
+  uninterrupted between both rooms.
+- Added a human-scale pirate chef. At 96 pixels he turns toward Chuck and gives
+  the exact authored warning; only after the dialogue closes does he pursue at
+  58 px/s with ordinary swept collision. Contact costs 20 Sanity. He cannot be
+  scratched, so the encounter encourages escape, and normal enemy reset
+  rebuilds/re-arms him after death.
+- Added a reproducible six-frame procedural sprite: two directional frames per
+  facing give the cook a heavy stride and alternating cleaver swing, noticeably
+  richer than the established stationary human NPCs while retaining their
+  16x30 scale.
+- Added targeted tests for map/checkpoint/audio content, reversible passage
+  wiring, exact dialogue ordering, delayed pursuit, damage, and reset. Updated
+  selector pagination regression coverage for the new third page.
+
+## Previous Pass (session 150, commit 39ff813)
 
 Polished the escape portholes and restored the pantry breakable behavior in
 the lower hold:

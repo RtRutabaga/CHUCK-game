@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 150 (clean cutscene waves + breakable hold crockery).
+Updated: session 151 (ship galley + chasing pirate chef).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -995,11 +995,11 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build the Phase 7 galley from one of the arrival compartment's established
-side doors. Add the pirate chef's authored line and contained cleaver pursuit,
-preserve uninterrupted ship music, and give the new map one physical Ashtray
-plus a shared-loader development checkpoint. Do not begin the exterior deck
-until the intervening ship interiors are complete.
+Build the Phase 7 crew quarters through the arrival compartment's remaining
+east open passage: hammocks, round table, seated pirate with first/subsequent
+dialogue, the future deck ladder, and the captain-cabin route. Give the map one
+physical Ashtray and shared-loader entry, preserve the uninterrupted ship
+music, and keep the exterior deck itself for its later dedicated session.
 
 ## Also open
 
@@ -1141,7 +1141,16 @@ until the intervening ship interiors are complete.
        ordinary rats, one physical Ashtray, and
        development-visible `Ship Hold` through the shared checkpoint loader
        (sessions 148/150).
-4. [ ] Build the galley and its chasing pirate chef as the next bounded slice.
+4. [x] Added a reversible 40x26 working galley through the arrival room's west
+       open passage, with counters and storage forming escape lanes, one
+       physical Ashtray, development-visible `Ship Galley`, and uninterrupted
+       shanty playback. The human-scale chef delivers the exact authored line,
+       then starts a collision-aware 58 px/s cleaver chase; his two-frame
+       directional run/swing animation is richer than ordinary NPCs, contact
+       costs 20 Sanity, and death rebuilds and re-arms the encounter. He is
+       intentionally not scratchable, keeping this an escape slice (session
+       151).
+5. [ ] Build the crew quarters and its seated pirate as the next bounded slice.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

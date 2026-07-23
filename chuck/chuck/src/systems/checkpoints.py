@@ -274,6 +274,24 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "ship_galley", "Ship Galley", "ship_galley",
+        arrival="from_ship_room", facing="left",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "ship_galley_anchor", "Ship Galley Ashtray", "ship_galley",
+        position=(116.0, 325.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "ship_deck_galley_return", "Ship Galley Return", "ship_deck",
+        arrival="from_galley", facing="right",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "ship_deck_return", "Ship Return", "ship_deck",
         arrival="from_lower_hold", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),

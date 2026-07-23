@@ -149,6 +149,15 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("ship_lower_hold", "ℓ"): AreaExit(
         "ship_deck", "from_lower_hold", "up"
     ),
+    # The arrival compartment's open west passage enters the galley. Every
+    # visible jamb section is live so the three-tile doorway reads and plays
+    # as one opening rather than a single hidden trigger pixel.
+    ("ship_deck", "╭"): AreaExit("ship_galley", "from_ship_room", "left"),
+    ("ship_deck", "│"): AreaExit("ship_galley", "from_ship_room", "left"),
+    ("ship_deck", "╰"): AreaExit("ship_galley", "from_ship_room", "left"),
+    ("ship_galley", "╮"): AreaExit("ship_deck", "from_galley", "right"),
+    ("ship_galley", "┃"): AreaExit("ship_deck", "from_galley", "right"),
+    ("ship_galley", "╯"): AreaExit("ship_deck", "from_galley", "right"),
     # (The rubble's one way out is the "Enter crevice?" prompt at the
     # crawlspace, not a walk-over exit — see the choice:crevice trigger.)
     ("temple_gauntlet", "⌄"): AreaExit(
@@ -194,4 +203,5 @@ AREA_MUSIC: dict[str, str | None] = {
     # Out of the temple at last: a jaunty sea-shanty reel for the ship.
     "ship_deck": "ship_shanty.wav",
     "ship_lower_hold": "ship_shanty.wav",
+    "ship_galley": "ship_shanty.wav",
 }

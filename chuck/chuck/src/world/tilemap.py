@@ -512,6 +512,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ҟ": MarkerDef(kind="arrival:from_ship_room", under="="),
     "Ҡ": MarkerDef(kind="anchor:ship_lower_hold_anchor", under="="),
     "Ң": MarkerDef(kind="rat", under="="),
+    "Ҥ": MarkerDef(kind="pirate_chef", under="="),
+    "Ҧ": MarkerDef(kind="arrival:from_ship_room", under="="),
+    "Ҩ": MarkerDef(kind="anchor:ship_galley_anchor", under="="),
+    "Ҫ": MarkerDef(kind="arrival:from_galley", under="="),
     # The rubble crawlspace's "Enter crevice?" prompt (session 141).
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
 }

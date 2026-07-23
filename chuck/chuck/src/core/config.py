@@ -319,6 +319,9 @@ NPC_HITBOX_W = 12
 NPC_HITBOX_H = 8
 UNDEAD_HITBOX_W = NPC_HITBOX_W
 UNDEAD_HITBOX_H = NPC_HITBOX_H
+PIRATE_CHEF_SPEED = 58.0
+PIRATE_CHEF_NOTICE_RANGE = 96.0
+PIRATE_CHEF_SANITY_DAMAGE = 20
 
 # ---------------------------------------------------------------------------
 # Audio

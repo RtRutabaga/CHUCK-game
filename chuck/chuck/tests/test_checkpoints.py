@@ -253,8 +253,9 @@ def test_development_selector_pages_follow_and_leap_the_selection() -> None:
         press("move_right")
         assert selector.page == 1
         assert selector._selected == min(selector.PAGE_SIZE, count - 1)
-        press("move_right")
-        assert selector.page == 0  # wrapped around
+        for _ in range(selector.pages - 1):
+            press("move_right")
+        assert selector.page == 0  # wrapped around from any page count
         press("move_left")
         assert selector.page == selector.pages - 1
         assert selector._selected <= count - 1
@@ -281,7 +282,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             "Chult 1", "Chult 2", "Chult 3", "Chult 4", "Chult 5",
             "Temple 1", "Temple 2", "Temple 3", "Temple 4", "Temple 5",
             "Temple 6", "Temple 7", "Temple 8", "Temple 9",
-            "Rubble 1", "Ship 1", "Ship Hold",
+            "Rubble 1", "Ship 1", "Ship Hold", "Ship Galley",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)

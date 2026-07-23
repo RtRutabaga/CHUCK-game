@@ -31,6 +31,7 @@ from src.entities.hazard import Cat
 from src.entities.massive_dinosaur import MassiveDinosaur
 from src.entities.npc import NPC
 from src.entities.pickup import Cigarette
+from src.entities.pirate_chef import PirateChef
 from src.entities.player import Player
 from src.entities.prop import Prop
 from src.entities.rat import SewerRat
@@ -317,6 +318,7 @@ class WorldScene(Scene):
             if kind in {
                 "cat", "rat", "zombie", "skeleton", "raptor",
                 "massive_dinosaur", "snake",
+                "pirate_chef",
             }
         ]
         self._staged_undead_spawns = [
@@ -360,7 +362,7 @@ class WorldScene(Scene):
                 self.npcs.append(npc)
             elif kind in {
                 "rat", "zombie", "skeleton", "raptor", "massive_dinosaur",
-                "snake",
+                "snake", "pirate_chef",
             }:
                 continue  # rebuilt with all enemies below
             elif kind.startswith("battle:"):
@@ -392,6 +394,12 @@ class WorldScene(Scene):
 
     def update(self, dt: float) -> None:
         """Advance the world simulation."""
+        # The authored warning freezes the room like any other dialogue. The
+        # chase begins only after that overlay closes and control returns.
+        if self._chef_start_after_dialogue:
+            self._chef_start_after_dialogue = False
+            for chef in self.chefs:
+                chef.begin_pursuit()
         if self._pending_entrance_dialogue is not None:
             lines = self.dialogue.get(self._pending_entrance_dialogue)
             self._pending_entrance_dialogue = None
@@ -454,6 +462,19 @@ class WorldScene(Scene):
             self._update_fireball(dt)
             self.camera.update(dt)
             return
+        if not self._chef_notice_shown:
+            noticing_chef = next(
+                (chef for chef in self.chefs if chef.can_notice(self.player)),
+                None,
+            )
+            if noticing_chef is not None:
+                self._chef_notice_shown = True
+                self._chef_start_after_dialogue = True
+                noticing_chef.face_toward(self.player)
+                self.game.scenes.push(DialogueScene(
+                    self.game, self.dialogue.get("pirate_chef_notice")
+                ))
+                return
         for cat in self.hazards:
             cat.update(dt)
         for rat in self.rats:
@@ -470,6 +491,8 @@ class WorldScene(Scene):
             dinosaur.update(dt, self.player)
         for snake in self.snakes:
             snake.update(dt, self.player)
+        for chef in self.chefs:
+            chef.update(dt, self.player)
         for trap in self.dart_traps:
             dart = trap.update(dt)
             if dart is not None:
@@ -660,6 +683,17 @@ class WorldScene(Scene):
         )
         if blocking_snake is not None:
             if self.sanity.damage(blocking_snake.damage):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+            self.player.x, self.player.y = old_player_position
+
+        blocking_chef = next(
+            (chef for chef in self.chefs
+             if overlaps(self.player.hitbox, chef.hitbox)),
+            None,
+        )
+        if blocking_chef is not None:
+            if self.sanity.damage(blocking_chef.damage):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
             self.player.x, self.player.y = old_player_position
@@ -883,7 +917,7 @@ class WorldScene(Scene):
                      *self.battle_actors,
                      *self.hazards, *self.rats,
                      *self.undead, *self.raptors, *self.dinosaurs,
-                     *self.snakes,
+                     *self.snakes, *self.chefs,
                      *self.darts, *self.battle_projectiles,
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
@@ -1022,6 +1056,9 @@ class WorldScene(Scene):
         self.raptors = []
         self.dinosaurs = []
         self.snakes = []
+        self.chefs = []
+        self._chef_notice_shown = False
+        self._chef_start_after_dialogue = False
         self.dart_traps = [
             DartTrap(cx, cy, direction)
             for direction, (cx, cy) in self._dart_trap_spawns
@@ -1093,6 +1130,11 @@ class WorldScene(Scene):
                 snake.tilemap = self.tilemap
                 snake.load_sprites(self.game.assets)
                 self.snakes.append(snake)
+            elif kind == "pirate_chef":
+                chef = PirateChef(cx, cy)
+                chef.tilemap = self.tilemap
+                chef.load_sprites(self.game.assets)
+                self.chefs.append(chef)
 
     def _spawn_undead(
         self, kind: str, position: tuple[float, float]
