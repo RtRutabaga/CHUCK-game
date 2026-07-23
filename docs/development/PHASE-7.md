@@ -50,8 +50,9 @@ Implemented so far:
   rocking sea presentation, Jeffries, helm, and physical Ashtray. Animated
   crew tricorns use shaped side-view crowns and narrow brims so turning toward
   Chuck during dialogue never obscures their faces with a dark rectangle.
-  Their up-facing frames likewise use a shaped warm head/scarf region instead
-  of the former solid near-black patch.
+  Their up-facing frames likewise use a shaped warm head/scarf region and
+  peaked rear tricorn silhouette instead of either former solid near-black
+  rectangle. The separate seated-pirate sheet follows the same rule.
 - After the chef encounter, seated-pirate conversation, four deck
   conversations, and captain's chest are all complete, the camera finds the
   captain emerging at the midship ladder and follows his animated walk across

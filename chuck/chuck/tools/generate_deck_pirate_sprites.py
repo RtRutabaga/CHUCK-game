@@ -58,6 +58,12 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
         # when the native image was scaled to the window.
         rect(draw, (cx - 4, 5 + bob, cx + 5, 6 + bob), OUTLINE)
         rect(draw, (cx - 1, 2 + bob, cx + 4, 5 + bob), OUTLINE)
+    elif facing == "up":
+        # Seen from behind, the tricorn still needs a broken silhouette. A
+        # full 13x4 brim becomes a featureless black rectangle at 4x scale.
+        rect(draw, (cx - 4, 5 + bob, cx + 4, 6 + bob), OUTLINE)
+        rect(draw, (cx - 2, 2 + bob, cx + 2, 5 + bob), OUTLINE)
+        rect(draw, (cx - 3, 4 + bob, cx + 3, 4 + bob), OUTLINE)
     else:
         rect(draw, (cx - 6, 3 + bob, cx + 6, 6 + bob), OUTLINE)
         rect(draw, (cx - 3, 1 + bob, cx + 3, 4 + bob), OUTLINE)

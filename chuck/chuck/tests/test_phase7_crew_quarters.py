@@ -82,6 +82,21 @@ def test_seated_pirate_uses_first_then_repeat_dialogue_and_animates() -> None:
         assert hammocks and all(prop._size == (30, 44)
                                 for prop in hammocks)
         pirate = next(npc for npc in scene.npcs if isinstance(npc, PirateNPC))
+        for frame in pirate._animated_frames["up"]:
+            dark_pixels = sum(
+                frame.get_at((x, y))[:3] in {
+                    (39, 31, 30), (78, 49, 34)
+                }
+                for x in range(2, 14)
+                for y in range(1, 13)
+            )
+            warm_head_pixels = sum(
+                frame.get_at((x, y))[:3] == (139, 91, 71)
+                for x in range(4, 12)
+                for y in range(8, 13)
+            )
+            assert dark_pixels <= 30
+            assert warm_head_pixels >= 20
         before = pirate._anim_t
         pirate.update(0.5)
         assert pirate._anim_t > before

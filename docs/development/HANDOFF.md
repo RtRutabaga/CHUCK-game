@@ -3,11 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `896b08d` (exterior-deck ladder crash fix)
-- Current work: ship sleeping-furniture and captain-cabin dressing (session 178)
+- Base commit before this pass: `8813701` (ship bunks and captain cabin)
+- Current work: remaining up-facing pirate head-block fix (session 179)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Removed the remaining rectangular head silhouette visible when ship pirates
+turned upward:
+
+- The earlier correction shaped the warm back-of-head area, but the deck
+  generator still drew the rear tricorn as a full-width 13x4 near-black slab.
+  Replaced it with a narrow brim, peaked crown, and broken silhouette across
+  both performance and captain-walk frames.
+- Audited the separate seated-pirate generator and applied the same rear-view
+  rule, also replacing its dark hair block with a warm shaped head/scarf area.
+- Regenerated all five deck/captain sheets plus the seated pirate sheet.
+- Added pixel regressions for both ordinary up-facing performance frames and
+  the captain's scripted up-walk frames, plus the seated pirate's two up
+  frames. A 4x native montage was inspected; focused deck-cast and crew-quarter
+  suites pass. All 63 standalone suites pass, compilation is clean, and the
+  title-loop launch smoke check passes.
+
+## Previous Pass (session 178, commit 8813701)
 
 Improved the crew and captain sleeping spaces without changing map dimensions,
 routes, checkpoints, or gameplay progression:

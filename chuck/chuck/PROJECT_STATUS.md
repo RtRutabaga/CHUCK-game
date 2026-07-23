@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 178 (enlarged ship hammocks and dressed captain's cabin).
+Updated: session 179 (removed remaining up-facing pirate head blocks).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1310,6 +1310,10 @@ bounded sessions.
    - [x] Removed the remaining solid near-black up-facing deck-pirate head
          patch at its procedural source and regenerated all five affected
          sheets with warm shaped head/scarf silhouettes (session 176).
+   - [x] Replaced the remaining full-width rear tricorn rectangles in both
+         captain/deck and seated-pirate generators with narrow peaked
+         silhouettes. Up-facing performance and captain-walk frames now retain
+         readable warm head/scarf pixels at 4x scale (session 179).
    - [x] Revised the Nine Hells fall so no overhead Hell tiles appear behind
          Chuck in the street-view descent. A large distant volcano now anchors
          the open heated sky. The landing plane is over 90% basalt with sparse

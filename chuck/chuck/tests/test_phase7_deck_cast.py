@@ -139,12 +139,20 @@ def test_up_facing_pirates_do_not_paint_a_black_box_over_their_heads() -> None:
         ]
         outline = (38, 29, 28)
         for pirate in pirates:
-            for frame in pirate._deck_frames["up"]:
+            up_frames = list(pirate._deck_frames["up"])
+            up_frames.extend(pirate._walk_frames.get("up", ()))
+            for frame in up_frames:
+                hat_region = [
+                    frame.get_at((x, y))[:3]
+                    for x in range(1, 16)
+                    for y in range(1, 8)
+                ]
                 face_region = [
                     frame.get_at((x, y))[:3]
                     for x in range(4, 13)
                     for y in range(8, 14)
                 ]
+                assert hat_region.count(outline) <= 36
                 assert face_region.count(outline) <= 12
                 assert sum(
                     pixel[0] > 100 and pixel[1] > 40 and pixel[2] < 110

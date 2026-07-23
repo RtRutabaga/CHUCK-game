@@ -41,9 +41,16 @@ def frame(facing: str, beat: int) -> Image.Image:
     rect(draw, (1, 21, 14, 23), CHAIR)
 
     # Battered tricorn and red head scarf.
-    rect(draw, (3, 3 + bob, 12, 4 + bob), OUTLINE)
-    rect(draw, (5, 1 + bob, 10, 4 + bob), HAIR)
-    rect(draw, (2, 4 + bob, 13, 6 + bob), HAIR)
+    if facing == "up":
+        # Break up the rear silhouette so the hat does not become a pasted-on
+        # dark rectangle when this separate interior pirate turns away.
+        rect(draw, (4, 5 + bob, 11, 6 + bob), OUTLINE)
+        rect(draw, (6, 2 + bob, 9, 5 + bob), HAIR)
+        rect(draw, (5, 4 + bob, 10, 5 + bob), HAIR)
+    else:
+        rect(draw, (3, 3 + bob, 12, 4 + bob), OUTLINE)
+        rect(draw, (5, 1 + bob, 10, 4 + bob), HAIR)
+        rect(draw, (2, 4 + bob, 13, 6 + bob), HAIR)
     rect(draw, (4, 6 + bob, 11, 7 + bob), RED)
     rect(draw, (5, 8 + bob, 10, 12 + bob), SKIN)
     if facing == "down":
@@ -51,8 +58,9 @@ def frame(facing: str, beat: int) -> Image.Image:
         rect(draw, (9, 9 + bob, 9, 9 + bob), OUTLINE)
         rect(draw, (5, 12 + bob, 10, 13 + bob), HAIR)
     elif facing == "up":
-        rect(draw, (5, 8 + bob, 10, 11 + bob), HAIR)
-        rect(draw, (6, 12 + bob, 9, 12 + bob), RED_DARK)
+        rect(draw, (5, 8 + bob, 10, 11 + bob), SKIN_DARK)
+        rect(draw, (6, 8 + bob, 9, 8 + bob), HAIR)
+        rect(draw, (5, 12 + bob, 10, 12 + bob), RED_DARK)
     else:
         rect(draw, (5, 9 + bob, 5, 9 + bob), OUTLINE)
         rect(draw, (4, 10 + bob, 4, 10 + bob), SKIN_DARK)
