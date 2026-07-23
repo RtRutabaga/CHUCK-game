@@ -113,17 +113,20 @@ def mast_sail() -> Image.Image:
 
 
 def bowsprit() -> Image.Image:
-    """A long timber spar projecting east from the center of the bow."""
-    image = Image.new("RGBA", (120, 32), TRANSPARENT)
+    """A massive timber spar projecting east from the actual bow edge."""
+    image = Image.new("RGBA", (400, 96), TRANSPARENT)
     draw = ImageDraw.Draw(image)
-    # Blank space to the left places the spar's heel on the anchor tile while
-    # most of its length projects beyond the east rail and over open water.
-    draw.polygon([(45, 18), (115, 5), (118, 8), (48, 23)], fill=DARK)
-    draw.polygon([(47, 17), (114, 6), (115, 8), (49, 21)], fill=WOOD)
-    draw.line((49, 17, 113, 7), fill=WOOD_LIGHT, width=2)
-    draw.line((47, 23, 73, 18), fill=WOOD_DARK, width=3)
-    draw.rectangle((43, 15, 50, 25), fill=WOOD_DARK)
-    draw.line((117, 5, 119, 8), fill=BRASS, width=2)
+    # The generic prop anchor sits at x=200: art begins there, exactly on the
+    # rail tile, then runs more than twelve tiles east across open water.
+    draw.polygon([(194, 47), (395, 19), (399, 39), (196, 88)], fill=DARK)
+    draw.polygon([(198, 50), (393, 23), (395, 36), (200, 82)], fill=WOOD)
+    draw.line((200, 52, 392, 25), fill=WOOD_LIGHT, width=4)
+    draw.line((199, 80, 393, 35), fill=WOOD_DARK, width=5)
+    # A wide reinforced heel makes the spar read as structural, not a rope.
+    draw.rectangle((190, 44, 205, 91), fill=WOOD_DARK)
+    draw.rectangle((194, 47, 201, 87), fill=WOOD)
+    draw.line((195, 48, 200, 48), fill=WOOD_LIGHT, width=2)
+    draw.line((395, 20, 399, 38), fill=BRASS, width=3)
     return image
 
 

@@ -3,11 +3,25 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `82e92be` (refined exterior ship proportions)
-- Current work: deck-spanning sails + bowsprit (session 157)
+- Base commit before this pass: `87e8c9f` (larger sails and bowsprit)
+- Current work: massive edge-anchored bowsprit (session 158)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Corrected the bowsprit scale and attachment point after visual playtesting:
+
+- Rebuilt `ship_bowsprit` from a 120x32 canvas with roughly four tiles of thin
+  visible spar into a 400x96 canvas with over twelve tiles of broad, tapered
+  timber projection and a substantially reinforced heel.
+- Moved its anchor from the final interior deck tile to the eastern perimeter
+  rail itself. The rail remains its solid under-tile, so the spar now begins at
+  the literal bow edge before extending over animated open water.
+- The bowsprit remains a presentation-only y-sorted prop sharing ship rocking;
+  no route, checkpoint, collision boundary, or mast placement changed.
+- Focused tests lock its bow-edge coordinate and new dimensions.
+
+## Previous Pass (session 157, commit 87e8c9f)
 
 Completed another tightly scoped exterior silhouette pass:
 

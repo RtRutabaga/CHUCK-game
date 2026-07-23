@@ -1186,6 +1186,9 @@ bounded sessions.
    - [x] Enlarged both centerline mast-and-sail silhouettes to a deck-spanning
          224x192 and added a dedicated 120x32 east-facing bowsprit that plants
          inside the bow rail and projects over open water (session 157).
+   - [x] Rebuilt the bowsprit as a massive 400x96 structural spar with over
+         twelve tiles of visible projection, and moved its reinforced heel
+         onto the actual eastern bow-edge rail tile (session 158).
 8. [ ] Populate the deck with its non-combat pirate cast and richer rhythmic
        animation next; defer the fencing hazard and ending sequence.
 
