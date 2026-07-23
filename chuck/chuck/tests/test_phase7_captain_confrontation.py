@@ -75,12 +75,18 @@ def test_gate_requires_every_major_pirate_and_the_captain_chest() -> None:
 
 def test_ready_gate_spawns_captain_and_plays_complete_authored_exchange() -> None:
     dialogue = DialogueSystem()
+    arrival_lines = [
+        "Captain on deck!",
+        "...",
+    ]
     expected = [
         "That's the rat who stole my Premium Buhetian Halfling Leaf.",
         "Put him on the plank.",
         "But we've all grown fond of the smoking rat, Cap.",
+        "...",
         "No.",
     ]
+    assert dialogue.get("captain_arrival") == arrival_lines
     assert dialogue.get("captain_confrontation") == expected
 
     game = Game()
@@ -89,13 +95,55 @@ def test_ready_gate_spawns_captain_and_plays_complete_authored_exchange() -> Non
             MAP_NAME, progress_flags=CAPTAIN_REQUIRED_FLAGS
         )
         scene.update(0.0)
-        assert isinstance(game.scenes.current, DialogueScene)
-        assert game.scenes.current._lines == expected
         assert len(_captains(scene)) == 1
         captain = _captains(scene)[0]
+        assert scene._captain_arrival_active
+        assert game.scenes.current is scene
+        assert scene.camera._target is captain
+        assert (captain.x, captain.y) == (
+            31 * config.TILE_SIZE
+            + (config.TILE_SIZE - captain.width) / 2,
+            27 * config.TILE_SIZE
+            + (config.TILE_SIZE - captain.height) / 2,
+        )
         assert captain.performance == "captain"
         assert all(len(frames) == 4
                    for frames in captain._deck_frames.values())
+        assert all(len(frames) == 4
+                   for frames in captain._walk_frames.values())
+        assert not game.progress.has(CAPTAIN_CONFRONTED_FLAG)
+
+        start_y = captain.y
+        scene.update(0.5)
+        assert captain.y < start_y
+        assert captain.facing == "up"
+        assert captain.scripted_moving
+
+        for _ in range(100):
+            scene.update(0.1)
+            if isinstance(game.scenes.current, DialogueScene):
+                break
+        assert isinstance(game.scenes.current, DialogueScene)
+        assert game.scenes.current._lines == arrival_lines
+        assert not scene._captain_arrival_active
+        assert (captain.x, captain.y) == (
+            13 * config.TILE_SIZE
+            + (config.TILE_SIZE - captain.width) / 2,
+            24 * config.TILE_SIZE
+            + (config.TILE_SIZE - captain.height) / 2,
+        )
+        announcer = next(
+            npc for npc in scene.npcs
+            if isinstance(npc, DeckPirateNPC)
+            and npc.npc_id == "concertina_pirate"
+        )
+        assert announcer.facing == "down"
+        assert not game.progress.has(CAPTAIN_CONFRONTED_FLAG)
+
+        game.scenes.pop()
+        scene.update(0.0)
+        assert isinstance(game.scenes.current, DialogueScene)
+        assert game.scenes.current._lines == expected
         assert not game.progress.has(CAPTAIN_CONFRONTED_FLAG)
 
         game.scenes.pop()

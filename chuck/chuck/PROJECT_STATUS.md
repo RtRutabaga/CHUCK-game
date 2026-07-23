@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 169 (lower-hold rat pursuit).
+Updated: session 170 (captain arrival cutscene).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1218,11 +1218,14 @@ bounded sessions.
        not a combat gate or scratch target (session 160).
 10. [x] Added a durable seven-condition captain gate covering the galley chef,
         seated pirate, four deck performers, and one-time chest reward. Once
-        complete, the captain appears beside the stern helm with a four-frame
-        pointing animation; the camera frames his accusation, plank order,
-        the crew's exact authored objection, and his refusal. Completion saves
-        at the deck Ashtray and CONTINUE restores the captain without replaying
-        the exchange (session 163).
+        complete, the captain emerges at the midship ladder with a dedicated
+        four-frame walk cycle. The camera follows his clear route north of the
+        Ashtray and west to the stern helm, where the nearby concertina crewman
+        turns toward him and announces `Captain on deck!`. Two restrained
+        `...` dialogue beats pace his accusation, plank order, the crew's exact
+        authored objection, and refusal. Completion saves at the deck Ashtray
+        and CONTINUE restores the captain without replaying the exchange
+        (sessions 163/170).
 11. [x] Added a staged eight-tile starboard plank that replaces one rail
         section and projects as a narrow walkable strip over animated ocean.
         After the confrontation, the captain and objecting pirate flank the

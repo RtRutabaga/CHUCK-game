@@ -3,11 +3,33 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `2d3f934` (moving Astral/Hell plank reveal)
-- Current work: lower-hold rat pursuit (session 169)
+- Base commit before this pass: `502c7aa` (lower-hold rat pursuit)
+- Current work: captain arrival cutscene (session 170)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Reworked the beginning and timing of the existing captain confrontation
+without changing its prerequisite gate, outcome, or plank handoff:
+
+- The captain now emerges at the authored midship ladder instead of appearing
+  instantly at the helm. Player control locks and the camera follows him north
+  of the deck Ashtray, west across the clear lower deck, and into his authored
+  stern-helm position.
+- Expanded only the captain sprite sheet with a dedicated four-frame,
+  directional walk cycle. His established pointing performance resumes once
+  the walk ends.
+- The nearby concertina crewman turns toward the arriving captain and delivers
+  the exact new line `Captain on deck!`.
+- Added one `...` beat after the announcement and one before the captain's
+  final `No.` so the entrance and objection have deliberate cinematic pauses.
+- The captain gate remains unset until both dialogue sequences close. Saved
+  `captain_confronted` state still reconstructs the completed plank tableau
+  without replaying the entrance.
+- Focused captain, deck-cast, and plank regressions pass. All 63 standalone
+  test scripts pass, compilation is clean, and the launch smoke check passes.
+
+## Previous Pass (session 169, commit 502c7aa)
 
 Gave only the lower-hold rats the temple snakes' readable attack-chase
 behavior without changing the sewer tutorial encounters:

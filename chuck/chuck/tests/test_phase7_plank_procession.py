@@ -117,6 +117,16 @@ def test_dialogue_hands_off_to_short_scripted_walk_then_returns_control() -> Non
             MAP_NAME, progress_flags=CAPTAIN_REQUIRED_FLAGS
         )
         scene.update(0.0)
+        assert scene._captain_arrival_active
+        for _ in range(100):
+            scene.update(0.1)
+            if isinstance(game.scenes.current, DialogueScene):
+                break
+        assert isinstance(game.scenes.current, DialogueScene)
+        assert game.scenes.current._lines == ["Captain on deck!", "..."]
+        game.scenes.pop()
+
+        scene.update(0.0)
         assert isinstance(game.scenes.current, DialogueScene)
         game.scenes.pop()
 

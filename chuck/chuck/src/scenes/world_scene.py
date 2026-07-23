@@ -47,6 +47,7 @@ from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
 from src.systems.astral_anchor import AstralAnchorSystem
 from src.systems.captain_confrontation import (
+    CAPTAIN_ARRIVAL_SPEED,
     CAPTAIN_CONFRONTED_FLAG,
     DECK_PLANK_LENGTH,
     PLANK_PROCESSION_SPEED,
@@ -263,6 +264,9 @@ class WorldScene(Scene):
         self.reality_blocks: RealityBlockField | None = None
         self._reality_warning_shown = False
         self._captain_confrontation_started = False
+        self._captain_arrival_active = False
+        self._captain_arrival_waypoints: list[tuple[float, float]] = []
+        self._captain_after_arrival_dialogue = False
         self._captain_after_dialogue = False
         self._plank_procession_active = False
         self._plank_procession_target: tuple[float, float] | None = None
@@ -473,6 +477,19 @@ class WorldScene(Scene):
             self._chef_start_after_dialogue = False
             for chef in self.chefs:
                 chef.begin_pursuit()
+        if self._captain_after_arrival_dialogue:
+            self._captain_after_arrival_dialogue = False
+            captain = self._spawn_deck_captain()
+            captain.face_toward(self.player)
+            self.camera.focus_on(
+                captain.x + captain.width / 2,
+                captain.y + captain.height / 2,
+            )
+            self._captain_after_dialogue = True
+            self.game.scenes.push(DialogueScene(
+                self.game, self.dialogue.get("captain_confrontation")
+            ))
+            return
         if self._captain_after_dialogue:
             self._captain_after_dialogue = False
             self.game.progress.enable(CAPTAIN_CONFRONTED_FLAG)
@@ -542,16 +559,40 @@ class WorldScene(Scene):
             and captain_confrontation_ready(self.game.progress)
         ):
             self._captain_confrontation_started = True
+            self._begin_captain_arrival()
+            self.camera.update(dt)
+            return
+        if self._captain_arrival_active:
             captain = self._spawn_deck_captain()
-            captain.face_toward(self.player)
-            self.camera.focus_on(
-                captain.x + captain.width / 2,
-                captain.y + captain.height / 2,
-            )
-            self._captain_after_dialogue = True
-            self.game.scenes.push(DialogueScene(
-                self.game, self.dialogue.get("captain_confrontation")
-            ))
+            target_x, target_y = self._captain_arrival_waypoints[0]
+            if captain.scripted_walk_toward(
+                target_x, target_y, CAPTAIN_ARRIVAL_SPEED, dt
+            ):
+                self._captain_arrival_waypoints.pop(0)
+            if not self._captain_arrival_waypoints:
+                self._captain_arrival_active = False
+                announcer = next(
+                    (
+                        npc for npc in self.npcs
+                        if isinstance(npc, DeckPirateNPC)
+                        and npc.npc_id == "concertina_pirate"
+                    ),
+                    None,
+                )
+                if announcer is None:
+                    raise ValueError(
+                        "Ship exterior deck is missing its captain announcer"
+                    )
+                announcer.face_toward(captain)
+                self.camera.focus_on(
+                    captain.x + captain.width / 2,
+                    captain.y + captain.height / 2,
+                )
+                self._captain_after_arrival_dialogue = True
+                self.game.scenes.push(DialogueScene(
+                    self.game, self.dialogue.get("captain_arrival")
+                ))
+            self.camera.update(dt)
             return
         if self._plank_procession_active:
             assert self._plank_procession_target is not None
@@ -1128,6 +1169,41 @@ class WorldScene(Scene):
         captain.load_sprites(self.game.assets)
         self.npcs.append(captain)
         return captain
+
+    def _begin_captain_arrival(self) -> None:
+        """Bring the captain up at midship and walk him to the stern helm."""
+        if self._deck_captain_spawn is None:
+            raise ValueError(
+                "Ship exterior deck is missing its authored captain marker"
+            )
+        arrival = next(
+            (
+                position for kind, position in self.tilemap.object_spawns
+                if kind == "arrival:from_crew_quarters"
+            ),
+            None,
+        )
+        if arrival is None:
+            raise ValueError(
+                "Ship exterior deck is missing its crew-quarters arrival"
+            )
+        captain = self._spawn_deck_captain()
+        captain.x = arrival[0] - captain.width / 2
+        captain.y = arrival[1] - captain.height / 2
+        target_cx, target_cy = self._deck_captain_spawn[:2]
+        target_x = target_cx - captain.width / 2
+        target_y = target_cy - captain.height / 2
+        # Step clear of the ladder and Ashtray, cross the open lower deck,
+        # then step north to the helm. This also avoids cutting diagonally
+        # through the western mast and Jeffries.
+        deck_lane_y = target_y + config.TILE_SIZE
+        self._captain_arrival_waypoints = [
+            (captain.x, deck_lane_y),
+            (target_x, deck_lane_y),
+            (target_x, target_y),
+        ]
+        self._captain_arrival_active = True
+        self.camera.follow(captain)
 
     def _stage_deck_plank(self) -> None:
         if self._deck_plank_origin is None:

@@ -41,8 +41,10 @@ Implemented so far:
   reference and includes the authored crew performances, fencing hazard,
   rocking sea presentation, Jeffries, helm, and physical Ashtray.
 - After the chef encounter, seated-pirate conversation, four deck
-  conversations, and captain's chest are all complete, the captain appears
-  beside the stern helm and delivers the accusation, plank order, crew
+  conversations, and captain's chest are all complete, the camera finds the
+  captain emerging at the midship ladder and follows his animated walk across
+  the deck to the stern helm. A nearby crewman announces `Captain on deck!`;
+  restrained `...` dialogue beats pace the accusation, plank order, crew
   objection, and refusal. A narrow physical plank then opens through the
   starboard rail; the captain and objecting pirate flank its approach while
   Chuck is marched to the rail and control returns. The outer endpoint remains

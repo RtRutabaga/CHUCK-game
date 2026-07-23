@@ -12,6 +12,7 @@ CAPTAIN_CONFRONTED_FLAG = "captain_confronted"
 DECK_PLANK_TERRAIN = "∥"
 DECK_PLANK_LENGTH = 8
 PLANK_PROCESSION_SPEED = 38.0
+CAPTAIN_ARRIVAL_SPEED = 48.0
 CAPTAIN_REQUIRED_FLAGS = frozenset({
     "pirate_chef_met",
     "crew_pirate_met",

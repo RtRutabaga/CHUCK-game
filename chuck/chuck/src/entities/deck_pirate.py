@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from typing import TYPE_CHECKING
 
 from src.core import config
@@ -50,6 +51,8 @@ class DeckPirateNPC(PirateNPC):
         )
         self.performance = performance
         self._deck_frames: dict[str, tuple[object, ...]] = {}
+        self._walk_frames: dict[str, tuple[object, ...]] = {}
+        self.scripted_moving = False
 
     def load_sprites(self, assets: "AssetManager") -> None:
         import pygame
@@ -59,9 +62,10 @@ class DeckPirateNPC(PirateNPC):
             config.NPC_FRAME_W,
             config.NPC_FRAME_H,
         )[0]
-        if len(frames) != ANIMATION_FRAMES * 3:
+        expected = ANIMATION_FRAMES * (6 if self.performance == "captain" else 3)
+        if len(frames) != expected:
             raise ValueError(
-                f"{self.npc_id} needs 12 deck-animation frames, got "
+                f"{self.npc_id} needs {expected} deck-animation frames, got "
                 f"{len(frames)}"
             )
         down = tuple(frames[0:4])
@@ -75,6 +79,49 @@ class DeckPirateNPC(PirateNPC):
                 pygame.transform.flip(frame, True, False) for frame in left
             ),
         }
+        if self.performance == "captain":
+            walk_down = tuple(frames[12:16])
+            walk_up = tuple(frames[16:20])
+            walk_left = tuple(frames[20:24])
+            self._walk_frames = {
+                "down": walk_down,
+                "up": walk_up,
+                "left": walk_left,
+                "right": tuple(
+                    pygame.transform.flip(frame, True, False)
+                    for frame in walk_left
+                ),
+            }
+
+    def scripted_walk_toward(
+        self,
+        target_x: float,
+        target_y: float,
+        speed: float,
+        dt: float,
+    ) -> bool:
+        """Walk an authored deck route while player control is suspended."""
+        dx = target_x - self.x
+        dy = target_y - self.y
+        distance = math.hypot(dx, dy)
+        if distance <= 1e-4:
+            self.x, self.y = target_x, target_y
+            self.scripted_moving = False
+            self.update(dt)
+            return True
+        if abs(dx) > abs(dy):
+            self.facing = "right" if dx > 0 else "left"
+        else:
+            self.facing = "down" if dy > 0 else "up"
+        step = min(distance, speed * dt)
+        self.x += dx / distance * step
+        self.y += dy / distance * step
+        reached = step >= distance
+        if reached:
+            self.x, self.y = target_x, target_y
+        self.scripted_moving = step > 0.0 and not reached
+        self.update(dt)
+        return reached
 
     @property
     def animation_frame(self) -> int:
@@ -88,10 +135,18 @@ class DeckPirateNPC(PirateNPC):
 
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
         ox, oy = camera_offset
-        frames = self._deck_frames.get(self.facing)
+        frames_by_facing = (
+            self._walk_frames if self.scripted_moving else self._deck_frames
+        )
+        frames = frames_by_facing.get(self.facing)
         if frames is None:
             return super().draw(surface, camera_offset)
-        frame = frames[self.animation_frame]
+        frame_index = (
+            int(self._anim_t / 0.14) % ANIMATION_FRAMES
+            if self.scripted_moving
+            else self.animation_frame
+        )
+        frame = frames[frame_index]
         fw, fh = frame.get_size()
         surface.blit(
             frame,

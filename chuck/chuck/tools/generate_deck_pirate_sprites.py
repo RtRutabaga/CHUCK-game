@@ -38,6 +38,8 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
     # Boots and legs establish a human-scale, readable stance.
     if action == "dance":
         left_dx, right_dx = ((-2, 1), (-1, 2), (0, 3), (-1, 2))[phase]
+    elif action == "captain_walk":
+        left_dx, right_dx = ((-2, 1), (-1, 2), (0, 1), (-1, 0))[phase]
     else:
         left_dx, right_dx = -1, 1
     rect(draw, (cx - 4 + left_dx, 22, cx - 1 + left_dx, 27), TROUSER)
@@ -86,6 +88,14 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
         for y in (15, 18, 21):
             rect(draw, (cx - 7, y, cx + 7, y), ROPE)
         rect(draw, (cx - 1, 12, cx, 25), ROPE)
+    elif action == "captain_walk":
+        # A restrained opposite arm swing, distinct from his later pointing
+        # performance so the entrance reads as a walk rather than a slide.
+        swing = (-1, 0, 1, 0)[phase]
+        rect(draw, (cx - 7, 15 + swing, cx - 5, 21 + swing), coat)
+        rect(draw, (cx + 5, 15 - swing, cx + 7, 21 - swing), coat)
+        rect(draw, (cx - 7, 21 + swing, cx - 6, 22 + swing), SKIN)
+        rect(draw, (cx + 6, 21 - swing, cx + 7, 22 - swing), SKIN)
     else:  # Captain: a clipped point toward Chuck/the waiting plank.
         reach = (0, 1, 2, 1)[phase]
         direction = -1 if facing == "left" else 1
@@ -109,6 +119,12 @@ def _sheet(action: str, coat) -> Image.Image:
         for facing in ("down", "up", "left")
         for phase in range(4)
     ]
+    if action == "captain":
+        frames.extend(
+            _person(facing, phase, coat, "captain_walk")
+            for facing in ("down", "up", "left")
+            for phase in range(4)
+        )
     sheet = Image.new("RGBA", (W * len(frames), H), CLEAR)
     for index, frame in enumerate(frames):
         sheet.paste(frame, (index * W, 0))
