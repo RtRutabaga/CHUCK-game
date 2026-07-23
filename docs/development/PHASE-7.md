@@ -45,7 +45,10 @@ Implemented so far:
   objection, and refusal. A narrow physical plank then opens through the
   starboard rail; the captain and objecting pirate flank its approach while
   Chuck is marched to the rail and control returns. The outer endpoint remains
-  safely bounded until the reality-breakup sequence is implemented.
+  safely bounded. Stepping onto the plank now phases in moving, hard-edged
+  Astral Sea and ember-cracked Hell blocks over separate sea lanes while
+  Jeffries shouts `It's back! The purple is back!`; the blocks remain
+  non-colliding and the kick/fall is reserved for the next slice.
 
 ------------------------------------------------------------------------
 
@@ -269,6 +272,6 @@ Do not fully explain the collided worlds.
 -   [x] Jeffries delivers collided-world dialogue.
 -   [x] Other pirates dismiss Jeffries.
 -   [x] Captain sequence triggers correctly.
--   [ ] Moving Astral Sea and Hell blocks appear.
+-   [x] Moving Astral Sea and Hell blocks appear.
 -   [ ] Chuck falls into a Hell block.
 -   [ ] Phase ends with the Nine Hells transition.

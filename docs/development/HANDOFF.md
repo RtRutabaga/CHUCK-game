@@ -3,11 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `02b84f4` (confirmed ship ladder traversal)
-- Current work: human-scale ship ladders (session 167)
+- Base commit before this pass: `0210eaa` (human-scale ship ladders)
+- Current work: moving Astral/Hell plank reveal (session 168)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Implemented the reality-breakup reveal around the staged plank without
+beginning the captain's kick, fall, or Phase 8:
+
+- Added a modular deterministic reality-block field anchored to the authored
+  plank origin. Four Astral and four Hell fragments phase in sequentially and
+  drift in broad ocean lanes on both sides without crossing the plank.
+- Astral chunks use hard-edged purple/blue starfield pixels; Hell chunks use
+  foreign basalt, orange magma seams, embers, and square flickering flames.
+  They render with the fixed sea rather than inheriting the ship's rocking
+  offset.
+- First stepping onto the staged plank activates the field and triggers
+  Jeffries' exact one-time shout: `It's back! The purple is back!`
+- The fragments are presentation-only in this slice. They do not collide,
+  damage, or pull Chuck off the plank, and the existing solid ocean endpoint
+  remains intact.
+- Focused tests cover delayed reveal, both materials, motion, plank separation,
+  activation gating, exact dialogue, one-time behavior, and the deliberate
+  absence of any fall/transition. A native 320x180 render was visually checked.
+- All 63 standalone test scripts pass, compilation is clean, and the game
+  reaches its running title loop in the headless launch smoke check.
+
+## Previous Pass (session 167, commit 0210eaa)
 
 Rebuilt the actual ladder geometry and art at human crew scale without
 changing any route or confirmation behavior:
@@ -592,13 +615,13 @@ boundary:
 - Phase 6 is complete end to end. Per the user's direction, the escape
   cutscene intentionally starts `ship_shanty.wav`; do not split it into a
   separate cue.
-- Phase 7 has begun, but only the arrival compartment and lower hold exist.
-  The exterior deck remains unbuilt and must use `docs/design/pirate ship.png`
-  as its composition reference when its later session begins.
+- Phase 7 is complete through the moving Astral/Hell block reveal. The captain
+  has not kicked Chuck, Chuck cannot yet fall into a Hell block, and Phase 8
+  gameplay must not begin in the next pass.
 
 ## Recommended Next Bounded Task
 
-- Build the galley from one of the arrival compartment's side doors: add its
-  map shell, one Ashtray/shared-loader entry, the authored chef line, and a
-  contained cleaver pursuit. Keep the ship theme uninterrupted and do not
-  begin the exterior deck yet.
+- Stage the captain's kick once Chuck reaches the outer plank, land him in one
+  authored moving Hell block, and hand off to the Nine Hells falling
+  transition. Keep the slice focused on completing Phase 7; stop at the stable
+  Phase 8 arrival boundary rather than building Nine Hells gameplay.

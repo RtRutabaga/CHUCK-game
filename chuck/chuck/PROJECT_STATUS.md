@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 167 (human-scale ship ladders).
+Updated: session 168 (moving Astral/Hell plank reveal).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1245,8 +1245,16 @@ bounded sessions.
          16x30 human NPC sprite scale. Both walkable halves share the same
          YES/NO transition, and nearby named arrivals were kept safely off
          the enlarged footprint (session 167).
-12. [ ] Add the moving Astral Sea and Hell blocks around the staged plank,
-        including Jeffries' warning; stop before the captain's kick and fall.
+12. [x] Added a deterministic moving reality field that activates when Chuck
+        first steps onto the staged plank. Eight hard-edged fragments phase in
+        across separate ocean lanes: purple/blue starfield Astral blocks and
+        ember-cracked, square-flamed Hell blocks. Jeffries shouts `It's back!
+        The purple is back!` once as they appear. They remain non-colliding,
+        never cross the plank, and its solid endpoint still prevents the
+        unbuilt kick/fall from beginning early (session 168).
+13. [ ] Stage the captain's kick, land Chuck in an authored moving Hell block,
+        and hand off to the Nine Hells falling transition without beginning
+        Phase 8 gameplay.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

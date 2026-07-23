@@ -8,6 +8,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 from src.core import config
 from src.core.game import Game
 from src.entities.deck_pirate import DeckPirateNPC
+from src.entities.reality_blocks import RealityBlockField
 from src.scenes.dialogue_scene import DialogueScene
 from src.systems.captain_confrontation import (
     CAPTAIN_CONFRONTED_FLAG,
@@ -138,6 +139,90 @@ def test_dialogue_hands_off_to_short_scripted_walk_then_returns_control() -> Non
             scene.player, 42, 31
         )
         assert not scene.player.moving
+        assert game.scenes.current is scene
+    finally:
+        game._shutdown()
+
+
+def test_reality_field_phases_in_both_materials_and_moves_off_the_plank() -> None:
+    field = RealityBlockField(*PLANK_ORIGIN)
+    assert not field.active and not field.visible_blocks
+    field.activate()
+    assert len(field.visible_blocks) == 1
+    first_positions = {
+        id(block): field.position(block) for block in field.visible_blocks
+    }
+
+    field.update(2.5)
+    assert {block.kind for block in field.visible_blocks} == {"astral", "hell"}
+    assert any(
+        field.position(block) != first_positions.get(id(block))
+        for block in field.visible_blocks
+    )
+
+    plank_x = PLANK_ORIGIN[0] * config.TILE_SIZE
+    for block in field.blocks:
+        x, _y = field.position(block)
+        if block.base_x < plank_x:
+            assert x + block.width < plank_x
+        else:
+            assert x > plank_x + config.TILE_SIZE
+
+
+def test_stepping_onto_plank_reveals_blocks_and_triggers_jeffries_once() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(
+            MAP_NAME,
+            progress_flags=(
+                CAPTAIN_REQUIRED_FLAGS | {CAPTAIN_CONFRONTED_FLAG}
+            ),
+        )
+        assert scene.reality_blocks is not None
+        assert not scene.reality_blocks.active
+        assert scene.dialogue.get("jeffries_reality_warning") == [
+            "It's back! The purple is back!"
+        ]
+
+        scene.player.x, scene.player.y = _tile_centered_position(
+            scene.player, *PLANK_ORIGIN
+        )
+        scene.update(0.0)
+        warning = game.scenes.current
+        assert isinstance(warning, DialogueScene)
+        assert warning._lines == ["It's back! The purple is back!"]
+        assert scene.reality_blocks.active
+        assert scene._reality_warning_shown
+        assert scene._fall_t is None
+        assert scene._pending_map is None
+
+        # This pass stops before the kick/fall: the plank remains walkable,
+        # its outer endpoint stays solid ocean, and closing the warning simply
+        # returns control amid the moving fragments.
+        col, first_row = PLANK_ORIGIN
+        assert all(
+            scene.tilemap.terrain_at(col, row) == DECK_PLANK_TERRAIN
+            for row in range(first_row, first_row + DECK_PLANK_LENGTH)
+        )
+        assert scene.tilemap.is_solid(
+            col, first_row + DECK_PLANK_LENGTH
+        )
+        game.scenes.pop()
+        before = [
+            scene.reality_blocks.position(block)
+            for block in scene.reality_blocks.visible_blocks
+        ]
+        scene.update(1.0)
+        after = [
+            scene.reality_blocks.position(block)
+            for block in scene.reality_blocks.visible_blocks[:len(before)]
+        ]
+        assert before != after
+        assert game.scenes.current is scene
+        assert scene._fall_t is None and scene._pending_map is None
+
+        # Remaining on the plank does not repeat Jeffries' line.
+        scene.update(0.0)
         assert game.scenes.current is scene
     finally:
         game._shutdown()

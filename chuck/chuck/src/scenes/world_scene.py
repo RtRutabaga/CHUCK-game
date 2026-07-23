@@ -39,6 +39,7 @@ from src.entities.player import Player
 from src.entities.prop import Prop
 from src.entities.rat import SewerRat
 from src.entities.raptor import Raptor
+from src.entities.reality_blocks import RealityBlockField
 from src.entities.snake import TempleSnake
 from src.entities.sword_fighter import SwordFighter
 from src.entities.undead import UndeadEnemy
@@ -47,6 +48,7 @@ from src.scenes.scene import Scene
 from src.systems.astral_anchor import AstralAnchorSystem
 from src.systems.captain_confrontation import (
     CAPTAIN_CONFRONTED_FLAG,
+    DECK_PLANK_LENGTH,
     PLANK_PROCESSION_SPEED,
     captain_confrontation_ready,
     stage_deck_plank,
@@ -258,6 +260,8 @@ class WorldScene(Scene):
         self.last_choice: str | None = None  # what Chuck last decided
         self._deck_captain_spawn = None
         self._deck_plank_origin: tuple[int, int] | None = None
+        self.reality_blocks: RealityBlockField | None = None
+        self._reality_warning_shown = False
         self._captain_confrontation_started = False
         self._captain_after_dialogue = False
         self._plank_procession_active = False
@@ -445,6 +449,11 @@ class WorldScene(Scene):
             self._spawn_deck_captain()
             self._stage_deck_plank()
             self._apply_post_confrontation_tableau()
+        if (
+            self.map_name == "ship_exterior_deck"
+            and self._deck_plank_origin is not None
+        ):
+            self.reality_blocks = RealityBlockField(*self._deck_plank_origin)
         # An opened-but-uncollected captain chest reconstructs its physical
         # carton when this room is loaded.
         self._collect_pending_drops()
@@ -519,6 +528,8 @@ class WorldScene(Scene):
 
         # The world keeps moving whether or not Chuck is in it.
         self._world_time += dt
+        if self.reality_blocks is not None:
+            self.reality_blocks.update(dt)
         if self._arrival_fade_t is not None:
             self._arrival_fade_t += dt
             if self._arrival_fade_t >= config.AREA_FADE_DURATION:
@@ -680,6 +691,9 @@ class WorldScene(Scene):
         )
         if fall_kind is not None:
             self._begin_fall(fall_kind)
+            self.camera.update(dt)
+            return
+        if self._maybe_begin_reality_breakup():
             self.camera.update(dt)
             return
         if (
@@ -959,6 +973,10 @@ class WorldScene(Scene):
                 surface, offset, self._world_time,
                 include_chars=frozenset({"~"}),
             )
+            if self.reality_blocks is not None:
+                # Reality fragments belong to the wrong sea, not the rocking
+                # ship, so they keep the ocean/camera frame beneath the hull.
+                self.reality_blocks.draw(surface, offset)
             rock_x, rock_y = deck_rock_offset(self._world_time)
             offset = (offset[0] - rock_x, offset[1] - rock_y)
             self.tilemap.draw_ground(
@@ -1187,6 +1205,33 @@ class WorldScene(Scene):
         self._on_choice(option)
         if option.goto is not None:
             self._pending_facing = exit_config.facing
+
+    def _maybe_begin_reality_breakup(self) -> bool:
+        """Reveal wrong-map blocks when Chuck first commits to the plank."""
+        field = self.reality_blocks
+        origin = self._deck_plank_origin
+        if (
+            field is None
+            or origin is None
+            or field.active
+            or self._reality_warning_shown
+            or not self.game.progress.has(CAPTAIN_CONFRONTED_FLAG)
+        ):
+            return False
+        col, row = self._player_tile()
+        plank_col, first_row = origin
+        if col != plank_col or not (
+            first_row <= row < first_row + DECK_PLANK_LENGTH
+        ):
+            return False
+
+        field.activate()
+        self._reality_warning_shown = True
+        self.game.scenes.push(DialogueScene(
+            self.game,
+            self.dialogue.get("jeffries_reality_warning"),
+        ))
+        return True
 
     def _interactable_in_range(self):
         """The NPC or prop Chuck could talk to right now, or None.
