@@ -73,6 +73,27 @@ def test_gate_requires_every_major_pirate_and_the_captain_chest() -> None:
         game._shutdown()
 
 
+def test_development_checkpoint_uses_the_real_captain_arrival_gate() -> None:
+    game = Game()
+    try:
+        definition = game.checkpoints.definition("ship_captain_arrival")
+        assert definition.display_name == "Captain Arrival"
+        assert definition.development_visible and not definition.saveable
+        assert CAPTAIN_REQUIRED_FLAGS <= definition.required_flags
+        assert CAPTAIN_CONFRONTED_FLAG not in definition.required_flags
+
+        scene = game.checkpoints.load_checkpoint("ship_captain_arrival")
+        assert scene.map_name == MAP_NAME
+        assert CAPTAIN_REQUIRED_FLAGS <= game.progress.flags
+        assert not game.progress.has(CAPTAIN_CONFRONTED_FLAG)
+        assert _captains(scene) == []
+        scene.update(0.0)
+        assert scene._captain_arrival_active
+        assert len(_captains(scene)) == 1
+    finally:
+        game._shutdown()
+
+
 def test_ready_gate_spawns_captain_and_plays_complete_authored_exchange() -> None:
     dialogue = DialogueSystem()
     arrival_lines = [

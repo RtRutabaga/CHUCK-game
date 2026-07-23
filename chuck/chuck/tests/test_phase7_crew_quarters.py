@@ -26,7 +26,7 @@ def _map() -> TileMap:
 
 def test_crew_quarters_contains_the_authored_room_and_one_checkpoint() -> None:
     tilemap = _map()
-    assert (tilemap.width_tiles, tilemap.height_tiles) == (42, 30)
+    assert (tilemap.width_tiles, tilemap.height_tiles) == (42, 24)
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_ship_room") == 1
     assert kinds.count("anchor:ship_crew_anchor") == 1
@@ -45,6 +45,7 @@ def test_crew_quarters_contains_the_authored_room_and_one_checkpoint() -> None:
     assert entry.display_name == "Ship Crew Quarters"
     assert entry.runtime_entry and entry.map_name == MAP_NAME
     anchor = CHECKPOINT_BY_ID["ship_crew_anchor"]
+    assert anchor.position == (116.0, 181.0)
     assert anchor.saveable and not anchor.development_visible
 
 

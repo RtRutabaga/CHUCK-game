@@ -3,11 +3,41 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `13d5ecd` (varied Hell-fragment lava layouts)
-- Current work: captain kick and Nine Hells fall (session 175)
+- Base commit before this pass: `ebdb3d8` (completed Phase 7 Hell fall)
+- Current work: ship/interior and Hell-fall polish (session 176)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Polished the completed Phase 7 ship and ending in the five requested areas:
+
+- Added a development-visible `Captain Arrival` definition to the shared
+  checkpoint registry. It loads the exterior deck with the real seven captain
+  prerequisites and no confronted flag, so the ordinary production gate,
+  spawn, camera, walk, announcement, and dialogue all run unchanged.
+- Kept the galley, crew quarters, and captain cabin at their exact 40/42/36
+  tile east-west widths while compressing their north-south spans to 22/24/21
+  tiles. Every prop, actor, doorway, ladder, arrival, Ashtray, and reversible
+  transition remains; the three anchor respawn positions follow their moved
+  markers.
+- Found the remaining NPC black block in the procedural deck-pirate up frame:
+  one solid 7x5 near-black patch covered the head. Replaced it with shaped warm
+  head shadow, scarf, and narrow hair/edge pixels, then regenerated all five
+  deck/captain sheets from source.
+- Removed all overhead Hell fragments from the street-view fall. Chuck now
+  descends through heated open air and sparks with one large distant volcano
+  behind him.
+- Rebuilt the arrival ground as over 90% basalt with only a thin branching
+  molten fissure, then reused the Chult tableau's left/right/down look,
+  cigarette insertion, lit ember, drag, and rising smoke before the input-free
+  Phase 8 hold.
+- Targeted galley, crew, cabin, captain gate, checkpoint selector, deck-pirate
+  pixel, and plank/fall suites pass. All 63 standalone suites pass, compilation
+  is clean, and the title-loop launch smoke check passes. Native renders of all
+  three compressed rooms, every regenerated up-facing pirate, and
+  fall/impact/smoke frames were inspected.
+
+## Previous Pass (session 175, commit ebdb3d8)
 
 Completed the bounded Phase 7 ending without beginning playable Phase 8:
 

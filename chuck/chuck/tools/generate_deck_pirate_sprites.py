@@ -65,7 +65,14 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
         rect(draw, (cx - 2, 9 + bob, cx - 2, 9 + bob), OUTLINE)
         rect(draw, (cx + 2, 9 + bob, cx + 2, 9 + bob), OUTLINE)
     elif facing == "up":
-        rect(draw, (cx - 3, 8 + bob, cx + 3, 12 + bob), OUTLINE)
+        # The old solid 7x5 near-black patch read as a box pasted over the
+        # head whenever dialogue turned a pirate away from Chuck. Shape the
+        # back of the head with warm shadow, scarf, and only a narrow hairline.
+        rect(draw, (cx - 3, 8 + bob, cx + 3, 11 + bob), SKIN_DARK)
+        rect(draw, (cx - 2, 8 + bob, cx + 2, 8 + bob), OUTLINE)
+        rect(draw, (cx - 3, 11 + bob, cx + 3, 12 + bob), RED)
+        rect(draw, (cx - 3, 9 + bob, cx - 3, 10 + bob), OUTLINE)
+        rect(draw, (cx + 3, 9 + bob, cx + 3, 10 + bob), OUTLINE)
     else:
         rect(draw, (cx - 3, 9 + bob, cx - 3, 9 + bob), OUTLINE)
         rect(draw, (cx - 5, 10 + bob, cx - 4, 11 + bob), SKIN_DARK)

@@ -11,6 +11,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from src.core import config
+from src.systems.captain_confrontation import CAPTAIN_REQUIRED_FLAGS
 from src.systems.save import SaveRecord, SaveSystem
 
 if TYPE_CHECKING:
@@ -293,7 +294,7 @@ CHECKPOINTS = (
     ),
     CheckpointDefinition(
         "ship_galley_anchor", "Ship Galley Ashtray", "ship_galley",
-        position=(116.0, 325.0), facing="up",
+        position=(116.0, 229.0), facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         saveable=True, development_visible=False,
     ),
@@ -311,7 +312,7 @@ CHECKPOINTS = (
     ),
     CheckpointDefinition(
         "ship_crew_anchor", "Ship Crew Ashtray", "ship_crew_quarters",
-        position=(116.0, 229.0), facing="up",
+        position=(116.0, 181.0), facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         saveable=True, development_visible=False,
     ),
@@ -329,7 +330,7 @@ CHECKPOINTS = (
     ),
     CheckpointDefinition(
         "ship_captain_anchor", "Ship Captain Ashtray",
-        "ship_captain_cabin", position=(100.0, 309.0), facing="up",
+        "ship_captain_cabin", position=(100.0, 229.0), facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         saveable=True, development_visible=False,
     ),
@@ -343,6 +344,15 @@ CHECKPOINTS = (
         "ship_exterior_deck", "Ship Exterior Deck", "ship_exterior_deck",
         arrival="from_crew_quarters", facing="down",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "ship_captain_arrival", "Captain Arrival", "ship_exterior_deck",
+        arrival="from_crew_quarters", facing="down",
+        required_flags=(
+            frozenset({"sewer_completed", "chult_reached"})
+            | CAPTAIN_REQUIRED_FLAGS
+        ),
         runtime_entry=True,
     ),
     CheckpointDefinition(

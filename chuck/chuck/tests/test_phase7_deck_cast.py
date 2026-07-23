@@ -125,6 +125,35 @@ def test_side_facing_tricorns_leave_pirate_faces_readable() -> None:
         game._shutdown()
 
 
+def test_up_facing_pirates_do_not_paint_a_black_box_over_their_heads() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(
+            MAP_NAME,
+            progress_flags=(
+                CAPTAIN_REQUIRED_FLAGS | {CAPTAIN_CONFRONTED_FLAG}
+            ),
+        )
+        pirates = [
+            npc for npc in scene.npcs if isinstance(npc, DeckPirateNPC)
+        ]
+        outline = (38, 29, 28)
+        for pirate in pirates:
+            for frame in pirate._deck_frames["up"]:
+                face_region = [
+                    frame.get_at((x, y))[:3]
+                    for x in range(4, 13)
+                    for y in range(8, 14)
+                ]
+                assert face_region.count(outline) <= 12
+                assert sum(
+                    pixel[0] > 100 and pixel[1] > 40 and pixel[2] < 110
+                    for pixel in face_region
+                ) >= 18
+    finally:
+        game._shutdown()
+
+
 def test_all_four_pirates_switch_to_repeat_dialogue_and_persist() -> None:
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "save.json"

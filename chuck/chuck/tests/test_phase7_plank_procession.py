@@ -18,8 +18,11 @@ from src.entities.reality_blocks import (
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.hell_falling_cutscene_scene import (
     HELL_ARRIVAL_TIME,
+    HELL_CIGARETTE_SEATED,
+    HELL_CIGARETTE_START,
     HELL_GROUND_APPROACH,
     HELL_IMPACT_TIME,
+    HELL_LOOK_START,
     HELL_MUSIC_START,
     HellFallingCutsceneScene,
 )
@@ -417,13 +420,23 @@ def test_hell_fall_reuses_cue_and_holds_at_phase8_arrival_boundary() -> None:
             (filename, loop)
         )
         game.audio.play_sfx = sounds.append
-        initial_fragments = [fragment[1] for fragment in scene.fragments]
+        assert not hasattr(scene, "fragments")
 
         scene.update(HELL_MUSIC_START - 0.1)
         assert music == []
         scene.update(0.2)
         assert music == [("fall_to_chult.wav", False)]
-        assert [fragment[1] for fragment in scene.fragments] != initial_fragments
+        fall_frame = pygame.Surface(
+            (config.NATIVE_WIDTH, config.NATIVE_HEIGHT)
+        )
+        scene.draw(fall_frame)
+        pixels = [
+            fall_frame.get_at((x, y))[:3]
+            for y in range(config.NATIVE_HEIGHT)
+            for x in range(config.NATIVE_WIDTH)
+        ]
+        assert sum(pixel == (34, 23, 25) for pixel in pixels) > 1000
+        assert not set(HELL_BASALT_COLORS) & set(pixels)
 
         scene.update(HELL_GROUND_APPROACH - scene.elapsed - 0.01)
         assert scene.phase == "fall"
@@ -436,14 +449,38 @@ def test_hell_fall_reuses_cue_and_holds_at_phase8_arrival_boundary() -> None:
         assert sounds == ["hurt"]
         game.scenes.draw(game.native_surface)
 
+        scene.update(HELL_LOOK_START - scene.elapsed + 0.01)
+        assert scene.phase == "look"
+        assert scene._facing_for_tableau() == "left"
+        scene.update(0.75)
+        assert scene._facing_for_tableau() == "right"
+        scene.update(HELL_CIGARETTE_START - scene.elapsed + 0.01)
+        assert scene.phase == "cigarette"
+        assert not scene.cigarette_lit
+        scene.update(HELL_CIGARETTE_SEATED - scene.elapsed + 0.01)
+        assert scene.phase == "smoke"
+        assert scene.cigarette_lit
+
+        ground = pygame.Surface((config.NATIVE_WIDTH, 48))
+        scene._draw_basalt_ground(ground)
+        ground_pixels = [
+            ground.get_at((x, y))[:3]
+            for y in range(ground.get_height())
+            for x in range(ground.get_width())
+        ]
+        basalt = sum(pixel in HELL_BASALT_COLORS for pixel in ground_pixels)
+        lava = sum(pixel in HELL_LAVA_COLORS for pixel in ground_pixels)
+        assert basalt > len(ground_pixels) * 0.9
+        assert lava < len(ground_pixels) * 0.02
+
         scene.update(HELL_ARRIVAL_TIME - scene.elapsed + 1.0)
         assert scene.arrived and scene.phase == "arrived"
         assert scene.elapsed == HELL_ARRIVAL_TIME
         assert scene.sanity == 73
         assert game.scenes.current is scene
-        held_fragments = [fragment[1] for fragment in scene.fragments]
+        held_elapsed = scene.elapsed
         scene.update(5.0)
-        assert [fragment[1] for fragment in scene.fragments] == held_fragments
+        assert scene.elapsed == held_elapsed
         game.scenes.draw(game.native_surface)
     finally:
         game._shutdown()

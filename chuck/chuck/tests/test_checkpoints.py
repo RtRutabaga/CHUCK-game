@@ -286,6 +286,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             "Ship Crew Quarters",
             "Ship Captain Cabin",
             "Ship Exterior Deck",
+            "Captain Arrival",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)

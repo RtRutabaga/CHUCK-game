@@ -24,7 +24,7 @@ def _map() -> TileMap:
 
 def test_galley_is_authored_as_one_ship_map_with_one_checkpoint() -> None:
     tilemap = _map()
-    assert (tilemap.width_tiles, tilemap.height_tiles) == (40, 26)
+    assert (tilemap.width_tiles, tilemap.height_tiles) == (40, 22)
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_ship_room") == 1
     assert kinds.count("pirate_chef") == 1
@@ -37,6 +37,7 @@ def test_galley_is_authored_as_one_ship_map_with_one_checkpoint() -> None:
     assert entry.map_name == MAP_NAME and entry.runtime_entry
     anchor = CHECKPOINT_BY_ID["ship_galley_anchor"]
     assert anchor.map_name == MAP_NAME
+    assert anchor.position == (116.0, 229.0)
     assert anchor.saveable and not anchor.development_visible
 
 

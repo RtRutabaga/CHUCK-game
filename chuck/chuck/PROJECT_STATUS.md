@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 175 (captain kick and Nine Hells fall).
+Updated: session 176 (Phase 7 ship and Hell-fall polish).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1287,6 +1287,26 @@ bounded sessions.
         gameplay control. This is the stable Phase 8 boundary; no Phase 8 map,
         mechanics, checkpoint, or narrative content was invented (session
         175).
+   - [x] Added the development-only `Captain Arrival` checkpoint through the
+         shared checkpoint registry/loader. It enters the exterior deck with
+         all seven production prerequisites and without `captain_confronted`,
+         so the ordinary gate starts the captain walk on the next update
+         (session 176).
+   - [x] Compressed only the north-south spans of the galley (40x26 -> 40x22),
+         crew quarters (42x30 -> 42x24), and captain cabin (36x26 -> 36x21).
+         East-west lengths, props, enemies/NPCs, ladders, open passages,
+         arrivals, Ashtrays, chest behavior, and reversible routes remain
+         authored; moved Ashtray checkpoint coordinates match their new rows
+         (session 176).
+   - [x] Removed the remaining solid near-black up-facing deck-pirate head
+         patch at its procedural source and regenerated all five affected
+         sheets with warm shaped head/scarf silhouettes (session 176).
+   - [x] Revised the Nine Hells fall so no overhead Hell tiles appear behind
+         Chuck in the street-view descent. A large distant volcano now anchors
+         the open heated sky. The landing plane is over 90% basalt with sparse
+         molten fissures, and Chuck reuses the Chult landing's left/right/down
+         look, cigarette insertion, ember, drag, and smoke before the held
+         Phase 8 boundary (session 176).
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

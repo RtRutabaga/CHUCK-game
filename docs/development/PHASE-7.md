@@ -26,22 +26,29 @@ Implemented so far:
 - The west open passage leads to a reversible working galley with one physical
   Ashtray. The pirate chef gives the authored warning, then begins a
   collision-aware, animated cleaver pursuit; Chuck cannot clear him by
-  scratching, so the encounter remains an escape through galley lanes.
+  scratching, so the encounter remains an escape through galley lanes. Its
+  east-west span remains 40 tiles while its sparse north-south span is
+  compressed from 26 to 22 tiles.
 - The east open passage leads to reversible crew quarters with hanging bunks,
   an oversized round mess table, one physical Ashtray, and a seated pirate who
   sways with his mug. His first greeting and shorter repeat line are selected
   by a durable conversation flag. The deck hatch remains visible but inert;
-  the open captain-cabin passage is now connected to its finished room.
+  the open captain-cabin passage is now connected to its finished room. The
+  quarters retain their 42-tile east-west length while shrinking from 30 to
+  24 tiles north-south.
 - The crew quarters' east opening now enters the captain's cabin. Interacting
   with or scratching its oversized chest plays a lid-opening animation and
   drops a physical golden 40-cigarette carton in front, with no dialogue box.
   The open and collected states persist through the cabin's Ashtray and
-  CONTINUE without duplicating the reward.
+  CONTINUE without duplicating the reward. The cabin remains 36 tiles wide
+  and is compressed from 26 to 21 tiles tall.
 - The exterior deck now uses `docs/design/pirate ship.png` as its composition
   reference and includes the authored crew performances, fencing hazard,
   rocking sea presentation, Jeffries, helm, and physical Ashtray. Animated
   crew tricorns use shaped side-view crowns and narrow brims so turning toward
   Chuck during dialogue never obscures their faces with a dark rectangle.
+  Their up-facing frames likewise use a shaped warm head/scarf region instead
+  of the former solid near-black patch.
 - After the chef encounter, seated-pirate conversation, four deck
   conversations, and captain's chest are all complete, the camera finds the
   captain emerging at the midship ladder and follows his animated walk across
@@ -63,9 +70,14 @@ Implemented so far:
   plank locks the final sequence: the captain walks down the plank, waits
   until a live Hell fragment passes below, visibly kicks Chuck into that same
   moving fragment, and hands off to a long input-free volcanic descent. The
-  established fall-to-Chult cue and timing language return; Chuck lands on a
-  basalt-and-lava plane and the tableau holds without granting control,
-  creating the stable Phase 8 arrival boundary.
+  established fall-to-Chult cue and timing language return. Chuck falls
+  through open heated air with a single large volcano in the distance; no
+  overhead Hell terrain floats behind him. He lands on a mostly solid basalt
+  plane with only sparse lava fissures, looks left/right/down, inserts and
+  drags a cigarette using the established Chult choreography, and the tableau
+  holds without granting control, creating the stable Phase 8 arrival
+  boundary. A development-only `Captain Arrival` checkpoint initializes the
+  real seven-condition gate immediately before the captain walks on deck.
 
 ------------------------------------------------------------------------
 
