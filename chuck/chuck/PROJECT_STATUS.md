@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 176 (Phase 7 ship and Hell-fall polish).
+Updated: session 177 (fixed the crew-ladder exterior-deck transition).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1292,6 +1292,11 @@ bounded sessions.
          all seven production prerequisites and without `captain_confronted`,
          so the ordinary gate starts the captain walk on the next update
          (session 176).
+   - [x] Fixed the crew-quarters ladder crash by keeping `Captain Arrival`
+         development-selectable but excluding it from ordinary named-arrival
+         resolution. The ladder now resolves uniquely to the normal exterior
+         deck entry, while direct development loading still starts the captain
+         sequence through the same checkpoint loader (session 177).
    - [x] Compressed only the north-south spans of the galley (40x26 -> 40x22),
          crew quarters (42x30 -> 42x24), and captain cabin (36x26 -> 36x21).
          East-west lengths, props, enemies/NPCs, ladders, open passages,

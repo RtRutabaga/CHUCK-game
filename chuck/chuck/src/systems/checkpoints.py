@@ -353,7 +353,7 @@ CHECKPOINTS = (
             frozenset({"sewer_completed", "chult_reached"})
             | CAPTAIN_REQUIRED_FLAGS
         ),
-        runtime_entry=True,
+        runtime_entry=False,
     ),
     CheckpointDefinition(
         "ship_exterior_anchor", "Ship Exterior Ashtray",

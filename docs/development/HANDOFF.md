@@ -3,11 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `ebdb3d8` (completed Phase 7 Hell fall)
-- Current work: ship/interior and Hell-fall polish (session 176)
+- Base commit before this pass: `5f9ba7c` (Phase 7 ship and Hell-fall polish)
+- Current work: exterior-deck ladder crash regression (session 177)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Fixed the ladder-to-exterior-deck crash introduced by the development-only
+`Captain Arrival` checkpoint:
+
+- The development checkpoint had accidentally been marked as a normal runtime
+  map-entry definition, giving `ship_exterior_deck/from_crew_quarters` two
+  competing checkpoint IDs and making the shared loader reject ladder travel.
+- `Captain Arrival` remains development-visible and still uses the shared
+  loader with the real captain prerequisites, but is no longer considered for
+  ordinary named-arrival resolution.
+- Added regression coverage proving the crew ladder resolves uniquely to
+  `ship_exterior_deck`, while direct development loading still starts the real
+  captain arrival sequence.
+- Focused exterior-deck and captain-confrontation suites pass. All 63
+  standalone suites pass, compilation is clean, and the title-loop launch
+  smoke check passes.
+
+## Previous Pass (session 176, commit 5f9ba7c)
 
 Polished the completed Phase 7 ship and ending in the five requested areas:
 

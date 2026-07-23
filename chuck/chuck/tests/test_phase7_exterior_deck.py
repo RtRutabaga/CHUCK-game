@@ -91,6 +91,14 @@ def test_crew_ladder_is_reversible() -> None:
     assert any(kind == "arrival:from_exterior_deck"
                for kind, _position in crew.object_spawns)
 
+    game = Game()
+    try:
+        assert game.checkpoints.entry_checkpoint_id(
+            MAP_NAME, "from_crew_quarters"
+        ) == "ship_exterior_deck"
+    finally:
+        game._shutdown()
+
 
 def test_every_ship_ladder_is_one_continuous_human_height_structure() -> None:
     for map_name in (

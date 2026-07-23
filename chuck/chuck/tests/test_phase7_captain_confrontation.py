@@ -79,6 +79,7 @@ def test_development_checkpoint_uses_the_real_captain_arrival_gate() -> None:
         definition = game.checkpoints.definition("ship_captain_arrival")
         assert definition.display_name == "Captain Arrival"
         assert definition.development_visible and not definition.saveable
+        assert not definition.runtime_entry
         assert CAPTAIN_REQUIRED_FLAGS <= definition.required_flags
         assert CAPTAIN_CONFRONTED_FLAG not in definition.required_flags
 
