@@ -1,18 +1,17 @@
-; PHASE 6 -> 7 BOUNDARY - SHIP DECK (26x13 tiles).
-; Chuck crawls out of the rubble into a wooden ship compartment, its
-; hull set with brass portholes onto the sunlit, wavy sea (the same
-; look as the escape cutscene). First structural slice: the onward
-; Phase 7 gameplay is later work; there is no exit off the deck yet.
+; PHASE 7 - ARRIVAL COMPARTMENT (26x13 tiles).
+; The escape cutscene ends here. Portholes are confined to the north hull;
+; closed human-scale doorways fill the other three walls for future routes.
+; The southern floor ladder leads to the first playable Phase 7 map.
 ##########################
 ##########################
-#====Ø====Ø====Ø====Ø====#
+#####Ø####Ø####Ø####Ø#####
 ##########################
-#========o======o========#
-#===x================x===#
-Ø========================Ø
-#=======Ҍ================#
 #========================#
-Ø====x==============x====Ø
-#============Ҋ===========#
-##########################
-##########################
+╭===x================x===╮
+│=========o=====o========┃
+╰=======Ҍ================╯
+#========================#
+#===========ҜҊ===========#
+#===========ℓℓ===========#
+#################┌┬┐######
+#################├┼┤######

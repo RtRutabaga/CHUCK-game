@@ -1,10 +1,11 @@
-"""Generate the ship compartment tileset (session 147).
+"""Generate the ship interior tileset.
 
-An internal wooden hull: plank floor, timber wall, and a brass porthole
-onto the sunlit sea. The porthole's sky/sea/wave palette is the escape
-cutscene's exact palette (escape_cutscene_scene.py), and its four frames
-roll the wave crests sideways, so the playable compartment and the
-cutscene read as the same place.
+An internal wooden hull: plank floor, timber wall, north-wall portholes,
+human-scale side doors, and floor ladders between decks. The porthole's
+sky/sea/wave palette is the escape cutscene's exact palette
+(escape_cutscene_scene.py), and its four frames roll the wave crests
+sideways, so the playable compartment and the cutscene read as the same
+place.
 """
 
 import math
@@ -34,6 +35,9 @@ HL_FLOOR = (140, 100, 64)
 HL_WALL = (110, 78, 48)
 RIM = (150, 120, 66)        # brass
 RIM_DARK = (96, 74, 38)
+DOOR = (70, 43, 27)
+DOOR_HL = (126, 82, 45)
+DARK = (24, 20, 19)
 
 
 def draw_ship_floor(surface, variant: int, _frame: int) -> None:
@@ -90,10 +94,128 @@ def draw_porthole(surface, _variant: int, frame: int) -> None:
         surface.set_at((rx, ry), RIM_DARK)
 
 
+def _draw_side_door(surface, side: str, section: str) -> None:
+    """One third of a closed human-scale doorway in a side hull wall."""
+    draw_ship_wall(surface, 1, 0)
+    if side == "west":
+        panel = pygame.Rect(1, 0, 12, 16)
+        jamb_x = 13
+        hinge_x = 3
+    else:
+        panel = pygame.Rect(3, 0, 12, 16)
+        jamb_x = 1
+        hinge_x = 12
+    pygame.draw.rect(surface, DARK, panel)
+    pygame.draw.rect(surface, DOOR, panel.inflate(-2, 0))
+    pygame.draw.line(surface, DOOR_HL, (jamb_x, 0), (jamb_x, 15), 2)
+    if section == "top":
+        pygame.draw.line(surface, DOOR_HL, (panel.left, 2),
+                         (panel.right - 1, 2), 2)
+    elif section == "middle":
+        pygame.draw.line(surface, LINE, (panel.left + 2, 8),
+                         (panel.right - 3, 8), 1)
+        surface.set_at((hinge_x, 8), RIM)
+    else:
+        pygame.draw.line(surface, DOOR_HL, (panel.left, 13),
+                         (panel.right - 1, 13), 2)
+
+
+def draw_ship_door_w_top(surface, _variant: int, _frame: int) -> None:
+    _draw_side_door(surface, "west", "top")
+
+
+def draw_ship_door_w_middle(surface, _variant: int, _frame: int) -> None:
+    _draw_side_door(surface, "west", "middle")
+
+
+def draw_ship_door_w_bottom(surface, _variant: int, _frame: int) -> None:
+    _draw_side_door(surface, "west", "bottom")
+
+
+def draw_ship_door_e_top(surface, _variant: int, _frame: int) -> None:
+    _draw_side_door(surface, "east", "top")
+
+
+def draw_ship_door_e_middle(surface, _variant: int, _frame: int) -> None:
+    _draw_side_door(surface, "east", "middle")
+
+
+def draw_ship_door_e_bottom(surface, _variant: int, _frame: int) -> None:
+    _draw_side_door(surface, "east", "bottom")
+
+
+def _draw_south_door(surface, column: str, row: str) -> None:
+    """One cell of the 3x2 closed doorway in the compartment's south wall."""
+    draw_ship_wall(surface, 2, 0)
+    pygame.draw.rect(surface, DARK, pygame.Rect(0, 0, 16, 16))
+    pygame.draw.rect(surface, DOOR, pygame.Rect(1, 1, 14, 15))
+    if row == "top":
+        pygame.draw.line(surface, DOOR_HL, (0, 1), (15, 1), 2)
+        pygame.draw.line(surface, LINE, (1, 10), (14, 10), 1)
+    else:
+        pygame.draw.line(surface, DOOR_HL, (0, 14), (15, 14), 2)
+        pygame.draw.line(surface, LINE, (1, 6), (14, 6), 1)
+    if column == "left":
+        pygame.draw.line(surface, DOOR_HL, (1, 0), (1, 15), 2)
+    elif column == "right":
+        pygame.draw.line(surface, DOOR_HL, (14, 0), (14, 15), 2)
+        if row == "bottom":
+            surface.set_at((11, 5), RIM)
+    else:
+        pygame.draw.line(surface, LINE, (8, 0), (8, 15), 1)
+
+
+def draw_ship_door_s_top_left(surface, _variant: int, _frame: int) -> None:
+    _draw_south_door(surface, "left", "top")
+
+
+def draw_ship_door_s_top_middle(surface, _variant: int, _frame: int) -> None:
+    _draw_south_door(surface, "middle", "top")
+
+
+def draw_ship_door_s_top_right(surface, _variant: int, _frame: int) -> None:
+    _draw_south_door(surface, "right", "top")
+
+
+def draw_ship_door_s_bottom_left(surface, _variant: int, _frame: int) -> None:
+    _draw_south_door(surface, "left", "bottom")
+
+
+def draw_ship_door_s_bottom_middle(surface, _variant: int, _frame: int) -> None:
+    _draw_south_door(surface, "middle", "bottom")
+
+
+def draw_ship_door_s_bottom_right(surface, _variant: int, _frame: int) -> None:
+    _draw_south_door(surface, "right", "bottom")
+
+
+def draw_ship_ladder(surface, _variant: int, _frame: int) -> None:
+    """A dark deck hatch with brass-edged wooden ladder rungs."""
+    draw_ship_floor(surface, 1, 0)
+    pygame.draw.rect(surface, DARK, pygame.Rect(2, 1, 12, 14))
+    pygame.draw.line(surface, RIM_DARK, (3, 1), (3, 14), 2)
+    pygame.draw.line(surface, RIM_DARK, (12, 1), (12, 14), 2)
+    for y in (3, 7, 11):
+        pygame.draw.line(surface, RIM, (4, y), (11, y), 2)
+
+
 DRAW = {
     "ship_floor": draw_ship_floor,
     "ship_wall": draw_ship_wall,
     "porthole": draw_porthole,
+    "ship_door_w_top": draw_ship_door_w_top,
+    "ship_door_w_middle": draw_ship_door_w_middle,
+    "ship_door_w_bottom": draw_ship_door_w_bottom,
+    "ship_door_e_top": draw_ship_door_e_top,
+    "ship_door_e_middle": draw_ship_door_e_middle,
+    "ship_door_e_bottom": draw_ship_door_e_bottom,
+    "ship_door_s_top_left": draw_ship_door_s_top_left,
+    "ship_door_s_top_middle": draw_ship_door_s_top_middle,
+    "ship_door_s_top_right": draw_ship_door_s_top_right,
+    "ship_door_s_bottom_left": draw_ship_door_s_bottom_left,
+    "ship_door_s_bottom_middle": draw_ship_door_s_bottom_middle,
+    "ship_door_s_bottom_right": draw_ship_door_s_bottom_right,
+    "ship_ladder": draw_ship_ladder,
 }
 
 

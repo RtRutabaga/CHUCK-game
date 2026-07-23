@@ -365,6 +365,28 @@ TILE_DEFS: dict[str, TileDef] = {
     # A porthole in the ship's hull — solid wall, the sea drawn by the
     # animated ship tileset (session 147).
     "Ø": TileDef(solid=True, color=(96, 164, 214)),
+    # Phase 7 ship interiors: closed, human-scale doors fill the west, east,
+    # and south walls; the floor ladder is the walk-over connection between
+    # the arrival compartment and lower hold.
+    "╭": TileDef(solid=True, color=(70, 43, 27)),
+    "│": TileDef(solid=True, color=(70, 43, 27)),
+    "╰": TileDef(solid=True, color=(70, 43, 27)),
+    "╮": TileDef(solid=True, color=(70, 43, 27)),
+    "┃": TileDef(solid=True, color=(70, 43, 27)),
+    "╯": TileDef(solid=True, color=(70, 43, 27)),
+    "┌": TileDef(solid=True, color=(70, 43, 27)),
+    "┬": TileDef(solid=True, color=(70, 43, 27)),
+    "┐": TileDef(solid=True, color=(70, 43, 27)),
+    "├": TileDef(solid=True, color=(70, 43, 27)),
+    "┼": TileDef(solid=True, color=(70, 43, 27)),
+    "┤": TileDef(solid=True, color=(70, 43, 27)),
+    "ℓ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
+    # Static reuse of pantry storage art in the ship's lower hold. These are
+    # cargo, not the pantry's carton-filled breakable furniture.
+    "ƞ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_shelf", under="="),
+    "ʒ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_sack", under="="),
     ";": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="sailing_cog", under="#"),
     "'": TileDef(solid=False, color=(44, 45, 29)),
@@ -486,6 +508,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # The ship deck — where the crawlspace leads out (session 138).
     "Ҋ": MarkerDef(kind="arrival:from_crawlspace", under="="),
     "Ҍ": MarkerDef(kind="anchor:ship_deck_anchor", under="="),
+    "Ҝ": MarkerDef(kind="arrival:from_lower_hold", under="="),
+    "Ҟ": MarkerDef(kind="arrival:from_ship_room", under="="),
+    "Ҡ": MarkerDef(kind="anchor:ship_lower_hold_anchor", under="="),
+    "Ң": MarkerDef(kind="rat", under="="),
     # The rubble crawlspace's "Enter crevice?" prompt (session 141).
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
 }

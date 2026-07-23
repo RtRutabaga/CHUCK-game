@@ -38,6 +38,10 @@ _SPRITES = {
     "pantry_open": "objects/pantry_open.png",
     "pantry_shelf": "objects/pantry_shelf.png",
     "grain_sack": "objects/grain_sack.png",
+    # Phase 7 cargo aliases reuse the pantry silhouettes without inheriting
+    # the pantry-specific breakable/carton behavior in WorldScene.
+    "ship_shelf": "objects/pantry_shelf.png",
+    "ship_sack": "objects/grain_sack.png",
     "chimney": "objects/chimney.png",
     "sewer_grate": "objects/sewer_grate.png",
     "house_door": "objects/house_door.png",

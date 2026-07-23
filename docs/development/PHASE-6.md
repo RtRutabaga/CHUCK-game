@@ -261,5 +261,6 @@ The phase ends immediately after Chuck reaches the ship.
 -   [x] The rubble map uses Astral Sea hazards.
 -   [x] Chuck escapes through a narrow crawlspace.
 -   [x] The cutscene ends aboard a ship at sea.
--   [ ] Temple, boss encounter, and cutscene each have distinct music.
--   [ ] Phase 7 begins aboard the ship.
+-   [x] Temple and boss encounter have distinct music; the escape cutscene
+    intentionally starts the Phase 7 ship theme for a seamless handoff.
+-   [x] Phase 7 begins aboard the ship.

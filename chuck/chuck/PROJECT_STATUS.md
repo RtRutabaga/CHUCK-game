@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 147 (ship deck rebuilt as a portholed compartment).
+Updated: session 148 (Phase 7 begins with the lower hold).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -650,18 +650,27 @@ This file is required by the project rules and updated every session.
   turnaround, seamless (loop seam 0.000), rendered at 0.95 headroom to
   match the loud temple/jungle mixes. Three reusable instrument voices
   added to src/audio/instruments.py; tests in test_music.py
-- Ship compartment with portholes (session 147): the playable ship_deck
-  (26x13) is now an internal wooden hull compartment whose walls are set
-  with brass portholes onto the sunlit wavy sea — matching the escape
+- Ship compartment with portholes (sessions 147-148): the playable ship_deck
+  (26x13) is an internal wooden hull compartment with brass portholes onto
+  the sunlit wavy sea — matching the escape
   cutscene. A dedicated ship tileset (tools/generate_ship_tileset.py ->
   ship.png; tileset_layout.SHIP; MAP_TILESET["ship_deck"]="ship") draws
   plank floor, timber hull wall, and an animated 4-frame porthole tile
   ('Ø', solid) whose sky/sea/crest colours are the cutscene's exact
-  palette and whose frames roll the wave crests. The map rings the
-  compartment with portholes (a band across the top hull + side-wall
-  portholes) over plank floor with cargo; Chuck arrives at the bottom
-  (from_crawlspace, tile 13,10) looking up at the sea, as in the
-  cutscene. Was a plain docks-tileset room with an open water band
+  palette and whose frames roll the wave crests. Session 148 confined the
+  windows to the north hull, added human-scale doors to the side walls, and
+  moved Chuck's safe cutscene arrival to tile 13,9 above the new lower-hold
+  ladder. This replaced the original plain docks-tileset room/open water band
+- Phase 7 opening + lower hold (session 148): the arrival compartment now
+  keeps its four animated sea portholes exclusively on the north hull. Its
+  west/east walls carry three-cell-tall closed ship doors and the south wall
+  carries a 3x2 door, reserving future interior routes. A southern floor ladder connects
+  reversibly to the new 40x30 ship_lower_hold. The hold reuses pantry shelf
+  and sack silhouettes as static cargo alongside crates and barrels, houses
+  sixteen ordinary scratchable rats, continues ship_shanty.wav without a
+  restart, and owns one physical shared-loader Ashtray plus development-
+  visible `Ship Hold`. The user-supplied `docs/design/pirate ship.png` is
+  reserved as the composition reference for the later exterior deck map
 - Walk-in crevice prompt (session 146): the rubble "Enter crevice?"
   YES/NO no longer needs the interact key — walking into the crevice
   zone pops it. ChoiceTrigger gains a walk_triggered flag (a _WALK_TRIGGERS
@@ -979,10 +988,11 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build Temple Map 7 as the next broad/open room east of the narrow Astral wind.
-Continue the recurring stone arches, wall torches, one physical Ashtray, and
-shared-loader entry. Keep the slice distinct from the final chamber, Fireball,
-rubble escape, and Phase 7 ship gameplay.
+Build the Phase 7 galley from one of the arrival compartment's established
+side doors. Add the pirate chef's authored line and contained cleaver pursuit,
+preserve uninterrupted ship music, and give the new map one physical Ashtray
+plus a shared-loader development checkpoint. Do not begin the exterior deck
+until the intervening ship interiors are complete.
 
 ## Also open
 
@@ -1108,9 +1118,21 @@ rubble escape, and Phase 7 ship gameplay.
        dart corridor, Astral seeds, monument pair, full kit, one
        shared-loader Ashtray, and an inert west boundary for Map 9
        (session 122).
-10. [ ] Continue the multi-map dungeon, final
-       battle, Fireball transition, rubble crawlspace, and ship escape in
-       bounded slices without beginning Phase 7 gameplay.
+10. [x] Completed the multi-map dungeon, final battle, Fireball transition,
+        rubble crawlspace, wordless escape cutscene, and ship arrival across
+        bounded slices (sessions 130-147).
+
+## Phase 7 progress (pirate ship)
+
+1. [x] Added the Phase 7 contract and made it the active development scope.
+2. [x] Corrected the existing arrival compartment to use four north-wall-only
+       animated portholes, human-scale closed side doors, and a southern floor
+       ladder while keeping the established Phase 7 ship theme continuous.
+3. [x] Added the reversible 40x30 lower hold with static pantry-derived cargo,
+       crates, barrels, sixteen ordinary rats, one physical Ashtray, and
+       development-visible `Ship Hold` through the shared checkpoint loader
+       (session 148).
+4. [ ] Build the galley and its chasing pirate chef as the next bounded slice.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

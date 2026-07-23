@@ -3,11 +3,32 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `9ef67d4` (walk-in crevice prompt)
-- Current work: ship deck rebuilt as a portholed compartment (session 147)
-- Active phase: Phase 6 → 7 boundary (`PHASE-6.md`); Phase 7 unstarted
+- Base commit before this pass: `f73c726` (portholed ship compartment)
+- Current work: Phase 7 opening compartment + lower hold (session 148)
+- Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Started Phase 7 with the corrected arrival compartment and lower hold:
+
+- The arrival compartment keeps exactly four animated portholes, all on the
+  north hull. Human-scale closed doors now occupy the other three walls for
+  future interior branches. A southern floor ladder is a
+  live reversible walk exit; the cutscene arrival moved one safe tile north.
+- Expanded the procedural ship tileset with six side-door sections and a deck
+  hatch/ladder while preserving its 4-frame rolling-wave porthole animation.
+- Added `ship_lower_hold` (40x30): a cargo-filled rat nest using static aliases
+  of the pantry shelf/sack silhouettes plus ordinary crates and barrels.
+  Sixteen ordinary rats use the established scratch, patrol, damage, and reset
+  systems. The same shanty continues through the ladder transition.
+- Added shared-loader `Ship Hold`, one physical `Ship Hold Ashtray`, reversible
+  named arrivals, and targeted Phase 7 tests for content, transition, loader,
+  and enemy reset behavior.
+- Added the user-authored Phase 7 contract and `docs/design/pirate ship.png`;
+  that image is reserved as the composition reference for the later exterior
+  deck map, which this pass deliberately did not begin.
+
+## Previous Pass (session 147, commit f73c726)
 
 Rebuilt the playable ship_deck to match the escape cutscene:
 
@@ -216,13 +237,14 @@ boundary:
 
 ## Verification Performed
 
-- All 55 suites pass (per-suite timeouts; nothing hangs).
-- Headless: stepping onto the rubble crawlspace replaces the world with
-  EscapeCutsceneScene; playing it through hands off to ship_deck at the
-  from_crawlspace arrival with Sanity preserved (40 → 40).
-- Screenshots: the crawl (a receding stone tunnel to the daylight, Chuck
-  crawling, vignetted corners) and the emergence (the wooden hold, the
-  sea through the hull breach, Chuck looking up, a narration caption).
+- All 55 standalone test suites pass; targeted ship arrival, lower-hold, and
+  checkpoint suites pass independently.
+- Headless launch/render succeeded at native 320x180 for both ship maps.
+- The arrival ladder enters the hold at its safe named arrival; the return
+  ladder restores the arrival compartment, and enemy reset restores all
+  sixteen rats.
+- Native screenshots were inspected for north-only portholes, side-door scale,
+  ladder readability, cargo silhouettes, and rat readability.
 
 ## Known Issues
 
@@ -230,15 +252,16 @@ boundary:
 
 ## Scope Notes
 
-- Phase 6 is now content-complete end to end (entrance → temple maps →
-  boss battle → Fireball → rubble → crawlspace → escape cutscene →
-  ship). What remains is polish/handoff: a distinct escape-cutscene
-  music cue (it currently reuses the sea theme), and Phase 7 gameplay
-  aboard the ship (the deck is a free-roam room with no onward exit).
+- Phase 6 is complete end to end. Per the user's direction, the escape
+  cutscene intentionally starts `ship_shanty.wav`; do not split it into a
+  separate cue.
+- Phase 7 has begun, but only the arrival compartment and lower hold exist.
+  The exterior deck remains unbuilt and must use `docs/design/pirate ship.png`
+  as its composition reference when its later session begins.
 
 ## Recommended Next Bounded Task
 
-- Begin Phase 7 (see the Phase 7 doc when it exists): the first playable
-  beat aboard the ship — or, if staying in Phase 6, compose a dedicated
-  escape-cutscene music cue (a short one-shot like fall_to_chult.wav)
-  and swap EscapeCutsceneScene's SEA_MUSIC over to it.
+- Build the galley from one of the arrival compartment's side doors: add its
+  map shell, one Ashtray/shared-loader entry, the authored chef line, and a
+  contained cleaver pursuit. Keep the ship theme uninterrupted and do not
+  begin the exterior deck yet.

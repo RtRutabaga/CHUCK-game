@@ -141,6 +141,14 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_sanctum", "»"): AreaExit(
         "temple_gauntlet", "from_temple_9", "right"
     ),
+    # Phase 7 begins below the arrival compartment. Both maps use the same
+    # visible ladder tile and resolve through ordinary named arrivals.
+    ("ship_deck", "ℓ"): AreaExit(
+        "ship_lower_hold", "from_ship_room", "down"
+    ),
+    ("ship_lower_hold", "ℓ"): AreaExit(
+        "ship_deck", "from_lower_hold", "up"
+    ),
     # (The rubble's one way out is the "Enter crevice?" prompt at the
     # crawlspace, not a walk-over exit — see the choice:crevice trigger.)
     ("temple_gauntlet", "⌄"): AreaExit(
@@ -185,4 +193,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "temple_rubble": "temple.wav",
     # Out of the temple at last: a jaunty sea-shanty reel for the ship.
     "ship_deck": "ship_shanty.wav",
+    "ship_lower_hold": "ship_shanty.wav",
 }

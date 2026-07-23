@@ -1,10 +1,9 @@
-"""The ship deck — the Phase 6 -> 7 boundary (session 138).
+"""The ship arrival compartment — the Phase 6 -> 7 boundary.
 
 Chuck crawls out of the rubble through the narrow crawlspace and emerges
-into a cramped wooden hold; a breach in the hull opens onto the open sea.
-This is the first structural slice: the arrival, the sea reveal, and the
-ashtray. The escape cutscene and any onward (Phase 7) gameplay are later
-work, so there is deliberately no exit off the deck.
+into a cramped wooden compartment. North-wall portholes continue the
+cutscene's sea view, while human-scale side doors and a southern ladder
+establish the Phase 7 routes.
 """
 
 import os
@@ -32,19 +31,28 @@ def test_the_deck_is_a_wooden_compartment_with_portholes() -> None:
     kinds = [kind for kind, _pos in tilemap.object_spawns]
     assert kinds.count("arrival:from_crawlspace") == 1
     assert kinds.count("anchor:ship_deck_anchor") == 1
-    # A wooden compartment (plank floor) whose hull is set with portholes
-    # onto the sea — matching the escape cutscene's look.
+    # A wooden compartment whose NORTH hull alone keeps the porthole view.
     planks = sum(row.count("=") for row in tilemap._grid)
     portholes = sum(row.count("Ø") for row in tilemap._grid)
     assert planks >= 120, planks
-    assert portholes >= 6, portholes
+    assert portholes == 4, portholes
+    assert all(row == 2 for row, line in enumerate(tilemap._grid)
+               for char in line if char == "Ø")
     # The portholes are solid hull, not walkable openings.
     from src.world.tilemap import TILE_DEFS
     assert TILE_DEFS["Ø"].solid
-    # No enemies and no onward exit (the escape is a later slice).
+    # Closed three-cell side doors read at human scale; the southern ladder
+    # is the first real Phase 7 route.
+    assert "╭" in tilemap._grid[5] and "╰" in tilemap._grid[7]
+    assert "╮" in tilemap._grid[5] and "╯" in tilemap._grid[7]
+    assert "┌┬┐" in tilemap._grid[11]
+    assert "├┼┤" in tilemap._grid[12]
+    assert sum(row.count("ℓ") for row in tilemap._grid) == 2
     assert not any(k in {"rat", "zombie", "skeleton", "raptor",
                          "massive_dinosaur", "snake"} for k in kinds)
-    assert not any(m == MAP_NAME for (m, _c) in AREA_WALK_EXITS)
+    lower_exit = AREA_WALK_EXITS[(MAP_NAME, "ℓ")]
+    assert lower_exit.destination == "ship_lower_hold"
+    assert lower_exit.arrival == "from_ship_room"
 
 
 def test_the_deck_uses_the_ship_art_and_shanty_theme() -> None:
@@ -98,7 +106,7 @@ def test_saying_yes_to_the_crevice_plays_the_escape_then_reaches_the_ship() -> N
         deck = game.scenes.current
         assert deck.map_name == MAP_NAME
         assert game.active_checkpoint_id == "ship_deck"
-        assert deck._player_tile() == (13, 10)  # the from_crawlspace arrival
+        assert deck._player_tile() == (13, 9)  # the from_crawlspace arrival
         assert deck.sanity.current == 40  # Sanity carried across the escape
     finally:
         game._shutdown()

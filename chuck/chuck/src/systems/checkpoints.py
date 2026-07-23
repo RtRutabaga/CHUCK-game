@@ -262,6 +262,24 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "ship_lower_hold", "Ship Hold", "ship_lower_hold",
+        arrival="from_ship_room", facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "ship_lower_hold_anchor", "Ship Hold Ashtray", "ship_lower_hold",
+        position=(280.0, 360.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "ship_deck_return", "Ship Return", "ship_deck",
+        arrival="from_lower_hold", facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "temple_8_return", "Temple 8 Return", "temple_gauntlet",
         arrival="from_temple_9", facing="right",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
