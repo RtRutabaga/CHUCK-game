@@ -54,6 +54,7 @@ from src.systems.undead_release import (
 )
 from src.ui.tutorial_hint import TutorialHint
 from src.systems.sanity import SanitySystem
+from src.systems.ship_motion import deck_rock_offset
 from src.ui.hud import HUD
 from src.world.camera import Camera
 from src.world.collision import overlaps
@@ -825,7 +826,21 @@ class WorldScene(Scene):
         """Draw the world through the camera offset."""
         surface.fill(config.COLOR_BLACK)
         offset = self.camera.offset
-        self.tilemap.draw_ground(surface, offset, self._world_time)
+        if self.map_name == "ship_exterior_deck":
+            # Sea stays fixed while ship geometry and every occupant share the
+            # same one-pixel, shanty-tempo bob. Physics remains unshifted.
+            self.tilemap.draw_ground(
+                surface, offset, self._world_time,
+                include_chars=frozenset({"~"}),
+            )
+            rock_x, rock_y = deck_rock_offset(self._world_time)
+            offset = (offset[0] - rock_x, offset[1] - rock_y)
+            self.tilemap.draw_ground(
+                surface, offset, self._world_time,
+                exclude_chars=frozenset({"~"}),
+            )
+        else:
+            self.tilemap.draw_ground(surface, offset, self._world_time)
         for pickup in self.pickups:  # flat ground litter, under everyone
             pickup.draw(surface, offset)
         for drawable in self._sorted_drawables():

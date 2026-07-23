@@ -3,31 +3,37 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `fba743f` (ship crew quarters)
-- Current work: captain's cabin + one-time leaf chest (session 153)
+- Base commit before this pass: `62b4cca` (ship captain cabin)
+- Current work: exterior deck foundation + ship motion (session 154)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
 
+Built the exterior-deck foundation without beginning its pirate encounters:
+
+- The crew quarters' existing ladder now enters a reversible 64x44 exterior
+  map through safe named arrivals. Its broad tapered hull, two large complete
+  mast-and-sail silhouettes, and rail geometry translate the authored
+  `docs/design/pirate ship.png` composition into native procedural pixel art.
+- Open sea surrounds the hull using a dedicated four-frame line-wave tile;
+  there are no Waterdeep-style moving dots. Sea rendering remains fixed while
+  the deck, Chuck, props, and future occupants share a presentation-only
+  one-pixel rock over an eight-beat 126-BPM shanty cycle. Collision and map
+  coordinates remain stable.
+- Added one physical `Ship Exterior Ashtray`, development-visible `Ship
+  Exterior Deck`, and a shared-loader save/respawn checkpoint. The existing
+  shanty continues uninterrupted from the crew room.
+- Added focused coverage for map composition, ocean art selection, exactly one
+  checkpoint, shared loading, reversible ladder routing, and bounded periodic
+  ship motion. The previous crew/cabin suites remain green.
+
+## Previous Pass (session 153, commit 62b4cca)
+
 Completed the final currently specified ship-interior room:
 
 - The crew quarters' existing black east doorway is now a live three-tile
-  passage into a reversible 36x26 captain's cabin. A safe named return marker
-  restores Chuck inside the crew room; the shanty remains uninterrupted.
-- Added north-wall portholes, captain-scale furnishings, one physical `Ship
-  Captain Ashtray`, and development-visible `Ship Captain Cabin` loading. The
-  exterior deck and captain confrontation remain untouched.
-- Added a large two-frame brass-bound sea chest with bundled leaf visible when
-  open. First interaction grants exactly 40 cigarettes and returns the authored
-  Premium Buhetian Halfling Leaf pickup text; later interactions say `Empty.`
-- `captain_chest_opened` is a durable save flag. The chest initializes open on
-  CONTINUE, cannot pay twice, and banks the ledger immediately so Sanity death
-  cannot produce an open chest whose unique reward was rolled back. The cabin
-  Ashtray persists both flag and count normally.
-- Generalized environmental interaction by calling an object's optional
-  `interact()` method; ordinary static props and NPC behavior remain unchanged.
-- Targeted tests cover map/checkpoint content, reversible doorways, exact
-  reward, repeated interaction, death ledger behavior, and save restoration.
+  passage into a reversible 36x26 captain's cabin with a one-time 40-cigarette
+  Premium Buhetian Halfling Leaf chest and durable save state.
 
 ## Previous Pass (session 152, commit fba743f)
 

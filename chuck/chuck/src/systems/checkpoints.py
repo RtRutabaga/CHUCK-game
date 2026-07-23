@@ -333,6 +333,24 @@ CHECKPOINTS = (
         development_visible=False, runtime_entry=True,
     ),
     CheckpointDefinition(
+        "ship_exterior_deck", "Ship Exterior Deck", "ship_exterior_deck",
+        arrival="from_crew_quarters", facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "ship_exterior_anchor", "Ship Exterior Ashtray",
+        "ship_exterior_deck", position=(436.0, 469.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "ship_crew_exterior_return", "Ship Exterior Return",
+        "ship_crew_quarters", arrival="from_exterior_deck", facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "ship_deck_return", "Ship Return", "ship_deck",
         arrival="from_lower_hold", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),

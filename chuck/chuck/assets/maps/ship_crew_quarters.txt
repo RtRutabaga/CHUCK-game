@@ -1,7 +1,7 @@
 ; PHASE 7 - CREW QUARTERS (42x30 tiles).
 ; Human bunks and a round mess table emphasize Chuck's scale. The west door
 ; returns to the arrival room; the deck ladder and captain-cabin passage are
-; visibly authored but remain inert until their dedicated sessions.
+; visibly authored; the deck ladder and captain route are now both live.
 ##########################################
 ##########################################
 ##########################################
@@ -18,7 +18,7 @@
 #========================================#
 #======Ұ=================================#
 #========================================#
-#===================Һℓ===================#
+#===================ҺℓӅ==================#
 #========================================#
 #========================================╮
 #=======================================ӀҲ

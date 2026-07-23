@@ -381,6 +381,17 @@ TILE_DEFS: dict[str, TileDef] = {
     "┼": TileDef(solid=False, color=(24, 20, 19)),
     "┤": TileDef(solid=False, color=(24, 20, 19)),
     "ℓ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
+    # Exterior deck: animated open sea surrounds a broad wooden hull. The
+    # rail pieces are solid perimeter geometry; their oriented tiles keep the
+    # ship silhouette readable instead of treating the edge as an indoor wall.
+    "═": TileDef(solid=True, color=(82, 53, 31)),
+    "║": TileDef(solid=True, color=(82, 53, 31)),
+    "╔": TileDef(solid=True, color=(82, 53, 31)),
+    "╗": TileDef(solid=True, color=(82, 53, 31)),
+    "╚": TileDef(solid=True, color=(82, 53, 31)),
+    "╝": TileDef(solid=True, color=(82, 53, 31)),
+    "ʘ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_mast_sail", under="="),
     # Crew-quarters furniture. Both are human-scale props over ship planks;
     # their single solid anchor tile leaves overhangs Chuck can scurry under.
     "ɦ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
@@ -535,6 +546,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ӏ": MarkerDef(kind="arrival:from_captain_cabin", under="="),
     "Ӂ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
     "ӂ": MarkerDef(kind="anchor:ship_captain_anchor", under="="),
+    "Ӄ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
+    "ӄ": MarkerDef(kind="anchor:ship_exterior_anchor", under="="),
+    "Ӆ": MarkerDef(kind="arrival:from_exterior_deck", under="="),
     # The rubble crawlspace's "Enter crevice?" prompt (session 141).
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
 }
@@ -721,7 +735,9 @@ class TileMap:
         return col0, col1, row0, row1
 
     def draw_ground(self, surface, camera_offset: tuple[int, int],
-                    time_s: float = 0.0) -> None:
+                    time_s: float = 0.0, *,
+                    include_chars: frozenset[str] | None = None,
+                    exclude_chars: frozenset[str] | None = None) -> None:
         """Draw the ground layer: tileset art (flat colors as the
         headless/missing-asset fallback), culled to the view. Prop
         tiles draw their under-terrain; the prop sprite itself is
@@ -743,6 +759,11 @@ class TileMap:
                 char = grid_row[col_i]
                 tile = TILE_DEFS[char]
                 ground_char = tile.under if tile.under else char
+                if (include_chars is not None
+                        and ground_char not in include_chars):
+                    continue
+                if exclude_chars is not None and ground_char in exclude_chars:
+                    continue
                 art = self._tile_art.get(ground_char)
                 if art is not None:
                     variants, frames = lookup[char_to_terrain[ground_char]]

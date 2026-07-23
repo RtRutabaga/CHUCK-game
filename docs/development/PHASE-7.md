@@ -246,7 +246,7 @@ Do not fully explain the collided worlds.
     cigarettes).
 -   [ ] Pirate animations are richer than previous NPCs.
 -   [ ] NPC dialogue changes after first conversations.
--   [ ] Deck rocking and animated waves are implemented.
+-   [x] Deck rocking and animated waves are implemented.
 -   [ ] Sword-fighting pirates damage Chuck.
 -   [ ] Deck animations synchronize with the soundtrack.
 -   [ ] Jeffries delivers collided-world dialogue.

@@ -1159,8 +1159,8 @@ bounded sessions.
        and uninterrupted shanty playback. The seated pirate has a restrained
        two-frame mug/sway animation and distinct first/repeat dialogue; meeting
        him sets the durable `crew_pirate_met` flag, which survives checkpoint
-       save and CONTINUE. The visible deck ladder and open captain-cabin route
-       are authored boundaries but remain inert (session 152).
+       save and CONTINUE. Its open captain-cabin route and deck ladder now lead
+       to their completed destination maps (sessions 152-154).
 6. [x] Added a reversible 36x26 captain's cabin through the crew room's open
        east doorway, with north-wall portholes, oversized human furniture, one
        physical Ashtray, development-visible `Ship Captain Cabin`, and the
@@ -1168,7 +1168,16 @@ bounded sessions.
        Buhetian Halfling Leaf (+40 cigarettes) once, switches permanently to
        an open/empty interaction, banks the paired reward against death, and
        persists both flag and count through save/CONTINUE (session 153).
-7. [ ] Build the exterior deck foundation and ship-motion language next.
+7. [x] Added the reversible 64x44 exterior deck through the crew ladder, using
+       the authored pirate-ship image as its composition reference: a broad
+       tapered hull, two large mast-and-sail silhouettes, animated line-wave
+       ocean, one physical shared-loader Ashtray, development-visible `Ship
+       Exterior Deck`, and uninterrupted shanty playback. The ocean remains
+       visually fixed while the complete ship/occupant layer rocks by one
+       pixel over an eight-beat 126-BPM cycle; collision stays stable. The
+       deck cast and ending sequence remain deliberately unbuilt (session 154).
+8. [ ] Populate the deck with its non-combat pirate cast and richer rhythmic
+       animation next; defer the fencing hazard and ending sequence.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

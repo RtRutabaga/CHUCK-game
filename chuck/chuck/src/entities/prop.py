@@ -40,6 +40,7 @@ _SPRITES = {
     "grain_sack": "objects/grain_sack.png",
     "ship_hammock": "objects/ship_hammock.png",
     "ship_round_table": "objects/ship_round_table.png",
+    "ship_mast_sail": "objects/ship_mast_sail.png",
     "chimney": "objects/chimney.png",
     "sewer_grate": "objects/sewer_grate.png",
     "house_door": "objects/house_door.png",

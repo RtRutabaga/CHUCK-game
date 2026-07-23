@@ -197,6 +197,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("ship_captain_cabin", "╰"): AreaExit(
         "ship_crew_quarters", "from_captain_cabin", "left"
     ),
+    ("ship_crew_quarters", "ℓ"): AreaExit(
+        "ship_exterior_deck", "from_crew_quarters", "down"
+    ),
+    ("ship_exterior_deck", "ℓ"): AreaExit(
+        "ship_crew_quarters", "from_exterior_deck", "down"
+    ),
     # (The rubble's one way out is the "Enter crevice?" prompt at the
     # crawlspace, not a walk-over exit — see the choice:crevice trigger.)
     ("temple_gauntlet", "⌄"): AreaExit(
@@ -245,4 +251,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "ship_galley": "ship_shanty.wav",
     "ship_crew_quarters": "ship_shanty.wav",
     "ship_captain_cabin": "ship_shanty.wav",
+    "ship_exterior_deck": "ship_shanty.wav",
 }

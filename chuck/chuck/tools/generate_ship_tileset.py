@@ -1,7 +1,8 @@
-"""Generate the ship interior tileset.
+"""Generate the shared ship interior and exterior tileset.
 
 An internal wooden hull: plank floor, timber wall, north-wall portholes,
-human-scale side doors, and floor ladders between decks. The porthole's
+human-scale side doors, floor ladders, open-sea waves, and exterior rails. The
+porthole's
 sky/sea/wave palette is the escape cutscene's exact palette
 (escape_cutscene_scene.py), and its four frames roll the wave crests
 sideways, so the playable compartment and the cutscene read as the same
@@ -182,6 +183,67 @@ def draw_ship_ladder(surface, _variant: int, _frame: int) -> None:
         pygame.draw.line(surface, RIM, (4, y), (11, y), 2)
 
 
+def draw_ship_ocean(surface, variant: int, frame: int) -> None:
+    """Bright open water with rolling line crests, never particle dots."""
+    surface.fill(SEA_DEEP)
+    phase = frame * 1.35 + variant * 0.8
+    for x in range(16):
+        upper = 3 + round(math.sin(x * 0.55 + phase) * 1.2)
+        lower = 11 + round(math.sin(x * 0.48 + phase + 2.1) * 1.1)
+        surface.set_at((x, upper), SEA)
+        surface.set_at((x, lower), CREST)
+        if upper + 1 < 16:
+            surface.set_at((x, upper + 1), SEA)
+
+
+def _rail_base(surface) -> None:
+    draw_ship_floor(surface, 0, 0)
+
+
+def draw_ship_rail_h(surface, _variant: int, _frame: int) -> None:
+    _rail_base(surface)
+    pygame.draw.rect(surface, DARK, pygame.Rect(0, 5, 16, 6))
+    pygame.draw.line(surface, HL_FLOOR, (0, 5), (15, 5), 1)
+    pygame.draw.line(surface, WALL, (0, 10), (15, 10), 2)
+    for x in (1, 8, 14):
+        pygame.draw.rect(surface, WALL, pygame.Rect(x, 1, 2, 14))
+
+
+def draw_ship_rail_v(surface, _variant: int, _frame: int) -> None:
+    _rail_base(surface)
+    pygame.draw.rect(surface, DARK, pygame.Rect(5, 0, 6, 16))
+    pygame.draw.line(surface, HL_FLOOR, (5, 0), (5, 15), 1)
+    pygame.draw.line(surface, WALL, (10, 0), (10, 15), 2)
+    for y in (1, 8, 14):
+        pygame.draw.rect(surface, WALL, pygame.Rect(1, y, 14, 2))
+
+
+def _draw_ship_rail_corner(surface, left: bool, top: bool) -> None:
+    _rail_base(surface)
+    hx0, hx1 = (5, 15) if left else (0, 10)
+    vy0, vy1 = (5, 15) if top else (0, 10)
+    pygame.draw.line(surface, DARK, (hx0, 8), (hx1, 8), 5)
+    pygame.draw.line(surface, DARK, (8, vy0), (8, vy1), 5)
+    pygame.draw.circle(surface, WALL, (8, 8), 4)
+    surface.set_at((8, 8), HL_FLOOR)
+
+
+def draw_ship_rail_nw(surface, _variant: int, _frame: int) -> None:
+    _draw_ship_rail_corner(surface, True, True)
+
+
+def draw_ship_rail_ne(surface, _variant: int, _frame: int) -> None:
+    _draw_ship_rail_corner(surface, False, True)
+
+
+def draw_ship_rail_sw(surface, _variant: int, _frame: int) -> None:
+    _draw_ship_rail_corner(surface, True, False)
+
+
+def draw_ship_rail_se(surface, _variant: int, _frame: int) -> None:
+    _draw_ship_rail_corner(surface, False, False)
+
+
 DRAW = {
     "ship_floor": draw_ship_floor,
     "ship_wall": draw_ship_wall,
@@ -199,6 +261,13 @@ DRAW = {
     "ship_door_s_bottom_middle": draw_ship_door_s_bottom_middle,
     "ship_door_s_bottom_right": draw_ship_door_s_bottom_right,
     "ship_ladder": draw_ship_ladder,
+    "ship_ocean": draw_ship_ocean,
+    "ship_rail_h": draw_ship_rail_h,
+    "ship_rail_v": draw_ship_rail_v,
+    "ship_rail_nw": draw_ship_rail_nw,
+    "ship_rail_ne": draw_ship_rail_ne,
+    "ship_rail_sw": draw_ship_rail_sw,
+    "ship_rail_se": draw_ship_rail_se,
 }
 
 

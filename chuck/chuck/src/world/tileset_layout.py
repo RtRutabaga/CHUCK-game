@@ -245,6 +245,13 @@ SHIP = Tileset(
         ("ship_door_s_bottom_middle", 1, 1),
         ("ship_door_s_bottom_right", 1, 1),
         ("ship_ladder", 1, 1),
+        ("ship_ocean", 3, 4),
+        ("ship_rail_h", 1, 1),
+        ("ship_rail_v", 1, 1),
+        ("ship_rail_nw", 1, 1),
+        ("ship_rail_ne", 1, 1),
+        ("ship_rail_sw", 1, 1),
+        ("ship_rail_se", 1, 1),
     ],
     char_to_terrain={
         "=": "ship_floor",
@@ -263,6 +270,13 @@ SHIP = Tileset(
         "┼": "ship_door_s_bottom_middle",
         "┤": "ship_door_s_bottom_right",
         "ℓ": "ship_ladder",
+        "~": "ship_ocean",
+        "═": "ship_rail_h",
+        "║": "ship_rail_v",
+        "╔": "ship_rail_nw",
+        "╗": "ship_rail_ne",
+        "╚": "ship_rail_sw",
+        "╝": "ship_rail_se",
     },
     overhead_char_to_terrain={},
 )
@@ -303,6 +317,7 @@ MAP_TILESET: dict[str, str] = {
     "ship_galley": "ship",
     "ship_crew_quarters": "ship",
     "ship_captain_cabin": "ship",
+    "ship_exterior_deck": "ship",
 }
 
 

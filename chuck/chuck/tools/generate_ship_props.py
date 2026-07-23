@@ -18,6 +18,9 @@ BRASS = (183, 142, 58, 255)
 BRASS_LIGHT = (225, 190, 91, 255)
 DARK = (31, 24, 22, 255)
 LEAF = (91, 105, 55, 255)
+SAIL_DARK = (161, 145, 102, 255)
+SAIL = (218, 202, 151, 255)
+SAIL_LIGHT = (239, 225, 174, 255)
 
 
 def hammock() -> Image.Image:
@@ -87,11 +90,33 @@ def captain_chest(opened: bool) -> Image.Image:
     return image
 
 
+def mast_sail() -> Image.Image:
+    """A large hybrid-top-down mast and sail based on the ship reference."""
+    image = Image.new("RGBA", (58, 90), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    # The sail is seen in full and deliberately overlaps the deck below it.
+    sail = [(7, 12), (45, 17), (51, 59), (15, 54)]
+    draw.polygon(sail, fill=DARK)
+    inner = [(9, 14), (43, 19), (48, 56), (17, 52)]
+    draw.polygon(inner, fill=SAIL)
+    draw.line((10, 16, 43, 21), fill=SAIL_LIGHT, width=2)
+    draw.line((16, 49, 47, 53), fill=SAIL_DARK, width=2)
+    draw.line((27, 17, 31, 54), fill=SAIL_DARK, width=1)
+    # Mast remains visibly planted into the deck beneath the complete sail.
+    draw.rectangle((27, 2, 32, 82), fill=WOOD_DARK)
+    draw.rectangle((28, 2, 30, 82), fill=WOOD_LIGHT)
+    draw.rectangle((23, 80, 36, 87), fill=DARK)
+    draw.rectangle((25, 79, 34, 84), fill=WOOD)
+    draw.line((25, 80, 34, 80), fill=WOOD_LIGHT, width=1)
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, image in (
         ("ship_hammock", hammock()),
         ("ship_round_table", round_table()),
+        ("ship_mast_sail", mast_sail()),
     ):
         path = OUT / f"{name}.png"
         image.save(path)
