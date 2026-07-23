@@ -91,23 +91,24 @@ def captain_chest(opened: bool) -> Image.Image:
 
 
 def mast_sail() -> Image.Image:
-    """A large hybrid-top-down mast and sail based on the ship reference."""
-    image = Image.new("RGBA", (58, 90), TRANSPARENT)
+    """A ship-scale hybrid-top-down mast and broad, fully visible sail."""
+    image = Image.new("RGBA", (144, 136), TRANSPARENT)
     draw = ImageDraw.Draw(image)
-    # The sail is seen in full and deliberately overlaps the deck below it.
-    sail = [(7, 12), (45, 17), (51, 59), (15, 54)]
+    # The sail is enormous beside Chuck and deliberately overlaps the deck.
+    sail = [(7, 14), (126, 22), (137, 96), (20, 87)]
     draw.polygon(sail, fill=DARK)
-    inner = [(9, 14), (43, 19), (48, 56), (17, 52)]
+    inner = [(10, 17), (123, 25), (133, 92), (23, 84)]
     draw.polygon(inner, fill=SAIL)
-    draw.line((10, 16, 43, 21), fill=SAIL_LIGHT, width=2)
-    draw.line((16, 49, 47, 53), fill=SAIL_DARK, width=2)
-    draw.line((27, 17, 31, 54), fill=SAIL_DARK, width=1)
+    draw.line((12, 19, 122, 27), fill=SAIL_LIGHT, width=3)
+    draw.line((23, 80, 132, 89), fill=SAIL_DARK, width=3)
+    draw.line((71, 22, 76, 87), fill=SAIL_DARK, width=2)
+    draw.line((14, 48, 130, 56), fill=SAIL_DARK, width=2)
     # Mast remains visibly planted into the deck beneath the complete sail.
-    draw.rectangle((27, 2, 32, 82), fill=WOOD_DARK)
-    draw.rectangle((28, 2, 30, 82), fill=WOOD_LIGHT)
-    draw.rectangle((23, 80, 36, 87), fill=DARK)
-    draw.rectangle((25, 79, 34, 84), fill=WOOD)
-    draw.line((25, 80, 34, 80), fill=WOOD_LIGHT, width=1)
+    draw.rectangle((68, 2, 76, 126), fill=WOOD_DARK)
+    draw.rectangle((69, 2, 72, 126), fill=WOOD_LIGHT)
+    draw.rectangle((61, 124, 83, 133), fill=DARK)
+    draw.rectangle((64, 122, 80, 129), fill=WOOD)
+    draw.line((64, 123, 80, 123), fill=WOOD_LIGHT, width=2)
     return image
 
 

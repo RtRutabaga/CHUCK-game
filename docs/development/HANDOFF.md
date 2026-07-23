@@ -3,11 +3,23 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `62b4cca` (ship captain cabin)
-- Current work: exterior deck foundation + ship motion (session 154)
+- Base commit before this pass: `2656bb9` (exterior pirate ship deck)
+- Current work: ship-scale mast/sail correction (session 155)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Corrected the exterior deck's mast composition after visual playtesting:
+
+- Both mast anchors now share the deck's exact center row, spaced east-to-west
+  at columns 21 and 42. The previous diagonal placement is gone.
+- Rebuilt the procedural mast/sail from 58x90 to 144x136: the broad complete
+  sail is nearly half the native screen wide, the mast remains visibly planted
+  in the boards, and the silhouette now reads at human-ship scale beside Chuck.
+- No deck route, checkpoint, collision rule, ocean animation, or rocking logic
+  changed. Targeted exterior-deck tests now lock the alignment and asset size.
+
+## Previous Pass (session 154, commit 2656bb9)
 
 Built the exterior-deck foundation without beginning its pirate encounters:
 

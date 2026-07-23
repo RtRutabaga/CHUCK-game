@@ -1176,6 +1176,9 @@ bounded sessions.
        visually fixed while the complete ship/occupant layer rocks by one
        pixel over an eight-beat 126-BPM cycle; collision stays stable. The
        deck cast and ending sequence remain deliberately unbuilt (session 154).
+   - [x] Enlarged both mast-and-sail props to a ship-scale 144x136 silhouette
+         and aligned their anchors east-to-west along the deck's exact center
+         row, replacing the small diagonal arrangement (session 155).
 8. [ ] Populate the deck with its non-combat pirate cast and richer rhythmic
        animation next; defer the fencing hazard and ending sequence.
 

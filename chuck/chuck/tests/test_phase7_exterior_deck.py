@@ -26,8 +26,9 @@ def _map() -> TileMap:
 def test_exterior_is_a_large_reference_led_ship_in_animated_sea() -> None:
     tilemap = _map()
     assert (tilemap.width_tiles, tilemap.height_tiles) == (64, 44)
-    props = [kind for kind, _col, _row in tilemap.prop_tiles]
-    assert props.count("ship_mast_sail") == 2
+    masts = [(col, row) for kind, col, row in tilemap.prop_tiles
+             if kind == "ship_mast_sail"]
+    assert masts == [(21, 22), (42, 22)]
     assert sum(row.count("~") for row in tilemap._grid) > 1200
     assert tileset_for(MAP_NAME).char_to_terrain["~"] == "ship_ocean"
     assert AREA_MUSIC[MAP_NAME] == "ship_shanty.wav"
@@ -51,6 +52,9 @@ def test_deck_has_one_checkpoint_and_uses_the_shared_loader() -> None:
         scene = game.checkpoints.load_checkpoint("ship_exterior_deck")
         assert scene.map_name == MAP_NAME
         assert len(scene.anchors) == 1
+        mast_sizes = [prop._size for prop in scene.props
+                      if prop.kind == "ship_mast_sail"]
+        assert mast_sizes == [(144, 136), (144, 136)]
     finally:
         game._shutdown()
 
