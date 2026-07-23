@@ -244,13 +244,13 @@ Do not fully explain the collided worlds.
 -   [x] Crew quarters contain the seated pirate.
 -   [x] Captain's chest grants Premium Buhetian Halfling Leaf (+40
     cigarettes).
--   [ ] Pirate animations are richer than previous NPCs.
--   [ ] NPC dialogue changes after first conversations.
+-   [x] Pirate animations are richer than previous NPCs.
+-   [x] NPC dialogue changes after first conversations.
 -   [x] Deck rocking and animated waves are implemented.
 -   [ ] Sword-fighting pirates damage Chuck.
 -   [ ] Deck animations synchronize with the soundtrack.
--   [ ] Jeffries delivers collided-world dialogue.
--   [ ] Other pirates dismiss Jeffries.
+-   [x] Jeffries delivers collided-world dialogue.
+-   [x] Other pirates dismiss Jeffries.
 -   [ ] Captain sequence triggers correctly.
 -   [ ] Moving Astral Sea and Hell blocks appear.
 -   [ ] Chuck falls into a Hell block.

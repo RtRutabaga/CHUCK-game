@@ -551,6 +551,19 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ӄ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
     "ӄ": MarkerDef(kind="anchor:ship_exterior_anchor", under="="),
     "Ӆ": MarkerDef(kind="arrival:from_exterior_deck", under="="),
+    "ӆ": MarkerDef(
+        kind="deck_pirate:concertina_pirate:deck_concertina_met:concertina",
+        under="=",
+    ),
+    "Ӈ": MarkerDef(
+        kind="deck_pirate:cheering_pirate:deck_cheering_met:cheer", under="=",
+    ),
+    "ӈ": MarkerDef(
+        kind="deck_pirate:dancing_pirate:deck_dancer_met:dance", under="=",
+    ),
+    "Ӊ": MarkerDef(
+        kind="deck_pirate:jeffries:deck_jeffries_met:struggle", under="=",
+    ),
     # The rubble crawlspace's "Enter crevice?" prompt (session 141).
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
 }

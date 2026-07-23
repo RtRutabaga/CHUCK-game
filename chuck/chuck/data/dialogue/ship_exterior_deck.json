@@ -1,0 +1,28 @@
+{
+  "concertina_pirate_first": [
+    "Requests are considered in the order they are shouted."
+  ],
+  "concertina_pirate_repeat": [
+    "Still considering it."
+  ],
+  "cheering_pirate_first": [
+    "Don't mind Jeffries over there tied to the mast. He's gone mad. Too much sun, I think."
+  ],
+  "cheering_pirate_repeat": [
+    "Good sea for it."
+  ],
+  "dancing_pirate_first": [
+    "Deck's moving. Saves me half the work."
+  ],
+  "dancing_pirate_repeat": [
+    "Other half's mine."
+  ],
+  "jeffries_first": [
+    "The sea is wrong, the land is wrong. Open your eyes!",
+    "Half the crew is gone... lost to the purple. They don't even remember them."
+  ],
+  "jeffries_repeat": [
+    "Don't go into the purple! DON'T GO INTO THE PURPLE!",
+    "Why don't they see!?"
+  ]
+}

@@ -3,11 +3,32 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `87e8c9f` (larger sails and bowsprit)
-- Current work: massive edge-anchored bowsprit (session 158)
+- Base commit before this pass: `9be609a` (extended ship bowsprit)
+- Current work: exterior deck's non-combat pirate cast (session 159)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Populated the exterior deck without beginning its combat or ending sequence:
+
+- Added four `DeckPirateNPC` performers: concertina player, cheering tankard
+  pirate, dancing pirate, and Jeffries struggling directly beneath the western
+  mast. Each has twelve procedural cells: four down/up/side action frames plus
+  mirrored right-facing frames at runtime.
+- Their distinct bellows, tankard, jig, and rope-strain loops all advance twice
+  per beat against the established 126-BPM shanty. Small phase offsets keep the
+  whole deck rhythmic without making every gesture mechanically simultaneous.
+- Added first/repeat dialogue and durable progress flags for all four. Jeffries
+  uses the documented collided-world warnings; the cheering pirate uses the
+  documented dismissal. Saving at the existing deck Ashtray and CONTINUE
+  preserve every conversation state.
+- Added a data-driven `deck_pirate:` map marker/spawn path and a dedicated test
+  suite covering cast composition, Jeffries' mast placement, exact key lines,
+  four-frame beat timing, first/repeat switching, and save restoration.
+- Sword-fighting pirates, their Sanity hazard, the captain, and the plank
+  sequence remain untouched for later bounded sessions.
+
+## Previous Pass (session 158, commit 9be609a)
 
 Corrected the bowsprit scale and attachment point after visual playtesting:
 

@@ -1189,8 +1189,16 @@ bounded sessions.
    - [x] Rebuilt the bowsprit as a massive 400x96 structural spar with over
          twelve tiles of visible projection, and moved its reinforced heel
          onto the actual eastern bow-edge rail tile (session 158).
-8. [ ] Populate the deck with its non-combat pirate cast and richer rhythmic
-       animation next; defer the fencing hazard and ending sequence.
+8. [x] Populated the deck with its four non-combat performers: a concertina
+       player with expanding bellows, a cheering tankard pirate, a four-step
+       dancing pirate, and Jeffries visibly struggling in rope directly below
+       the mast. Each uses four directional frames advancing on half-beats at
+       the shanty's 126 BPM, distinct first/repeat dialogue, and a durable save
+       flag. Jeffries delivers the authored collided-world warnings while the
+       cheering pirate dismisses him. The fencing hazard and ending sequence
+       remain deliberately unbuilt (session 159).
+9. [ ] Add the two wandering sword-fighting pirates as an avoidable Sanity
+       hazard next; do not begin the captain or plank sequence yet.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

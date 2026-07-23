@@ -28,6 +28,7 @@ from src.entities.battle_hazards import (
     AstralBreach, BattleChoreographer, BattleProjectile,
 )
 from src.entities.dart_trap import DartTrap, TempleDart
+from src.entities.deck_pirate import DeckPirateNPC
 from src.entities.hazard import Cat
 from src.entities.massive_dinosaur import MassiveDinosaur
 from src.entities.npc import NPC
@@ -376,6 +377,16 @@ class WorldScene(Scene):
                     cx, cy, npc_id=npc_id,
                     progress=self.game.progress,
                     progress_flag=progress_flag,
+                )
+                npc.load_sprites(self.game.assets)
+                self.npcs.append(npc)
+            elif kind.startswith("deck_pirate:"):
+                npc_id, progress_flag, performance = kind.split(":", 3)[1:]
+                npc = DeckPirateNPC(
+                    cx, cy, npc_id=npc_id,
+                    progress=self.game.progress,
+                    progress_flag=progress_flag,
+                    performance=performance,
                 )
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)

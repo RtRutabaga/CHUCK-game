@@ -1,0 +1,118 @@
+"""Generate the four shanty-synchronized exterior-deck pirate sheets."""
+
+from pathlib import Path
+
+from PIL import Image, ImageDraw
+
+
+W, H = 16, 30
+CLEAR = (0, 0, 0, 0)
+OUTLINE = (38, 29, 28, 255)
+SKIN = (194, 143, 103, 255)
+SKIN_DARK = (137, 88, 67, 255)
+WHITE = (205, 198, 166, 255)
+BOOT = (43, 31, 27, 255)
+TROUSER = (61, 53, 49, 255)
+ROPE = (184, 149, 91, 255)
+PEWTER = (151, 157, 154, 255)
+ALE = (190, 128, 49, 255)
+WOOD = (109, 70, 39, 255)
+GOLD = (205, 154, 56, 255)
+RED = (145, 48, 44, 255)
+BLUE = (49, 77, 103, 255)
+GREEN = (50, 94, 61, 255)
+PURPLE = (92, 54, 103, 255)
+
+
+def rect(draw: ImageDraw.ImageDraw, box, color) -> None:
+    draw.rectangle(box, fill=color)
+
+
+def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
+    image = Image.new("RGBA", (W, H), CLEAR)
+    draw = ImageDraw.Draw(image)
+    sway = (-1, 0, 1, 0)[phase] if action == "dance" else 0
+    bob = (0, 1, 0, 1)[phase] if action != "struggle" else (0, 0, 1, 0)[phase]
+    cx = 8 + sway
+
+    # Boots and legs establish a human-scale, readable stance.
+    if action == "dance":
+        left_dx, right_dx = ((-2, 1), (-1, 2), (0, 3), (-1, 2))[phase]
+    else:
+        left_dx, right_dx = -1, 1
+    rect(draw, (cx - 4 + left_dx, 22, cx - 1 + left_dx, 27), TROUSER)
+    rect(draw, (cx + right_dx, 22, cx + 3 + right_dx, 27), TROUSER)
+    rect(draw, (cx - 5 + left_dx, 27, cx - 1 + left_dx, 29), BOOT)
+    rect(draw, (cx + right_dx, 27, cx + 4 + right_dx, 29), BOOT)
+
+    # Loose coat, pale shirt, head, scarf, and battered tricorn.
+    rect(draw, (cx - 5, 13 + bob, cx + 5, 22 + bob), coat)
+    rect(draw, (cx - 1, 13 + bob, cx + 2, 21 + bob), WHITE)
+    rect(draw, (cx - 4, 7 + bob, cx + 4, 13 + bob), SKIN)
+    rect(draw, (cx - 5, 6 + bob, cx + 5, 8 + bob), RED)
+    rect(draw, (cx - 6, 3 + bob, cx + 6, 6 + bob), OUTLINE)
+    rect(draw, (cx - 3, 1 + bob, cx + 3, 4 + bob), OUTLINE)
+    if facing == "down":
+        rect(draw, (cx - 2, 9 + bob, cx - 2, 9 + bob), OUTLINE)
+        rect(draw, (cx + 2, 9 + bob, cx + 2, 9 + bob), OUTLINE)
+    elif facing == "up":
+        rect(draw, (cx - 3, 8 + bob, cx + 3, 12 + bob), OUTLINE)
+    else:
+        rect(draw, (cx - 3, 9 + bob, cx - 3, 9 + bob), OUTLINE)
+        rect(draw, (cx - 5, 10 + bob, cx - 4, 11 + bob), SKIN_DARK)
+
+    if action == "concertina":
+        spread = (1, 3, 5, 3)[phase]
+        y = 16 + bob
+        rect(draw, (cx - 5 - spread, y, cx - 3, y + 5), WOOD)
+        rect(draw, (cx + 3, y, cx + 5 + spread, y + 5), WOOD)
+        rect(draw, (cx - 3 - spread, y + 1, cx + 3 + spread, y + 4), GOLD)
+        for x in range(cx - 2 - spread, cx + 3 + spread, 2):
+            rect(draw, (x, y + 1, x, y + 4), OUTLINE)
+    elif action == "cheer":
+        mug_y = (16, 10, 4, 10)[phase]
+        rect(draw, (cx + 5, mug_y, cx + 8, mug_y + 5), PEWTER)
+        rect(draw, (cx + 6, mug_y, cx + 7, mug_y), ALE)
+        rect(draw, (cx + 3, mug_y + 2, cx + 5, mug_y + 3), SKIN)
+    elif action == "dance":
+        arm_y = (18, 13, 9, 13)[phase]
+        rect(draw, (cx - 7, arm_y, cx - 5, arm_y + 5), SKIN)
+        rect(draw, (cx + 5, 22 - arm_y // 2, cx + 7, 27 - arm_y // 2), SKIN)
+    else:  # Jeffries: elbows strain against three visible rope bands.
+        tug = (-1, 1, -1, 1)[phase]
+        rect(draw, (cx - 7 + tug, 14, cx - 5 + tug, 22), SKIN)
+        rect(draw, (cx + 5 - tug, 14, cx + 7 - tug, 22), SKIN)
+        for y in (15, 18, 21):
+            rect(draw, (cx - 7, y, cx + 7, y), ROPE)
+        rect(draw, (cx - 1, 12, cx, 25), ROPE)
+    return image
+
+
+def _sheet(action: str, coat) -> Image.Image:
+    frames = [
+        _person(facing, phase, coat, action)
+        for facing in ("down", "up", "left")
+        for phase in range(4)
+    ]
+    sheet = Image.new("RGBA", (W * len(frames), H), CLEAR)
+    for index, frame in enumerate(frames):
+        sheet.paste(frame, (index * W, 0))
+    return sheet
+
+
+def main() -> None:
+    out = Path(__file__).resolve().parents[1] / "assets" / "sprites" / "npcs"
+    out.mkdir(parents=True, exist_ok=True)
+    for name, action, coat in (
+        ("concertina_pirate", "concertina", BLUE),
+        ("cheering_pirate", "cheer", RED),
+        ("dancing_pirate", "dance", GREEN),
+        ("jeffries", "struggle", PURPLE),
+    ):
+        path = out / f"{name}.png"
+        _sheet(action, coat).save(path)
+        print(f"Wrote {path}")
+
+
+if __name__ == "__main__":
+    main()
