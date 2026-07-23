@@ -3,11 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `f3cb6c6` (exterior non-combat deck cast)
-- Current work: paired sword-fighting deck hazard (session 160)
+- Base commit before this pass: `cf0e49a` (paired deck sword fighters)
+- Current work: Jeffries/mast placement and exterior helm polish (session 161)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Polished two requested exterior-deck composition details without changing its
+routes or progression:
+
+- Jeffries keeps his safe marker and dialogue approach tile directly below the
+  western/main mast, but his rendered 30-pixel struggling figure is lifted 24
+  pixels. His complete body now visibly overlaps the exposed pole instead of
+  appearing to stand at its base.
+- Added one 56x54 procedural ship's helm on a solid plank anchor four tiles
+  west (sternward) and two tiles south of the main mast. Its large timber rim,
+  eight handles, brass hub, and pedestal remain readable at native 320x180
+  scale and reinforce Chuck's one-foot scale.
+- Focused exterior/deck-cast tests lock the helm position and size plus
+  Jeffries' visual lift. A native headless render verified their composition.
+- The captain, walk-the-plank confrontation, Astral/Hell breakup, and ending
+  remain untouched for later bounded sessions.
+
+## Previous Pass (session 160, commit cf0e49a)
 
 Completed the exterior deck's lively cast without beginning the ending:
 
@@ -24,8 +42,6 @@ Completed the exterior deck's lively cast without beginning the ending:
   enemy-reset lifecycle rebuilds and rebinds both fighters after death.
 - A focused test suite covers exact map composition, open bypass lanes, paired
   movement, beat timing, collision-safe positions, contact damage, and reset.
-- The captain, walk-the-plank confrontation, Astral/Hell breakup, and ending
-  remain untouched for later bounded sessions.
 
 ## Previous Pass (session 159, commit f3cb6c6)
 

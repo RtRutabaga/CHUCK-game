@@ -40,6 +40,10 @@ def test_map_authors_the_four_noncombat_performers_and_no_fencers() -> None:
     jeffries = next(position for kind, position in deck_spawns
                     if ":jeffries:" in kind)
     assert jeffries == (21 * config.TILE_SIZE + 8, 23 * config.TILE_SIZE + 8)
+    assert DeckPirateNPC(
+        *jeffries, "jeffries", progress=object(),
+        progress_flag="deck_jeffries_met", performance="struggle",
+    ).draw_lift == 24
     assert all("fencer" not in kind for kind, _position in tilemap.object_spawns)
 
 

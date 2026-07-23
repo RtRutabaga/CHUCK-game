@@ -1191,12 +1191,15 @@ bounded sessions.
          onto the actual eastern bow-edge rail tile (session 158).
 8. [x] Populated the deck with its four non-combat performers: a concertina
        player with expanding bellows, a cheering tankard pirate, a four-step
-       dancing pirate, and Jeffries visibly struggling in rope directly below
-       the mast. Each uses four directional frames advancing on half-beats at
-       the shanty's 126 BPM, distinct first/repeat dialogue, and a durable save
-       flag. Jeffries delivers the authored collided-world warnings while the
-       cheering pirate dismisses him. The fencing hazard and ending sequence
-       remain deliberately unbuilt (session 159).
+       dancing pirate, and Jeffries visibly struggling in rope against the
+       main-mast pole. Each uses four directional frames advancing on
+       half-beats at the shanty's 126 BPM, distinct first/repeat dialogue, and
+       a durable save flag. Jeffries delivers the authored collided-world
+       warnings while the cheering pirate dismisses him. The fencing hazard
+       and ending sequence remain deliberately unbuilt (session 159).
+   - [x] Lifted Jeffries' rendered struggle fully onto the mast pole while
+         preserving his accessible interaction tile, and added a human-scale
+         procedural helm immediately sternward of the main mast (session 161).
 9. [x] Added two human-scale sword-fighting pirates to the central deck lanes.
        Their paired controller wanders a shared midpoint while the fighters
        guard, lunge, high-parry, and recover on opposing shanty half-beats;

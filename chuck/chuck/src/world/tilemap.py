@@ -392,6 +392,8 @@ TILE_DEFS: dict[str, TileDef] = {
     "╝": TileDef(solid=True, color=(82, 53, 31)),
     "ʘ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="ship_mast_sail", under="="),
+    "ɧ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_helm", under="="),
     "ƀ": TileDef(solid=True, color=(82, 53, 31),
                  prop="ship_bowsprit", under="║"),
     # Crew-quarters furniture. Both are human-scale props over ship planks;

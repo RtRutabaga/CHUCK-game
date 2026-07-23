@@ -112,6 +112,29 @@ def mast_sail() -> Image.Image:
     return image
 
 
+def helm() -> Image.Image:
+    """A human-scale wheel and pedestal for the exterior deck's stern."""
+    image = Image.new("RGBA", (56, 54), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    # Low pedestal first, then the wheel: the broad silhouette remains
+    # readable against both deck boards and the main mast's sail.
+    draw.rectangle((19, 42, 37, 51), fill=DARK)
+    draw.rectangle((22, 35, 34, 48), fill=WOOD_DARK)
+    draw.rectangle((25, 33, 31, 47), fill=WOOD)
+    draw.line((26, 34, 29, 34), fill=WOOD_LIGHT, width=2)
+    draw.ellipse((8, 4, 47, 43), fill=DARK)
+    draw.ellipse((12, 8, 43, 39), fill=WOOD)
+    draw.ellipse((16, 12, 39, 35), fill=TRANSPARENT)
+    # Eight spokes extend beyond the rim like a proper ship's wheel.
+    cx, cy = 27, 23
+    for end in ((27, 1), (27, 46), (5, 23), (50, 23),
+                (11, 7), (43, 39), (43, 7), (11, 39)):
+        draw.line((cx, cy, *end), fill=WOOD_LIGHT, width=3)
+    draw.ellipse((22, 18, 32, 28), fill=BRASS)
+    draw.ellipse((25, 21, 29, 25), fill=BRASS_LIGHT)
+    return image
+
+
 def bowsprit() -> Image.Image:
     """A massive timber spar projecting east from the actual bow edge."""
     image = Image.new("RGBA", (400, 96), TRANSPARENT)
@@ -136,6 +159,7 @@ def main() -> None:
         ("ship_hammock", hammock()),
         ("ship_round_table", round_table()),
         ("ship_mast_sail", mast_sail()),
+        ("ship_helm", helm()),
         ("ship_bowsprit", bowsprit()),
     ):
         path = OUT / f"{name}.png"

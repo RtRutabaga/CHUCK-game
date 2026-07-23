@@ -29,6 +29,9 @@ def test_exterior_is_a_large_reference_led_ship_in_animated_sea() -> None:
     masts = [(col, row) for kind, col, row in tilemap.prop_tiles
              if kind == "ship_mast_sail"]
     assert masts == [(21, 22), (42, 22)]
+    helms = [(col, row) for kind, col, row in tilemap.prop_tiles
+             if kind == "ship_helm"]
+    assert helms == [(17, 24)]
     bowsprits = [(col, row) for kind, col, row in tilemap.prop_tiles
                  if kind == "ship_bowsprit"]
     assert bowsprits == [(55, 22)]
@@ -61,6 +64,8 @@ def test_deck_has_one_checkpoint_and_uses_the_shared_loader() -> None:
         mast_sizes = [prop._size for prop in scene.props
                       if prop.kind == "ship_mast_sail"]
         assert mast_sizes == [(224, 192), (224, 192)]
+        helm = next(prop for prop in scene.props if prop.kind == "ship_helm")
+        assert helm._size == (56, 54)
         bowsprit = next(prop for prop in scene.props
                         if prop.kind == "ship_bowsprit")
         assert bowsprit._size == (400, 96)

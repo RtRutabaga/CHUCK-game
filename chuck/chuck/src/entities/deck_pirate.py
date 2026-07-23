@@ -21,6 +21,12 @@ _PHASE_OFFSETS = {
     "dance": 1,
     "struggle": 0,
 }
+_DRAW_LIFTS = {
+    # Jeffries' authored marker remains on the safe interaction tile below
+    # the solid mast base, while his whole struggling figure is tied visibly
+    # against the exposed pole rather than standing at its foot.
+    "struggle": 24,
+}
 
 
 class DeckPirateNPC(PirateNPC):
@@ -75,6 +81,10 @@ class DeckPirateNPC(PirateNPC):
         phase = int(self._anim_t / seconds_per_frame)
         return (phase + _PHASE_OFFSETS[self.performance]) % ANIMATION_FRAMES
 
+    @property
+    def draw_lift(self) -> int:
+        return _DRAW_LIFTS.get(self.performance, 0)
+
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
         ox, oy = camera_offset
         frames = self._deck_frames.get(self.facing)
@@ -85,5 +95,5 @@ class DeckPirateNPC(PirateNPC):
         surface.blit(
             frame,
             (int(self.x + self.width / 2 - fw / 2) - ox,
-             int(self.y + self.height - fh) - oy),
+             int(self.y + self.height - fh) - oy - self.draw_lift),
         )
