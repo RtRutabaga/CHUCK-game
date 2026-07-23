@@ -3,11 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `bf5f141` (east-west plank reality streams)
-- Current work: overhead Hell-block terrain (session 173)
+- Base commit before this pass: `0557fcc` (overhead Hell-block terrain)
+- Current work: varied Hell-fragment lava layouts (session 174)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Removed the repeated grid from adjacent overhead Hell fragments without
+changing their established appearance or movement:
+
+- Replaced the shared fixed 12x12 basalt lattice with deterministic
+  per-fragment bands whose heights, horizontal origins, slab widths, vertical
+  insets, gap widths, and missing lava-pool plates vary by seed.
+- Neighboring Hell chunks now place their lava channels and exposed pools at
+  different coordinates instead of visually continuing one uniform grid.
+- Terrain remains stable between animation frames; only the existing lava
+  highlights drift, avoiding procedural shimmer.
+- Astral art, Hell palette/material identity, stream lanes, westward motion,
+  recycling, layering, collision, and plank behavior are unchanged.
+- Added a focused regression that renders separate seeds and requires
+  substantially distinct lava masks. The focused nine-test plank suite and all
+  63 standalone suites pass, compilation is clean, the title-loop launch smoke
+  check passes, and a side-by-side 4x nearest-neighbor native preview was
+  inspected.
+
+## Previous Pass (session 173, commit 0557fcc)
 
 Reworked only the moving Hell-fragment art to read as terrain viewed from
 above, preserving the established plank stream and its unfinished fall boundary:

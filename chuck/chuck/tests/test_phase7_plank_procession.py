@@ -245,6 +245,37 @@ def test_hell_blocks_read_as_overhead_basalt_terrain_and_lava() -> None:
     assert top_edge & set(HELL_LAVA_COLORS)
 
 
+def test_hell_fragments_use_distinct_nonuniform_lava_layouts() -> None:
+    field = RealityBlockField(*PLANK_ORIGIN)
+    images = []
+    for seed in (1, 3):
+        image = pygame.Surface((3 * TILE_PX, 3 * TILE_PX), pygame.SRCALPHA)
+        field._draw_hell(image, image.get_rect(), seed)
+        images.append(image)
+
+    first, second = images
+    first_bytes = pygame.image.tobytes(first, "RGBA")
+    second_bytes = pygame.image.tobytes(second, "RGBA")
+    assert first_bytes != second_bytes
+
+    # Lava openings should not repeat at fixed 12-pixel grid intersections
+    # across separately seeded fragments.
+    first_lava = {
+        (x, y)
+        for y in range(first.get_height())
+        for x in range(first.get_width())
+        if first.get_at((x, y))[:3] in HELL_LAVA_COLORS
+    }
+    second_lava = {
+        (x, y)
+        for y in range(second.get_height())
+        for x in range(second.get_width())
+        if second.get_at((x, y))[:3] in HELL_LAVA_COLORS
+    }
+    overlap = len(first_lava & second_lava)
+    assert overlap < min(len(first_lava), len(second_lava)) * 0.65
+
+
 def test_stepping_onto_plank_reveals_blocks_and_triggers_jeffries_once() -> None:
     game = Game()
     try:

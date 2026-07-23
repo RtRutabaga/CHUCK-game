@@ -55,10 +55,12 @@ Implemented so far:
   The purple is back!`. Astral chunks tile the exact animated fall-hazard art
   shared by the sewer, pantry, Chult, and temple. Hell chunks show a bird's-eye
   plane of cracked basalt plates, branching lava channels, and molten vents
-  below the ship rather than a side-facing flame strip. Both materials enter
-  at the east screen edge, travel completely off the west edge, and
-  continuously recycle behind the ship. They remain non-colliding and the
-  kick/fall is reserved for the next slice.
+  below the ship rather than a side-facing flame strip. Each fragment uses a
+  different deterministic arrangement of staggered plates and lava pools so
+  neighboring chunks do not join into a uniform grid. Both materials enter at
+  the east screen edge, travel completely off the west edge, and continuously
+  recycle behind the ship. They remain non-colliding and the kick/fall is
+  reserved for the next slice.
 
 ------------------------------------------------------------------------
 

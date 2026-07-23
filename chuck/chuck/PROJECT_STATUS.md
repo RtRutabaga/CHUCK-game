@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 173 (overhead Hell-block terrain).
+Updated: session 174 (varied Hell-fragment lava layouts).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1266,11 +1266,14 @@ bounded sessions.
         temple rather than using a separate approximation. Hell chunks now
         read as a bird's-eye plane below the ship: dark irregular basalt
         shelves cover flowing orange lava channels, angular fissures, exposed
-        pools, and pinprick molten vents, with no side-facing flame edge. The
-        streams render behind the hull/plank, remain non-colliding, and the
-        endpoint still prevents the unbuilt kick/fall from beginning early.
-        Jeffries retains his one-time `It's back! The purple is back!` warning
-        (sessions 168/172/173).
+        pools, and pinprick molten vents, with no side-facing flame edge. Their
+        layouts use seed-varied row heights, staggered origins, slab sizes, and
+        gaps so neighboring fragments do not align into a uniform lava grid;
+        the deterministic terrain remains stable while only heat highlights
+        animate. The streams render behind the hull/plank, remain non-colliding,
+        and the endpoint still prevents the unbuilt kick/fall from beginning
+        early. Jeffries retains his one-time `It's back! The purple is back!`
+        warning (sessions 168/172/173/174).
 13. [ ] Stage the captain's kick, land Chuck in an authored moving Hell block,
         and hand off to the Nine Hells falling transition without beginning
         Phase 8 gameplay.

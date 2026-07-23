@@ -214,33 +214,49 @@ class RealityBlockField:
                         HELL_LAVA_COLORS[3],
                     )
 
-        # Each cell is an overhead slab with clipped corners. Their variable
-        # gaps connect into molten channels instead of forming a tile grid.
-        cell = 12
-        rows = max(1, (rect.height + cell - 1) // cell)
-        cols = max(1, (rect.width + cell - 1) // cell)
-        for row in range(rows):
-            for col in range(cols):
-                value = seed * 23 + row * 17 + col * 31
+        # Build irregular staggered bands rather than a shared square lattice.
+        # The seed changes the band heights, starting offsets, slab widths,
+        # and gaps for every fragment, while remaining stable between frames.
+        row = 0
+        band_top = rect.top - (seed * 3 % 5)
+        while band_top < rect.bottom:
+            band_value = seed * 43 + row * 71
+            band_height = 9 + band_value % 7
+            col = 0
+            cursor_x = rect.left - (band_value % 8)
+            while cursor_x < rect.right:
+                value = seed * 97 + row * 53 + col * 37
+                slab_width = 8 + value % 9
+                gap_left = 1 + (value // 7) % 4
+                top_inset = 1 + (value // 13) % 3
+
                 # A few absent plates create larger lava pools. Never remove
                 # adjacent cells in these small fragments, preserving a clear
                 # majority of traversable-looking basalt terrain.
                 if value % 7 == 0 and (row + col) % 2:
+                    cursor_x += slab_width
+                    col += 1
                     continue
-                left = rect.left + col * cell
-                top = rect.top + row * cell
-                right = min(left + cell + (value % 3), rect.right)
-                bottom = min(top + cell + ((value // 3) % 2), rect.bottom)
+                left = max(rect.left, cursor_x + gap_left)
+                top = max(rect.top, band_top + top_inset)
+                right = min(
+                    cursor_x + slab_width + (value // 19) % 3,
+                    rect.right,
+                )
+                bottom = min(
+                    band_top + band_height + (value // 23) % 3,
+                    rect.bottom,
+                )
                 if right - left < 4 or bottom - top < 4:
+                    cursor_x += slab_width
+                    col += 1
                     continue
 
-                gap_left = 1 + (value % 2)
-                gap_top = 1 + ((value // 5) % 2)
                 plate = pygame.Rect(
-                    left + gap_left,
-                    top + gap_top,
-                    max(2, right - left - gap_left),
-                    max(2, bottom - top - gap_top),
+                    left,
+                    top,
+                    right - left,
+                    bottom - top,
                 )
                 notch = 2 + value % 2
                 points = (
@@ -287,6 +303,10 @@ class RealityBlockField:
                         (center_x, center_y + 1),
                         HELL_LAVA_COLORS[2],
                     )
+                cursor_x += slab_width
+                col += 1
+            band_top += band_height
+            row += 1
 
         # Pinprick vents sit in the final terrain layer so the hottest lava
         # remains readable after the plates cover the flowing ground plane.
