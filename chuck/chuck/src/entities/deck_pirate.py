@@ -53,6 +53,7 @@ class DeckPirateNPC(PirateNPC):
         self._deck_frames: dict[str, tuple[object, ...]] = {}
         self._walk_frames: dict[str, tuple[object, ...]] = {}
         self.scripted_moving = False
+        self.kick_progress: float | None = None
 
     def load_sprites(self, assets: "AssetManager") -> None:
         import pygame
@@ -148,8 +149,28 @@ class DeckPirateNPC(PirateNPC):
         )
         frame = frames[frame_index]
         fw, fh = frame.get_size()
+        draw_x = int(self.x + self.width / 2 - fw / 2) - ox
+        draw_y = (
+            int(self.y + self.height - fh) - oy - self.draw_lift
+        )
         surface.blit(
             frame,
-            (int(self.x + self.width / 2 - fw / 2) - ox,
-             int(self.y + self.height - fh) - oy - self.draw_lift),
+            (draw_x, draw_y),
         )
+        if self.performance == "captain" and self.kick_progress is not None:
+            # A deliberately simple, readable boot extension from the
+            # captain's feet. Chuck draws after him at the plank endpoint, so
+            # the contact naturally tucks behind the smaller sprite.
+            import pygame
+
+            extension = 2 + round(11 * self.kick_progress)
+            foot_x = int(self.x + self.width / 2) - ox
+            foot_y = int(self.y + self.height) - oy
+            pygame.draw.rect(
+                surface, (74, 45, 29),
+                (foot_x - 2, foot_y - 2, 4, extension + 2),
+            )
+            pygame.draw.rect(
+                surface, (35, 25, 22),
+                (foot_x - 2, foot_y + extension - 1, 7, 3),
+            )

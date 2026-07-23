@@ -3,11 +3,38 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `0557fcc` (overhead Hell-block terrain)
-- Current work: varied Hell-fragment lava layouts (session 174)
+- Base commit before this pass: `13d5ecd` (varied Hell-fragment lava layouts)
+- Current work: captain kick and Nine Hells fall (session 175)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Completed the bounded Phase 7 ending without beginning playable Phase 8:
+
+- Reaching the outermost staged plank tile now locks control and routes the
+  captain horizontally to the plank centerline, then straight down behind
+  Chuck using his existing scripted walk cycle.
+- The captain waits in place until a currently rendered Hell fragment crosses
+  beneath Chuck. A native-pixel boot extension, `hurt` impact, and restrained
+  camera shake launch Chuck down and into that exact still-moving fragment;
+  the established shrinking fall animation carries the contact.
+- Added a dedicated input-free Nine Hells descent scene. It reuses the
+  fall-to-Chult music and its four-second cue / 29-second impact structure,
+  while overhead volcanic fragments, rising sparks, a warming void, and an
+  approaching basalt/lava plane replace the Chult clouds and canopy.
+- Chuck lands at the stable Phase 8 boundary and the tableau holds without
+  player control. Sanity and the global cigarette run remain available to a
+  future Phase 8 handoff, but no map, checkpoint, mechanic, or narrative
+  content was invented without Phase 8 documentation.
+- Targeted regressions cover the outer-tile gate, captain approach, live Hell
+  target selection, kick/fall frames, scene handoff, reused music timing,
+  impact, preserved Sanity, input-free arrival hold, and rendering. The
+  eleven-test plank suite plus captain, deck-cast, and original Chult-fall
+  regressions pass; all 63 standalone suites pass, compilation is clean, and
+  the title-loop launch smoke check passes. Native 4x renders of both the kick
+  and fall/arrival frames were inspected.
+
+## Previous Pass (session 174, commit 13d5ecd)
 
 Removed the repeated grid from adjacent overhead Hell fragments without
 changing their established appearance or movement:
@@ -735,13 +762,11 @@ boundary:
 - Phase 6 is complete end to end. Per the user's direction, the escape
   cutscene intentionally starts `ship_shanty.wav`; do not split it into a
   separate cue.
-- Phase 7 is complete through the moving Astral/Hell block reveal. The captain
-  has not kicked Chuck, Chuck cannot yet fall into a Hell block, and Phase 8
-  gameplay must not begin in the next pass.
+- Phase 7 is complete. The Nine Hells arrival is deliberately an input-free
+  held tableau because no Phase 8 implementation document exists in the
+  repository yet.
 
 ## Recommended Next Bounded Task
 
-- Stage the captain's kick once Chuck reaches the outer plank, land him in one
-  authored moving Hell block, and hand off to the Nine Hells falling
-  transition. Keep the slice focused on completing Phase 7; stop at the stable
-  Phase 8 arrival boundary rather than building Nine Hells gameplay.
+- Do not begin Phase 8 gameplay until its authoritative phase document is
+  added. The held Nine Hells arrival tableau is the intended handoff point.

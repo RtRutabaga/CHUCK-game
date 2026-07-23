@@ -50,6 +50,9 @@ from src.systems.captain_confrontation import (
     CAPTAIN_ARRIVAL_SPEED,
     CAPTAIN_CONFRONTED_FLAG,
     DECK_PLANK_LENGTH,
+    PLANK_KICK_APPROACH_SPEED,
+    PLANK_KICK_FALL_DURATION,
+    PLANK_KICK_WINDUP,
     PLANK_PROCESSION_SPEED,
     captain_confrontation_ready,
     stage_deck_plank,
@@ -270,6 +273,12 @@ class WorldScene(Scene):
         self._captain_after_dialogue = False
         self._plank_procession_active = False
         self._plank_procession_target: tuple[float, float] | None = None
+        self._plank_ending_phase: str | None = None
+        self._plank_ending_t = 0.0
+        self._plank_ending_waypoints: list[tuple[float, float]] = []
+        self._plank_ending_block = None
+        self._plank_ending_start: tuple[float, float] | None = None
+        self._plank_kick_sounded = False
         # Temple urns, pantry jar shelves, and pantry floor jars are
         # living breakables (see below), not static props.
         self.props = []
@@ -608,6 +617,10 @@ class WorldScene(Scene):
             self._update_footsteps(dt)
             self.camera.update(dt)
             return
+        if self._plank_ending_phase is not None:
+            self._update_plank_ending(dt)
+            self.camera.update(dt)
+            return
 
         # The Fireball has been cast: the world freezes under the blast
         # until it throws Chuck into the rubble.
@@ -736,6 +749,9 @@ class WorldScene(Scene):
             self.camera.update(dt)
             return
         if self._maybe_begin_reality_breakup():
+            self.camera.update(dt)
+            return
+        if self._maybe_begin_plank_ending():
             self.camera.update(dt)
             return
         if (
@@ -1309,6 +1325,143 @@ class WorldScene(Scene):
             self.dialogue.get("jeffries_reality_warning"),
         ))
         return True
+
+    def _maybe_begin_plank_ending(self) -> bool:
+        """Lock the endpoint once Chuck reaches the end of the live plank."""
+        field = self.reality_blocks
+        origin = self._deck_plank_origin
+        if (
+            field is None
+            or origin is None
+            or not field.active
+            or not self._reality_warning_shown
+            or self._plank_ending_phase is not None
+        ):
+            return False
+        col, row = self._player_tile()
+        plank_col, first_row = origin
+        last_row = first_row + DECK_PLANK_LENGTH - 1
+        if (col, row) != (plank_col, last_row):
+            return False
+
+        captain = self._spawn_deck_captain()
+        ts = config.TILE_SIZE
+        target_x = plank_col * ts + (ts - captain.width) / 2
+        target_y = (last_row - 2) * ts + (ts - captain.height) / 2
+        # First cross the deck to the plank centerline, then walk straight
+        # behind Chuck. This avoids a diagonal shortcut across open sea.
+        self._plank_ending_waypoints = [
+            (target_x, captain.y),
+            (target_x, target_y),
+        ]
+        self._plank_ending_phase = "approach"
+        self._plank_ending_t = 0.0
+        self.player.moving = False
+        self.player.jump_remaining = 0.0
+        self.player.scratch_remaining = 0.0
+        self.player.facing = "down"
+        self.camera.focus_on(
+            self.player.x + self.player.width / 2,
+            self.player.y + self.player.height / 2,
+        )
+        return True
+
+    def _update_plank_ending(self, dt: float) -> None:
+        """Walk the captain in, kick Chuck, and land in a streamed block."""
+        assert self.reality_blocks is not None
+        captain = self._spawn_deck_captain()
+        phase = self._plank_ending_phase
+
+        if phase == "approach":
+            target = self._plank_ending_waypoints[0]
+            if captain.scripted_walk_toward(
+                *target, PLANK_KICK_APPROACH_SPEED, dt
+            ):
+                self._plank_ending_waypoints.pop(0)
+            if not self._plank_ending_waypoints:
+                captain.facing = "down"
+                self._plank_ending_phase = "wait"
+            return
+
+        captain.update(dt)
+        if phase == "wait":
+            player_screen_x = (
+                self.player.x + self.player.width / 2 - round(self.camera.x)
+            )
+            player_screen_bottom = (
+                self.player.y + self.player.height - round(self.camera.y)
+            )
+            candidates = []
+            for block in self.reality_blocks.visible_blocks:
+                if block.kind != "hell" or block.screen_y < player_screen_bottom:
+                    continue
+                block_x, _block_y = self.reality_blocks.position(block)
+                if block_x <= player_screen_x <= block_x + block.width:
+                    candidates.append(block)
+            if not candidates:
+                return
+            self._plank_ending_block = min(
+                candidates, key=lambda block: block.screen_y
+            )
+            self._plank_ending_start = (self.player.x, self.player.y)
+            self._plank_ending_phase = "kick"
+            self._plank_ending_t = 0.0
+            self._plank_kick_sounded = False
+            captain.kick_progress = 0.0
+            return
+
+        if phase != "kick":
+            return
+        assert self._plank_ending_block is not None
+        assert self._plank_ending_start is not None
+        previous = self._plank_ending_t
+        self._plank_ending_t += dt
+        captain.kick_progress = min(
+            1.0, self._plank_ending_t / PLANK_KICK_WINDUP
+        )
+        if (
+            not self._plank_kick_sounded
+            and previous < PLANK_KICK_WINDUP <= self._plank_ending_t
+        ):
+            self._plank_kick_sounded = True
+            self.game.audio.play_sfx("hurt")
+            self.camera.shake(2.0)
+
+        fall_progress = min(
+            1.0,
+            max(0.0, self._plank_ending_t - PLANK_KICK_WINDUP)
+            / PLANK_KICK_FALL_DURATION,
+        )
+        if fall_progress <= 0.0:
+            return
+        eased = fall_progress * fall_progress * (3.0 - 2.0 * fall_progress)
+        block_x, block_y = self.reality_blocks.position(
+            self._plank_ending_block
+        )
+        rock_x, rock_y = deck_rock_offset(self._world_time)
+        target_x = (
+            block_x + self._plank_ending_block.width / 2
+            + round(self.camera.x) - rock_x - self.player.width / 2
+        )
+        target_y = (
+            block_y + self._plank_ending_block.height / 2
+            + round(self.camera.y) - rock_y - self.player.height / 2
+        )
+        start_x, start_y = self._plank_ending_start
+        self.player.x = start_x + (target_x - start_x) * eased
+        self.player.y = start_y + (target_y - start_y) * eased
+        self.player.fall_progress = eased
+        if fall_progress < 1.0:
+            return
+
+        captain.kick_progress = None
+        self.player.visible = False
+        from src.scenes.hell_falling_cutscene_scene import (
+            HellFallingCutsceneScene,
+        )
+        self.game.scenes.replace(
+            HellFallingCutsceneScene(self.game, sanity=self.sanity.current)
+        )
 
     def _interactable_in_range(self):
         """The NPC or prop Chuck could talk to right now, or None.

@@ -59,8 +59,13 @@ Implemented so far:
   different deterministic arrangement of staggered plates and lava pools so
   neighboring chunks do not join into a uniform grid. Both materials enter at
   the east screen edge, travel completely off the west edge, and continuously
-  recycle behind the ship. They remain non-colliding and the kick/fall is
-  reserved for the next slice.
+  recycle behind the ship. They remain non-colliding. Reaching the outer
+  plank locks the final sequence: the captain walks down the plank, waits
+  until a live Hell fragment passes below, visibly kicks Chuck into that same
+  moving fragment, and hands off to a long input-free volcanic descent. The
+  established fall-to-Chult cue and timing language return; Chuck lands on a
+  basalt-and-lava plane and the tableau holds without granting control,
+  creating the stable Phase 8 arrival boundary.
 
 ------------------------------------------------------------------------
 
@@ -285,5 +290,5 @@ Do not fully explain the collided worlds.
 -   [x] Other pirates dismiss Jeffries.
 -   [x] Captain sequence triggers correctly.
 -   [x] Moving Astral Sea and Hell blocks appear.
--   [ ] Chuck falls into a Hell block.
--   [ ] Phase ends with the Nine Hells transition.
+-   [x] Chuck falls into a Hell block.
+-   [x] Phase ends with the Nine Hells transition.

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 174 (varied Hell-fragment lava layouts).
+Updated: session 175 (captain kick and Nine Hells fall).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1274,9 +1274,19 @@ bounded sessions.
         and the endpoint still prevents the unbuilt kick/fall from beginning
         early. Jeffries retains his one-time `It's back! The purple is back!`
         warning (sessions 168/172/173/174).
-13. [ ] Stage the captain's kick, land Chuck in an authored moving Hell block,
-        and hand off to the Nine Hells falling transition without beginning
-        Phase 8 gameplay.
+13. [x] Completed the Phase 7 endpoint. Reaching the outer plank tile locks
+        control and sends the captain along the authored plank centerline
+        behind Chuck. He waits for an actual streamed Hell fragment to cross
+        beneath the endpoint, extends a readable boot with impact feedback,
+        and knocks Chuck into that same moving fragment while Chuck shrinks
+        through the established fall animation. A dedicated input-free Nine
+        Hells descent reuses the fall-to-Chult cue and its four-second music /
+        29-second impact timing language, replaces clouds and jungle with
+        rising volcanic fragments, sparks, and an approaching overhead
+        basalt/lava plane, then holds on Chuck's arrival without granting
+        gameplay control. This is the stable Phase 8 boundary; no Phase 8 map,
+        mechanics, checkpoint, or narrative content was invented (session
+        175).
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

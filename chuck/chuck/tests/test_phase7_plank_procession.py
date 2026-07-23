@@ -16,12 +16,20 @@ from src.entities.reality_blocks import (
     RealityBlockField,
 )
 from src.scenes.dialogue_scene import DialogueScene
+from src.scenes.hell_falling_cutscene_scene import (
+    HELL_ARRIVAL_TIME,
+    HELL_GROUND_APPROACH,
+    HELL_IMPACT_TIME,
+    HELL_MUSIC_START,
+    HellFallingCutsceneScene,
+)
 from src.systems.captain_confrontation import (
     CAPTAIN_CONFRONTED_FLAG,
     CAPTAIN_REQUIRED_FLAGS,
     DECK_PLANK_LENGTH,
     DECK_PLANK_TERRAIN,
 )
+from src.systems.ship_motion import deck_rock_offset
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import SEWER, TILE_PX, tileset_for
 
@@ -303,9 +311,8 @@ def test_stepping_onto_plank_reveals_blocks_and_triggers_jeffries_once() -> None
         assert scene._fall_t is None
         assert scene._pending_map is None
 
-        # This pass stops before the kick/fall: the plank remains walkable,
-        # its outer endpoint stays solid ocean, and closing the warning simply
-        # returns control amid the moving fragments.
+        # The plank stays walkable and its solid ocean endpoint still prevents
+        # ordinary movement from leaving it. The ending owns that departure.
         col, first_row = PLANK_ORIGIN
         assert all(
             scene.tilemap.terrain_at(col, row) == DECK_PLANK_TERRAIN
@@ -328,9 +335,116 @@ def test_stepping_onto_plank_reveals_blocks_and_triggers_jeffries_once() -> None
         assert game.scenes.current is scene
         assert scene._fall_t is None and scene._pending_map is None
 
-        # Remaining on the plank does not repeat Jeffries' line.
+        # Remaining near the approach does not repeat Jeffries' line or start
+        # the kick before Chuck commits to the outer tile.
         scene.update(0.0)
         assert game.scenes.current is scene
+        assert scene._plank_ending_phase is None
+    finally:
+        game._shutdown()
+
+
+def test_outer_plank_stages_captain_kick_into_a_live_hell_fragment() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(
+            MAP_NAME,
+            progress_flags=(
+                CAPTAIN_REQUIRED_FLAGS | {CAPTAIN_CONFRONTED_FLAG}
+            ),
+        )
+        assert scene.reality_blocks is not None
+        scene.reality_blocks.activate()
+        scene._reality_warning_shown = True
+        sounds = []
+        game.audio.play_sfx = sounds.append
+
+        col, first_row = PLANK_ORIGIN
+        last_row = first_row + DECK_PLANK_LENGTH - 1
+        scene.player.x, scene.player.y = _tile_centered_position(
+            scene.player, col, last_row
+        )
+        scene.camera.follow(scene.player)
+        scene.camera.update(0.0)
+        scene.update(0.0)
+        assert scene._plank_ending_phase == "approach"
+        assert scene.player.facing == "down"
+
+        saw_kick = False
+        saw_fall = False
+        for _ in range(180):
+            scene.update(0.1)
+            captain = _pirate(scene, "captain_pirate")
+            saw_kick = saw_kick or captain.kick_progress is not None
+            saw_fall = saw_fall or scene.player.fall_progress is not None
+            if game.scenes.current is not scene:
+                break
+
+        cutscene = game.scenes.current
+        assert isinstance(cutscene, HellFallingCutsceneScene)
+        assert scene._plank_ending_block.kind == "hell"
+        assert saw_kick and saw_fall
+        assert sounds == ["hurt"]
+        assert cutscene.sanity == scene.sanity.current
+        block_x, block_y = scene.reality_blocks.position(
+            scene._plank_ending_block
+        )
+        rock_x, rock_y = deck_rock_offset(scene._world_time)
+        player_screen_center = (
+            scene.player.x + scene.player.width / 2
+            - round(scene.camera.x) + rock_x,
+            scene.player.y + scene.player.height / 2
+            - round(scene.camera.y) + rock_y,
+        )
+        assert block_x <= player_screen_center[0] <= (
+            block_x + scene._plank_ending_block.width
+        )
+        assert block_y <= player_screen_center[1] <= (
+            block_y + scene._plank_ending_block.height
+        )
+    finally:
+        game._shutdown()
+
+
+def test_hell_fall_reuses_cue_and_holds_at_phase8_arrival_boundary() -> None:
+    game = Game()
+    try:
+        scene = HellFallingCutsceneScene(game, sanity=73)
+        game.scenes.replace(scene)
+        music = []
+        sounds = []
+        game.audio.play_music = lambda filename, loop=True: music.append(
+            (filename, loop)
+        )
+        game.audio.play_sfx = sounds.append
+        initial_fragments = [fragment[1] for fragment in scene.fragments]
+
+        scene.update(HELL_MUSIC_START - 0.1)
+        assert music == []
+        scene.update(0.2)
+        assert music == [("fall_to_chult.wav", False)]
+        assert [fragment[1] for fragment in scene.fragments] != initial_fragments
+
+        scene.update(HELL_GROUND_APPROACH - scene.elapsed - 0.01)
+        assert scene.phase == "fall"
+        scene.update(0.02)
+        assert scene.phase == "approach"
+        game.scenes.draw(game.native_surface)
+
+        scene.update(HELL_IMPACT_TIME - scene.elapsed + 0.01)
+        assert scene.phase == "impact"
+        assert sounds == ["hurt"]
+        game.scenes.draw(game.native_surface)
+
+        scene.update(HELL_ARRIVAL_TIME - scene.elapsed + 1.0)
+        assert scene.arrived and scene.phase == "arrived"
+        assert scene.elapsed == HELL_ARRIVAL_TIME
+        assert scene.sanity == 73
+        assert game.scenes.current is scene
+        held_fragments = [fragment[1] for fragment in scene.fragments]
+        scene.update(5.0)
+        assert [fragment[1] for fragment in scene.fragments] == held_fragments
+        game.scenes.draw(game.native_surface)
     finally:
         game._shutdown()
 
