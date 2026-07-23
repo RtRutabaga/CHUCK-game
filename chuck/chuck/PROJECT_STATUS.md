@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 148 (Phase 7 begins with the lower hold).
+Updated: session 149 (ship doors replaced by open doorway recesses).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -663,8 +663,9 @@ This file is required by the project rules and updated every session.
   ladder. This replaced the original plain docks-tileset room/open water band
 - Phase 7 opening + lower hold (session 148): the arrival compartment now
   keeps its four animated sea portholes exclusively on the north hull. Its
-  west/east walls carry three-cell-tall closed ship doors and the south wall
-  carries a 3x2 door, reserving future interior routes. A southern floor ladder connects
+  west/east walls carry three-cell-tall dark open doorway recesses and the
+  south wall carries a 3x2 opening, reserving future interior routes without
+  implying that Chuck can operate full-sized doors. A southern floor ladder connects
   reversibly to the new 40x30 ship_lower_hold. The hold reuses pantry shelf
   and sack silhouettes as static cargo alongside crates and barrels, houses
   sixteen ordinary scratchable rats, continues ship_shanty.wav without a
@@ -1126,8 +1127,9 @@ until the intervening ship interiors are complete.
 
 1. [x] Added the Phase 7 contract and made it the active development scope.
 2. [x] Corrected the existing arrival compartment to use four north-wall-only
-       animated portholes, human-scale closed side doors, and a southern floor
-       ladder while keeping the established Phase 7 ship theme continuous.
+       animated portholes, human-scale dark open doorway recesses on the other
+       walls, and a southern floor ladder while keeping the established Phase
+       7 ship theme continuous (sessions 148-149).
 3. [x] Added the reversible 40x30 lower hold with static pantry-derived cargo,
        crates, barrels, sixteen ordinary rats, one physical Ashtray, and
        development-visible `Ship Hold` through the shared checkpoint loader

@@ -35,7 +35,6 @@ HL_FLOOR = (140, 100, 64)
 HL_WALL = (110, 78, 48)
 RIM = (150, 120, 66)        # brass
 RIM_DARK = (96, 74, 38)
-DOOR = (70, 43, 27)
 DOOR_HL = (126, 82, 45)
 DARK = (24, 20, 19)
 
@@ -95,29 +94,21 @@ def draw_porthole(surface, _variant: int, frame: int) -> None:
 
 
 def _draw_side_door(surface, side: str, section: str) -> None:
-    """One third of a closed human-scale doorway in a side hull wall."""
-    draw_ship_wall(surface, 1, 0)
+    """One third of a dark, open human-scale side doorway."""
+    surface.fill(DARK)
     if side == "west":
-        panel = pygame.Rect(1, 0, 12, 16)
         jamb_x = 13
-        hinge_x = 3
     else:
-        panel = pygame.Rect(3, 0, 12, 16)
         jamb_x = 1
-        hinge_x = 12
-    pygame.draw.rect(surface, DARK, panel)
-    pygame.draw.rect(surface, DOOR, panel.inflate(-2, 0))
     pygame.draw.line(surface, DOOR_HL, (jamb_x, 0), (jamb_x, 15), 2)
     if section == "top":
-        pygame.draw.line(surface, DOOR_HL, (panel.left, 2),
-                         (panel.right - 1, 2), 2)
+        pygame.draw.line(surface, DOOR_HL, (0, 2), (15, 2), 2)
     elif section == "middle":
-        pygame.draw.line(surface, LINE, (panel.left + 2, 8),
-                         (panel.right - 3, 8), 1)
-        surface.set_at((hinge_x, 8), RIM)
+        # A single highlight on the jamb keeps the opening readable against
+        # the black future-map boundary without implying a door panel.
+        surface.set_at((jamb_x, 8), RIM)
     else:
-        pygame.draw.line(surface, DOOR_HL, (panel.left, 13),
-                         (panel.right - 1, 13), 2)
+        pygame.draw.line(surface, DOOR_HL, (0, 13), (15, 13), 2)
 
 
 def draw_ship_door_w_top(surface, _variant: int, _frame: int) -> None:
@@ -145,24 +136,16 @@ def draw_ship_door_e_bottom(surface, _variant: int, _frame: int) -> None:
 
 
 def _draw_south_door(surface, column: str, row: str) -> None:
-    """One cell of the 3x2 closed doorway in the compartment's south wall."""
-    draw_ship_wall(surface, 2, 0)
-    pygame.draw.rect(surface, DARK, pygame.Rect(0, 0, 16, 16))
-    pygame.draw.rect(surface, DOOR, pygame.Rect(1, 1, 14, 15))
+    """One cell of the 3x2 dark opening in the compartment's south wall."""
+    surface.fill(DARK)
     if row == "top":
         pygame.draw.line(surface, DOOR_HL, (0, 1), (15, 1), 2)
-        pygame.draw.line(surface, LINE, (1, 10), (14, 10), 1)
     else:
         pygame.draw.line(surface, DOOR_HL, (0, 14), (15, 14), 2)
-        pygame.draw.line(surface, LINE, (1, 6), (14, 6), 1)
     if column == "left":
         pygame.draw.line(surface, DOOR_HL, (1, 0), (1, 15), 2)
     elif column == "right":
         pygame.draw.line(surface, DOOR_HL, (14, 0), (14, 15), 2)
-        if row == "bottom":
-            surface.set_at((11, 5), RIM)
-    else:
-        pygame.draw.line(surface, LINE, (8, 0), (8, 15), 1)
 
 
 def draw_ship_door_s_top_left(surface, _variant: int, _frame: int) -> None:

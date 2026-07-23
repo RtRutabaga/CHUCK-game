@@ -3,16 +3,27 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `f73c726` (portholed ship compartment)
-- Current work: Phase 7 opening compartment + lower hold (session 148)
+- Base commit before this pass: `7eca61a` (Phase 7 lower hold)
+- Current work: ship doors replaced by open doorway recesses (session 149)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
 
+Replaced the arrival compartment's closed doors with open doorway recesses:
+
+- All west/east/south doorway cells now draw as uninterrupted black interior
+  space within highlighted timber jambs, with no panel, latch, or closed-door
+  silhouette. Their terrain is walkable so Chuck can enter each threshold;
+  ordinary out-of-bounds collision contains the two unfinished future routes.
+- The north portholes, southern lower-hold ladder, map geometry, transition
+  wiring, checkpoint positions, and uninterrupted ship music are unchanged.
+
+## Previous Pass (session 148, commit 7eca61a)
+
 Started Phase 7 with the corrected arrival compartment and lower hold:
 
 - The arrival compartment keeps exactly four animated portholes, all on the
-  north hull. Human-scale closed doors now occupy the other three walls for
+  north hull. Human-scale doorways now occupy the other three walls for
   future interior branches. A southern floor ladder is a
   live reversible walk exit; the cutscene arrival moved one safe tile north.
 - Expanded the procedural ship tileset with six side-door sections and a deck

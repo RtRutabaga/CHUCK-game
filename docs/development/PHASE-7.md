@@ -11,7 +11,7 @@ character animation rather than combat.
 Implemented so far:
 
 - The opening compartment now confines its animated sea portholes to the
-  north hull. Human-scale closed doors occupy the other three walls and
+  north hull. Human-scale dark open doorways occupy the other three walls and
   establish future interior routes, while a southern floor ladder begins the
   playable phase.
 - The ladder leads to a reversible cargo-filled lower hold with reused pantry

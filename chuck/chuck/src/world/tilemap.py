@@ -365,21 +365,21 @@ TILE_DEFS: dict[str, TileDef] = {
     # A porthole in the ship's hull — solid wall, the sea drawn by the
     # animated ship tileset (session 147).
     "Ø": TileDef(solid=True, color=(96, 164, 214)),
-    # Phase 7 ship interiors: closed, human-scale doors fill the west, east,
-    # and south walls; the floor ladder is the walk-over connection between
-    # the arrival compartment and lower hold.
-    "╭": TileDef(solid=True, color=(70, 43, 27)),
-    "│": TileDef(solid=True, color=(70, 43, 27)),
-    "╰": TileDef(solid=True, color=(70, 43, 27)),
-    "╮": TileDef(solid=True, color=(70, 43, 27)),
-    "┃": TileDef(solid=True, color=(70, 43, 27)),
-    "╯": TileDef(solid=True, color=(70, 43, 27)),
-    "┌": TileDef(solid=True, color=(70, 43, 27)),
-    "┬": TileDef(solid=True, color=(70, 43, 27)),
-    "┐": TileDef(solid=True, color=(70, 43, 27)),
-    "├": TileDef(solid=True, color=(70, 43, 27)),
-    "┼": TileDef(solid=True, color=(70, 43, 27)),
-    "┤": TileDef(solid=True, color=(70, 43, 27)),
+    # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
+    # the west, east, and south walls. They are walkable so Chuck can enter
+    # the threshold; out-of-bounds collision keeps unfinished routes contained.
+    "╭": TileDef(solid=False, color=(24, 20, 19)),
+    "│": TileDef(solid=False, color=(24, 20, 19)),
+    "╰": TileDef(solid=False, color=(24, 20, 19)),
+    "╮": TileDef(solid=False, color=(24, 20, 19)),
+    "┃": TileDef(solid=False, color=(24, 20, 19)),
+    "╯": TileDef(solid=False, color=(24, 20, 19)),
+    "┌": TileDef(solid=False, color=(24, 20, 19)),
+    "┬": TileDef(solid=False, color=(24, 20, 19)),
+    "┐": TileDef(solid=False, color=(24, 20, 19)),
+    "├": TileDef(solid=False, color=(24, 20, 19)),
+    "┼": TileDef(solid=False, color=(24, 20, 19)),
+    "┤": TileDef(solid=False, color=(24, 20, 19)),
     "ℓ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
     # Static reuse of pantry storage art in the ship's lower hold. These are
     # cargo, not the pantry's carton-filled breakable furniture.

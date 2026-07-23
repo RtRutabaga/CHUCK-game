@@ -41,12 +41,14 @@ def test_the_deck_is_a_wooden_compartment_with_portholes() -> None:
     # The portholes are solid hull, not walkable openings.
     from src.world.tilemap import TILE_DEFS
     assert TILE_DEFS["Ø"].solid
-    # Closed three-cell side doors read at human scale; the southern ladder
-    # is the first real Phase 7 route.
+    # Dark open doorway recesses occupy every non-porthole wall and are
+    # walkable at the threshold; the southern ladder is the first live route.
     assert "╭" in tilemap._grid[5] and "╰" in tilemap._grid[7]
     assert "╮" in tilemap._grid[5] and "╯" in tilemap._grid[7]
     assert "┌┬┐" in tilemap._grid[11]
     assert "├┼┤" in tilemap._grid[12]
+    for char in "╭│╰╮┃╯┌┬┐├┼┤":
+        assert not TILE_DEFS[char].solid
     assert sum(row.count("ℓ") for row in tilemap._grid) == 2
     assert not any(k in {"rat", "zombie", "skeleton", "raptor",
                          "massive_dinosaur", "snake"} for k in kinds)
