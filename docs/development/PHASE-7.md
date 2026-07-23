@@ -37,8 +37,10 @@ Implemented so far:
 - After the chef encounter, seated-pirate conversation, four deck
   conversations, and captain's chest are all complete, the captain appears
   beside the stern helm and delivers the accusation, plank order, crew
-  objection, and refusal. The physical plank walk and reality breakup remain
-  unstarted.
+  objection, and refusal. A narrow physical plank then opens through the
+  starboard rail; the captain and objecting pirate flank its approach while
+  Chuck is marched to the rail and control returns. The outer endpoint remains
+  safely bounded until the reality-breakup sequence is implemented.
 
 ------------------------------------------------------------------------
 
@@ -207,6 +209,10 @@ A pirate objects:
 > "But we've all grown fond of the smoking rat, Cap."
 
 The captain refuses.
+
+The crew stages a narrow plank through the starboard rail. Chuck is marched to
+its approach, then the player regains control and can walk to its currently
+bounded outer end.
 
 Moving Astral Sea blocks begin appearing over the ocean.
 

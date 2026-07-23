@@ -3,11 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `729aeca` (helm perspective correction)
-- Current work: gated captain confrontation (session 163)
+- Base commit before this pass: `72138e5` (gated captain confrontation)
+- Current work: staged starboard plank and ordered approach (session 164)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Implemented the physical plank and ordered approach without beginning the
+reality breakup or fall:
+
+- Authored one hidden plank origin in the south/starboard rail. Once the
+  confrontation completes, it replaces that rail cell and seven ocean cells
+  with a dedicated narrow, walkable plank terrain rendered transparently over
+  the existing animated sea.
+- Solid ocean tiles remain on both sides and beyond the endpoint, so Chuck can
+  walk the full plank but cannot step off it or trigger an unfinished fall.
+- The captain and objecting cheering pirate move to opposite sides of the
+  approach. Chuck cuts to a clear four-tile lane and takes a short input-locked
+  walk to the rail using his normal shuffle animation and wooden footsteps;
+  control returns one tile before the plank.
+- `captain_confronted` derives the complete staged tableau on map load and
+  CONTINUE without replaying the procession or adding another save flag.
+- Focused tests cover hidden/staged terrain, collision containment, tableau
+  positions, procession completion, and control return. A native render
+  verified the opened rail and plank over the sea.
+- Astral/Hell blocks, Jeffries' warning, the kick, fall, and Phase 8 transition
+  remain untouched.
+
+## Previous Pass (session 163, commit 72138e5)
 
 Implemented the captain's gated arrival and accusation without beginning the
 physical plank sequence or reality breakup:
@@ -27,8 +50,6 @@ physical plank sequence or reality breakup:
 - Focused tests cover every prerequisite, hidden/spawned states, authored
   dialogue, animation, chef tracking, and save restoration. A native render
   verified the captain's placement beside the helm.
-- The physical plank, forced walk, Astral/Hell blocks, kick, fall, and Phase 8
-  transition remain untouched.
 
 ## Previous Pass (session 162, commit 729aeca)
 

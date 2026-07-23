@@ -9,6 +9,9 @@ if TYPE_CHECKING:
 
 
 CAPTAIN_CONFRONTED_FLAG = "captain_confronted"
+DECK_PLANK_TERRAIN = "∥"
+DECK_PLANK_LENGTH = 8
+PLANK_PROCESSION_SPEED = 38.0
 CAPTAIN_REQUIRED_FLAGS = frozenset({
     "pirate_chef_met",
     "crew_pirate_met",
@@ -26,3 +29,10 @@ def captain_confrontation_ready(progress: "ProgressState") -> bool:
         not progress.has(CAPTAIN_CONFRONTED_FLAG)
         and CAPTAIN_REQUIRED_FLAGS <= progress.flags
     )
+
+
+def stage_deck_plank(tilemap, origin: tuple[int, int]) -> None:
+    """Open the starboard rail and lay one narrow walkable plank over sea."""
+    col, first_row = origin
+    for row in range(first_row, first_row + DECK_PLANK_LENGTH):
+        tilemap.set_terrain(col, row, DECK_PLANK_TERRAIN)

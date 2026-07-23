@@ -46,7 +46,10 @@ from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
 from src.systems.astral_anchor import AstralAnchorSystem
 from src.systems.captain_confrontation import (
-    CAPTAIN_CONFRONTED_FLAG, captain_confrontation_ready,
+    CAPTAIN_CONFRONTED_FLAG,
+    PLANK_PROCESSION_SPEED,
+    captain_confrontation_ready,
+    stage_deck_plank,
 )
 from src.systems.choice import ChoiceSystem
 from src.systems.combat import scratch_first_target
@@ -252,8 +255,11 @@ class WorldScene(Scene):
         self.choices = ChoiceSystem()
         self.last_choice: str | None = None  # what Chuck last decided
         self._deck_captain_spawn = None
+        self._deck_plank_origin: tuple[int, int] | None = None
         self._captain_confrontation_started = False
         self._captain_after_dialogue = False
+        self._plank_procession_active = False
+        self._plank_procession_target: tuple[float, float] | None = None
         # Temple urns, pantry jar shelves, and pantry floor jars are
         # living breakables (see below), not static props.
         self.props = []
@@ -402,6 +408,11 @@ class WorldScene(Scene):
                 self._deck_captain_spawn = (
                     cx, cy, npc_id, progress_flag, performance,
                 )
+            elif kind == "deck_plank_origin":
+                self._deck_plank_origin = (
+                    int(cx // config.TILE_SIZE),
+                    int(cy // config.TILE_SIZE),
+                )
             elif kind in {
                 "rat", "zombie", "skeleton", "raptor", "massive_dinosaur",
                 "snake", "pirate_chef",
@@ -430,6 +441,8 @@ class WorldScene(Scene):
                 raise ValueError(f"No spawner for object kind {kind!r}")
         if self.game.progress.has(CAPTAIN_CONFRONTED_FLAG):
             self._spawn_deck_captain()
+            self._stage_deck_plank()
+            self._apply_post_confrontation_tableau()
         self._reset_enemies()
 
 
@@ -449,7 +462,7 @@ class WorldScene(Scene):
         if self._captain_after_dialogue:
             self._captain_after_dialogue = False
             self.game.progress.enable(CAPTAIN_CONFRONTED_FLAG)
-            self.camera.follow(self.player)
+            self._begin_plank_procession()
         if self._pending_entrance_dialogue is not None:
             lines = self.dialogue.get(self._pending_entrance_dialogue)
             self._pending_entrance_dialogue = None
@@ -521,6 +534,19 @@ class WorldScene(Scene):
             self.game.scenes.push(DialogueScene(
                 self.game, self.dialogue.get("captain_confrontation")
             ))
+            return
+        if self._plank_procession_active:
+            assert self._plank_procession_target is not None
+            reached = self.player.scripted_walk_toward(
+                *self._plank_procession_target,
+                PLANK_PROCESSION_SPEED,
+                dt,
+            )
+            if reached:
+                self._plank_procession_active = False
+                self._plank_procession_target = None
+            self._update_footsteps(dt)
+            self.camera.update(dt)
             return
 
         # The Fireball has been cast: the world freezes under the blast
@@ -1047,6 +1073,63 @@ class WorldScene(Scene):
         self.npcs.append(captain)
         return captain
 
+    def _stage_deck_plank(self) -> None:
+        if self._deck_plank_origin is None:
+            raise ValueError(
+                "Ship exterior deck is missing its authored plank origin"
+            )
+        stage_deck_plank(self.tilemap, self._deck_plank_origin)
+
+    def _apply_post_confrontation_tableau(self) -> None:
+        """Place the captain and objecting pirate around the plank approach."""
+        if self._deck_plank_origin is None:
+            raise ValueError(
+                "Ship exterior deck is missing its authored plank origin"
+            )
+        captain = self._spawn_deck_captain()
+        objector = next(
+            (
+                npc for npc in self.npcs
+                if isinstance(npc, DeckPirateNPC)
+                and npc.npc_id == "cheering_pirate"
+            ),
+            None,
+        )
+        if objector is None:
+            raise ValueError("Ship exterior deck is missing its objecting pirate")
+        col, rail_row = self._deck_plank_origin
+        ts = config.TILE_SIZE
+
+        def place(entity, tile_col: int, tile_row: int) -> None:
+            entity.x = tile_col * ts + (ts - entity.width) / 2
+            entity.y = tile_row * ts + (ts - entity.height) / 2
+
+        place(captain, col - 3, rail_row - 2)
+        place(objector, col + 3, rail_row - 2)
+        captain.facing = "right"
+        objector.facing = "left"
+
+    def _begin_plank_procession(self) -> None:
+        """Cut to the starboard approach, then let Chuck walk to the rail."""
+        self._stage_deck_plank()
+        self._apply_post_confrontation_tableau()
+        assert self._deck_plank_origin is not None
+        col, rail_row = self._deck_plank_origin
+        ts = config.TILE_SIZE
+        self.player.x = col * ts + (ts - self.player.width) / 2
+        self.player.y = (
+            (rail_row - 5) * ts + (ts - self.player.height) / 2
+        )
+        self.player.jump_remaining = 0.0
+        self.player.scratch_remaining = 0.0
+        self.player.facing = "down"
+        self._plank_procession_target = (
+            self.player.x,
+            (rail_row - 1) * ts + (ts - self.player.height) / 2,
+        )
+        self._plank_procession_active = True
+        self.camera.follow(self.player)
+
     def _on_choice(self, option) -> None:
         """What a decision means. The scene reports; the world acts.
 
@@ -1150,7 +1233,7 @@ class WorldScene(Scene):
             int((self.player.x + self.player.width / 2) // ts),
             int((self.player.y + self.player.height / 2) // ts),
         )
-        surface = "wood" if terrain == "=" else "stone"
+        surface = "wood" if terrain in {"=", "∥"} else "stone"
         self.game.audio.play_sfx(f"footstep_{surface}_{self._step_variant}")
         self._step_variant = 2 if self._step_variant == 1 else 1
 

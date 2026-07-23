@@ -390,6 +390,7 @@ TILE_DEFS: dict[str, TileDef] = {
     "╗": TileDef(solid=True, color=(82, 53, 31)),
     "╚": TileDef(solid=True, color=(82, 53, 31)),
     "╝": TileDef(solid=True, color=(82, 53, 31)),
+    "∥": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
     "ʘ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="ship_mast_sail", under="="),
     "ɧ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
@@ -571,6 +572,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ӌ": MarkerDef(
         kind="deck_captain:captain_pirate:captain_confronted:captain",
         under="=",
+    ),
+    "Ӎ": MarkerDef(
+        kind="deck_plank_origin", under="═", allow_solid=True,
     ),
     # The rubble crawlspace's "Enter crevice?" prompt (session 141).
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),

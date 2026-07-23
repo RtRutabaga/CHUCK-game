@@ -163,11 +163,45 @@ class Player(Entity):
                 )
 
         if self._animations:
-            key = ("walk" if self.moving else "idle", self.facing)
-            if key != self._current_key:
-                self._current_key = key
-                self._animations[key].reset()
-            self._animations[key].update(dt)
+            self._update_animation(dt)
+
+    def scripted_walk_toward(
+        self,
+        target_x: float,
+        target_y: float,
+        speed: float,
+        dt: float,
+    ) -> bool:
+        """Walk an authored straight lane without reading player input."""
+        import math
+
+        dx = target_x - self.x
+        dy = target_y - self.y
+        distance = math.hypot(dx, dy)
+        if distance <= 1e-4:
+            self.x, self.y = target_x, target_y
+            self.moving = False
+            self._update_animation(dt)
+            return True
+        step = min(distance, speed * dt)
+        self._update_facing(dx, dy)
+        self.x += dx / distance * step
+        self.y += dy / distance * step
+        reached = step >= distance
+        if reached:
+            self.x, self.y = target_x, target_y
+        self.moving = step > 0.0 and not reached
+        self._update_animation(dt)
+        return reached
+
+    def _update_animation(self, dt: float) -> None:
+        if not self._animations:
+            return
+        key = ("walk" if self.moving else "idle", self.facing)
+        if key != self._current_key:
+            self._current_key = key
+            self._animations[key].reset()
+        self._animations[key].update(dt)
 
     @property
     def jumping(self) -> bool:

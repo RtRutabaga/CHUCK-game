@@ -196,6 +196,17 @@ def draw_ship_ocean(surface, variant: int, frame: int) -> None:
             surface.set_at((x, upper + 1), SEA)
 
 
+def draw_ship_plank(surface, variant: int, _frame: int) -> None:
+    """One narrow north-south board, transparent over the animated sea."""
+    pygame.draw.rect(surface, DARK, pygame.Rect(2, 0, 12, 16))
+    pygame.draw.rect(surface, WOOD, pygame.Rect(3, 0, 10, 16))
+    pygame.draw.line(surface, HL_FLOOR, (4, 0), (4, 15), 1)
+    pygame.draw.line(surface, LINE, (11, 0), (11, 15), 1)
+    brace_y = 4 + variant * 7
+    pygame.draw.line(surface, LINE, (3, brace_y), (12, brace_y), 2)
+    surface.set_at((9 - variant * 3, 8 + variant * 4), HL_FLOOR)
+
+
 def _rail_base(surface) -> None:
     draw_ship_floor(surface, 0, 0)
 
@@ -262,6 +273,7 @@ DRAW = {
     "ship_door_s_bottom_right": draw_ship_door_s_bottom_right,
     "ship_ladder": draw_ship_ladder,
     "ship_ocean": draw_ship_ocean,
+    "ship_plank": draw_ship_plank,
     "ship_rail_h": draw_ship_rail_h,
     "ship_rail_v": draw_ship_rail_v,
     "ship_rail_nw": draw_ship_rail_nw,

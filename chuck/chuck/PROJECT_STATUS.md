@@ -1217,8 +1217,16 @@ bounded sessions.
         the crew's exact authored objection, and his refusal. Completion saves
         at the deck Ashtray and CONTINUE restores the captain without replaying
         the exchange (session 163).
-11. [ ] Add the physical plank and stage the ordered walk toward it; stop
-        before moving Astral Sea/Hell blocks or the kick/fall transition.
+11. [x] Added a staged eight-tile starboard plank that replaces one rail
+        section and projects as a narrow walkable strip over animated ocean.
+        After the confrontation, the captain and objecting pirate flank the
+        approach while Chuck takes a short input-locked, normally animated
+        wooden-footstep walk to the rail. Control returns one step before the
+        plank; solid ocean constrains its sides and current endpoint. Saved
+        confronted state restores the complete tableau without replaying the
+        procession (session 164).
+12. [ ] Add the moving Astral Sea and Hell blocks around the staged plank,
+        including Jeffries' warning; stop before the captain's kick and fall.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 
