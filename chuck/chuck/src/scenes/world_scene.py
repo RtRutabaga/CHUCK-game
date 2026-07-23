@@ -590,7 +590,7 @@ class WorldScene(Scene):
         for cat in self.hazards:
             cat.update(dt)
         for rat in self.rats:
-            rat.update(dt)
+            rat.update(dt, self.player)
         for kind, position in self.undead_release.release_for_row(
             self._player_tile()[1]
         ):
@@ -1417,10 +1417,13 @@ class WorldScene(Scene):
                     int(cx // config.TILE_SIZE),
                     int(cy // config.TILE_SIZE),
                 )
-                rat.configure_patrol(
-                    self.tilemap,
-                    blocked_spawn_tiles=rat_spawn_tiles - {rat_tile},
-                )
+                if self.map_name == "ship_lower_hold":
+                    rat.configure_attack_chase(self.tilemap)
+                else:
+                    rat.configure_patrol(
+                        self.tilemap,
+                        blocked_spawn_tiles=rat_spawn_tiles - {rat_tile},
+                    )
                 self.rats.append(rat)
                 if self.map_name == "sewer" and rat_tile in tutorial_tiles:
                     self._scratch_tutorial_rats.append(rat)

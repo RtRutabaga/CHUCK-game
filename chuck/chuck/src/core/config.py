@@ -165,6 +165,10 @@ RAT_HITBOX_H = 6
 RAT_SANITY_DAMAGE = 10
 RAT_PATROL_SPEED = 12.0
 RAT_PATROL_RANGE = 6.0
+# Hold rats use the temple snakes' notice-and-pursue pressure while retaining
+# their ordinary one-scratch durability and contact damage.
+HOLD_RAT_CHASE_SPEED = 32.0
+HOLD_RAT_NOTICE_RANGE = 96.0
 
 # Chult undead share the established human footprint and sprite scale. Both
 # are deliberately durable; their low speeds leave room to evade them.

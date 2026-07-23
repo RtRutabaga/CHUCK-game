@@ -138,11 +138,15 @@ def test_ladder_transition_and_rat_respawn_use_existing_architecture() -> None:
         assert hold._player_tile() == (19, 5)
         assert hold.player.facing == "down"
         assert len(hold.rats) == 16
+        assert all(rat.attack_chase_enabled for rat in hold.rats)
+        assert all(rat.tilemap is hold.tilemap for rat in hold.rats)
+        assert not any(rat.patrolling for rat in hold.rats)
 
         hold.rats[0].alive = False
         hold.rats = [rat for rat in hold.rats if rat.alive]
         hold._reset_enemies()
         assert len(hold.rats) == 16
+        assert all(rat.attack_chase_enabled for rat in hold.rats)
 
         hold.player.x = 19 * config.TILE_SIZE + 4
         hold.player.y = 3 * config.TILE_SIZE + 4

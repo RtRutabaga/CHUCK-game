@@ -3,11 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `0210eaa` (human-scale ship ladders)
-- Current work: moving Astral/Hell plank reveal (session 168)
+- Base commit before this pass: `2d3f934` (moving Astral/Hell plank reveal)
+- Current work: lower-hold rat pursuit (session 169)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Gave only the lower-hold rats the temple snakes' readable attack-chase
+behavior without changing the sewer tutorial encounters:
+
+- Added a reusable opt-in rat chase mode with the snakes' 96-pixel notice
+  radius and 32 px/s pursuit speed.
+- Pursuit uses the shared swept tile collision and treats fall hazards as
+  solid, so rats chase through valid cargo lanes without crossing walls or
+  unsupported hazards.
+- All sixteen lower-hold rat markers enable the chase mode when the room is
+  built or reset. Their existing contact Sanity damage and one-scratch defeat
+  behavior are unchanged.
+- Sewer and other ordinary rats retain their established short horizontal
+  patrol configuration.
+- Focused combat, lower-hold reset, sewer reset, and temple-snake regression
+  checks pass. All 63 standalone test scripts pass, compilation is clean, and
+  the game reaches and cleanly exits its running title loop.
+
+## Previous Pass (session 168, commit 2d3f934)
 
 Implemented the reality-breakup reveal around the staged plank without
 beginning the captain's kick, fall, or Phase 8:

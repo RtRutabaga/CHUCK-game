@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 168 (moving Astral/Hell plank reveal).
+Updated: session 169 (lower-hold rat pursuit).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1145,7 +1145,11 @@ bounded sessions.
        shelves/jars that spill 20-cigarette cartons, crates, barrels, sixteen
        ordinary rats, one physical Ashtray, and
        development-visible `Ship Hold` through the shared checkpoint loader
-       (sessions 148/150).
+       (sessions 148/150). The hold rats now use the temple snakes' 96-pixel
+       notice-and-chase pattern at 32 px/s, with swept wall/fall-hazard
+       collision and the existing one-scratch defeat/contact-Sanity behavior.
+       Sewer rats retain their established short patrols, and death/reset
+       restores all sixteen hold pursuers (session 169).
 4. [x] Added a reversible 40x26 working galley through the arrival room's west
        open passage, with counters and storage forming escape lanes, one
        physical Ashtray, development-visible `Ship Galley`, and uninterrupted

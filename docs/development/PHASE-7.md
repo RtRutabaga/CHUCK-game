@@ -16,12 +16,13 @@ Implemented so far:
   phase. The unused south-wall opening has been restored to solid hull.
 - The ladder leads to a reversible cargo-filled lower hold with reused pantry
   shelves and jars that scratch-break into cigarette cartons, sixteen ordinary
-  rats, uninterrupted ship music, one physical Ashtray, and shared-loader
-  `Ship Hold` development entry. Approaching any live ship ladder opens a
-  direction-correct `Climb up ladder?` or `Climb down ladder?` YES/NO prompt;
-  NO closes silently and YES follows the existing named transition. Each
-  ladder is a continuous 16×32 structure matching the human crew's 16×30
-  sprite scale rather than a repeated Chuck-height tile.
+  rats that notice and chase Chuck like the temple snakes, uninterrupted ship
+  music, one physical Ashtray, and shared-loader `Ship Hold` development
+  entry. Approaching any live ship ladder opens a direction-correct `Climb up
+  ladder?` or `Climb down ladder?` YES/NO prompt; NO closes silently and YES
+  follows the existing named transition. Each ladder is a continuous 16×32
+  structure matching the human crew's 16×30 sprite scale rather than a
+  repeated Chuck-height tile.
 - The west open passage leads to a reversible working galley with one physical
   Ashtray. The pirate chef gives the authored warning, then begins a
   collision-aware, animated cleaver pursuit; Chuck cannot clear him by

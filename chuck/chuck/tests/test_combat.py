@@ -87,6 +87,32 @@ def test_rat_stays_put_beside_objects_fall_zones_or_other_rats() -> None:
         assert not rat.patrolling and rat.x == start
 
 
+def test_attack_chase_rat_notices_pursues_and_respects_walls() -> None:
+    class Target:
+        x = 52
+        y = 21
+        width = config.PLAYER_HITBOX_W
+        height = config.PLAYER_HITBOX_H
+
+    rat = SewerRat(24, 24)
+    rat.configure_attack_chase(_map("#####\n#ddd#\n#####\n"))
+    start = rat.x
+    rat.update(0.25, Target())
+    assert rat.attack_chase_enabled and not rat.patrolling
+    assert rat.x > start
+
+    rat = SewerRat(24, 24)
+    rat.configure_attack_chase(_map("#####\n#d#d#\n#####\n"))
+    rat.update(1.0, Target())
+    assert rat.x + rat.width <= 2 * config.TILE_SIZE
+
+    far_target = Target()
+    far_target.x = rat.x + config.HOLD_RAT_NOTICE_RANGE + 20
+    before = (rat.x, rat.y)
+    rat.update(0.25, far_target)
+    assert (rat.x, rat.y) == before
+
+
 def test_sewer_has_three_rats_in_a_one_tile_choke_after_gap() -> None:
     m = TileMap(config.MAPS_DIR / "sewer.txt")
     rats = [(int(x // config.TILE_SIZE), int(y // config.TILE_SIZE))
