@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 152 (ship crew quarters + seated pirate).
+Updated: session 153 (captain's cabin + one-time leaf chest).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -31,14 +31,15 @@ This file is required by the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the 21 authored Ashtrays have
+  retain the established local retry behavior; the 22 authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
   development-only checkpoint saves disable CONTINUE without crashing. Durable
   flags are `sewer_completed`, which restores the tavern's open exterior,
   `chult_reached`, which restores the playable Chult state, and
-  `crew_pirate_met`, which preserves the first/repeat pirate conversation
+  `crew_pirate_met`, which preserves the first/repeat pirate conversation;
+  `captain_chest_opened` preserves the one-time ship treasure and its open art
 - Dialogue: JSON data files, typewriter box, eight NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
@@ -996,11 +997,12 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build the Phase 7 captain's cabin through the crew quarters' established open
-east passage. Add the treasure chest and one-time Premium Buhetian Halfling
-Leaf reward (+40 cigarettes), one physical Ashtray and shared-loader entry,
-and preserve uninterrupted ship music. Do not begin the exterior deck or
-captain accusation sequence in the same pass.
+Build the Phase 7 exterior deck foundation through the crew quarters' existing
+ladder, using `docs/design/pirate ship.png` as the authoritative composition
+reference. Establish the large deck silhouette, animated ocean, subtle ship
+rocking, one physical Ashtray, shared-loader entry, and uninterrupted shanty;
+defer the deck's full pirate cast and ending accusation sequence to later
+bounded sessions.
 
 ## Also open
 
@@ -1159,7 +1161,14 @@ captain accusation sequence in the same pass.
        him sets the durable `crew_pirate_met` flag, which survives checkpoint
        save and CONTINUE. The visible deck ladder and open captain-cabin route
        are authored boundaries but remain inert (session 152).
-6. [ ] Build the captain's cabin and one-time +40 cigarette chest next.
+6. [x] Added a reversible 36x26 captain's cabin through the crew room's open
+       east doorway, with north-wall portholes, oversized human furniture, one
+       physical Ashtray, development-visible `Ship Captain Cabin`, and the
+       uninterrupted shanty. Its two-frame brass-bound chest grants Premium
+       Buhetian Halfling Leaf (+40 cigarettes) once, switches permanently to
+       an open/empty interaction, banks the paired reward against death, and
+       persists both flag and count through save/CONTINUE (session 153).
+7. [ ] Build the exterior deck foundation and ship-motion language next.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

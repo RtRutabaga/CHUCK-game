@@ -48,7 +48,7 @@ def test_crew_quarters_contains_the_authored_room_and_one_checkpoint() -> None:
     assert anchor.saveable and not anchor.development_visible
 
 
-def test_east_compartment_passage_is_reversible_but_future_routes_are_inert() -> None:
+def test_east_compartment_passage_is_reversible_and_deck_route_is_inert() -> None:
     into_quarters = AREA_WALK_EXITS[("ship_deck", "┃")]
     assert (into_quarters.destination, into_quarters.arrival) == (
         MAP_NAME, "from_ship_room"
@@ -58,7 +58,8 @@ def test_east_compartment_passage_is_reversible_but_future_routes_are_inert() ->
         "ship_deck", "from_crew_quarters"
     )
     assert (MAP_NAME, "ℓ") not in AREA_WALK_EXITS
-    assert (MAP_NAME, "┃") not in AREA_WALK_EXITS
+    cabin = AREA_WALK_EXITS[(MAP_NAME, "┃")]
+    assert cabin.destination == "ship_captain_cabin"
 
 
 def test_seated_pirate_uses_first_then_repeat_dialogue_and_animates() -> None:

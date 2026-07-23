@@ -21,6 +21,7 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "sewer_completed",
     "chult_reached",
     "crew_pirate_met",
+    "captain_chest_opened",
 })
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
@@ -310,6 +311,24 @@ CHECKPOINTS = (
     CheckpointDefinition(
         "ship_deck_crew_return", "Ship Crew Return", "ship_deck",
         arrival="from_crew_quarters", facing="left",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "ship_captain_cabin", "Ship Captain Cabin", "ship_captain_cabin",
+        arrival="from_crew_quarters", facing="right",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "ship_captain_anchor", "Ship Captain Ashtray",
+        "ship_captain_cabin", position=(100.0, 309.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "ship_crew_captain_return", "Ship Captain Return",
+        "ship_crew_quarters", arrival="from_captain_cabin", facing="left",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         development_visible=False, runtime_entry=True,
     ),

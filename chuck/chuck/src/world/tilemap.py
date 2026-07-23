@@ -387,6 +387,8 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="ship_hammock", under="="),
     "ɱ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="ship_round_table", under="="),
+    "ȼ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_captain_chest", under="="),
     # Lower-hold reuse of the pantry's carton-filled breakable shelves/jars,
     # with ship planks beneath instead of pantry boards.
     "ƞ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
@@ -530,6 +532,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ҳ": MarkerDef(kind="boundary:captain_cabin", under="┃"),
     "Һ": MarkerDef(kind="boundary:ship_deck", under="ℓ"),
     "Ҵ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
+    "Ӏ": MarkerDef(kind="arrival:from_captain_cabin", under="="),
+    "Ӂ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
+    "ӂ": MarkerDef(kind="anchor:ship_captain_anchor", under="="),
     # The rubble crawlspace's "Enter crevice?" prompt (session 141).
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
 }

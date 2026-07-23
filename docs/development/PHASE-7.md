@@ -25,8 +25,12 @@ Implemented so far:
 - The east open passage leads to reversible crew quarters with hanging bunks,
   an oversized round mess table, one physical Ashtray, and a seated pirate who
   sways with his mug. His first greeting and shorter repeat line are selected
-  by a durable conversation flag. The deck hatch and open captain-cabin
-  passage are visible but remain inert pending their dedicated sessions.
+  by a durable conversation flag. The deck hatch remains visible but inert;
+  the open captain-cabin passage is now connected to its finished room.
+- The crew quarters' east opening now enters the captain's cabin. Its oversized
+  chest grants Premium Buhetian Halfling Leaf (+40 cigarettes) exactly once,
+  stays visibly open afterward, and persists that state through the cabin's
+  Ashtray and CONTINUE. The captain and accusation sequence remain unstarted.
 - `docs/design/pirate ship.png` is the authoritative composition reference
   for the later exterior deck map; that deck has not been built yet.
 
@@ -238,7 +242,7 @@ Do not fully explain the collided worlds.
 -   [x] Lower hold contains rats and reused pantry assets.
 -   [x] Galley chef chases Chuck.
 -   [x] Crew quarters contain the seated pirate.
--   [ ] Captain's chest grants Premium Buhetian Halfling Leaf (+40
+-   [x] Captain's chest grants Premium Buhetian Halfling Leaf (+40
     cigarettes).
 -   [ ] Pirate animations are richer than previous NPCs.
 -   [ ] NPC dialogue changes after first conversations.

@@ -14,6 +14,10 @@ CANVAS_DARK = (95, 75, 62, 255)
 CANVAS = (151, 126, 96, 255)
 CANVAS_LIGHT = (184, 158, 119, 255)
 ROPE = (184, 149, 91, 255)
+BRASS = (183, 142, 58, 255)
+BRASS_LIGHT = (225, 190, 91, 255)
+DARK = (31, 24, 22, 255)
+LEAF = (91, 105, 55, 255)
 
 
 def hammock() -> Image.Image:
@@ -54,6 +58,35 @@ def round_table() -> Image.Image:
     return image
 
 
+def captain_chest(opened: bool) -> Image.Image:
+    """A broad brass-bound sea chest, closed or permanently opened."""
+    image = Image.new("RGBA", (32, 24), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    if opened:
+        draw.rectangle((2, 0, 29, 7), fill=WOOD_DARK)
+        draw.rectangle((3, 1, 28, 5), fill=WOOD)
+        draw.line((3, 6, 28, 6), fill=WOOD_LIGHT, width=1)
+        draw.rectangle((2, 7, 29, 12), fill=DARK)
+        # Muted wrapped leaf bundles remain visible in the deep chest.
+        for x in (5, 11, 17, 23):
+            draw.rectangle((x, 8, x + 4, 11), fill=LEAF)
+            draw.line((x + 2, 8, x + 2, 11), fill=ROPE, width=1)
+    else:
+        draw.rounded_rectangle((1, 3, 30, 11), radius=4, fill=WOOD_DARK)
+        draw.rounded_rectangle((2, 3, 29, 9), radius=3, fill=WOOD)
+        draw.line((4, 4, 27, 4), fill=WOOD_LIGHT, width=1)
+    draw.rectangle((1, 11, 30, 22), fill=WOOD)
+    draw.rectangle((1, 19, 30, 22), fill=WOOD_DARK)
+    draw.line((2, 12, 29, 12), fill=WOOD_LIGHT, width=1)
+    for x in (5, 25):
+        draw.rectangle((x, 3 if not opened else 7, x + 2, 22), fill=BRASS)
+        draw.line((x + 1, 4 if not opened else 8, x + 1, 21),
+                  fill=BRASS_LIGHT, width=1)
+    draw.rectangle((14, 11, 18, 16), fill=BRASS)
+    draw.rectangle((15, 12, 17, 14), fill=DARK)
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, image in (
@@ -63,6 +96,14 @@ def main() -> None:
         path = OUT / f"{name}.png"
         image.save(path)
         print(f"Wrote {path}")
+    closed = captain_chest(False)
+    opened = captain_chest(True)
+    sheet = Image.new("RGBA", (64, 24), TRANSPARENT)
+    sheet.paste(closed, (0, 0))
+    sheet.paste(opened, (32, 0))
+    path = OUT / "ship_captain_chest.png"
+    sheet.save(path)
+    print(f"Wrote {path}")
 
 
 if __name__ == "__main__":

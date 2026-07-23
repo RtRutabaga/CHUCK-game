@@ -302,6 +302,7 @@ MAP_TILESET: dict[str, str] = {
     "ship_lower_hold": "ship",
     "ship_galley": "ship",
     "ship_crew_quarters": "ship",
+    "ship_captain_cabin": "ship",
 }
 
 

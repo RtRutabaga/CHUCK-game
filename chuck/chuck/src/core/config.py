@@ -138,6 +138,7 @@ CIGARETTE_SANITY_RESTORE = 25  # TODO: tune during Phase One playtesting
 # exactly this many cigarettes: sanity clamps at full, and the
 # overall-game cigarette ledger (session 128) banks the full 20.
 CARTON_CIGARETTE_COUNT = 20
+HALFLING_LEAF_CIGARETTES = 40
 
 # Seconds of invulnerability after taking a hit, so one cat brush
 # doesn't drain everything in a single overlap.

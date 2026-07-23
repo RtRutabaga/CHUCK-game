@@ -19,6 +19,7 @@ import pygame
 from src.core import config
 from src.entities.anchor import AstralAnchor
 from src.entities.battle_actor import BattleActor
+from src.entities.captain_chest import CaptainChest
 from src.entities.breakable_grass import BreakableGrass
 from src.entities.breakable_urn import BreakableUrn
 from src.entities.jar_shelf import PantryJar, PantryJarShelf
@@ -246,11 +247,18 @@ class WorldScene(Scene):
         self.last_choice: str | None = None  # what Chuck last decided
         # Temple urns, pantry jar shelves, and pantry floor jars are
         # living breakables (see below), not static props.
-        self.props = [
-            Prop(kind, col, row, self.game.assets)
-            for kind, col, row in self.tilemap.prop_tiles
-            if kind not in ("temple_urn", "pantry_shelf", "grain_sack")
-        ]
+        self.props = []
+        for kind, col, row in self.tilemap.prop_tiles:
+            if kind in ("temple_urn", "pantry_shelf", "grain_sack"):
+                continue
+            if kind == "ship_captain_chest":
+                prop = CaptainChest(
+                    col, row, self.game.assets,
+                    self.game.progress, self.game.cigarettes,
+                )
+            else:
+                prop = Prop(kind, col, row, self.game.assets)
+            self.props.append(prop)
         self.pickups: list[Cigarette] = []
         self.breakables: list[BreakableGrass | BreakableUrn] = []
         # Each dressed urn becomes a scratchable entity concealing a
@@ -729,9 +737,10 @@ class WorldScene(Scene):
                     )
                     return
                 # NPCs turn to face Chuck; props just talk.
+                interact = getattr(target, "interact", None)
                 dialogue_id = (
-                    target.interact(self.player)
-                    if isinstance(target, NPC)
+                    interact(self.player)
+                    if callable(interact)
                     else target.dialogue_id
                 )
                 self.game.scenes.push(
