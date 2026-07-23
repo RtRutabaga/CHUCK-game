@@ -1,4 +1,4 @@
-"""Phase 7 captain cabin, one-time chest reward, save, and transitions."""
+"""Phase 7 captain cabin, physical chest reward, save, and transitions."""
 
 import os
 from pathlib import Path
@@ -10,9 +10,8 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 from src.core import config
 from src.core.game import Game
 from src.entities.captain_chest import CaptainChest
-from src.scenes.dialogue_scene import DialogueScene
+from src.entities.pickup import GoldenCigaretteCarton
 from src.systems.checkpoints import CHECKPOINT_BY_ID
-from src.systems.dialogue import DialogueSystem
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import tileset_for
 from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
@@ -57,13 +56,7 @@ def test_cabin_passage_is_reversible_through_the_existing_open_doorway() -> None
                for kind, _position in crew.object_spawns)
 
 
-def test_chest_interaction_grants_exact_reward_once_and_banks_death_state() -> None:
-    dialogue = DialogueSystem()
-    assert dialogue.get("captain_chest_reward") == [
-        "Premium Buhetian Halfling Leaf.", "40 cigarettes."
-    ]
-    assert dialogue.get("captain_chest_empty") == ["Empty."]
-
+def test_interacting_animates_chest_then_drops_physical_gold_carton() -> None:
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint("ship_captain_cabin")
@@ -76,13 +69,26 @@ def test_chest_interaction_grants_exact_reward_once_and_banks_death_state() -> N
         scene.player.facing = "up"
         game.input._actions_just_pressed.add("interact")
         scene.update(0.0)
-        assert isinstance(game.scenes.current, DialogueScene)
+        game.input._actions_just_pressed.discard("interact")
+        assert game.scenes.current is scene
         assert chest.opened
         assert game.progress.has("captain_chest_opened")
-        assert game.cigarettes.total == before + config.HALFLING_LEAF_CIGARETTES
+        assert not scene.pickups
+        assert game.cigarettes.total == before
 
-        game.scenes.pop()
-        assert chest.interact(scene.player) == "captain_chest_empty"
+        scene.update(chest.opening_duration)
+        assert len(scene.pickups) == 1
+        carton = scene.pickups[0]
+        assert isinstance(carton, GoldenCigaretteCarton)
+        assert carton.cigarette_count == 40
+        # "In front" is the open floor immediately south of the chest.
+        assert carton.y >= chest.y + chest.height
+
+        scene.player.x = carton.x
+        scene.player.y = carton.y
+        scene.update(0.0)
+        assert not scene.pickups
+        assert game.progress.has("captain_chest_carton_collected")
         assert game.cigarettes.total == before + config.HALFLING_LEAF_CIGARETTES
         game.cigarettes.rollback()
         assert game.cigarettes.total == before + config.HALFLING_LEAF_CIGARETTES
@@ -90,7 +96,32 @@ def test_chest_interaction_grants_exact_reward_once_and_banks_death_state() -> N
         game._shutdown()
 
 
-def test_open_chest_and_forty_cigarettes_persist_through_continue() -> None:
+def test_scratch_opens_chest_without_dialogue_or_duplicate_drop() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("ship_captain_cabin")
+        chest = next(prop for prop in scene.props
+                     if isinstance(prop, CaptainChest))
+        scene.player.x = chest.x + chest.width / 2 - scene.player.width / 2
+        scene.player.y = chest.y + chest.height + 1
+        scene.player.facing = "up"
+        game.input._actions_just_pressed.add("scratch")
+        scene.update(0.0)
+        game.input._actions_just_pressed.discard("scratch")
+        assert game.scenes.current is scene
+        assert chest.opened
+
+        scene.update(chest.opening_duration)
+        assert len(scene.pickups) == 1
+        chest.on_scratched()
+        chest.interact(scene.player)
+        scene.update(chest.opening_duration)
+        assert len(scene.pickups) == 1
+    finally:
+        game._shutdown()
+
+
+def test_collected_gold_carton_and_open_chest_persist_through_continue() -> None:
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "save.json"
         game = Game(save_path=path)
@@ -99,6 +130,12 @@ def test_open_chest_and_forty_cigarettes_persist_through_continue() -> None:
             chest = next(prop for prop in scene.props
                          if isinstance(prop, CaptainChest))
             chest.interact(scene.player)
+            scene.update(chest.opening_duration)
+            carton = next(pickup for pickup in scene.pickups
+                          if isinstance(pickup, GoldenCigaretteCarton))
+            scene.player.x = carton.x
+            scene.player.y = carton.y
+            scene.update(0.0)
             assert game.checkpoints.activate_checkpoint(
                 "ship_captain_anchor", scene.sanity.current
             )
@@ -110,12 +147,42 @@ def test_open_chest_and_forty_cigarettes_persist_through_continue() -> None:
             scene = resumed.checkpoints.continue_game()
             assert scene.map_name == MAP_NAME
             assert resumed.progress.has("captain_chest_opened")
+            assert resumed.progress.has("captain_chest_carton_collected")
             assert resumed.cigarettes.total == config.HALFLING_LEAF_CIGARETTES
             chest = next(prop for prop in scene.props
                          if isinstance(prop, CaptainChest))
             assert chest.opened
-            assert chest.interact(scene.player) == "captain_chest_empty"
+            assert not any(isinstance(pickup, GoldenCigaretteCarton)
+                           for pickup in scene.pickups)
+            assert chest.interact(scene.player) is None
             assert resumed.cigarettes.total == config.HALFLING_LEAF_CIGARETTES
+        finally:
+            resumed._shutdown()
+
+
+def test_open_uncollected_chest_reconstructs_carton_on_continue() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "save.json"
+        game = Game(save_path=path)
+        try:
+            scene = game.checkpoints.load_checkpoint("ship_captain_cabin")
+            chest = next(prop for prop in scene.props
+                         if isinstance(prop, CaptainChest))
+            chest.interact(scene.player)
+            scene.update(chest.opening_duration)
+            assert game.checkpoints.activate_checkpoint(
+                "ship_captain_anchor", scene.sanity.current
+            )
+        finally:
+            game._shutdown()
+
+        resumed = Game(save_path=path)
+        try:
+            scene = resumed.checkpoints.continue_game()
+            assert resumed.progress.has("captain_chest_opened")
+            assert not resumed.progress.has("captain_chest_carton_collected")
+            assert sum(isinstance(pickup, GoldenCigaretteCarton)
+                       for pickup in scene.pickups) == 1
         finally:
             resumed._shutdown()
 

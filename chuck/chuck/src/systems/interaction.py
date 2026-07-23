@@ -54,12 +54,13 @@ def find_target(probe, player_box, npcs, props):
         if in_reach(npc, probe, player_box):
             return npc
     for prop in props:
-        has_something_to_say = (
+        can_respond = (
             prop.dialogue_id is not None
             or getattr(prop, "choice_id", None) is not None
+            or callable(getattr(prop, "interact", None))
         )
-        if not has_something_to_say:
-            continue  # mute scenery
+        if not can_respond:
+            continue  # mute, inert scenery
         if in_reach(prop, probe, player_box):
             return prop
     return None

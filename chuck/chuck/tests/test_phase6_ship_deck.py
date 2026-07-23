@@ -2,8 +2,8 @@
 
 Chuck crawls out of the rubble through the narrow crawlspace and emerges
 into a cramped wooden compartment. North-wall portholes continue the
-cutscene's sea view, while human-scale side doors and a southern ladder
-establish the Phase 7 routes.
+cutscene's sea view, while human-scale side doors and a floor ladder
+establish the three live Phase 7 routes.
 """
 
 import os
@@ -41,13 +41,13 @@ def test_the_deck_is_a_wooden_compartment_with_portholes() -> None:
     # The portholes are solid hull, not walkable openings.
     from src.world.tilemap import TILE_DEFS
     assert TILE_DEFS["Ø"].solid
-    # Dark open doorway recesses occupy every non-porthole wall and are
-    # walkable at the threshold; the southern ladder is the first live route.
+    # The two side recesses are live routes. The unused south recess has been
+    # restored to ordinary solid hull; the floor ladder remains live.
     assert "╭" in tilemap._grid[5] and "╰" in tilemap._grid[7]
     assert "╮" in tilemap._grid[5] and "╯" in tilemap._grid[7]
-    assert "┌┬┐" in tilemap._grid[11]
-    assert "├┼┤" in tilemap._grid[12]
-    for char in "╭│╰╮┃╯┌┬┐├┼┤":
+    assert tilemap._grid[11] == "#" * tilemap.width_tiles
+    assert tilemap._grid[12] == "#" * tilemap.width_tiles
+    for char in "╭│╰╮┃╯":
         assert not TILE_DEFS[char].solid
     assert sum(row.count("ℓ") for row in tilemap._grid) == 2
     assert not any(k in {"rat", "zombie", "skeleton", "raptor",

@@ -61,19 +61,27 @@ def round_table() -> Image.Image:
     return image
 
 
-def captain_chest(opened: bool) -> Image.Image:
-    """A broad brass-bound sea chest, closed or permanently opened."""
+def captain_chest(stage: int) -> Image.Image:
+    """A broad brass-bound sea chest across four opening stages."""
     image = Image.new("RGBA", (32, 24), TRANSPARENT)
     draw = ImageDraw.Draw(image)
-    if opened:
+    if stage == 3:
         draw.rectangle((2, 0, 29, 7), fill=WOOD_DARK)
         draw.rectangle((3, 1, 28, 5), fill=WOOD)
         draw.line((3, 6, 28, 6), fill=WOOD_LIGHT, width=1)
         draw.rectangle((2, 7, 29, 12), fill=DARK)
-        # Muted wrapped leaf bundles remain visible in the deep chest.
-        for x in (5, 11, 17, 23):
-            draw.rectangle((x, 8, x + 4, 11), fill=LEAF)
-            draw.line((x + 2, 8, x + 2, 11), fill=ROPE, width=1)
+    elif stage == 2:
+        draw.polygon(((2, 2), (29, 2), (27, 9), (4, 9)),
+                     fill=WOOD_DARK)
+        draw.polygon(((4, 3), (27, 3), (25, 7), (6, 7)), fill=WOOD)
+        draw.line((5, 3, 26, 3), fill=WOOD_LIGHT, width=1)
+        draw.rectangle((2, 8, 29, 12), fill=DARK)
+    elif stage == 1:
+        draw.polygon(((2, 3), (29, 3), (28, 9), (3, 9)),
+                     fill=WOOD_DARK)
+        draw.polygon(((3, 4), (28, 4), (27, 7), (4, 7)), fill=WOOD)
+        draw.line((4, 4, 27, 4), fill=WOOD_LIGHT, width=1)
+        draw.rectangle((2, 8, 29, 12), fill=DARK)
     else:
         draw.rounded_rectangle((1, 3, 30, 11), radius=4, fill=WOOD_DARK)
         draw.rounded_rectangle((2, 3, 29, 9), radius=3, fill=WOOD)
@@ -82,8 +90,9 @@ def captain_chest(opened: bool) -> Image.Image:
     draw.rectangle((1, 19, 30, 22), fill=WOOD_DARK)
     draw.line((2, 12, 29, 12), fill=WOOD_LIGHT, width=1)
     for x in (5, 25):
-        draw.rectangle((x, 3 if not opened else 7, x + 2, 22), fill=BRASS)
-        draw.line((x + 1, 4 if not opened else 8, x + 1, 21),
+        lid_top = 3 if stage == 0 else (7 if stage == 3 else 8)
+        draw.rectangle((x, lid_top, x + 2, 22), fill=BRASS)
+        draw.line((x + 1, lid_top + 1, x + 1, 21),
                   fill=BRASS_LIGHT, width=1)
     draw.rectangle((14, 11, 18, 16), fill=BRASS)
     draw.rectangle((15, 12, 17, 14), fill=DARK)
@@ -180,11 +189,10 @@ def main() -> None:
         path = OUT / f"{name}.png"
         image.save(path)
         print(f"Wrote {path}")
-    closed = captain_chest(False)
-    opened = captain_chest(True)
-    sheet = Image.new("RGBA", (64, 24), TRANSPARENT)
-    sheet.paste(closed, (0, 0))
-    sheet.paste(opened, (32, 0))
+    frames = [captain_chest(stage) for stage in range(4)]
+    sheet = Image.new("RGBA", (32 * len(frames), 24), TRANSPARENT)
+    for index, frame in enumerate(frames):
+        sheet.paste(frame, (index * 32, 0))
     path = OUT / "ship_captain_chest.png"
     sheet.save(path)
     print(f"Wrote {path}")

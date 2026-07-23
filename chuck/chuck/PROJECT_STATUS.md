@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 153 (captain's cabin + one-time leaf chest).
+Updated: session 165 (arrival wall + physical golden chest reward).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -39,7 +39,9 @@ This file is required by the project rules and updated every session.
   flags are `sewer_completed`, which restores the tavern's open exterior,
   `chult_reached`, which restores the playable Chult state, and
   `crew_pirate_met`, which preserves the first/repeat pirate conversation;
-  `captain_chest_opened` preserves the one-time ship treasure and its open art
+  `captain_chest_opened` preserves the captain chest's opened art and later
+  confrontation gate, while `captain_chest_carton_collected` prevents its
+  physical golden 40-cigarette carton from duplicating after collection
 - Dialogue: JSON data files, typewriter box, eight NPCs; choice
   options can speak, navigate, or close silently
 - Audio: pure-stdlib engine (src/audio: synth, instruments,
@@ -1225,6 +1227,13 @@ bounded sessions.
         plank; solid ocean constrains its sides and current endpoint. Saved
         confronted state restores the complete tableau without replaying the
         procession (session 164).
+   - [x] Restored the arrival compartment's unused south doorway to ordinary
+         solid hull, leaving only its three real routes. Replaced the captain
+         chest's direct dialogue reward with a four-frame opening action
+         triggered by interact or scratch; it now drops a physical golden
+         40-cigarette carton in front, banks the reward on collection, and
+         restores opened/uncollected/collected states without duplication
+         (session 165).
 12. [ ] Add the moving Astral Sea and Hell blocks around the staged plank,
         including Jeffries' warning; stop before the captain's kick and fall.
 

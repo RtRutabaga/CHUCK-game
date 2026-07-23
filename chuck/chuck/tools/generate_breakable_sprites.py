@@ -55,11 +55,31 @@ def cigarette_carton() -> Image.Image:
     return image
 
 
+def golden_cigarette_carton() -> Image.Image:
+    """The captain's conspicuous forty-cigarette carton."""
+    image = Image.new("RGBA", (12, 8), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    gold_dark = (126, 82, 19, 255)
+    gold = (221, 170, 43, 255)
+    gold_light = (255, 222, 101, 255)
+    band = (118, 45, 38, 255)
+    paper = (248, 239, 196, 255)
+    draw.rectangle((0, 1, 11, 7), fill=gold, outline=gold_dark)
+    draw.line((1, 2, 10, 2), fill=gold_light, width=1)
+    draw.rectangle((1, 4, 10, 5), fill=band)
+    draw.line((1, 6, 10, 6), fill=gold_dark, width=1)
+    for x in (2, 5, 8):
+        draw.point((x, 0), fill=paper)
+        draw.point((x + 1, 0), fill=gold_light)
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, image in (
         ("breakable_grass", breakable_grass()),
         ("cigarette_carton", cigarette_carton()),
+        ("golden_cigarette_carton", golden_cigarette_carton()),
     ):
         path = OUT / f"{name}.png"
         image.save(path)

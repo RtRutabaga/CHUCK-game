@@ -23,6 +23,7 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "crew_pirate_met",
     "pirate_chef_met",
     "captain_chest_opened",
+    "captain_chest_carton_collected",
     "deck_concertina_met",
     "deck_cheering_met",
     "deck_dancer_met",

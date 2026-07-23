@@ -1,7 +1,6 @@
 ; PHASE 7 - ARRIVAL COMPARTMENT (26x13 tiles).
 ; The escape cutscene ends here. Portholes are confined to the north hull;
-; dark open doorway recesses fill the other three walls for future routes.
-; The southern floor ladder leads to the first playable Phase 7 map.
+; the west/east doorway recesses and floor ladder are the three live routes.
 ##########################
 ##########################
 #####Ø####Ø####Ø####Ø#####
@@ -13,5 +12,5 @@
 #========================#
 #===========ҜҊ===========#
 #===========ℓℓ===========#
-#################┌┬┐######
-#################├┼┤######
+##########################
+##########################

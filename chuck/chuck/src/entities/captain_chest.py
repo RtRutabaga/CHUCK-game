@@ -1,21 +1,23 @@
-"""The captain's one-time Premium Buhetian Halfling Leaf chest."""
+"""The captain's scratchable, one-time golden-carton chest."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
 from src.core import config
+from src.entities.entity import Entity
 
 if TYPE_CHECKING:
     from src.core.assets import AssetManager
     from src.systems.checkpoints import ProgressState
-    from src.systems.cigarettes import CigaretteLedger
 
 
-class CaptainChest:
-    """A solid, y-sorted chest with a durable open/reward state."""
+class CaptainChest(Entity):
+    """A solid chest that physically opens and drops its reward."""
 
     progress_flag = "captain_chest_opened"
+    collected_flag = "captain_chest_carton_collected"
+    opening_duration = 0.45
 
     def __init__(
         self,
@@ -23,11 +25,9 @@ class CaptainChest:
         row: int,
         assets: "AssetManager",
         progress: "ProgressState",
-        cigarettes: "CigaretteLedger",
     ) -> None:
         self.kind = "ship_captain_chest"
         self._progress = progress
-        self._cigarettes = cigarettes
         self._frames = assets.sheet(
             "objects/ship_captain_chest.png", 32, 24
         )[0]
@@ -36,10 +36,20 @@ class CaptainChest:
         self._draw_y = (row + 1) * ts - 24
         self._bottom = (row + 1) * ts
         self._size = (32, 24)
+        super().__init__(self._draw_x, self._draw_y, *self._size)
         self.opened = self._progress.has(self.progress_flag)
-        self.dialogue_id = (
-            "captain_chest_empty" if self.opened else "captain_chest_reward"
+        self._opening = False
+        self._opening_time = (
+            self.opening_duration if self.opened else 0.0
         )
+        self._drop = (
+            col * ts + ts / 2,
+            (row + 2) * ts + ts / 2,
+        )
+        self._drop_pending = (
+            self.opened and not self._progress.has(self.collected_flag)
+        )
+        self.dialogue_id = None
         self.choice_id = None
 
     def interaction_bounds(self) -> tuple[int, int, int, int]:
@@ -54,20 +64,55 @@ class CaptainChest:
     def sort_y(self) -> float:
         return float(self._bottom)
 
-    def interact(self, _by) -> str:
+    def interact(self, _by) -> None:
+        self._begin_opening()
+
+    def on_scratched(self) -> None:
+        self._begin_opening()
+
+    def _begin_opening(self) -> None:
         if self.opened:
-            return "captain_chest_empty"
+            return
         self.opened = True
-        self.dialogue_id = "captain_chest_empty"
+        self._opening = True
+        self._opening_time = 0.0
         self._progress.enable(self.progress_flag)
-        self._cigarettes.add(config.HALFLING_LEAF_CIGARETTES)
-        # Opening the one-time chest and losing its reward on death would leave
-        # an open, empty chest with no way to recover the forty. Bank both sides
-        # of that state transition together; the next Ashtray persists them.
-        self._cigarettes.commit()
-        return "captain_chest_reward"
+
+    def update(self, dt: float) -> None:
+        if not self._opening:
+            return
+        self._opening_time = min(
+            self.opening_duration, self._opening_time + dt
+        )
+        if self._opening_time >= self.opening_duration:
+            self._opening = False
+            if not self._progress.has(self.collected_flag):
+                self._drop_pending = True
+
+    def take_drop_position(self) -> tuple[float, float] | None:
+        if not self._drop_pending:
+            return None
+        self._drop_pending = False
+        return self._drop
+
+    def create_pickup(self, drop: tuple[float, float], assets):
+        from src.entities.pickup import GoldenCigaretteCarton
+
+        pickup = GoldenCigaretteCarton(*drop, self._progress)
+        pickup.load_sprite(assets)
+        return pickup
 
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
         ox, oy = camera_offset
-        frame = self._frames[1 if self.opened else 0]
+        if not self.opened:
+            frame_index = 0
+        elif not self._opening:
+            frame_index = len(self._frames) - 1
+        else:
+            progress = self._opening_time / self.opening_duration
+            frame_index = min(
+                len(self._frames) - 1,
+                1 + int(progress * (len(self._frames) - 1)),
+            )
+        frame = self._frames[frame_index]
         surface.blit(frame, (self._draw_x - ox, self._draw_y - oy))

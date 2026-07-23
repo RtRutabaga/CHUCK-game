@@ -3,11 +3,33 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `72138e5` (gated captain confrontation)
-- Current work: staged starboard plank and ordered approach (session 164)
+- Base commit before this pass: `04a68e4` (staged starboard plank procession)
+- Current work: arrival wall + physical golden chest reward (session 165)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Corrected the arrival compartment and captain chest without changing the
+completed ship routes or confrontation architecture:
+
+- Restored the arrival compartment's unused south-wall doorway recess to
+  ordinary solid hull. The live west/east passages and lower-hold floor ladder
+  remain unchanged.
+- Interacting with or scratching the captain's chest now starts the same
+  four-frame lid-opening animation. It opens directly in the world and never
+  pushes the old Buhetian Halfling Leaf or empty dialogue.
+- When the lid finishes, the chest drops a dedicated golden carton on the
+  floor in front. Physical collection grants exactly 40 cigarettes and banks
+  the one-time reward against death.
+- Separate durable opened and collected flags let CONTINUE reconstruct an
+  opened-but-uncollected carton while preventing duplication after collection.
+  The existing captain-confrontation gate still requires only opening the
+  chest.
+- All 63 standalone test scripts pass, including focused interaction, scratch,
+  animation timing, one-time reward, save/Continue, arrival collision, and
+  confrontation regressions.
+
+## Previous Pass (session 164, commit 04a68e4)
 
 Implemented the physical plank and ordered approach without beginning the
 reality breakup or fall:

@@ -269,7 +269,7 @@ class WorldScene(Scene):
             if kind == "ship_captain_chest":
                 prop = CaptainChest(
                     col, row, self.game.assets,
-                    self.game.progress, self.game.cigarettes,
+                    self.game.progress,
                 )
             else:
                 prop = Prop(kind, col, row, self.game.assets)
@@ -443,6 +443,9 @@ class WorldScene(Scene):
             self._spawn_deck_captain()
             self._stage_deck_plank()
             self._apply_post_confrontation_tableau()
+        # An opened-but-uncollected captain chest reconstructs its physical
+        # carton when this room is loaded.
+        self._collect_pending_drops()
         self._reset_enemies()
 
 
@@ -642,6 +645,11 @@ class WorldScene(Scene):
         for breakable in self.breakables:
             breakable.update(dt)
         self.breakables = [item for item in self.breakables if item.alive]
+        for prop in self.props:
+            update = getattr(prop, "update", None)
+            if callable(update):
+                update(dt)
+        self._collect_pending_drops()
 
         if self._climb_t is not None:
             self._update_climb(dt)
@@ -713,17 +721,12 @@ class WorldScene(Scene):
             self.game.audio.play_sfx("scratch")
             scratch_first_target(
                 self.player.scratch_hitbox(),
-                [*self.breakables, *self.rats, *self.undead, *self.raptors,
+                [*(prop for prop in self.props
+                   if callable(getattr(prop, "on_scratched", None))),
+                 *self.breakables, *self.rats, *self.undead, *self.raptors,
                  *self.dinosaurs, *self.snakes],
             )
-            for breakable in self.breakables:
-                drop = breakable.take_drop_position()
-                if drop is not None:
-                    # Each breakable knows its own reward: grass conceals
-                    # one cigarette, a temple urn a full carton.
-                    self.pickups.append(
-                        breakable.create_pickup(drop, self.game.assets)
-                    )
+            self._collect_pending_drops()
         self.rats = [rat for rat in self.rats if rat.alive]
         self.undead = [enemy for enemy in self.undead if enemy.alive]
         self.raptors = [raptor for raptor in self.raptors if raptor.alive]
@@ -832,6 +835,11 @@ class WorldScene(Scene):
                     if callable(interact)
                     else target.dialogue_id
                 )
+                if dialogue_id is None:
+                    # Action-only interactables (the captain's chest) alter
+                    # the world directly and never open a dialogue overlay.
+                    self._collect_pending_drops()
+                    return
                 self.game.scenes.push(
                     DialogueScene(self.game, self.dialogue.get(dialogue_id))
                 )
@@ -1157,6 +1165,19 @@ class WorldScene(Scene):
             [*self.props,
              *(t for t in self.choice_triggers if not t.walk_triggered)],
         )
+
+    def _collect_pending_drops(self) -> None:
+        """Materialize one-shot physical rewards requested by world objects."""
+        for source in [*self.props, *self.breakables]:
+            take_drop = getattr(source, "take_drop_position", None)
+            create_pickup = getattr(source, "create_pickup", None)
+            if not callable(take_drop) or not callable(create_pickup):
+                continue
+            drop = take_drop()
+            if drop is not None:
+                self.pickups.append(
+                    create_pickup(drop, self.game.assets)
+                )
 
     def _player_tile(self) -> tuple[int, int]:
         """Tile under Chuck's footprint center."""

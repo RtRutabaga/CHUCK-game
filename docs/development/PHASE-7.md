@@ -11,9 +11,9 @@ character animation rather than combat.
 Implemented so far:
 
 - The opening compartment now confines its animated sea portholes to the
-  north hull. Human-scale dark open doorways occupy the other three walls and
-  establish future interior routes, while a southern floor ladder begins the
-  playable phase.
+  north hull. Human-scale dark open doorways occupy the west/east walls and
+  connect its two side routes, while the floor ladder begins the playable
+  phase. The unused south-wall opening has been restored to solid hull.
 - The ladder leads to a reversible cargo-filled lower hold with reused pantry
   shelves and jars that scratch-break into cigarette cartons, sixteen ordinary
   rats, uninterrupted ship music, one physical Ashtray, and shared-loader
@@ -27,10 +27,11 @@ Implemented so far:
   sways with his mug. His first greeting and shorter repeat line are selected
   by a durable conversation flag. The deck hatch remains visible but inert;
   the open captain-cabin passage is now connected to its finished room.
-- The crew quarters' east opening now enters the captain's cabin. Its oversized
-  chest grants Premium Buhetian Halfling Leaf (+40 cigarettes) exactly once,
-  stays visibly open afterward, and persists that state through the cabin's
-  Ashtray and CONTINUE.
+- The crew quarters' east opening now enters the captain's cabin. Interacting
+  with or scratching its oversized chest plays a lid-opening animation and
+  drops a physical golden 40-cigarette carton in front, with no dialogue box.
+  The open and collected states persist through the cabin's Ashtray and
+  CONTINUE without duplicating the reward.
 - The exterior deck now uses `docs/design/pirate ship.png` as its composition
   reference and includes the authored crew performances, fencing hazard,
   rocking sea presentation, Jeffries, helm, and physical Ashtray.

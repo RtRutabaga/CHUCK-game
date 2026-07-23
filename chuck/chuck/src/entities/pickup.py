@@ -118,3 +118,34 @@ class CigaretteCarton(Entity):
             pygame.Rect(int(self.x) - ox, int(self.y) - oy,
                         CARTON_W, CARTON_H),
         )
+
+
+class GoldenCigaretteCarton(CigaretteCarton):
+    """The captain's one-time gold carton: forty cigarettes.
+
+    It remains a physical pickup rather than an inventory/dialogue reward.
+    Its durable collection flag prevents the cabin chest from manufacturing
+    another carton when the room is revisited.
+    """
+
+    progress_flag = "captain_chest_carton_collected"
+
+    def __init__(self, center_x: float, center_y: float, progress) -> None:
+        super().__init__(center_x, center_y)
+        self.cigarette_count = config.HALFLING_LEAF_CIGARETTES
+        self.restore_amount = (
+            self.cigarette_count * config.CIGARETTE_SANITY_RESTORE
+        )
+        self._progress = progress
+
+    def load_sprite(self, assets) -> None:
+        self._image = assets.image("objects/golden_cigarette_carton.png")
+
+    def on_collect(self, sanity_system, ledger=None) -> None:
+        super().on_collect(sanity_system, ledger)
+        self._progress.enable(self.progress_flag)
+        # Runtime death rolls the ledger back to its last commit. The chest
+        # cannot respawn once this durable flag is set, so bank both halves
+        # of the one-time reward together.
+        if ledger is not None:
+            ledger.commit()
