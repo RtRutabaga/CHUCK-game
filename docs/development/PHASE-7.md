@@ -51,12 +51,14 @@ Implemented so far:
   starboard rail; the captain and objecting pirate flank its approach while
   Chuck is marched to the rail and control returns. The outer endpoint remains
   safely bounded. Stepping onto the plank now starts staggered streams of
-  Astral Sea and ember-cracked Hell blocks while Jeffries shouts `It's back!
+  Astral Sea and overhead volcanic Hell blocks while Jeffries shouts `It's back!
   The purple is back!`. Astral chunks tile the exact animated fall-hazard art
-  shared by the sewer, pantry, Chult, and temple. Both materials enter at the
-  east screen edge, travel completely off the west edge, and continuously
-  recycle behind the ship. They remain non-colliding and the kick/fall is
-  reserved for the next slice.
+  shared by the sewer, pantry, Chult, and temple. Hell chunks show a bird's-eye
+  plane of cracked basalt plates, branching lava channels, and molten vents
+  below the ship rather than a side-facing flame strip. Both materials enter
+  at the east screen edge, travel completely off the west edge, and
+  continuously recycle behind the ship. They remain non-colliding and the
+  kick/fall is reserved for the next slice.
 
 ------------------------------------------------------------------------
 

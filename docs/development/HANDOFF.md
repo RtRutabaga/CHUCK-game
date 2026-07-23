@@ -3,11 +3,32 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `057b189` (readable deck-pirate side facings)
-- Current work: east-west plank reality streams (session 172)
+- Base commit before this pass: `bf5f141` (east-west plank reality streams)
+- Current work: overhead Hell-block terrain (session 173)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Reworked only the moving Hell-fragment art to read as terrain viewed from
+above, preserving the established plank stream and its unfinished fall boundary:
+
+- Replaced the old flat brown field, diagonal stripes, central seam, and
+  top-edge flame row, which implied a side-facing block.
+- Hell fragments now expose an animated orange-red lava ground plane beneath
+  irregular clipped basalt shelves. Branching molten gaps, angular rock
+  fissures, larger exposed pools, and pinprick hot vents keep the small chunks
+  legible at native 320x180 scale.
+- Astral art, east-to-west screen crossing, stagger timing, recycling,
+  ship/plank layering, activation, collision, Jeffries' warning, and bounded
+  plank endpoint are unchanged.
+- Added a focused visual-material regression requiring a basalt-majority
+  overhead surface, substantial lava exposure, bright heat points, and mixed
+  terrain at the upper edge instead of the former flame strip. The focused
+  plank suite and all 63 standalone suites pass, compilation is clean, the
+  title-loop launch smoke check passes, and a 4x nearest-neighbor native render
+  was inspected.
+
+## Previous Pass (session 172, commit bf5f141)
 
 Reworked the plank reality breakup to match established Astral art and the
 ship's direction of travel without beginning the kick/fall:

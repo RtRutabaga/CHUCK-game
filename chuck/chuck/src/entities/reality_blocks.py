@@ -20,6 +20,21 @@ if TYPE_CHECKING:
 _OFFSCREEN_MARGIN = 12
 _EAST_EDGE_INSET = 8
 
+# Shared semantic palettes keep the procedural Hell terrain readable at the
+# native resolution and make its top-down material balance testable.
+HELL_BASALT_COLORS = (
+    (28, 22, 23),
+    (42, 28, 27),
+    (58, 35, 30),
+    (76, 43, 32),
+)
+HELL_LAVA_COLORS = (
+    (112, 28, 13),
+    (178, 45, 12),
+    (235, 83, 15),
+    (255, 157, 31),
+)
+
 
 @dataclass(frozen=True)
 class RealityBlock:
@@ -175,47 +190,116 @@ class RealityBlockField:
                 )
 
     def _draw_hell(self, surface, rect, seed: int) -> None:
-        """A block of foreign basalt with square magma seams and ember heat."""
+        """Draw a bird's-eye volcanic hellscape of basalt over moving lava."""
         import pygame
 
-        pygame.draw.rect(surface, (43, 16, 15), rect)
-        phase = int(self.age * 5) + seed * 3
-        for x in range(rect.left + 5 - phase % 6, rect.right, 9):
-            pygame.draw.line(
-                surface,
-                (126, 38, 20),
-                (x, rect.top),
-                (x + 3, rect.bottom),
-                2,
-            )
-        seam_y = rect.top + rect.height // 2
-        pygame.draw.line(
-            surface,
-            (224, 72, 24),
-            (rect.left, seam_y),
-            (rect.right, seam_y),
-            1,
-        )
-        for flame, fx in enumerate(range(rect.left + 2, rect.right, 7)):
-            height = 2 + (phase + flame * 3) % 5
-            pygame.draw.rect(
-                surface,
-                (205, 48, 19),
-                pygame.Rect(fx, rect.top, 4, height),
-            )
-            pygame.draw.rect(
-                surface,
-                (255, 142, 31),
-                pygame.Rect(fx + 1, rect.top, 2, max(1, height - 2)),
-            )
-        for ember in range(5):
-            ex = (
-                rect.left
-                + (seed * 9 + ember * 13 + phase) % max(1, rect.width)
-            )
-            ey = (
-                rect.top
-                + (seed * 4 + ember * 9) % max(1, rect.height)
-            )
-            surface.set_at((ex, ey), (255, 162, 42))
-        pygame.draw.rect(surface, (102, 31, 24), rect, 1)
+        # Lava is the ground plane, visible through the gaps between irregular
+        # basalt plates. Slow highlight drift suggests flow without making the
+        # terrain itself slide separately from its east-west screen motion.
+        phase = int(self.age * 4) + seed * 5
+        pygame.draw.rect(surface, HELL_LAVA_COLORS[0], rect)
+        for y in range(rect.top + 2, rect.bottom, 6):
+            offset = (phase + y * 3) % 9
+            for x in range(rect.left - 6 + offset, rect.right, 12):
+                pygame.draw.line(
+                    surface,
+                    HELL_LAVA_COLORS[2],
+                    (x, y),
+                    (min(x + 5, rect.right - 1), y),
+                    1,
+                )
+                if (x + y + seed) % 3 == 0:
+                    surface.set_at(
+                        (min(x + 2, rect.right - 1), y),
+                        HELL_LAVA_COLORS[3],
+                    )
+
+        # Each cell is an overhead slab with clipped corners. Their variable
+        # gaps connect into molten channels instead of forming a tile grid.
+        cell = 12
+        rows = max(1, (rect.height + cell - 1) // cell)
+        cols = max(1, (rect.width + cell - 1) // cell)
+        for row in range(rows):
+            for col in range(cols):
+                value = seed * 23 + row * 17 + col * 31
+                # A few absent plates create larger lava pools. Never remove
+                # adjacent cells in these small fragments, preserving a clear
+                # majority of traversable-looking basalt terrain.
+                if value % 7 == 0 and (row + col) % 2:
+                    continue
+                left = rect.left + col * cell
+                top = rect.top + row * cell
+                right = min(left + cell + (value % 3), rect.right)
+                bottom = min(top + cell + ((value // 3) % 2), rect.bottom)
+                if right - left < 4 or bottom - top < 4:
+                    continue
+
+                gap_left = 1 + (value % 2)
+                gap_top = 1 + ((value // 5) % 2)
+                plate = pygame.Rect(
+                    left + gap_left,
+                    top + gap_top,
+                    max(2, right - left - gap_left),
+                    max(2, bottom - top - gap_top),
+                )
+                notch = 2 + value % 2
+                points = (
+                    (plate.left + notch, plate.top),
+                    (plate.right - 1, plate.top),
+                    (plate.right - 1, plate.bottom - notch),
+                    (plate.right - notch, plate.bottom - 1),
+                    (plate.left, plate.bottom - 1),
+                    (plate.left, plate.top + notch),
+                )
+                pygame.draw.polygon(surface, HELL_BASALT_COLORS[0], points)
+
+                inner = tuple(
+                    (
+                        min(max(x, plate.left + 1), plate.right - 2),
+                        min(max(y, plate.top + 1), plate.bottom - 2),
+                    )
+                    for x, y in points
+                )
+                pygame.draw.polygon(
+                    surface,
+                    HELL_BASALT_COLORS[2 + value % 2],
+                    inner,
+                )
+
+                # Short angular fissures read as cracked rock from above.
+                center_x = plate.centerx
+                center_y = plate.centery
+                fissure = (
+                    (plate.left + 2, center_y - 1),
+                    (center_x - 1, center_y),
+                    (center_x + 1, center_y + 2),
+                    (plate.right - 2, center_y + 1),
+                )
+                pygame.draw.lines(
+                    surface,
+                    HELL_BASALT_COLORS[0],
+                    False,
+                    fissure,
+                    1,
+                )
+                if value % 4 == 0:
+                    surface.set_at(
+                        (center_x, center_y + 1),
+                        HELL_LAVA_COLORS[2],
+                    )
+
+        # Pinprick vents sit in the final terrain layer so the hottest lava
+        # remains readable after the plates cover the flowing ground plane.
+        for vent in range(max(2, rect.width // 16)):
+            vx = rect.left + 3 + (
+                seed * 7 + vent * 17 + phase
+            ) % max(1, rect.width - 6)
+            vy = rect.top + 3 + (
+                seed * 11 + vent * 13
+            ) % max(1, rect.height - 6)
+            surface.set_at((vx, vy), HELL_LAVA_COLORS[3])
+            surface.set_at((max(rect.left, vx - 1), vy), HELL_LAVA_COLORS[2])
+
+        # A dark cut edge keeps each foreign-world fragment distinct against
+        # the bright ocean without implying a side-facing wall or flame row.
+        pygame.draw.rect(surface, HELL_BASALT_COLORS[0], rect, 1)

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 172 (east-west plank reality streams).
+Updated: session 173 (overhead Hell-block terrain).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1259,15 +1259,18 @@ bounded sessions.
          the enlarged footprint (session 167).
 12. [x] Added a deterministic moving reality field that activates when Chuck
         first steps onto the staged plank. Eight staggered Astral and
-        ember-cracked Hell fragments enter from the native screen's east edge,
+        volcanic Hell fragments enter from the native screen's east edge,
         travel fully clear of its west edge, and recycle continuously to sell
         the ship's forward motion. Astral chunks tile the exact animated
         `astral_void` fall-hazard cells shared by the sewer, pantry, Chult, and
-        temple rather than using a separate approximation. The streams render
-        behind the hull/plank, remain non-colliding, and the endpoint still
-        prevents the unbuilt kick/fall from beginning early. Jeffries retains
-        his one-time `It's back! The purple is back!` warning (sessions
-        168/172).
+        temple rather than using a separate approximation. Hell chunks now
+        read as a bird's-eye plane below the ship: dark irregular basalt
+        shelves cover flowing orange lava channels, angular fissures, exposed
+        pools, and pinprick molten vents, with no side-facing flame edge. The
+        streams render behind the hull/plank, remain non-colliding, and the
+        endpoint still prevents the unbuilt kick/fall from beginning early.
+        Jeffries retains his one-time `It's back! The purple is back!` warning
+        (sessions 168/172/173).
 13. [ ] Stage the captain's kick, land Chuck in an authored moving Hell block,
         and hand off to the Nine Hells falling transition without beginning
         Phase 8 gameplay.

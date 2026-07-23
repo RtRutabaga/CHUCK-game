@@ -10,7 +10,11 @@ import pygame
 from src.core import config
 from src.core.game import Game
 from src.entities.deck_pirate import DeckPirateNPC
-from src.entities.reality_blocks import RealityBlockField
+from src.entities.reality_blocks import (
+    HELL_BASALT_COLORS,
+    HELL_LAVA_COLORS,
+    RealityBlockField,
+)
 from src.scenes.dialogue_scene import DialogueScene
 from src.systems.captain_confrontation import (
     CAPTAIN_CONFRONTED_FLAG,
@@ -212,6 +216,33 @@ def test_reality_field_reuses_exact_animated_astral_fall_tiles() -> None:
         )
     finally:
         game._shutdown()
+
+
+def test_hell_blocks_read_as_overhead_basalt_terrain_and_lava() -> None:
+    field = RealityBlockField(*PLANK_ORIGIN)
+    field.activate()
+    field.update(0.75)
+    image = pygame.Surface((3 * TILE_PX, 2 * TILE_PX), pygame.SRCALPHA)
+    field._draw_hell(image, image.get_rect(), seed=3)
+
+    pixels = [
+        image.get_at((x, y))[:3]
+        for y in range(image.get_height())
+        for x in range(image.get_width())
+    ]
+    basalt = sum(pixel in HELL_BASALT_COLORS for pixel in pixels)
+    lava = sum(pixel in HELL_LAVA_COLORS for pixel in pixels)
+    assert basalt > len(pixels) * 0.45
+    assert lava > len(pixels) * 0.12
+    assert HELL_LAVA_COLORS[-1] in pixels
+
+    # There is no longer a side-facing flame strip along the top edge: both
+    # basalt plate tops and exposed lava channels meet the fragment boundary.
+    top_edge = {
+        image.get_at((x, 1))[:3] for x in range(1, image.get_width() - 1)
+    }
+    assert top_edge & set(HELL_BASALT_COLORS)
+    assert top_edge & set(HELL_LAVA_COLORS)
 
 
 def test_stepping_onto_plank_reveals_blocks_and_triggers_jeffries_once() -> None:
