@@ -39,7 +39,9 @@ Implemented so far:
   CONTINUE without duplicating the reward.
 - The exterior deck now uses `docs/design/pirate ship.png` as its composition
   reference and includes the authored crew performances, fencing hazard,
-  rocking sea presentation, Jeffries, helm, and physical Ashtray.
+  rocking sea presentation, Jeffries, helm, and physical Ashtray. Animated
+  crew tricorns use shaped side-view crowns and narrow brims so turning toward
+  Chuck during dialogue never obscures their faces with a dark rectangle.
 - After the chef encounter, seated-pirate conversation, four deck
   conversations, and captain's chest are all complete, the camera finds the
   captain emerging at the midship ladder and follows his animated walk across

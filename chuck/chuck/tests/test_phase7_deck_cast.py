@@ -10,6 +10,10 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 from src.core import config
 from src.core.game import Game
 from src.entities.deck_pirate import DeckPirateNPC
+from src.systems.captain_confrontation import (
+    CAPTAIN_CONFRONTED_FLAG,
+    CAPTAIN_REQUIRED_FLAGS,
+)
 from src.systems.dialogue import DialogueSystem
 from src.world.tilemap import TileMap
 
@@ -78,6 +82,45 @@ def test_each_performer_has_four_distinct_shanty_timed_frames() -> None:
             first = pirate.animation_frame
             pirate.update((60.0 / 126.0) / 2.0 + 0.001)
             assert pirate.animation_frame == (first + 1) % 4
+    finally:
+        game._shutdown()
+
+
+def test_side_facing_tricorns_leave_pirate_faces_readable() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(
+            MAP_NAME,
+            progress_flags=(
+                CAPTAIN_REQUIRED_FLAGS | {CAPTAIN_CONFRONTED_FLAG}
+            ),
+        )
+        pirates = [
+            npc for npc in scene.npcs if isinstance(npc, DeckPirateNPC)
+        ]
+        assert len(pirates) == 5
+        outline = (38, 29, 28)
+        for pirate in pirates:
+            for facing in ("left", "right"):
+                for frame in pirate._deck_frames[facing]:
+                    dark_hat_pixels = sum(
+                        frame.get_at((x, y))[:3] == outline
+                        for x in range(frame.get_width())
+                        for y in range(1, 8)
+                    )
+                    visible_face_pixels = sum(
+                        (
+                            pixel.a > 0
+                            and pixel.r > 150
+                            and pixel.g > 100
+                            and pixel.b < 130
+                        )
+                        for x in range(2, 14)
+                        for y in range(7, 14)
+                        for pixel in (frame.get_at((x, y)),)
+                    )
+                    assert dark_hat_pixels <= 42
+                    assert visible_face_pixels >= 20
     finally:
         game._shutdown()
 

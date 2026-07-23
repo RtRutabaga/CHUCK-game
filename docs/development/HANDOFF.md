@@ -3,11 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `502c7aa` (lower-hold rat pursuit)
-- Current work: captain arrival cutscene (session 170)
+- Base commit before this pass: `4203c0a` (captain arrival cutscene)
+- Current work: readable deck-pirate side facings (session 171)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Corrected the apparent black boxes over animated deck NPC faces when dialogue
+made them turn left or right:
+
+- Confirmed the sprite surfaces retain alpha; the fault was visual rather than
+  a transparency or runtime-flip bug. The old side-view tricorn used one
+  full-width 13×4 dark rectangle that read as covering the face at 4× scale.
+- Reworked the shared procedural side-view hat into a stepped crown and narrow,
+  rear-weighted brim while preserving the established front/back silhouettes.
+- Regenerated all four animated deck performers and the captain from the same
+  source, so both left- and mirrored right-facing dialogue poses keep the eye,
+  nose, cheek, and red hat band readable.
+- Added a focused native-pixel regression that caps the dark side-hat mass and
+  requires visible face pixels in every side-facing performer frame.
+- Focused deck-cast and captain-confrontation tests pass; all 63 standalone
+  suites pass, compilation is clean, the title-loop launch smoke check passes,
+  and a native 320×180 render was visually inspected from the reported angle.
+
+## Previous Pass (session 170, commit 4203c0a)
 
 Reworked the beginning and timing of the existing captain confrontation
 without changing its prerequisite gate, outcome, or plank handoff:

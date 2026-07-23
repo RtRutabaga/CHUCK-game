@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 170 (captain arrival cutscene).
+Updated: session 171 (readable deck-pirate side facings).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1203,6 +1203,11 @@ bounded sessions.
        a durable save flag. Jeffries delivers the authored collided-world
        warnings while the cheering pirate dismisses him. The fencing hazard
        and ending sequence remain deliberately unbuilt (session 159).
+   - [x] Replaced the animated crew's full-width side-view tricorn rectangles
+         with stepped crowns and narrow brims. Left/right dialogue facings now
+         preserve readable eyes, noses, cheeks, and hat bands at native scale;
+         the shared procedural fix covers the four performers and captain
+         without changing their front/back art or interactions (session 171).
    - [x] Lifted Jeffries' rendered struggle fully onto the mast pole while
          preserving his accessible interaction tile, and added a human-scale
          procedural helm immediately sternward of the main mast (session 161).

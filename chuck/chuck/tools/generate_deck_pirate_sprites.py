@@ -52,8 +52,15 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
     rect(draw, (cx - 1, 13 + bob, cx + 2, 21 + bob), WHITE)
     rect(draw, (cx - 4, 7 + bob, cx + 4, 13 + bob), SKIN)
     rect(draw, (cx - 5, 6 + bob, cx + 5, 8 + bob), RED)
-    rect(draw, (cx - 6, 3 + bob, cx + 6, 6 + bob), OUTLINE)
-    rect(draw, (cx - 3, 1 + bob, cx + 3, 4 + bob), OUTLINE)
+    if facing == "left":
+        # Side dialogue facings need a shaped tricorn silhouette. The former
+        # full-width 13x4 rectangle read as a black box over the pirate's face
+        # when the native image was scaled to the window.
+        rect(draw, (cx - 4, 5 + bob, cx + 5, 6 + bob), OUTLINE)
+        rect(draw, (cx - 1, 2 + bob, cx + 4, 5 + bob), OUTLINE)
+    else:
+        rect(draw, (cx - 6, 3 + bob, cx + 6, 6 + bob), OUTLINE)
+        rect(draw, (cx - 3, 1 + bob, cx + 3, 4 + bob), OUTLINE)
     if facing == "down":
         rect(draw, (cx - 2, 9 + bob, cx - 2, 9 + bob), OUTLINE)
         rect(draw, (cx + 2, 9 + bob, cx + 2, 9 + bob), OUTLINE)
