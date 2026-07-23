@@ -1043,6 +1043,9 @@ class WorldScene(Scene):
             )
         else:
             self.tilemap.draw_ground(surface, offset, self._world_time)
+        for prop in self.props:
+            if getattr(prop, "floor_layer", False):
+                prop.draw(surface, offset)
         for pickup in self.pickups:  # flat ground litter, under everyone
             pickup.draw(surface, offset)
         for drawable in self._sorted_drawables():
@@ -1151,7 +1154,11 @@ class WorldScene(Scene):
         front of and behind props, anchors, and each other. Chuck is
         one foot tall; this is where that finally SHOWS.
         """
-        drawables = [*self.props, *self.breakables, *self.anchors,
+        standing_props = [
+            prop for prop in self.props
+            if not getattr(prop, "floor_layer", False)
+        ]
+        drawables = [*standing_props, *self.breakables, *self.anchors,
                      *self.battle_actors,
                      *self.hazards, *self.rats,
                      *self.undead, *self.raptors, *self.dinosaurs,

@@ -77,6 +77,10 @@ def test_seated_pirate_uses_first_then_repeat_dialogue_and_animates() -> None:
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint("ship_crew_quarters")
+        hammocks = [prop for prop in scene.props
+                    if prop.kind == "ship_hammock"]
+        assert hammocks and all(prop._size == (30, 44)
+                                for prop in hammocks)
         pirate = next(npc for npc in scene.npcs if isinstance(npc, PirateNPC))
         before = pirate._anim_t
         pirate.update(0.5)

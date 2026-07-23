@@ -39,6 +39,8 @@ _SPRITES = {
     "pantry_shelf": "objects/pantry_shelf.png",
     "grain_sack": "objects/grain_sack.png",
     "ship_hammock": "objects/ship_hammock.png",
+    "ship_captain_bed": "objects/ship_captain_bed.png",
+    "ship_captain_rug": "objects/ship_captain_rug.png",
     "ship_round_table": "objects/ship_round_table.png",
     "ship_mast_sail": "objects/ship_mast_sail.png",
     "ship_helm": "objects/ship_helm.png",
@@ -136,6 +138,7 @@ class Prop:
         self._draw_y = (row + 1) * ts - h
         self._bottom = (row + 1) * ts
         self._size = (w, h)
+        self.floor_layer = kind == "ship_captain_rug"
         self.dialogue_id = PROP_DIALOGUE.get(kind)
         self.choice_id = PROP_CHOICE.get(kind)
         if self.dialogue_id and self.choice_id:

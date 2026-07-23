@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 177 (fixed the crew-ladder exterior-deck transition).
+Updated: session 178 (enlarged ship hammocks and dressed captain's cabin).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1297,6 +1297,10 @@ bounded sessions.
          resolution. The ladder now resolves uniquely to the normal exterior
          deck entry, while direct development loading still starts the captain
          sequence through the same checkpoint loader (session 177).
+   - [x] Enlarged all ship hammocks from 20x34 to 30x44 native pixels, then
+         added a 72x44 solid captain's bed and an 80x48 central woven rug to
+         the captain's cabin. The rug uses a reusable flat-prop layer so Chuck,
+         furniture, and pickups always draw above it (session 178).
    - [x] Compressed only the north-south spans of the galley (40x26 -> 40x22),
          crew quarters (42x30 -> 42x24), and captain cabin (36x26 -> 36x21).
          East-west lengths, props, enemies/NPCs, ladders, open passages,

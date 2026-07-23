@@ -32,6 +32,16 @@ def test_captain_cabin_is_one_complete_checkpointed_ship_map() -> None:
     assert kinds.count("anchor:ship_captain_anchor") == 1
     props = [kind for kind, _col, _row in tilemap.prop_tiles]
     assert props.count("ship_captain_chest") == 1
+    assert props.count("ship_captain_bed") == 1
+    assert props.count("ship_captain_rug") == 1
+    bed_tiles = [
+        (col, row)
+        for row, line in enumerate(tilemap._grid)
+        for col, char in enumerate(line)
+        if char in {"Ḅ", "ḅ"}
+    ]
+    assert len(bed_tiles) == 10
+    assert all(tilemap.is_solid(col, row) for col, row in bed_tiles)
     assert tileset_for(MAP_NAME).sheet == "ship.png"
     assert AREA_MUSIC[MAP_NAME] == "ship_shanty.wav"
 
@@ -61,6 +71,15 @@ def test_interacting_animates_chest_then_drops_physical_gold_carton() -> None:
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint("ship_captain_cabin")
+        bed = next(prop for prop in scene.props
+                   if prop.kind == "ship_captain_bed")
+        rug = next(prop for prop in scene.props
+                   if prop.kind == "ship_captain_rug")
+        assert bed._size == (72, 44)
+        assert rug._size == (80, 48)
+        assert not bed.floor_layer and rug.floor_layer
+        assert bed in scene._sorted_drawables()
+        assert rug not in scene._sorted_drawables()
         chest = next(prop for prop in scene.props
                      if isinstance(prop, CaptainChest))
         before = game.cigarettes.total

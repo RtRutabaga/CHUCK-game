@@ -24,24 +24,71 @@ SAIL_LIGHT = (239, 225, 174, 255)
 
 
 def hammock() -> Image.Image:
-    """A hanging human bunk looming two tiles above its anchor."""
-    image = Image.new("RGBA", (20, 34), TRANSPARENT)
+    """A broad hanging human bunk looming over Chuck."""
+    image = Image.new("RGBA", (30, 44), TRANSPARENT)
     draw = ImageDraw.Draw(image)
-    draw.line((2, 0, 5, 11), fill=ROPE, width=1)
-    draw.line((17, 0, 14, 11), fill=ROPE, width=1)
-    draw.line((2, 0, 2, 28), fill=WOOD_DARK, width=2)
-    draw.line((17, 0, 17, 28), fill=WOOD_DARK, width=2)
-    draw.line((4, 10, 15, 10), fill=ROPE, width=1)
+    draw.line((2, 0, 7, 14), fill=ROPE, width=2)
+    draw.line((27, 0, 22, 14), fill=ROPE, width=2)
+    draw.line((2, 0, 2, 36), fill=WOOD_DARK, width=3)
+    draw.line((27, 0, 27, 36), fill=WOOD_DARK, width=3)
+    draw.line((6, 13, 23, 13), fill=ROPE, width=2)
     # Deep curved canvas belly; Chuck can visibly pass under its overhang.
-    for y, inset in ((11, 0), (12, 0), (13, 1), (14, 1), (15, 2),
-                     (16, 2), (17, 3), (18, 4), (19, 5)):
-        draw.line((4 + inset, y, 15 - inset, y), fill=CANVAS, width=1)
-    draw.line((5, 11, 14, 11), fill=CANVAS_LIGHT, width=1)
-    draw.line((9, 13, 12, 18), fill=CANVAS_DARK, width=1)
-    draw.rectangle((1, 27, 4, 31), fill=WOOD)
-    draw.rectangle((15, 27, 18, 31), fill=WOOD)
-    draw.line((1, 31, 4, 31), fill=WOOD_LIGHT, width=1)
-    draw.line((15, 31, 18, 31), fill=WOOD_LIGHT, width=1)
+    for y, inset in ((14, 0), (15, 0), (16, 1), (17, 1), (18, 2),
+                     (19, 2), (20, 3), (21, 4), (22, 5), (23, 7),
+                     (24, 9)):
+        draw.line((6 + inset, y, 23 - inset, y), fill=CANVAS, width=1)
+    draw.line((7, 14, 22, 14), fill=CANVAS_LIGHT, width=2)
+    draw.line((13, 16, 17, 23), fill=CANVAS_DARK, width=2)
+    draw.rectangle((0, 35, 6, 41), fill=WOOD)
+    draw.rectangle((23, 35, 29, 41), fill=WOOD)
+    draw.line((0, 41, 6, 41), fill=WOOD_LIGHT, width=2)
+    draw.line((23, 41, 29, 41), fill=WOOD_LIGHT, width=2)
+    return image
+
+
+def captain_bed() -> Image.Image:
+    """An oversized human bed, nearly architectural beside Chuck."""
+    image = Image.new("RGBA", (72, 44), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    # Heavy raised frame and tall headboard.
+    draw.rectangle((1, 3, 70, 12), fill=WOOD_DARK)
+    draw.rectangle((4, 5, 67, 10), fill=WOOD)
+    draw.line((5, 6, 66, 6), fill=WOOD_LIGHT, width=2)
+    draw.rectangle((4, 10, 67, 39), fill=DARK)
+    draw.rectangle((6, 11, 65, 36), fill=CANVAS_LIGHT)
+    # Two pale pillows and a deep captain-red cover.
+    draw.rounded_rectangle((9, 13, 29, 23), radius=3, fill=(211, 194, 157))
+    draw.rounded_rectangle((42, 13, 62, 23), radius=3, fill=(211, 194, 157))
+    draw.rectangle((6, 24, 65, 36), fill=(113, 45, 42))
+    draw.line((7, 25, 64, 25), fill=(174, 78, 55), width=2)
+    draw.line((35, 25, 35, 35), fill=(78, 32, 31), width=1)
+    # Brass corners and stout feet sell the captain's better furnishings.
+    for x in (4, 64):
+        draw.rectangle((x, 9, x + 3, 39), fill=BRASS)
+        draw.line((x + 1, 10, x + 1, 38), fill=BRASS_LIGHT, width=1)
+    draw.rectangle((2, 37, 10, 43), fill=WOOD_DARK)
+    draw.rectangle((61, 37, 69, 43), fill=WOOD_DARK)
+    return image
+
+
+def captain_rug() -> Image.Image:
+    """A broad woven rug drawn flat beneath every standing object."""
+    image = Image.new("RGBA", (80, 48), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    dark_red = (75, 35, 37, 255)
+    red = (126, 53, 48, 255)
+    gold = (183, 142, 58, 255)
+    draw.rounded_rectangle((2, 3, 77, 44), radius=5, fill=DARK)
+    draw.rounded_rectangle((4, 4, 75, 42), radius=4, fill=dark_red)
+    draw.rectangle((8, 8, 71, 38), fill=red)
+    draw.rectangle((11, 11, 68, 35), outline=gold, width=2)
+    draw.polygon(((40, 13), (54, 23), (40, 33), (26, 23)),
+                 fill=dark_red)
+    draw.polygon(((40, 16), (49, 23), (40, 30), (31, 23)),
+                 outline=gold)
+    for x in range(7, 75, 6):
+        draw.line((x, 1, x, 4), fill=ROPE, width=1)
+        draw.line((x, 42, x, 46), fill=ROPE, width=1)
     return image
 
 
@@ -181,6 +228,8 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, image in (
         ("ship_hammock", hammock()),
+        ("ship_captain_bed", captain_bed()),
+        ("ship_captain_rug", captain_rug()),
         ("ship_round_table", round_table()),
         ("ship_mast_sail", mast_sail()),
         ("ship_helm", helm()),

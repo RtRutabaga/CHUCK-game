@@ -3,11 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `5f9ba7c` (Phase 7 ship and Hell-fall polish)
-- Current work: exterior-deck ladder crash regression (session 177)
+- Base commit before this pass: `896b08d` (exterior-deck ladder crash fix)
+- Current work: ship sleeping-furniture and captain-cabin dressing (session 178)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Improved the crew and captain sleeping spaces without changing map dimensions,
+routes, checkpoints, or gameplay progression:
+
+- Enlarged the procedurally generated hammock art from 20x34 to 30x44 native
+  pixels. All eight crew-quarter bunks now read at human scale while retaining
+  their single authored anchor and scurry-under overhang language.
+- Added a 72x44 brass-trimmed double bed to the captain's cabin with a broad
+  two-row solid footprint, keeping Chuck from walking through the mattress.
+- Added an 80x48 woven central rug beneath the cabin's existing furniture.
+  Formalized a small reusable floor-prop flag so rugs render immediately above
+  terrain and below pickups, Chuck, NPCs, and standing props.
+- Added focused coverage for furniture counts, native sprite sizes, bed
+  collision authorship, and rug draw-layer behavior. Native 4x room and
+  furniture renders were inspected. All 63 standalone suites pass,
+  compilation is clean, and the title-loop launch smoke check passes.
+
+## Previous Pass (session 177, commit 896b08d)
 
 Fixed the ladder-to-exterior-deck crash introduced by the development-only
 `Captain Arrival` checkpoint:

@@ -35,13 +35,16 @@ Implemented so far:
   by a durable conversation flag. The deck hatch remains visible but inert;
   the open captain-cabin passage is now connected to its finished room. The
   quarters retain their 42-tile east-west length while shrinking from 30 to
-  24 tiles north-south.
+  24 tiles north-south. Its eight hammocks are broad human-scale hanging bunks
+  that visibly loom over Chuck.
 - The crew quarters' east opening now enters the captain's cabin. Interacting
   with or scratching its oversized chest plays a lid-opening animation and
   drops a physical golden 40-cigarette carton in front, with no dialogue box.
   The open and collected states persist through the cabin's Ashtray and
-  CONTINUE without duplicating the reward. The cabin remains 36 tiles wide
-  and is compressed from 26 to 21 tiles tall.
+  CONTINUE without duplicating the reward. A large brass-trimmed captain's bed
+  occupies a solid human-scale footprint, while a central woven rug remains
+  flat beneath Chuck and the existing furniture. The cabin remains 36 tiles
+  wide and is compressed from 26 to 21 tiles tall.
 - The exterior deck now uses `docs/design/pirate ship.png` as its composition
   reference and includes the authored crew performances, fencing hazard,
   rocking sea presentation, Jeffries, helm, and physical Ashtray. Animated

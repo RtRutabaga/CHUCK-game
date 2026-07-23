@@ -408,6 +408,12 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="ship_round_table", under="="),
     "ȼ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="ship_captain_chest", under="="),
+    "ḅ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_captain_bed", under="="),
+    "Ḅ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 under="="),
+    "ṛ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_captain_rug", under="="),
     # Lower-hold reuse of the pantry's carton-filled breakable shelves/jars,
     # with ship planks beneath instead of pantry boards.
     "ƞ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
