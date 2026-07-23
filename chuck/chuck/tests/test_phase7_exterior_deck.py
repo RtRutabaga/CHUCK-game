@@ -79,10 +79,12 @@ def test_crew_ladder_is_reversible() -> None:
     assert (outward.destination, outward.arrival) == (
         MAP_NAME, "from_crew_quarters"
     )
+    assert outward.confirmation == "Climb up ladder?"
     inward = AREA_WALK_EXITS[(MAP_NAME, "ℓ")]
     assert (inward.destination, inward.arrival) == (
         "ship_crew_quarters", "from_exterior_deck"
     )
+    assert inward.confirmation == "Climb down ladder?"
     crew = TileMap(config.MAPS_DIR / "ship_crew_quarters.txt")
     assert any(kind == "arrival:from_exterior_deck"
                for kind, _position in crew.object_spawns)

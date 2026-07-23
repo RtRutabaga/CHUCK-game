@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 165 (arrival wall + physical golden chest reward).
+Updated: session 166 (confirmed ship ladder traversal).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1234,6 +1234,12 @@ bounded sessions.
          40-cigarette carton in front, banks the reward on collection, and
          restores opened/uncollected/collected states without duplication
          (session 165).
+   - [x] Added reusable approach confirmations to all four live ship ladder
+         directions. The hold descent and exterior-deck return ask
+         `Climb down ladder?`; the hold return and crew-to-deck route ask
+         `Climb up ladder?`. YES uses the existing AreaExit destination,
+         named arrival, and facing; NO closes silently and stays dismissed
+         until Chuck leaves and reapproaches the ladder (session 166).
 12. [ ] Add the moving Astral Sea and Hell blocks around the staged plank,
         including Jeffries' warning; stop before the captain's kick and fall.
 

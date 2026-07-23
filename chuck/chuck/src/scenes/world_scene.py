@@ -51,7 +51,7 @@ from src.systems.captain_confrontation import (
     captain_confrontation_ready,
     stage_deck_plank,
 )
-from src.systems.choice import ChoiceSystem
+from src.systems.choice import Choice, ChoiceSystem, Option
 from src.systems.combat import scratch_first_target
 from src.systems.dialogue import DialogueSystem
 from src.systems.fall import fall_zone_kind
@@ -143,8 +143,10 @@ class WorldScene(Scene):
         self._pending_map = None
         self._pending_arrival = None
         self._pending_climb_from_water = False
+        self._pending_facing = None
         self._pending_fade_in = False
         self._walk_choice_armed = True  # crevice-style walk-in prompts
+        self._ladder_choice_armed = True
         self.tilemap = TileMap(config.MAPS_DIR / f"{self.map_name}.txt")
         if self.map_name == "waterdeep_docks" and self._sewer_completed:
             self.tilemap.open_tavern_entrance()
@@ -496,6 +498,7 @@ class WorldScene(Scene):
             destination = self._pending_map
             arrival = self._pending_arrival
             climb_from_water = self._pending_climb_from_water
+            facing = self._pending_facing
             fade_in = self._pending_fade_in
             if self.map_name == "temple_rubble" and destination == "ship_deck":
                 # Saying YES to the crevice plays the escape cutscene, which
@@ -509,6 +512,7 @@ class WorldScene(Scene):
                 destination,
                 arrival=arrival,
                 climb_from_water=climb_from_water,
+                facing=facing,
                 fade_in=fade_in,
             )
             return
@@ -709,12 +713,38 @@ class WorldScene(Scene):
             (self.map_name, self.tilemap.terrain_at(*self._player_tile()))
         )
         if exit_config is not None:
+            if exit_config.confirmation is not None:
+                if self._ladder_choice_armed:
+                    self._ladder_choice_armed = False
+                    choice = Choice(
+                        prompt=exit_config.confirmation,
+                        options=[
+                            Option(
+                                "YES",
+                                goto=exit_config.destination,
+                                arrival=exit_config.arrival,
+                            ),
+                            Option("NO"),
+                        ],
+                    )
+                    self.game.scenes.push(DialogueScene(
+                        self.game, [choice.prompt], choice=choice,
+                        dialogue=self.dialogue,
+                        on_choice=(
+                            lambda option, exit_config=exit_config:
+                            self._on_ladder_choice(option, exit_config)
+                        ),
+                    ))
+                # NO leaves Chuck standing on the ladder without immediately
+                # reopening or traversing it. Walking away rearms the prompt.
+                return
             self.load_map(
                 exit_config.destination,
                 arrival=exit_config.arrival,
                 facing=exit_config.facing,
             )
             return
+        self._ladder_choice_armed = True
 
         # One committed scratch resolves against at most one living enemy.
         if self.player.scratch_just_started:
@@ -1151,6 +1181,12 @@ class WorldScene(Scene):
             self._pending_map = option.goto
             self._pending_arrival = option.arrival
             self._pending_climb_from_water = option.climb_from_water
+
+    def _on_ladder_choice(self, option, exit_config) -> None:
+        """Route a confirmed ladder through the ordinary area-exit record."""
+        self._on_choice(option)
+        if option.goto is not None:
+            self._pending_facing = exit_config.facing
 
     def _interactable_in_range(self):
         """The NPC or prop Chuck could talk to right now, or None.

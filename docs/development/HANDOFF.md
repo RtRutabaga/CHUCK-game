@@ -3,11 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `04a68e4` (staged starboard plank procession)
-- Current work: arrival wall + physical golden chest reward (session 165)
+- Base commit before this pass: `0b48103` (physical captain-chest reward)
+- Current work: confirmed ship ladder traversal (session 166)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Added rubble-style YES/NO approach confirmation to every live ship ladder
+without creating a parallel route system:
+
+- Extended the existing `AreaExit` records with an optional confirmation
+  prompt. Only the four ship ladder directions opt in.
+- Arrival compartment to lower hold and exterior deck to crew quarters ask
+  `Climb down ladder?`; lower hold to arrival compartment and crew quarters
+  to exterior deck ask `Climb up ladder?`.
+- YES reuses the same destination, named arrival, and facing already authored
+  for the ladder. NO closes silently, does not traverse, and does not reopen
+  while Chuck remains on the tile; leaving and approaching again rearms it.
+- Focused checks cover both prompt texts, NO/rearm behavior, YES traversal,
+  named arrivals, facing, and the exterior ladder pair.
+- All 63 standalone test scripts pass, and the game reaches its running title
+  loop in the headless launch smoke check.
+
+## Previous Pass (session 165, commit 0b48103)
 
 Corrected the arrival compartment and captain chest without changing the
 completed ship routes or confrontation architecture:

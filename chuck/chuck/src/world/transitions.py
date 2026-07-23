@@ -1,8 +1,8 @@
 """Per-area music configuration.
 
-Choice destinations, named arrivals, and arrival choreography live in choice
-data (see src/systems/choice.py). This module holds walk-over exits and each
-area's looping music.
+Choice destinations, named arrivals, and arrival choreography normally live in
+choice data (see src/systems/choice.py). This module holds walk-over exits,
+their optional approach confirmations, and each area's looping music.
 """
 
 from __future__ import annotations
@@ -11,11 +11,12 @@ from typing import NamedTuple
 
 
 class AreaExit(NamedTuple):
-    """A walk-over transition with a safe named arrival off the exit tile."""
+    """A transition with a safe named arrival and optional YES/NO prompt."""
 
     destination: str
     arrival: str
     facing: str
+    confirmation: str | None = None
 
 
 AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
@@ -142,12 +143,15 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
         "temple_gauntlet", "from_temple_9", "right"
     ),
     # Phase 7 begins below the arrival compartment. Both maps use the same
-    # visible ladder tile and resolve through ordinary named arrivals.
+    # visible ladder tile and resolve through ordinary named arrivals after
+    # the shared approach confirmation.
     ("ship_deck", "ℓ"): AreaExit(
-        "ship_lower_hold", "from_ship_room", "down"
+        "ship_lower_hold", "from_ship_room", "down",
+        "Climb down ladder?",
     ),
     ("ship_lower_hold", "ℓ"): AreaExit(
-        "ship_deck", "from_lower_hold", "up"
+        "ship_deck", "from_lower_hold", "up",
+        "Climb up ladder?",
     ),
     # The arrival compartment's open west passage enters the galley. Every
     # visible jamb section is live so the three-tile doorway reads and plays
@@ -198,10 +202,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
         "ship_crew_quarters", "from_captain_cabin", "left"
     ),
     ("ship_crew_quarters", "ℓ"): AreaExit(
-        "ship_exterior_deck", "from_crew_quarters", "down"
+        "ship_exterior_deck", "from_crew_quarters", "down",
+        "Climb up ladder?",
     ),
     ("ship_exterior_deck", "ℓ"): AreaExit(
-        "ship_crew_quarters", "from_exterior_deck", "down"
+        "ship_crew_quarters", "from_exterior_deck", "down",
+        "Climb down ladder?",
     ),
     # (The rubble's one way out is the "Enter crevice?" prompt at the
     # crawlspace, not a walk-over exit — see the choice:crevice trigger.)

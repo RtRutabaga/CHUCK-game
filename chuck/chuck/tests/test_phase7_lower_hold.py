@@ -9,6 +9,7 @@ from src.core import config
 from src.core.game import Game
 from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.pickup import CigaretteCarton
+from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import tileset_for
@@ -78,6 +79,7 @@ def test_lower_hold_uses_shared_ship_systems_and_returns_upstairs() -> None:
     upstairs = AREA_WALK_EXITS[(MAP_NAME, "ℓ")]
     assert upstairs.destination == "ship_deck"
     assert upstairs.arrival == "from_lower_hold"
+    assert upstairs.confirmation == "Climb up ladder?"
 
     entry = CHECKPOINT_BY_ID["ship_lower_hold"]
     assert entry.display_name == "Ship Hold"
@@ -102,9 +104,39 @@ def test_ladder_transition_and_rat_respawn_use_existing_architecture() -> None:
         room.player.x = ladder_col * config.TILE_SIZE + 4
         room.player.y = ladder_row * config.TILE_SIZE + 4
         room.update(0.0)
+        prompt = game.scenes.current
+        assert isinstance(prompt, DialogueScene)
+        assert prompt._choice.prompt == "Climb down ladder?"
+
+        # NO closes silently, leaves Chuck in place, and does not immediately
+        # reopen while he remains on the ladder.
+        room._on_ladder_choice(
+            prompt._choice.options[1],
+            AREA_WALK_EXITS[("ship_deck", "ℓ")],
+        )
+        game.scenes.pop()
+        room.update(0.0)
+        assert game.scenes.current is room
+        assert room.map_name == "ship_deck"
+
+        # Leaving and approaching again rearms the same confirmation.
+        room.player.y -= config.TILE_SIZE
+        room.update(0.0)
+        room.player.y += config.TILE_SIZE
+        room.update(0.0)
+        prompt = game.scenes.current
+        assert isinstance(prompt, DialogueScene)
+        assert prompt._choice.prompt == "Climb down ladder?"
+        room._on_ladder_choice(
+            prompt._choice.options[0],
+            AREA_WALK_EXITS[("ship_deck", "ℓ")],
+        )
+        game.scenes.pop()
+        room.update(0.0)
         hold = game.scenes.current
         assert hold.map_name == MAP_NAME
         assert hold._player_tile() == (19, 4)
+        assert hold.player.facing == "down"
         assert len(hold.rats) == 16
 
         hold.rats[0].alive = False
@@ -115,9 +147,19 @@ def test_ladder_transition_and_rat_respawn_use_existing_architecture() -> None:
         hold.player.x = 19 * config.TILE_SIZE + 4
         hold.player.y = 3 * config.TILE_SIZE + 4
         hold.update(0.0)
+        prompt = game.scenes.current
+        assert isinstance(prompt, DialogueScene)
+        assert prompt._choice.prompt == "Climb up ladder?"
+        hold._on_ladder_choice(
+            prompt._choice.options[0],
+            AREA_WALK_EXITS[(MAP_NAME, "ℓ")],
+        )
+        game.scenes.pop()
+        hold.update(0.0)
         room = game.scenes.current
         assert room.map_name == "ship_deck"
         assert room._player_tile() == (12, 9)
+        assert room.player.facing == "up"
     finally:
         game._shutdown()
 
