@@ -7,6 +7,8 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
 from src.core.game import Game
+from src.entities.jar_shelf import PantryJar, PantryJarShelf
+from src.entities.pickup import CigaretteCarton
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import tileset_for
@@ -28,10 +30,46 @@ def test_lower_hold_is_a_cargo_filled_rat_map() -> None:
     assert kinds.count("anchor:ship_lower_hold_anchor") == 1
     assert kinds.count("rat") == 16
     prop_kinds = [kind for kind, _col, _row in tilemap.prop_tiles]
-    assert prop_kinds.count("ship_shelf") == 8
-    assert prop_kinds.count("ship_sack") >= 10
+    assert prop_kinds.count("pantry_shelf") == 8
+    assert prop_kinds.count("grain_sack") >= 10
     assert prop_kinds.count("crate") >= 6
     assert prop_kinds.count("barrel") >= 5
+
+
+def test_hold_shelves_and_jars_reuse_pantry_breakable_cartons() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("ship_lower_hold")
+        shelves = [b for b in scene.breakables
+                   if isinstance(b, PantryJarShelf)]
+        jars = [b for b in scene.breakables if isinstance(b, PantryJar)]
+        assert len(shelves) == 8
+        assert len(jars) >= 10
+        assert not any(p.kind in {"pantry_shelf", "grain_sack"}
+                       for p in scene.props)
+        assert all(scene.tilemap.terrain_at(
+            int(shelf._drop[0] // config.TILE_SIZE),
+            int(shelf._drop[1] // config.TILE_SIZE)) == "="
+                   for shelf in shelves)
+
+        jar = jars[0]
+        col = int(jar._center_x // config.TILE_SIZE)
+        row = int(jar._bottom // config.TILE_SIZE) - 1
+        assert scene.tilemap.is_solid(col, row)
+        scene.player.x = col * config.TILE_SIZE + 3
+        scene.player.y = (row + 1) * config.TILE_SIZE + 1
+        scene.player.facing = "up"
+        game.input._actions_just_pressed.add("scratch")
+        scene.update(0.01)
+        assert not jar.intact
+        carton = next(p for p in scene.pickups
+                      if isinstance(p, CigaretteCarton))
+        assert carton.cigarette_count == config.CARTON_CIGARETTE_COUNT
+        # The same scratch invokes the shared callback and opens ship planks.
+        assert not scene.tilemap.is_solid(col, row)
+        assert scene.tilemap.terrain_at(col, row) == "="
+    finally:
+        game._shutdown()
 
 
 def test_lower_hold_uses_shared_ship_systems_and_returns_upstairs() -> None:

@@ -210,12 +210,6 @@ class EscapeCutsceneScene(Scene):
                     glass.set_at((x, wy), _SEA_GLINT)
                 if horizon <= wy + 1 < size:
                     glass.set_at((x, wy + 1), _SEA_DEEP)
-        # A brighter sun-glitter that shimmers on the nearest swell.
-        for i in range(4):
-            wx = gx + round(math.sin(self.elapsed * 1.3 + i * 1.9) * (r - 5))
-            wy = horizon + 6 + (i * 7) % max(1, span - 6)
-            if wy < size - 1:
-                glass.set_at((wx, wy), (255, 255, 255))
         # Re-mask to the circle so nothing spills past the glass.
         mask = pygame.Surface((size, size), pygame.SRCALPHA)
         pygame.draw.circle(mask, (255, 255, 255, 255), (gx, gx), r)

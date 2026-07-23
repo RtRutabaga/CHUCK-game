@@ -25,6 +25,24 @@ def test_the_escape_is_wordless() -> None:
     assert not hasattr(escape_cutscene_scene, "_CAPTIONS")
 
 
+def test_porthole_waves_use_lines_without_white_glitter_dots() -> None:
+    game = Game()
+    try:
+        scene = EscapeCutsceneScene(game)
+        surface = pygame.Surface((64, 64))
+        surface.fill((0, 0, 0))
+        for elapsed in (0.0, 1.0, 2.5):
+            scene.elapsed = elapsed
+            scene._draw_porthole(surface, 32, 32, 22)
+            assert not any(
+                surface.get_at((x, y))[:3] == (255, 255, 255)
+                for y in range(10, 54)
+                for x in range(10, 54)
+            )
+    finally:
+        game._shutdown()
+
+
 def test_the_cutscene_is_input_free_and_draws_every_phase() -> None:
     game = Game()
     try:

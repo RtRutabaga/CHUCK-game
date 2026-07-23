@@ -1,6 +1,6 @@
 ; PHASE 7 - LOWER HOLD (40x30 tiles).
-; A cargo-heavy rat nest below the arrival compartment. Pantry silhouettes
-; are reused as static ship cargo; the room has one physical Ashtray and
+; A cargo-heavy rat nest below the arrival compartment. Pantry shelves/jars
+; reuse their scratch-break and cigarette-carton behavior; one Ashtray and
 ; returns through the same northern ladder.
 ########################################
 ########################################

@@ -3,11 +3,28 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `7eca61a` (Phase 7 lower hold)
-- Current work: ship doors replaced by open doorway recesses (session 149)
+- Base commit before this pass: `bfa8ee6` (open ship passageways)
+- Current work: clean cutscene waves + breakable hold crockery (session 150)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Polished the escape portholes and restored the pantry breakable behavior in
+the lower hold:
+
+- Removed the four isolated pure-white sun-glitter pixels from each cutscene
+  porthole. The animated undulating crest lines and their darker shadow lines
+  remain, so the sea still moves without mixing line and dot languages.
+- Lower-hold shelf/jar map tiles now declare the actual `pantry_shelf` and
+  `grain_sack` prop kinds over ship planks. WorldScene's existing pantry
+  breakable construction therefore supplies the same scratch, debris, empty
+  shelf, tile-clearing, carton-drop, and reload-restock lifecycle.
+- Generalized shelf carton placement from pantry board only to safe pantry
+  board or ship plank. Every one of the hold's eight shelves and floor jars
+  now yields the established 20-cigarette carton; no duplicate ship-specific
+  breakable implementation was added.
+
+## Previous Pass (session 149, commit bfa8ee6)
 
 Replaced the arrival compartment's closed doors with open doorway recesses:
 
@@ -256,6 +273,9 @@ boundary:
   sixteen rats.
 - Native screenshots were inspected for north-only portholes, side-door scale,
   ladder readability, cargo silhouettes, and rat readability.
+- Session 150 targeted suites pass for the escape cutscene, lower hold, pantry
+  breakables, and ship arrival. Native screenshots confirm line-only cutscene
+  waves and the unchanged lower-hold cargo presentation.
 
 ## Known Issues
 

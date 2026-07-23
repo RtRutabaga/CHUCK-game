@@ -265,11 +265,10 @@ class WorldScene(Scene):
             )
             urn.load_sprite(self.game.assets)
             self.breakables.append(urn)
-        # Pantry shelves: the furniture stands forever, but its JARS are
-        # scratch-breakable and spill a carton. The scene picks the drop
-        # tile because only the map knows which neighbor is safe plain
-        # board — the left shelf stands directly above an Astral fall
-        # tile, and a carton must never land where collecting it kills.
+        # Pantry-style shelves: the furniture stands forever, but its JARS
+        # are scratch-breakable and spill a carton. The scene picks the drop
+        # tile because only the map knows which neighboring board is safe;
+        # this supports both pantry board ('p') and ship plank ('=').
         for kind, col, row in self.tilemap.prop_tiles:
             if kind != "pantry_shelf":
                 continue
@@ -279,7 +278,8 @@ class WorldScene(Scene):
                 for c, r in ((col, row + 1), (col - 1, row + 1),
                              (col + 1, row + 1), (col - 1, row),
                              (col + 1, row))
-                if self.tilemap.terrain_at(c, r) == "p"
+                if self.tilemap.terrain_at(c, r) in {"p", "="}
+                and not self.tilemap.is_solid(c, r)
             )
             shelf = PantryJarShelf(
                 col, row,

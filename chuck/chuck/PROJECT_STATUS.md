@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 149 (ship doors replaced by open doorway recesses).
+Updated: session 150 (clean cutscene waves + breakable hold crockery).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -665,13 +665,19 @@ This file is required by the project rules and updated every session.
   keeps its four animated sea portholes exclusively on the north hull. Its
   west/east walls carry three-cell-tall dark open doorway recesses and the
   south wall carries a 3x2 opening, reserving future interior routes without
-  implying that Chuck can operate full-sized doors. A southern floor ladder connects
+  implying that Chuck can operate full-sized doors. A southern floor ladder
+  connects
   reversibly to the new 40x30 ship_lower_hold. The hold reuses pantry shelf
-  and sack silhouettes as static cargo alongside crates and barrels, houses
-  sixteen ordinary scratchable rats, continues ship_shanty.wav without a
+  and jar silhouettes alongside crates and barrels; session 150 routed all
+  eight shelves and floor jars through the pantry's existing scratch-break,
+  debris, tile-clearing, reload-restock, and 20-cigarette-carton lifecycle.
+  It houses sixteen ordinary scratchable rats, continues ship_shanty.wav without a
   restart, and owns one physical shared-loader Ashtray plus development-
   visible `Ship Hold`. The user-supplied `docs/design/pirate ship.png` is
   reserved as the composition reference for the later exterior deck map
+- Clean cutscene porthole waves (session 150): the Phase 6 escape tableau keeps
+  its animated undulating crest/shadow lines but no longer adds four isolated
+  white sun-glitter dots inside each porthole
 - Walk-in crevice prompt (session 146): the rubble "Enter crevice?"
   YES/NO no longer needs the interact key — walking into the crevice
   zone pops it. ChoiceTrigger gains a walk_triggered flag (a _WALK_TRIGGERS
@@ -1130,10 +1136,11 @@ until the intervening ship interiors are complete.
        animated portholes, human-scale dark open doorway recesses on the other
        walls, and a southern floor ladder while keeping the established Phase
        7 ship theme continuous (sessions 148-149).
-3. [x] Added the reversible 40x30 lower hold with static pantry-derived cargo,
-       crates, barrels, sixteen ordinary rats, one physical Ashtray, and
+3. [x] Added the reversible 40x30 lower hold with pantry-derived breakable
+       shelves/jars that spill 20-cigarette cartons, crates, barrels, sixteen
+       ordinary rats, one physical Ashtray, and
        development-visible `Ship Hold` through the shared checkpoint loader
-       (session 148).
+       (sessions 148/150).
 4. [ ] Build the galley and its chasing pirate chef as the next bounded slice.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)

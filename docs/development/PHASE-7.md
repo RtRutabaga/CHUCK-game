@@ -15,8 +15,9 @@ Implemented so far:
   establish future interior routes, while a southern floor ladder begins the
   playable phase.
 - The ladder leads to a reversible cargo-filled lower hold with reused pantry
-  storage silhouettes, sixteen ordinary rats, uninterrupted ship music, one
-  physical Ashtray, and shared-loader `Ship Hold` development entry.
+  shelves and jars that scratch-break into cigarette cartons, sixteen ordinary
+  rats, uninterrupted ship music, one physical Ashtray, and shared-loader
+  `Ship Hold` development entry.
 - `docs/design/pirate ship.png` is the authoritative composition reference
   for the later exterior deck map; that deck has not been built yet.
 

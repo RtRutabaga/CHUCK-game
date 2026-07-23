@@ -381,12 +381,12 @@ TILE_DEFS: dict[str, TileDef] = {
     "┼": TileDef(solid=False, color=(24, 20, 19)),
     "┤": TileDef(solid=False, color=(24, 20, 19)),
     "ℓ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
-    # Static reuse of pantry storage art in the ship's lower hold. These are
-    # cargo, not the pantry's carton-filled breakable furniture.
+    # Lower-hold reuse of the pantry's carton-filled breakable shelves/jars,
+    # with ship planks beneath instead of pantry boards.
     "ƞ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
-                 prop="ship_shelf", under="="),
+                 prop="pantry_shelf", under="="),
     "ʒ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
-                 prop="ship_sack", under="="),
+                 prop="grain_sack", under="="),
     ";": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                  prop="sailing_cog", under="#"),
     "'": TileDef(solid=False, color=(44, 45, 29)),
