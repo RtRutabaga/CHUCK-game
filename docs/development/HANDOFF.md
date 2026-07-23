@@ -3,11 +3,25 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `2656bb9` (exterior pirate ship deck)
-- Current work: ship-scale mast/sail correction (session 155)
+- Base commit before this pass: `28cc329` (corrected exterior deck masts)
+- Current work: narrower hull + larger mast/sails (session 156)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Refined the exterior silhouette after a second visual playtest:
+
+- Reduced the hull's north-south beam from 30 tile rows to 22 while preserving
+  its full east-west length. The surrounding ocean now reads more strongly and
+  the deck no longer feels excessively broad.
+- Moved the existing hatch, named arrival, and sole Ashtray two rows inward so
+  the narrower rail never crowds the save/transition space; the Ashtray's
+  shared checkpoint position moved with its authored marker.
+- Enlarged both centerline mast-and-sail sprites from 144x136 to 176x160. Their
+  east-west alignment and anchor columns are unchanged.
+- Focused tests lock the new beam bounds, mast positions and sprite size.
+
+## Previous Pass (session 155, commit 28cc329)
 
 Corrected the exterior deck's mast composition after visual playtesting:
 

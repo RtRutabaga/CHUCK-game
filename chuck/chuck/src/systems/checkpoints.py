@@ -340,7 +340,7 @@ CHECKPOINTS = (
     ),
     CheckpointDefinition(
         "ship_exterior_anchor", "Ship Exterior Ashtray",
-        "ship_exterior_deck", position=(436.0, 469.0), facing="up",
+        "ship_exterior_deck", position=(436.0, 437.0), facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         saveable=True, development_visible=False,
     ),
