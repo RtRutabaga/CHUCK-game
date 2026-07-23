@@ -458,6 +458,7 @@ class WorldScene(Scene):
             and self._deck_plank_origin is not None
         ):
             self.reality_blocks = RealityBlockField(*self._deck_plank_origin)
+            self.reality_blocks.load_art(self.game.assets)
         # An opened-but-uncollected captain chest reconstructs its physical
         # carton when this room is loaded.
         self._collect_pending_drops()

@@ -3,11 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `4203c0a` (captain arrival cutscene)
-- Current work: readable deck-pirate side facings (session 171)
+- Base commit before this pass: `057b189` (readable deck-pirate side facings)
+- Current work: east-west plank reality streams (session 172)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Reworked the plank reality breakup to match established Astral art and the
+ship's direction of travel without beginning the kick/fall:
+
+- Removed the old plank-centered sine drift and custom Astral approximation.
+- Astral fragments now load and tile the exact six animated `astral_void`
+  cells used by the sewer, pantry, Chult, and temple fall hazards.
+- Astral and ember-cracked Hell blocks occupy staggered screen-space sea lanes.
+  Each begins entering at the native screen's east edge, moves directly west
+  until fully off-screen, then recycles as a replacement at the east edge.
+- The streams remain fixed to the sea frame and draw below the rocking
+  hull/plank, so the ship appears to travel through them without changing
+  physics, collision, Jeffries' warning, or the bounded plank endpoint.
+- Focused tests verify exact Astral cell reuse, pure westward movement, full
+  screen crossing, east-edge recycling, both materials, and all existing plank
+  gates. All 63 standalone suites pass, compilation is clean, the title-loop
+  launch smoke check passes, and a native 320×180 plank render was inspected.
+
+## Previous Pass (session 171, commit 057b189)
 
 Corrected the apparent black boxes over animated deck NPC faces when dialogue
 made them turn left or right:

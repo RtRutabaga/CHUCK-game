@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 171 (readable deck-pirate side facings).
+Updated: session 172 (east-west plank reality streams).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1258,12 +1258,16 @@ bounded sessions.
          YES/NO transition, and nearby named arrivals were kept safely off
          the enlarged footprint (session 167).
 12. [x] Added a deterministic moving reality field that activates when Chuck
-        first steps onto the staged plank. Eight hard-edged fragments phase in
-        across separate ocean lanes: purple/blue starfield Astral blocks and
-        ember-cracked, square-flamed Hell blocks. Jeffries shouts `It's back!
-        The purple is back!` once as they appear. They remain non-colliding,
-        never cross the plank, and its solid endpoint still prevents the
-        unbuilt kick/fall from beginning early (session 168).
+        first steps onto the staged plank. Eight staggered Astral and
+        ember-cracked Hell fragments enter from the native screen's east edge,
+        travel fully clear of its west edge, and recycle continuously to sell
+        the ship's forward motion. Astral chunks tile the exact animated
+        `astral_void` fall-hazard cells shared by the sewer, pantry, Chult, and
+        temple rather than using a separate approximation. The streams render
+        behind the hull/plank, remain non-colliding, and the endpoint still
+        prevents the unbuilt kick/fall from beginning early. Jeffries retains
+        his one-time `It's back! The purple is back!` warning (sessions
+        168/172).
 13. [ ] Stage the captain's kick, land Chuck in an authored moving Hell block,
         and hand off to the Nine Hells falling transition without beginning
         Phase 8 gameplay.
