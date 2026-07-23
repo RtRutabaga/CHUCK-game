@@ -40,6 +40,7 @@ from src.entities.prop import Prop
 from src.entities.rat import SewerRat
 from src.entities.raptor import Raptor
 from src.entities.snake import TempleSnake
+from src.entities.sword_fighter import SwordFighter
 from src.entities.undead import UndeadEnemy
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
@@ -330,7 +331,7 @@ class WorldScene(Scene):
                 "cat", "rat", "zombie", "skeleton", "raptor",
                 "massive_dinosaur", "snake",
                 "pirate_chef",
-            }
+            } or kind.startswith("sword_fighter:")
         ]
         self._staged_undead_spawns = [
             (kind, position)
@@ -395,6 +396,8 @@ class WorldScene(Scene):
                 "snake", "pirate_chef",
             }:
                 continue  # rebuilt with all enemies below
+            elif kind.startswith("sword_fighter:"):
+                continue  # paired and rebuilt with hazards below
             elif kind.startswith("battle:"):
                 actor = BattleActor(cx, cy, kind.split(":", 1)[1])
                 actor.load_sprite(self.game.assets)
@@ -523,6 +526,8 @@ class WorldScene(Scene):
             snake.update(dt, self.player)
         for chef in self.chefs:
             chef.update(dt, self.player)
+        for fencer in self.fencers:
+            fencer.update(dt)
         for npc in self.npcs:
             npc.update(dt)
         for trap in self.dart_traps:
@@ -726,6 +731,17 @@ class WorldScene(Scene):
         )
         if blocking_chef is not None:
             if self.sanity.damage(blocking_chef.damage):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+            self.player.x, self.player.y = old_player_position
+
+        blocking_fencer = next(
+            (fencer for fencer in self.fencers
+             if overlaps(self.player.hitbox, fencer.hitbox)),
+            None,
+        )
+        if blocking_fencer is not None:
+            if self.sanity.damage(blocking_fencer.damage):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
             self.player.x, self.player.y = old_player_position
@@ -964,7 +980,7 @@ class WorldScene(Scene):
                      *self.battle_actors,
                      *self.hazards, *self.rats,
                      *self.undead, *self.raptors, *self.dinosaurs,
-                     *self.snakes, *self.chefs,
+                     *self.snakes, *self.chefs, *self.fencers,
                      *self.darts, *self.battle_projectiles,
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
@@ -1104,6 +1120,7 @@ class WorldScene(Scene):
         self.dinosaurs = []
         self.snakes = []
         self.chefs = []
+        self.fencers = []
         self._chef_notice_shown = False
         self._chef_start_after_dialogue = False
         self.dart_traps = [
@@ -1182,6 +1199,15 @@ class WorldScene(Scene):
                 chef.tilemap = self.tilemap
                 chef.load_sprites(self.game.assets)
                 self.chefs.append(chef)
+            elif kind.startswith("sword_fighter:"):
+                fencer = SwordFighter(cx, cy, kind.split(":", 1)[1])
+                fencer.tilemap = self.tilemap
+                fencer.load_sprites(self.game.assets)
+                self.fencers.append(fencer)
+        if self.fencers:
+            if len(self.fencers) != 2:
+                raise ValueError("Exterior fencing encounter needs two pirates")
+            self.fencers[0].bind_pair(self.fencers[1])
 
     def _spawn_undead(
         self, kind: str, position: tuple[float, float]

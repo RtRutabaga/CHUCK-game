@@ -238,7 +238,7 @@ Do not fully explain the collided worlds.
 
 # 11. Acceptance Criteria
 
--   [ ] Ship interior is fully explorable.
+-   [x] Ship interior is fully explorable.
 -   [x] Lower hold contains rats and reused pantry assets.
 -   [x] Galley chef chases Chuck.
 -   [x] Crew quarters contain the seated pirate.
@@ -247,8 +247,8 @@ Do not fully explain the collided worlds.
 -   [x] Pirate animations are richer than previous NPCs.
 -   [x] NPC dialogue changes after first conversations.
 -   [x] Deck rocking and animated waves are implemented.
--   [ ] Sword-fighting pirates damage Chuck.
--   [ ] Deck animations synchronize with the soundtrack.
+-   [x] Sword-fighting pirates damage Chuck.
+-   [x] Deck animations synchronize with the soundtrack.
 -   [x] Jeffries delivers collided-world dialogue.
 -   [x] Other pirates dismiss Jeffries.
 -   [ ] Captain sequence triggers correctly.

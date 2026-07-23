@@ -564,6 +564,8 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ӊ": MarkerDef(
         kind="deck_pirate:jeffries:deck_jeffries_met:struggle", under="=",
     ),
+    "ӊ": MarkerDef(kind="sword_fighter:a", under="="),
+    "Ӌ": MarkerDef(kind="sword_fighter:b", under="="),
     # The rubble crawlspace's "Enter crevice?" prompt (session 141).
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
 }

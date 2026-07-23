@@ -3,11 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `9be609a` (extended ship bowsprit)
-- Current work: exterior deck's non-combat pirate cast (session 159)
+- Base commit before this pass: `f3cb6c6` (exterior non-combat deck cast)
+- Current work: paired sword-fighting deck hazard (session 160)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Completed the exterior deck's lively cast without beginning the ending:
+
+- Added exactly two `SwordFighter` hazards in the central deck lanes. They bind
+  to one shared midpoint, wander it in a slow broad loop, and lunge/retreat
+  across it while always facing one another.
+- Each fighter has twelve procedural 24x30 cells. Their guard, lunge, high
+  parry, and low recovery run on opposing half-beats at the shanty's 126 BPM;
+  one wears blue and one red so the exchange remains readable.
+- Movement uses ordinary swept tile collision, so the pair cannot pass through
+  masts or rails. Routes above and below remain open, making this an avoidable
+  hazard rather than a combat gate. They are intentionally not scratch targets.
+- Contact costs 15 Sanity and restores Chuck's previous position. The ordinary
+  enemy-reset lifecycle rebuilds and rebinds both fighters after death.
+- A focused test suite covers exact map composition, open bypass lanes, paired
+  movement, beat timing, collision-safe positions, contact damage, and reset.
+- The captain, walk-the-plank confrontation, Astral/Hell breakup, and ending
+  remain untouched for later bounded sessions.
+
+## Previous Pass (session 159, commit f3cb6c6)
 
 Populated the exterior deck without beginning its combat or ending sequence:
 

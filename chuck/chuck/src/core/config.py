@@ -323,6 +323,8 @@ UNDEAD_HITBOX_H = NPC_HITBOX_H
 PIRATE_CHEF_SPEED = 58.0
 PIRATE_CHEF_NOTICE_RANGE = 96.0
 PIRATE_CHEF_SANITY_DAMAGE = 20
+SWORD_FIGHTER_SPEED = 38.0
+SWORD_FIGHTER_SANITY_DAMAGE = 15
 
 # ---------------------------------------------------------------------------
 # Audio

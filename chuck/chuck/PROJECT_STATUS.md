@@ -1197,8 +1197,15 @@ bounded sessions.
        flag. Jeffries delivers the authored collided-world warnings while the
        cheering pirate dismisses him. The fencing hazard and ending sequence
        remain deliberately unbuilt (session 159).
-9. [ ] Add the two wandering sword-fighting pirates as an avoidable Sanity
-       hazard next; do not begin the captain or plank sequence yet.
+9. [x] Added two human-scale sword-fighting pirates to the central deck lanes.
+       Their paired controller wanders a shared midpoint while the fighters
+       guard, lunge, high-parry, and recover on opposing shanty half-beats;
+       swept tile collision keeps them off masts and rails. Contact costs 15
+       Sanity, broad routes remain open above and below them, and ordinary
+       death reset restores the complete pair. They are an avoidable hazard,
+       not a combat gate or scratch target (session 160).
+10. [ ] Add the gated captain confrontation after the required conversations
+        and chest reward; stop before reality breaks into Astral/Hell blocks.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 
