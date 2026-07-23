@@ -1200,6 +1200,9 @@ bounded sessions.
    - [x] Lifted Jeffries' rendered struggle fully onto the mast pole while
          preserving his accessible interaction tile, and added a human-scale
          procedural helm immediately sternward of the main mast (session 161).
+   - [x] Corrected the helm to the masts' east-west centerline and redrew its
+         wheel in a strongly foreshortened transverse plane for the ship's
+         starboard three-quarter viewpoint (session 162).
 9. [x] Added two human-scale sword-fighting pirates to the central deck lanes.
        Their paired controller wanders a shared midpoint while the fighters
        guard, lunge, high-parry, and recover on opposing shanty half-beats;

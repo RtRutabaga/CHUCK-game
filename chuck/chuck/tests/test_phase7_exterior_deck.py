@@ -31,7 +31,8 @@ def test_exterior_is_a_large_reference_led_ship_in_animated_sea() -> None:
     assert masts == [(21, 22), (42, 22)]
     helms = [(col, row) for kind, col, row in tilemap.prop_tiles
              if kind == "ship_helm"]
-    assert helms == [(17, 24)]
+    assert helms == [(17, 22)]
+    assert {row for _col, row in helms + masts} == {22}
     bowsprits = [(col, row) for kind, col, row in tilemap.prop_tiles
                  if kind == "ship_bowsprit"]
     assert bowsprits == [(55, 22)]

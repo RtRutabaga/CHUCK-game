@@ -3,11 +3,28 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `cf0e49a` (paired deck sword fighters)
-- Current work: Jeffries/mast placement and exterior helm polish (session 161)
+- Base commit before this pass: `ba4a404` (Jeffries and exterior helm polish)
+- Current work: helm centerline and perspective correction (session 162)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Corrected the exterior helm's position and perspective without changing routes
+or progression:
+
+- Moved the helm two rows north so its anchor now shares the exact row-22
+  stern-to-bow centerline with both mast bases, remaining four tiles sternward
+  of the western/main mast.
+- Rebuilt its wheel from a flush circular face into a narrow, layered
+  transverse rim with offset depth, compressed spokes, handles, angled
+  pedestal, and brass hub. It now reads from the authored three-quarter
+  viewpoint off the starboard side.
+- The focused exterior-deck test locks the shared centerline. The helm remains
+  a 56x54 human-scale solid prop and shares the ship's visual rocking.
+- The captain, walk-the-plank confrontation, Astral/Hell breakup, and ending
+  remain untouched for later bounded sessions.
+
+## Previous Pass (session 161, commit ba4a404)
 
 Polished two requested exterior-deck composition details without changing its
 routes or progression:
@@ -22,8 +39,6 @@ routes or progression:
   scale and reinforce Chuck's one-foot scale.
 - Focused exterior/deck-cast tests lock the helm position and size plus
   Jeffries' visual lift. A native headless render verified their composition.
-- The captain, walk-the-plank confrontation, Astral/Hell breakup, and ending
-  remain untouched for later bounded sessions.
 
 ## Previous Pass (session 160, commit cf0e49a)
 

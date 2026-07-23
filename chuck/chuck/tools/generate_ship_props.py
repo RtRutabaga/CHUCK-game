@@ -113,25 +113,40 @@ def mast_sail() -> Image.Image:
 
 
 def helm() -> Image.Image:
-    """A human-scale wheel and pedestal for the exterior deck's stern."""
+    """An oblique human-scale wheel viewed from the ship's starboard side."""
     image = Image.new("RGBA", (56, 54), TRANSPARENT)
     draw = ImageDraw.Draw(image)
-    # Low pedestal first, then the wheel: the broad silhouette remains
-    # readable against both deck boards and the main mast's sail.
-    draw.rectangle((19, 42, 37, 51), fill=DARK)
-    draw.rectangle((22, 35, 34, 48), fill=WOOD_DARK)
-    draw.rectangle((25, 33, 31, 47), fill=WOOD)
-    draw.line((26, 34, 29, 34), fill=WOOD_LIGHT, width=2)
-    draw.ellipse((8, 4, 47, 43), fill=DARK)
-    draw.ellipse((12, 8, 43, 39), fill=WOOD)
-    draw.ellipse((16, 12, 39, 35), fill=TRANSPARENT)
-    # Eight spokes extend beyond the rim like a proper ship's wheel.
-    cx, cy = 27, 23
-    for end in ((27, 1), (27, 46), (5, 23), (50, 23),
-                (11, 7), (43, 39), (43, 7), (11, 39)):
-        draw.line((cx, cy, *end), fill=WOOD_LIGHT, width=3)
-    draw.ellipse((22, 18, 32, 28), fill=BRASS)
-    draw.ellipse((25, 21, 29, 25), fill=BRASS_LIGHT)
+    # The pedestal leans slightly aft. It is broad enough to read as a ship
+    # fitting but does not turn the wheel into a front-facing sign.
+    draw.polygon([(17, 46), (37, 43), (42, 51), (20, 53)], fill=DARK)
+    draw.polygon([(22, 35), (32, 33), (37, 47), (26, 49)],
+                 fill=WOOD_DARK)
+    draw.polygon([(25, 34), (29, 33), (34, 47), (30, 48)], fill=WOOD)
+
+    # The wheel's transverse plane is strongly foreshortened from the
+    # starboard three-quarter viewpoint. A second offset rim supplies depth.
+    back_rim = [(31, 2), (41, 8), (40, 23), (34, 40),
+                (27, 47), (21, 40), (21, 24), (27, 7)]
+    front_rim = [(27, 5), (36, 10), (35, 24), (30, 40),
+                 (24, 45), (18, 38), (18, 24), (23, 9)]
+    draw.line(back_rim + [back_rim[0]], fill=DARK, width=4)
+    draw.line(front_rim + [front_rim[0]], fill=WOOD, width=4)
+    for front, back in zip(front_rim[::2], back_rim[::2]):
+        draw.line((*front, *back), fill=WOOD_DARK, width=2)
+
+    # Eight spokes and handles retain the iconic helm silhouette, compressed
+    # into the same oblique plane rather than facing the camera flush.
+    hub = (28, 25)
+    for end in front_rim:
+        draw.line((*hub, *end), fill=WOOD_LIGHT, width=2)
+    for point in front_rim:
+        px, py = point
+        dx = -1 if px < hub[0] else 1
+        dy = -1 if py < hub[1] else 1
+        draw.line((px, py, px + dx * 3, py + dy * 3),
+                  fill=WOOD_LIGHT, width=2)
+    draw.ellipse((23, 20, 33, 30), fill=BRASS)
+    draw.ellipse((26, 23, 30, 27), fill=BRASS_LIGHT)
     return image
 
 
