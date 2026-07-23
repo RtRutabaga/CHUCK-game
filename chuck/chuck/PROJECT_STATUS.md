@@ -1210,8 +1210,15 @@ bounded sessions.
        Sanity, broad routes remain open above and below them, and ordinary
        death reset restores the complete pair. They are an avoidable hazard,
        not a combat gate or scratch target (session 160).
-10. [ ] Add the gated captain confrontation after the required conversations
-        and chest reward; stop before reality breaks into Astral/Hell blocks.
+10. [x] Added a durable seven-condition captain gate covering the galley chef,
+        seated pirate, four deck performers, and one-time chest reward. Once
+        complete, the captain appears beside the stern helm with a four-frame
+        pointing animation; the camera frames his accusation, plank order,
+        the crew's exact authored objection, and his refusal. Completion saves
+        at the deck Ashtray and CONTINUE restores the captain without replaying
+        the exchange (session 163).
+11. [ ] Add the physical plank and stage the ordered walk toward it; stop
+        before moving Astral Sea/Hell blocks or the kick/fall transition.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 

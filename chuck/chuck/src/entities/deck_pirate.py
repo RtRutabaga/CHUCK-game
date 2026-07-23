@@ -20,6 +20,7 @@ _PHASE_OFFSETS = {
     "cheer": 2,
     "dance": 1,
     "struggle": 0,
+    "captain": 0,
 }
 _DRAW_LIFTS = {
     # Jeffries' authored marker remains on the safe interaction tile below

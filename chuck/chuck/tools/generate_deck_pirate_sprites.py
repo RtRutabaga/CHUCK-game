@@ -78,13 +78,28 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
         arm_y = (18, 13, 9, 13)[phase]
         rect(draw, (cx - 7, arm_y, cx - 5, arm_y + 5), SKIN)
         rect(draw, (cx + 5, 22 - arm_y // 2, cx + 7, 27 - arm_y // 2), SKIN)
-    else:  # Jeffries: elbows strain against three visible rope bands.
+    elif action == "struggle":
+        # Jeffries: elbows strain against three visible rope bands.
         tug = (-1, 1, -1, 1)[phase]
         rect(draw, (cx - 7 + tug, 14, cx - 5 + tug, 22), SKIN)
         rect(draw, (cx + 5 - tug, 14, cx + 7 - tug, 22), SKIN)
         for y in (15, 18, 21):
             rect(draw, (cx - 7, y, cx + 7, y), ROPE)
         rect(draw, (cx - 1, 12, cx, 25), ROPE)
+    else:  # Captain: a clipped point toward Chuck/the waiting plank.
+        reach = (0, 1, 2, 1)[phase]
+        direction = -1 if facing == "left" else 1
+        sleeve_x = sorted((cx + 3 * direction,
+                           cx + (4 + reach) * direction))
+        hand_x = sorted((cx + (5 + reach) * direction,
+                         cx + (6 + reach) * direction))
+        rect(draw, (sleeve_x[0], 14, sleeve_x[1], 16), coat)
+        rect(draw, (hand_x[0], 14, hand_x[1], 15), SKIN)
+        hip_direction = -direction
+        hip_x = sorted((cx + 5 * hip_direction, cx + 7 * hip_direction))
+        rect(draw, (hip_x[0], 16, hip_x[1], 21), SKIN)
+        trim_x = sorted((cx + 2 * hip_direction, cx + 5 * hip_direction))
+        rect(draw, (trim_x[0], 21, trim_x[1], 22), GOLD)
     return image
 
 
@@ -108,6 +123,7 @@ def main() -> None:
         ("cheering_pirate", "cheer", RED),
         ("dancing_pirate", "dance", GREEN),
         ("jeffries", "struggle", PURPLE),
+        ("captain_pirate", "captain", (73, 38, 43, 255)),
     ):
         path = out / f"{name}.png"
         _sheet(action, coat).save(path)

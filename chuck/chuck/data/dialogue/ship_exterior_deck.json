@@ -24,5 +24,17 @@
   "jeffries_repeat": [
     "Don't go into the purple! DON'T GO INTO THE PURPLE!",
     "Why don't they see!?"
+  ],
+  "captain_confrontation": [
+    "That's the rat who stole my Premium Buhetian Halfling Leaf.",
+    "Put him on the plank.",
+    "But we've all grown fond of the smoking rat, Cap.",
+    "No."
+  ],
+  "captain_pirate_first": [
+    "Put him on the plank."
+  ],
+  "captain_pirate_repeat": [
+    "The plank."
   ]
 }

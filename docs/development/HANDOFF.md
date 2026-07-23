@@ -3,11 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `ba4a404` (Jeffries and exterior helm polish)
-- Current work: helm centerline and perspective correction (session 162)
+- Base commit before this pass: `729aeca` (helm perspective correction)
+- Current work: gated captain confrontation (session 163)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Implemented the captain's gated arrival and accusation without beginning the
+physical plank sequence or reality breakup:
+
+- Added one modular seven-flag gate requiring the galley chef encounter,
+  seated pirate, all four deck conversations, and opened captain's chest.
+  The previously runtime-only chef notice now sets a durable save flag.
+- A hidden authored captain marker beside the stern helm materializes only
+  when the gate is ready. The camera cuts to him and the dialogue delivers the
+  theft accusation, plank order, exact authored crew objection, and the
+  captain's clipped refusal.
+- Added a twelve-cell captain sheet with four shanty-timed pointing frames per
+  facing. After the exchange he remains as a normal first/repeat-aware deck
+  pirate and the camera returns to Chuck.
+- `captain_confronted` persists through the deck Ashtray and CONTINUE. A
+  restored captain never replays the automatic sequence.
+- Focused tests cover every prerequisite, hidden/spawned states, authored
+  dialogue, animation, chef tracking, and save restoration. A native render
+  verified the captain's placement beside the helm.
+- The physical plank, forced walk, Astral/Hell blocks, kick, fall, and Phase 8
+  transition remain untouched.
+
+## Previous Pass (session 162, commit 729aeca)
 
 Corrected the exterior helm's position and perspective without changing routes
 or progression:
@@ -21,8 +44,6 @@ or progression:
   viewpoint off the starboard side.
 - The focused exterior-deck test locks the shared centerline. The helm remains
   a 56x54 human-scale solid prop and shares the ship's visual rocking.
-- The captain, walk-the-plank confrontation, Astral/Hell breakup, and ending
-  remain untouched for later bounded sessions.
 
 ## Previous Pass (session 161, commit ba4a404)
 

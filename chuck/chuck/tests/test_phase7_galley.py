@@ -68,6 +68,7 @@ def test_chef_delivers_authored_warning_then_begins_pursuit() -> None:
         galley.update(0.0)
         assert isinstance(game.scenes.current, DialogueScene)
         assert galley._chef_notice_shown
+        assert game.progress.has("pirate_chef_met")
         assert not chef.pursuing
 
         game.scenes.pop()

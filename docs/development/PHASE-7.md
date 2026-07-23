@@ -30,9 +30,15 @@ Implemented so far:
 - The crew quarters' east opening now enters the captain's cabin. Its oversized
   chest grants Premium Buhetian Halfling Leaf (+40 cigarettes) exactly once,
   stays visibly open afterward, and persists that state through the cabin's
-  Ashtray and CONTINUE. The captain and accusation sequence remain unstarted.
-- `docs/design/pirate ship.png` is the authoritative composition reference
-  for the later exterior deck map; that deck has not been built yet.
+  Ashtray and CONTINUE.
+- The exterior deck now uses `docs/design/pirate ship.png` as its composition
+  reference and includes the authored crew performances, fencing hazard,
+  rocking sea presentation, Jeffries, helm, and physical Ashtray.
+- After the chef encounter, seated-pirate conversation, four deck
+  conversations, and captain's chest are all complete, the captain appears
+  beside the stern helm and delivers the accusation, plank order, crew
+  objection, and refusal. The physical plank walk and reality breakup remain
+  unstarted.
 
 ------------------------------------------------------------------------
 
@@ -251,7 +257,7 @@ Do not fully explain the collided worlds.
 -   [x] Deck animations synchronize with the soundtrack.
 -   [x] Jeffries delivers collided-world dialogue.
 -   [x] Other pirates dismiss Jeffries.
--   [ ] Captain sequence triggers correctly.
+-   [x] Captain sequence triggers correctly.
 -   [ ] Moving Astral Sea and Hell blocks appear.
 -   [ ] Chuck falls into a Hell block.
 -   [ ] Phase ends with the Nine Hells transition.

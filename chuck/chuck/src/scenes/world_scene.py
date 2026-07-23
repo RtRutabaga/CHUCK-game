@@ -45,6 +45,9 @@ from src.entities.undead import UndeadEnemy
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
 from src.systems.astral_anchor import AstralAnchorSystem
+from src.systems.captain_confrontation import (
+    CAPTAIN_CONFRONTED_FLAG, captain_confrontation_ready,
+)
 from src.systems.choice import ChoiceSystem
 from src.systems.combat import scratch_first_target
 from src.systems.dialogue import DialogueSystem
@@ -248,6 +251,9 @@ class WorldScene(Scene):
         self.dialogue = DialogueSystem()
         self.choices = ChoiceSystem()
         self.last_choice: str | None = None  # what Chuck last decided
+        self._deck_captain_spawn = None
+        self._captain_confrontation_started = False
+        self._captain_after_dialogue = False
         # Temple urns, pantry jar shelves, and pantry floor jars are
         # living breakables (see below), not static props.
         self.props = []
@@ -391,6 +397,11 @@ class WorldScene(Scene):
                 )
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
+            elif kind.startswith("deck_captain:"):
+                npc_id, progress_flag, performance = kind.split(":", 3)[1:]
+                self._deck_captain_spawn = (
+                    cx, cy, npc_id, progress_flag, performance,
+                )
             elif kind in {
                 "rat", "zombie", "skeleton", "raptor", "massive_dinosaur",
                 "snake", "pirate_chef",
@@ -417,6 +428,8 @@ class WorldScene(Scene):
                 continue  # released in finite groups as Chuck advances
             else:
                 raise ValueError(f"No spawner for object kind {kind!r}")
+        if self.game.progress.has(CAPTAIN_CONFRONTED_FLAG):
+            self._spawn_deck_captain()
         self._reset_enemies()
 
 
@@ -433,6 +446,10 @@ class WorldScene(Scene):
             self._chef_start_after_dialogue = False
             for chef in self.chefs:
                 chef.begin_pursuit()
+        if self._captain_after_dialogue:
+            self._captain_after_dialogue = False
+            self.game.progress.enable(CAPTAIN_CONFRONTED_FLAG)
+            self.camera.follow(self.player)
         if self._pending_entrance_dialogue is not None:
             lines = self.dialogue.get(self._pending_entrance_dialogue)
             self._pending_entrance_dialogue = None
@@ -488,6 +505,23 @@ class WorldScene(Scene):
                 self._arrival_fade_t = None
             self.camera.update(dt)
             return
+        if (
+            self.map_name == "ship_exterior_deck"
+            and not self._captain_confrontation_started
+            and captain_confrontation_ready(self.game.progress)
+        ):
+            self._captain_confrontation_started = True
+            captain = self._spawn_deck_captain()
+            captain.face_toward(self.player)
+            self.camera.focus_on(
+                captain.x + captain.width / 2,
+                captain.y + captain.height / 2,
+            )
+            self._captain_after_dialogue = True
+            self.game.scenes.push(DialogueScene(
+                self.game, self.dialogue.get("captain_confrontation")
+            ))
+            return
 
         # The Fireball has been cast: the world freezes under the blast
         # until it throws Chuck into the rubble.
@@ -502,6 +536,7 @@ class WorldScene(Scene):
             )
             if noticing_chef is not None:
                 self._chef_notice_shown = True
+                self.game.progress.enable("pirate_chef_met")
                 self._chef_start_after_dialogue = True
                 noticing_chef.face_toward(self.player)
                 self.game.scenes.push(DialogueScene(
@@ -984,6 +1019,33 @@ class WorldScene(Scene):
                      *self.darts, *self.battle_projectiles,
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
+
+    def _spawn_deck_captain(self) -> DeckPirateNPC:
+        """Materialize the authored captain once the confrontation is due."""
+        existing = next(
+            (
+                npc for npc in self.npcs
+                if isinstance(npc, DeckPirateNPC)
+                and npc.npc_id == "captain_pirate"
+            ),
+            None,
+        )
+        if existing is not None:
+            return existing
+        if self._deck_captain_spawn is None:
+            raise ValueError(
+                "Ship exterior deck is missing its authored captain marker"
+            )
+        cx, cy, npc_id, progress_flag, performance = self._deck_captain_spawn
+        captain = DeckPirateNPC(
+            cx, cy, npc_id=npc_id,
+            progress=self.game.progress,
+            progress_flag=progress_flag,
+            performance=performance,
+        )
+        captain.load_sprites(self.game.assets)
+        self.npcs.append(captain)
+        return captain
 
     def _on_choice(self, option) -> None:
         """What a decision means. The scene reports; the world acts.

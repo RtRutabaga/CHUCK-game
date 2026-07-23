@@ -21,11 +21,13 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "sewer_completed",
     "chult_reached",
     "crew_pirate_met",
+    "pirate_chef_met",
     "captain_chest_opened",
     "deck_concertina_met",
     "deck_cheering_met",
     "deck_dancer_met",
     "deck_jeffries_met",
+    "captain_confronted",
 })
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
