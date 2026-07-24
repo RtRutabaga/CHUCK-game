@@ -58,7 +58,7 @@ Implemented so far:
   captain emerging at the midship ladder and follows his animated walk across
   the deck to the stern helm. A nearby crewman announces `Captain on deck!`;
   restrained `...` dialogue beats pace the accusation, plank order, crew
-  objection, and refusal. A narrow physical plank then opens through the
+  objection, and refusal. A two-tile-wide physical plank then opens through the
   starboard rail; the captain and objecting pirate flank its approach while
   Chuck is marched to the rail and control returns. The outer endpoint remains
   safely bounded. Stepping onto the plank now starts staggered streams of
@@ -251,9 +251,9 @@ A pirate objects:
 
 The captain refuses.
 
-The crew stages a narrow plank through the starboard rail. Chuck is marched to
-its approach, then the player regains control and can walk to its currently
-bounded outer end.
+The crew stages a broad two-tile plank through the starboard rail. Chuck is
+marched to its approach, then the player regains control and can walk to its
+currently bounded outer end.
 
 Moving Astral Sea blocks begin appearing over the ocean.
 

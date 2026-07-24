@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: session 179 (removed remaining up-facing pirate head blocks).
+Updated: session 180 (widened the exterior-deck gangplank).
 This file is required by the project rules and updated every session.
 
 ## Working systems
@@ -1314,6 +1314,12 @@ bounded sessions.
          captain/deck and seated-pirate generators with narrow peaked
          silhouettes. Up-facing performance and captain-walk frames now retain
          readable warm head/scarf pixels at 4x scale (session 179).
+   - [x] Widened the staged starboard gangplank from one tile to two (16px to
+         32px), including its rail opening and collision. Either lane starts
+         the reality warning and endpoint sequence; the cinematic recenters
+         Chuck and the captain on the broad plank before the kick. Its
+         procedural tile now fills both halves without a water seam (session
+         180).
    - [x] Revised the Nine Hells fall so no overhead Hell tiles appear behind
          Chuck in the street-view descent. A large distant volcano now anchors
          the open heated sky. The landing plane is over 90% basalt with sparse

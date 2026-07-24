@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 CAPTAIN_CONFRONTED_FLAG = "captain_confronted"
 DECK_PLANK_TERRAIN = "∥"
 DECK_PLANK_LENGTH = 8
+DECK_PLANK_WIDTH = 2
 PLANK_PROCESSION_SPEED = 38.0
 CAPTAIN_ARRIVAL_SPEED = 48.0
 PLANK_KICK_APPROACH_SPEED = 46.0
@@ -36,7 +37,8 @@ def captain_confrontation_ready(progress: "ProgressState") -> bool:
 
 
 def stage_deck_plank(tilemap, origin: tuple[int, int]) -> None:
-    """Open the starboard rail and lay one narrow walkable plank over sea."""
-    col, first_row = origin
-    for row in range(first_row, first_row + DECK_PLANK_LENGTH):
-        tilemap.set_terrain(col, row, DECK_PLANK_TERRAIN)
+    """Open the starboard rail and lay a broad walkable plank over sea."""
+    first_col, first_row = origin
+    for col in range(first_col, first_col + DECK_PLANK_WIDTH):
+        for row in range(first_row, first_row + DECK_PLANK_LENGTH):
+            tilemap.set_terrain(col, row, DECK_PLANK_TERRAIN)

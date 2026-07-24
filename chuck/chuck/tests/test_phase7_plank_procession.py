@@ -31,6 +31,7 @@ from src.systems.captain_confrontation import (
     CAPTAIN_REQUIRED_FLAGS,
     DECK_PLANK_LENGTH,
     DECK_PLANK_TERRAIN,
+    DECK_PLANK_WIDTH,
 )
 from src.systems.ship_motion import deck_rock_offset
 from src.world.tilemap import TileMap
@@ -56,6 +57,15 @@ def _tile_centered_position(entity, col: int, row: int) -> tuple[float, float]:
     )
 
 
+def _plank_centered_position(entity, row: int) -> tuple[float, float]:
+    ts = config.TILE_SIZE
+    first_col, _first_row = PLANK_ORIGIN
+    return (
+        (first_col + DECK_PLANK_WIDTH / 2) * ts - entity.width / 2,
+        row * ts + (ts - entity.height) / 2,
+    )
+
+
 def test_map_authors_one_plank_origin_in_the_starboard_rail() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     origins = [
@@ -77,11 +87,15 @@ def test_plank_is_hidden_before_confrontation_and_staged_afterward() -> None:
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint(MAP_NAME)
-        col, row = PLANK_ORIGIN
-        assert scene.tilemap.terrain_at(col, row) == "═"
+        first_col, first_row = PLANK_ORIGIN
         assert all(
-            scene.tilemap.terrain_at(col, plank_row) != DECK_PLANK_TERRAIN
-            for plank_row in range(row, row + DECK_PLANK_LENGTH)
+            scene.tilemap.terrain_at(col, first_row) == "═"
+            for col in range(first_col, first_col + DECK_PLANK_WIDTH)
+        )
+        assert all(
+            scene.tilemap.terrain_at(col, row) != DECK_PLANK_TERRAIN
+            for col in range(first_col, first_col + DECK_PLANK_WIDTH)
+            for row in range(first_row, first_row + DECK_PLANK_LENGTH)
         )
 
         scene = game.checkpoints.load_checkpoint(
@@ -91,14 +105,24 @@ def test_plank_is_hidden_before_confrontation_and_staged_afterward() -> None:
             ),
         )
         assert all(
-            scene.tilemap.terrain_at(col, plank_row) == DECK_PLANK_TERRAIN
-            and not scene.tilemap.is_solid(col, plank_row)
-            for plank_row in range(row, row + DECK_PLANK_LENGTH)
+            scene.tilemap.terrain_at(col, row) == DECK_PLANK_TERRAIN
+            and not scene.tilemap.is_solid(col, row)
+            for col in range(first_col, first_col + DECK_PLANK_WIDTH)
+            for row in range(first_row, first_row + DECK_PLANK_LENGTH)
         )
-        assert scene.tilemap.terrain_at(col, row + DECK_PLANK_LENGTH) == "~"
-        assert scene.tilemap.is_solid(col, row + DECK_PLANK_LENGTH)
-        assert scene.tilemap.is_solid(col - 1, row + 2)
-        assert scene.tilemap.is_solid(col + 1, row + 2)
+        assert all(
+            scene.tilemap.terrain_at(
+                col, first_row + DECK_PLANK_LENGTH
+            ) == "~"
+            and scene.tilemap.is_solid(
+                col, first_row + DECK_PLANK_LENGTH
+            )
+            for col in range(first_col, first_col + DECK_PLANK_WIDTH)
+        )
+        assert scene.tilemap.is_solid(first_col - 1, first_row + 2)
+        assert scene.tilemap.is_solid(
+            first_col + DECK_PLANK_WIDTH, first_row + 2
+        )
     finally:
         game._shutdown()
 
@@ -118,7 +142,7 @@ def test_completed_state_places_captain_and_objector_at_the_approach() -> None:
             captain, 39, 30
         )
         assert (objector.x, objector.y) == _tile_centered_position(
-            objector, 45, 30
+            objector, 46, 30
         )
         assert captain.facing == "right"
         assert objector.facing == "left"
@@ -150,20 +174,21 @@ def test_dialogue_hands_off_to_short_scripted_walk_then_returns_control() -> Non
         scene.update(0.0)
         assert scene._plank_procession_active
         assert game.progress.has(CAPTAIN_CONFRONTED_FLAG)
-        assert (scene.player.x, scene.player.y) == _tile_centered_position(
-            scene.player, 42, 27
+        assert (scene.player.x, scene.player.y) == _plank_centered_position(
+            scene.player, 27
         )
         assert scene.player.facing == "down"
         assert all(
-            scene.tilemap.terrain_at(42, row) == DECK_PLANK_TERRAIN
+            scene.tilemap.terrain_at(col, row) == DECK_PLANK_TERRAIN
+            for col in range(42, 42 + DECK_PLANK_WIDTH)
             for row in range(32, 32 + DECK_PLANK_LENGTH)
         )
 
         scene.update(2.0)
         assert not scene._plank_procession_active
         assert scene._plank_procession_target is None
-        assert (scene.player.x, scene.player.y) == _tile_centered_position(
-            scene.player, 42, 31
+        assert (scene.player.x, scene.player.y) == _plank_centered_position(
+            scene.player, 31
         )
         assert not scene.player.moving
         assert game.scenes.current is scene
@@ -303,7 +328,8 @@ def test_stepping_onto_plank_reveals_blocks_and_triggers_jeffries_once() -> None
         ]
 
         scene.player.x, scene.player.y = _tile_centered_position(
-            scene.player, *PLANK_ORIGIN
+            scene.player, PLANK_ORIGIN[0] + DECK_PLANK_WIDTH - 1,
+            PLANK_ORIGIN[1],
         )
         scene.update(0.0)
         warning = game.scenes.current
@@ -316,13 +342,17 @@ def test_stepping_onto_plank_reveals_blocks_and_triggers_jeffries_once() -> None
 
         # The plank stays walkable and its solid ocean endpoint still prevents
         # ordinary movement from leaving it. The ending owns that departure.
-        col, first_row = PLANK_ORIGIN
+        first_col, first_row = PLANK_ORIGIN
         assert all(
             scene.tilemap.terrain_at(col, row) == DECK_PLANK_TERRAIN
+            for col in range(first_col, first_col + DECK_PLANK_WIDTH)
             for row in range(first_row, first_row + DECK_PLANK_LENGTH)
         )
-        assert scene.tilemap.is_solid(
-            col, first_row + DECK_PLANK_LENGTH
+        assert all(
+            scene.tilemap.is_solid(
+                col, first_row + DECK_PLANK_LENGTH
+            )
+            for col in range(first_col, first_col + DECK_PLANK_WIDTH)
         )
         game.scenes.pop()
         before = [
@@ -362,16 +392,19 @@ def test_outer_plank_stages_captain_kick_into_a_live_hell_fragment() -> None:
         sounds = []
         game.audio.play_sfx = sounds.append
 
-        col, first_row = PLANK_ORIGIN
+        first_col, first_row = PLANK_ORIGIN
         last_row = first_row + DECK_PLANK_LENGTH - 1
         scene.player.x, scene.player.y = _tile_centered_position(
-            scene.player, col, last_row
+            scene.player, first_col, last_row
         )
         scene.camera.follow(scene.player)
         scene.camera.update(0.0)
         scene.update(0.0)
         assert scene._plank_ending_phase == "approach"
         assert scene.player.facing == "down"
+        assert scene.player.x == _plank_centered_position(
+            scene.player, last_row
+        )[0]
 
         saw_kick = False
         saw_fall = False

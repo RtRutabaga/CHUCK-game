@@ -50,6 +50,7 @@ from src.systems.captain_confrontation import (
     CAPTAIN_ARRIVAL_SPEED,
     CAPTAIN_CONFRONTED_FLAG,
     DECK_PLANK_LENGTH,
+    DECK_PLANK_WIDTH,
     PLANK_KICK_APPROACH_SPEED,
     PLANK_KICK_FALL_DURATION,
     PLANK_KICK_WINDUP,
@@ -1261,7 +1262,7 @@ class WorldScene(Scene):
             entity.y = tile_row * ts + (ts - entity.height) / 2
 
         place(captain, col - 3, rail_row - 2)
-        place(objector, col + 3, rail_row - 2)
+        place(objector, col + DECK_PLANK_WIDTH + 2, rail_row - 2)
         captain.facing = "right"
         objector.facing = "left"
 
@@ -1272,7 +1273,8 @@ class WorldScene(Scene):
         assert self._deck_plank_origin is not None
         col, rail_row = self._deck_plank_origin
         ts = config.TILE_SIZE
-        self.player.x = col * ts + (ts - self.player.width) / 2
+        plank_center_x = (col + DECK_PLANK_WIDTH / 2) * ts
+        self.player.x = plank_center_x - self.player.width / 2
         self.player.y = (
             (rail_row - 5) * ts + (ts - self.player.height) / 2
         )
@@ -1320,7 +1322,9 @@ class WorldScene(Scene):
             return False
         col, row = self._player_tile()
         plank_col, first_row = origin
-        if col != plank_col or not (
+        if not (
+            plank_col <= col < plank_col + DECK_PLANK_WIDTH
+        ) or not (
             first_row <= row < first_row + DECK_PLANK_LENGTH
         ):
             return False
@@ -1348,12 +1352,17 @@ class WorldScene(Scene):
         col, row = self._player_tile()
         plank_col, first_row = origin
         last_row = first_row + DECK_PLANK_LENGTH - 1
-        if (col, row) != (plank_col, last_row):
+        if (
+            not plank_col <= col < plank_col + DECK_PLANK_WIDTH
+            or row != last_row
+        ):
             return False
 
         captain = self._spawn_deck_captain()
         ts = config.TILE_SIZE
-        target_x = plank_col * ts + (ts - captain.width) / 2
+        plank_center_x = (plank_col + DECK_PLANK_WIDTH / 2) * ts
+        self.player.x = plank_center_x - self.player.width / 2
+        target_x = plank_center_x - captain.width / 2
         target_y = (last_row - 2) * ts + (ts - captain.height) / 2
         # First cross the deck to the plank centerline, then walk straight
         # behind Chuck. This avoids a diagonal shortcut across open sea.

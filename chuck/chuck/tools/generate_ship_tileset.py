@@ -210,13 +210,14 @@ def draw_ship_ocean(surface, variant: int, frame: int) -> None:
 
 
 def draw_ship_plank(surface, variant: int, _frame: int) -> None:
-    """One narrow north-south board, transparent over the animated sea."""
-    pygame.draw.rect(surface, DARK, pygame.Rect(2, 0, 12, 16))
-    pygame.draw.rect(surface, WOOD, pygame.Rect(3, 0, 10, 16))
-    pygame.draw.line(surface, HL_FLOOR, (4, 0), (4, 15), 1)
-    pygame.draw.line(surface, LINE, (11, 0), (11, 15), 1)
+    """One opaque half of the broad north-south gangplank."""
+    surface.fill(WOOD)
+    pygame.draw.line(surface, LINE, (0, 0), (0, 15), 1)
+    pygame.draw.line(surface, LINE, (15, 0), (15, 15), 1)
+    pygame.draw.line(surface, HL_FLOOR, (2, 0), (2, 15), 1)
+    pygame.draw.line(surface, WALL, (13, 0), (13, 15), 1)
     brace_y = 4 + variant * 7
-    pygame.draw.line(surface, LINE, (3, brace_y), (12, brace_y), 2)
+    pygame.draw.line(surface, LINE, (0, brace_y), (15, brace_y), 2)
     surface.set_at((9 - variant * 3, 8 + variant * 4), HL_FLOOR)
 
 

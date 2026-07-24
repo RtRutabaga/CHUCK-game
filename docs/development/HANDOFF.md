@@ -3,11 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `8813701` (ship bunks and captain cabin)
-- Current work: remaining up-facing pirate head-block fix (session 179)
+- Base commit before this pass: `4dfda43` (pirate head silhouettes)
+- Current work: wider exterior-deck gangplank (session 180)
 - Active phase: Phase 7 (`PHASE-7.md`)
 
 ## Completed This Pass
+
+Widened the staged walk-the-plank route without changing its length or ending:
+
+- Added an authored two-tile plank width and stage both adjacent columns,
+  opening a 32px passage through the starboard rail instead of one 16px lane.
+- Both lanes now trigger Jeffries' warning and the outer endpoint. The
+  procession begins on the shared centerline, while an off-center endpoint
+  arrival recenters Chuck before the captain approaches and kicks him.
+- Rebalanced the flanking objector by one tile around the wider approach.
+- Rebuilt the procedural ship-plank tile as an opaque half-width section, so
+  adjacent cells read as one broad gangplank rather than two narrow boards with
+  animated water visible between them.
+- Expanded focused regressions across the full 2x8 walkable footprint, both
+  trigger lanes, solid ocean boundary, centered procession, and kick handoff.
+  Plank-procession, exterior-deck, and tileset suites pass; a 4x native render
+  was inspected. All 63 standalone suites pass, compilation is clean, and the
+  title-loop launch smoke check passes.
+
+## Previous Pass (session 179, commit 4dfda43)
 
 Removed the remaining rectangular head silhouette visible when ship pirates
 turned upward:
