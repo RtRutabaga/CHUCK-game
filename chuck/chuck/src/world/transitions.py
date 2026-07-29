@@ -246,6 +246,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("phlegethos_road", "Δ"): AreaExit(
         "phlegethos_arrival", "from_phlegethos_2", "down"
     ),
+    ("phlegethos_road", "∇"): AreaExit(
+        "phlegethos_lake", "from_phlegethos_2", "up"
+    ),
+    ("phlegethos_lake", "Δ"): AreaExit(
+        "phlegethos_road", "from_phlegethos_3", "down"
+    ),
 }
 
 
@@ -284,4 +290,5 @@ AREA_MUSIC: dict[str, str | None] = {
     # Phlegethos placeholder: the dedicated infernal theme is a later slice.
     "phlegethos_arrival": "chult.wav",
     "phlegethos_road": "chult.wav",
+    "phlegethos_lake": "chult.wav",
 }

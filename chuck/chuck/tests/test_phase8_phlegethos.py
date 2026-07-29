@@ -129,7 +129,7 @@ def test_the_lava_road_pinches_to_a_ledge_and_is_walkable_end_to_end() -> None:
     kinds = [kind for kind, _pos in tilemap.object_spawns]
     assert kinds.count("arrival:from_phlegethos_1") == 1
     assert kinds.count("anchor:phlegethos_2_anchor") == 1
-    assert kinds.count("boundary:phlegethos_3") == 1  # inert until map 3
+    assert kinds.count("arrival:from_phlegethos_3") == 1  # back from the lake
     # Far more lava than the arrival: the road is the first real gauntlet.
     assert sum(row.count("≋") for row in tilemap._grid) >= 150
     # Its waist is a single-tile stone ledge with lava on both sides.
@@ -156,7 +156,6 @@ def test_the_lava_road_pinches_to_a_ledge_and_is_walkable_end_to_end() -> None:
             reached.add(nxt)
             frontier.append(nxt)
     assert pts["phlegethos_2_anchor"] in reached
-    assert pts["phlegethos_3"] in reached
     for char in ("∇", "Δ"):
         gap = next((c, r) for r in range(tilemap.height_tiles)
                    for c in range(tilemap.width_tiles)
@@ -222,6 +221,108 @@ def test_the_two_phlegethos_maps_connect_both_ways() -> None:
         scene.update(0.0)
         assert scene.map_name == MAP_NAME
         assert game.active_checkpoint_id == "phlegethos_1_return"
+    finally:
+        game._shutdown()
+
+
+LAKE = "phlegethos_lake"
+
+
+def test_the_lava_lake_is_crossed_by_single_hop_stepping_stones() -> None:
+    """The phase's set piece: islands over a lava lake, every gap exactly
+    one tile so each crossing is one committed jump (the temple Astral
+    connector's rule). Nothing safe may be stranded."""
+    tilemap = TileMap(config.MAPS_DIR / f"{LAKE}.txt")
+    assert (tilemap.width_tiles, tilemap.height_tiles) == (44, 34)
+    # It really is a lake: lava dominates the map.
+    lava = {(c, r) for r in range(tilemap.height_tiles)
+            for c in range(tilemap.width_tiles)
+            if tilemap.terrain_at(c, r) == "≋"}
+    assert len(lava) >= 400, len(lava)
+    safe = {(c, r) for r in range(tilemap.height_tiles)
+            for c in range(tilemap.width_tiles)
+            if not tilemap.is_solid(c, r) and (c, r) not in lava}
+
+    ts = config.TILE_SIZE
+    pts = {kind.split(":", 1)[1]: (int(x // ts), int(y // ts))
+           for kind, (x, y) in tilemap.object_spawns
+           if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+    start = pts["from_phlegethos_2"]
+
+    # Walk on safe cells; jump clears EXACTLY one lava cell onto safe floor.
+    reached = {start}
+    frontier = deque([start])
+    while frontier:
+        c, r = frontier.popleft()
+        for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            walk = (c + dc, r + dr)
+            if walk in safe and walk not in reached:
+                reached.add(walk)
+                frontier.append(walk)
+            over = (c + dc, r + dr)
+            land = (c + 2 * dc, r + 2 * dr)
+            if over in lava and land in safe and land not in reached:
+                reached.add(land)
+                frontier.append(land)
+    assert reached == safe, sorted(safe - reached)[:8]
+    assert pts["phlegethos_3_anchor"] in reached
+    assert pts["phlegethos_4"] in reached  # the far shore, onward
+
+    # The crossing genuinely requires hops: the far shore is NOT reachable
+    # by walking alone.
+    walk_only = {start}
+    frontier = deque([start])
+    while frontier:
+        c, r = frontier.popleft()
+        for nxt in ((c + 1, r), (c - 1, r), (c, r + 1), (c, r - 1)):
+            if nxt in safe and nxt not in walk_only:
+                walk_only.add(nxt)
+                frontier.append(nxt)
+    assert pts["phlegethos_4"] not in walk_only, "the lake can be walked!"
+    # And a good number of separate islands stand in the lava.
+    islands = []
+    seen: set = set()
+    for cell in sorted(safe):
+        if cell in seen:
+            continue
+        blob = {cell}
+        stack = [cell]
+        while stack:
+            c, r = stack.pop()
+            for nxt in ((c + 1, r), (c - 1, r), (c, r + 1), (c, r - 1)):
+                if nxt in safe and nxt not in blob:
+                    blob.add(nxt)
+                    stack.append(nxt)
+        seen |= blob
+        islands.append(blob)
+    # Two shores plus the stepping stones, each its own disconnected blob.
+    assert len(islands) >= 8, len(islands)
+
+
+def test_the_road_and_lake_connect_both_ways() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("phlegethos_road")
+        scene._arrival_fade_t = None
+        onward = next((c, r) for r in range(scene.tilemap.height_tiles)
+                      for c in range(scene.tilemap.width_tiles)
+                      if scene.tilemap.terrain_at(c, r) == "∇")
+        scene.player.x = onward[0] * config.TILE_SIZE + 3
+        scene.player.y = onward[1] * config.TILE_SIZE + 4
+        scene.update(0.0)
+        assert scene.map_name == LAKE
+        assert game.active_checkpoint_id == "phlegethos_lake"
+        scene.update(0.0)
+        assert scene.map_name == LAKE  # no bounce
+
+        back = next((c, r) for r in range(scene.tilemap.height_tiles)
+                    for c in range(scene.tilemap.width_tiles)
+                    if scene.tilemap.terrain_at(c, r) == "Δ")
+        scene.player.x = back[0] * config.TILE_SIZE + 3
+        scene.player.y = back[1] * config.TILE_SIZE + 4
+        scene.update(0.0)
+        assert scene.map_name == ROAD
+        assert game.active_checkpoint_id == "phlegethos_2_return"
     finally:
         game._shutdown()
 

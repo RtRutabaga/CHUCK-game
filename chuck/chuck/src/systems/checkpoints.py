@@ -399,6 +399,24 @@ CHECKPOINTS = (
         development_visible=False, runtime_entry=True,
     ),
     CheckpointDefinition(
+        "phlegethos_lake", "Phlegethos 3", "phlegethos_lake",
+        arrival="from_phlegethos_2", facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "phlegethos_lake_anchor", "Phlegethos 3 Ashtray", "phlegethos_lake",
+        position=(276.0, 453.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "phlegethos_2_return", "Phlegethos 2 Return", "phlegethos_road",
+        arrival="from_phlegethos_3", facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "ship_deck_return", "Ship Return", "ship_deck",
         arrival="from_lower_hold", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),

@@ -30,6 +30,17 @@ Implemented so far:
   zombie/skeleton lifecycle exactly, but the slowest and most durable yet
   (LEMURE_* config) -- and **fire snakes** are a `TempleSnake` variant that
   changes only the sprite sheet, so both reuse their systems wholesale.
+- The lava-lake island crossing (`phlegethos_lake`, 44x34) -- the spec's
+  called-out set piece. A wall-to-wall molten lake is crossed by eight
+  small basalt stepping stones zigzagging north; every gap is EXACTLY one
+  lava tile, so each crossing is a single committed hop (the temple Astral
+  connector's rule). `tools/generate_phlegethos_lake.py` proves before
+  writing that no island touches another island or a shore, that nothing
+  safe is stranded, and that the far shore is reachable by walk+hop; the
+  test additionally proves the lake canNOT be walked across. Passes join
+  it to the road both ways; checkpoints `Phlegethos 3` + Ashtray +
+  `Phlegethos 2 Return`. Fire snakes patrol the shores only -- the lake
+  itself is pure traversal.
 
 ------------------------------------------------------------------------
 
@@ -214,7 +225,7 @@ of the collided worlds.
 
 # 11. Acceptance Criteria
 
-- [ ] Multiple connected Phlegethos maps are implemented. *(two so far)*
+- [ ] Multiple connected Phlegethos maps are implemented. *(three so far)*
 - [ ] Basalt, lava, statues and fortress exteriors establish the setting.
   *(basalt/lava/fissures/cliffs done; statues + fortress pending)*
 - [x] Lemures reuse zombie gameplay.
@@ -223,7 +234,8 @@ of the collided worlds.
   Chuck in melee.
 - [ ] Flameskulls weave rapidly as hazards.
 - [ ] Horned devils reuse the large-dinosaur gameplay.
-- [ ] Lava traversal and jump sequences are complete.
+- [ ] Lava traversal and jump sequences are complete. *(the lava-lake
+  island crossing is in; more lava hazards may follow)*
 - [ ] Fortress climax functions.
 - [ ] Trio battles the Pit Fiend.
 - [ ] Dialogue reinforces the trio's mission.

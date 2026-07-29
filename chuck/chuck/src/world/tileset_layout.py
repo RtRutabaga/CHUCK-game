@@ -352,6 +352,7 @@ MAP_TILESET: dict[str, str] = {
     "ship_exterior_deck": "ship",
     "phlegethos_arrival": "phlegethos",
     "phlegethos_road": "phlegethos",
+    "phlegethos_lake": "phlegethos",
 }
 
 

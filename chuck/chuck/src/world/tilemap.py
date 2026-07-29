@@ -602,7 +602,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ԁ": MarkerDef(kind="fire_snake", under="·"),
     "Ԃ": MarkerDef(kind="arrival:from_phlegethos_1", under="≡"),
     "Ԅ": MarkerDef(kind="anchor:phlegethos_2_anchor", under="·"),
-    "Ԇ": MarkerDef(kind="boundary:phlegethos_3", under="≡"),
+    "Ԇ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
+    # Phlegethos map 3, the lava lake crossed by stepping-stone islands.
+    "Ԉ": MarkerDef(kind="arrival:from_phlegethos_2", under="≡"),
+    "Ԋ": MarkerDef(kind="anchor:phlegethos_3_anchor", under="≡"),
+    "Ԍ": MarkerDef(kind="boundary:phlegethos_4", under="≡"),
 }
 
 _COMMENT_PREFIX = ";"
