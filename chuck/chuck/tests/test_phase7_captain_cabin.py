@@ -40,7 +40,7 @@ def test_captain_cabin_is_one_complete_checkpointed_ship_map() -> None:
         for col, char in enumerate(line)
         if char in {"Ḅ", "ḅ"}
     ]
-    assert len(bed_tiles) == 10
+    assert len(bed_tiles) == 20
     assert all(tilemap.is_solid(col, row) for col, row in bed_tiles)
     assert tileset_for(MAP_NAME).sheet == "ship.png"
     assert AREA_MUSIC[MAP_NAME] == "ship_shanty.wav"
@@ -75,7 +75,7 @@ def test_interacting_animates_chest_then_drops_physical_gold_carton() -> None:
                    if prop.kind == "ship_captain_bed")
         rug = next(prop for prop in scene.props
                    if prop.kind == "ship_captain_rug")
-        assert bed._size == (72, 44)
+        assert bed._size == (72, 64)
         assert rug._size == (80, 48)
         assert not bed.floor_layer and rug.floor_layer
         assert bed in scene._sorted_drawables()

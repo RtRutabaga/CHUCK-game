@@ -22,10 +22,28 @@ RED = (145, 48, 44, 255)
 BLUE = (49, 77, 103, 255)
 GREEN = (50, 94, 61, 255)
 PURPLE = (92, 54, 103, 255)
+STEEL = (176, 182, 188, 255)
+STEEL_LIGHT = (214, 219, 222, 255)
 
 
 def rect(draw: ImageDraw.ImageDraw, box, color) -> None:
     draw.rectangle(box, fill=color)
+
+
+def _draw_cutlass(draw: ImageDraw.ImageDraw, cx: int, bob: int,
+                  side: int) -> None:
+    """A cutlass gripped point-down at the captain's side (`side`: +1 right,
+    -1 left). Kept clear of the head so it never boxes his hat or face."""
+    hand = sorted((cx + 5 * side, cx + 7 * side))
+    edge = cx + 6 * side
+    rect(draw, (hand[0], 14 + bob, hand[1], 16 + bob), SKIN)      # grip
+    rect(draw, (hand[0], 16 + bob, hand[1], 17 + bob), GOLD)      # crossguard
+    rect(draw, (edge, 12 + bob, edge, 14 + bob), WOOD)            # handle knob
+    for i in range(10):                                          # curved blade
+        y = 18 + bob + i
+        bx = max(0, min(15, edge + (i // 3) * side))
+        rect(draw, (bx, y, bx, y), STEEL)
+    rect(draw, (edge, 19 + bob, edge, 23 + bob), STEEL_LIGHT)    # lit edge
 
 
 def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
@@ -116,6 +134,7 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
         rect(draw, (cx + 5, 15 - swing, cx + 7, 21 - swing), coat)
         rect(draw, (cx - 7, 21 + swing, cx - 6, 22 + swing), SKIN)
         rect(draw, (cx + 6, 21 - swing, cx + 7, 22 - swing), SKIN)
+        _draw_cutlass(draw, cx, bob, 1)  # cutlass in hand as he enters
     else:  # Captain: a clipped point toward Chuck/the waiting plank.
         reach = (0, 1, 2, 1)[phase]
         direction = -1 if facing == "left" else 1
@@ -130,6 +149,8 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
         rect(draw, (hip_x[0], 16, hip_x[1], 21), SKIN)
         trim_x = sorted((cx + 2 * hip_direction, cx + 5 * hip_direction))
         rect(draw, (trim_x[0], 21, trim_x[1], 22), GOLD)
+        # The cutlass rides in his free (hip-side) hand, opposite the point.
+        _draw_cutlass(draw, cx, bob, hip_direction)
     return image
 
 

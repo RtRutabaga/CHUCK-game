@@ -47,27 +47,30 @@ def hammock() -> Image.Image:
 
 
 def captain_bed() -> Image.Image:
-    """An oversized human bed, nearly architectural beside Chuck."""
-    image = Image.new("RGBA", (72, 44), TRANSPARENT)
+    """An oversized human bed, nearly architectural beside Chuck. Long from
+    head (top) to foot (bottom) so it reads as a proper north-south berth."""
+    image = Image.new("RGBA", (72, 64), TRANSPARENT)
     draw = ImageDraw.Draw(image)
-    # Heavy raised frame and tall headboard.
+    # Heavy raised frame and tall headboard at the top (the head).
     draw.rectangle((1, 3, 70, 12), fill=WOOD_DARK)
     draw.rectangle((4, 5, 67, 10), fill=WOOD)
     draw.line((5, 6, 66, 6), fill=WOOD_LIGHT, width=2)
-    draw.rectangle((4, 10, 67, 39), fill=DARK)
-    draw.rectangle((6, 11, 65, 36), fill=CANVAS_LIGHT)
-    # Two pale pillows and a deep captain-red cover.
+    # The long mattress runs down to the foot.
+    draw.rectangle((4, 10, 67, 59), fill=DARK)
+    draw.rectangle((6, 11, 65, 56), fill=CANVAS_LIGHT)
+    # Two pale pillows at the head and a deep captain-red cover down the berth.
     draw.rounded_rectangle((9, 13, 29, 23), radius=3, fill=(211, 194, 157))
     draw.rounded_rectangle((42, 13, 62, 23), radius=3, fill=(211, 194, 157))
-    draw.rectangle((6, 24, 65, 36), fill=(113, 45, 42))
-    draw.line((7, 25, 64, 25), fill=(174, 78, 55), width=2)
-    draw.line((35, 25, 35, 35), fill=(78, 32, 31), width=1)
-    # Brass corners and stout feet sell the captain's better furnishings.
+    draw.rectangle((6, 25, 65, 56), fill=(113, 45, 42))
+    draw.line((7, 26, 64, 26), fill=(174, 78, 55), width=2)
+    draw.line((35, 26, 35, 54), fill=(78, 32, 31), width=1)
+    draw.line((6, 40, 65, 40), fill=(90, 36, 34), width=1)  # a fold across it
+    # Brass corners running the full length, and stout feet at the foot.
     for x in (4, 64):
-        draw.rectangle((x, 9, x + 3, 39), fill=BRASS)
-        draw.line((x + 1, 10, x + 1, 38), fill=BRASS_LIGHT, width=1)
-    draw.rectangle((2, 37, 10, 43), fill=WOOD_DARK)
-    draw.rectangle((61, 37, 69, 43), fill=WOOD_DARK)
+        draw.rectangle((x, 9, x + 3, 59), fill=BRASS)
+        draw.line((x + 1, 10, x + 1, 58), fill=BRASS_LIGHT, width=1)
+    draw.rectangle((2, 57, 10, 63), fill=WOOD_DARK)
+    draw.rectangle((61, 57, 69, 63), fill=WOOD_DARK)
     return image
 
 
