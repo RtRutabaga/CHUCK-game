@@ -298,6 +298,7 @@ PHLEGETHOS = Tileset(
         ("path", 2, 1),
         ("lava", 2, 3),     # animated; a lethal fall hazard on foot
         ("fissure", 2, 1),  # basalt split by a glowing lava crack
+        ("pass", 1, 1),     # an ash-choked gap onward to the next map
     ],
     char_to_terrain={
         "·": "basalt",
@@ -305,6 +306,8 @@ PHLEGETHOS = Tileset(
         "≡": "path",
         "≋": "lava",
         "♨": "fissure",
+        "∇": "pass",
+        "Δ": "pass",
     },
     overhead_char_to_terrain={},
 )
@@ -348,6 +351,7 @@ MAP_TILESET: dict[str, str] = {
     "ship_captain_cabin": "ship",
     "ship_exterior_deck": "ship",
     "phlegethos_arrival": "phlegethos",
+    "phlegethos_road": "phlegethos",
 }
 
 

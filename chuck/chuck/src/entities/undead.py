@@ -26,6 +26,13 @@ _STATS = {
         config.SKELETON_SANITY_DAMAGE,
         config.SKELETON_SCRATCHES,
     ),
+    # Phlegethos (Phase 8): the lemure is a third undead kind, identical in
+    # behaviour to the Chultan pair but slower and far more durable.
+    "lemure": (
+        config.LEMURE_SPEED,
+        config.LEMURE_SANITY_DAMAGE,
+        config.LEMURE_SCRATCHES,
+    ),
 }
 
 
@@ -101,6 +108,9 @@ class UndeadEnemy(Entity):
                  int(self.y + self.height - fh) - oy),
             )
         else:
-            color = (73, 100, 62) if self.kind == "zombie" else (194, 191, 158)
+            color = {
+                "zombie": (73, 100, 62),
+                "lemure": (176, 146, 132),
+            }.get(self.kind, (194, 191, 158))
             pygame.draw.rect(surface, color,
                              (int(self.x) - ox, int(self.y) - 22 - oy, 12, 30))

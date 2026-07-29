@@ -110,12 +110,26 @@ def draw_fissure(surface, variant: int, _frame: int) -> None:
         surface.set_at((x, y), LAVA_HOT)
 
 
+def draw_pass(surface, _variant: int, _frame: int) -> None:
+    """A dark gap in the cliff wall: the way onward, worn smooth."""
+    surface.fill(CLIFF_DARK)
+    pygame.draw.rect(surface, (12, 9, 11), (2, 0, 12, 16))
+    pygame.draw.line(surface, CLIFF, (0, 0), (0, 15))
+    pygame.draw.line(surface, CLIFF, (15, 0), (15, 15))
+    pygame.draw.line(surface, CLIFF_LIGHT, (1, 0), (1, 4))
+    pygame.draw.line(surface, CLIFF_LIGHT, (14, 0), (14, 4))
+    # A worn threshold underfoot so it reads as walkable.
+    pygame.draw.line(surface, PATH_DARK, (2, 14), (13, 14))
+    pygame.draw.line(surface, PATH, (3, 15), (12, 15))
+
+
 DRAW = {
     "basalt": draw_basalt,
     "cliff": draw_cliff,
     "path": draw_path,
     "lava": draw_lava,
     "fissure": draw_fissure,
+    "pass": draw_pass,
 }
 
 

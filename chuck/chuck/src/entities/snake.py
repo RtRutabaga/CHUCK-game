@@ -16,15 +16,21 @@ if TYPE_CHECKING:
 
 
 class TempleSnake(Entity):
-    """A low, readable pursuer that disappears after one scratch."""
+    """A low, readable pursuer that disappears after one scratch.
 
-    def __init__(self, center_x: float, center_y: float) -> None:
+    `variant` selects the sprite sheet only: Phlegethos fire snakes
+    (Phase 8) are this exact gameplay in molten colours.
+    """
+
+    def __init__(self, center_x: float, center_y: float,
+                 variant: str = "snake") -> None:
         super().__init__(
             center_x - config.SNAKE_HITBOX_W / 2,
             center_y - config.SNAKE_HITBOX_H / 2,
             config.SNAKE_HITBOX_W,
             config.SNAKE_HITBOX_H,
         )
+        self.variant = variant
         self.speed = config.SNAKE_SPEED
         self.damage = config.SNAKE_SANITY_DAMAGE
         self.max_scratches = 1
@@ -37,7 +43,7 @@ class TempleSnake(Entity):
         import pygame
 
         down, up, left = assets.sheet(
-            "hazards/snake.png",
+            f"hazards/{self.variant}.png",
             config.SNAKE_FRAME_W,
             config.SNAKE_FRAME_H,
         )[0]

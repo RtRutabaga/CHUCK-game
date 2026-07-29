@@ -239,6 +239,13 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_astral_wind", "⌄"): AreaExit(
         "temple_snakes", "from_temple_6", "up"
     ),
+    # Phase 8 --- Phlegethos. The ash-choked passes join the maps both ways.
+    ("phlegethos_arrival", "∇"): AreaExit(
+        "phlegethos_road", "from_phlegethos_1", "up"
+    ),
+    ("phlegethos_road", "Δ"): AreaExit(
+        "phlegethos_arrival", "from_phlegethos_2", "down"
+    ),
 }
 
 
@@ -276,4 +283,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "ship_exterior_deck": "ship_shanty.wav",
     # Phlegethos placeholder: the dedicated infernal theme is a later slice.
     "phlegethos_arrival": "chult.wav",
+    "phlegethos_road": "chult.wav",
 }

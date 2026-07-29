@@ -360,8 +360,8 @@ class WorldScene(Scene):
             (kind, position)
             for kind, position in self.tilemap.object_spawns
             if kind in {
-                "cat", "rat", "zombie", "skeleton", "raptor",
-                "massive_dinosaur", "snake",
+                "cat", "rat", "zombie", "skeleton", "lemure", "raptor",
+                "massive_dinosaur", "snake", "fire_snake",
                 "pirate_chef",
             } or kind.startswith("sword_fighter:")
         ]
@@ -434,8 +434,8 @@ class WorldScene(Scene):
                     int(cy // config.TILE_SIZE),
                 )
             elif kind in {
-                "rat", "zombie", "skeleton", "raptor", "massive_dinosaur",
-                "snake", "pirate_chef",
+                "rat", "zombie", "skeleton", "lemure", "raptor",
+                "massive_dinosaur", "snake", "fire_snake", "pirate_chef",
             }:
                 continue  # rebuilt with all enemies below
             elif kind.startswith("sword_fighter:"):
@@ -1673,7 +1673,7 @@ class WorldScene(Scene):
                 self.rats.append(rat)
                 if self.map_name == "sewer" and rat_tile in tutorial_tiles:
                     self._scratch_tutorial_rats.append(rat)
-            elif kind in {"zombie", "skeleton"}:
+            elif kind in {"zombie", "skeleton", "lemure"}:
                 self._spawn_undead(kind, (cx, cy))
             elif kind == "raptor":
                 raptor = Raptor(cx, cy)
@@ -1685,8 +1685,13 @@ class WorldScene(Scene):
                 dinosaur.tilemap = self.tilemap
                 dinosaur.load_sprites(self.game.assets)
                 self.dinosaurs.append(dinosaur)
-            elif kind == "snake":
-                snake = TempleSnake(cx, cy)
+            elif kind in {"snake", "fire_snake"}:
+                # Phlegethos fire snakes are the temple snake exactly, in
+                # molten colours (the variant selects the sprite sheet).
+                snake = TempleSnake(
+                    cx, cy,
+                    variant="fire_snake" if kind == "fire_snake" else "snake",
+                )
                 snake.tilemap = self.tilemap
                 snake.load_sprites(self.game.assets)
                 self.snakes.append(snake)

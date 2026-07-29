@@ -20,6 +20,16 @@ Implemented so far:
   `Phlegethos Ashtray`; placeholder music (chult.wav) until the dedicated
   infernal theme is composed. Enemies, lava-island jumps, the fortress
   climax, the soundtrack, and the Feywild-river ending are later slices.
+- A second connected map and the first two infernal enemies.
+  `phlegethos_road` (48x32) climbs north between widening lava and pinches
+  to a single-tile stone ledge with lava on both sides -- the phase's first
+  real traversal gauntlet. Ash-choked cliff passes ('∇'/'Δ') join it to the
+  arrival map both ways, with checkpoints `Phlegethos 2` + its Ashtray and a
+  `Phlegethos 1 Return`. Its north pass onward is an inert boundary until
+  map 3. **Lemures** are a third `UndeadEnemy` kind -- the Chultan
+  zombie/skeleton lifecycle exactly, but the slowest and most durable yet
+  (LEMURE_* config) -- and **fire snakes** are a `TempleSnake` variant that
+  changes only the sprite sheet, so both reuse their systems wholesale.
 
 ------------------------------------------------------------------------
 
@@ -204,10 +214,11 @@ of the collided worlds.
 
 # 11. Acceptance Criteria
 
-- [ ] Multiple connected Phlegethos maps are implemented.
+- [ ] Multiple connected Phlegethos maps are implemented. *(two so far)*
 - [ ] Basalt, lava, statues and fortress exteriors establish the setting.
-- [ ] Lemures reuse zombie gameplay.
-- [ ] Fire snakes reuse temple-snake gameplay.
+  *(basalt/lava/fissures/cliffs done; statues + fortress pending)*
+- [x] Lemures reuse zombie gameplay.
+- [x] Fire snakes reuse temple-snake gameplay.
 - [ ] Spined devils create ranged dodge hazards and instantly defeat
   Chuck in melee.
 - [ ] Flameskulls weave rapidly as hazards.

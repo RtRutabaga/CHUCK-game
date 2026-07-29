@@ -180,6 +180,12 @@ ZOMBIE_SCRATCHES = 8
 SKELETON_SPEED = 25.0
 SKELETON_SANITY_DAMAGE = 15
 SKELETON_SCRATCHES = 6
+# Phlegethos lemures (Phase 8) reuse the undead lifecycle exactly: the
+# slowest, most durable shamblers yet -- a wall of wretched flesh that is
+# far better walked around than fought.
+LEMURE_SPEED = 15.0
+LEMURE_SANITY_DAMAGE = 18
+LEMURE_SCRATCHES = 10
 UNDEAD_NOTICE_RANGE = 112.0
 THORN_SANITY_DAMAGE = 10
 

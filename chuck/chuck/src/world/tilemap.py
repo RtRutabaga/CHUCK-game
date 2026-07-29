@@ -594,7 +594,15 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # Phlegethos arrival map — where the Nine Hells fall drops Chuck.
     "Ѩ": MarkerDef(kind="arrival:from_hell", under="≡"),
     "Ѫ": MarkerDef(kind="anchor:phlegethos_anchor", under="·"),
-    "Ѭ": MarkerDef(kind="boundary:phlegethos_2", under="≡"),
+    "Ѭ": MarkerDef(kind="arrival:from_phlegethos_2", under="≡"),
+    # Phlegethos map 2, the lava road, and its infernal enemies. Lemures
+    # are a third undead kind and fire snakes a temple-snake variant, so
+    # both spawn through the existing enemy paths.
+    "Ѯ": MarkerDef(kind="lemure", under="·"),
+    "Ԁ": MarkerDef(kind="fire_snake", under="·"),
+    "Ԃ": MarkerDef(kind="arrival:from_phlegethos_1", under="≡"),
+    "Ԅ": MarkerDef(kind="anchor:phlegethos_2_anchor", under="·"),
+    "Ԇ": MarkerDef(kind="boundary:phlegethos_3", under="≡"),
 }
 
 _COMMENT_PREFIX = ";"
