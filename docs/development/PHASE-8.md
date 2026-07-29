@@ -41,6 +41,20 @@ Implemented so far:
   it to the road both ways; checkpoints `Phlegethos 3` + Ashtray +
   `Phlegethos 2 Return`. Fire snakes patrol the shores only -- the lake
   itself is pure traversal.
+- The Phlegethos soundtrack (`data/music/phlegethos.py` -> phlegethos.wav),
+  replacing the jungle placeholder on all three maps. An original 48-bar,
+  ~87s loop at 132 BPM in E Phrygian dominant (E F G# A B C D) -- the flat
+  second against the raised third gives the exotic infernal heat, and keeps
+  it clearly distinct from the temple's D minor and the boss theme's D
+  Phrygian. Twelve voices: an uneven tribal tom engine on every bar, a
+  throbbing low synth, driving root-fifth bass, struck metal ringing across
+  the groove like distant forges, an eerie exotic lead, and a choir texture
+  only in the "the environment is alive" section. Its arc rises (bed ->
+  lead -> driving -> alive -> full return -> climbing turnaround) so it is
+  never slow, ambient-only or mournful. Two reusable instrument voices were
+  added for the brief: `metal_hit` (inharmonic struck metal) and
+  `low_pulse` (a tremolo'd filtered square). Renders at 0.93 headroom, RMS
+  0.183 (level with temple/boss), seam 0.011.
 - **Spined devils** and **flameskulls**, completing the bestiary's dodge
   hazards. A spined devil never moves: it perches beside a lane and flicks
   burning tail spines across it on a staggered cadence (the temple

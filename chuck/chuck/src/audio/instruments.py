@@ -10,7 +10,7 @@ from __future__ import annotations
 import math
 
 from src.audio.synth import (
-    SAMPLE_RATE, envelope, gain, lowpass, mix, noise, tone,
+    SAMPLE_RATE, envelope, gain, lowpass, mix, noise, tone, tremolo,
 )
 
 
@@ -107,6 +107,35 @@ def brass(freq: float, dur: float, vel: float = 1.0) -> list[float]:
 # ---------------------------------------------------------------------------
 # Percussion (freq is ignored or used loosely for tuning)
 # ---------------------------------------------------------------------------
+def metal_hit(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """A struck-metal clang: inharmonic partials over a bright noise
+    transient, ringing out. Phlegethos's forge-and-chain percussion."""
+    f = max(90.0, freq)
+    body = mix(
+        tone(f, dur),
+        gain(tone(f * 2.76, dur), 0.55),   # deliberately inharmonic, so it
+        gain(tone(f * 5.40, dur), 0.30),   # reads as metal, not as a pitch
+        gain(tone(f * 8.93, dur), 0.16),
+    )
+    ring = envelope(lowpass(body, 6200), 0.001, dur * 0.9)
+    strike = envelope(_highpassed_noise(0.03, 3000, seed=41), 0.001, 0.028)
+    return gain(mix(ring, gain(strike, 0.5)), vel * 0.34)
+
+
+def low_pulse(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """A pulsing low synth: a narrow filtered square throbbing under the
+    groove, so the ground itself feels alive and moving."""
+    body = mix(
+        tone(freq, dur, "square", duty=0.34),
+        gain(tone(freq / 2, dur, "triangle"), 0.5),
+    )
+    body = lowpass(body, 480)
+    # The throb: a fast tremolo keeps it in motion rather than droning.
+    body = tremolo(body, rate_hz=6.4, depth=0.55)
+    return gain(envelope(body, 0.02, min(0.25, dur * 0.35), sustain=0.95),
+                vel * 0.6)
+
+
 def timpani(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     """A tuned orchestral boom: low sine body with a soft mallet thud
     and a longer decay than the hand-tom. Big dramatic accents."""

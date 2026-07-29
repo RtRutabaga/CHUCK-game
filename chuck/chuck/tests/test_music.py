@@ -13,6 +13,7 @@ import struct
 import wave
 
 from data.music import boss_battle as boss_song
+from data.music import phlegethos as phlegethos_song
 from data.music import ship_shanty as shanty_song
 from data.music import fall_to_chult as fall_song
 from data.music import chult as chult_song
@@ -316,6 +317,63 @@ def test_rendered_ship_shanty_respects_loop_quality_gates() -> None:
     peak = max(abs(s) for s in samples)
     assert peak <= 0.92, f"clipping risk: peak {peak:.2f}"
     assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
+
+
+def test_phlegethos_theme_is_driving_infernal_and_never_ambient() -> None:
+    """The brief: dangerous, adventurous, mysterious, infernal, energetic,
+    rhythmically driven -- and explicitly NOT slow, ambient-only, or
+    hopeless. Hell is an active, hostile place."""
+    tracks = phlegethos_song.build_tracks()
+    duration = phlegethos_song.TOTAL_BEATS * 60.0 / phlegethos_song.TEMPO_BPM
+    assert duration >= 60.0
+    assert phlegethos_song.TEMPO_BPM >= 120  # energetic, never slow
+    voiced = [t for t in tracks if t.notes]
+    assert len(voiced) >= 10, "the brief asks for a big percussive ensemble"
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < phlegethos_song.TOTAL_BEATS, (
+                track.name, note)
+
+    named = {track.name: track for track in tracks}
+    # Heavy percussion / tribal tom rhythms carry every single bar: this
+    # is a groove, not an atmosphere.
+    toms = named["toms"]
+    assert len(toms.notes) >= phlegethos_song.TOTAL_BARS * 6
+    kick = named["kick"]
+    assert len(kick.notes) >= phlegethos_song.TOTAL_BARS * 4
+    tom_bars = {int(n.beat // 4) for n in toms.notes}
+    assert len(tom_bars) == phlegethos_song.TOTAL_BARS, "a bar without toms"
+    # Driving bass, pulsing low synth, and metallic hits are all present.
+    assert len(named["bass"].notes) >= phlegethos_song.TOTAL_BARS * 4
+    assert named["pulse"].notes and named["metal"].notes
+    # An eerie melodic lead and an occasional choir texture sit on top.
+    assert named["lead"].notes and named["eerie"].notes
+    assert named["choir"].notes
+    # Phrygian-dominant heat: the flat second (F) against a raised third
+    # (G#) over an E tonic is what makes it infernal rather than merely sad.
+    lead_pitches = {n.pitch for n in named["lead"].notes}
+    assert any(p.startswith("F") and not p.startswith("F#")
+               for p in lead_pitches)
+    assert any(p.startswith("G#") for p in lead_pitches)
+
+
+def test_rendered_phlegethos_theme_respects_loop_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "phlegethos.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 60 * SAMPLE_RATE
+    peak = max(abs(s) for s in samples)
+    assert peak <= 0.95, f"clipping risk: peak {peak:.2f}"
+    assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
+    # It must read as strongly as the other late-game themes in play.
+    with wave.open(str(config.MUSIC_DIR / "temple.wav")) as f:
+        traw = f.readframes(f.getnframes())
+    tsamp = [x / 32767 for (x,) in struct.iter_unpack("<h", traw)]
+    rms = (sum(s * s for s in samples) / len(samples)) ** 0.5
+    temple_rms = (sum(s * s for s in tsamp) / len(tsamp)) ** 0.5
+    assert rms >= temple_rms * 0.9, (rms, temple_rms)
 
 
 def _run_all() -> None:

@@ -91,11 +91,13 @@ def test_arrival_reaches_the_ashtray_and_the_way_onward_on_foot() -> None:
     assert onward in reached
 
 
-def test_phlegethos_uses_its_own_tileset_and_placeholder_music() -> None:
+def test_phlegethos_uses_its_own_tileset_and_infernal_theme() -> None:
     tileset = tileset_for(MAP_NAME)
     assert tileset.sheet == "phlegethos.png"
     assert tileset.info()["lava"][1] >= 2  # lava is animated
-    assert AREA_MUSIC[MAP_NAME] == "chult.wav"  # placeholder for now
+    # Every Phlegethos map plays the realm's own driving infernal theme.
+    for name in (MAP_NAME, "phlegethos_road", "phlegethos_lake"):
+        assert AREA_MUSIC[name] == "phlegethos.wav", name
 
 
 def test_phlegethos_checkpoints_are_registered() -> None:
