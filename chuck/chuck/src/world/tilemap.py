@@ -365,6 +365,10 @@ TILE_DEFS: dict[str, TileDef] = {
     # A porthole in the ship's hull — solid wall, the sea drawn by the
     # animated ship tileset (session 147).
     "Ø": TileDef(solid=True, color=(96, 164, 214)),
+    # Phlegethos (Phase 8): lava is a walkable, lethal fall hazard, like
+    # the Astral Sea; a fissure is basalt split by a glowing lava crack.
+    "≋": TileDef(solid=False, color=(178, 45, 12)),
+    "♨": TileDef(solid=False, color=(58, 35, 30)),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.
@@ -587,6 +591,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     ),
     # The rubble crawlspace's "Enter crevice?" prompt (session 141).
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
+    # Phlegethos arrival map — where the Nine Hells fall drops Chuck.
+    "Ѩ": MarkerDef(kind="arrival:from_hell", under="≡"),
+    "Ѫ": MarkerDef(kind="anchor:phlegethos_anchor", under="·"),
+    "Ѭ": MarkerDef(kind="boundary:phlegethos_2", under="≡"),
 }
 
 _COMMENT_PREFIX = ";"

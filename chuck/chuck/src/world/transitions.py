@@ -274,4 +274,6 @@ AREA_MUSIC: dict[str, str | None] = {
     "ship_crew_quarters": "ship_shanty.wav",
     "ship_captain_cabin": "ship_shanty.wav",
     "ship_exterior_deck": "ship_shanty.wav",
+    # Phlegethos placeholder: the dedicated infernal theme is a later slice.
+    "phlegethos_arrival": "chult.wav",
 }

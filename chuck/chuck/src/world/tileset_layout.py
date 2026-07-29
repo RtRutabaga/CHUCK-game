@@ -285,6 +285,30 @@ SHIP = Tileset(
     overhead_char_to_terrain={},
 )
 
+# --------------------------------------------------------------------------
+# Phlegethos (assets/tilesets/phlegethos.png). The Nine Hells overworld:
+# dark cracked basalt, volcanic cliffs, worn stone paths, glowing lava
+# fissures, and animated lava (a walkable fall hazard, like the Astral Sea).
+# --------------------------------------------------------------------------
+PHLEGETHOS = Tileset(
+    sheet="phlegethos.png",
+    order=[
+        ("basalt", 4, 1),
+        ("cliff", 3, 1),
+        ("path", 2, 1),
+        ("lava", 2, 3),     # animated; a lethal fall hazard on foot
+        ("fissure", 2, 1),  # basalt split by a glowing lava crack
+    ],
+    char_to_terrain={
+        "·": "basalt",
+        "█": "cliff",
+        "≡": "path",
+        "≋": "lava",
+        "♨": "fissure",
+    },
+    overhead_char_to_terrain={},
+)
+
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
     "sewer": SEWER,
@@ -293,6 +317,7 @@ TILESETS: dict[str, Tileset] = {
     "chult": CHULT,
     "temple": TEMPLE,
     "ship": SHIP,
+    "phlegethos": PHLEGETHOS,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -322,6 +347,7 @@ MAP_TILESET: dict[str, str] = {
     "ship_crew_quarters": "ship",
     "ship_captain_cabin": "ship",
     "ship_exterior_deck": "ship",
+    "phlegethos_arrival": "phlegethos",
 }
 
 

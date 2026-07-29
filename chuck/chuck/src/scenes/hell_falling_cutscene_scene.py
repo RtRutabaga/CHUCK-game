@@ -33,6 +33,10 @@ HELL_CIGARETTE_START = 33.0
 HELL_CIGARETTE_SEATED = 34.0
 HELL_DRAG_START = 34.1
 HELL_ARRIVAL_TIME = 37.0
+# The tableau completes, then a fade hands Chuck off to playable
+# Phlegethos (the start of Phase 8).
+HELL_FADE_OUT_START = 37.0
+HELL_HANDOFF_TIME = 38.2
 HELL_GROUND_Y = 132
 
 
@@ -63,6 +67,7 @@ class HellFallingCutsceneScene(Scene):
         super().__init__(game)
         self.sanity = sanity
         self.elapsed = 0.0
+        self._handed_off = False
         self._frames: dict[str, pygame.Surface] = {}
         self._left_without_cigarette: pygame.Surface | None = None
 
@@ -112,14 +117,19 @@ class HellFallingCutsceneScene(Scene):
         return self.elapsed >= HELL_CIGARETTE_SEATED
 
     def update(self, dt: float) -> None:
-        if self.arrived:
+        if self._handed_off:
             return
         previous = self.elapsed
-        self.elapsed = min(HELL_ARRIVAL_TIME, self.elapsed + dt)
+        self.elapsed = min(HELL_HANDOFF_TIME, self.elapsed + dt)
         if previous < HELL_MUSIC_START <= self.elapsed:
             self.game.audio.play_music("fall_to_chult.wav", loop=False)
         if previous < HELL_IMPACT_TIME <= self.elapsed:
             self.game.audio.play_sfx("hurt")
+        if previous < HELL_HANDOFF_TIME <= self.elapsed:
+            # The fade completes: Phase 8 begins on the Phlegethos ground.
+            self._handed_off = True
+            self.game.checkpoints.load_checkpoint(
+                "phlegethos_arrival", sanity=self.sanity)
 
     def draw(self, surface: pygame.Surface) -> None:
         self._draw_void(surface)
@@ -132,6 +142,14 @@ class HellFallingCutsceneScene(Scene):
             (17, 12, 15),
             (0, config.NATIVE_HEIGHT - 7, config.NATIVE_WIDTH, 7),
         )
+        if self.elapsed >= HELL_FADE_OUT_START:
+            frac = _clamp01(
+                (self.elapsed - HELL_FADE_OUT_START)
+                / (HELL_HANDOFF_TIME - HELL_FADE_OUT_START)
+            )
+            fade = pygame.Surface(surface.get_size())
+            fade.set_alpha(round(255 * frac))
+            surface.blit(fade, (0, 0))
 
     def _draw_void(self, surface: pygame.Surface) -> None:
         heat = _ease(self.elapsed / HELL_IMPACT_TIME)

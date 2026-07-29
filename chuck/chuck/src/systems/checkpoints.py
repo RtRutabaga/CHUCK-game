@@ -367,6 +367,19 @@ CHECKPOINTS = (
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         development_visible=False, runtime_entry=True,
     ),
+    # Phase 8 --- Phlegethos, the Nine Hells overworld.
+    CheckpointDefinition(
+        "phlegethos_arrival", "Phlegethos 1", "phlegethos_arrival",
+        arrival="from_hell", facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True, fade_in=True,
+    ),
+    CheckpointDefinition(
+        "phlegethos_anchor", "Phlegethos Ashtray", "phlegethos_arrival",
+        position=(340.0, 389.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
     CheckpointDefinition(
         "ship_deck_return", "Ship Return", "ship_deck",
         arrival="from_lower_hold", facing="up",

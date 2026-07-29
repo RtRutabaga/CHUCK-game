@@ -34,7 +34,7 @@ class SolidGrid(Protocol):
 # enemies have no fall choreography — their movement treats every fall
 # hazard as a wall, so a skeleton never strolls across a spike pit or
 # the Astral sea (session 127).
-FALL_HAZARD_TERRAIN = frozenset({"V", "♠", "s"})
+FALL_HAZARD_TERRAIN = frozenset({"V", "♠", "s", "≋"})
 
 
 def move_and_collide(

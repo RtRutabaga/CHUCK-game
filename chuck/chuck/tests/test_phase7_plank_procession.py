@@ -523,15 +523,19 @@ def test_hell_fall_reuses_cue_and_holds_at_phase8_arrival_boundary() -> None:
         assert basalt > len(ground_pixels) * 0.9
         assert lava < len(ground_pixels) * 0.02
 
-        scene.update(HELL_ARRIVAL_TIME - scene.elapsed + 1.0)
+        # The tableau completes, then a fade hands Chuck off to playable
+        # Phlegethos -- the start of Phase 8.
+        scene.update(HELL_ARRIVAL_TIME - scene.elapsed + 0.1)
         assert scene.arrived and scene.phase == "arrived"
-        assert scene.elapsed == HELL_ARRIVAL_TIME
         assert scene.sanity == 73
-        assert game.scenes.current is scene
-        held_elapsed = scene.elapsed
-        scene.update(5.0)
-        assert scene.elapsed == held_elapsed
+        assert game.scenes.current is scene  # still fading out
         game.scenes.draw(game.native_surface)
+        scene.update(2.0)  # past the fade
+        world = game.scenes.current
+        assert world is not scene
+        assert world.map_name == "phlegethos_arrival"
+        assert game.active_checkpoint_id == "phlegethos_arrival"
+        assert world.sanity.current == 73  # Sanity carried into Hell
     finally:
         game._shutdown()
 
