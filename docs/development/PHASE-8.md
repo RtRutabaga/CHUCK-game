@@ -41,6 +41,16 @@ Implemented so far:
   it to the road both ways; checkpoints `Phlegethos 3` + Ashtray +
   `Phlegethos 2 Return`. Fire snakes patrol the shores only -- the lake
   itself is pure traversal.
+- **Spined devils** and **flameskulls**, completing the bestiary's dodge
+  hazards. A spined devil never moves: it perches beside a lane and flicks
+  burning tail spines across it on a staggered cadence (the temple
+  wall-launcher pattern with a visible, menacing owner). Contact merely
+  hurts, but *scratching* one instantly defeats Chuck, so the rule reads
+  as "never fight this" -- four of them watch the lava road's lanes. A
+  flameskull weaves fast around a fixed haunt (bee-like, never a pursuer),
+  cannot be cleared by any scratch, and floats over lava as happily as
+  stone -- four haunt the lava lake's stepping stones, using lava-under
+  markers so they never punch safe tiles into the lake.
 
 ------------------------------------------------------------------------
 
@@ -230,9 +240,9 @@ of the collided worlds.
   *(basalt/lava/fissures/cliffs done; statues + fortress pending)*
 - [x] Lemures reuse zombie gameplay.
 - [x] Fire snakes reuse temple-snake gameplay.
-- [ ] Spined devils create ranged dodge hazards and instantly defeat
+- [x] Spined devils create ranged dodge hazards and instantly defeat
   Chuck in melee.
-- [ ] Flameskulls weave rapidly as hazards.
+- [x] Flameskulls weave rapidly as hazards.
 - [ ] Horned devils reuse the large-dinosaur gameplay.
 - [ ] Lava traversal and jump sequences are complete. *(the lava-lake
   island crossing is in; more lava hazards may follow)*

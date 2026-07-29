@@ -327,6 +327,107 @@ def test_the_road_and_lake_connect_both_ways() -> None:
         game._shutdown()
 
 
+def test_spined_devils_are_stationary_throwers_and_fatal_in_melee() -> None:
+    from src.entities.spined_devil import FlamingSpine, SpinedDevil
+
+    tilemap = TileMap(config.MAPS_DIR / f"{ROAD}.txt")
+    perches = [kind for kind, _pos in tilemap.object_spawns
+               if kind.startswith("spined_devil:")]
+    assert len(perches) >= 3
+    assert all(k.split(":", 1)[1] in {"up", "down", "left", "right"}
+               for k in perches)
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("phlegethos_road")
+        scene._arrival_fade_t = None
+        devils = scene.spined_devils
+        assert devils and all(isinstance(d, SpinedDevil) for d in devils)
+        # They never move: a perch is a fixed lane problem.
+        home = [(d.x, d.y) for d in devils]
+        for _ in range(40):
+            scene.update(0.05)
+        assert [(d.x, d.y) for d in devils] == home
+        # ...but they throw burning spines on a cadence.
+        assert scene.spines and all(isinstance(s, FlamingSpine)
+                                    for s in scene.spines)
+        # A spine costs Sanity and is spent on impact.
+        scene.spines = []
+        spine = FlamingSpine(scene.player.hitbox.centerx,
+                             scene.player.hitbox.centery, "down")
+        scene.spines.append(spine)
+        before = scene.sanity.current
+        scene.update(0.01)
+        assert scene.sanity.current == before - config.SPINE_SANITY_DAMAGE
+        assert spine not in scene.spines
+
+        # Closing to melee is simply fatal, however much Sanity remains.
+        devil = devils[0]
+        scene.sanity.current = scene.sanity.maximum
+        scene.player.x = devil.x - 4
+        scene.player.y = devil.y
+        scene.player.facing = "right"
+        game.input.begin_frame()
+        game.input._actions_just_pressed.add("scratch")
+        scene.update(0.02)
+        assert scene.sanity.current == 0, "scratching a spined devil must kill"
+    finally:
+        game._shutdown()
+
+
+def test_flameskulls_weave_as_unkillable_hazards_over_the_lava() -> None:
+    from src.entities.flameskull import Flameskull
+
+    tilemap = TileMap(config.MAPS_DIR / f"{LAKE}.txt")
+    haunts = [kind for kind, _pos in tilemap.object_spawns
+              if kind.startswith("flameskull:")]
+    assert len(haunts) >= 3
+    # They float, so their markers leave the molten tile beneath intact.
+    ts = config.TILE_SIZE
+    for kind, (x, y) in tilemap.object_spawns:
+        if kind.startswith("flameskull:"):
+            assert tilemap.terrain_at(int(x // ts), int(y // ts)) == "≋"
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(LAKE)
+        scene._arrival_fade_t = None
+        skulls = scene.flameskulls
+        assert skulls and all(isinstance(s, Flameskull) for s in skulls)
+        # They weave: fast movement that returns around a fixed haunt.
+        skull = skulls[0]
+        seen = set()
+        for _ in range(120):
+            scene.update(0.05)
+            seen.add((round(skull.x), round(skull.y)))
+        assert len(seen) > 20, "a flameskull should weave, not sit"
+        spread = max(abs(x - skull.home[0]) for x, _y in seen)
+        assert spread <= config.FLAMESKULL_RANGE + config.FLAMESKULL_WEAVE + 8
+
+        # Put one exactly where Chuck stands on the safe shore (he cannot
+        # stand in the lava they haunt), so contact is judged on its own.
+        haunt = Flameskull(scene.player.hitbox.centerx,
+                           scene.player.hitbox.centery, "h")
+        haunt._t = 0.0  # at rest on its haunt, i.e. right on top of him
+        haunt.load_sprites(game.assets)
+        scene.flameskulls.append(haunt)
+        before_count = len(scene.flameskulls)
+
+        # Touching one costs Chuck Sanity...
+        scene.sanity.current = scene.sanity.maximum
+        scene.update(0.001)
+        assert scene.sanity.current == (
+            scene.sanity.maximum - config.FLAMESKULL_SANITY_DAMAGE)
+
+        # ...and it cannot be cleared: scratching one changes nothing.
+        game.input.begin_frame()
+        game.input._actions_just_pressed.add("scratch")
+        scene.update(0.001)
+        assert len(scene.flameskulls) == before_count
+    finally:
+        game._shutdown()
+
+
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):

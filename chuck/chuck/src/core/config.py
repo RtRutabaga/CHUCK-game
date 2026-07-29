@@ -186,6 +186,32 @@ SKELETON_SCRATCHES = 6
 LEMURE_SPEED = 15.0
 LEMURE_SANITY_DAMAGE = 18
 LEMURE_SCRATCHES = 10
+
+# Spined devils never move: they perch and flick burning tail spines down
+# an authored lane, exactly as the temple's wall launchers throw darts.
+# Closing to melee is fatal, so they are a pure ranged dodge problem.
+SPINED_DEVIL_FRAME_W = 16
+SPINED_DEVIL_FRAME_H = 22
+SPINED_DEVIL_HITBOX_W = 12
+SPINED_DEVIL_HITBOX_H = 10
+SPINED_DEVIL_INTERVAL = 2.0
+SPINED_DEVIL_CONTACT_DAMAGE = 15
+SPINE_SPEED = 96.0
+SPINE_SANITY_DAMAGE = 18
+SPINE_HITBOX_LONG = 8
+SPINE_HITBOX_SHORT = 3
+
+# Flameskulls weave fast and erratically around a fixed haunt, like bees.
+# They cannot be cleared -- they are moving hazards to be timed, and they
+# drift over lava as happily as over stone.
+FLAMESKULL_FRAME_W = 14
+FLAMESKULL_FRAME_H = 14
+FLAMESKULL_HITBOX_W = 10
+FLAMESKULL_HITBOX_H = 10
+FLAMESKULL_SPEED = 62.0
+FLAMESKULL_RANGE = 40.0
+FLAMESKULL_WEAVE = 18.0
+FLAMESKULL_SANITY_DAMAGE = 16
 UNDEAD_NOTICE_RANGE = 112.0
 THORN_SANITY_DAMAGE = 10
 

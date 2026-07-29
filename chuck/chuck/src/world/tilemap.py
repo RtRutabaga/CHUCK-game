@@ -607,6 +607,18 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ԉ": MarkerDef(kind="arrival:from_phlegethos_2", under="≡"),
     "Ԋ": MarkerDef(kind="anchor:phlegethos_3_anchor", under="≡"),
     "Ԍ": MarkerDef(kind="boundary:phlegethos_4", under="≡"),
+    # Spined devils perch and throw down an authored lane; flameskulls
+    # weave along a horizontal or vertical haunt.
+    "Ԏ": MarkerDef(kind="spined_devil:down", under="·"),
+    "Ԑ": MarkerDef(kind="spined_devil:up", under="·"),
+    "Ԓ": MarkerDef(kind="spined_devil:left", under="·"),
+    "Ԕ": MarkerDef(kind="spined_devil:right", under="·"),
+    "Ԗ": MarkerDef(kind="flameskull:h", under="·"),
+    "Ԙ": MarkerDef(kind="flameskull:v", under="·"),
+    # Flameskulls float, so they may also haunt open lava. These place
+    # the same hazard while leaving the molten tile beneath untouched.
+    "Ԛ": MarkerDef(kind="flameskull:h", under="≋"),
+    "Ԝ": MarkerDef(kind="flameskull:v", under="≋"),
 }
 
 _COMMENT_PREFIX = ";"

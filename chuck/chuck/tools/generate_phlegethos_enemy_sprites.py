@@ -1,9 +1,9 @@
-"""Generate the Phlegethos lemure and fire-snake sprite sheets (Phase 8).
+"""Generate the Phlegethos enemy sprite sheets (Phase 8).
 
-Both reuse existing gameplay wholesale -- the lemure is a third
-UndeadEnemy kind (Chultan zombie/skeleton lifecycle) and the fire snake
-is a TempleSnake variant -- so these sheets match those frame layouts
-exactly: three facings (down, up, left) on one row.
+The lemure is a third UndeadEnemy kind and the fire snake a TempleSnake
+variant, so those sheets match the established frame layouts exactly:
+three facings (down, up, left) on one row. The spined devil follows the
+same three-facing convention; the flameskull is a single hovering frame.
 """
 
 from pathlib import Path
@@ -92,12 +92,84 @@ def fire_snake_frame(facing: str) -> Image.Image:
     return image
 
 
+# A spined devil: a lean red imp bristling with barbed tail spines.
+HIDE = (150, 46, 38, 255)
+HIDE_DARK = (98, 28, 28, 255)
+HIDE_LIGHT = (192, 74, 50, 255)
+HORN = (222, 200, 172, 255)
+WING = (74, 26, 30, 255)
+EYE = (255, 214, 96, 255)
+
+DEVIL_W, DEVIL_H = 16, 22
+SKULL_W, SKULL_H = 14, 14
+
+# A flameskull: a bleached skull wreathed in fire.
+BONE = (226, 220, 198, 255)
+BONE_DARK = (166, 158, 138, 255)
+SOCKET = (38, 24, 26, 255)
+FLAME = (240, 128, 34, 255)
+FLAME_HOT = (255, 196, 84, 255)
+
+
+def spined_devil_frame(facing: str) -> Image.Image:
+    """A perched imp: hunched wings, barbed tail arced over its back."""
+    image = Image.new("RGBA", (DEVIL_W, DEVIL_H), CLEAR)
+    draw = ImageDraw.Draw(image)
+    # Ragged wings behind, hunched high on the shoulders.
+    draw.polygon(((1, 8), (5, 5), (5, 15)), fill=WING)
+    draw.polygon(((14, 8), (10, 5), (10, 15)), fill=WING)
+    # Squat body and clawed feet.
+    draw.ellipse((4, 9, 11, 19), fill=HIDE_DARK)
+    draw.ellipse((5, 10, 10, 17), fill=HIDE)
+    draw.rectangle((5, 19, 6, 21), fill=HIDE_DARK)
+    draw.rectangle((9, 19, 10, 21), fill=HIDE_DARK)
+    # Head with swept horns.
+    draw.ellipse((4, 2, 11, 9), fill=HIDE)
+    draw.ellipse((5, 3, 10, 8), fill=HIDE_LIGHT)
+    draw.line((4, 3, 2, 0), fill=HORN, width=1)
+    draw.line((11, 3, 13, 0), fill=HORN, width=1)
+    if facing == "down":
+        draw.point((6, 5), fill=EYE)
+        draw.point((9, 5), fill=EYE)
+    elif facing == "left":
+        draw.point((5, 5), fill=EYE)
+    # The barbed tail, arced up and ready to flick.
+    draw.line((11, 17, 14, 13, 13, 9), fill=HIDE_DARK, width=2)
+    for x, y in ((14, 12), (13, 10), (14, 14)):
+        draw.point((x, y), fill=FLAME_HOT)
+    return image
+
+
+def flameskull_frame(_facing: str) -> Image.Image:
+    """A grinning skull inside a corona of fire."""
+    image = Image.new("RGBA", (SKULL_W, SKULL_H), CLEAR)
+    draw = ImageDraw.Draw(image)
+    # The fire corona.
+    draw.ellipse((0, 0, 13, 13), fill=FLAME)
+    draw.ellipse((1, 1, 12, 12), fill=FLAME_HOT)
+    # The skull itself.
+    draw.ellipse((2, 2, 11, 10), fill=BONE)
+    draw.ellipse((3, 3, 10, 8), fill=BONE)
+    draw.rectangle((4, 5, 5, 7), fill=SOCKET)
+    draw.rectangle((8, 5, 9, 7), fill=SOCKET)
+    draw.rectangle((6, 8, 7, 9), fill=BONE_DARK)
+    # A row of teeth.
+    draw.rectangle((4, 10, 9, 11), fill=BONE)
+    for x in (5, 7, 9):
+        draw.point((x, 11), fill=SOCKET)
+    return image
+
+
 def main() -> None:
     out = Path(__file__).resolve().parents[1] / "assets" / "sprites" / "hazards"
     out.mkdir(parents=True, exist_ok=True)
+    # The flameskull is one hovering frame, not a three-facing sheet.
+    flameskull_frame("down").save(out / "flameskull.png")
+    print(f"Wrote {out / 'flameskull.png'}")
     for name, make, (w, h) in (
         ("lemure", lemure_frame, (UNDEAD_W, UNDEAD_H)),
         ("fire_snake", fire_snake_frame, (SNAKE_W, SNAKE_H)),
+        ("spined_devil", spined_devil_frame, (DEVIL_W, DEVIL_H)),
     ):
         sheet = Image.new("RGBA", (w * 3, h), CLEAR)
         for index, facing in enumerate(("down", "up", "left")):

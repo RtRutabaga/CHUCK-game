@@ -41,6 +41,8 @@ from src.entities.rat import SewerRat
 from src.entities.raptor import Raptor
 from src.entities.reality_blocks import RealityBlockField
 from src.entities.snake import TempleSnake
+from src.entities.flameskull import Flameskull
+from src.entities.spined_devil import FlamingSpine, SpinedDevil
 from src.entities.sword_fighter import SwordFighter
 from src.entities.undead import UndeadEnemy
 from src.scenes.dialogue_scene import DialogueScene
@@ -363,7 +365,8 @@ class WorldScene(Scene):
                 "cat", "rat", "zombie", "skeleton", "lemure", "raptor",
                 "massive_dinosaur", "snake", "fire_snake",
                 "pirate_chef",
-            } or kind.startswith("sword_fighter:")
+            } or kind.startswith(("sword_fighter:", "spined_devil:",
+                                  "flameskull:"))
         ]
         self._staged_undead_spawns = [
             (kind, position)
@@ -438,8 +441,9 @@ class WorldScene(Scene):
                 "massive_dinosaur", "snake", "fire_snake", "pirate_chef",
             }:
                 continue  # rebuilt with all enemies below
-            elif kind.startswith("sword_fighter:"):
-                continue  # paired and rebuilt with hazards below
+            elif kind.startswith(("sword_fighter:", "spined_devil:",
+                                  "flameskull:")):
+                continue  # rebuilt with all hazards below
             elif kind.startswith("battle:"):
                 actor = BattleActor(cx, cy, kind.split(":", 1)[1])
                 actor.load_sprite(self.game.assets)
@@ -672,6 +676,15 @@ class WorldScene(Scene):
         for dart in self.darts:
             dart.update(dt, self.tilemap)
         self.darts = [dart for dart in self.darts if dart.alive]
+        for devil in self.spined_devils:
+            spine = devil.update(dt)
+            if spine is not None:
+                self.spines.append(spine)
+        for spine in self.spines:
+            spine.update(dt, self.tilemap)
+        self.spines = [spine for spine in self.spines if spine.alive]
+        for skull in self.flameskulls:
+            skull.update(dt)
         for actor in self.battle_actors:
             actor.update(dt)
         if self.battle is not None:
@@ -822,6 +835,13 @@ class WorldScene(Scene):
         # One committed scratch resolves against at most one living enemy.
         if self.player.scratch_just_started:
             self.game.audio.play_sfx("scratch")
+            # Closing to melee with a spined devil is simply fatal: its
+            # barbs answer the scratch before Chuck's claws land.
+            reach = self.player.scratch_hitbox()
+            if any(overlaps(reach, devil.hitbox)
+                   for devil in self.spined_devils):
+                self.sanity.deplete()
+                return
             scratch_first_target(
                 self.player.scratch_hitbox(),
                 [*(prop for prop in self.props
@@ -957,6 +977,28 @@ class WorldScene(Scene):
                     self.player.hurt_blink = config.HURT_COOLDOWN
                     self.game.audio.play_sfx("hurt")
         self.darts = [dart for dart in self.darts if dart.alive]
+
+        for spine in self.spines:
+            if spine.alive and overlaps(player_box, spine.hitbox):
+                spine.alive = False
+                if self.sanity.damage(spine.damage):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+        self.spines = [spine for spine in self.spines if spine.alive]
+
+        # Flameskulls cannot be cleared: they only ever cost Sanity.
+        for skull in self.flameskulls:
+            if overlaps(player_box, skull.hitbox):
+                if self.sanity.damage(skull.damage):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+                break
+        for devil in self.spined_devils:
+            if overlaps(player_box, devil.hitbox):
+                if self.sanity.damage(devil.damage):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+                break
 
         for shot in self.battle_projectiles:
             if shot.alive and overlaps(player_box, shot.hitbox):
@@ -1164,7 +1206,8 @@ class WorldScene(Scene):
                      *self.hazards, *self.rats,
                      *self.undead, *self.raptors, *self.dinosaurs,
                      *self.snakes, *self.chefs, *self.fencers,
-                     *self.darts, *self.battle_projectiles,
+                     *self.spined_devils, *self.flameskulls,
+                     *self.darts, *self.spines, *self.battle_projectiles,
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
 
@@ -1621,6 +1664,10 @@ class WorldScene(Scene):
             for direction, (cx, cy) in self._dart_trap_spawns
         ]
         self.darts: list[TempleDart] = []
+        # Phlegethos hazards: perched spine-throwers and weaving skulls.
+        self.spined_devils: list[SpinedDevil] = []
+        self.spines: list[FlamingSpine] = []
+        self.flameskulls: list[Flameskull] = []
         # The sanctum battle restarts its cadences whenever the room does,
         # and the Astral breach heals shut and re-arms with it.
         self.battle = (BattleChoreographer(self.battle_actors)
@@ -1705,6 +1752,14 @@ class WorldScene(Scene):
                 fencer.tilemap = self.tilemap
                 fencer.load_sprites(self.game.assets)
                 self.fencers.append(fencer)
+            elif kind.startswith("spined_devil:"):
+                devil = SpinedDevil(cx, cy, kind.split(":", 1)[1])
+                devil.load_sprites(self.game.assets)
+                self.spined_devils.append(devil)
+            elif kind.startswith("flameskull:"):
+                skull = Flameskull(cx, cy, kind.split(":", 1)[1])
+                skull.load_sprites(self.game.assets)
+                self.flameskulls.append(skull)
         if self.fencers:
             if len(self.fencers) != 2:
                 raise ValueError("Exterior fencing encounter needs two pirates")
