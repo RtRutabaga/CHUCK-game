@@ -411,6 +411,26 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "phlegethos_fortress_approach", "Phlegethos 4",
+        "phlegethos_fortress_approach",
+        arrival="from_phlegethos_3", facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "phlegethos_4_anchor", "Phlegethos 4 Ashtray",
+        "phlegethos_fortress_approach",
+        position=(324.0, 453.0), facing="up",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "phlegethos_3_return", "Phlegethos 3 Return", "phlegethos_lake",
+        arrival="from_phlegethos_4", facing="down",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "phlegethos_2_return", "Phlegethos 2 Return", "phlegethos_road",
         arrival="from_phlegethos_3", facing="down",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),

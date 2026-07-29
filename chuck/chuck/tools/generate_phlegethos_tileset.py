@@ -123,6 +123,42 @@ def draw_pass(surface, _variant: int, _frame: int) -> None:
     pygame.draw.line(surface, PATH, (3, 15), (12, 15))
 
 
+FORT = (44, 40, 46)
+FORT_DARK = (26, 24, 30)
+FORT_LIGHT = (70, 64, 72)
+FORT_IRON = (96, 92, 100)
+
+
+def draw_fortress(surface, variant: int, _frame: int) -> None:
+    """Iron-black fortress masonry: colder and harder than the cliffs."""
+    surface.fill(FORT)
+    pygame.draw.rect(surface, FORT_DARK, (0, 13, 16, 3))
+    pygame.draw.line(surface, FORT_LIGHT, (0, 0), (15, 0))
+    for y in (4, 9):
+        pygame.draw.line(surface, FORT_DARK, (0, y), (15, y))
+    seam = (variant * 5 + 2) % 14
+    pygame.draw.line(surface, FORT_DARK, (seam, 0), (seam, 4))
+    pygame.draw.line(surface, FORT_DARK, ((seam + 7) % 15, 5),
+                     ((seam + 7) % 15, 9))
+    # Iron rivets and a faint ember bleeding from the joints.
+    surface.set_at((seam + 2 if seam < 13 else 1, 7), FORT_IRON)
+    if variant == 1:
+        surface.set_at((11, 11), LAVA_HOT)
+
+
+def draw_fortress_gate(surface, _variant: int, _frame: int) -> None:
+    """A barred gate, shut: the fortress interior is not this phase."""
+    surface.fill(FORT_DARK)
+    for x in range(1, 16, 3):
+        pygame.draw.line(surface, FORT_IRON, (x, 0), (x, 15))
+        pygame.draw.line(surface, FORT_LIGHT, (x, 0), (x, 3))
+    for y in (3, 11):
+        pygame.draw.line(surface, FORT_IRON, (0, y), (15, y))
+    # Hellfire glimmering somewhere far behind the bars.
+    for x, y in ((3, 8), (9, 6), (13, 9)):
+        surface.set_at((x, y), LAVA_DEEP)
+
+
 DRAW = {
     "basalt": draw_basalt,
     "cliff": draw_cliff,
@@ -130,6 +166,8 @@ DRAW = {
     "lava": draw_lava,
     "fissure": draw_fissure,
     "pass": draw_pass,
+    "fortress": draw_fortress,
+    "fortress_gate": draw_fortress_gate,
 }
 
 

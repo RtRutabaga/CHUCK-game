@@ -268,7 +268,7 @@ def test_the_lava_lake_is_crossed_by_single_hop_stepping_stones() -> None:
                 frontier.append(land)
     assert reached == safe, sorted(safe - reached)[:8]
     assert pts["phlegethos_3_anchor"] in reached
-    assert pts["phlegethos_4"] in reached  # the far shore, onward
+    assert pts["from_phlegethos_4"] in reached  # the far shore, onward
 
     # The crossing genuinely requires hops: the far shore is NOT reachable
     # by walking alone.
@@ -280,7 +280,7 @@ def test_the_lava_lake_is_crossed_by_single_hop_stepping_stones() -> None:
             if nxt in safe and nxt not in walk_only:
                 walk_only.add(nxt)
                 frontier.append(nxt)
-    assert pts["phlegethos_4"] not in walk_only, "the lake can be walked!"
+    assert pts["from_phlegethos_4"] not in walk_only, "the lake can be walked!"
     # And a good number of separate islands stand in the lava.
     islands = []
     seen: set = set()
@@ -426,6 +426,120 @@ def test_flameskulls_weave_as_unkillable_hazards_over_the_lava() -> None:
         game.input._actions_just_pressed.add("scratch")
         scene.update(0.001)
         assert len(scene.flameskulls) == before_count
+    finally:
+        game._shutdown()
+
+
+APPROACH = "phlegethos_fortress_approach"
+
+
+def test_the_fortress_approach_establishes_the_wall_gate_and_idols() -> None:
+    tilemap = TileMap(config.MAPS_DIR / f"{APPROACH}.txt")
+    assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 34)
+    kinds = [kind for kind, _pos in tilemap.object_spawns]
+    assert kinds.count("arrival:from_phlegethos_3") == 1
+    assert kinds.count("anchor:phlegethos_4_anchor") == 1
+    assert kinds.count("boundary:phlegethos_fortress") == 1  # the climax
+    # The setting's remaining visual beats: an iron-black fortress wall
+    # closing off the north, its shut gate, and brooding infernal idols.
+    fortress = sum(row.count("▓") for row in tilemap._grid)
+    gate = sum(row.count("╬") for row in tilemap._grid)
+    statues = [(c, r) for kind, c, r in tilemap.prop_tiles
+               if kind == "phlegethos_statue"]
+    assert fortress >= 150, fortress
+    assert gate >= 6, gate
+    assert len(statues) >= 6, len(statues)
+    # Wall, gate and idols are all solid: the fortress interior is not
+    # this phase, and the idols are scenery to walk around.
+    assert TILE_DEFS["▓"].solid and TILE_DEFS["╬"].solid
+    assert all(tilemap.is_solid(c, r) for c, r in statues)
+    # The gate sits inside the wall band, not out in the open.
+    gate_rows = {r for r in range(tilemap.height_tiles)
+                 for c in range(tilemap.width_tiles)
+                 if tilemap.terrain_at(c, r) == "╬"}
+    assert max(gate_rows) <= 8, gate_rows
+
+    # Entry, Ashtray, the gate approach and the pass back all connect on
+    # foot without routing through lava.
+    ts = config.TILE_SIZE
+    pts = {kind.split(":", 1)[1]: (int(x // ts), int(y // ts))
+           for kind, (x, y) in tilemap.object_spawns
+           if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+    start = pts["from_phlegethos_3"]
+    reached = {start}
+    frontier = deque([start])
+    while frontier:
+        c, r = frontier.popleft()
+        for nxt in ((c - 1, r), (c + 1, r), (c, r - 1), (c, r + 1)):
+            if nxt in reached or tilemap.is_solid(*nxt):
+                continue
+            if tilemap.terrain_at(*nxt) == "≋":
+                continue
+            reached.add(nxt)
+            frontier.append(nxt)
+    assert pts["phlegethos_4_anchor"] in reached
+    assert pts["phlegethos_fortress"] in reached
+    back = next((c, r) for r in range(tilemap.height_tiles)
+                for c in range(tilemap.width_tiles)
+                if tilemap.terrain_at(c, r) == "Δ")
+    assert back in reached
+
+
+def test_horned_devils_reuse_the_massive_dinosaur_wholesale() -> None:
+    from src.entities.massive_dinosaur import MassiveDinosaur
+
+    tilemap = TileMap(config.MAPS_DIR / f"{APPROACH}.txt")
+    kinds = [kind for kind, _pos in tilemap.object_spawns]
+    assert kinds.count("horned_devil") >= 1
+    # The garrison mixes every lesser devil the realm has introduced.
+    assert kinds.count("lemure") >= 2
+    assert kinds.count("fire_snake") >= 2
+    assert sum(1 for k in kinds if k.startswith("spined_devil:")) >= 1
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(APPROACH)
+        devils = scene.dinosaurs
+        assert devils and all(isinstance(d, MassiveDinosaur) for d in devils)
+        devil = devils[0]
+        # It IS the Chult colossus: identical stats, infernal art only.
+        assert devil.variant == "horned_devil"
+        assert devil.speed == config.DINOSAUR_SPEED
+        assert devil.damage == config.DINOSAUR_SANITY_DAMAGE
+        assert devil.max_scratches == config.DINOSAUR_SCRATCHES
+        # It towers: the frame is far larger than a human NPC's.
+        frame = devil._frames["down"][0]
+        assert frame.get_width() == config.DINOSAUR_FRAME_W
+        assert frame.get_height() == config.DINOSAUR_FRAME_H
+        assert frame.get_height() > config.UNDEAD_FRAME_H
+    finally:
+        game._shutdown()
+
+
+def test_the_lake_and_fortress_approach_connect_both_ways() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(LAKE)
+        scene._arrival_fade_t = None
+        onward = next((c, r) for r in range(scene.tilemap.height_tiles)
+                      for c in range(scene.tilemap.width_tiles)
+                      if scene.tilemap.terrain_at(c, r) == "∇")
+        scene.player.x = onward[0] * config.TILE_SIZE + 3
+        scene.player.y = onward[1] * config.TILE_SIZE + 4
+        scene.update(0.0)
+        assert scene.map_name == APPROACH
+        assert game.active_checkpoint_id == APPROACH
+        scene.update(0.0)
+        assert scene.map_name == APPROACH  # no bounce
+
+        back = next((c, r) for r in range(scene.tilemap.height_tiles)
+                    for c in range(scene.tilemap.width_tiles)
+                    if scene.tilemap.terrain_at(c, r) == "Δ")
+        scene.player.x = back[0] * config.TILE_SIZE + 3
+        scene.player.y = back[1] * config.TILE_SIZE + 4
+        scene.update(0.0)
+        assert scene.map_name == LAKE
+        assert game.active_checkpoint_id == "phlegethos_3_return"
     finally:
         game._shutdown()
 

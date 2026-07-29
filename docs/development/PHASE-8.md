@@ -55,6 +55,19 @@ Implemented so far:
   added for the brief: `metal_hit` (inharmonic struck metal) and
   `low_pulse` (a tremolo'd filtered square). Renders at 0.93 headroom, RMS
   0.183 (level with temple/boss), seam 0.011.
+- The fortress approach (`phlegethos_fortress_approach`, 48x34) and the
+  last enemy. The iron-black fortress wall now closes off the north with
+  its gate shut (new `fortress` / `fortress_gate` tileset rows -- the
+  interior is not this phase), and a processional lined with brooding
+  **infernal idols** (new `phlegethos_statue` prop, eyes lit from within)
+  climbs from the south pass to a muster yard. **Horned devils** are a
+  `MassiveDinosaur` variant -- the Chultan colossus's gameplay exactly,
+  wearing infernal art: a slab-muscled, batwinged, horned soldier dragging
+  a barbed iron fork, towering over Chuck. One holds the yard, with lemures,
+  fire snakes and spined devils scattered below. Checkpoints `Phlegethos 4`
+  + Ashtray + `Phlegethos 3 Return`; the gate approach is an inert boundary
+  awaiting the climax. This completes the bestiary and the setting's visual
+  brief.
 - **Spined devils** and **flameskulls**, completing the bestiary's dodge
   hazards. A spined devil never moves: it perches beside a lane and flicks
   burning tail spines across it on a staggered cadence (the temple
@@ -249,15 +262,14 @@ of the collided worlds.
 
 # 11. Acceptance Criteria
 
-- [ ] Multiple connected Phlegethos maps are implemented. *(three so far)*
-- [ ] Basalt, lava, statues and fortress exteriors establish the setting.
-  *(basalt/lava/fissures/cliffs done; statues + fortress pending)*
+- [x] Multiple connected Phlegethos maps are implemented. *(four)*
+- [x] Basalt, lava, statues and fortress exteriors establish the setting.
 - [x] Lemures reuse zombie gameplay.
 - [x] Fire snakes reuse temple-snake gameplay.
 - [x] Spined devils create ranged dodge hazards and instantly defeat
   Chuck in melee.
 - [x] Flameskulls weave rapidly as hazards.
-- [ ] Horned devils reuse the large-dinosaur gameplay.
+- [x] Horned devils reuse the large-dinosaur gameplay.
 - [ ] Lava traversal and jump sequences are complete. *(the lava-lake
   island crossing is in; more lava hazards may follow)*
 - [ ] Fortress climax functions.

@@ -99,6 +99,10 @@ _SPRITES = {
     "temple_rubble_block": tuple(
         f"objects/temple_rubble_block_{i + 1}.png" for i in range(12)
     ),
+    "phlegethos_statue": (
+        "objects/phlegethos_statue_1.png",
+        "objects/phlegethos_statue_2.png",
+    ),
 }
 
 # Props that respond to the interact key with a line of dialogue

@@ -16,9 +16,15 @@ if TYPE_CHECKING:
 
 
 class MassiveDinosaur(Entity):
-    """A towering pursuer whose threat comes from scale, not speed."""
+    """A towering pursuer whose threat comes from scale, not speed.
 
-    def __init__(self, center_x: float, center_y: float) -> None:
+    `variant` selects the sprite sheet only: Phlegethos horned devils
+    (Phase 8) are this exact gameplay wearing infernal art.
+    """
+
+    def __init__(self, center_x: float, center_y: float,
+                 variant: str = "massive_dinosaur") -> None:
+        self.variant = variant
         super().__init__(
             center_x - config.DINOSAUR_HITBOX_W / 2,
             center_y - config.DINOSAUR_HITBOX_H / 2,
@@ -39,7 +45,7 @@ class MassiveDinosaur(Entity):
         import pygame
 
         rows = assets.sheet(
-            "hazards/massive_dinosaur.png",
+            f"hazards/{self.variant}.png",
             config.DINOSAUR_FRAME_W,
             config.DINOSAUR_FRAME_H,
         )

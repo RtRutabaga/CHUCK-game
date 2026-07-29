@@ -363,7 +363,7 @@ class WorldScene(Scene):
             for kind, position in self.tilemap.object_spawns
             if kind in {
                 "cat", "rat", "zombie", "skeleton", "lemure", "raptor",
-                "massive_dinosaur", "snake", "fire_snake",
+                "massive_dinosaur", "horned_devil", "snake", "fire_snake",
                 "pirate_chef",
             } or kind.startswith(("sword_fighter:", "spined_devil:",
                                   "flameskull:"))
@@ -438,7 +438,8 @@ class WorldScene(Scene):
                 )
             elif kind in {
                 "rat", "zombie", "skeleton", "lemure", "raptor",
-                "massive_dinosaur", "snake", "fire_snake", "pirate_chef",
+                "massive_dinosaur", "horned_devil", "snake", "fire_snake",
+                "pirate_chef",
             }:
                 continue  # rebuilt with all enemies below
             elif kind.startswith(("sword_fighter:", "spined_devil:",
@@ -1727,8 +1728,13 @@ class WorldScene(Scene):
                 raptor.tilemap = self.tilemap
                 raptor.load_sprites(self.game.assets)
                 self.raptors.append(raptor)
-            elif kind == "massive_dinosaur":
-                dinosaur = MassiveDinosaur(cx, cy)
+            elif kind in {"massive_dinosaur", "horned_devil"}:
+                # A horned devil is the Chultan colossus in infernal art.
+                dinosaur = MassiveDinosaur(
+                    cx, cy,
+                    variant=("horned_devil" if kind == "horned_devil"
+                             else "massive_dinosaur"),
+                )
                 dinosaur.tilemap = self.tilemap
                 dinosaur.load_sprites(self.game.assets)
                 self.dinosaurs.append(dinosaur)

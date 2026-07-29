@@ -369,6 +369,12 @@ TILE_DEFS: dict[str, TileDef] = {
     # the Astral Sea; a fissure is basalt split by a glowing lava crack.
     "≋": TileDef(solid=False, color=(178, 45, 12)),
     "♨": TileDef(solid=False, color=(58, 35, 30)),
+    # The infernal fortress's outer wall and its shut gate, plus the
+    # brooding idols that line its approach (Phase 8).
+    "▓": TileDef(solid=True, color=(44, 40, 46)),
+    "╬": TileDef(solid=True, color=(26, 24, 30)),
+    "Ϥ": TileDef(solid=True, color=(58, 52, 58),
+                 prop="phlegethos_statue", under="·"),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.
@@ -606,7 +612,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # Phlegethos map 3, the lava lake crossed by stepping-stone islands.
     "Ԉ": MarkerDef(kind="arrival:from_phlegethos_2", under="≡"),
     "Ԋ": MarkerDef(kind="anchor:phlegethos_3_anchor", under="≡"),
-    "Ԍ": MarkerDef(kind="boundary:phlegethos_4", under="≡"),
+    "Ԍ": MarkerDef(kind="arrival:from_phlegethos_4", under="≡"),
     # Spined devils perch and throw down an authored lane; flameskulls
     # weave along a horizontal or vertical haunt.
     "Ԏ": MarkerDef(kind="spined_devil:down", under="·"),
@@ -619,6 +625,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # the same hazard while leaving the molten tile beneath untouched.
     "Ԛ": MarkerDef(kind="flameskull:h", under="≋"),
     "Ԝ": MarkerDef(kind="flameskull:v", under="≋"),
+    # Phlegethos map 4, the fortress approach, and its horned devil.
+    "Ԟ": MarkerDef(kind="horned_devil", under="·"),
+    "Ԡ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
+    "Ԣ": MarkerDef(kind="anchor:phlegethos_4_anchor", under="≡"),
+    "Ԥ": MarkerDef(kind="boundary:phlegethos_fortress", under="≡"),
 }
 
 _COMMENT_PREFIX = ";"
