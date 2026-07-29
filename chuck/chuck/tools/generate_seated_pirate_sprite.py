@@ -58,9 +58,11 @@ def frame(facing: str, beat: int) -> Image.Image:
         rect(draw, (9, 9 + bob, 9, 9 + bob), OUTLINE)
         rect(draw, (5, 12 + bob, 10, 13 + bob), HAIR)
     elif facing == "up":
-        rect(draw, (5, 8 + bob, 10, 11 + bob), SKIN_DARK)
-        rect(draw, (6, 8 + bob, 9, 8 + bob), HAIR)
-        rect(draw, (5, 12 + bob, 10, 12 + bob), RED_DARK)
+        # Back of the head: uniform shadowed skull with one narrow scarf
+        # tail hanging CONNECTED to the wrap-around band (a detached lower
+        # band over pale skin read as an open mouth from behind).
+        rect(draw, (5, 8 + bob, 10, 12 + bob), SKIN_DARK)
+        rect(draw, (7, 8 + bob, 7, 10 + bob), RED_DARK)
     else:
         rect(draw, (5, 9 + bob, 5, 9 + bob), OUTLINE)
         rect(draw, (4, 10 + bob, 4, 10 + bob), SKIN_DARK)

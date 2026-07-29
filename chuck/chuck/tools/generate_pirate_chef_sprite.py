@@ -47,7 +47,10 @@ def chef_frame(facing: str, step: int) -> Image.Image:
         _rect(draw, (9, 10 + bob, 9, 10 + bob), OUTLINE)
         _rect(draw, (7, 12 + bob, 9, 12 + bob), RED_DARK)
     elif facing == "up":
-        _rect(draw, (5, 9 + bob, 10, 11 + bob), SKIN_SHADOW)
+        # The whole head shadows over from behind (a pale strip below the
+        # shadow read as a mouth), with the bandana knot at the nape.
+        _rect(draw, (5, 9 + bob, 10, 12 + bob), SKIN_SHADOW)
+        _rect(draw, (7, 9 + bob, 8, 11 + bob), RED_DARK)
     else:
         _rect(draw, (5, 10 + bob, 5, 10 + bob), OUTLINE)
         _rect(draw, (4, 11 + bob, 4, 11 + bob), SKIN)

@@ -32,18 +32,20 @@ def rect(draw: ImageDraw.ImageDraw, box, color) -> None:
 
 def _draw_cutlass(draw: ImageDraw.ImageDraw, cx: int, bob: int,
                   side: int) -> None:
-    """A cutlass gripped point-down at the captain's side (`side`: +1 right,
-    -1 left). Kept clear of the head so it never boxes his hat or face."""
-    hand = sorted((cx + 5 * side, cx + 7 * side))
-    edge = cx + 6 * side
-    rect(draw, (hand[0], 14 + bob, hand[1], 16 + bob), SKIN)      # grip
-    rect(draw, (hand[0], 16 + bob, hand[1], 17 + bob), GOLD)      # crossguard
-    rect(draw, (edge, 12 + bob, edge, 14 + bob), WOOD)            # handle knob
-    for i in range(10):                                          # curved blade
-        y = 18 + bob + i
-        bx = max(0, min(15, edge + (i // 3) * side))
-        rect(draw, (bx, y, bx, y), STEEL)
-    rect(draw, (edge, 19 + bob, edge, 23 + bob), STEEL_LIGHT)    # lit edge
+    """A cutlass held out at guard, matching the deck fencers' language:
+    an extended hand, a gold crossguard, and an angled steel blade with a
+    bright edge rising up and away from the body (`side`: +1 right, -1
+    left). Kept below hat height so it never crosses his face."""
+    hilt_x = cx + 6 * side
+    hilt_y = 17 + bob
+    tip_x = 15 if side > 0 else 0
+    tip_y = 9 + bob
+    arm = sorted((cx + 3 * side, cx + 5 * side))
+    rect(draw, (arm[0], 15 + bob, arm[1], 17 + bob), SKIN)   # extended hand
+    draw.line((hilt_x, hilt_y, tip_x, tip_y), fill=STEEL, width=2)
+    draw.line((hilt_x, hilt_y - 1, tip_x, tip_y - 1), fill=STEEL_LIGHT,
+              width=1)
+    rect(draw, (hilt_x - 1, hilt_y - 1, hilt_x + 1, hilt_y + 1), GOLD)
 
 
 def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
@@ -65,10 +67,15 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
     rect(draw, (cx - 5 + left_dx, 27, cx - 1 + left_dx, 29), BOOT)
     rect(draw, (cx + right_dx, 27, cx + 4 + right_dx, 29), BOOT)
 
-    # Loose coat, pale shirt, head, scarf, and battered tricorn.
+    # Loose coat, pale shirt, head, scarf, and battered tricorn. Seen
+    # from behind (facing up) the shirt front and the pale face are
+    # hidden: plain coat back and a fully shadowed skull instead.
     rect(draw, (cx - 5, 13 + bob, cx + 5, 22 + bob), coat)
-    rect(draw, (cx - 1, 13 + bob, cx + 2, 21 + bob), WHITE)
-    rect(draw, (cx - 4, 7 + bob, cx + 4, 13 + bob), SKIN)
+    if facing != "up":
+        rect(draw, (cx - 1, 13 + bob, cx + 2, 21 + bob), WHITE)
+        rect(draw, (cx - 4, 7 + bob, cx + 4, 13 + bob), SKIN)
+    else:
+        rect(draw, (cx - 4, 7 + bob, cx + 4, 13 + bob), SKIN_DARK)
     rect(draw, (cx - 5, 6 + bob, cx + 5, 8 + bob), RED)
     if facing == "left":
         # Side dialogue facings need a shaped tricorn silhouette. The former
@@ -89,14 +96,14 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
         rect(draw, (cx - 2, 9 + bob, cx - 2, 9 + bob), OUTLINE)
         rect(draw, (cx + 2, 9 + bob, cx + 2, 9 + bob), OUTLINE)
     elif facing == "up":
-        # The old solid 7x5 near-black patch read as a box pasted over the
-        # head whenever dialogue turned a pirate away from Chuck. Shape the
-        # back of the head with warm shadow, scarf, and only a narrow hairline.
-        rect(draw, (cx - 3, 8 + bob, cx + 3, 11 + bob), SKIN_DARK)
-        rect(draw, (cx - 2, 8 + bob, cx + 2, 8 + bob), OUTLINE)
-        rect(draw, (cx - 3, 11 + bob, cx + 3, 12 + bob), RED)
-        rect(draw, (cx - 3, 9 + bob, cx - 3, 10 + bob), OUTLINE)
-        rect(draw, (cx + 3, 9 + bob, cx + 3, 10 + bob), OUTLINE)
+        # The back of the head is now the uniform shadowed skull painted
+        # above; only the scarf's knot and hanging tails interrupt it,
+        # CONNECTED to the wrap-around band so they read as cloth. (The
+        # old pale ring + a second detached red band read as a huge open
+        # mouth whenever a pirate looked north.)
+        rect(draw, (cx - 1, 8 + bob, cx + 1, 9 + bob), RED)      # knot
+        rect(draw, (cx, 9 + bob, cx + 1, 12 + bob), RED)          # tail
+        rect(draw, (cx - 1, 9 + bob, cx - 1, 10 + bob), RED)      # tail
     else:
         rect(draw, (cx - 3, 9 + bob, cx - 3, 9 + bob), OUTLINE)
         rect(draw, (cx - 5, 10 + bob, cx - 4, 11 + bob), SKIN_DARK)
@@ -145,11 +152,10 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
         rect(draw, (sleeve_x[0], 14, sleeve_x[1], 16), coat)
         rect(draw, (hand_x[0], 14, hand_x[1], 15), SKIN)
         hip_direction = -direction
-        hip_x = sorted((cx + 5 * hip_direction, cx + 7 * hip_direction))
-        rect(draw, (hip_x[0], 16, hip_x[1], 21), SKIN)
         trim_x = sorted((cx + 2 * hip_direction, cx + 5 * hip_direction))
         rect(draw, (trim_x[0], 21, trim_x[1], 22), GOLD)
-        # The cutlass rides in his free (hip-side) hand, opposite the point.
+        # The cutlass rides at guard in his free hand, opposite the point
+        # (the cutlass helper draws the extended arm itself).
         _draw_cutlass(draw, cx, bob, hip_direction)
     return image
 
