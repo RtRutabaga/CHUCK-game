@@ -21,6 +21,13 @@ from src.scenes.scene import Scene
 HELL_MUSIC_START = 4.0
 HELL_GROUND_APPROACH = 26.2
 HELL_IMPACT_TIME = 29.0
+# The distant volcano climbs into view as Chuck falls: empty air, then its
+# peak, then its full slopes. A slow rise (it is far away) that nonetheless
+# makes the descent unmistakable while Chuck holds center screen.
+VOLCANO_REVEAL_DELAY = 2.5   # seconds of empty sky before the peak appears
+VOLCANO_RISE = 132           # how far it climbs from below the frame to full
+VOLCANO_PEAK_Y = 55          # its crown, once fully revealed
+VOLCANO_BASE_Y = 182         # its foot, flush past the bottom letterbox
 HELL_LOOK_START = 30.0
 HELL_CIGARETTE_START = 33.0
 HELL_CIGARETTE_SEATED = 34.0
@@ -146,77 +153,53 @@ class HellFallingCutsceneScene(Scene):
             color = (242, 91, 20) if index % 3 else (255, 161, 41)
             pygame.draw.rect(surface, color, (x, y, 1, 2))
 
+    def _volcano_offset(self) -> int:
+        """How far the volcano is pushed below its full position right now.
+
+        Large early (the volcano is off the bottom of the frame — empty
+        air), easing to zero as Chuck falls so the peak rises into view and
+        then the whole mountain, its foot flush against the bottom."""
+        reveal = _ease(_clamp01(
+            (self.elapsed - VOLCANO_REVEAL_DELAY)
+            / (HELL_GROUND_APPROACH - VOLCANO_REVEAL_DELAY)
+        ))
+        return round((1.0 - reveal) * VOLCANO_RISE)
+
     def _draw_volcano(self, surface: pygame.Surface) -> None:
-        """A distant street-view landmark, never a floating terrain tile."""
-        approach = _ease(self.elapsed / HELL_IMPACT_TIME)
-        base_y = 157 + round(5 * (1.0 - approach))
-        peak_y = 48 - round(5 * approach)
-        mountain = (
-            (18, base_y),
-            (58, 132),
-            (91, 116),
-            (118, 93),
-            (143, 84),
-            (158, peak_y + 11),
-            (174, peak_y),
-            (191, peak_y + 12),
-            (210, 88),
-            (238, 106),
-            (266, 130),
-            (307, base_y),
-        )
-        pygame.draw.polygon(surface, (34, 23, 25), mountain)
-        pygame.draw.polygon(
-            surface,
-            (51, 28, 27),
-            (
-                (58, base_y),
-                (111, 109),
-                (148, 91),
-                (174, peak_y + 8),
-                (202, 94),
-                (270, base_y),
-            ),
-        )
-        # A broad dark crater lip and narrow lava scars establish scale while
-        # keeping the mountain a distant silhouette, not a traversable tile.
-        pygame.draw.polygon(
-            surface,
-            (20, 18, 20),
-            (
-                (154, peak_y + 11),
-                (174, peak_y + 5),
-                (194, peak_y + 13),
-                (185, peak_y + 18),
-                (163, peak_y + 18),
-            ),
-        )
-        pygame.draw.line(
-            surface,
-            HELL_LAVA_COLORS[2],
-            (174, peak_y + 17),
-            (164, 112),
-            2,
-        )
-        pygame.draw.line(
-            surface,
-            HELL_LAVA_COLORS[1],
-            (164, 112),
-            (151, base_y),
-            1,
-        )
-        pygame.draw.line(
-            surface,
-            HELL_LAVA_COLORS[1],
-            (185, peak_y + 17),
-            (207, 122),
-            1,
-        )
+        """A distant landmark that climbs into view as Chuck descends."""
+        oy = self._volcano_offset()
+        peak = VOLCANO_PEAK_Y
+        base = VOLCANO_BASE_Y
+
+        def shifted(points):
+            return tuple((x, y + oy) for x, y in points)
+
+        pygame.draw.polygon(surface, (34, 23, 25), shifted((
+            (14, base), (56, 140), (90, 122), (118, 96), (142, 84),
+            (158, peak + 11), (174, peak), (191, peak + 12),
+            (210, 90), (240, 112), (268, 138), (311, base),
+        )))
+        pygame.draw.polygon(surface, (51, 28, 27), shifted((
+            (56, base), (111, 111), (148, 90), (174, peak + 8),
+            (202, 94), (272, base),
+        )))
+        # A broad dark crater lip and narrow lava scars establish scale
+        # while keeping the mountain a distant silhouette.
+        pygame.draw.polygon(surface, (20, 18, 20), shifted((
+            (154, peak + 11), (174, peak + 5), (194, peak + 13),
+            (185, peak + 18), (163, peak + 18),
+        )))
+        pygame.draw.line(surface, HELL_LAVA_COLORS[2],
+                         (174, peak + 17 + oy), (164, 112 + oy), 2)
+        pygame.draw.line(surface, HELL_LAVA_COLORS[1],
+                         (164, 112 + oy), (151, base + oy), 1)
+        pygame.draw.line(surface, HELL_LAVA_COLORS[1],
+                         (185, peak + 17 + oy), (207, 122 + oy), 1)
         smoke_age = self.elapsed * 0.7
         for index in range(5):
             rise = (smoke_age * (6 + index) + index * 13) % 54
             x = 174 + round(math.sin(smoke_age + index) * (4 + index))
-            y = peak_y - 2 - round(rise)
+            y = peak + oy - 2 - round(rise)
             pygame.draw.rect(
                 surface,
                 (47 + index * 3, 35, 37),

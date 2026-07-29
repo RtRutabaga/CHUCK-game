@@ -459,20 +459,37 @@ def test_hell_fall_reuses_cue_and_holds_at_phase8_arrival_boundary() -> None:
         assert music == []
         scene.update(0.2)
         assert music == [("fall_to_chult.wav", False)]
-        fall_frame = pygame.Surface(
-            (config.NATIVE_WIDTH, config.NATIVE_HEIGHT)
-        )
-        scene.draw(fall_frame)
-        pixels = [
-            fall_frame.get_at((x, y))[:3]
-            for y in range(config.NATIVE_HEIGHT)
-            for x in range(config.NATIVE_WIDTH)
-        ]
-        assert sum(pixel == (34, 23, 25) for pixel in pixels) > 1000
-        assert not set(HELL_BASALT_COLORS) & set(pixels)
 
+        def _volcano_pixels(rows=None):
+            frame = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+            scene.draw(frame)
+            ys = rows if rows is not None else range(config.NATIVE_HEIGHT)
+            count = 0
+            colours = set()
+            for y in ys:
+                for x in range(config.NATIVE_WIDTH):
+                    px = frame.get_at((x, y))[:3]
+                    colours.add(px)
+                    if px == (34, 23, 25):
+                        count += 1
+            return count, colours
+
+        # Early in the fall the volcano is still below the frame — empty
+        # heated air, no landmark yet, and certainly no ground.
+        early, early_colours = _volcano_pixels()
+        assert early < 100, early
+        assert not set(HELL_BASALT_COLORS) & early_colours
+
+        # By the time the ground nears, the volcano has climbed fully into
+        # view (its silhouette fills the lower frame) and reaches flush to
+        # the bottom of the picture.
         scene.update(HELL_GROUND_APPROACH - scene.elapsed - 0.01)
         assert scene.phase == "fall"
+        full, _ = _volcano_pixels()
+        assert full > 1000, full
+        bottom, _ = _volcano_pixels(rows=range(160, 173))
+        assert bottom > 0, "the volcano should reach the bottom, no gap"
+
         scene.update(0.02)
         assert scene.phase == "approach"
         game.scenes.draw(game.native_surface)

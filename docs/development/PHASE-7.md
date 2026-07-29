@@ -75,8 +75,11 @@ Implemented so far:
   until a live Hell fragment passes below, visibly kicks Chuck into that same
   moving fragment, and hands off to a long input-free volcanic descent. The
   established fall-to-Chult cue and timing language return. Chuck falls
-  through open heated air with a single large volcano in the distance; no
-  overhead Hell terrain floats behind him. He lands on a mostly solid basalt
+  through open heated air; the single large distant volcano is absent at
+  first, then climbs into view (its peak, then its full slopes) as he
+  descends -- a slow parallax rise that sells the fall while Chuck holds
+  center screen -- and sits flush against the bottom of the frame with no
+  gap. No overhead Hell terrain floats behind him. He lands on a mostly solid basalt
   plane with only sparse lava fissures, looks left/right/down, inserts and
   drags a cigarette using the established Chult choreography, and the tableau
   holds without granting control, creating the stable Phase 8 arrival
