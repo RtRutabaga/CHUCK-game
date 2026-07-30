@@ -16,6 +16,8 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
 from src.core.game import Game
+from src.entities.breakable_urn import BreakableUrn
+from src.entities.pickup import CigaretteCarton
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.systems.fall import fall_zone_kind
 from src.world import collision
@@ -433,6 +435,48 @@ def test_flameskulls_weave_as_unkillable_hazards_over_the_lava() -> None:
 
 
 APPROACH = "phlegethos_fortress_approach"
+
+PHLEGETHOS_URN_COUNTS = {
+    MAP_NAME: 3,
+    ROAD: 3,
+    LAKE: 4,
+    APPROACH: 4,
+}
+
+
+def test_all_phlegethos_maps_reuse_carton_filled_temple_urns() -> None:
+    game = Game()
+    try:
+        for map_name, expected_count in PHLEGETHOS_URN_COUNTS.items():
+            tilemap = TileMap(config.MAPS_DIR / f"{map_name}.txt")
+            authored = [
+                (col, row) for kind, col, row in tilemap.prop_tiles
+                if kind == "temple_urn"
+            ]
+            assert len(authored) == expected_count, (map_name, authored)
+            assert all(
+                tilemap.terrain_at(col, row) == chr(0xA2)
+                for col, row in authored
+            )
+
+            scene = game.checkpoints.load_checkpoint(map_name)
+            scene._pending_entrance_dialogue = None
+            scene._arrival_fade_t = None
+            urns = [
+                item for item in scene.breakables
+                if isinstance(item, BreakableUrn)
+            ]
+            assert len(urns) == expected_count
+            urn = urns[0]
+            col = int(urn._center_x // config.TILE_SIZE)
+            row = int(urn._bottom // config.TILE_SIZE) - 1
+            urn.on_scratched()
+            scene.update(0.0)
+            assert scene.tilemap.terrain_at(col, row) == chr(0xB7)
+            assert isinstance(scene.pickups[-1], CigaretteCarton)
+            assert scene.pickups[-1].cigarette_count == 20
+    finally:
+        game._shutdown()
 
 
 def test_the_fortress_approach_establishes_the_wall_gate_and_idols() -> None:

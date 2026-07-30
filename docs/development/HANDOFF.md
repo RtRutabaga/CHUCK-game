@@ -3,28 +3,37 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `aab0e48` (completed Phase 8 river escape)
-- Current work: fortress Pit Fiend scale pass
+- Base commit before this pass: `f898d04` (enlarged fortress Pit Fiend)
+- Current work: reusable breakable urns across Phlegethos
 - Active phase: Phase 8 (`PHASE-8.md`)
 
 ## Completed This Pass
 
-- Enlarged the fortress Pit Fiend from 64x64 to 128x128 native pixels and
-  expanded only its planted non-colliding battle footprint from 40x20 to
-  64x32. Its marker, feet anchor, projectile targeting, animation timing, and
-  the surrounding trio choreography remain unchanged.
-- Regenerated the existing procedural sprite with nearest-neighbor scaling;
-  no new art dependency or alternate entity path was introduced.
-- Focused Phase 8 regressions, compilation, all 65 standalone test scripts,
-  and the headless launch smoke pass. A native 4x fortress establishing render
-  confirms the enlarged fiend dominates the human-scale trio without
-  obscuring the playable lower approach.
+- Added fourteen existing temple floor-urn markers across every playable Hell
+  map: Arrival 3, Lava Road 3, Lava Lake 4, and Fortress Approach 4.
+- The maps instantiate the ordinary `BreakableUrn` entity through the existing
+  WorldScene path. One scratch uses the same terracotta shard animation, clears
+  the occupied cell back to basalt, and drops the same 20-cigarette carton.
+  Map reload/death rebuilding restores every urn.
+- Placements are restricted to broad safe basalt pockets. None occupies a
+  required path, lava-lake stepping stone, checkpoint, transition, enemy
+  marker, or the fortress battle/processional lane.
+- Added a deterministic placement tool and a focused regression that validates
+  authored counts, shared entity construction, basalt restoration, and carton
+  reward behavior on all four maps. Focused Phase 8 and temple-urn suites,
+  compilation, all 65 standalone test scripts, and the headless launch smoke
+  pass; a native 4x map contact sheet was inspected.
 
 ## Next Logical Task
 
 Phase 8 is complete. Do not begin Feywild gameplay until an authoritative
 Phase 9 implementation document is added. The held black riverbank ending is
 the intended handoff boundary.
+
+## Previous Pass (commit f898d04)
+
+Enlarged the fortress Pit Fiend from 64x64 to 128x128 while preserving its
+marker, feet anchor, choreography, and attacks. All 65 suites passed.
 
 ## Previous Pass (commit aab0e48)
 

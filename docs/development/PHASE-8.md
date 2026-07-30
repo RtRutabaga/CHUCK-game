@@ -78,6 +78,13 @@ Implemented so far:
   cannot be cleared by any scratch, and floats over lava as happily as
   stone -- four haunt the lava lake's stepping stones, using lava-under
   markers so they never punch safe tiles into the lake.
+- Fourteen of the Chult temple's **breakable terracotta urns** now appear
+  across the four Phlegethos maps. Arrival and Lava Road hold three each;
+  four sit only on the Lava Lake's safe shores; four flank the Fortress yard
+  away from its battle aisle. They reuse the exact scratch, shard, carton-drop,
+  and map-reset implementation, including the standard 20-cigarette carton.
+  None replaces a required route, lava stepping stone, checkpoint, or battle
+  marker.
 - The fortress muster yard now contains the trio already battling a towering
   **Pit Fiend**. Its 128x128 native silhouette and broad planted shadow now
   dominate the trio's human-scale figures. The existing non-interactive

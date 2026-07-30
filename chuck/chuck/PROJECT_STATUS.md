@@ -10,6 +10,12 @@ This file is required by the project rules and updated every session.
 - The complete Phase 8 enemy set is present: lemures, fire snakes, spined
   devils, flameskulls, and horned devils, all built as variants or extensions
   of established enemy/hazard systems.
+- Fourteen temple-style breakable urns are distributed across all four
+  Phlegethos maps: three each in Arrival and Lava Road, four on the Lava
+  Lake's two safe shores, and four around the Fortress yard. They reuse the
+  exact temple scratch/shatter/reset lifecycle and each drops the established
+  20-cigarette carton. Placements stay off required routes, stepping stones,
+  checkpoints, and the fortress battle aisle.
 - The fortress yard now shows the returning fighter, wizard, and ranger
   actively battling a massive 128x128 Pit Fiend, now more than four times a
   human enemy's sprite height. A Phlegethos-specific choreographer
