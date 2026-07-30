@@ -17,6 +17,7 @@ FLOWER = (22, 25)
 OPEN_GATE = ((27, 24), (27, 25), (27, 26))
 CLOSE_GATE = ((27, 19), (27, 20), (27, 21))
 DEEPER = (54, 9)
+DEEPER_RETURN = (51, 9)
 
 HEADER = [
     "; PHASE 9 - FEYWILD 2, THE BLOOMING PATH (60x42 tiles).",
@@ -136,6 +137,7 @@ def build() -> list[list[str]]:
         grid[row][col] = "Ժ"
     for col, row in CLOSE_GATE:
         grid[row][col] = "Ի"
+    grid[DEEPER_RETURN[1]][DEEPER_RETURN[0]] = "Մ"
     grid[DEEPER[1]][DEEPER[0]] = "Ը"
     return grid
 
@@ -148,6 +150,7 @@ def _under(char: str) -> str:
         "Թ": ".",
         "Ժ": "#",
         "Ի": "'",
+        "Մ": "'",
     }.get(char, char)
 
 
@@ -187,6 +190,7 @@ def validate(grid: list[list[str]]) -> None:
         assert ANCHOR in reached
         assert FLOWER in reached
         assert DEEPER in reached
+        assert DEEPER_RETURN in reached
         assert RETURN_EXIT in reached
     assert all(_under(grid[row][col]) == "#" for col, row in OPEN_GATE)
     assert all(_under(grid[row][col]) == "'" for col, row in CLOSE_GATE)

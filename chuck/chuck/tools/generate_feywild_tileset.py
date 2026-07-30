@@ -114,12 +114,34 @@ def path(surface, variant: int, _frame: int) -> None:
         )
 
 
+def pollen(surface, variant: int, frame: int) -> None:
+    """Low luminous flowers and drifting spores over readable ground."""
+    surface.fill((49, 78, 54))
+    pygame.draw.rect(surface, (61, 91, 58), (0, 12, 16, 4))
+    petals = (GOLD, PINK, BLUE)
+    for index in range(4):
+        x = (variant * 5 + index * 4 + 1) % 15
+        y = 9 + ((variant + index * 2) % 5)
+        color = petals[(variant + index) % len(petals)]
+        pygame.draw.line(surface, LEAF_LIGHT, (x, 15), (x, y + 1))
+        surface.set_at((x, y), color)
+        if x + 1 < 16:
+            surface.set_at((x + 1, y + 1), color)
+    # Three small motes rise and drift between animation frames. Their
+    # stagger keeps adjacent tiles from resolving into a uniform grid.
+    for index, color in enumerate((GOLD, PINK, BLUE)):
+        x = (variant * 7 + index * 6 + frame * (index + 1)) % 16
+        y = 8 - ((frame * 2 + index * 3 + variant) % 7)
+        surface.set_at((x, y), color)
+
+
 DRAW = {
     "fey_ground": ground,
     "fey_dense": dense,
     "fey_river": river,
     "fey_bank": bank,
     "fey_path": path,
+    "fey_pollen": pollen,
 }
 
 

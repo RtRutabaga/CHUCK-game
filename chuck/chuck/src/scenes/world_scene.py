@@ -68,6 +68,7 @@ from src.systems.dialogue import DialogueSystem
 from src.systems.fall import fall_zone_kind
 from src.systems.interaction import find_target
 from src.systems.reactive_flowers import ReactiveFlowerController
+from src.systems.terrain_effect import ground_speed_multiplier
 from src.systems.terrain_hazard import touching_terrain_hazard
 from src.systems.undead_release import (
     UndeadReleaseController, is_staged_undead,
@@ -816,6 +817,9 @@ class WorldScene(Scene):
 
         self.sanity.update(dt)
         old_player_position = (self.player.x, self.player.y)
+        self.player.ground_speed_multiplier = ground_speed_multiplier(
+            self.tilemap, self.player.hitbox, self.player.jumping
+        )
         self.player.update(dt)
         if self.player.jump_just_started:
             self.game.audio.play_sfx("jump")

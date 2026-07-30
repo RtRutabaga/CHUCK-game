@@ -83,6 +83,7 @@ COLOR_SEWER_CHANNEL = (46, 56, 46)   # murky drainage water (solid)
 # Player
 # ---------------------------------------------------------------------------
 PLAYER_SPEED = 80.0  # pixels/second — tune until walking feels good
+FEYWILD_POLLEN_SPEED_MULTIPLIER = 0.48
 # Hitbox in pixels; deliberately smaller than a 16px tile because Chuck
 # is one foot tall and should slip through rat-sized gaps. The hitbox is
 # his footprint; the sprite is taller and anchored to its bottom edge.

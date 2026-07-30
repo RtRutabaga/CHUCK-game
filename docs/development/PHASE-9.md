@@ -16,7 +16,9 @@ The first playable Feywild map already exists:
 Phase 9 begins on that riverbank and builds the first large playable
 Feywild region. Its first implementation slice is complete: `Feywild 2`
 (Blooming Path), its Ashtray, and the reusable scratch-reactive flower
-system now connect to the riverbank in both directions.
+system now connect to the riverbank in both directions. `Feywild 3`
+(Pollen Orchard) is also complete, providing the safe, enemy-free slowing
+pollen lesson and the region's third Ashtray.
 
 This phase contains **thirteen playable Feywild maps total**: the
 existing riverbank plus twelve new maps. Chult's exterior region and
@@ -1033,12 +1035,12 @@ exploration, traversal, and one stable endpoint for a later phase.**
 
 ## Pollen
 
-- [ ] Pollen is visually distinct at native scale.
-- [ ] Grounded contact consistently slows Chuck.
-- [ ] Pollen does not directly damage Sanity.
-- [ ] Leaving pollen immediately restores normal movement.
-- [ ] A one-tile pollen strip can be cleared with the existing jump.
-- [ ] The first pollen lesson occurs without enemies.
+- [x] Pollen is visually distinct at native scale.
+- [x] Grounded contact consistently slows Chuck.
+- [x] Pollen does not directly damage Sanity.
+- [x] Leaving pollen immediately restores normal movement.
+- [x] A one-tile pollen strip can be cleared with the existing jump.
+- [x] The first pollen lesson occurs without enemies.
 - [ ] Later pollen combinations remain fair.
 
 ## Chuck-Sized Passages
@@ -1175,3 +1177,11 @@ boundary reserved for the later floating-wizard-tower phase.
   authored initial state on map load/death, and keeps transient flower state
   out of the save file. Tested both route states, bidirectional transitions,
   scratch integration, Ashtray saving, Continue restoration, and reset.
+- **Pollen Orchard / slowing-pollen introduction:** Added the 62x46,
+  enemy-free `feywild_pollen_orchard`, its physical Ashtray and shared
+  `Feywild 3` development entry. Five shallow animated pollen beds interrupt
+  winding orchard lanes; grounded contact immediately reduces walking speed,
+  leaving restores it, airborne movement is unaffected, and the first
+  one-tile strip can be cleared by the existing jump. A reversible flower
+  exchanges the long eastern detour for a direct middle lane. Both states
+  retain valid access to the Ashtray, exits, switch, and optional grass.

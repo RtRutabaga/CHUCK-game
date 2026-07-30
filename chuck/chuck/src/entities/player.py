@@ -45,6 +45,7 @@ class Player(Entity):
         )
         self.input = input_manager
         self.speed = config.PLAYER_SPEED
+        self.ground_speed_multiplier = 1.0
         self.facing = "down"  # "up" | "down" | "left" | "right"
         self.moving = False
         # The map Chuck collides with; set by the WorldScene on spawn
@@ -144,7 +145,7 @@ class Player(Entity):
             self.scratch_remaining = max(0.0, self.scratch_remaining - dt)
         else:
             dx, dy = self.input.movement_vector()
-            move_speed = self.speed
+            move_speed = self.speed * self.ground_speed_multiplier
             ignored_terrain = frozenset()
         self.moving = bool(dx or dy)
 

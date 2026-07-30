@@ -3,29 +3,32 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `4e08336` (Phase 9 implementation contract)
-- Current work: Phase 9 Blooming Path and reactive-flower introduction
+- Base commit before this pass: `4b0c5b2` (Blooming Path)
+- Current work: Phase 9 Pollen Orchard and slowing-pollen introduction
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Added `feywild_blooming_path`, a 60x42 enemy-free Map 2 with one Ashtray,
-  an optional cigarette-grass pocket, oversized Feywild props, two alternate
-  routes, and an inert authored boundary for the future Pollen Orchard.
-- Connected it bidirectionally to the existing Riverbank through normal walk
-  transitions. Added the shared `Feywild 2` development entry, its saveable
-  Ashtray checkpoint, and an internal Riverbank return entry.
-- Added a reusable, map-authored reactive-flower controller. Scratching the
-  flower uses normal combat targeting, gives a visible pulse/fleck warning,
-  and atomically swaps authored open/closed vegetation cells. A second scratch
-  reverses the route.
-- Terrain changes wait until Chuck is clear. Both configurations retain valid
-  access to the Ashtray, switch, exits, and reciprocal scratch. Death, reload,
-  and Continue restore the valid initial arrangement; no flower state was
-  added to persistent save data.
-- Added procedural closed/open flower art, map generation validation, and
-  targeted tests for navigation states, scratch integration, transitions,
-  checkpoint save/Continue, and reset behavior.
+- Added `feywild_pollen_orchard`, a 62x46 enemy-free Map 3 with five shallow
+  pollen beds, winding lanes, one optional grass pocket, one physical Ashtray,
+  and an inert boundary for Rootways.
+- Added animated pollen terrain to the existing Feywild sheet. Its low
+  flowers and drifting colored motes remain readable at native 320x180 scale.
+- Added a deliberately small terrain-effect helper: grounded pollen contact
+  supplies a 0.48 movement multiplier each frame, leaving restores full speed,
+  and jumping uses its unchanged committed speed. Pollen does not damage
+  Sanity, persist a status, or behave as a fall hazard.
+- Reused reactive flowers for an optional route exchange: the initial winding
+  eastern detour can be traded for a direct middle lane, and both authored
+  states retain access to every landmark.
+- Connected Blooming Path and Pollen Orchard bidirectionally and added the
+  shared `Feywild 3` development checkpoint, saveable Ashtray, and internal
+  return entries.
+- Added targeted coverage for terrain behavior, one-tile jump clearance,
+  both flower states, transitions, Ashtray save/Continue, and enemy-free map
+  initialization. Native-scale screenshots were inspected.
+- All 69 standalone test suites pass, compilation is clean, and the headless
+  title-loop launch smoke check passes.
 
 ## Previous Pass (commit 9284e56)
 
@@ -50,8 +53,13 @@
 
 ## Next Logical Task
 
-Implement Phase 9's next bounded slice: Feywild 3, Pollen Orchard, with the
-safe enemy-free introduction to slowing pollen and its map-local Ashtray.
+Implement Phase 9's next bounded slice: Feywild 4, Rootways, with reusable
+Chuck-sized passages, the first restrained redcap pursuit, and its Ashtray.
+
+## Previous Pass (commit 4b0c5b2)
+
+Added Blooming Path, its Ashtray and shared checkpoint, and the reusable
+scratch-reactive flower system. All 68 suites passed.
 
 ## Previous Pass (commit 4e08336)
 

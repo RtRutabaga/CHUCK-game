@@ -398,6 +398,11 @@ TILE_DEFS: dict[str, TileDef] = {
     # opposite directions distinct for authored two-way transitions.
     "←": TileDef(solid=False, color=(45, 76, 59)),
     "→": TileDef(solid=False, color=(45, 76, 59)),
+    "⇧": TileDef(solid=False, color=(45, 76, 59)),
+    "⇩": TileDef(solid=False, color=(45, 76, 59)),
+    # Luminous Feywild pollen is ordinary walkable ground. Its only gameplay
+    # effect is derived from Chuck's grounded footprint each frame.
+    "☼": TileDef(solid=False, color=(76, 99, 54)),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.
@@ -673,12 +678,24 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # authored vegetation gates. Solid target markers explicitly opt in.
     "Զ": MarkerDef(kind="arrival:from_feywild_1", under="'"),
     "Է": MarkerDef(kind="anchor:feywild_2_anchor", under="'"),
-    "Ը": MarkerDef(kind="boundary:feywild_3", under="'"),
+    "Ը": MarkerDef(kind="boundary:feywild_3", under="→"),
     "Թ": MarkerDef(kind="flower_switch:intro", under="."),
     "Ժ": MarkerDef(
         kind="flower_open:intro", under="#", allow_solid=True
     ),
     "Ի": MarkerDef(kind="flower_close:intro", under="'"),
+    # Pollen Orchard arrivals, checkpoint, later boundary, and its optional
+    # route-exchange flower.
+    "Լ": MarkerDef(kind="arrival:from_feywild_2", under="'"),
+    "Ծ": MarkerDef(kind="anchor:feywild_3_anchor", under="'"),
+    "Կ": MarkerDef(kind="boundary:feywild_4", under="⇧"),
+    "Հ": MarkerDef(kind="arrival:from_feywild_4", under="'"),
+    "Ձ": MarkerDef(kind="flower_switch:orchard", under="."),
+    "Ղ": MarkerDef(
+        kind="flower_open:orchard", under="#", allow_solid=True
+    ),
+    "Ճ": MarkerDef(kind="flower_close:orchard", under="'"),
+    "Մ": MarkerDef(kind="arrival:from_feywild_3", under="'"),
 }
 
 _COMMENT_PREFIX = ";"

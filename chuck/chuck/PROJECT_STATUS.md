@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9 implementation has begun with Feywild 2, Blooming Path, and
-the reusable reactive-flower system.
+Updated: Phase 9 now includes Feywild 2 and Feywild 3, introducing reactive
+flowers and slowing pollen through two low-pressure exploration maps.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -95,6 +95,17 @@ This file is required by the project rules and updated every session.
   occupies a target cell, cannot strand him in either authored state, and
   resets on death, map reload, or Continue rather than expanding the save
   format.
+- `Feywild 3` (Pollen Orchard) is a connected 62x46 enemy-free map with five
+  shallow pollen beds, winding orchard lanes, one Ashtray, an optional
+  cigarette-grass pocket, and an inert Rootways boundary. Its reversible
+  flower exchanges a long eastern detour for a direct middle lane while both
+  configurations preserve all required routes.
+- Slowing pollen is implemented as a reusable immediate terrain effect rather
+  than a status system. Animated low flowers and drifting gold, pink, and cyan
+  motes visibly mark the walkable terrain. Grounded contact applies one
+  consistent 0.48 movement multiplier; leaving restores full speed, jumping
+  remains unaffected, and pollen never damages Sanity or behaves as a fall
+  hazard. `Feywild 3` and its Ashtray use the shared checkpoint loader.
 
 ## Working systems
 
