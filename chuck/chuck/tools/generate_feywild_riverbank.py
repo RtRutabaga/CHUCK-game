@@ -21,6 +21,7 @@ OUT = (
 ARRIVAL = (15, 27)
 ANCHOR = (20, 27)
 DEEPER = (43, 6)
+RETURN = (40, 6)
 
 PATH_POINTS = (
     ARRIVAL,
@@ -36,7 +37,7 @@ HEADER = [
     "; PHASE 9 - FEYWILD 1, THE RIVERBANK (52x36 tiles).",
     "; Chuck regains control beside the river from the ending cutscene.",
     "; A quiet luminous clearing leads from the shore past one Ashtray",
-    "; to an inert path deeper into the Feywild. No enemies are authored.",
+    "; to the Blooming Path deeper in the Feywild. No enemies are authored.",
 ]
 
 
@@ -96,7 +97,7 @@ def build() -> list[list[str]]:
     }
     protected |= {
         (cx + dx, cy + dy)
-        for cx, cy in (ARRIVAL, ANCHOR, DEEPER)
+        for cx, cy in (ARRIVAL, ANCHOR, DEEPER, RETURN)
         for dx in range(-2, 3)
         for dy in range(-2, 3)
     }
@@ -129,6 +130,7 @@ def build() -> list[list[str]]:
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Գ"
     grid[ANCHOR[1]][ANCHOR[0]] = "Դ"
+    grid[RETURN[1]][RETURN[0]] = "Խ"
     grid[DEEPER[1]][DEEPER[0]] = "Ե"
     return grid
 
@@ -152,6 +154,7 @@ def validate(grid: list[list[str]]) -> None:
                 reached.add(point)
                 frontier.append(point)
     assert ANCHOR in reached, "arrival cannot reach the Feywild Ashtray"
+    assert RETURN in reached, "arrival cannot reach the Blooming Path return"
     assert DEEPER in reached, "arrival cannot reach the deeper boundary"
     assert sum(row.count("~") for row in grid) >= 300
     enemy_markers = set("()ѮԀԞ¡¶")

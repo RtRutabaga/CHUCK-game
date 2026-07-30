@@ -3,27 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `9284e56` (uninterrupted plank cinematic)
-- Current work: Phase 9 Feywild implementation contract
+- Base commit before this pass: `4e08336` (Phase 9 implementation contract)
+- Current work: Phase 9 Blooming Path and reactive-flower introduction
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Authored the Phase 9 implementation contract. It defines thirteen playable
-  Feywild maps total: the existing riverbank plus twelve new maps, making the
-  region more than twice the size of Chult's exterior or Phlegethos.
-- The region's reusable core is reactive scratch-activated flower switches,
-  slowing pollen, and root/table/mushroom passages that admit Chuck while
-  excluding larger enemies.
-- Defined five Feywild-specific enemy roles at readable scale: one-scratch
-  thorn mites, durable gnome-sized redcaps, stationary projectile orchids,
-  weaving lantern moths, and one massive avoidable displacer beast.
-- Defined the map order, pressure cadence, one-Ashtray-per-map requirement,
-  shared development checkpoints `Feywild 1` through `Feywild 13`, regional
-  audio direction, architecture boundaries, acceptance criteria, and complete
-  playtest route.
-- The phase deliberately stops at a stable boundary. It does not include the
-  later floating wizard's tower, its cutscene, or the transition beyond it.
+- Added `feywild_blooming_path`, a 60x42 enemy-free Map 2 with one Ashtray,
+  an optional cigarette-grass pocket, oversized Feywild props, two alternate
+  routes, and an inert authored boundary for the future Pollen Orchard.
+- Connected it bidirectionally to the existing Riverbank through normal walk
+  transitions. Added the shared `Feywild 2` development entry, its saveable
+  Ashtray checkpoint, and an internal Riverbank return entry.
+- Added a reusable, map-authored reactive-flower controller. Scratching the
+  flower uses normal combat targeting, gives a visible pulse/fleck warning,
+  and atomically swaps authored open/closed vegetation cells. A second scratch
+  reverses the route.
+- Terrain changes wait until Chuck is clear. Both configurations retain valid
+  access to the Ashtray, switch, exits, and reciprocal scratch. Death, reload,
+  and Continue restore the valid initial arrangement; no flower state was
+  added to persistent save data.
+- Added procedural closed/open flower art, map generation validation, and
+  targeted tests for navigation states, scratch integration, transitions,
+  checkpoint save/Continue, and reset behavior.
 
 ## Previous Pass (commit 9284e56)
 
@@ -48,8 +50,14 @@
 
 ## Next Logical Task
 
-Implement Phase 9's first bounded slice: Feywild 2, Blooming Path, together
-with the safe introductory reactive-flower switch and its map-local Ashtray.
+Implement Phase 9's next bounded slice: Feywild 3, Pollen Orchard, with the
+safe enemy-free introduction to slowing pollen and its map-local Ashtray.
+
+## Previous Pass (commit 4e08336)
+
+Authored Phase 9 as a thirteen-map Feywild region with reactive flowers,
+slowing pollen, Chuck-sized passages, five enemy roles, pacing, checkpoints,
+acceptance criteria, and a stable pre-wizard-tower endpoint.
 
 ## Previous Pass (commit 60e0394)
 

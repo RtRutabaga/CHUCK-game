@@ -340,6 +340,8 @@ FEYWILD = Tileset(
         "~": "fey_river",
         ",": "fey_bank",
         "'": "fey_path",
+        "←": "fey_path",
+        "→": "fey_path",
     },
     overhead_char_to_terrain={},
 )
@@ -389,6 +391,7 @@ MAP_TILESET: dict[str, str] = {
     "phlegethos_rubble_pass": "phlegethos",
     "phlegethos_fortress_approach": "phlegethos",
     "feywild_riverbank": "feywild",
+    "feywild_blooming_path": "feywild",
 }
 
 

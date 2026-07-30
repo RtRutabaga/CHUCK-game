@@ -1,0 +1,273 @@
+"""Phase 9's Blooming Path and reusable reactive-flower introduction."""
+
+from collections import Counter, deque
+import os
+from pathlib import Path
+import tempfile
+
+os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+
+import pygame
+
+from src.core import config
+from src.core.game import Game
+from src.systems.checkpoints import CHECKPOINT_BY_ID
+from src.systems.reactive_flowers import ReactiveFlowerController
+from src.world.tilemap import TileMap
+from src.world.tileset_layout import MAP_TILESET
+from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
+
+
+MAP_NAME = "feywild_blooming_path"
+
+
+def _marker_positions(tilemap: TileMap, prefix: str = ""):
+    size = config.TILE_SIZE
+    return [
+        (kind, (int(x // size), int(y // size)))
+        for kind, (x, y) in tilemap.object_spawns
+        if kind.startswith(prefix)
+    ]
+
+
+def _reachable(tilemap: TileMap, start: tuple[int, int]):
+    reached = {start}
+    frontier = deque([start])
+    while frontier:
+        col, row = frontier.popleft()
+        for point in (
+            (col - 1, row), (col + 1, row),
+            (col, row - 1), (col, row + 1),
+        ):
+            if point in reached or tilemap.is_solid(*point):
+                continue
+            reached.add(point)
+            frontier.append(point)
+    return reached
+
+
+def test_blooming_path_is_a_large_peaceful_two_route_map() -> None:
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    assert (tilemap.width_tiles, tilemap.height_tiles) == (60, 42)
+    assert MAP_TILESET[MAP_NAME] == "feywild"
+    assert AREA_MUSIC[MAP_NAME] is None
+
+    kinds = Counter(kind for kind, _position in tilemap.object_spawns)
+    assert kinds["arrival:from_feywild_1"] == 1
+    assert kinds["anchor:feywild_2_anchor"] == 1
+    assert kinds["boundary:feywild_3"] == 1
+    assert kinds["flower_switch:intro"] == 1
+    assert kinds["flower_open:intro"] == 3
+    assert kinds["flower_close:intro"] == 3
+    assert kinds["breakable_grass"] == 1
+    assert not any(
+        kind in {
+            "rat", "snake", "zombie", "skeleton", "lemure", "raptor",
+            "massive_dinosaur", "horned_devil", "fire_snake",
+        }
+        for kind in kinds
+    )
+
+    props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
+    assert props["feywild_tree"] >= 4
+    assert props["feywild_spiral"] >= 2
+    assert props["feywild_mushroom"] >= 2
+
+
+def test_both_authored_flower_states_remain_navigable() -> None:
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    markers = dict(_marker_positions(tilemap))
+    controller = ReactiveFlowerController(tilemap, tilemap.object_spawns)
+    arrival = markers["arrival:from_feywild_1"]
+    required = {
+        markers["anchor:feywild_2_anchor"],
+        markers["boundary:feywild_3"],
+        markers["flower_switch:intro"],
+    }
+
+    assert required <= _reachable(tilemap, arrival)
+    group = controller.groups["intro"]
+    assert all(tilemap.is_solid(target.col, target.row)
+               for target in group.opens)
+    assert all(not tilemap.is_solid(target.col, target.row)
+               for target in group.closes)
+
+    assert controller.trigger("intro")
+    controller.update(
+        config.REACTIVE_FLOWER_CHANGE_DELAY,
+        pygame.Rect(-100, -100, 1, 1),
+    )
+    assert group.active
+    assert required <= _reachable(tilemap, arrival)
+    assert all(not tilemap.is_solid(target.col, target.row)
+               for target in group.opens)
+    assert all(tilemap.is_solid(target.col, target.row)
+               for target in group.closes)
+
+    assert controller.trigger("intro")
+    controller.update(
+        config.REACTIVE_FLOWER_CHANGE_DELAY,
+        pygame.Rect(-100, -100, 1, 1),
+    )
+    assert not group.active
+    assert required <= _reachable(tilemap, arrival)
+
+
+def test_flower_waits_until_chuck_is_clear_and_resets_after_death() -> None:
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    controller = ReactiveFlowerController(tilemap, tilemap.object_spawns)
+    target = controller.groups["intro"].opens[0]
+    blocking_player = pygame.Rect(
+        target.col * config.TILE_SIZE,
+        target.row * config.TILE_SIZE,
+        config.PLAYER_HITBOX_W,
+        config.PLAYER_HITBOX_H,
+    )
+
+    controller.trigger("intro")
+    controller.update(config.REACTIVE_FLOWER_CHANGE_DELAY, blocking_player)
+    assert not controller.groups["intro"].active
+    assert tilemap.is_solid(target.col, target.row)
+
+    controller.update(0.0, pygame.Rect(-100, -100, 1, 1))
+    assert controller.groups["intro"].active
+    assert not tilemap.is_solid(target.col, target.row)
+
+    controller.reset()
+    assert not controller.groups["intro"].active
+    assert tilemap.is_solid(target.col, target.row)
+
+
+def test_world_scratch_activates_the_flower_through_normal_combat() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("feywild_2")
+        flower = scene.reactive_flowers.flowers[0]
+        scene.player.x = flower.x - scene.player.width - 2
+        scene.player.y = flower.y + (flower.height - scene.player.height) / 2
+        scene.player.facing = "right"
+        game.input._actions_just_pressed.add("scratch")
+
+        scene.update(0.0)
+        assert scene.reactive_flowers._pending_group == "intro"
+        assert not scene.reactive_flowers.groups["intro"].active
+
+        scene.update(config.REACTIVE_FLOWER_CHANGE_DELAY)
+        assert scene.reactive_flowers.groups["intro"].active
+    finally:
+        game._shutdown()
+
+
+def test_blooming_path_uses_shared_transitions_and_checkpoints() -> None:
+    forward = AREA_WALK_EXITS[("feywild_riverbank", "→")]
+    backward = AREA_WALK_EXITS[(MAP_NAME, "←")]
+    assert forward.destination == MAP_NAME
+    assert forward.arrival == "from_feywild_1"
+    assert backward.destination == "feywild_riverbank"
+    assert backward.arrival == "from_feywild_2"
+
+    entry = CHECKPOINT_BY_ID["feywild_2"]
+    anchor = CHECKPOINT_BY_ID["feywild_2_anchor"]
+    return_entry = CHECKPOINT_BY_ID["feywild_1_return"]
+    assert entry.display_name == "Feywild 2"
+    assert entry.map_name == MAP_NAME and entry.runtime_entry
+    assert anchor.map_name == MAP_NAME and anchor.saveable
+    assert not anchor.development_visible
+    assert return_entry.arrival == "from_feywild_2"
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("feywild_2")
+        assert scene.map_name == MAP_NAME
+        assert game.progress.has("feywild_reached")
+        assert len(scene.anchors) == 1
+        assert scene.anchors[0].checkpoint_id == "feywild_2_anchor"
+        assert len(scene.reactive_flowers.flowers) == 1
+        assert scene.undead == []
+        assert scene.raptors == []
+        assert scene.dinosaurs == []
+    finally:
+        game._shutdown()
+
+
+def test_riverbank_and_blooming_path_transition_both_ways() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("feywild_riverbank")
+        # The river-cutscene entry deliberately fades in before control.
+        scene.update(config.AREA_FADE_DURATION)
+        forward_tile = next(
+            (col, row)
+            for row, terrain_row in enumerate(scene.tilemap._grid)
+            for col, char in enumerate(terrain_row)
+            if char == "→"
+        )
+        scene.player.x = forward_tile[0] * config.TILE_SIZE + 3
+        scene.player.y = forward_tile[1] * config.TILE_SIZE + 4
+        scene.update(0.0)
+        assert scene.map_name == MAP_NAME
+        assert game.active_checkpoint_id == "feywild_2"
+
+        return_tile = next(
+            (col, row)
+            for row, terrain_row in enumerate(scene.tilemap._grid)
+            for col, char in enumerate(terrain_row)
+            if char == "←"
+        )
+        scene.player.x = return_tile[0] * config.TILE_SIZE + 3
+        scene.player.y = return_tile[1] * config.TILE_SIZE + 4
+        scene.update(0.0)
+        assert scene.map_name == "feywild_riverbank"
+        assert game.active_checkpoint_id == "feywild_1_return"
+    finally:
+        game._shutdown()
+
+
+def test_blooming_path_ashtray_saves_and_continue_restores_initial_flowers() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        game = Game(save_path=Path(directory) / "save.json")
+        try:
+            scene = game.checkpoints.load_checkpoint("feywild_2", sanity=71)
+            anchor = scene.anchors[0]
+            scene.player.x = anchor.x
+            scene.player.y = anchor.y
+            scene.update(0.0)
+            assert anchor.lit
+            assert game.active_checkpoint_id == "feywild_2_anchor"
+            assert game.checkpoints.can_continue
+
+            scene.reactive_flowers.trigger("intro")
+            scene.reactive_flowers.update(
+                config.REACTIVE_FLOWER_CHANGE_DELAY,
+                pygame.Rect(-100, -100, 1, 1),
+            )
+            assert scene.reactive_flowers.groups["intro"].active
+
+            resumed = game.checkpoints.continue_game()
+            assert resumed is not None
+            assert resumed.map_name == MAP_NAME
+            assert resumed.sanity.current == 71
+            assert not resumed.reactive_flowers.groups["intro"].active
+            assert resumed.anchors[0].lit
+        finally:
+            game._shutdown()
+
+
+def _run_all() -> None:
+    failures = 0
+    for name, fn in sorted(globals().items()):
+        if name.startswith("test_") and callable(fn):
+            try:
+                fn()
+                print(f"  PASS  {name}")
+            except AssertionError as exc:
+                failures += 1
+                print(f"  FAIL  {name}: {exc}")
+    if failures:
+        raise SystemExit(f"{failures} test(s) failed")
+    print("All Phase 9 Blooming Path tests passed.")
+
+
+if __name__ == "__main__":
+    _run_all()

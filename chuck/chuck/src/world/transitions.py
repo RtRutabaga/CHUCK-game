@@ -264,6 +264,13 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("phlegethos_fortress_approach", "Δ"): AreaExit(
         "phlegethos_rubble_pass", "from_phlegethos_fortress", "left"
     ),
+    # Phase 9 --- ordinary paths connect in geographically wrong directions.
+    ("feywild_riverbank", "→"): AreaExit(
+        "feywild_blooming_path", "from_feywild_1", "right"
+    ),
+    ("feywild_blooming_path", "←"): AreaExit(
+        "feywild_riverbank", "from_feywild_2", "left"
+    ),
 }
 
 
@@ -308,4 +315,5 @@ AREA_MUSIC: dict[str, str | None] = {
     # The region's musical identity is intentionally left open until Phase 9
     # documentation specifies it; do not borrow Chult or Hell music.
     "feywild_riverbank": None,
+    "feywild_blooming_path": None,
 }

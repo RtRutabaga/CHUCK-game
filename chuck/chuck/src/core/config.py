@@ -113,6 +113,12 @@ BREAKABLE_GRASS_DURATION = 0.42
 GRASS_SCRATCH_HINT_MAPS = {"waterdeep_docks", "sewer"}
 GRASS_SCRATCH_HINT_REACH = TILE_SIZE * 2
 
+# Feywild reactive flowers visibly pulse before atomically exchanging one
+# authored vegetation route for another. The short aftermath flash makes the
+# changed tiles legible without a tutorial panel.
+REACTIVE_FLOWER_CHANGE_DELAY = 0.45
+REACTIVE_FLOWER_FLASH_DURATION = 0.48
+
 # Chuck's sprite sheet (see tools/generate_chuck_sprites.py).
 CHUCK_SHEET = "chuck/chuck.png"
 CHUCK_FRAME_W = 12

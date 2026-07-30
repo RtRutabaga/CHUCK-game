@@ -394,6 +394,10 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="feywild_spiral", under="."),
     "ŋ": TileDef(solid=True, color=(20, 55, 52),
                  prop="feywild_mushroom", under="."),
+    # Feywild path thresholds retain the regional path art while keeping
+    # opposite directions distinct for authored two-way transitions.
+    "←": TileDef(solid=False, color=(45, 76, 59)),
+    "→": TileDef(solid=False, color=(45, 76, 59)),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.
@@ -660,11 +664,21 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ԯ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
     "԰": MarkerDef(kind="anchor:phlegethos_rubble_anchor", under="≡"),
     "Բ": MarkerDef(kind="arrival:from_phlegethos_fortress", under="≡"),
-    # Phase 9 opens on the bank reached by the river cutscene. The deeper
-    # boundary remains inert until the next authored Feywild map exists.
+    # Phase 9 opens on the bank reached by the river cutscene.
     "Գ": MarkerDef(kind="arrival:from_river", under=","),
     "Դ": MarkerDef(kind="anchor:feywild_anchor", under="'"),
-    "Ե": MarkerDef(kind="boundary:feywild_deeper", under="'"),
+    "Ե": MarkerDef(kind="boundary:feywild_deeper", under="→"),
+    "Խ": MarkerDef(kind="arrival:from_feywild_2", under="'"),
+    # Blooming Path: one reversible flower exchanges the upper and lower
+    # authored vegetation gates. Solid target markers explicitly opt in.
+    "Զ": MarkerDef(kind="arrival:from_feywild_1", under="'"),
+    "Է": MarkerDef(kind="anchor:feywild_2_anchor", under="'"),
+    "Ը": MarkerDef(kind="boundary:feywild_3", under="'"),
+    "Թ": MarkerDef(kind="flower_switch:intro", under="."),
+    "Ժ": MarkerDef(
+        kind="flower_open:intro", under="#", allow_solid=True
+    ),
+    "Ի": MarkerDef(kind="flower_close:intro", under="'"),
 }
 
 _COMMENT_PREFIX = ";"

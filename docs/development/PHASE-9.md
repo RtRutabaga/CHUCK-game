@@ -14,7 +14,9 @@ The first playable Feywild map already exists:
 - durable progression flag `feywild_reached`
 
 Phase 9 begins on that riverbank and builds the first large playable
-Feywild region.
+Feywild region. Its first implementation slice is complete: `Feywild 2`
+(Blooming Path), its Ashtray, and the reusable scratch-reactive flower
+system now connect to the riverbank in both directions.
 
 This phase contains **thirteen playable Feywild maps total**: the
 existing riverbank plus twelve new maps. Chult's exterior region and
@@ -1019,12 +1021,12 @@ exploration, traversal, and one stable endpoint for a later phase.**
 
 ## Reactive Flowers
 
-- [ ] Flowers activate through Chuck's existing scratch.
-- [ ] Flowers mutate only authored vegetation or stepping-pad groups.
-- [ ] Every change has a readable animation or warning.
-- [ ] Terrain never changes beneath Chuck.
-- [ ] Required puzzles cannot permanently trap the player.
-- [ ] Flower state resets to a valid state after death and checkpoint
+- [x] Flowers activate through Chuck's existing scratch.
+- [x] Flowers mutate only authored vegetation or stepping-pad groups.
+- [x] Every change has a readable animation or warning.
+- [x] Terrain never changes beneath Chuck.
+- [x] Required puzzles cannot permanently trap the player.
+- [x] Flower state resets to a valid state after death and checkpoint
       loading.
 - [ ] Shifting Hedge uses several deterministic flower groups without
       becoming random.
@@ -1162,3 +1164,14 @@ boundary reserved for the later floating-wizard-tower phase.
 # Implementation Log
 
 (Slices are appended here as they land, newest last.)
+
+- **Blooming Path / reactive-flower introduction:** Added the 60x42,
+  enemy-free `feywild_blooming_path` with one physical Ashtray, shared
+  `Feywild 2` development checkpoint, one optional cigarette-grass pocket,
+  and two authored routes through a dense enchanted clearing. Scratching the
+  central flower visibly pulses before atomically opening the direct route
+  and closing the upper route; scratching it again reverses the state. The
+  reusable controller delays changes beneath Chuck, guarantees a valid
+  authored initial state on map load/death, and keeps transient flower state
+  out of the save file. Tested both route states, bidirectional transitions,
+  scratch integration, Ashtray saving, Continue restoration, and reset.

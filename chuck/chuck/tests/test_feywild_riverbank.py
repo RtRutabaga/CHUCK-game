@@ -40,6 +40,7 @@ def test_riverbank_is_a_peaceful_winding_feywild_arrival() -> None:
     markers = _markers(tilemap)
     assert set(markers) == {
         "arrival:from_river",
+        "arrival:from_feywild_2",
         "anchor:feywild_anchor",
         "boundary:feywild_deeper",
     }

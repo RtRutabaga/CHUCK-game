@@ -1,6 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's thirteen-map Feywild implementation contract is authored.
+Updated: Phase 9 implementation has begun with Feywild 2, Blooming Path, and
+the reusable reactive-flower system.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -81,8 +82,19 @@ This file is required by the project rules and updated every session.
   Phase 9 is now specified in `docs/development/PHASE-9.md` as a thirteen-map
   Feywild region: the existing riverbank plus twelve new maps built around
   reactive flower switches, slowing pollen, Chuck-sized passages, and a
-  Feywild-specific enemy scale. No additional Phase 9 gameplay has been
-  implemented yet.
+  Feywild-specific enemy scale.
+- `Feywild 2` (Blooming Path) is now a connected 60x42, enemy-free enchanted
+  clearing with one Ashtray, one optional cigarette-grass pocket, dense
+  oversized vegetation, and valid paths both back to the Riverbank and toward
+  the inert Map 3 boundary. Its shared development checkpoint and map-local
+  save checkpoint both use the existing checkpoint loader.
+- The first reusable reactive-flower group is live. Chuck scratches the
+  central flower with the normal attack; it pulses before three authored
+  vegetation cells retract and three others close, swapping a winding upper
+  route for a direct lower route. The change is reversible, waits if Chuck
+  occupies a target cell, cannot strand him in either authored state, and
+  resets on death, map reload, or Continue rather than expanding the save
+  format.
 
 ## Working systems
 

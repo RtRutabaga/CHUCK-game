@@ -67,6 +67,7 @@ from src.systems.combat import scratch_first_target
 from src.systems.dialogue import DialogueSystem
 from src.systems.fall import fall_zone_kind
 from src.systems.interaction import find_target
+from src.systems.reactive_flowers import ReactiveFlowerController
 from src.systems.terrain_hazard import touching_terrain_hazard
 from src.systems.undead_release import (
     UndeadReleaseController, is_staged_undead,
@@ -361,6 +362,10 @@ class WorldScene(Scene):
         self.hazards: list[Cat] = []
         self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
+        self.reactive_flowers = ReactiveFlowerController(
+            self.tilemap, self.tilemap.object_spawns
+        )
+        self.reactive_flowers.load_sprites(self.game.assets)
         self.choice_triggers: list[ChoiceTrigger] = []
         self.battle_actors: list[BattleActor] = []
         self._dart_trap_spawns = [
@@ -468,6 +473,10 @@ class WorldScene(Scene):
                 # Authored handoff metadata for a future destination.  It is
                 # deliberately inert until that destination map exists.
                 continue
+            elif kind.startswith(
+                ("flower_switch:", "flower_open:", "flower_close:")
+            ):
+                continue  # owned by the map-local reactive-flower controller
             elif kind.startswith("dart_trap:"):
                 continue  # rebuilt with projectiles by _reset_enemies()
             elif is_staged_undead(kind):
@@ -780,6 +789,7 @@ class WorldScene(Scene):
             ):
                 self.feywild_river.activate()
         self.feywild_river.update(dt)
+        self.reactive_flowers.update(dt, self.player.hitbox)
         for breakable in self.breakables:
             breakable.update(dt)
         self.breakables = [item for item in self.breakables if item.alive]
@@ -912,7 +922,8 @@ class WorldScene(Scene):
                 return
             scratch_first_target(
                 self.player.scratch_hitbox(),
-                [*(prop for prop in self.props
+                [*self.reactive_flowers.flowers,
+                 *(prop for prop in self.props
                    if callable(getattr(prop, "on_scratched", None))),
                  *self.breakables, *self.rats, *self.undead, *self.raptors,
                  *self.dinosaurs, *self.snakes],
@@ -1155,6 +1166,7 @@ class WorldScene(Scene):
         else:
             self.tilemap.draw_ground(surface, offset, self._world_time)
         self.feywild_river.draw(surface, offset)
+        self.reactive_flowers.draw(surface, offset)
         for prop in self.props:
             if getattr(prop, "floor_layer", False):
                 prop.draw(surface, offset)
@@ -1274,6 +1286,7 @@ class WorldScene(Scene):
             if not getattr(prop, "floor_layer", False)
         ]
         drawables = [*standing_props, *self.breakables, *self.anchors,
+                     *self.reactive_flowers.flowers,
                      *self.battle_actors,
                      *self.hazards, *self.rats,
                      *self.undead, *self.raptors, *self.dinosaurs,
@@ -1794,6 +1807,7 @@ class WorldScene(Scene):
         self.feywild_river = FeywildRiverField(
             self.tilemap.width_tiles * config.TILE_SIZE
         )
+        self.reactive_flowers.reset()
         # The scripted Fireball: how long Chuck has survived sealed in,
         # and the explosion once it fires. Reset with the room so death
         # restarts the survival clock.

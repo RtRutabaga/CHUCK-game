@@ -476,6 +476,31 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "feywild_2", "Feywild 2", "feywild_blooming_path",
+        arrival="from_feywild_1", facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "feywild_2_anchor", "Feywild 2 Ashtray",
+        "feywild_blooming_path",
+        position=(164.0, 533.0), facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "feywild_1_return", "Feywild 1 Return", "feywild_riverbank",
+        arrival="from_feywild_2", facing="left",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "ship_deck_return", "Ship Return", "ship_deck",
         arrival="from_lower_hold", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),

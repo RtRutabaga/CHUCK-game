@@ -105,12 +105,58 @@ def mushroom(variant: int) -> Image.Image:
     return image
 
 
+def reactive_flower(active: bool) -> Image.Image:
+    """A broad, scratch-readable switch flower in closed/open states."""
+    image = Image.new("RGBA", (26, 30), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    draw.ellipse((2, 25, 24, 29), fill=(7, 31, 34, 170))
+    draw.line((13, 26, 13, 13), fill=(39, 131, 71, 255), width=3)
+    draw.polygon(
+        ((12, 21), (3, 17), (5, 23), (12, 25)),
+        fill=(71, 176, 91, 255),
+    )
+    draw.polygon(
+        ((14, 22), (23, 17), (21, 24), (14, 26)),
+        fill=(87, 194, 101, 255),
+    )
+    if active:
+        petals = (
+            (1, 4, 12, 15), (14, 4, 25, 15),
+            (7, 0, 19, 12), (7, 10, 19, 21),
+        )
+        colors = (
+            (82, 219, 207, 255),
+            (190, 83, 242, 255),
+            (245, 110, 194, 255),
+            (93, 192, 250, 255),
+        )
+        for box, color in zip(petals, colors):
+            draw.ellipse(box, fill=color)
+        draw.ellipse((9, 7, 17, 15), fill=(247, 218, 86, 255))
+        draw.point((13, 10), fill=(255, 249, 211, 255))
+    else:
+        draw.polygon(
+            ((5, 14), (8, 4), (13, 10), (18, 4), (21, 14),
+             (13, 18)),
+            fill=(171, 69, 214, 255),
+        )
+        draw.line((7, 14, 13, 10, 19, 14), fill=(236, 105, 190, 255))
+        draw.ellipse((10, 10, 16, 16), fill=(231, 194, 74, 255))
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for index in range(3):
         tree(index).save(OUT / f"feywild_tree_{index + 1}.png")
         spiral(index).save(OUT / f"feywild_spiral_{index + 1}.png")
         mushroom(index).save(OUT / f"feywild_mushroom_{index + 1}.png")
+    reactive_flower(False).save(
+        OUT / "feywild_reactive_flower_closed.png"
+    )
+    reactive_flower(True).save(
+        OUT / "feywild_reactive_flower_open.png"
+    )
     print("Generated Feywild trees, spiral plants, and mushrooms")
 
 
