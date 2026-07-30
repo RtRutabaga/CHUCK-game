@@ -3,39 +3,41 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `cc047e8` (Phlegethos fortress approach)
-- Current work: Phase 8 fortress battle and checkpoint repair
+- Base commit before this pass: `1dfc98d` (Phlegethos fortress battle)
+- Current work: Phase 8 escalating Astral corruption
 - Active phase: Phase 8 (`PHASE-8.md`)
 
 ## Completed This Pass
 
-Completed the first fortress-climax slice without beginning its escape:
-
-- Fixed the Road and Lake Ashtray marker IDs, which did not match their
-  checkpoint registry definitions and caused a confirmed crash on activation.
-  Added a regression that resolves every Phase 8 map marker to a saveable
-  same-map checkpoint definition.
-- Placed the returning fighter, wizard, and ranger in the fortress yard against
-  a new, procedurally authored Pit Fiend. The fiend is deliberately much larger
-  than a human NPC and remains a non-interactive battle actor.
-- Added a Phlegethos-specific battle choreographer on the established
-  actor/projectile architecture. The ranger fires directly at the Pit Fiend,
-  the wizard sends bolt fans into it, the fighter holds the nearby lesser
-  devils, and the Pit Fiend returns fire through their lanes.
-- Added brief automatic dialogue making clear that the trio understands the
-  fractures are spreading and is actively trying to bind/repair them. Chuck
-  does not speak or participate.
-- Kept the later climax deliberately unbuilt: no Astral escalation, Feywild
-  river blocks, forced escape, or ending cutscene were added.
-- All 64 standalone test scripts pass, compilation is clean, the headless
-  title-loop launch smoke check passes, and the battle establishing frame plus
-  Pit Fiend sprite were inspected at integer scale.
+- Added a dedicated `InfernalAstralCorruption` controller to the existing
+  fortress map. Crossing into the upper yard starts it through normal
+  `WorldScene` update flow.
+- The first event converts two complete safe rows behind Chuck into Astral Sea,
+  producing an unjumpable retreat seal. Three later timed waves advance from
+  alternating arena edges with deterministic missing cells and jagged shapes.
+- Runtime mutations use the existing `TileMap.set_terrain`, shared Astral fall
+  handling, enemy fall-hazard collision, and reset lifecycle. No parallel
+  hazard or death system was introduced.
+- Added the exact established two-variant/three-frame Astral art row to the
+  Phlegethos tileset. A native render confirms the corruption matches earlier
+  regions rather than reading as a new portal effect.
+- Protected authored object positions, Chuck's current tile, and a central
+  survival spine. Death restores every changed tile and re-arms the sequence.
+- Did not add Feywild river blocks, the forced escape, or the river cutscene.
+- All 64 standalone test scripts pass, focused checkpoint tests pass,
+  compilation is clean, and the headless title-loop launch smoke check passes.
 
 ## Next Logical Task
 
-Add the escalating Astral Sea corruption to the existing fortress battle while
-preserving a survivable route long enough for the later Feywild river intrusion
-to become the only escape. Do not implement Phase 9 gameplay.
+Add moving Feywild river blocks to the remaining fortress survival route and
+make deliberate entry into one the only answer to the final Astral pressure.
+Keep the river cutscene as the following bounded slice; do not implement Phase
+9 gameplay.
+
+## Previous Pass (commit 1dfc98d)
+
+Added the trio/Pit Fiend fortress battle, mission-reinforcing dialogue, and the
+Road/Lake Ashtray ID repair. All 64 suites passed.
 
 ## Previous Pass (session 179, commit 4dfda43)
 

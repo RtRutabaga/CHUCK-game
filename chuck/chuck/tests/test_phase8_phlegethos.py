@@ -95,6 +95,8 @@ def test_phlegethos_uses_its_own_tileset_and_infernal_theme() -> None:
     tileset = tileset_for(MAP_NAME)
     assert tileset.sheet == "phlegethos.png"
     assert tileset.info()["lava"][1] >= 2  # lava is animated
+    assert tileset.char_to_terrain["V"] == "astral_void"
+    assert tileset.info()["astral_void"] == (2, 3)
     # Every Phlegethos map plays the realm's own driving infernal theme.
     for name in (MAP_NAME, "phlegethos_road", "phlegethos_lake"):
         assert AREA_MUSIC[name] == "phlegethos.wav", name
@@ -555,6 +557,89 @@ def test_the_trio_battles_the_pit_fiend_through_shared_choreography() -> None:
         kinds = {shot.kind for shot in tick.projectiles}
         assert {"arrow", "bolt", "ray"} <= kinds
         assert by_kind["pit_fiend"]._image.get_size() == (64, 64)
+    finally:
+        game._shutdown()
+
+
+def test_astral_corruption_seals_retreat_then_constricts_the_arena() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(APPROACH)
+        corruption = scene.infernal_corruption
+        assert corruption is not None and not corruption.triggered
+
+        # The WorldScene owns the trigger: the lower approach stays intact,
+        # then crossing into the upper yard starts the corruption.
+        scene._pending_entrance_dialogue = None
+        scene.player.x = 24 * config.TILE_SIZE
+        scene.player.y = (
+            config.INFERNAL_CORRUPTION_TRIGGER_ROW + 1
+        ) * config.TILE_SIZE
+        scene.update(0.01)
+        assert not corruption.triggered
+        scene.player.y = (
+            config.INFERNAL_CORRUPTION_TRIGGER_ROW
+        ) * config.TILE_SIZE
+        scene.update(0.01)
+        assert corruption.triggered
+
+        # The first event is a two-row, unjumpable seal behind Chuck. Give
+        # its center-out cascade time to finish.
+        corruption.update(2.0, scene.player.hitbox)
+        for row in config.INFERNAL_CORRUPTION_SEAL_ROWS:
+            original_safe = [
+                col for col in range(scene.tilemap.width_tiles)
+                if scene.tilemap.terrain_at(col, row) == "V"
+            ]
+            assert len(original_safe) >= 10, (row, original_safe)
+
+        # Three later incursions eat inward from both sides, but the authored
+        # central spine remains safe until the later Feywild-river slice.
+        corruption.update(12.0, scene.player.hitbox)
+        astral = {
+            (col, row)
+            for row in range(scene.tilemap.height_tiles)
+            for col in range(scene.tilemap.width_tiles)
+            if scene.tilemap.terrain_at(col, row) == "V"
+        }
+        assert len(astral) >= 70, len(astral)
+        assert corruption.wave_index == 3
+        assert all(
+            scene.tilemap.terrain_at(col, row) != "V"
+            for row in range(10, 21)
+            for col in range(21, 28)
+        )
+
+        # Ordinary death/reset restores the authored basalt and re-arms the
+        # complete sequence rather than saving a corrupted runtime map.
+        scene._reset_enemies()
+        assert scene.infernal_corruption is not corruption
+        assert not scene.infernal_corruption.triggered
+        assert not any(
+            scene.tilemap.terrain_at(col, row) == "V"
+            for row in range(scene.tilemap.height_tiles)
+            for col in range(scene.tilemap.width_tiles)
+        )
+    finally:
+        game._shutdown()
+
+
+def test_astral_corruption_never_opens_directly_beneath_chuck() -> None:
+    import pygame
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(APPROACH)
+        corruption = scene.infernal_corruption
+        corruption.trigger((24, config.INFERNAL_CORRUPTION_TRIGGER_ROW))
+        row = config.INFERNAL_CORRUPTION_SEAL_ROWS[0]
+        chuck_tile = pygame.Rect(24 * config.TILE_SIZE,
+                                 row * config.TILE_SIZE,
+                                 config.TILE_SIZE, config.TILE_SIZE)
+        corruption.update(2.0, chuck_tile)
+        assert scene.tilemap.terrain_at(24, row) != "V"
+        corruption.update(0.1, None)
+        assert scene.tilemap.terrain_at(24, row) == "V"
     finally:
         game._shutdown()
 

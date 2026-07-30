@@ -90,6 +90,15 @@ Implemented so far:
 - Corrected the Road and Lake Ashtray marker IDs to match their shared
   checkpoint definitions. Both now save and respawn through the same registry
   path as every other checkpoint instead of crashing on contact.
+- The fortress battle now triggers a staged **Astral corruption** sequence
+  when Chuck crosses into the upper yard. A continuous two-row band appears
+  behind him first, cutting off retreat with an unjumpable shared Astral fall
+  hazard. Three later waves break inward from alternating sides as jagged,
+  deterministic wrong-map fragments. The sequence never opens directly under
+  Chuck, preserves a readable central survival spine for the upcoming river
+  intrusion, and fully restores/re-arms on death. Phlegethos now includes the
+  exact animated Astral tile language used by the sewer, pantry, Chult, and
+  temple rather than a new approximation.
 
 ------------------------------------------------------------------------
 
@@ -287,7 +296,7 @@ of the collided worlds.
 - [ ] Fortress climax functions.
 - [x] Trio battles the Pit Fiend.
 - [x] Dialogue reinforces the trio's mission.
-- [ ] Astral Sea hazards escalate.
+- [x] Astral Sea hazards escalate.
 - [ ] Feywild river blocks become the only escape.
 - [ ] Chuck washes ashore in the Feywild.
 - [ ] Phase 9 begins there.

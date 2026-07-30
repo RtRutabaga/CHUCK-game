@@ -35,6 +35,13 @@ LAVA = (178, 45, 12)
 LAVA_DEEP = (112, 28, 13)
 LAVA_HOT = (235, 83, 15)
 LAVA_BRIGHT = (255, 157, 31)
+ASTRAL = {
+    "deep": (14, 16, 38),
+    "blue": (28, 38, 82),
+    "purple": (72, 42, 104),
+    "bright": (158, 132, 210),
+    "star": (228, 232, 248),
+}
 
 
 def draw_basalt(surface, variant: int, _frame: int) -> None:
@@ -123,6 +130,25 @@ def draw_pass(surface, _variant: int, _frame: int) -> None:
     pygame.draw.line(surface, PATH, (3, 15), (12, 15))
 
 
+def draw_astral_void(surface, variant: int, frame: int) -> None:
+    """The exact hard-edged Astral hazard language used in earlier regions."""
+    surface.fill(ASTRAL["deep"])
+    phase = frame * 2 + variant * 3
+    for y in range(TILE_PX):
+        for x in range(TILE_PX):
+            band = (x // 3 + y // 2 + phase) % 9
+            if band in (0, 1):
+                surface.set_at((x, y), ASTRAL["blue"])
+            elif band == 5 and (x + y + variant) % 3 == 0:
+                surface.set_at((x, y), ASTRAL["purple"])
+    stars = ((2, 3), (11, 2), (7, 9), (14, 13))
+    for i, (x, y) in enumerate(stars):
+        if (i + frame + variant) % 3 != 0:
+            surface.set_at((x, y), ASTRAL["star"])
+        elif i == 0:
+            surface.set_at((x, y), ASTRAL["bright"])
+
+
 FORT = (44, 40, 46)
 FORT_DARK = (26, 24, 30)
 FORT_LIGHT = (70, 64, 72)
@@ -166,6 +192,7 @@ DRAW = {
     "lava": draw_lava,
     "fissure": draw_fissure,
     "pass": draw_pass,
+    "astral_void": draw_astral_void,
     "fortress": draw_fortress,
     "fortress_gate": draw_fortress_gate,
 }

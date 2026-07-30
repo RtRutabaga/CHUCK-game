@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: Phase 8 fortress battle slice.
+Updated: Phase 8 fortress Astral-corruption slice.
 This file is required by the project rules and updated every session.
 
 ## Current Phase 8 state
@@ -19,9 +19,14 @@ This file is required by the project rules and updated every session.
 - Road and Lake Ashtray marker IDs now match the checkpoint registry. Their
   previous mismatch crashed on activation; regression coverage now validates
   every authored Phase 8 Ashtray against a saveable same-map definition.
-- The next logical Phase 8 slice is the fortress battle's escalating Astral
-  corruption. Feywild river blocks, the forced escape, and the river cutscene
-  remain after that. Phase 9 gameplay has not begun.
+- Entering the upper fortress yard now triggers escalating Astral corruption:
+  a continuous two-row band cuts off retreat, then three timed jagged waves
+  advance from the arena's sides. They use the exact animated Astral fall
+  tiles, never materialize under Chuck, preserve a temporary central survival
+  spine, and restore completely on death/reset.
+- The next logical Phase 8 slice is moving Feywild river blocks intruding into
+  the remaining safe route and becoming Chuck's only escape. The river
+  cutscene follows after that. Phase 9 gameplay has not begun.
 
 ## Working systems
 

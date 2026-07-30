@@ -369,6 +369,138 @@ class InfernalBattleChoreographer:
         return None
 
 
+class InfernalAstralCorruption:
+    """Timed Astral blocks that close around the fortress battle.
+
+    The first wave is an unjumpable two-row seal behind Chuck. Later waves
+    arrive from alternating sides of the upper yard. The center remains a
+    deliberate survival spine until the separate Feywild-river slice exists.
+    """
+
+    _WAVE_RECTS = (
+        ((4, 18, 8, 3), (36, 18, 8, 3)),
+        ((6, 14, 9, 3), (33, 14, 9, 3)),
+        ((3, 10, 8, 3), (37, 10, 8, 3),
+         (13, 12, 4, 4), (31, 11, 4, 4)),
+    )
+
+    def __init__(self, tilemap) -> None:
+        self._tilemap = tilemap
+        self.triggered = False
+        self.elapsed = 0.0
+        self.wave_index = 0
+        self._pending: list[list] = []
+        self._restore: list[tuple[int, int, str]] = []
+        self.flashes: list[list] = []
+        ts = config.TILE_SIZE
+        self._protected = {
+            (int(cx // ts), int(cy // ts))
+            for _kind, (cx, cy) in tilemap.object_spawns
+        }
+
+    def trigger(self, player_tile: tuple[int, int]) -> None:
+        if self.triggered:
+            return
+        self.triggered = True
+        player_col, _player_row = player_tile
+        cells = (
+            (col, row)
+            for row in config.INFERNAL_CORRUPTION_SEAL_ROWS
+            for col in range(self._tilemap.width_tiles)
+        )
+        self._queue(cells, lambda col, _row: abs(col - player_col) * 0.025)
+
+    def _queue(self, cells, delay_for) -> None:
+        for col, row in cells:
+            if (col, row) in self._protected:
+                continue
+            if self._tilemap.terrain_at(col, row) not in {"·", "≡"}:
+                continue
+            self._pending.append([delay_for(col, row), col, row])
+        self._pending.sort()
+
+    def _queue_wave(self, wave_index: int) -> None:
+        rects = self._WAVE_RECTS[wave_index]
+        cells = []
+        for left, top, width, height in rects:
+            for row in range(top, top + height):
+                for col in range(left, left + width):
+                    # This vertical spine is the readable temporary refuge.
+                    if 21 <= col <= 27:
+                        continue
+                    # Deterministic missing cells break the later incursions
+                    # into jagged wrong-map fragments rather than clean
+                    # rectangles. The initial retreat seal stays continuous.
+                    if (col * 7 + row * 11 + wave_index * 3) % 6 == 0:
+                        continue
+                    cells.append((col, row))
+        self._queue(
+            cells,
+            lambda col, row: (abs(col - 24) + abs(row - 16)) * 0.018,
+        )
+
+    def update(self, dt: float, player_hitbox=None) -> None:
+        if not self.triggered:
+            return
+        self.elapsed += dt
+        while (
+            self.wave_index < len(config.INFERNAL_CORRUPTION_WAVE_TIMES)
+            and self.elapsed >= config.INFERNAL_CORRUPTION_WAVE_TIMES[
+                self.wave_index
+            ]
+        ):
+            self._queue_wave(self.wave_index)
+            self.wave_index += 1
+
+        for flash in self.flashes:
+            flash[2] += dt
+        self.flashes = [f for f in self.flashes if f[2] < config.BREACH_FLASH]
+
+        import pygame
+
+        remaining = []
+        for entry in self._pending:
+            entry[0] -= dt
+            _delay, col, row = entry
+            if entry[0] > 0.0:
+                remaining.append(entry)
+                continue
+            ts = config.TILE_SIZE
+            cell = pygame.Rect(col * ts, row * ts, ts, ts)
+            if player_hitbox is not None and cell.colliderect(player_hitbox):
+                remaining.append(entry)
+                continue
+            old = self._tilemap.set_terrain(col, row, "V")
+            self._restore.append((col, row, old))
+            self.flashes.append([col, row, 0.0])
+        self._pending = remaining
+
+    def restore(self) -> None:
+        for col, row, char in reversed(self._restore):
+            self._tilemap.set_terrain(col, row, char)
+        self.triggered = False
+        self.elapsed = 0.0
+        self.wave_index = 0
+        self._pending = []
+        self._restore = []
+        self.flashes = []
+
+    def draw(self, surface, camera_offset: tuple[int, int]) -> None:
+        import pygame
+
+        ox, oy = camera_offset
+        ts = config.TILE_SIZE
+        for col, row, age in self.flashes:
+            fade = 1.0 - age / config.BREACH_FLASH
+            pad = round(3 * (1.0 - fade))
+            color = (round(150 + 90 * fade), round(160 + 86 * fade), 255)
+            pygame.draw.rect(
+                surface, color,
+                (col * ts + pad - ox, row * ts + pad - oy,
+                 ts - 2 * pad, ts - 2 * pad),
+            )
+
+
 class AstralBreach:
     """The Astral Sea seals the hall once Chuck has seen the battle.
 

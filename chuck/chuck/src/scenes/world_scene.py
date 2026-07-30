@@ -26,7 +26,7 @@ from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.battle_hazards import (
     AstralBreach, BattleChoreographer, BattleProjectile,
-    InfernalBattleChoreographer,
+    InfernalAstralCorruption, InfernalBattleChoreographer,
 )
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.deck_pirate import DeckPirateNPC
@@ -733,6 +733,15 @@ class WorldScene(Scene):
                         DialogueScene(self.game,
                                       self.dialogue.get("fireball_cast")))
                     return
+        if self.infernal_corruption is not None:
+            if (
+                not self.infernal_corruption.triggered
+                and self._player_tile()[1]
+                <= config.INFERNAL_CORRUPTION_TRIGGER_ROW
+            ):
+                self.infernal_corruption.trigger(self._player_tile())
+                self.game.audio.play_sfx("vanish")
+            self.infernal_corruption.update(dt, self.player.hitbox)
         for breakable in self.breakables:
             breakable.update(dt)
         self.breakables = [item for item in self.breakables if item.alive]
@@ -1102,6 +1111,8 @@ class WorldScene(Scene):
             drawable.draw(surface, offset)
         if self.breach is not None:
             self.breach.draw(surface, offset)
+        if self.infernal_corruption is not None:
+            self.infernal_corruption.draw(surface, offset)
         for cone in self.battle_cones:
             cone.draw(surface, offset)
         self.tilemap.draw_overhead(surface, offset, self._world_time)
@@ -1687,9 +1698,15 @@ class WorldScene(Scene):
         self.battle_cones: list = []
         if getattr(self, "breach", None) is not None:
             self.breach.restore()
+        if getattr(self, "infernal_corruption", None) is not None:
+            self.infernal_corruption.restore()
         self.breach = (
             AstralBreach(self.tilemap)
             if self.map_name == "temple_sanctum" else None
+        )
+        self.infernal_corruption = (
+            InfernalAstralCorruption(self.tilemap)
+            if self.map_name == "phlegethos_fortress_approach" else None
         )
         # The scripted Fireball: how long Chuck has survived sealed in,
         # and the explosion once it fires. Reset with the room so death

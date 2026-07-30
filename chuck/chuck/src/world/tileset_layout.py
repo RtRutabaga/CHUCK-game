@@ -299,6 +299,7 @@ PHLEGETHOS = Tileset(
         ("lava", 2, 3),     # animated; a lethal fall hazard on foot
         ("fissure", 2, 1),  # basalt split by a glowing lava crack
         ("pass", 1, 1),     # an ash-choked gap onward to the next map
+        ("astral_void", 2, 3),  # collided reality; exact shared hazard art
         ("fortress", 3, 1),      # the infernal fortress's iron-black wall
         ("fortress_gate", 1, 1),  # its barred gate, shut for now
     ],
@@ -310,6 +311,7 @@ PHLEGETHOS = Tileset(
         "♨": "fissure",
         "∇": "pass",
         "Δ": "pass",
+        "V": "astral_void",
         "▓": "fortress",
         "╬": "fortress_gate",
     },

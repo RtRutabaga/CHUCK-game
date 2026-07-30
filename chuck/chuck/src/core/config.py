@@ -296,6 +296,14 @@ BREACH_INSTANT_RADIUS = 7
 BREACH_STEP = 0.06
 BREACH_FLASH = 0.35
 
+# The fortress battle's Phase 8 corruption. Crossing into the upper yard
+# seals the two rows behind Chuck, then three timed incursions eat inward from
+# the arena's sides. A central spine remains safe for this slice; the later
+# Feywild river sequence will supply the forced final escape.
+INFERNAL_CORRUPTION_TRIGGER_ROW = 23
+INFERNAL_CORRUPTION_SEAL_ROWS = (25, 26)
+INFERNAL_CORRUPTION_WAVE_TIMES = (4.0, 8.0, 12.0)
+
 # The entrance establishing shot cuts the camera to the battle so the
 # trio's heroic lines land on the trio, not the empty aisle Chuck
 # walked in by. The group's feet sit this far below screen-center, so
