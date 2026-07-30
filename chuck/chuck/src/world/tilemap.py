@@ -382,6 +382,14 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="phlegethos_rubble", under="·"),
     "ƒ": TileDef(solid=True, color=(178, 45, 12),
                  prop="phlegethos_lava_fall", under="≋"),
+    # Phase 9's first Feywild silhouettes: tall trees grow from the solid
+    # canopy; freestanding spiral plants and mushrooms shape optional floor.
+    "ł": TileDef(solid=True, color=(18, 69, 52),
+                 prop="feywild_tree", under="#"),
+    "Ł": TileDef(solid=True, color=(20, 55, 52),
+                 prop="feywild_spiral", under="."),
+    "ŋ": TileDef(solid=True, color=(20, 55, 52),
+                 prop="feywild_mushroom", under="."),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.
@@ -648,6 +656,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ԯ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
     "԰": MarkerDef(kind="anchor:phlegethos_rubble_anchor", under="≡"),
     "Բ": MarkerDef(kind="arrival:from_phlegethos_fortress", under="≡"),
+    # Phase 9 opens on the bank reached by the river cutscene. The deeper
+    # boundary remains inert until the next authored Feywild map exists.
+    "Գ": MarkerDef(kind="arrival:from_river", under=","),
+    "Դ": MarkerDef(kind="anchor:feywild_anchor", under="'"),
+    "Ե": MarkerDef(kind="boundary:feywild_deeper", under="'"),
 }
 
 _COMMENT_PREFIX = ";"

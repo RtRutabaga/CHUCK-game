@@ -138,9 +138,10 @@ Implemented so far:
   leaving the native procedural style. Chuck crosses a short foaming
   waterfall, remains visible through the calmer current, and clearly washes
   prone onto a quiet bank. After a deliberate still beat, he slowly pushes
-  himself upright and stands before the final fade to the held Phase 9
-  boundary. The scene preserves Sanity, uses the established
-  `fall_to_chult.wav` cue, and creates no playable Feywild map or checkpoint.
+  himself upright and stands before the final fade. The scene preserves
+  Sanity and uses the established `fall_to_chult.wav` cue. A subsequent direct
+  instruction now hands that full-black endpoint to the first playable
+  Feywild riverbank and its shared `Feywild 1` checkpoint.
 
 ------------------------------------------------------------------------
 
@@ -317,7 +318,7 @@ the worlds continue to collide.
 
 # 10. Out of Scope
 
-Do not implement: Feywild gameplay, Pit Fiend defeat, river-exploration
+Do not implement within Phase 8: Feywild gameplay, Pit Fiend defeat, river-exploration
 gameplay, an explanation of the flowing Feywild river, or an explanation
 of the collided worlds.
 
@@ -341,7 +342,7 @@ of the collided worlds.
 - [x] Astral Sea hazards escalate.
 - [x] Feywild river blocks become the only escape.
 - [x] Chuck washes ashore in the Feywild.
-- [ ] Phase 9 begins there.
+- [x] Phase 9 begins there. *(direct post-Phase-8 riverbank instruction)*
 
 ------------------------------------------------------------------------
 

@@ -3,41 +3,47 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `b09e109` (enchanted Feywild river arrival)
-- Current work: east-west Phlegethos rubble pass
-- Active phase: Phase 8 (`PHASE-8.md`)
+- Base commit before this pass: `6d16217` (east-west Phlegethos rubble pass)
+- Current work: first playable Feywild riverbank
+- Active scope: direct user instruction after completed Phase 8; no Phase 9
+  implementation document is present
 
 ## Completed This Pass
 
-- Inserted `phlegethos_rubble_pass` between the Lava Lake and Fortress,
-  turning the previously northward chain into a 64x34 west-to-east traversal.
-  All four boundary directions use the existing named-arrival/shared-loader
-  transition path.
-- Authored a broad paved route that winds through 127 solid dark
-  basalt-and-ember rubble props. A 48x96 lava fall spills from a broken cliff
-  into a narrow two-tile east-west lava river; one intact slab carries the
-  quiet route across it.
-- Limited the map to one slow lemure and one slow horned devil. The lemure
-  begins beyond notice range behind a rubble pocket; the devil remains beyond
-  notice range from every required path tile, so neither becomes an immediate
-  combat gate.
-- Added the map-local `Phlegethos 4` development checkpoint and Ashtray.
-  Fortress display names advance to `Phlegethos 5` without changing its
-  persisted IDs. Three shared breakable carton urns continue the established
-  every-Hell-map rule, and the Phlegethos music remains uninterrupted.
-- Generator validation proves arrival, Ashtray, return, and exit connectivity
-  without crossing lava/rubble. Focused regressions cover composition,
-  east-west geometry, exact enemies and notice distances, checkpoints,
-  transitions, urns, music, and shared loading. Native entry, crossing, and
-  lava-fall frames were inspected after reducing an initially unreadable
-  rubble density. All 66 standalone suites pass, compilation is clean, and
-  the headless title-loop launch smoke check passes.
+- Added `feywild_riverbank`, a 52x36 peaceful first Feywild map that continues
+  the completed river cutscene. A wide animated teal river frames the west
+  bank; a winding route branches through dense enchanted vegetation before
+  ending at a stable, inert deeper-Feywild boundary.
+- Added a dedicated procedural Feywild tileset plus reusable trees, luminous
+  spiral plants, and mushrooms. The palette and silhouettes translate the
+  cutscene's saturated cyan/emerald/violet/pink language into native 320x180
+  top-down gameplay without introducing combat or narrative.
+- Added one map-local Ashtray and the development-visible `Feywild 1`
+  checkpoint through the existing shared loader. The new durable
+  `feywild_reached` flag is sufficient to load the area directly; Sanity
+  carries through the cutscene handoff and normal save/respawn behavior remains
+  unchanged.
+- The river cutscene now replaces itself with `Feywild 1` only after its final
+  fade reaches black. The new map fades in, keeping the scene boundary clean.
+- Generator validation and focused regressions cover composition, exact
+  enemy-free spawns, collision connectivity, checkpoint definitions, direct
+  development loading, progression initialization, and cutscene handoff.
+  Native views of the landing, central route, and deeper boundary were
+  inspected. The area remains deliberately silent and its onward boundary
+  inert until an authoritative Phase 9 document or direct instruction defines
+  the next slice. All 67 standalone suites pass, compilation is clean, and the
+  headless title-loop launch smoke check passes.
 
 ## Next Logical Task
 
-Phase 8 is complete. Do not begin Feywild gameplay until an authoritative
-Phase 9 implementation document is added. The held black riverbank ending is
-the intended handoff boundary.
+Await an authoritative Phase 9 document or direct instruction before defining
+the Feywild's regional music, mechanics, enemies, narrative, or second map.
+
+## Previous Pass (commit 6d16217)
+
+Added the east-west Phlegethos rubble pass between the Lava Lake and Fortress,
+with dark rubble, a lava fall and river, one lemure, one optional horned devil,
+a map-local Ashtray, urns, and shared transitions. All 66 suites passed.
 
 ## Previous Pass (commit b09e109)
 

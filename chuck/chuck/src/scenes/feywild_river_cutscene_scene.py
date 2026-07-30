@@ -3,7 +3,7 @@
 Chuck is swept through a river caught between collided worlds. Infernal
 basalt gives way to impossible Feywild growth, the current carries him over
 a short waterfall, and he washes onto a quiet bank. The scene fades to black
-and holds at the Phase 9 boundary; it does not create playable Feywild.
+and hands Chuck to the first playable Feywild riverbank.
 """
 
 from __future__ import annotations
@@ -77,6 +77,7 @@ class FeywildRiverCutsceneScene(Scene):
         self.sanity = sanity
         self.elapsed = 0.0
         self._frames: dict[str, pygame.Surface] = {}
+        self._handoff_started = False
 
     def on_enter(self) -> None:
         grid = self.game.assets.sheet(
@@ -123,6 +124,11 @@ class FeywildRiverCutsceneScene(Scene):
             self.game.audio.play_sfx("jump")
         if previous < ASHORE_TIME <= self.elapsed:
             self.game.audio.play_sfx("chime")
+        if self.elapsed >= CUTSCENE_END and not self._handoff_started:
+            self._handoff_started = True
+            self.game.checkpoints.load_checkpoint(
+                "feywild_riverbank", sanity=self.sanity
+            )
 
     def draw(self, surface: pygame.Surface) -> None:
         if self.elapsed >= SHORE_START:

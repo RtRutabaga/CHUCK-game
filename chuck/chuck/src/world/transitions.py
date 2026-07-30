@@ -305,4 +305,7 @@ AREA_MUSIC: dict[str, str | None] = {
     "phlegethos_lake": "phlegethos.wav",
     "phlegethos_rubble_pass": "phlegethos.wav",
     "phlegethos_fortress_approach": "phlegethos.wav",
+    # The region's musical identity is intentionally left open until Phase 9
+    # documentation specifies it; do not borrow Chult or Hell music.
+    "feywild_riverbank": None,
 }

@@ -1,11 +1,11 @@
 # CHUCK — Project Status
 
-Updated: Phase 8 east-west Phlegethos rubble pass added.
+Updated: first playable Feywild riverbank added by direct instruction.
 This file is required by the project rules and updated every session.
 
-## Current Phase 8 state
+## Current state
 
-- Five connected playable Phlegethos maps are complete through the fortress
+- Phase 8 is complete. Five connected playable Phlegethos maps lead through the fortress
   approach: Arrival, Lava Road, Lava Lake, Rubble Pass, and Fortress Approach.
 - The new 64x34 Rubble Pass sits between the Lava Lake and Fortress and turns
   the route west-to-east. A broad paved lane winds through 127 pieces of dark
@@ -55,10 +55,21 @@ This file is required by the project rules and updated every session.
   vegetation. Chuck remains clearly visible in the current through the longer
   rush and waterfall, enters calmer water, then visibly washes out prone onto
   the bank. He lies still, slowly pushes himself upright, and stands before the
-  final held-black fade. The scene reuses the established fall soundtrack,
-  carries Sanity across the fortress handoff, and creates no playable Feywild.
-- Phase 9 has not begun, and no Phase 9 implementation contract is present.
-  The next development pass should wait for its authoritative phase document.
+  final black fade. The scene reuses the established fall soundtrack and
+  carries Sanity across the fortress handoff.
+- By direct instruction, the final black now resolves into the first playable
+  Feywild area: a 52x36 enemy-free riverbank. Chuck wakes beside the broad
+  animated teal river, reaches the nearby `Feywild Ashtray`, and follows a
+  winding, branching path through dense enchanted growth toward an inert
+  deeper-Feywild boundary. A dedicated procedural tileset and reusable tree,
+  luminous spiral-plant, and mushroom props carry the cutscene's cyan,
+  emerald, violet, and pink visual language into normal top-down play.
+- `Feywild 1` uses the shared checkpoint loader and development selector;
+  `feywild_reached` is the only new durable progression flag. Loading directly
+  or arriving from the cutscene preserves the normal checkpoint/Sanity
+  architecture, and the map-local Ashtray is the sole save/respawn point.
+  Regional music and onward transition remain deliberately unauthored because
+  no Phase 9 implementation contract is present.
 
 ## Working systems
 
@@ -88,13 +99,14 @@ This file is required by the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the 27 authored Ashtrays have
+  retain the established local retry behavior; the 28 authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
   development-only checkpoint saves disable CONTINUE without crashing. Durable
   flags are `sewer_completed`, which restores the tavern's open exterior,
-  `chult_reached`, which restores the playable Chult state, and
+  `chult_reached`, which restores the playable Chult state,
+  `feywild_reached`, which restores the first Feywild riverbank, and
   `crew_pirate_met`, which preserves the first/repeat pirate conversation;
   `captain_chest_opened` preserves the captain chest's opened art and later
   confrontation gate, while `captain_chest_carton_collected` prevents its
@@ -136,7 +148,7 @@ This file is required by the project rules and updated every session.
   its terrain rows + char maps; tileset_for(map) picks one) with stable
   per-position variants, animated frames, view culling, and a flat-
   color fallback when a sheet is missing. docks.png, sewer.png, tavern.png,
-  pantry.png, chult.png, and temple.png
+  pantry.png, chult.png, temple.png, and feywild.png
 - Bobert asleep in his barrel at spawn (solid scenery, tile 'B');
   cigarette is a drawn sprite; the Astral Anchor presents as an
   ashtray (cold ash dormant / live ember + smoke when attuned), with

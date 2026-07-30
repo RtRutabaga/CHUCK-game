@@ -318,6 +318,30 @@ PHLEGETHOS = Tileset(
     overhead_char_to_terrain={},
 )
 
+# --------------------------------------------------------------------------
+# Feywild (assets/tilesets/feywild.png). The first playable riverbank
+# continues the ending cutscene's cool teal water, saturated growth, luminous
+# flowers, and enchanted paths without borrowing Chult's tropical palette.
+# --------------------------------------------------------------------------
+FEYWILD = Tileset(
+    sheet="feywild.png",
+    order=[
+        ("fey_ground", 4, 1),
+        ("fey_dense", 4, 1),
+        ("fey_river", 3, 3),
+        ("fey_bank", 3, 1),
+        ("fey_path", 3, 1),
+    ],
+    char_to_terrain={
+        ".": "fey_ground",
+        "#": "fey_dense",
+        "~": "fey_river",
+        ",": "fey_bank",
+        "'": "fey_path",
+    },
+    overhead_char_to_terrain={},
+)
+
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
     "sewer": SEWER,
@@ -327,6 +351,7 @@ TILESETS: dict[str, Tileset] = {
     "temple": TEMPLE,
     "ship": SHIP,
     "phlegethos": PHLEGETHOS,
+    "feywild": FEYWILD,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -361,6 +386,7 @@ MAP_TILESET: dict[str, str] = {
     "phlegethos_lake": "phlegethos",
     "phlegethos_rubble_pass": "phlegethos",
     "phlegethos_fortress_approach": "phlegethos",
+    "feywild_riverbank": "feywild",
 }
 
 

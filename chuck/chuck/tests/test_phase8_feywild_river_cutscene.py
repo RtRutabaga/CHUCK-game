@@ -1,4 +1,4 @@
-"""Phase 8's fortress escape and held Feywild-bank ending."""
+"""Phase 8's fortress escape and handoff to the first Feywild map."""
 
 import os
 
@@ -77,7 +77,7 @@ def test_cutscene_uses_the_fall_cue_and_reaches_each_authored_phase() -> None:
         game._shutdown()
 
 
-def test_every_phase_draws_and_the_feywild_endpoint_holds_black() -> None:
+def test_every_phase_draws_then_hands_off_to_the_feywild_riverbank() -> None:
     game = Game()
     try:
         scene = FeywildRiverCutsceneScene(game, sanity=75)
@@ -93,15 +93,21 @@ def test_every_phase_draws_and_the_feywild_endpoint_holds_black() -> None:
             PRONE_END + 0.5,
             RISE_END + 0.5,
             FADE_OUT_START + 0.5,
-            CUTSCENE_END,
+            CUTSCENE_END - 0.01,
         ):
             scene.update(target - scene.elapsed)
             scene.draw(surface)
             assert game.scenes.current is scene
 
-        assert scene.complete
-        assert game.scenes.current is scene
         assert surface.get_at((160, 90))[:3] == (0, 0, 0)
+        scene.update(0.02)
+        world = game.scenes.current
+        assert scene.complete
+        assert world is not scene
+        assert world.map_name == "feywild_riverbank"
+        assert world.sanity.current == 75
+        assert game.active_checkpoint_id == "feywild_riverbank"
+        assert game.progress.has("feywild_reached")
     finally:
         game._shutdown()
 

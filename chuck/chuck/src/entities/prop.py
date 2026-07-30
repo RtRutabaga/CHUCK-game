@@ -107,6 +107,21 @@ _SPRITES = {
         f"objects/phlegethos_rubble_{i + 1}.png" for i in range(10)
     ),
     "phlegethos_lava_fall": "objects/phlegethos_lava_fall.png",
+    "feywild_tree": (
+        "objects/feywild_tree_1.png",
+        "objects/feywild_tree_2.png",
+        "objects/feywild_tree_3.png",
+    ),
+    "feywild_spiral": (
+        "objects/feywild_spiral_1.png",
+        "objects/feywild_spiral_2.png",
+        "objects/feywild_spiral_3.png",
+    ),
+    "feywild_mushroom": (
+        "objects/feywild_mushroom_1.png",
+        "objects/feywild_mushroom_2.png",
+        "objects/feywild_mushroom_3.png",
+    ),
 }
 
 # Props that respond to the interact key with a line of dialogue

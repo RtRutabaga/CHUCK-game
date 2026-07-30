@@ -30,6 +30,7 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "deck_dancer_met",
     "deck_jeffries_met",
     "captain_confronted",
+    "feywild_reached",
 })
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
@@ -456,6 +457,23 @@ CHECKPOINTS = (
         arrival="from_phlegethos_3", facing="down",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         development_visible=False, runtime_entry=True,
+    ),
+    # Phase 9 begins at the bank reached by the completed river cutscene.
+    CheckpointDefinition(
+        "feywild_riverbank", "Feywild 1", "feywild_riverbank",
+        arrival="from_river", facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        runtime_entry=True, fade_in=True,
+    ),
+    CheckpointDefinition(
+        "feywild_anchor", "Feywild Ashtray", "feywild_riverbank",
+        position=(324.0, 437.0), facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "ship_deck_return", "Ship Return", "ship_deck",
