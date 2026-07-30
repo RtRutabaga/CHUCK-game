@@ -3,41 +3,41 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `1dfc98d` (Phlegethos fortress battle)
-- Current work: Phase 8 escalating Astral corruption
+- Base commit before this pass: `e99277a` (fortress Astral corruption)
+- Current work: Phase 8 moving Feywild river escape
 - Active phase: Phase 8 (`PHASE-8.md`)
 
 ## Completed This Pass
 
-- Added a dedicated `InfernalAstralCorruption` controller to the existing
-  fortress map. Crossing into the upper yard starts it through normal
-  `WorldScene` update flow.
-- The first event converts two complete safe rows behind Chuck into Astral Sea,
-  producing an unjumpable retreat seal. Three later timed waves advance from
-  alternating arena edges with deterministic missing cells and jagged shapes.
-- Runtime mutations use the existing `TileMap.set_terrain`, shared Astral fall
-  handling, enemy fall-hazard collision, and reset lifecycle. No parallel
-  hazard or death system was introduced.
-- Added the exact established two-variant/three-frame Astral art row to the
-  Phlegethos tileset. A native render confirms the corruption matches earlier
-  regions rather than reading as a new portal effect.
-- Protected authored object positions, Chuck's current tile, and a central
-  survival spine. Death restores every changed tile and re-arms the sequence.
-- Did not add Feywild river blocks, the forced escape, or the river cutscene.
-- All 64 standalone test scripts pass, focused checkpoint tests pass,
-  compilation is clean, and the headless title-loop launch smoke check passes.
+- Added a reusable `FeywildRiverField` to the fortress WorldScene. Four
+  64x16 hard-edged fragments move west at 64 px/s through two staggered lanes,
+  recycle beyond the western edge, and draw above terrain but beneath actors.
+- The field activates at 15 seconds, after the third Astral wave. A fourth
+  corruption wave at 21 seconds consumes the complete central survival spine.
+  Earlier waves continue protecting Chuck's occupied tile; the final choke
+  removes that protection after a 2.5-second grace period so waiting forever
+  is not a solution.
+- River overlap only succeeds while Chuck is airborne. It resolves before
+  ordinary Astral fall detection, locks input, hides Chuck, plays the vanish
+  beat, and fades through blue-green to a held black boundary. Grounded overlap
+  does nothing, so the authored action is explicitly a jump into the current.
+- Death before escape resets both the Astral sequence and river field.
+- Did not implement the rushing-river/Feywild cutscene or Phase 9 gameplay.
+- Focused Phase 8 tests, compilation, all 64 standalone test scripts, and the
+  headless launch smoke pass. A native 4x final-arena render was also inspected.
 
 ## Next Logical Task
 
-Add moving Feywild river blocks to the remaining fortress survival route and
-make deliberate entry into one the only answer to the final Astral pressure.
-Keep the river cutscene as the following bounded slice; do not implement Phase
-9 gameplay.
+Implement the dedicated river cutscene from the held black boundary: Chuck is
+swept through the collided-world river, basalt yields to Feywild vegetation,
+he passes a short waterfall, the current calms, and he washes onto the quiet
+bank. End there; do not implement Phase 9 gameplay.
 
-## Previous Pass (commit 1dfc98d)
+## Previous Pass (commit e99277a)
 
-Added the trio/Pit Fiend fortress battle, mission-reinforcing dialogue, and the
-Road/Lake Ashtray ID repair. All 64 suites passed.
+Added the timed Astral retreat seal and three jagged arena incursions, exact
+shared Astral art, safe-tile protection, and complete death reset. All 64
+suites passed.
 
 ## Previous Pass (session 179, commit 4dfda43)
 

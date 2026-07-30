@@ -382,6 +382,9 @@ class InfernalAstralCorruption:
         ((6, 14, 9, 3), (33, 14, 9, 3)),
         ((3, 10, 8, 3), (37, 10, 8, 3),
          (13, 12, 4, 4), (31, 11, 4, 4)),
+        # The final choke consumes the temporary central refuge. By then the
+        # moving Feywild river is present: boarding it is the only answer.
+        ((21, 10, 7, 13),),
     )
 
     def __init__(self, tilemap) -> None:
@@ -391,6 +394,7 @@ class InfernalAstralCorruption:
         self.wave_index = 0
         self._pending: list[list] = []
         self._restore: list[tuple[int, int, str]] = []
+        self._forced_cells: set[tuple[int, int]] = set()
         self.flashes: list[list] = []
         ts = config.TILE_SIZE
         self._protected = {
@@ -410,13 +414,15 @@ class InfernalAstralCorruption:
         )
         self._queue(cells, lambda col, _row: abs(col - player_col) * 0.025)
 
-    def _queue(self, cells, delay_for) -> None:
+    def _queue(self, cells, delay_for, *, forced: bool = False) -> None:
         for col, row in cells:
             if (col, row) in self._protected:
                 continue
             if self._tilemap.terrain_at(col, row) not in {"·", "≡"}:
                 continue
             self._pending.append([delay_for(col, row), col, row])
+            if forced:
+                self._forced_cells.add((col, row))
         self._pending.sort()
 
     def _queue_wave(self, wave_index: int) -> None:
@@ -426,17 +432,21 @@ class InfernalAstralCorruption:
             for row in range(top, top + height):
                 for col in range(left, left + width):
                     # This vertical spine is the readable temporary refuge.
-                    if 21 <= col <= 27:
+                    if wave_index < 3 and 21 <= col <= 27:
                         continue
                     # Deterministic missing cells break the later incursions
                     # into jagged wrong-map fragments rather than clean
                     # rectangles. The initial retreat seal stays continuous.
-                    if (col * 7 + row * 11 + wave_index * 3) % 6 == 0:
+                    if (
+                        wave_index < 3
+                        and (col * 7 + row * 11 + wave_index * 3) % 6 == 0
+                    ):
                         continue
                     cells.append((col, row))
         self._queue(
             cells,
             lambda col, row: (abs(col - 24) + abs(row - 16)) * 0.018,
+            forced=wave_index == 3,
         )
 
     def update(self, dt: float, player_hitbox=None) -> None:
@@ -468,8 +478,14 @@ class InfernalAstralCorruption:
             ts = config.TILE_SIZE
             cell = pygame.Rect(col * ts, row * ts, ts, ts)
             if player_hitbox is not None and cell.colliderect(player_hitbox):
-                remaining.append(entry)
-                continue
+                force_ready = (
+                    (col, row) in self._forced_cells
+                    and self.elapsed
+                    >= config.INFERNAL_CORRUPTION_WAVE_TIMES[-1] + 2.5
+                )
+                if not force_ready:
+                    remaining.append(entry)
+                    continue
             old = self._tilemap.set_terrain(col, row, "V")
             self._restore.append((col, row, old))
             self.flashes.append([col, row, 0.0])
@@ -483,6 +499,7 @@ class InfernalAstralCorruption:
         self.wave_index = 0
         self._pending = []
         self._restore = []
+        self._forced_cells = set()
         self.flashes = []
 
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
@@ -499,6 +516,102 @@ class InfernalAstralCorruption:
                 (col * ts + pad - ox, row * ts + pad - oy,
                  ts - 2 * pad, ts - 2 * pad),
             )
+
+
+@dataclass
+class FeywildRiverBlock:
+    x: float
+    y: float
+
+    @property
+    def rect(self):
+        import pygame
+
+        return pygame.Rect(
+            round(self.x), round(self.y),
+            config.FEYWILD_RIVER_BLOCK_W,
+            config.FEYWILD_RIVER_BLOCK_H,
+        )
+
+
+class FeywildRiverField:
+    """Hard-edged river fragments flowing west through the Hell arena."""
+
+    _SPACING = 144
+
+    def __init__(self, map_width_px: int) -> None:
+        self.map_width_px = map_width_px
+        self.active = False
+        self.time = 0.0
+        self.blocks: list[FeywildRiverBlock] = []
+
+    def activate(self) -> None:
+        if self.active:
+            return
+        self.active = True
+        # Two nearby lanes cross the central survival spine. Staggered east
+        # starts make the intrusion build instead of appearing all at once.
+        rows = (15, 18, 15, 18)
+        self.blocks = [
+            FeywildRiverBlock(
+                self.map_width_px - config.FEYWILD_RIVER_BLOCK_W
+                + index * self._SPACING,
+                row * config.TILE_SIZE,
+            )
+            for index, row in enumerate(rows)
+        ]
+
+    def update(self, dt: float) -> None:
+        if not self.active:
+            return
+        self.time += dt
+        for block in self.blocks:
+            block.x -= config.FEYWILD_RIVER_SPEED * dt
+        for block in self.blocks:
+            if block.x + config.FEYWILD_RIVER_BLOCK_W >= 0:
+                continue
+            rightmost = max(other.x for other in self.blocks)
+            block.x = rightmost + self._SPACING
+
+    def overlaps(self, hitbox) -> bool:
+        return self.active and any(
+            block.rect.colliderect(hitbox) for block in self.blocks
+        )
+
+    def reset(self) -> None:
+        self.active = False
+        self.time = 0.0
+        self.blocks = []
+
+    def draw(self, surface, camera_offset: tuple[int, int]) -> None:
+        if not self.active:
+            return
+        import pygame
+
+        ox, oy = camera_offset
+        deep = (18, 66, 78)
+        water = (35, 132, 142)
+        bright = (112, 226, 194)
+        green = (44, 104, 82)
+        phase = int(self.time * 8)
+        for index, block in enumerate(self.blocks):
+            rect = block.rect.move(-ox, -oy)
+            pygame.draw.rect(surface, deep, rect)
+            pygame.draw.rect(surface, green, (rect.x, rect.y, rect.w, 2))
+            pygame.draw.rect(
+                surface, green, (rect.x, rect.bottom - 2, rect.w, 2)
+            )
+            for x in range(rect.x - 8, rect.right + 8, 12):
+                wave_x = x - ((phase + index * 3) % 12)
+                pygame.draw.line(
+                    surface, water,
+                    (wave_x, rect.y + 5), (wave_x + 7, rect.y + 5), 2,
+                )
+                pygame.draw.line(
+                    surface, bright,
+                    (wave_x + 4, rect.y + 10),
+                    (wave_x + 9, rect.y + 10),
+                )
 
 
 class AstralBreach:

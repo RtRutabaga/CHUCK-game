@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: Phase 8 fortress Astral-corruption slice.
+Updated: Phase 8 Feywild-river escape slice.
 This file is required by the project rules and updated every session.
 
 ## Current Phase 8 state
@@ -24,9 +24,15 @@ This file is required by the project rules and updated every session.
   advance from the arena's sides. They use the exact animated Astral fall
   tiles, never materialize under Chuck, preserve a temporary central survival
   spine, and restore completely on death/reset.
-- The next logical Phase 8 slice is moving Feywild river blocks intruding into
-  the remaining safe route and becoming Chuck's only escape. The river
-  cutscene follows after that. Phase 9 gameplay has not begun.
+- Four hard-edged Feywild river fragments now flow west through two arena
+  lanes after the third Astral wave. The fourth wave consumes the temporary
+  central refuge; after a short grace period even Chuck's occupied tile is no
+  longer protected. Jumping into a moving river fragment is the sole successful
+  exit and reaches an input-locked blue-green fade-to-black boundary.
+- The next logical Phase 8 slice is the dedicated rushing-river cutscene:
+  escape from Hell, Feywild vegetation replacing basalt, a short waterfall,
+  calmer water, and Chuck washing onto the quiet Feywild bank. Phase 9
+  gameplay must not begin.
 
 ## Working systems
 

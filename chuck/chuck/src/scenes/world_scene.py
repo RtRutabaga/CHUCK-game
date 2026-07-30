@@ -26,7 +26,8 @@ from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.battle_hazards import (
     AstralBreach, BattleChoreographer, BattleProjectile,
-    InfernalAstralCorruption, InfernalBattleChoreographer,
+    FeywildRiverField, InfernalAstralCorruption,
+    InfernalBattleChoreographer,
 )
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.deck_pirate import DeckPirateNPC
@@ -288,6 +289,7 @@ class WorldScene(Scene):
         self._plank_ending_block = None
         self._plank_ending_start: tuple[float, float] | None = None
         self._plank_kick_sounded = False
+        self._river_escape_t: float | None = None
         # Temple urns, pantry jar shelves, and pantry floor jars are
         # living breakables (see below), not static props.
         self.props = []
@@ -532,6 +534,11 @@ class WorldScene(Scene):
             self._restore_camera_to_player = False
             self.camera.follow(self.player)
 
+        if self._river_escape_t is not None:
+            self._river_escape_t += dt
+            self.camera.update(dt)
+            return
+
         # The argument has closed on "FIREBALL!!": now it lands.
         if self._fireball_after_dialogue and self._fireball_t is None:
             self._fireball_after_dialogue = False
@@ -742,6 +749,13 @@ class WorldScene(Scene):
                 self.infernal_corruption.trigger(self._player_tile())
                 self.game.audio.play_sfx("vanish")
             self.infernal_corruption.update(dt, self.player.hitbox)
+            if (
+                self.infernal_corruption.triggered
+                and self.infernal_corruption.elapsed
+                >= config.FEYWILD_RIVER_START_TIME
+            ):
+                self.feywild_river.activate()
+        self.feywild_river.update(dt)
         for breakable in self.breakables:
             breakable.update(dt)
         self.breakables = [item for item in self.breakables if item.alive]
@@ -771,6 +785,13 @@ class WorldScene(Scene):
         self.player.update(dt)
         if self.player.jump_just_started:
             self.game.audio.play_sfx("jump")
+        if (
+            self.player.jumping
+            and self.feywild_river.overlaps(self.player.hitbox)
+        ):
+            self._begin_river_escape()
+            self.camera.update(dt)
+            return
         fall_kind = fall_zone_kind(
             self.tilemap, self.player.hitbox, self.player.jumping
         )
@@ -1102,6 +1123,7 @@ class WorldScene(Scene):
             )
         else:
             self.tilemap.draw_ground(surface, offset, self._world_time)
+        self.feywild_river.draw(surface, offset)
         for prop in self.props:
             if getattr(prop, "floor_layer", False):
                 prop.draw(surface, offset)
@@ -1135,6 +1157,7 @@ class WorldScene(Scene):
                 self._hint.draw(surface, config.HINT_INTERACT)
         self._draw_respawn_overlay(surface)
         self._draw_arrival_fade(surface)
+        self._draw_river_escape_boundary(surface)
         self._draw_fireball(surface)
 
     def _battle_establishing_focus(self) -> tuple[float, float]:
@@ -1708,6 +1731,11 @@ class WorldScene(Scene):
             InfernalAstralCorruption(self.tilemap)
             if self.map_name == "phlegethos_fortress_approach" else None
         )
+        if getattr(self, "feywild_river", None) is not None:
+            self.feywild_river.reset()
+        self.feywild_river = FeywildRiverField(
+            self.tilemap.width_tiles * config.TILE_SIZE
+        )
         # The scripted Fireball: how long Chuck has survived sealed in,
         # and the explosion once it fires. Reset with the room so death
         # restarts the survival clock.
@@ -1835,6 +1863,35 @@ class WorldScene(Scene):
             col * ts + ts / 2 - self.player.width / 2,
             row * ts + ts / 2 - self.player.height / 2,
         )
+
+    def _begin_river_escape(self) -> None:
+        """Reach the stable boundary before the dedicated river cutscene."""
+        self._river_escape_t = 0.0
+        self.player.visible = False
+        self.player.moving = False
+        self.player.jump_remaining = 0.0
+        self.player.scratch_remaining = 0.0
+        self._step_timer = 0.0
+        self.game.audio.play_sfx("vanish")
+
+    def _draw_river_escape_boundary(self, surface) -> None:
+        if self._river_escape_t is None:
+            return
+        progress = min(
+            1.0,
+            self._river_escape_t / config.FEYWILD_RIVER_ESCAPE_FADE,
+        )
+        overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+        # A brief blue-green water flash gives way to the black handoff where
+        # the next bounded slice will begin the rushing-river cutscene.
+        color = (
+            round(32 * (1.0 - progress)),
+            round(112 * (1.0 - progress)),
+            round(124 * (1.0 - progress)),
+            255,
+        )
+        overlay.fill(color)
+        surface.blit(overlay, (0, 0))
 
     def _update_fall(self, dt: float) -> None:
         """Shrink and sink Chuck, then hand off to ordinary respawn."""

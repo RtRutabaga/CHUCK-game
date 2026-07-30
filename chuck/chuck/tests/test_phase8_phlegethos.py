@@ -644,6 +644,87 @@ def test_astral_corruption_never_opens_directly_beneath_chuck() -> None:
         game._shutdown()
 
 
+def test_feywild_river_flows_in_before_the_final_astral_choke() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(APPROACH)
+        scene._pending_entrance_dialogue = None
+        corruption = scene.infernal_corruption
+        corruption.trigger((24, config.INFERNAL_CORRUPTION_TRIGGER_ROW))
+
+        corruption.update(config.FEYWILD_RIVER_START_TIME - 0.1, None)
+        scene.update(0.0)
+        assert not scene.feywild_river.active
+
+        corruption.update(0.1, None)
+        scene.update(0.0)
+        river = scene.feywild_river
+        assert river.active and len(river.blocks) == 4
+        before = [block.x for block in river.blocks]
+        river.update(1.0)
+        assert all(
+            after < prior
+            for after, prior in zip(
+                (block.x for block in river.blocks), before,
+            )
+        )
+
+        # The fourth Astral wave consumes the formerly protected center only
+        # after the river has had time to enter the arena.
+        corruption.update(
+            config.INFERNAL_CORRUPTION_WAVE_TIMES[-1]
+            - corruption.elapsed + 1.0,
+            None,
+        )
+        assert corruption.wave_index == 4
+        center_astral = sum(
+            scene.tilemap.terrain_at(col, row) == "V"
+            for row in range(10, 23)
+            for col in range(21, 28)
+        )
+        assert center_astral >= 60, center_astral
+
+        old_river = river
+        scene._reset_enemies()
+        assert scene.feywild_river is not old_river
+        assert not scene.feywild_river.active
+        assert not any(
+            scene.tilemap.terrain_at(col, row) == "V"
+            for row in range(scene.tilemap.height_tiles)
+            for col in range(scene.tilemap.width_tiles)
+        )
+    finally:
+        game._shutdown()
+
+
+def test_only_an_airborne_river_overlap_reaches_the_escape_boundary() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(APPROACH)
+        scene._pending_entrance_dialogue = None
+        scene.feywild_river.activate()
+        block = scene.feywild_river.blocks[0]
+        scene.player.x = block.x + 8
+        scene.player.y = block.y + 4
+
+        # Merely standing where a fragment passes is not the authored choice.
+        scene.player.jump_remaining = 0.0
+        scene.update(0.0)
+        assert scene._river_escape_t is None
+        assert scene.player.visible
+
+        # A committed jump into the same moving water wins before ordinary
+        # Astral fall handling and reaches the clean cutscene handoff.
+        scene.player.jump_remaining = config.JUMP_DURATION / 2
+        scene.update(0.0)
+        assert scene._river_escape_t == 0.0
+        assert not scene.player.visible
+        scene.update(config.FEYWILD_RIVER_ESCAPE_FADE)
+        assert scene._river_escape_t >= config.FEYWILD_RIVER_ESCAPE_FADE
+    finally:
+        game._shutdown()
+
+
 def test_the_lake_and_fortress_approach_connect_both_ways() -> None:
     game = Game()
     try:

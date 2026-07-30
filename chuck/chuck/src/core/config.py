@@ -302,7 +302,12 @@ BREACH_FLASH = 0.35
 # Feywild river sequence will supply the forced final escape.
 INFERNAL_CORRUPTION_TRIGGER_ROW = 23
 INFERNAL_CORRUPTION_SEAL_ROWS = (25, 26)
-INFERNAL_CORRUPTION_WAVE_TIMES = (4.0, 8.0, 12.0)
+INFERNAL_CORRUPTION_WAVE_TIMES = (4.0, 8.0, 12.0, 21.0)
+FEYWILD_RIVER_START_TIME = 15.0
+FEYWILD_RIVER_SPEED = 64.0
+FEYWILD_RIVER_BLOCK_W = 64
+FEYWILD_RIVER_BLOCK_H = 16
+FEYWILD_RIVER_ESCAPE_FADE = 0.65
 
 # The entrance establishing shot cuts the camera to the battle so the
 # trio's heroic lines land on the trio, not the empty aisle Chuck

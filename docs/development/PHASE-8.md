@@ -99,6 +99,16 @@ Implemented so far:
   intrusion, and fully restores/re-arms on death. Phlegethos now includes the
   exact animated Astral tile language used by the sewer, pantry, Chult, and
   temple rather than a new approximation.
+- After the third Astral wave, four hard-edged **Feywild river fragments**
+  begin flowing west through two lanes of the fortress yard. They use a
+  distinct blue-green current with moving pixel streaks and recycle beyond the
+  map edge. A final fourth Astral wave then consumes the previously protected
+  central spine, including Chuck's occupied tile after a short grace period.
+  Ordinary contact with a river fragment is not an exit; Chuck must commit to
+  a jump into the moving water. Airborne river contact wins before Astral fall
+  resolution, hides Chuck, and fades the battlefield through a blue-green
+  flash to a stable black handoff. The dedicated river cutscene is the next
+  slice.
 
 ------------------------------------------------------------------------
 
@@ -293,11 +303,11 @@ of the collided worlds.
 - [x] Horned devils reuse the large-dinosaur gameplay.
 - [ ] Lava traversal and jump sequences are complete. *(the lava-lake
   island crossing is in; more lava hazards may follow)*
-- [ ] Fortress climax functions.
+- [x] Fortress climax functions.
 - [x] Trio battles the Pit Fiend.
 - [x] Dialogue reinforces the trio's mission.
 - [x] Astral Sea hazards escalate.
-- [ ] Feywild river blocks become the only escape.
+- [x] Feywild river blocks become the only escape.
 - [ ] Chuck washes ashore in the Feywild.
 - [ ] Phase 9 begins there.
 
