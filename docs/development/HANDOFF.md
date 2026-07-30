@@ -3,28 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `e10fe67` (Pollen Orchard)
-- Current work: Feywild transition readability and first-flower discoverability
+- Base commit before this pass: `474435d` (Feywild path readability)
+- Current work: original Feywild regional exploration soundtrack
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Replaced the bare cardinal transition tiles across Riverbank, Blooming Path,
-  and Pollen Orchard with four direction-aware Feywild wilderness openings.
-  They reuse Chult's established overhead-canopy language while retaining
-  normal walk-triggered map transitions.
-- Each opening now has a dark path recess framed by dense leaves, vines, and
-  violet/cyan/pink accents, making the onward route readable without turning it
-  into a constructed doorway or portal.
-- Added a second Blooming Path cigarette-grass tuft directly beside the first
-  reactive flower. A scratch positioned between both targets hits the flower
-  first, naturally demonstrating the mechanic, while the grass remains
-  available as a reward.
-- Regenerated the Feywild sheet and Blooming Path map. Added regressions for
-  all four opening orientations and the overlapping grass/flower scratch.
-  Native 320x180 screenshots were inspected.
-- All 69 standalone test suites pass, compilation is clean, and the headless
-  title-loop launch smoke check passes.
+- Composed and rendered `feywild.wav`, an original 48-bar/99-second regional
+  loop at 116 BPM. F Lydian-dominant harmony combines a warm tonic with an
+  enchanted raised fourth and mysterious flat seventh.
+- Built a memorable syncopated mallet hook and intact later reprise over an
+  elastic pitch-scooped bass, hand percussion, woody reed answers, bells,
+  reverse-feeling swells, and a restrained moonlit breakdown. The result stays
+  rhythmically alive for exploration without reaching combat-theme density.
+- Added reusable procedural mallet, reed, reverse-bell, and elastic-bass
+  instruments in the established standard-library synthesis architecture.
+- Assigned one identical looping file to Riverbank, Blooming Path, and Pollen
+  Orchard. The existing audio request deduplication therefore preserves the
+  song position across ordinary Feywild map transitions and prevents duplicate
+  playback after death/checkpoint restoration.
+- Added composition-level and rendered-audio regressions for hook recurrence,
+  syncopation, modal color, instrument roles, arrangement length, level,
+  clipping headroom, and loop seam, plus map-level regional music assertions.
+- All 69 standalone suites pass, compilation is clean, and the headless
+  title-loop launch smoke check passes. The rendered loop peaks at 0.92, has
+  an exact endpoint seam, and averages 1.10x Chult's RMS level.
 
 ## Previous Pass (commit 9284e56)
 
@@ -51,6 +54,12 @@
 
 Implement Phase 9's next bounded slice: Feywild 4, Rootways, with reusable
 Chuck-sized passages, the first restrained redcap pursuit, and its Ashtray.
+
+## Previous Pass (commit 474435d)
+
+Clarified every implemented Feywild transition with vegetation-framed
+wilderness openings and placed cigarette grass beside the first reactive
+flower to teach scratching through natural overlap.
 
 ## Previous Pass (commit e10fe67)
 

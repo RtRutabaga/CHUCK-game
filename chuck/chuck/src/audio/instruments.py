@@ -104,6 +104,71 @@ def brass(freq: float, dur: float, vel: float = 1.0) -> list[float]:
                          min(0.3, dur * 0.5), sustain=0.95), vel * 0.46)
 
 
+def enchanted_mallet(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Warm wooden mallet with a glassy, deliberately imperfect overtone."""
+    body = mix(
+        tone(freq, dur, "triangle"),
+        gain(tone(freq * 2.01, dur), 0.32),
+        gain(tone(freq * 3.98, dur), 0.10),
+    )
+    strike = envelope(noise(min(0.018, dur), seed=61), 0.001,
+                      min(0.016, dur))
+    body = mix(lowpass(body, 3300), gain(strike, 0.18))
+    return gain(envelope(body, 0.002, max(0.03, dur * 0.82)),
+                vel * 0.52)
+
+
+def breathy_reed(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Woody enchanted reed: warm vibrato body with restrained breath."""
+    body = mix(
+        _vibrato_sine(freq, dur, rate=4.7, depth=0.011),
+        gain(tone(freq, dur, "triangle"), 0.36),
+        gain(tone(freq * 2, dur), 0.10),
+        gain(_highpassed_noise(dur, 2600, seed=62), 0.055),
+    )
+    return gain(
+        envelope(lowpass(body, 3100), min(0.09, dur * 0.25),
+                 min(0.35, dur * 0.35), sustain=0.92),
+        vel * 0.47,
+    )
+
+
+def reverse_bell(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """A backwards-feeling magical swell that still ends click-free."""
+    body = mix(
+        tone(freq, dur),
+        gain(tone(freq * 2.02, dur), 0.34),
+        gain(tone(freq * 3.01, dur), 0.13),
+    )
+    body = lowpass(body, 3900)
+    n = len(body)
+    out = []
+    for index, sample in enumerate(body):
+        progress = index / max(1, n - 1)
+        rise = progress ** 1.8
+        # Preserve the reverse gesture, then close the final 6% cleanly.
+        release = min(1.0, (1.0 - progress) / 0.06)
+        out.append(sample * rise * max(0.0, release))
+    return gain(out, vel * 0.43)
+
+
+def elastic_bass(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Rubbery funk bass with a quick upward pitch scoop on each note."""
+    n = int(dur * SAMPLE_RATE)
+    phase = 0.0
+    body = []
+    for index in range(n):
+        seconds = index / SAMPLE_RATE
+        scoop = 0.90 + 0.10 * (1.0 - math.exp(-seconds / 0.045))
+        phase = (phase + freq * scoop / SAMPLE_RATE) % 1.0
+        body.append(4.0 * abs(phase - 0.5) - 1.0)
+    body = mix(body, gain(tone(freq / 2, dur), 0.32))
+    return gain(
+        envelope(lowpass(body, 820), 0.003, min(0.16, dur * 0.35)),
+        vel * 0.72,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Percussion (freq is ignored or used loosely for tuning)
 # ---------------------------------------------------------------------------

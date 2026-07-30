@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's first three maps now use clear vegetation-framed wilderness
-openings, and Blooming Path teaches its first flower through nearby grass.
+Updated: Phase 9's first three maps now share an original, uninterrupted
+Feywild exploration theme built for long-form wandering.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -112,6 +112,13 @@ This file is required by the project rules and updated every session.
   wilderness opening modeled on Chult's vegetation-framed trail handoff. A
   dark path recess, dense leaves, vines, and saturated accents render
   overhead while the established walk-transition terrain remains underneath.
+- The Feywild now has its own 99-second regional soundtrack at 116 BPM. Its
+  recurring syncopated mallet hook, elastic scooped bass, hand percussion,
+  woody reed answers, reverse-bell swells, and F Lydian-dominant harmony make
+  it catchy and funky while retaining mysterious enchanted color. Riverbank,
+  Blooming Path, and Pollen Orchard all request the same seamless loop, so the
+  existing audio deduplication keeps it playing through map transitions,
+  checkpoint respawns, and reloads without layering or restarting.
 
 ## Working systems
 
@@ -1110,12 +1117,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build the Phase 7 exterior deck foundation through the crew quarters' existing
-ladder, using `docs/design/pirate ship.png` as the authoritative composition
-reference. Establish the large deck silhouette, animated ocean, subtle ship
-rocking, one physical Ashtray, shared-loader entry, and uninterrupted shanty;
-defer the deck's full pirate cast and ending accusation sequence to later
-bounded sessions.
+Build Phase 9's next bounded map, `Feywild 4` (Rootways), with reusable
+Chuck-sized passages, the first restrained redcap pursuit, one physical
+Ashtray, and the shared Feywild soundtrack.
 
 ## Also open
 

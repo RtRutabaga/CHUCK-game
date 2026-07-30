@@ -19,6 +19,8 @@ Feywild region. Its first implementation slice is complete: `Feywild 2`
 system now connect to the riverbank in both directions. `Feywild 3`
 (Pollen Orchard) is also complete, providing the safe, enemy-free slowing
 pollen lesson and the region's third Ashtray.
+The regional soundtrack is complete and currently shared without interruption
+across all three implemented Feywild maps.
 
 This phase contains **thirteen playable Feywild maps total**: the
 existing riverbank plus twelve new maps. Chult's exterior region and
@@ -1080,12 +1082,12 @@ exploration, traversal, and one stable endpoint for a later phase.**
 
 ## Audio
 
-- [ ] The Feywild has a memorable original regional theme.
-- [ ] The track supports extended exploration without becoming generic
+- [x] The Feywild has a memorable original regional theme.
+- [x] The track supports extended exploration without becoming generic
       ambience.
-- [ ] Music continues uninterrupted between maps sharing the theme.
-- [ ] Death and checkpoint respawn do not duplicate audio.
-- [ ] Ambience remains secondary to music.
+- [x] Music continues uninterrupted between maps sharing the theme.
+- [x] Death and checkpoint respawn do not duplicate audio.
+- [x] Ambience remains secondary to music.
 
 ## Technical Quality
 
@@ -1191,3 +1193,12 @@ boundary reserved for the later floating-wizard-tower phase.
   Added a cigarette-grass tuft directly beside Blooming Path's first flower;
   a scratch overlapping both prioritizes the flower so exploration can reveal
   the mechanic accidentally without consuming the grass reward.
+- **Feywild regional soundtrack:** Added an original 48-bar, 99-second theme
+  at 116 BPM in F Lydian dominant. A recurring syncopated mallet hook, elastic
+  pitch-scooped bass, hand percussion, woody reed countermelody, and
+  reverse-feeling bell swells provide funk, mystery, and enchanted warmth
+  without falling into generic fairy ambience. Riverbank, Blooming Path, and
+  Pollen Orchard use the same seamless file, allowing the existing audio
+  request deduplication to preserve playback across transitions and respawns.
+  Composition and rendered-WAV tests cover hook recurrence, rhythmic density,
+  modal color, instrumentation, duration, loudness, clipping, and loop seam.

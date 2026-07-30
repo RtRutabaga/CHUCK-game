@@ -29,7 +29,7 @@ def test_riverbank_is_a_peaceful_winding_feywild_arrival() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     assert (tilemap.width_tiles, tilemap.height_tiles) == (52, 36)
     assert MAP_TILESET[MAP_NAME] == "feywild"
-    assert AREA_MUSIC[MAP_NAME] is None
+    assert AREA_MUSIC[MAP_NAME] == "feywild.wav"
 
     terrain = "".join(tilemap._grid)
     assert terrain.count("~") >= 300

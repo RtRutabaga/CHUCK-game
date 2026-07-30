@@ -14,6 +14,7 @@ import wave
 
 from data.music import boss_battle as boss_song
 from data.music import phlegethos as phlegethos_song
+from data.music import feywild as feywild_song
 from data.music import ship_shanty as shanty_song
 from data.music import fall_to_chult as fall_song
 from data.music import chult as chult_song
@@ -374,6 +375,85 @@ def test_rendered_phlegethos_theme_respects_loop_quality_gates() -> None:
     rms = (sum(s * s for s in samples) / len(samples)) ** 0.5
     temple_rms = (sum(s * s for s in tsamp) / len(tsamp)) ** 0.5
     assert rms >= temple_rms * 0.9, (rms, temple_rms)
+
+
+def test_feywild_theme_is_catchy_funky_mysterious_and_wondrous() -> None:
+    tracks = feywild_song.build_tracks()
+    duration = (
+        feywild_song.TOTAL_BEATS * 60.0 / feywild_song.TEMPO_BPM
+    )
+    assert duration >= 90.0
+    assert 110 <= feywild_song.TEMPO_BPM <= 120
+    named = {track.name: track for track in tracks}
+    assert len([track for track in tracks if track.notes]) >= 11
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < feywild_song.TOTAL_BEATS
+
+    # Catchy: the compact mallet hook returns intact after the moonlit break.
+    mallet = named["mallet"]
+    first_hook = [
+        ((note.beat - 4 * 4) % 32, note.pitch)
+        for note in mallet.notes if 4 * 4 <= note.beat < 12 * 4
+    ]
+    full_return = [
+        ((note.beat - 32 * 4) % 32, note.pitch)
+        for note in mallet.notes if 32 * 4 <= note.beat < 40 * 4
+    ]
+    assert first_hook == full_return
+    assert len(first_hook) >= 36
+
+    # Funky: elastic bass hits seven or more times per main-section bar,
+    # including sixteenth-inflected positions outside the eighth-note grid.
+    bass = named["bass"]
+    groove = [note for note in bass.notes if 4 * 4 <= note.beat < 20 * 4]
+    assert len(groove) >= 16 * 7
+    assert any(note.beat % 0.5 not in {0.0} for note in groove)
+    assert bass.level > mallet.level
+
+    # Enchanted mystery: F Lydian-dominant's B natural and Eb both color the
+    # melody, a woody reed answers it, and reverse swells inhabit the break.
+    pitches = {note.pitch for note in mallet.notes}
+    assert any(pitch.startswith("B") and not pitch.startswith("Bb")
+               for pitch in pitches)
+    assert any(pitch.startswith("Eb") for pitch in pitches)
+    assert named["reed"].notes
+    break_start, break_end = 28 * 4, 32 * 4
+    assert sum(
+        break_start <= note.beat < break_end
+        for note in named["swells"].notes
+    ) >= 4
+
+    # The groove remains alive in every bar without becoming a combat wall.
+    tom_bars = {int(note.beat // 4) for note in named["toms"].notes}
+    wood_bars = {int(note.beat // 4) for note in named["wood"].notes}
+    assert len(tom_bars) == feywild_song.TOTAL_BARS
+    assert len(wood_bars) == feywild_song.TOTAL_BARS
+
+
+def test_rendered_feywild_theme_respects_loop_and_mix_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "feywild.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 90 * SAMPLE_RATE
+    peak = max(abs(sample) for sample in samples)
+    assert peak <= 0.93, f"clipping risk: peak {peak:.2f}"
+    assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
+
+    with wave.open(str(config.MUSIC_DIR / "chult.wav")) as f:
+        chult_raw = f.readframes(f.getnframes())
+    chult_samples = [
+        x / 32767 for (x,) in struct.iter_unpack("<h", chult_raw)
+    ]
+    rms = (sum(sample * sample for sample in samples) / len(samples)) ** 0.5
+    chult_rms = (
+        sum(sample * sample for sample in chult_samples)
+        / len(chult_samples)
+    ) ** 0.5
+    # Strong enough to follow Chult/Phlegethos, but not mixed like combat.
+    assert 0.95 <= rms / chult_rms <= 1.25, (rms, chult_rms)
 
 
 def _run_all() -> None:
