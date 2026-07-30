@@ -537,6 +537,15 @@ class WorldScene(Scene):
         if self._river_escape_t is not None:
             self._river_escape_t += dt
             self.camera.update(dt)
+            if self._river_escape_t >= config.FEYWILD_RIVER_ESCAPE_FADE:
+                from src.scenes.feywild_river_cutscene_scene import (
+                    FeywildRiverCutsceneScene,
+                )
+                self.game.scenes.replace(
+                    FeywildRiverCutsceneScene(
+                        self.game, sanity=self.sanity.current
+                    )
+                )
             return
 
         # The argument has closed on "FIREBALL!!": now it lands.

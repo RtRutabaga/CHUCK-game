@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: Phase 8 Feywild-river escape slice.
+Updated: Phase 8 river cutscene and Feywild-bank ending complete.
 This file is required by the project rules and updated every session.
 
 ## Current Phase 8 state
@@ -28,11 +28,16 @@ This file is required by the project rules and updated every session.
   lanes after the third Astral wave. The fourth wave consumes the temporary
   central refuge; after a short grace period even Chuck's occupied tile is no
   longer protected. Jumping into a moving river fragment is the sole successful
-  exit and reaches an input-locked blue-green fade-to-black boundary.
-- The next logical Phase 8 slice is the dedicated rushing-river cutscene:
-  escape from Hell, Feywild vegetation replacing basalt, a short waterfall,
-  calmer water, and Chuck washing onto the quiet Feywild bank. Phase 9
-  gameplay must not begin.
+  exit and now enters a dedicated input-free river cutscene.
+- The Phase 8 ending is complete. Chuck is swept rapidly down a river suspended
+  between the collided worlds as basalt banks yield to moss, flowers, roots,
+  and vibrant Feywild vegetation. He passes over a short waterfall, the
+  current visibly calms, and he washes onto a quiet green bank. The camera
+  lingers on the contrast before fading to a held black boundary. The scene
+  reuses the established fall soundtrack, carries Sanity across the fortress
+  handoff, and does not create playable Feywild.
+- Phase 9 has not begun, and no Phase 9 implementation contract is present.
+  The next development pass should wait for its authoritative phase document.
 
 ## Working systems
 

@@ -107,8 +107,15 @@ Implemented so far:
   Ordinary contact with a river fragment is not an exit; Chuck must commit to
   a jump into the moving water. Airborne river contact wins before Astral fall
   resolution, hides Chuck, and fades the battlefield through a blue-green
-  flash to a stable black handoff. The dedicated river cutscene is the next
-  slice.
+  flash to the dedicated river cutscene.
+- The stable handoff now enters a dedicated, input-free **Feywild river
+  cutscene**. Chuck is carried rapidly down a hard-edged blue-green river while
+  infernal basalt banks scroll past and gradually yield to moss, oversized
+  roots, bright flowers, and dense Feywild growth. He crosses a short foaming
+  waterfall, emerges into slower water, and washes onto a quiet green bank.
+  The camera lingers before fading to black and holding at the Phase 9
+  boundary. The scene preserves Sanity, uses the established
+  `fall_to_chult.wav` cue, and creates no playable Feywild map or checkpoint.
 
 ------------------------------------------------------------------------
 
@@ -301,14 +308,14 @@ of the collided worlds.
   Chuck in melee.
 - [x] Flameskulls weave rapidly as hazards.
 - [x] Horned devils reuse the large-dinosaur gameplay.
-- [ ] Lava traversal and jump sequences are complete. *(the lava-lake
-  island crossing is in; more lava hazards may follow)*
+- [x] Lava traversal and jump sequences are complete. *(the authored
+  lava-lake island crossing supplies the phase's traversal set piece)*
 - [x] Fortress climax functions.
 - [x] Trio battles the Pit Fiend.
 - [x] Dialogue reinforces the trio's mission.
 - [x] Astral Sea hazards escalate.
 - [x] Feywild river blocks become the only escape.
-- [ ] Chuck washes ashore in the Feywild.
+- [x] Chuck washes ashore in the Feywild.
 - [ ] Phase 9 begins there.
 
 ------------------------------------------------------------------------
