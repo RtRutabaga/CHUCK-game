@@ -3,8 +3,8 @@
 The timing deliberately echoes the completed fall-to-Chult presentation and
 reuses its music. Chuck falls through open heated air toward a distant
 volcano; terrain appears only when the ground approaches. The scene then
-reuses his established quiet look-around and cigarette drag before holding at
-the stable Phase 8 boundary.
+reuses his established quiet death/return, look-around, and cigarette drag
+before holding at the stable Phase 8 boundary.
 """
 
 from __future__ import annotations
@@ -15,12 +15,29 @@ import pygame
 
 from src.core import config
 from src.entities.reality_blocks import HELL_BASALT_COLORS, HELL_LAVA_COLORS
+from src.scenes.falling_cutscene_scene import (
+    FallingCutsceneScene,
+    MUSIC_START as CHULT_MUSIC_START,
+    GROUND_APPROACH as CHULT_GROUND_APPROACH,
+    IMPACT_TIME as CHULT_IMPACT_TIME,
+    VANISH_TIME as CHULT_VANISH_TIME,
+    RESPAWN_TIME as CHULT_RESPAWN_TIME,
+    LOOK_START as CHULT_LOOK_START,
+    CIGARETTE_START as CHULT_CIGARETTE_START,
+    CIGARETTE_SEATED as CHULT_CIGARETTE_SEATED,
+    DRAG_START as CHULT_DRAG_START,
+    COMPLETE_TIME as CHULT_COMPLETE_TIME,
+    CHULT_FADE_OUT_START,
+    CHULT_HANDOFF_TIME,
+)
 from src.scenes.scene import Scene
 
 
-HELL_MUSIC_START = 4.0
-HELL_GROUND_APPROACH = 26.2
-HELL_IMPACT_TIME = 29.0
+HELL_MUSIC_START = CHULT_MUSIC_START
+HELL_GROUND_APPROACH = CHULT_GROUND_APPROACH
+HELL_IMPACT_TIME = CHULT_IMPACT_TIME
+HELL_VANISH_TIME = CHULT_VANISH_TIME
+HELL_RESPAWN_TIME = CHULT_RESPAWN_TIME
 # The distant volcano climbs into view as Chuck falls: empty air, then its
 # peak, then its full slopes. A slow rise (it is far away) that nonetheless
 # makes the descent unmistakable while Chuck holds center screen.
@@ -28,15 +45,15 @@ VOLCANO_REVEAL_DELAY = 2.5   # seconds of empty sky before the peak appears
 VOLCANO_RISE = 132           # how far it climbs from below the frame to full
 VOLCANO_PEAK_Y = 55          # its crown, once fully revealed
 VOLCANO_BASE_Y = 182         # its foot, flush past the bottom letterbox
-HELL_LOOK_START = 30.0
-HELL_CIGARETTE_START = 33.0
-HELL_CIGARETTE_SEATED = 34.0
-HELL_DRAG_START = 34.1
-HELL_ARRIVAL_TIME = 37.0
+HELL_LOOK_START = CHULT_LOOK_START
+HELL_CIGARETTE_START = CHULT_CIGARETTE_START
+HELL_CIGARETTE_SEATED = CHULT_CIGARETTE_SEATED
+HELL_DRAG_START = CHULT_DRAG_START
+HELL_ARRIVAL_TIME = CHULT_COMPLETE_TIME
 # The tableau completes, then a fade hands Chuck off to playable
 # Phlegethos (the start of Phase 8).
-HELL_FADE_OUT_START = 37.0
-HELL_HANDOFF_TIME = 38.2
+HELL_FADE_OUT_START = CHULT_FADE_OUT_START
+HELL_HANDOFF_TIME = CHULT_HANDOFF_TIME
 HELL_GROUND_Y = 132
 
 
@@ -98,8 +115,12 @@ class HellFallingCutsceneScene(Scene):
             return "fall"
         if self.elapsed < HELL_IMPACT_TIME:
             return "approach"
-        if self.elapsed < HELL_LOOK_START:
+        if self.elapsed < HELL_VANISH_TIME:
             return "impact"
+        if self.elapsed < HELL_RESPAWN_TIME:
+            return "vanished"
+        if self.elapsed < HELL_LOOK_START:
+            return "return"
         if self.elapsed < HELL_CIGARETTE_START:
             return "look"
         if self.elapsed < HELL_CIGARETTE_SEATED:
@@ -125,6 +146,10 @@ class HellFallingCutsceneScene(Scene):
             self.game.audio.play_music("fall_to_chult.wav", loop=False)
         if previous < HELL_IMPACT_TIME <= self.elapsed:
             self.game.audio.play_sfx("hurt")
+        if previous < HELL_VANISH_TIME <= self.elapsed:
+            self.game.audio.play_sfx("vanish")
+        if previous < HELL_RESPAWN_TIME <= self.elapsed:
+            self.game.audio.play_sfx("respawn")
         if previous < HELL_HANDOFF_TIME <= self.elapsed:
             # The fade completes: Phase 8 begins on the Phlegethos ground.
             self._handed_off = True
@@ -324,13 +349,43 @@ class HellFallingCutsceneScene(Scene):
         chuck_x = config.NATIVE_WIDTH // 2 - config.CHUCK_FRAME_W // 2
         chuck_y = HELL_GROUND_Y - config.CHUCK_FRAME_H
         jolt = 2 if self.elapsed < HELL_IMPACT_TIME + 0.1 else 0
-        facing = self._facing_for_tableau()
-        frame = self._frame_for_tableau(facing)
-        if frame is not None:
-            surface.blit(frame, (chuck_x, chuck_y + jolt))
-        if self.phase == "cigarette":
+        phase = self.phase
+        if phase == "impact":
+            frame = self._frames.get("down")
+            if frame is not None:
+                surface.blit(frame, (chuck_x, chuck_y + jolt))
+        elif phase == "vanished":
+            FallingCutsceneScene._draw_astral_blip(
+                surface,
+                chuck_x + 6,
+                HELL_GROUND_Y - 7,
+                self.elapsed - HELL_VANISH_TIME,
+                returning=False,
+            )
+        elif phase == "return":
+            progress = _clamp01(
+                (self.elapsed - HELL_RESPAWN_TIME)
+                / (HELL_LOOK_START - HELL_RESPAWN_TIME)
+            )
+            FallingCutsceneScene._draw_astral_blip(
+                surface,
+                chuck_x + 6,
+                HELL_GROUND_Y - 7,
+                progress,
+                returning=True,
+            )
+            if int(progress * 8) % 2 == 1 or progress > 0.8:
+                frame = self._frames.get("down")
+                if frame is not None:
+                    surface.blit(frame, (chuck_x, chuck_y))
+        else:
+            facing = self._facing_for_tableau()
+            frame = self._frame_for_tableau(facing)
+            if frame is not None:
+                surface.blit(frame, (chuck_x, chuck_y))
+        if phase == "cigarette":
             self._draw_cigarette_insert(surface, chuck_x, chuck_y)
-        elif self.phase in {"smoke", "arrived"}:
+        elif phase in {"smoke", "arrived"}:
             self._draw_drag(surface, chuck_x, chuck_y)
 
     def _facing_for_tableau(self) -> str:

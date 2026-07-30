@@ -21,10 +21,22 @@ from src.scenes.hell_falling_cutscene_scene import (
     HELL_CIGARETTE_SEATED,
     HELL_CIGARETTE_START,
     HELL_GROUND_APPROACH,
+    HELL_HANDOFF_TIME,
     HELL_IMPACT_TIME,
     HELL_LOOK_START,
     HELL_MUSIC_START,
+    HELL_RESPAWN_TIME,
+    HELL_VANISH_TIME,
     HellFallingCutsceneScene,
+)
+from src.scenes.falling_cutscene_scene import (
+    CIGARETTE_SEATED,
+    CIGARETTE_START,
+    COMPLETE_TIME,
+    IMPACT_TIME,
+    LOOK_START,
+    RESPAWN_TIME,
+    VANISH_TIME,
 )
 from src.systems.captain_confrontation import (
     CAPTAIN_CONFRONTED_FLAG,
@@ -499,6 +511,16 @@ def test_hell_fall_reuses_cue_and_holds_at_phase8_arrival_boundary() -> None:
         assert sounds == ["hurt"]
         game.scenes.draw(game.native_surface)
 
+        scene.update(HELL_VANISH_TIME - scene.elapsed + 0.01)
+        assert scene.phase == "vanished"
+        assert sounds[-1] == "vanish"
+        game.scenes.draw(game.native_surface)
+
+        scene.update(HELL_RESPAWN_TIME - scene.elapsed + 0.01)
+        assert scene.phase == "return"
+        assert sounds[-1] == "respawn"
+        game.scenes.draw(game.native_surface)
+
         scene.update(HELL_LOOK_START - scene.elapsed + 0.01)
         assert scene.phase == "look"
         assert scene._facing_for_tableau() == "left"
@@ -530,7 +552,7 @@ def test_hell_fall_reuses_cue_and_holds_at_phase8_arrival_boundary() -> None:
         assert scene.sanity == 73
         assert game.scenes.current is scene  # still fading out
         game.scenes.draw(game.native_surface)
-        scene.update(2.0)  # past the fade
+        scene.update(HELL_HANDOFF_TIME - scene.elapsed + 0.01)
         world = game.scenes.current
         assert world is not scene
         assert world.map_name == "phlegethos_arrival"
@@ -538,6 +560,16 @@ def test_hell_fall_reuses_cue_and_holds_at_phase8_arrival_boundary() -> None:
         assert world.sanity.current == 73  # Sanity carried into Hell
     finally:
         game._shutdown()
+
+
+def test_hell_impact_reuses_the_exact_chult_death_return_timing() -> None:
+    assert HELL_IMPACT_TIME == IMPACT_TIME
+    assert HELL_VANISH_TIME == VANISH_TIME
+    assert HELL_RESPAWN_TIME == RESPAWN_TIME
+    assert HELL_LOOK_START == LOOK_START
+    assert HELL_CIGARETTE_START == CIGARETTE_START
+    assert HELL_CIGARETTE_SEATED == CIGARETTE_SEATED
+    assert HELL_ARRIVAL_TIME == COMPLETE_TIME
 
 
 def _run_all() -> None:

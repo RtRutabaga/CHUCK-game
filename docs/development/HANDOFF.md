@@ -3,37 +3,40 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `de6519f` (first playable Feywild riverbank)
-- Current work: Phlegethos exit/animation/tableau and river-cutscene polish
+- Base commit before this pass: `18b49c8` (Phlegethos presentation polish)
+- Current work: exact Chult-style death/return in the Nine Hells fall
 - Active scope: direct user instruction after completed Phase 8; no Phase 9
   implementation document is present
 
 ## Completed This Pass
 
-- Replaced the Rubble Pass's borrowed temple arch at the east edge with a
-  dedicated three-cell-tall Phlegethos cleft. It is centered on row 6 where
-  the paved path arrives, and every visible doorway cell uses the same shared
-  east transition, eliminating the art/trigger mismatch.
-- Converted the 48x96 cliff lava fall from a static sprite into four authored
-  procedural frames. Lava edges sway, highlights descend, and the impact pool
-  pulses through the existing optional prop-update hook.
-- Moved the fortress wizard from column 27 to column 34. His complete sprite
-  now clears the enlarged Pit Fiend's 128px visual bounds while the existing
-  battle choreography continues to target actors by identity.
-- Removed only the detached 19px horizontal foam stroke beside Chuck during
-  the wash-ashore phase. The current, shoreline, timing, prone landing, rise,
-  and later map handoff are unchanged.
-- Focused regressions verify the exact doorway footprint and transition,
-  four distinct animated lava frames, non-overlapping wizard/Pit Fiend visual
-  bounds, and absence of the cutscene line. Native exit, two lava frames,
-  fortress battle, and shoreline frames were inspected. All 67 standalone
-  suites pass, compilation is clean, and the headless title-loop launch smoke
-  check passes.
+- Added the death/return interval that the Nine Hells landing had skipped.
+  Impact still occurs at 29 seconds; Chuck now vanishes at the Chult scene's
+  exact 29.15-second mark and returns at its exact 31.1-second mark.
+- Reused `FallingCutsceneScene._draw_astral_blip` directly for both the
+  contracting death particles and expanding return particles. The Phlegethos
+  version therefore uses the actual Chult animation rather than an imitation.
+- Added the matching `vanish` and `respawn` sound cues. The look-around now
+  begins at Chult's 32-second mark, followed by the same cigarette insertion,
+  lit ember, drag, and smoke timings. The later fade/handoff moved accordingly;
+  Sanity and checkpoint loading are unchanged.
+- Focused regression coverage locks every post-impact timing to the Chult
+  constants and walks through impact, vanished, return, look, cigarette,
+  smoke, fade, and playable Phlegethos handoff. Native impact, absent,
+  returning, and restored frames were inspected. All 67 standalone suites
+  pass, compilation is clean, and the headless title-loop launch smoke check
+  passes.
 
 ## Next Logical Task
 
 Await an authoritative Phase 9 document or direct instruction before defining
 the Feywild's regional music, mechanics, enemies, narrative, or second map.
+
+## Previous Pass (commit 18b49c8)
+
+Aligned the Rubble Pass east cleft and transition, animated its lava fall,
+moved the wizard clear of the Pit Fiend, and removed the river-cutscene foam
+artifact. All 67 suites passed.
 
 ## Previous Pass (commit de6519f)
 

@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: Phlegethos and Feywild-handoff presentation fixes.
+Updated: Nine Hells landing now mirrors Chult's death/return.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -1402,9 +1402,12 @@ bounded sessions.
    - [x] Revised the Nine Hells fall so no overhead Hell tiles appear behind
          Chuck in the street-view descent. A large distant volcano now anchors
          the open heated sky. The landing plane is over 90% basalt with sparse
-         molten fissures, and Chuck reuses the Chult landing's left/right/down
-         look, cigarette insertion, ember, drag, and smoke before the held
-         Phase 8 boundary (session 176).
+         molten fissures. On impact Chuck now follows the Chult landing's exact
+         quiet death timing: a `hurt` beat, vanish at 29.15 seconds through the
+         same contracting Astral-star blip, respawn at 31.1 seconds through the
+         same return flicker, then the established left/right/down look,
+         cigarette insertion, ember, drag, and smoke before the playable
+         Phlegethos handoff.
 
 ## Phase 3 progress (tavern, pantry, and fall to Chult)
 
