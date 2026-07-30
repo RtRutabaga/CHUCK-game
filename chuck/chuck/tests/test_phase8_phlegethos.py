@@ -100,7 +100,13 @@ def test_phlegethos_uses_its_own_tileset_and_infernal_theme() -> None:
     assert tileset.char_to_terrain["V"] == "astral_void"
     assert tileset.info()["astral_void"] == (2, 3)
     # Every Phlegethos map plays the realm's own driving infernal theme.
-    for name in (MAP_NAME, "phlegethos_road", "phlegethos_lake"):
+    for name in (
+        MAP_NAME,
+        "phlegethos_road",
+        "phlegethos_lake",
+        "phlegethos_rubble_pass",
+        "phlegethos_fortress_approach",
+    ):
         assert AREA_MUSIC[name] == "phlegethos.wav", name
 
 
@@ -440,6 +446,7 @@ PHLEGETHOS_URN_COUNTS = {
     MAP_NAME: 3,
     ROAD: 3,
     LAKE: 4,
+    "phlegethos_rubble_pass": 3,
     APPROACH: 4,
 }
 
@@ -483,7 +490,7 @@ def test_the_fortress_approach_establishes_the_wall_gate_and_idols() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{APPROACH}.txt")
     assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 34)
     kinds = [kind for kind, _pos in tilemap.object_spawns]
-    assert kinds.count("arrival:from_phlegethos_3") == 1
+    assert kinds.count("arrival:from_phlegethos_rubble") == 1
     assert kinds.count("anchor:phlegethos_4_anchor") == 1
     assert kinds.count("boundary:phlegethos_fortress") == 1  # the climax
     for actor in ("fighter", "wizard", "ranger", "pit_fiend"):
@@ -513,7 +520,7 @@ def test_the_fortress_approach_establishes_the_wall_gate_and_idols() -> None:
     pts = {kind.split(":", 1)[1]: (int(x // ts), int(y // ts))
            for kind, (x, y) in tilemap.object_spawns
            if kind.startswith(("arrival:", "anchor:", "boundary:"))}
-    start = pts["from_phlegethos_3"]
+    start = pts["from_phlegethos_rubble"]
     reached = {start}
     frontier = deque([start])
     while frontier:
@@ -570,6 +577,7 @@ def test_phlegethos_ashtray_markers_resolve_to_saveable_definitions() -> None:
         "phlegethos_arrival",
         ROAD,
         LAKE,
+        "phlegethos_rubble_pass",
         APPROACH,
     ):
         tilemap = TileMap(config.MAPS_DIR / f"{map_name}.txt")
@@ -790,7 +798,7 @@ def test_walking_or_jumping_into_river_falls_then_starts_cutscene() -> None:
         game._shutdown()
 
 
-def test_the_lake_and_fortress_approach_connect_both_ways() -> None:
+def test_the_lake_and_rubble_pass_connect_both_ways() -> None:
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint(LAKE)
@@ -801,14 +809,14 @@ def test_the_lake_and_fortress_approach_connect_both_ways() -> None:
         scene.player.x = onward[0] * config.TILE_SIZE + 3
         scene.player.y = onward[1] * config.TILE_SIZE + 4
         scene.update(0.0)
-        assert scene.map_name == APPROACH
-        assert game.active_checkpoint_id == APPROACH
+        assert scene.map_name == "phlegethos_rubble_pass"
+        assert game.active_checkpoint_id == "phlegethos_rubble_pass"
         scene.update(0.0)
-        assert scene.map_name == APPROACH  # no bounce
+        assert scene.map_name == "phlegethos_rubble_pass"  # no bounce
 
         back = next((c, r) for r in range(scene.tilemap.height_tiles)
                     for c in range(scene.tilemap.width_tiles)
-                    if scene.tilemap.terrain_at(c, r) == "Δ")
+                    if scene.tilemap.terrain_at(c, r) == "«")
         scene.player.x = back[0] * config.TILE_SIZE + 3
         scene.player.y = back[1] * config.TILE_SIZE + 4
         scene.update(0.0)

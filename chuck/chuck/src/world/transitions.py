@@ -253,10 +253,16 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
         "phlegethos_road", "from_phlegethos_3", "down"
     ),
     ("phlegethos_lake", "∇"): AreaExit(
-        "phlegethos_fortress_approach", "from_phlegethos_3", "up"
+        "phlegethos_rubble_pass", "from_phlegethos_3", "right"
+    ),
+    ("phlegethos_rubble_pass", "«"): AreaExit(
+        "phlegethos_lake", "from_phlegethos_4", "down"
+    ),
+    ("phlegethos_rubble_pass", "»"): AreaExit(
+        "phlegethos_fortress_approach", "from_phlegethos_rubble", "up"
     ),
     ("phlegethos_fortress_approach", "Δ"): AreaExit(
-        "phlegethos_lake", "from_phlegethos_4", "down"
+        "phlegethos_rubble_pass", "from_phlegethos_fortress", "left"
     ),
 }
 
@@ -297,5 +303,6 @@ AREA_MUSIC: dict[str, str | None] = {
     "phlegethos_arrival": "phlegethos.wav",
     "phlegethos_road": "phlegethos.wav",
     "phlegethos_lake": "phlegethos.wav",
+    "phlegethos_rubble_pass": "phlegethos.wav",
     "phlegethos_fortress_approach": "phlegethos.wav",
 }

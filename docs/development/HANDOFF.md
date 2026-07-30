@@ -3,34 +3,47 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `11adf87` (unavoidable Feywild river surge)
-- Current work: extended enchanted Feywild river-arrival cutscene
+- Base commit before this pass: `b09e109` (enchanted Feywild river arrival)
+- Current work: east-west Phlegethos rubble pass
 - Active phase: Phase 8 (`PHASE-8.md`)
 
 ## Completed This Pass
 
-- Extended the river cutscene from 20 to 35 seconds. It now begins on a true
-  black frame and takes 2.8 seconds to reveal the river, keeping the music's
-  delayed entrance inside the fade.
-- Lengthened Chuck's visible rushing-water, waterfall, and calm-water beats.
-  The shore is now a continuous authored sequence rather than an instantaneous
-  pose change: Chuck drifts out of the water, slides onto land prone, remains
-  still, slowly pushes himself upright, and finally stands.
-- Reworked the banks and endpoint toward an enchanted psychedelic Feywild
-  identity while retaining procedural native-scale art: denser layered leaves,
-  luminous spiral plants, glowing violet/pink/blue/gold flowers, mushrooms,
-  colored root highlights, teal ground, and saturated blue-green water.
-- Added focused timing and rendering regressions for the initial black frame,
-  slow reveal, wash, prone, rising, standing, final fade, music/SFX gates,
-  Sanity preservation, and scene handoff. A native 320x180 montage covering
-  all major beats was inspected. All 65 standalone suites pass, compilation is
-  clean, and the headless title-loop launch smoke check passes.
+- Inserted `phlegethos_rubble_pass` between the Lava Lake and Fortress,
+  turning the previously northward chain into a 64x34 west-to-east traversal.
+  All four boundary directions use the existing named-arrival/shared-loader
+  transition path.
+- Authored a broad paved route that winds through 127 solid dark
+  basalt-and-ember rubble props. A 48x96 lava fall spills from a broken cliff
+  into a narrow two-tile east-west lava river; one intact slab carries the
+  quiet route across it.
+- Limited the map to one slow lemure and one slow horned devil. The lemure
+  begins beyond notice range behind a rubble pocket; the devil remains beyond
+  notice range from every required path tile, so neither becomes an immediate
+  combat gate.
+- Added the map-local `Phlegethos 4` development checkpoint and Ashtray.
+  Fortress display names advance to `Phlegethos 5` without changing its
+  persisted IDs. Three shared breakable carton urns continue the established
+  every-Hell-map rule, and the Phlegethos music remains uninterrupted.
+- Generator validation proves arrival, Ashtray, return, and exit connectivity
+  without crossing lava/rubble. Focused regressions cover composition,
+  east-west geometry, exact enemies and notice distances, checkpoints,
+  transitions, urns, music, and shared loading. Native entry, crossing, and
+  lava-fall frames were inspected after reducing an initially unreadable
+  rubble density. All 66 standalone suites pass, compilation is clean, and
+  the headless title-loop launch smoke check passes.
 
 ## Next Logical Task
 
 Phase 8 is complete. Do not begin Feywild gameplay until an authoritative
 Phase 9 implementation document is added. The held black riverbank ending is
 the intended handoff boundary.
+
+## Previous Pass (commit b09e109)
+
+Extended the Feywild river cutscene to 35 seconds with a slow black reveal,
+denser enchanted psychedelic banks, a longer visible river journey, and a
+clear wash-prone-rise-stand shoreline sequence. All 65 suites passed.
 
 ## Previous Pass (commit 11adf87)
 

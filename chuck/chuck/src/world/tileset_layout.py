@@ -359,6 +359,7 @@ MAP_TILESET: dict[str, str] = {
     "phlegethos_arrival": "phlegethos",
     "phlegethos_road": "phlegethos",
     "phlegethos_lake": "phlegethos",
+    "phlegethos_rubble_pass": "phlegethos",
     "phlegethos_fortress_approach": "phlegethos",
 }
 

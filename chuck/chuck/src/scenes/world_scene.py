@@ -209,7 +209,7 @@ class WorldScene(Scene):
             else "phlegethos_battle_entrance"
             if (
                 map_name == "phlegethos_fortress_approach"
-                and arrival == "from_phlegethos_3"
+                and arrival == "from_phlegethos_rubble"
             )
             else None
         )

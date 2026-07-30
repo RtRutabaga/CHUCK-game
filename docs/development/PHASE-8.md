@@ -41,8 +41,17 @@ Implemented so far:
   it to the road both ways; checkpoints `Phlegethos 3` + Ashtray +
   `Phlegethos 2 Return`. Fire snakes patrol the shores only -- the lake
   itself is pure traversal.
+- An east-west low-pressure traversal map now separates the lake from the
+  fortress. `phlegethos_rubble_pass` (64x34) turns the route through 127
+  dark basalt-and-ember rubble pieces on a broad winding paved lane. A
+  cliff-fed 48x96 lava fall empties into a narrow two-tile lava river, crossed
+  on one intact basalt slab. Its only enemies are one slow lemure whose pocket
+  delays its approach and one slow horned devil kept beyond notice range from
+  the required path. The map owns one Ashtray and development-visible
+  `Phlegethos 4`; the fortress display advances to `Phlegethos 5` while its
+  persisted checkpoint IDs remain stable.
 - The Phlegethos soundtrack (`data/music/phlegethos.py` -> phlegethos.wav),
-  replacing the jungle placeholder on all three maps. An original 48-bar,
+  replacing the jungle placeholder across all five maps. An original 48-bar,
   ~87s loop at 132 BPM in E Phrygian dominant (E F G# A B C D) -- the flat
   second against the raised third gives the exotic infernal heat, and keeps
   it clearly distinct from the temple's D minor and the boss theme's D
@@ -55,7 +64,8 @@ Implemented so far:
   added for the brief: `metal_hit` (inharmonic struck metal) and
   `low_pulse` (a tremolo'd filtered square). Renders at 0.93 headroom, RMS
   0.183 (level with temple/boss), seam 0.011.
-- The fortress approach (`phlegethos_fortress_approach`, 48x34) and the
+- The fifth map, the fortress approach
+  (`phlegethos_fortress_approach`, 48x34), and the
   last enemy. The iron-black fortress wall now closes off the north with
   its gate shut (new `fortress` / `fortress_gate` tileset rows -- the
   interior is not this phase), and a processional lined with brooding
@@ -64,8 +74,8 @@ Implemented so far:
   `MassiveDinosaur` variant -- the Chultan colossus's gameplay exactly,
   wearing infernal art: a slab-muscled, batwinged, horned soldier dragging
   a barbed iron fork, towering over Chuck. One holds the yard, with lemures,
-  fire snakes and spined devils scattered below. Checkpoints `Phlegethos 4`
-  + Ashtray + `Phlegethos 3 Return`; the gate approach is an inert boundary
+  fire snakes and spined devils scattered below. Checkpoints `Phlegethos 5`
+  + Ashtray + a Rubble Pass return; the gate approach is an inert boundary
   awaiting the climax. This completes the bestiary and the setting's visual
   brief.
 - **Spined devils** and **flameskulls**, completing the bestiary's dodge
@@ -78,13 +88,13 @@ Implemented so far:
   cannot be cleared by any scratch, and floats over lava as happily as
   stone -- four haunt the lava lake's stepping stones, using lava-under
   markers so they never punch safe tiles into the lake.
-- Fourteen of the Chult temple's **breakable terracotta urns** now appear
-  across the four Phlegethos maps. Arrival and Lava Road hold three each;
-  four sit only on the Lava Lake's safe shores; four flank the Fortress yard
-  away from its battle aisle. They reuse the exact scratch, shard, carton-drop,
-  and map-reset implementation, including the standard 20-cigarette carton.
-  None replaces a required route, lava stepping stone, checkpoint, or battle
-  marker.
+- Seventeen of the Chult temple's **breakable terracotta urns** now appear
+  across the five Phlegethos maps. Arrival and Lava Road hold three each;
+  four sit only on the Lava Lake's safe shores; three sit off the Rubble
+  Pass route; four flank the Fortress yard away from its battle aisle. They
+  reuse the exact scratch, shard, carton-drop, and map-reset implementation,
+  including the standard 20-cigarette carton. None replaces a required route,
+  lava stepping stone, checkpoint, or battle marker.
 - The fortress muster yard now contains the trio already battling a towering
   **Pit Fiend**. Its 128x128 native silhouette and broad planted shadow now
   dominate the trio's human-scale figures. The existing non-interactive
@@ -315,7 +325,7 @@ of the collided worlds.
 
 # 11. Acceptance Criteria
 
-- [x] Multiple connected Phlegethos maps are implemented. *(four)*
+- [x] Multiple connected Phlegethos maps are implemented. *(five)*
 - [x] Basalt, lava, statues and fortress exteriors establish the setting.
 - [x] Lemures reuse zombie gameplay.
 - [x] Fire snakes reuse temple-snake gameplay.

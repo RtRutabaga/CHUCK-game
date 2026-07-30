@@ -1,18 +1,28 @@
 # CHUCK — Project Status
 
-Updated: Phase 8 river cutscene and Feywild-bank ending complete.
+Updated: Phase 8 east-west Phlegethos rubble pass added.
 This file is required by the project rules and updated every session.
 
 ## Current Phase 8 state
 
-- Four connected playable Phlegethos maps are complete through the fortress
-  approach: Arrival, Lava Road, Lava Lake, and Fortress Approach.
+- Five connected playable Phlegethos maps are complete through the fortress
+  approach: Arrival, Lava Road, Lava Lake, Rubble Pass, and Fortress Approach.
+- The new 64x34 Rubble Pass sits between the Lava Lake and Fortress and turns
+  the route west-to-east. A broad paved lane winds through 127 pieces of dark
+  basalt-and-ember rubble, crosses a narrow two-tile lava river on an intact
+  slab, and passes a 48x96 cliff-fed lava fall. One slow lemure starts beyond
+  notice range at the west end; one slow horned devil remains optional beyond
+  notice range from the required route. The map has its own Ashtray,
+  development checkpoint `Phlegethos 4`, three breakable carton urns, and
+  uninterrupted Phlegethos music. The fortress is now displayed as
+  `Phlegethos 5`; its stable persisted checkpoint IDs are unchanged.
 - The complete Phase 8 enemy set is present: lemures, fire snakes, spined
   devils, flameskulls, and horned devils, all built as variants or extensions
   of established enemy/hazard systems.
-- Fourteen temple-style breakable urns are distributed across all four
+- Seventeen temple-style breakable urns are distributed across all five
   Phlegethos maps: three each in Arrival and Lava Road, four on the Lava
-  Lake's two safe shores, and four around the Fortress yard. They reuse the
+  Lake's two safe shores, three in the Rubble Pass, and four around the
+  Fortress yard. They reuse the
   exact temple scratch/shatter/reset lifecycle and each drops the established
   20-cigarette carton. Placements stay off required routes, stepping stones,
   checkpoints, and the fortress battle aisle.

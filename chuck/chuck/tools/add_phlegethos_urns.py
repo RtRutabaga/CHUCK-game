@@ -16,6 +16,7 @@ PLACEMENTS = {
     "phlegethos_arrival": ((8, 12), (35, 17), (33, 25)),
     "phlegethos_road": ((12, 8), (40, 10), (6, 23)),
     "phlegethos_lake": ((6, 6), (37, 7), (7, 29), (37, 26)),
+    "phlegethos_rubble_pass": ((10, 5), (34, 6), (56, 19)),
     "phlegethos_fortress_approach": (
         (6, 16), (41, 17), (7, 24), (40, 24),
     ),

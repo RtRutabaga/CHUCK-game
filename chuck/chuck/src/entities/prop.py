@@ -103,6 +103,10 @@ _SPRITES = {
         "objects/phlegethos_statue_1.png",
         "objects/phlegethos_statue_2.png",
     ),
+    "phlegethos_rubble": tuple(
+        f"objects/phlegethos_rubble_{i + 1}.png" for i in range(10)
+    ),
+    "phlegethos_lava_fall": "objects/phlegethos_lava_fall.png",
 }
 
 # Props that respond to the interact key with a line of dialogue

@@ -375,6 +375,13 @@ TILE_DEFS: dict[str, TileDef] = {
     "╬": TileDef(solid=True, color=(26, 24, 30)),
     "Ϥ": TileDef(solid=True, color=(58, 52, 58),
                  prop="phlegethos_statue", under="·"),
+    # The east-west rubble pass uses its own near-black basalt debris instead
+    # of importing the green temple collapse. The lava-fall anchor is solid
+    # molten terrain beneath a tall cliff-face prop.
+    "þ": TileDef(solid=True, color=(38, 32, 36),
+                 prop="phlegethos_rubble", under="·"),
+    "ƒ": TileDef(solid=True, color=(178, 45, 12),
+                 prop="phlegethos_lava_fall", under="≋"),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.
@@ -625,16 +632,22 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # the same hazard while leaving the molten tile beneath untouched.
     "Ԛ": MarkerDef(kind="flameskull:h", under="≋"),
     "Ԝ": MarkerDef(kind="flameskull:v", under="≋"),
-    # Phlegethos map 4, the fortress approach, its infernal garrison,
+    # Phlegethos map 5, the fortress approach, its infernal garrison,
     # and the trio's battle with the Pit Fiend.
     "Ԟ": MarkerDef(kind="horned_devil", under="·"),
-    "Ԡ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
+    "Ԡ": MarkerDef(kind="arrival:from_phlegethos_rubble", under="≡"),
     "Ԣ": MarkerDef(kind="anchor:phlegethos_4_anchor", under="≡"),
     "Ԥ": MarkerDef(kind="boundary:phlegethos_fortress", under="≡"),
     "Ԧ": MarkerDef(kind="battle:fighter", under="≡"),
     "Ԩ": MarkerDef(kind="battle:wizard", under="≡"),
     "Ԫ": MarkerDef(kind="battle:ranger", under="≡"),
     "Ԭ": MarkerDef(kind="battle:pit_fiend", under="≡"),
+    # Phlegethos's east-west rubble pass, inserted between the lava lake and
+    # fortress. Its internal checkpoint IDs remain independent of display
+    # numbering so existing fortress saves stay valid.
+    "Ԯ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
+    "԰": MarkerDef(kind="anchor:phlegethos_rubble_anchor", under="≡"),
+    "Բ": MarkerDef(kind="arrival:from_phlegethos_fortress", under="≡"),
 }
 
 _COMMENT_PREFIX = ";"
