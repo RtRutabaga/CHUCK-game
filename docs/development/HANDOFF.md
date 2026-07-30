@@ -3,31 +3,33 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `474435d` (Feywild path readability)
-- Current work: original Feywild regional exploration soundtrack
+- Base commit before this pass: `a35781c` (Feywild exploration theme)
+- Current work: Feywild theme catchiness and harmonic polish
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Composed and rendered `feywild.wav`, an original 48-bar/99-second regional
-  loop at 116 BPM. F Lydian-dominant harmony combines a warm tonic with an
-  enchanted raised fourth and mysterious flat seventh.
-- Built a memorable syncopated mallet hook and intact later reprise over an
-  elastic pitch-scooped bass, hand percussion, woody reed answers, bells,
-  reverse-feeling swells, and a restrained moonlit breakdown. The result stays
-  rhythmically alive for exploration without reaching combat-theme density.
-- Added reusable procedural mallet, reed, reverse-bell, and elastic-bass
-  instruments in the established standard-library synthesis architecture.
-- Assigned one identical looping file to Riverbank, Blooming Path, and Pollen
-  Orchard. The existing audio request deduplication therefore preserves the
-  song position across ordinary Feywild map transitions and prevents duplicate
-  playback after death/checkpoint restoration.
-- Added composition-level and rendered-audio regressions for hook recurrence,
-  syncopation, modal color, instrument roles, arrangement length, level,
-  clipping headroom, and loop seam, plus map-level regional music assertions.
-- All 69 standalone suites pass, compilation is clean, and the headless
-  title-loop launch smoke check passes. The rendered loop peaks at 0.92, has
-  an exact endpoint seam, and averages 1.10x Chult's RMS level.
+- Reharmonized the theme from sharper F Lydian-dominant color to warmer
+  F Mixolydian, replacing every exposed B-natural/F-sharp tension with Bb.
+  The flat seventh retains enchanted storybook color while making the melody
+  friendlier and easier to follow.
+- Reworked the main eight-bar mallet theme so its three-bar call repeats after
+  four bars before a resolving cadence. The full hook still returns after the
+  moonlit break, but now establishes itself much earlier.
+- Reduced the reverse-bell swells from fourteen to eight and lowered their
+  velocities so they remain magical punctuation instead of making the track
+  feel constantly unstable. Bass, hand percussion, reed answers, tempo,
+  arrangement length, map integration, and uninterrupted playback remain.
+- Rerendered the 99-second WAV and strengthened the composition regression to
+  enforce the repeated core hook and entirely Mixolydian melodic palette.
+- All 69 standalone suites pass, compilation is clean, and the headless launch
+  smoke check passes. The revised render peaks at 0.92 with an exact loop seam.
+
+## Previous Pass (commit a35781c)
+
+Added the original 48-bar Feywild exploration theme, four reusable procedural
+instruments, seamless regional integration, and composition/rendered-audio
+quality regressions. All 69 suites passed.
 
 ## Previous Pass (commit 9284e56)
 

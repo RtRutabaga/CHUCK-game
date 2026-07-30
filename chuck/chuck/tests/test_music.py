@@ -403,6 +403,14 @@ def test_feywild_theme_is_catchy_funky_mysterious_and_wondrous() -> None:
     ]
     assert first_hook == full_return
     assert len(first_hook) >= 36
+    # The three-bar call repeats after four bars before a resolving cadence,
+    # making the tune land early without turning into a mechanical copy.
+    assert [
+        (beat, pitch) for beat, pitch in first_hook if beat < 12
+    ] == [
+        (beat - 16, pitch)
+        for beat, pitch in first_hook if 16 <= beat < 28
+    ]
 
     # Funky: elastic bass hits seven or more times per main-section bar,
     # including sixteenth-inflected positions outside the eighth-note grid.
@@ -412,18 +420,22 @@ def test_feywild_theme_is_catchy_funky_mysterious_and_wondrous() -> None:
     assert any(note.beat % 0.5 not in {0.0} for note in groove)
     assert bass.level > mallet.level
 
-    # Enchanted mystery: F Lydian-dominant's B natural and Eb both color the
-    # melody, a woody reed answers it, and reverse swells inhabit the break.
+    # Enchanted mystery: F Mixolydian's Bb and Eb color the otherwise warm
+    # major melody, a woody reed answers it, and reverse swells inhabit the
+    # break without dominating the arrangement.
     pitches = {note.pitch for note in mallet.notes}
-    assert any(pitch.startswith("B") and not pitch.startswith("Bb")
-               for pitch in pitches)
+    assert any(pitch.startswith("Bb") for pitch in pitches)
+    assert not any(
+        pitch.startswith("B") and not pitch.startswith("Bb")
+        for pitch in pitches
+    )
     assert any(pitch.startswith("Eb") for pitch in pitches)
     assert named["reed"].notes
     break_start, break_end = 28 * 4, 32 * 4
     assert sum(
         break_start <= note.beat < break_end
         for note in named["swells"].notes
-    ) >= 4
+    ) >= 2
 
     # The groove remains alive in every bar without becoming a combat wall.
     tom_bars = {int(note.beat // 4) for note in named["toms"].notes}

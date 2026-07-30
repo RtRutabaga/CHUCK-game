@@ -114,11 +114,11 @@ This file is required by the project rules and updated every session.
   overhead while the established walk-transition terrain remains underneath.
 - The Feywild now has its own 99-second regional soundtrack at 116 BPM. Its
   recurring syncopated mallet hook, elastic scooped bass, hand percussion,
-  woody reed answers, reverse-bell swells, and F Lydian-dominant harmony make
-  it catchy and funky while retaining mysterious enchanted color. Riverbank,
-  Blooming Path, and Pollen Orchard all request the same seamless loop, so the
-  existing audio deduplication keeps it playing through map transitions,
-  checkpoint respawns, and reloads without layering or restarting.
+  woody reed answers, restrained reverse-bell swells, and F Mixolydian harmony
+  make it catchy and funky while retaining mysterious enchanted color.
+  Riverbank, Blooming Path, and Pollen Orchard all request the same seamless
+  loop, so the existing audio deduplication keeps it playing through map
+  transitions, checkpoint respawns, and reloads without layering or restarting.
 
 ## Working systems
 

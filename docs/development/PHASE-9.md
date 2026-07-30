@@ -1194,7 +1194,7 @@ boundary reserved for the later floating-wizard-tower phase.
   a scratch overlapping both prioritizes the flower so exploration can reveal
   the mechanic accidentally without consuming the grass reward.
 - **Feywild regional soundtrack:** Added an original 48-bar, 99-second theme
-  at 116 BPM in F Lydian dominant. A recurring syncopated mallet hook, elastic
+  at 116 BPM in F Mixolydian. A recurring syncopated mallet hook, elastic
   pitch-scooped bass, hand percussion, woody reed countermelody, and
   reverse-feeling bell swells provide funk, mystery, and enchanted warmth
   without falling into generic fairy ambience. Riverbank, Blooming Path, and
