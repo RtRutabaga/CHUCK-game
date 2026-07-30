@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9 now includes Feywild 2 and Feywild 3, introducing reactive
-flowers and slowing pollen through two low-pressure exploration maps.
+Updated: Phase 9's first three maps now use clear vegetation-framed wilderness
+openings, and Blooming Path teaches its first flower through nearby grass.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -84,7 +84,7 @@ This file is required by the project rules and updated every session.
   reactive flower switches, slowing pollen, Chuck-sized passages, and a
   Feywild-specific enemy scale.
 - `Feywild 2` (Blooming Path) is now a connected 60x42, enemy-free enchanted
-  clearing with one Ashtray, one optional cigarette-grass pocket, dense
+  clearing with one Ashtray, two cigarette-grass tufts, dense
   oversized vegetation, and valid paths both back to the Riverbank and toward
   the inert Map 3 boundary. Its shared development checkpoint and map-local
   save checkpoint both use the existing checkpoint loader.
@@ -94,7 +94,9 @@ This file is required by the project rules and updated every session.
   route for a direct lower route. The change is reversible, waits if Chuck
   occupies a target cell, cannot strand him in either authored state, and
   resets on death, map reload, or Continue rather than expanding the save
-  format.
+  format. One grass tuft now grows immediately beside this first flower; a
+  casual scratch aimed between them prioritizes the flower, providing a
+  natural accidental demonstration while leaving the grass reward intact.
 - `Feywild 3` (Pollen Orchard) is a connected 62x46 enemy-free map with five
   shallow pollen beds, winding orchard lanes, one Ashtray, an optional
   cigarette-grass pocket, and an inert Rootways boundary. Its reversible
@@ -106,6 +108,10 @@ This file is required by the project rules and updated every session.
   consistent 0.48 movement multiplier; leaving restores full speed, jumping
   remains unaffected, and pollen never damages Sanity or behaves as a fall
   hazard. `Feywild 3` and its Ashtray use the shared checkpoint loader.
+- Every current Feywild transition threshold now uses a cardinal enchanted
+  wilderness opening modeled on Chult's vegetation-framed trail handoff. A
+  dark path recess, dense leaves, vines, and saturated accents render
+  overhead while the established walk-transition terrain remains underneath.
 
 ## Working systems
 

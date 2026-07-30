@@ -1185,3 +1185,9 @@ boundary reserved for the later floating-wizard-tower phase.
   one-tile strip can be cleared by the existing jump. A reversible flower
   exchanges the long eastern detour for a direct middle lane. Both states
   retain valid access to the Ashtray, exits, switch, and optional grass.
+- **Early-region readability polish:** Replaced the bare cardinal path tiles
+  at every implemented Feywild handoff with direction-aware, vegetation-framed
+  wilderness openings based on Chult's established canopy-exit language.
+  Added a cigarette-grass tuft directly beside Blooming Path's first flower;
+  a scratch overlapping both prioritizes the flower so exploration can reveal
+  the mechanic accidentally without consuming the grass reward.

@@ -14,8 +14,8 @@ from src.core import config
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.systems.reactive_flowers import ReactiveFlowerController
-from src.world.tilemap import TileMap
-from src.world.tileset_layout import MAP_TILESET
+from src.world.tilemap import TILE_DEFS, TileMap
+from src.world.tileset_layout import MAP_TILESET, tileset_for
 from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 
@@ -60,7 +60,7 @@ def test_blooming_path_is_a_large_peaceful_two_route_map() -> None:
     assert kinds["flower_switch:intro"] == 1
     assert kinds["flower_open:intro"] == 3
     assert kinds["flower_close:intro"] == 3
-    assert kinds["breakable_grass"] == 1
+    assert kinds["breakable_grass"] == 2
     assert not any(
         kind in {
             "rat", "snake", "zombie", "skeleton", "lemure", "raptor",
@@ -157,6 +157,49 @@ def test_world_scratch_activates_the_flower_through_normal_combat() -> None:
         assert scene.reactive_flowers.groups["intro"].active
     finally:
         game._shutdown()
+
+
+def test_grass_beside_first_flower_can_accidentally_trigger_it() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("feywild_2")
+        flower = scene.reactive_flowers.flowers[0]
+        grass = min(
+            scene.breakables,
+            key=lambda item: abs(item.x - flower.x) + abs(item.y - flower.y),
+        )
+        assert abs(grass.x - flower.x) <= config.TILE_SIZE
+        assert abs(grass.y - flower.y) <= 1
+
+        # Approach between the adjacent targets while apparently scratching
+        # upward at the grass. Flower targeting is intentionally first.
+        scene.player.x = flower.x - 7
+        scene.player.y = flower.y + flower.height + 3
+        scene.player.facing = "up"
+        assert scene.player.scratch_hitbox().colliderect(grass.hitbox)
+        assert scene.player.scratch_hitbox().colliderect(flower.hitbox)
+        game.input._actions_just_pressed.add("scratch")
+        scene.update(0.0)
+
+        assert scene.reactive_flowers._pending_group == "intro"
+        assert grass.alive
+    finally:
+        game._shutdown()
+
+
+def test_feywild_boundaries_use_cardinal_vegetation_openings() -> None:
+    tileset = tileset_for(MAP_NAME)
+    expected = {
+        "\u2190": "fey_opening_w",
+        "\u2192": "fey_opening_e",
+        "\u21e7": "fey_opening_n",
+        "\u21e9": "fey_opening_s",
+    }
+    assert tileset.overhead_char_to_terrain == expected
+    for char, art_name in expected.items():
+        assert char not in tileset.char_to_terrain
+        assert TILE_DEFS[char].under == "'"
+        assert TILE_DEFS[char].overhead == art_name
 
 
 def test_blooming_path_uses_shared_transitions_and_checkpoints() -> None:

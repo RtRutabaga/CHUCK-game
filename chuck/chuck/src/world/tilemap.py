@@ -396,10 +396,14 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="feywild_mushroom", under="."),
     # Feywild path thresholds retain the regional path art while keeping
     # opposite directions distinct for authored two-way transitions.
-    "←": TileDef(solid=False, color=(45, 76, 59)),
-    "→": TileDef(solid=False, color=(45, 76, 59)),
-    "⇧": TileDef(solid=False, color=(45, 76, 59)),
-    "⇩": TileDef(solid=False, color=(45, 76, 59)),
+    "←": TileDef(solid=False, color=(45, 76, 59),
+                 under="'", overhead="fey_opening_w"),
+    "→": TileDef(solid=False, color=(45, 76, 59),
+                 under="'", overhead="fey_opening_e"),
+    "⇧": TileDef(solid=False, color=(45, 76, 59),
+                 under="'", overhead="fey_opening_n"),
+    "⇩": TileDef(solid=False, color=(45, 76, 59),
+                 under="'", overhead="fey_opening_s"),
     # Luminous Feywild pollen is ordinary walkable ground. Its only gameplay
     # effect is derived from Chuck's grounded footprint each frame.
     "☼": TileDef(solid=False, color=(76, 99, 54)),

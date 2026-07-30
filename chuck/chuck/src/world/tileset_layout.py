@@ -334,6 +334,10 @@ FEYWILD = Tileset(
         ("fey_bank", 3, 1),
         ("fey_path", 3, 1),
         ("fey_pollen", 3, 3),
+        ("fey_opening_w", 3, 1),
+        ("fey_opening_e", 3, 1),
+        ("fey_opening_n", 3, 1),
+        ("fey_opening_s", 3, 1),
     ],
     char_to_terrain={
         ".": "fey_ground",
@@ -341,13 +345,14 @@ FEYWILD = Tileset(
         "~": "fey_river",
         ",": "fey_bank",
         "'": "fey_path",
-        "←": "fey_path",
-        "→": "fey_path",
-        "⇧": "fey_path",
-        "⇩": "fey_path",
         "☼": "fey_pollen",
     },
-    overhead_char_to_terrain={},
+    overhead_char_to_terrain={
+        "←": "fey_opening_w",
+        "→": "fey_opening_e",
+        "⇧": "fey_opening_n",
+        "⇩": "fey_opening_s",
+    },
 )
 
 TILESETS: dict[str, Tileset] = {

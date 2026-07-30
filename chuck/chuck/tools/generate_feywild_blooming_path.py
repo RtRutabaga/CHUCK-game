@@ -127,6 +127,9 @@ def build() -> list[list[str]]:
 
     # One optional cigarette-grass tuft sits in the upper side pocket.
     grid[15][15] = "<"
+    # A second tuft sits beside the introductory flower. A casual scratch
+    # toward the grass can catch the flower first and teach the interaction.
+    grid[FLOWER[1]][FLOWER[0] - 1] = "<"
 
     # Metadata and switch targets. Marker under-terrain is authoritative.
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "←"
@@ -194,7 +197,7 @@ def validate(grid: list[list[str]]) -> None:
         assert RETURN_EXIT in reached
     assert all(_under(grid[row][col]) == "#" for col, row in OPEN_GATE)
     assert all(_under(grid[row][col]) == "'" for col, row in CLOSE_GATE)
-    assert sum(row.count("<") for row in grid) == 1
+    assert sum(row.count("<") for row in grid) == 2
     map_text = "".join("".join(row) for row in grid)
     assert not any(
         marker in map_text for marker in ("(", ")", "¡", "¶", "Ѯ", "Ԟ")

@@ -135,6 +135,68 @@ def pollen(surface, variant: int, frame: int) -> None:
         surface.set_at((x, y), color)
 
 
+def opening(surface, variant: int, side: str) -> None:
+    """A dense vegetation arch framing one cardinal wilderness handoff."""
+    surface.fill((0, 0, 0, 0))
+    throat = {
+        "w": (0, 3, 13, 10),
+        "e": (3, 3, 13, 10),
+        "n": (3, 0, 10, 13),
+        "s": (3, 3, 10, 13),
+    }[side]
+    # The dark recess is the readable negative space; it is surrounded by
+    # leaves rather than masonry so it remains a wilderness trail opening.
+    pygame.draw.rect(surface, GROUND_DARK, throat)
+    pygame.draw.rect(surface, (8, 29, 31), throat, 1)
+    bands = {
+        "w": ((0, 0, 5, 16), (0, 0, 16, 4), (0, 12, 16, 4)),
+        "e": ((11, 0, 5, 16), (0, 0, 16, 4), (0, 12, 16, 4)),
+        "n": ((0, 0, 16, 5), (0, 0, 4, 16), (12, 0, 4, 16)),
+        "s": ((0, 11, 16, 5), (0, 0, 4, 16), (12, 0, 4, 16)),
+    }[side]
+    for index, rect in enumerate(bands):
+        pygame.draw.rect(surface, LEAF_DARK if index == 0 else LEAF, rect)
+    accents = (VIOLET, BLUE, PINK)
+    if side in {"w", "e"}:
+        edge_x = 2 if side == "w" else 13
+        pygame.draw.line(surface, LEAF_LIGHT, (edge_x, 1), (edge_x, 14), 2)
+        pygame.draw.line(
+            surface, accents[variant], (edge_x, 3 + variant),
+            (8 if side == "w" else 7, 5 + variant), 1,
+        )
+        pygame.draw.line(
+            surface, accents[(variant + 1) % 3], (edge_x, 12 - variant),
+            (7 if side == "w" else 8, 10 - variant), 1,
+        )
+    else:
+        edge_y = 2 if side == "n" else 13
+        pygame.draw.line(surface, LEAF_LIGHT, (1, edge_y), (14, edge_y), 2)
+        pygame.draw.line(
+            surface, accents[variant], (3 + variant, edge_y),
+            (5 + variant, 8 if side == "n" else 7), 1,
+        )
+        pygame.draw.line(
+            surface, accents[(variant + 1) % 3], (12 - variant, edge_y),
+            (10 - variant, 7 if side == "n" else 8), 1,
+        )
+
+
+def opening_w(surface, variant: int, _frame: int) -> None:
+    opening(surface, variant, "w")
+
+
+def opening_e(surface, variant: int, _frame: int) -> None:
+    opening(surface, variant, "e")
+
+
+def opening_n(surface, variant: int, _frame: int) -> None:
+    opening(surface, variant, "n")
+
+
+def opening_s(surface, variant: int, _frame: int) -> None:
+    opening(surface, variant, "s")
+
+
 DRAW = {
     "fey_ground": ground,
     "fey_dense": dense,
@@ -142,6 +204,10 @@ DRAW = {
     "fey_bank": bank,
     "fey_path": path,
     "fey_pollen": pollen,
+    "fey_opening_w": opening_w,
+    "fey_opening_e": opening_e,
+    "fey_opening_n": opening_n,
+    "fey_opening_s": opening_s,
 }
 
 
