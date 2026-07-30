@@ -162,9 +162,13 @@ def build() -> list[list[str]]:
         assert grid[row][col] == "·", (col, row, grid[row][col])
         grid[row][col] = "¢"
 
-    # Human-readable edge thresholds and the three map-local markers.
+    # Human-readable edge thresholds and the three map-local markers. The
+    # east opening is a one-tile-wide, human-height vertical cleft centered
+    # exactly on the paved approach; every visible dark cell is an active
+    # threshold, so the art and transition footprint cannot disagree.
     grid[WEST_PASS[1]][WEST_PASS[0]] = "«"
-    grid[EAST_PASS[1]][EAST_PASS[0]] = "»"
+    for row in range(EAST_PASS[1] - 1, EAST_PASS[1] + 2):
+        grid[row][EAST_PASS[0]] = "›"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Ԯ"
     grid[ANCHOR[1]][ANCHOR[0]] = "԰"
     grid[RETURN_ARRIVAL[1]][RETURN_ARRIVAL[0]] = "Բ"
@@ -199,6 +203,16 @@ def validate(grid: list[list[str]]) -> int:
     assert grid[LEMURE[1]][LEMURE[0]] == "Ѯ"
     assert grid[HORNED_DEVIL[1]][HORNED_DEVIL[0]] == "Ԟ"
     assert sum(row.count("≋") for row in grid) >= 90
+    assert {
+        (EAST_PASS[0], EAST_PASS[1] - 1),
+        EAST_PASS,
+        (EAST_PASS[0], EAST_PASS[1] + 1),
+    } == {
+        (col, row)
+        for row in range(H)
+        for col in range(W)
+        if grid[row][col] == "›"
+    }
     return sum(row.count("þ") for row in grid)
 
 

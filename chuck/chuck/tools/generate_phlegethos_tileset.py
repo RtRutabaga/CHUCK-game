@@ -130,6 +130,16 @@ def draw_pass(surface, _variant: int, _frame: int) -> None:
     pygame.draw.line(surface, PATH, (3, 15), (12, 15))
 
 
+def draw_side_pass(surface, _variant: int, _frame: int) -> None:
+    """A vertical black cleft aligned to an east-edge transition column."""
+    surface.fill((12, 9, 11))
+    pygame.draw.line(surface, CLIFF, (0, 0), (0, 15), 2)
+    pygame.draw.line(surface, CLIFF_DARK, (15, 0), (15, 15), 2)
+    pygame.draw.line(surface, CLIFF_LIGHT, (2, 0), (2, 15))
+    # Sparse embers imply depth without turning the doorway into lava.
+    pygame.draw.rect(surface, LAVA_DEEP, (12, 5, 1, 2))
+
+
 def draw_astral_void(surface, variant: int, frame: int) -> None:
     """The exact hard-edged Astral hazard language used in earlier regions."""
     surface.fill(ASTRAL["deep"])
@@ -192,6 +202,7 @@ DRAW = {
     "lava": draw_lava,
     "fissure": draw_fissure,
     "pass": draw_pass,
+    "side_pass": draw_side_pass,
     "astral_void": draw_astral_void,
     "fortress": draw_fortress,
     "fortress_gate": draw_fortress_gate,

@@ -258,7 +258,7 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("phlegethos_rubble_pass", "«"): AreaExit(
         "phlegethos_lake", "from_phlegethos_4", "down"
     ),
-    ("phlegethos_rubble_pass", "»"): AreaExit(
+    ("phlegethos_rubble_pass", "›"): AreaExit(
         "phlegethos_fortress_approach", "from_phlegethos_rubble", "up"
     ),
     ("phlegethos_fortress_approach", "Δ"): AreaExit(

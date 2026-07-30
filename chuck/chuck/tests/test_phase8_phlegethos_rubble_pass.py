@@ -55,13 +55,15 @@ def test_rubble_pass_is_a_dark_east_west_route_with_a_lava_fall() -> None:
         for col in range(tilemap.width_tiles)
         if tilemap.terrain_at(col, row) == "«"
     )
-    east = next(
+    east_cells = {
         (col, row)
         for row in range(tilemap.height_tiles)
         for col in range(tilemap.width_tiles)
-        if tilemap.terrain_at(col, row) == "»"
-    )
-    assert west[0] == 1 and east[0] == tilemap.width_tiles - 2
+        if tilemap.terrain_at(col, row) == "›"
+    }
+    assert west[0] == 1
+    assert east_cells == {(62, 5), (62, 6), (62, 7)}
+    east = (62, 6)
 
     # Arrival, Ashtray, and exit connect without crossing molten terrain or
     # rubble. The path changes rows repeatedly rather than forming a corridor.
@@ -151,7 +153,7 @@ def test_rubble_pass_checkpoint_and_both_connections_use_shared_loading() -> Non
 
     assert AREA_WALK_EXITS[(LAKE, "∇")].destination == MAP_NAME
     assert AREA_WALK_EXITS[(MAP_NAME, "«")].destination == LAKE
-    assert AREA_WALK_EXITS[(MAP_NAME, "»")].destination == FORTRESS
+    assert AREA_WALK_EXITS[(MAP_NAME, "›")].destination == FORTRESS
     assert AREA_WALK_EXITS[(FORTRESS, "Δ")].destination == MAP_NAME
 
     game = Game()
@@ -170,12 +172,7 @@ def test_rubble_pass_checkpoint_and_both_connections_use_shared_loading() -> Non
         assert scene.map_name == MAP_NAME
         assert game.active_checkpoint_id == MAP_NAME
 
-        east = next(
-            (col, row)
-            for row in range(scene.tilemap.height_tiles)
-            for col in range(scene.tilemap.width_tiles)
-            if scene.tilemap.terrain_at(col, row) == "»"
-        )
+        east = (62, 6)
         scene.player.x = east[0] * config.TILE_SIZE + 3
         scene.player.y = east[1] * config.TILE_SIZE + 4
         scene.update(0.0)
@@ -194,6 +191,24 @@ def test_rubble_pass_checkpoint_and_both_connections_use_shared_loading() -> Non
         scene.update(0.0)
         assert scene.map_name == MAP_NAME
         assert game.active_checkpoint_id == "phlegethos_rubble_return"
+    finally:
+        game._shutdown()
+
+
+def test_the_cliff_lava_fall_animates_through_authored_frames() -> None:
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(MAP_NAME)
+        fall = next(
+            prop for prop in scene.props
+            if prop.kind == "phlegethos_lava_fall"
+        )
+        assert len(fall._frames) == 4
+        assert len({frame.get_view("1").raw for frame in fall._frames}) == 4
+        first = fall._image
+        fall.update(0.15)
+        assert fall._image is fall._frames[1]
+        assert fall._image is not first
     finally:
         game._shutdown()
 

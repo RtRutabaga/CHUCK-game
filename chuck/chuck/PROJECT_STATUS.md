@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: first playable Feywild riverbank added by direct instruction.
+Updated: Phlegethos and Feywild-handoff presentation fixes.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -16,6 +16,13 @@ This file is required by the project rules and updated every session.
   development checkpoint `Phlegethos 4`, three breakable carton urns, and
   uninterrupted Phlegethos music. The fortress is now displayed as
   `Phlegethos 5`; its stable persisted checkpoint IDs are unchanged.
+- The Rubble Pass's east exit no longer borrows a misaligned temple arch. A
+  three-tile-tall infernal wall cleft is centered on the paved approach, and
+  every visible dark doorway cell is the actual transition trigger. The
+  cliff-fed lava fall now cycles through four procedural ribbon, highlight,
+  and impact frames. In the fortress tableau, the wizard stands clear to the
+  east of the enlarged Pit Fiend rather than being hidden behind its 128px
+  sprite.
 - The complete Phase 8 enemy set is present: lemures, fire snakes, spined
   devils, flameskulls, and horned devils, all built as variants or extensions
   of established enemy/hazard systems.
@@ -57,6 +64,9 @@ This file is required by the project rules and updated every session.
   the bank. He lies still, slowly pushes himself upright, and stands before the
   final black fade. The scene reuses the established fall soundtrack and
   carries Sanity across the fortress handoff.
+- The detached horizontal foam stroke that appeared beside Chuck as he washed
+  onto the Feywild bank has been removed; the river and shoreline animation
+  otherwise remain unchanged.
 - By direct instruction, the final black now resolves into the first playable
   Feywild area: a 52x36 enemy-free riverbank. Chuck wakes beside the broad
   animated teal river, reaches the nearby `Feywild Ashtray`, and follows a

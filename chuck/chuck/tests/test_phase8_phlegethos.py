@@ -495,6 +495,16 @@ def test_the_fortress_approach_establishes_the_wall_gate_and_idols() -> None:
     assert kinds.count("boundary:phlegethos_fortress") == 1  # the climax
     for actor in ("fighter", "wizard", "ranger", "pit_fiend"):
         assert kinds.count(f"battle:{actor}") == 1
+    battle_positions = {
+        kind.split(":", 1)[1]: position
+        for kind, position in tilemap.object_spawns
+        if kind.startswith("battle:")
+    }
+    # The 128px Pit Fiend must not cover the wizard's complete silhouette.
+    assert (
+        battle_positions["wizard"][0]
+        > battle_positions["pit_fiend"][0] + 128
+    )
     # The setting's remaining visual beats: an iron-black fortress wall
     # closing off the north, its shut gate, and brooding infernal idols.
     fortress = sum(row.count("▓") for row in tilemap._grid)
@@ -612,6 +622,12 @@ def test_the_trio_battles_the_pit_fiend_through_shared_choreography() -> None:
         assert fiend._image.get_size() == (128, 128)
         assert (fiend.width, fiend.height) == (64, 32)
         assert fiend._image.get_height() >= config.UNDEAD_FRAME_H * 4
+        wizard = by_kind["wizard"]
+        fiend_left = fiend.center_x - fiend._image.get_width() / 2
+        fiend_right = fiend.center_x + fiend._image.get_width() / 2
+        wizard_left = wizard.center_x - wizard._image.get_width() / 2
+        wizard_right = wizard.center_x + wizard._image.get_width() / 2
+        assert wizard_left > fiend_right or wizard_right < fiend_left
     finally:
         game._shutdown()
 

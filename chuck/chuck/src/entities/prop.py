@@ -124,6 +124,16 @@ _SPRITES = {
     ),
 }
 
+_ANIMATED_SPRITES = {
+    "phlegethos_lava_fall": (
+        "objects/phlegethos_lava_fall.png",
+        "objects/phlegethos_lava_fall_2.png",
+        "objects/phlegethos_lava_fall_3.png",
+        "objects/phlegethos_lava_fall_4.png",
+    ),
+}
+_PROP_FRAME_TIME = 0.14
+
 # Props that respond to the interact key with a line of dialogue
 # (ids live in data/dialogue/). Everything else stays mute scenery.
 PROP_DIALOGUE = {
@@ -149,12 +159,20 @@ class Prop:
             raise ValueError(f"Unknown prop kind {kind!r}")
         self.kind = kind
         ts = config.TILE_SIZE
-        sprite = _SPRITES[kind]
-        if isinstance(sprite, tuple):
-            # Stable spatial variation: authored trees keep their silhouette
-            # between runs without requiring three separate map characters.
-            sprite = sprite[(col * 31 + row * 17) % len(sprite)]
-        self._image = assets.image(sprite)
+        animated = _ANIMATED_SPRITES.get(kind)
+        if animated is not None:
+            self._frames = tuple(assets.image(path) for path in animated)
+            self._animation_t = 0.0
+            self._image = self._frames[0]
+        else:
+            self._frames = ()
+            self._animation_t = 0.0
+            sprite = _SPRITES[kind]
+            if isinstance(sprite, tuple):
+                # Stable spatial variation: authored trees keep their
+                # silhouette between runs without requiring separate chars.
+                sprite = sprite[(col * 31 + row * 17) % len(sprite)]
+            self._image = assets.image(sprite)
         w, h = self._image.get_size()
         # Horizontally centered on the tile, bottom edges aligned.
         self._draw_x = col * ts + (ts - w) // 2
@@ -183,3 +201,11 @@ class Prop:
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
         ox, oy = camera_offset
         surface.blit(self._image, (self._draw_x - ox, self._draw_y - oy))
+
+    def update(self, dt: float) -> None:
+        """Advance the small set of authored animated scenery props."""
+        if not self._frames:
+            return
+        self._animation_t += dt
+        frame = int(self._animation_t / _PROP_FRAME_TIME) % len(self._frames)
+        self._image = self._frames[frame]

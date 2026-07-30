@@ -51,7 +51,7 @@ def rubble(variant: int) -> Image.Image:
     return canvas
 
 
-def lava_fall() -> Image.Image:
+def lava_fall(frame: int) -> Image.Image:
     image = Image.new("RGBA", (48, 96), TRANSPARENT)
     draw = ImageDraw.Draw(image)
     # Jagged cliff lip and shadowed cleft.
@@ -66,25 +66,31 @@ def lava_fall() -> Image.Image:
         fill=BASALT_LIGHT,
     )
     draw.line((2, 22, 12, 28, 35, 30, 46, 24), fill=BASALT)
-    # Three animated-looking ribbons share one static procedural sprite:
-    # hard pixel steps and highlights match the existing lava tiles.
+    # Hard pixel-stepped ribbons match the existing lava tiles. Their edges,
+    # highlights, and impact splash shift across four authored frames.
+    phase = frame % 4
+    sway = (-1, 0, 1, 0)[phase]
     draw.polygon(
-        ((14, 11), (35, 12), (38, 34), (33, 58),
-         (38, 82), (34, 95), (12, 95), (16, 76),
-         (11, 54), (16, 31)),
+        ((14 + sway, 11), (35, 12), (38 - sway, 34), (33, 58),
+         (38 + sway, 82), (34, 95), (12, 95), (16 - sway, 76),
+         (11 + sway, 54), (16, 31)),
         fill=LAVA,
     )
     draw.polygon(
-        ((19, 11), (25, 12), (23, 35), (28, 51),
-         (24, 71), (27, 94), (18, 94), (20, 73),
-         (16, 54), (21, 31)),
+        ((19 + sway, 11), (25 + sway, 12), (23 - sway, 35), (28, 51),
+         (24 + sway, 71), (27, 94), (18, 94), (20 - sway, 73),
+         (16, 54), (21 + sway, 31)),
         fill=LAVA_LIGHT,
     )
-    draw.line((34, 17, 31, 35, 35, 50, 30, 69, 34, 90), fill=EMBER, width=2)
+    highlight_y = phase * 5
+    for y in range(17 - highlight_y, 91, 20):
+        if y >= 12:
+            draw.line((34 - sway, y, 31 + sway, min(93, y + 10)),
+                      fill=EMBER, width=2)
     # Foam-equivalent molten splash where the fall meets the river.
     draw.rectangle((7, 90, 40, 95), fill=LAVA)
-    draw.rectangle((3, 93, 44, 95), fill=EMBER)
-    draw.rectangle((14, 90, 31, 92), fill=LAVA_LIGHT)
+    draw.rectangle((3 + phase, 93, 44 - (3 - phase), 95), fill=EMBER)
+    draw.rectangle((14 - sway * 2, 90, 31 + sway, 92), fill=LAVA_LIGHT)
     return image
 
 
@@ -92,8 +98,10 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for index in range(10):
         rubble(index).save(OUT / f"phlegethos_rubble_{index + 1}.png")
-    lava_fall().save(OUT / "phlegethos_lava_fall.png")
-    print("Generated 10 dark rubble variants and the Phlegethos lava fall")
+    for frame in range(4):
+        suffix = "" if frame == 0 else f"_{frame + 1}"
+        lava_fall(frame).save(OUT / f"phlegethos_lava_fall{suffix}.png")
+    print("Generated 10 dark rubble variants and 4 lava-fall frames")
 
 
 if __name__ == "__main__":

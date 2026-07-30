@@ -381,12 +381,6 @@ class FeywildRiverCutsceneScene(Scene):
             angle = round(18 + wash * 72)
             image = pygame.transform.rotate(left, angle)
             surface.blit(image, (x, y))
-            if wash > 0.38:
-                foam_x = round(176 + wash * 17)
-                pygame.draw.line(
-                    surface, _FOAM,
-                    (foam_x - 8, y + 12), (foam_x + 10, y + 12), 1,
-                )
             return
         if self.phase == "prone":
             image = pygame.transform.rotate(left, 90)

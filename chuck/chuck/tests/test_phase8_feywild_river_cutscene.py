@@ -22,6 +22,7 @@ from src.scenes.feywild_river_cutscene_scene import (
     WATERFALL_END,
     WATERFALL_START,
     FeywildRiverCutsceneScene,
+    _FOAM,
 )
 
 
@@ -128,6 +129,31 @@ def test_cutscene_opens_on_black_and_fades_in_slowly() -> None:
         scene.update(FADE_IN_END / 2 + 0.01)
         scene.draw(surface)
         assert surface.get_at((160, 90))[:3] != midpoint
+    finally:
+        game._shutdown()
+
+
+def test_washing_ashore_has_no_detached_horizontal_foam_line() -> None:
+    game = Game()
+    try:
+        scene = FeywildRiverCutsceneScene(game, sanity=75)
+        game.scenes.replace(scene)
+        scene.update((SHORE_START + ASHORE_TIME) / 2)
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+        scene.draw(surface)
+
+        # The prior artifact was an explicit 19px horizontal _FOAM stroke
+        # beside Chuck. Natural river foam elsewhere remains untouched.
+        longest = 0
+        for y in range(90, 130):
+            run = 0
+            for x in range(155, 215):
+                if surface.get_at((x, y))[:3] == _FOAM:
+                    run += 1
+                    longest = max(longest, run)
+                else:
+                    run = 0
+        assert longest < 8
     finally:
         game._shutdown()
 

@@ -325,6 +325,10 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="temple_arch_ew", under="∇"),
     "»": TileDef(solid=False, color=(10, 16, 15),
                  prop="temple_arch_ew", under="Δ"),
+    # Rubble Pass's east-facing infernal cleft: unlike the temple arches this
+    # is terrain art, allowing its three visible cells to exactly match the
+    # walk-transition footprint.
+    "›": TileDef(solid=False, color=(12, 9, 11)),
     "♠": TileDef(solid=False, color=(20, 25, 24)),
     # Temple interior dressing — the temple's style add-ons, matching the
     # docks' stall/walls and the jungle's trees. Wall pieces keep the

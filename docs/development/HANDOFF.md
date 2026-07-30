@@ -3,41 +3,43 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `6d16217` (east-west Phlegethos rubble pass)
-- Current work: first playable Feywild riverbank
+- Base commit before this pass: `de6519f` (first playable Feywild riverbank)
+- Current work: Phlegethos exit/animation/tableau and river-cutscene polish
 - Active scope: direct user instruction after completed Phase 8; no Phase 9
   implementation document is present
 
 ## Completed This Pass
 
-- Added `feywild_riverbank`, a 52x36 peaceful first Feywild map that continues
-  the completed river cutscene. A wide animated teal river frames the west
-  bank; a winding route branches through dense enchanted vegetation before
-  ending at a stable, inert deeper-Feywild boundary.
-- Added a dedicated procedural Feywild tileset plus reusable trees, luminous
-  spiral plants, and mushrooms. The palette and silhouettes translate the
-  cutscene's saturated cyan/emerald/violet/pink language into native 320x180
-  top-down gameplay without introducing combat or narrative.
-- Added one map-local Ashtray and the development-visible `Feywild 1`
-  checkpoint through the existing shared loader. The new durable
-  `feywild_reached` flag is sufficient to load the area directly; Sanity
-  carries through the cutscene handoff and normal save/respawn behavior remains
-  unchanged.
-- The river cutscene now replaces itself with `Feywild 1` only after its final
-  fade reaches black. The new map fades in, keeping the scene boundary clean.
-- Generator validation and focused regressions cover composition, exact
-  enemy-free spawns, collision connectivity, checkpoint definitions, direct
-  development loading, progression initialization, and cutscene handoff.
-  Native views of the landing, central route, and deeper boundary were
-  inspected. The area remains deliberately silent and its onward boundary
-  inert until an authoritative Phase 9 document or direct instruction defines
-  the next slice. All 67 standalone suites pass, compilation is clean, and the
-  headless title-loop launch smoke check passes.
+- Replaced the Rubble Pass's borrowed temple arch at the east edge with a
+  dedicated three-cell-tall Phlegethos cleft. It is centered on row 6 where
+  the paved path arrives, and every visible doorway cell uses the same shared
+  east transition, eliminating the art/trigger mismatch.
+- Converted the 48x96 cliff lava fall from a static sprite into four authored
+  procedural frames. Lava edges sway, highlights descend, and the impact pool
+  pulses through the existing optional prop-update hook.
+- Moved the fortress wizard from column 27 to column 34. His complete sprite
+  now clears the enlarged Pit Fiend's 128px visual bounds while the existing
+  battle choreography continues to target actors by identity.
+- Removed only the detached 19px horizontal foam stroke beside Chuck during
+  the wash-ashore phase. The current, shoreline, timing, prone landing, rise,
+  and later map handoff are unchanged.
+- Focused regressions verify the exact doorway footprint and transition,
+  four distinct animated lava frames, non-overlapping wizard/Pit Fiend visual
+  bounds, and absence of the cutscene line. Native exit, two lava frames,
+  fortress battle, and shoreline frames were inspected. All 67 standalone
+  suites pass, compilation is clean, and the headless title-loop launch smoke
+  check passes.
 
 ## Next Logical Task
 
 Await an authoritative Phase 9 document or direct instruction before defining
 the Feywild's regional music, mechanics, enemies, narrative, or second map.
+
+## Previous Pass (commit de6519f)
+
+Added the first playable Feywild riverbank, its procedural terrain/props,
+map-local Ashtray, `Feywild 1` shared checkpoint, durable progression flag,
+and final-black cutscene handoff. All 67 suites passed.
 
 ## Previous Pass (commit 6d16217)
 
