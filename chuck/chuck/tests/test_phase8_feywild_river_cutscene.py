@@ -12,9 +12,13 @@ from src.core.game import Game
 from src.scenes.feywild_river_cutscene_scene import (
     ASHORE_TIME,
     CUTSCENE_END,
+    FADE_IN_END,
     FADE_OUT_START,
     FEYWILD_GROW_START,
     MUSIC_START,
+    PRONE_END,
+    RISE_END,
+    SHORE_START,
     WATERFALL_END,
     WATERFALL_START,
     FeywildRiverCutsceneScene,
@@ -60,8 +64,14 @@ def test_cutscene_uses_the_fall_cue_and_reaches_each_authored_phase() -> None:
         assert scene.phase == "waterfall" and sounds == ["jump"]
         scene.update(WATERFALL_END - scene.elapsed + 0.01)
         assert scene.phase == "calm"
+        scene.update(SHORE_START - scene.elapsed + 0.01)
+        assert scene.phase == "washing_ashore"
         scene.update(ASHORE_TIME - scene.elapsed + 0.01)
-        assert scene.phase == "ashore" and sounds == ["jump", "chime"]
+        assert scene.phase == "prone" and sounds == ["jump", "chime"]
+        scene.update(PRONE_END - scene.elapsed + 0.01)
+        assert scene.phase == "rising"
+        scene.update(RISE_END - scene.elapsed + 0.01)
+        assert scene.phase == "standing"
         assert scene.sanity == 61
     finally:
         game._shutdown()
@@ -78,7 +88,10 @@ def test_every_phase_draws_and_the_feywild_endpoint_holds_black() -> None:
             4.5,
             WATERFALL_START + 0.8,
             WATERFALL_END + 1.0,
+            SHORE_START + 0.5,
             ASHORE_TIME + 0.5,
+            PRONE_END + 0.5,
+            RISE_END + 0.5,
             FADE_OUT_START + 0.5,
             CUTSCENE_END,
         ):
@@ -89,6 +102,26 @@ def test_every_phase_draws_and_the_feywild_endpoint_holds_black() -> None:
         assert scene.complete
         assert game.scenes.current is scene
         assert surface.get_at((160, 90))[:3] == (0, 0, 0)
+    finally:
+        game._shutdown()
+
+
+def test_cutscene_opens_on_black_and_fades_in_slowly() -> None:
+    game = Game()
+    try:
+        scene = FeywildRiverCutsceneScene(game, sanity=75)
+        game.scenes.replace(scene)
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+
+        scene.draw(surface)
+        assert surface.get_at((160, 90))[:3] == (0, 0, 0)
+        scene.update(FADE_IN_END / 2)
+        scene.draw(surface)
+        midpoint = surface.get_at((160, 90))[:3]
+        assert midpoint != (0, 0, 0)
+        scene.update(FADE_IN_END / 2 + 0.01)
+        scene.draw(surface)
+        assert surface.get_at((160, 90))[:3] != midpoint
     finally:
         game._shutdown()
 

@@ -120,11 +120,15 @@ Implemented so far:
   toward the moving water's center. Unlike Astral or lava, completion preserves
   Sanity and fades directly into the river cutscene instead of respawning.
 - The stable handoff now enters a dedicated, input-free **Feywild river
-  cutscene**. Chuck is carried rapidly down a hard-edged blue-green river while
-  infernal basalt banks scroll past and gradually yield to moss, oversized
-  roots, bright flowers, and dense Feywild growth. He crosses a short foaming
-  waterfall, emerges into slower water, and washes onto a quiet green bank.
-  The camera lingers before fading to black and holding at the Phase 9
+  cutscene**. A full-black opening slowly reveals a longer river journey:
+  Chuck is carried rapidly down a hard-edged blue-green current while infernal
+  basalt banks yield to dense, enchanted Feywild growth. Luminous spiral
+  plants, glowing flowers, mushrooms, violet/cyan accents, oversized roots,
+  and layered leaves give the destination a psychedelic identity without
+  leaving the native procedural style. Chuck crosses a short foaming
+  waterfall, remains visible through the calmer current, and clearly washes
+  prone onto a quiet bank. After a deliberate still beat, he slowly pushes
+  himself upright and stands before the final fade to the held Phase 9
   boundary. The scene preserves Sanity, uses the established
   `fall_to_chult.wav` cue, and creates no playable Feywild map or checkpoint.
 

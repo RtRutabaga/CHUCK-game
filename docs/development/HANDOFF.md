@@ -3,34 +3,41 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `dc4b250` (Phlegethos breakable urns)
-- Current work: unavoidable late river surge and shared fall handoff
+- Base commit before this pass: `11adf87` (unavoidable Feywild river surge)
+- Current work: extended enchanted Feywild river-arrival cutscene
 - Active phase: Phase 8 (`PHASE-8.md`)
 
 ## Completed This Pass
 
-- Removed the fourth forced Astral conversion. The three existing jagged side
-  waves and retreat seal remain, but the seven-column central route stays open
-  throughout the climax, keeping Astral pressure readable and avoidable.
-- Increased the opening river field from four to ten staggered fragments and
-  reduced their spacing. Six seconds after activation, eighteen additional
-  river blocks enter at one x coordinate across rows 7-24, creating a complete
-  arena-height westward surge that cannot be dodged or outlasted.
-- Both grounded and airborne river contact now call the shared `_begin_fall`
-  lifecycle with the moving block's center as Chuck's glide target. Chuck stays
-  visible through the full shrink/sink animation; only afterward does the
-  existing blue-green fade hand off to the river cutscene. Sanity is preserved.
-- Focused regressions cover the permanent Astral-safe route, early fragment
-  count and motion, complete late-surge coverage, both contact states, the full
-  fall animation, Sanity preservation, reset, and cutscene handoff. All 65
-  standalone test scripts, compilation, and the headless launch smoke pass; a
-  native 4x late-surge render was inspected.
+- Extended the river cutscene from 20 to 35 seconds. It now begins on a true
+  black frame and takes 2.8 seconds to reveal the river, keeping the music's
+  delayed entrance inside the fade.
+- Lengthened Chuck's visible rushing-water, waterfall, and calm-water beats.
+  The shore is now a continuous authored sequence rather than an instantaneous
+  pose change: Chuck drifts out of the water, slides onto land prone, remains
+  still, slowly pushes himself upright, and finally stands.
+- Reworked the banks and endpoint toward an enchanted psychedelic Feywild
+  identity while retaining procedural native-scale art: denser layered leaves,
+  luminous spiral plants, glowing violet/pink/blue/gold flowers, mushrooms,
+  colored root highlights, teal ground, and saturated blue-green water.
+- Added focused timing and rendering regressions for the initial black frame,
+  slow reveal, wash, prone, rising, standing, final fade, music/SFX gates,
+  Sanity preservation, and scene handoff. A native 320x180 montage covering
+  all major beats was inspected. All 65 standalone suites pass, compilation is
+  clean, and the headless title-loop launch smoke check passes.
 
 ## Next Logical Task
 
 Phase 8 is complete. Do not begin Feywild gameplay until an authoritative
 Phase 9 implementation document is added. The held black riverbank ending is
 the intended handoff boundary.
+
+## Previous Pass (commit 11adf87)
+
+Made grounded or airborne river contact use Chuck's full fall animation before
+the cutscene handoff, increased the early river fragments, replaced the forced
+Astral choke with an unavoidable full-height late river surge, and preserved a
+readable central route around the Astral corruption. All 65 suites passed.
 
 ## Previous Pass (commit dc4b250)
 

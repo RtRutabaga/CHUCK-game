@@ -38,13 +38,15 @@ This file is required by the project rules and updated every session.
   Walking or jumping into any river block now starts Chuck's shared
   shrink-and-sink fall animation; after the animation completes, Sanity is
   preserved and the dedicated input-free river cutscene begins.
-- The Phase 8 ending is complete. Chuck is swept rapidly down a river suspended
-  between the collided worlds as basalt banks yield to moss, flowers, roots,
-  and vibrant Feywild vegetation. He passes over a short waterfall, the
-  current visibly calms, and he washes onto a quiet green bank. The camera
-  lingers on the contrast before fading to a held black boundary. The scene
-  reuses the established fall soundtrack, carries Sanity across the fortress
-  handoff, and does not create playable Feywild.
+- The Phase 8 ending is complete. It opens fully black and slowly reveals a
+  35-second river journey suspended between collided worlds. Basalt banks give
+  way to dense enchanted growth, luminous spiral plants, glowing flowers,
+  mushrooms, saturated violet/cyan accents, oversized roots, and vibrant
+  vegetation. Chuck remains clearly visible in the current through the longer
+  rush and waterfall, enters calmer water, then visibly washes out prone onto
+  the bank. He lies still, slowly pushes himself upright, and stands before the
+  final held-black fade. The scene reuses the established fall soundtrack,
+  carries Sanity across the fortress handoff, and creates no playable Feywild.
 - Phase 9 has not begun, and no Phase 9 implementation contract is present.
   The next development pass should wait for its authoritative phase document.
 
