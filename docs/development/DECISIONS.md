@@ -18,7 +18,8 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Each newly authored gameplay map receives one physical Ashtray/checkpoint,
   registered through the shared save/checkpoint loader rather than a separate
   map-specific or development teleport path.
-- Phase 5 is complete. Phase 6 is active and is governed by `PHASE-6.md`.
+- Phase 5 and Phase 6 are complete. Phase 6's implemented scope remains
+  documented in `PHASE-6.md`.
 - Phase 6 begins at the jungle-temple interior and ends when Chuck reaches the
   ship; ship gameplay remains Phase 7 content.
 - The first Phase 6 room is a dedicated, reversible temple entrance hall with
@@ -38,3 +39,9 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
   scratchable grass tufts. They use the shared breakable/reward behavior, but
   the `Press F to scratch` proximity tutorial remains limited to Waterdeep and
   the sewer.
+- Phase 9 is governed by `PHASE-9.md` and contains thirteen playable Feywild
+  maps total: the existing riverbank plus twelve new maps. Its recurring
+  gameplay language is reactive flower switches, slowing pollen, and
+  Chuck-sized root/table/mushroom passages that exclude larger enemies.
+- Phase 9 ends at a stable Feywild boundary. The floating wizard's tower, its
+  cutscene, and the transition beyond it are reserved for a later phase.

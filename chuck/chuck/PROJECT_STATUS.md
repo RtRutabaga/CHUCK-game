@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: captain arrival through the plank fall is one uninterrupted sequence.
+Updated: Phase 9's thirteen-map Feywild implementation contract is authored.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -78,8 +78,11 @@ This file is required by the project rules and updated every session.
   `feywild_reached` is the only new durable progression flag. Loading directly
   or arriving from the cutscene preserves the normal checkpoint/Sanity
   architecture, and the map-local Ashtray is the sole save/respawn point.
-  Regional music and onward transition remain deliberately unauthored because
-  no Phase 9 implementation contract is present.
+  Phase 9 is now specified in `docs/development/PHASE-9.md` as a thirteen-map
+  Feywild region: the existing riverbank plus twelve new maps built around
+  reactive flower switches, slowing pollen, Chuck-sized passages, and a
+  Feywild-specific enemy scale. No additional Phase 9 gameplay has been
+  implemented yet.
 
 ## Working systems
 

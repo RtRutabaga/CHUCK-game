@@ -3,12 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `60e0394` (Chult-style Nine Hells death/return)
-- Current work: uninterrupted captain-arrival-to-plank cinematic
-- Active scope: direct user instruction after completed Phase 8; no Phase 9
-  implementation document is present
+- Base commit before this pass: `9284e56` (uninterrupted plank cinematic)
+- Current work: Phase 9 Feywild implementation contract
+- Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
+
+- Authored the Phase 9 implementation contract. It defines thirteen playable
+  Feywild maps total: the existing riverbank plus twelve new maps, making the
+  region more than twice the size of Chult's exterior or Phlegethos.
+- The region's reusable core is reactive scratch-activated flower switches,
+  slowing pollen, and root/table/mushroom passages that admit Chuck while
+  excluding larger enemies.
+- Defined five Feywild-specific enemy roles at readable scale: one-scratch
+  thorn mites, durable gnome-sized redcaps, stationary projectile orchids,
+  weaving lantern moths, and one massive avoidable displacer beast.
+- Defined the map order, pressure cadence, one-Ashtray-per-map requirement,
+  shared development checkpoints `Feywild 1` through `Feywild 13`, regional
+  audio direction, architecture boundaries, acceptance criteria, and complete
+  playtest route.
+- The phase deliberately stops at a stable boundary. It does not include the
+  later floating wizard's tower, its cutscene, or the transition beyond it.
+
+## Previous Pass (commit 9284e56)
 
 - Extended the existing deck state machine so the captain's arrival, crew
   announcement, accusation, plank order, objection, refusal, Chuck's walk,
@@ -31,8 +48,8 @@
 
 ## Next Logical Task
 
-Await an authoritative Phase 9 document or direct instruction before defining
-the Feywild's regional music, mechanics, enemies, narrative, or second map.
+Implement Phase 9's first bounded slice: Feywild 2, Blooming Path, together
+with the safe introductory reactive-flower switch and its map-local Ashtray.
 
 ## Previous Pass (commit 60e0394)
 
