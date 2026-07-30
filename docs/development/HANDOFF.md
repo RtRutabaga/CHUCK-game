@@ -3,36 +3,33 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `fc0ae50` (forced Feywild river escape)
-- Current work: Phase 8 river cutscene and Feywild-bank ending
+- Base commit before this pass: `aab0e48` (completed Phase 8 river escape)
+- Current work: fortress Pit Fiend scale pass
 - Active phase: Phase 8 (`PHASE-8.md`)
 
 ## Completed This Pass
 
-- Added a dedicated `FeywildRiverCutsceneScene` at the existing fortress
-  escape boundary. The WorldScene replaces itself only after its established
-  blue-green fade reaches black and carries current Sanity into the scene.
-- The input-free native 320x180 sequence begins as a fast, narrow river through
-  basalt. Deterministically scrolling banks transform into moss, bright
-  flowers, oversized roots, and dense vegetation as the river enters the
-  Feywild.
-- A foaming lip and full-screen blue-green plunge stage the short waterfall.
-  Afterward, the current streaks slow and the river broadens before Chuck
-  washes onto a quiet bank framed by human-scale roots. The camera lingers,
-  fades to black, and holds there.
-- The cutscene sheds the looping Phlegethos track and reuses
-  `fall_to_chult.wav`, as required. It does not load a map, create a
-  checkpoint, or begin Phase 9 gameplay.
-- Targeted tests cover shared scene handoff, Sanity continuity, music and SFX
-  cues, every authored phase, drawing, and the held-black endpoint. A native
-  4x four-phase contact sheet was inspected. All 65 standalone test scripts,
-  compilation, and the headless launch smoke pass.
+- Enlarged the fortress Pit Fiend from 64x64 to 128x128 native pixels and
+  expanded only its planted non-colliding battle footprint from 40x20 to
+  64x32. Its marker, feet anchor, projectile targeting, animation timing, and
+  the surrounding trio choreography remain unchanged.
+- Regenerated the existing procedural sprite with nearest-neighbor scaling;
+  no new art dependency or alternate entity path was introduced.
+- Focused Phase 8 regressions, compilation, all 65 standalone test scripts,
+  and the headless launch smoke pass. A native 4x fortress establishing render
+  confirms the enlarged fiend dominates the human-scale trio without
+  obscuring the playable lower approach.
 
 ## Next Logical Task
 
 Phase 8 is complete. Do not begin Feywild gameplay until an authoritative
 Phase 9 implementation document is added. The held black riverbank ending is
 the intended handoff boundary.
+
+## Previous Pass (commit aab0e48)
+
+Completed the input-free rushing-river cutscene from the fortress escape
+through the waterfall and quiet Feywild-bank ending. All 65 suites passed.
 
 ## Previous Pass (commit fc0ae50)
 

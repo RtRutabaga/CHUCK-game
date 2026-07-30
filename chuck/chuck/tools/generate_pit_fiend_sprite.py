@@ -54,8 +54,9 @@ def main() -> None:
     out = (Path(__file__).resolve().parents[1] /
            "assets" / "sprites" / "npcs" / "pit_fiend.png")
     # Author the silhouette at a tight scale, then enlarge with nearest
-    # neighbor so the Pit Fiend towers over human NPCs without smoothing.
-    image.resize((64, 64), Image.Resampling.NEAREST).save(out)
+    # neighbor. At 128 native pixels it dominates the fortress tableau and
+    # reads as a genuinely enormous fiend beside human-sized adventurers.
+    image.resize((128, 128), Image.Resampling.NEAREST).save(out)
     print(f"Wrote {out}")
 
 

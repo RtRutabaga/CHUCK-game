@@ -79,7 +79,9 @@ Implemented so far:
   stone -- four haunt the lava lake's stepping stones, using lava-under
   markers so they never punch safe tiles into the lake.
 - The fortress muster yard now contains the trio already battling a towering
-  **Pit Fiend**. The existing non-interactive battle actor/projectile
+  **Pit Fiend**. Its 128x128 native silhouette and broad planted shadow now
+  dominate the trio's human-scale figures. The existing non-interactive
+  battle actor/projectile
   architecture is reused with a dedicated infernal choreographer: the ranger
   fires directly at the Pit Fiend, the wizard drives repeated bolt fans into
   it, the fighter holds the nearby lesser devils, and the fiend answers across

@@ -556,7 +556,10 @@ def test_the_trio_battles_the_pit_fiend_through_shared_choreography() -> None:
         tick = scene.battle.update(2.0)
         kinds = {shot.kind for shot in tick.projectiles}
         assert {"arrow", "bolt", "ray"} <= kinds
-        assert by_kind["pit_fiend"]._image.get_size() == (64, 64)
+        fiend = by_kind["pit_fiend"]
+        assert fiend._image.get_size() == (128, 128)
+        assert (fiend.width, fiend.height) == (64, 32)
+        assert fiend._image.get_height() >= config.UNDEAD_FRAME_H * 4
     finally:
         game._shutdown()
 

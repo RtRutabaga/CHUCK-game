@@ -11,7 +11,8 @@ This file is required by the project rules and updated every session.
   devils, flameskulls, and horned devils, all built as variants or extensions
   of established enemy/hazard systems.
 - The fortress yard now shows the returning fighter, wizard, and ranger
-  actively battling a new Pit Fiend. A Phlegethos-specific choreographer
+  actively battling a massive 128x128 Pit Fiend, now more than four times a
+  human enemy's sprite height. A Phlegethos-specific choreographer
   reuses the shared battle projectile path: the ranger aims at the fiend, the
   wizard fires bolt fans, the fighter holds lesser devils, and the fiend
   returns fire. Automatic entry dialogue establishes that the trio is trying

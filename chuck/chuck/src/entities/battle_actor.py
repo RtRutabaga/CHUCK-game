@@ -36,7 +36,10 @@ class BattleActor(Entity):
         if kind == "beholder":
             width, height = 24, 12
         elif kind == "pit_fiend":
-            width, height = 40, 20
+            # A broad planted footprint supports the fortress tableau's
+            # enormous 128px silhouette without changing its authored marker
+            # or turning the non-interactive battle into collision geometry.
+            width, height = 64, 32
         else:
             width, height = 12, 8
         super().__init__(center_x - width / 2, center_y - height / 2,
