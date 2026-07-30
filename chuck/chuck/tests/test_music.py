@@ -420,6 +420,26 @@ def test_feywild_theme_is_catchy_funky_mysterious_and_wondrous() -> None:
     assert any(note.beat % 0.5 not in {0.0} for note in groove)
     assert bass.level > mallet.level
 
+    # Clear peaks: the A' and A'' sections widen the hook with only four
+    # delayed accents each, while the reed waits rather than competing.
+    peak_ranges = ((12 * 4, 20 * 4), (32 * 4, 40 * 4))
+    for start, end in peak_ranges:
+        assert sum(start <= note.beat < end for note in named["echo"].notes) == 4
+        assert not any(start <= note.beat < end for note in named["reed"].notes)
+        for bar in range(start // 4, end // 4):
+            assert sum(
+                bar * 4 <= note.beat < (bar + 1) * 4
+                for note in named["bass"].notes
+            ) == 7
+            assert sum(
+                bar * 4 <= note.beat < (bar + 1) * 4
+                for note in named["kick"].notes
+            ) == 3
+            assert sum(
+                bar * 4 <= note.beat < (bar + 1) * 4
+                for note in named["toms"].notes
+            ) == 3
+
     # Enchanted mystery: F Mixolydian's Bb and Eb color the otherwise warm
     # major melody, a woody reed answers it, and reverse swells inhabit the
     # break without dominating the arrangement.

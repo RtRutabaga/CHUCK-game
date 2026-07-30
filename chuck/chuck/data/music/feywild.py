@@ -9,7 +9,7 @@ durable identity; the hook repeats within each main section so it lands early.
 Structure (48 bars of 4/4):
     0-3    Firefly intro   bass hook, mallet fragment, hand percussion
     4-11   A               full memorable mallet theme
-    12-19  A'              reed answers and brighter counter-rhythm
+    12-19  A'              sparse echo accents, clearer rhythm section
     20-27  B               the hedge turns; B/Eb mystery comes forward
     28-31  Moonlit break   reverse swells, bass and sparse wooden pulse
     32-39  A''             fullest, funkiest return of the main hook
@@ -149,22 +149,16 @@ def _melody(start_bar: int, phrase, velocity: float) -> dict:
 
 
 def _reed_answers(start_bar: int, bright: bool) -> dict:
+    """One consonant answer per bar, never a second continuous melody."""
     if bright:
-        colors = (
-            ("C5", "Bb4"), ("A4", "G4"),
-            ("D5", "C5"), ("Bb4", "A4"),
-        )
+        colors = ("D5", "Bb4", "F4", "G4", "A4", "Bb4", "G4", "C5")
     else:
-        colors = (
-            ("Bb4", "Eb5"), ("D5", "Bb4"),
-            ("G4", "Bb4"), ("Eb5", "C5"),
-        )
+        colors = ("F4", "G4", "A4", "Bb4", "F4", "G4", "D5", "G4")
     return {
         start_bar + index: [
-            (.5, 1.15, first, .54),
-            (2.75, 1.0, second, .48),
+            (1.0 if index % 2 == 0 else 2.5, .72, pitch, .40)
         ]
-        for index, (first, second) in enumerate(colors * 2)
+        for index, pitch in enumerate(colors)
     }
 
 
@@ -196,9 +190,6 @@ def _kit(start_bar: int, bars: int, mode: str) -> tuple:
             (beat, .045, "C5", .34 if beat % 1 else .54)
             for beat in beats
         ]
-        if mode == "full":
-            kick[bar].append((3.5, .10, "C2", .55))
-            toms[bar].append((2.75, .10, "D3", .52))
     return kick, snare, toms, wood, hats
 
 
@@ -212,15 +203,17 @@ def build_tracks() -> list[Track]:
         _melody(40, _HOOK_C, .92),
     )
     echo = {}
-    for start, phrase in ((12, _HOOK_A), (32, _HOOK_A), (40, _HOOK_C)):
+    # A few delayed first notes widen the hook without duplicating every
+    # mallet event into a competing second melody.
+    for start, phrase in ((12, _HOOK_A), (32, _HOOK_A)):
         for index, events in enumerate(phrase):
+            if index % 2 != 0:
+                continue
+            beat, duration, pitch = events[0]
             echo[start + index] = [
-                (beat + .375, min(.28, duration), pitch, .34)
-                for beat, duration, pitch in events
-                if beat + .375 < 4
+                (beat + .375, min(.24, duration), pitch, .26)
             ]
     reed = _merge(
-        _reed_answers(12, bright=True),
         _reed_answers(20, bright=False),
         {
             28: [(0, 3.5, "Bb4", .42)],
@@ -233,10 +226,10 @@ def build_tracks() -> list[Track]:
     bass = _merge(
         _bass(0, _A_ROOTS[:4]),
         _bass(4, _A_ROOTS),
-        _bass(12, _A_ROOTS, "full"),
+        _bass(12, _A_ROOTS),
         _bass(20, _B_ROOTS),
         _bass(28, ("F2", "Bb1", "Eb2", "C2"), "break"),
-        _bass(32, _A_ROOTS, "full"),
+        _bass(32, _A_ROOTS),
         _bass(40, _C_ROOTS),
     )
     sub_roots = (
@@ -268,10 +261,10 @@ def build_tracks() -> list[Track]:
     sections = (
         _kit(0, 4, "break"),
         _kit(4, 8, "groove"),
-        _kit(12, 8, "full"),
+        _kit(12, 8, "groove"),
         _kit(20, 8, "groove"),
         _kit(28, 4, "break"),
-        _kit(32, 8, "full"),
+        _kit(32, 8, "groove"),
         _kit(40, 8, "groove"),
     )
     kick, snare, toms, wood, hats = (
@@ -281,15 +274,15 @@ def build_tracks() -> list[Track]:
 
     return [
         Track("mallet", ins.enchanted_mallet, .88, _bars(mallet)),
-        Track("echo", ins.pluck_lead, .38, _bars(echo)),
-        Track("reed", ins.breathy_reed, .62, _bars(reed)),
+        Track("echo", ins.pluck_lead, .26, _bars(echo)),
+        Track("reed", ins.breathy_reed, .50, _bars(reed)),
         Track("bass", ins.elastic_bass, 1.16, _bars(bass)),
         Track("sub", ins.round_bass, .42, _bars(sub)),
-        Track("bells", ins.bell, .45, _bars(bells)),
-        Track("swells", ins.reverse_bell, .48, _bars(swells)),
+        Track("bells", ins.bell, .38, _bars(bells)),
+        Track("swells", ins.reverse_bell, .40, _bars(swells)),
         Track("kick", ins.kick, .92, _bars(kick)),
         Track("snare", ins.snare, .66, _bars(snare)),
         Track("toms", ins.jungle_tom, .74, _bars(toms)),
         Track("wood", ins.woodblock, .76, _bars(wood)),
-        Track("hats", ins.hat, .56, _bars(hats)),
+        Track("hats", ins.hat, .50, _bars(hats)),
     ]

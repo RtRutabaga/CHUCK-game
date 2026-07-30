@@ -116,6 +116,9 @@ This file is required by the project rules and updated every session.
   recurring syncopated mallet hook, elastic scooped bass, hand percussion,
   woody reed answers, restrained reverse-bell swells, and F Mixolydian harmony
   make it catchy and funky while retaining mysterious enchanted color.
+  Later peaks use only isolated echo accents, reserve reed answers for
+  contrasting sections, and avoid added bass/percussion fills so the hook
+  remains clear rather than becoming cluttered or disharmonious.
   Riverbank, Blooming Path, and Pollen Orchard all request the same seamless
   loop, so the existing audio deduplication keeps it playing through map
   transitions, checkpoint respawns, and reloads without layering or restarting.

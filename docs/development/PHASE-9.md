@@ -1197,8 +1197,11 @@ boundary reserved for the later floating-wizard-tower phase.
   at 116 BPM in F Mixolydian. A recurring syncopated mallet hook, elastic
   pitch-scooped bass, hand percussion, woody reed countermelody, and
   reverse-feeling bell swells provide funk, mystery, and enchanted warmth
-  without falling into generic fairy ambience. Riverbank, Blooming Path, and
-  Pollen Orchard use the same seamless file, allowing the existing audio
-  request deduplication to preserve playback across transitions and respawns.
-  Composition and rendered-WAV tests cover hook recurrence, rhythmic density,
-  modal color, instrumentation, duration, loudness, clipping, and loop seam.
+  without falling into generic fairy ambience. Its peak statements keep the
+  hook forward through sparse echoes, alternating lead voices, and restrained
+  rhythm fills rather than stacking every instrument. Riverbank, Blooming
+  Path, and Pollen Orchard use the same seamless file, allowing the existing
+  audio request deduplication to preserve playback across transitions and
+  respawns. Composition and rendered-WAV tests cover hook recurrence, peak
+  density, modal color, instrumentation, duration, loudness, clipping, and
+  loop seam.

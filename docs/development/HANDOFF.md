@@ -3,27 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `a35781c` (Feywild exploration theme)
-- Current work: Feywild theme catchiness and harmonic polish
+- Base commit before this pass: `a6af3a9` (catchier Feywild theme)
+- Current work: Feywild peak-arrangement clarity
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Reharmonized the theme from sharper F Lydian-dominant color to warmer
-  F Mixolydian, replacing every exposed B-natural/F-sharp tension with Bb.
-  The flat seventh retains enchanted storybook color while making the melody
-  friendlier and easier to follow.
-- Reworked the main eight-bar mallet theme so its three-bar call repeats after
-  four bars before a resolving cadence. The full hook still returns after the
-  moonlit break, but now establishes itself much earlier.
-- Reduced the reverse-bell swells from fourteen to eight and lowered their
-  velocities so they remain magical punctuation instead of making the track
-  feel constantly unstable. Bass, hand percussion, reed answers, tempo,
-  arrangement length, map integration, and uninterrupted playback remain.
-- Rerendered the 99-second WAV and strengthened the composition regression to
-  enforce the repeated core hook and entirely Mixolydian melodic palette.
+- Preserved the theme's opening, core mallet hook, F Mixolydian harmony,
+  116 BPM tempo, and 99-second structure while clearing the later peaks.
+- Replaced full-hook echo duplication with four isolated accents per
+  eight-bar peak. The breathy reed now waits through both peak statements and
+  uses one consonant response per bar only in the contrasting sections.
+- Removed the peak-only extra bass, kick, and tom fills. Lowered echo, reed,
+  bell, reverse-swell, and hat levels so the hook, elastic bass, and core hand
+  percussion remain legible instead of competing.
+- The render contains 1,544 events, down from 1,736. Peak RMS remains a gentle
+  lift over the opening rather than collapsing dynamically; the 0.92 peak and
+  exact loop seam are preserved.
+- Strengthened composition tests to enforce sparse peak echoes, absent peak
+  reed counterpoint, and consistent seven-note bass/three-hit kick/three-hit
+  tom patterns.
 - All 69 standalone suites pass, compilation is clean, and the headless launch
-  smoke check passes. The revised render peaks at 0.92 with an exact loop seam.
+  smoke check passes.
+
+## Previous Pass (commit a6af3a9)
+
+Made the original Feywild theme catchier and less harmonically strange by
+moving to F Mixolydian, repeating its central call earlier, and restraining
+reverse swells. All 69 suites passed.
 
 ## Previous Pass (commit a35781c)
 
