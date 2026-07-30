@@ -26,6 +26,7 @@ from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.battle_hazards import (
     AstralBreach, BattleChoreographer, BattleProjectile,
+    InfernalBattleChoreographer,
 )
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.deck_pirate import DeckPirateNPC
@@ -204,6 +205,11 @@ class WorldScene(Scene):
         self._pending_entrance_dialogue = (
             "sanctum_entrance"
             if map_name == "temple_sanctum" and arrival == "from_temple_8"
+            else "phlegethos_battle_entrance"
+            if (
+                map_name == "phlegethos_fortress_approach"
+                and arrival == "from_phlegethos_3"
+            )
             else None
         )
         self._restore_camera_to_player = False
@@ -1671,14 +1677,20 @@ class WorldScene(Scene):
         self.flameskulls: list[Flameskull] = []
         # The sanctum battle restarts its cadences whenever the room does,
         # and the Astral breach heals shut and re-arms with it.
-        self.battle = (BattleChoreographer(self.battle_actors)
-                       if self.battle_actors else None)
+        if self.map_name == "temple_sanctum":
+            self.battle = BattleChoreographer(self.battle_actors)
+        elif self.map_name == "phlegethos_fortress_approach":
+            self.battle = InfernalBattleChoreographer(self.battle_actors)
+        else:
+            self.battle = None
         self.battle_projectiles: list[BattleProjectile] = []
         self.battle_cones: list = []
         if getattr(self, "breach", None) is not None:
             self.breach.restore()
-        self.breach = (AstralBreach(self.tilemap)
-                       if self.battle is not None else None)
+        self.breach = (
+            AstralBreach(self.tilemap)
+            if self.map_name == "temple_sanctum" else None
+        )
         # The scripted Fireball: how long Chuck has survived sealed in,
         # and the explosion once it fires. Reset with the room so death
         # restarts the survival clock.

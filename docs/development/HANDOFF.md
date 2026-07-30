@@ -3,28 +3,39 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `4dfda43` (pirate head silhouettes)
-- Current work: wider exterior-deck gangplank (session 180)
-- Active phase: Phase 7 (`PHASE-7.md`)
+- Base commit before this pass: `cc047e8` (Phlegethos fortress approach)
+- Current work: Phase 8 fortress battle and checkpoint repair
+- Active phase: Phase 8 (`PHASE-8.md`)
 
 ## Completed This Pass
 
-Widened the staged walk-the-plank route without changing its length or ending:
+Completed the first fortress-climax slice without beginning its escape:
 
-- Added an authored two-tile plank width and stage both adjacent columns,
-  opening a 32px passage through the starboard rail instead of one 16px lane.
-- Both lanes now trigger Jeffries' warning and the outer endpoint. The
-  procession begins on the shared centerline, while an off-center endpoint
-  arrival recenters Chuck before the captain approaches and kicks him.
-- Rebalanced the flanking objector by one tile around the wider approach.
-- Rebuilt the procedural ship-plank tile as an opaque half-width section, so
-  adjacent cells read as one broad gangplank rather than two narrow boards with
-  animated water visible between them.
-- Expanded focused regressions across the full 2x8 walkable footprint, both
-  trigger lanes, solid ocean boundary, centered procession, and kick handoff.
-  Plank-procession, exterior-deck, and tileset suites pass; a 4x native render
-  was inspected. All 63 standalone suites pass, compilation is clean, and the
-  title-loop launch smoke check passes.
+- Fixed the Road and Lake Ashtray marker IDs, which did not match their
+  checkpoint registry definitions and caused a confirmed crash on activation.
+  Added a regression that resolves every Phase 8 map marker to a saveable
+  same-map checkpoint definition.
+- Placed the returning fighter, wizard, and ranger in the fortress yard against
+  a new, procedurally authored Pit Fiend. The fiend is deliberately much larger
+  than a human NPC and remains a non-interactive battle actor.
+- Added a Phlegethos-specific battle choreographer on the established
+  actor/projectile architecture. The ranger fires directly at the Pit Fiend,
+  the wizard sends bolt fans into it, the fighter holds the nearby lesser
+  devils, and the Pit Fiend returns fire through their lanes.
+- Added brief automatic dialogue making clear that the trio understands the
+  fractures are spreading and is actively trying to bind/repair them. Chuck
+  does not speak or participate.
+- Kept the later climax deliberately unbuilt: no Astral escalation, Feywild
+  river blocks, forced escape, or ending cutscene were added.
+- All 64 standalone test scripts pass, compilation is clean, the headless
+  title-loop launch smoke check passes, and the battle establishing frame plus
+  Pit Fiend sprite were inspected at integer scale.
+
+## Next Logical Task
+
+Add the escalating Astral Sea corruption to the existing fortress battle while
+preserving a survivable route long enough for the later Feywild river intrusion
+to become the only escape. Do not implement Phase 9 gameplay.
 
 ## Previous Pass (session 179, commit 4dfda43)
 

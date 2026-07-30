@@ -607,11 +607,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ѯ": MarkerDef(kind="lemure", under="·"),
     "Ԁ": MarkerDef(kind="fire_snake", under="·"),
     "Ԃ": MarkerDef(kind="arrival:from_phlegethos_1", under="≡"),
-    "Ԅ": MarkerDef(kind="anchor:phlegethos_2_anchor", under="·"),
+    "Ԅ": MarkerDef(kind="anchor:phlegethos_road_anchor", under="·"),
     "Ԇ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
     # Phlegethos map 3, the lava lake crossed by stepping-stone islands.
     "Ԉ": MarkerDef(kind="arrival:from_phlegethos_2", under="≡"),
-    "Ԋ": MarkerDef(kind="anchor:phlegethos_3_anchor", under="≡"),
+    "Ԋ": MarkerDef(kind="anchor:phlegethos_lake_anchor", under="≡"),
     "Ԍ": MarkerDef(kind="arrival:from_phlegethos_4", under="≡"),
     # Spined devils perch and throw down an authored lane; flameskulls
     # weave along a horizontal or vertical haunt.
@@ -625,11 +625,16 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # the same hazard while leaving the molten tile beneath untouched.
     "Ԛ": MarkerDef(kind="flameskull:h", under="≋"),
     "Ԝ": MarkerDef(kind="flameskull:v", under="≋"),
-    # Phlegethos map 4, the fortress approach, and its horned devil.
+    # Phlegethos map 4, the fortress approach, its infernal garrison,
+    # and the trio's battle with the Pit Fiend.
     "Ԟ": MarkerDef(kind="horned_devil", under="·"),
     "Ԡ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
     "Ԣ": MarkerDef(kind="anchor:phlegethos_4_anchor", under="≡"),
     "Ԥ": MarkerDef(kind="boundary:phlegethos_fortress", under="≡"),
+    "Ԧ": MarkerDef(kind="battle:fighter", under="≡"),
+    "Ԩ": MarkerDef(kind="battle:wizard", under="≡"),
+    "Ԫ": MarkerDef(kind="battle:ranger", under="≡"),
+    "Ԭ": MarkerDef(kind="battle:pit_fiend", under="≡"),
 }
 
 _COMMENT_PREFIX = ";"

@@ -1,12 +1,10 @@
-"""The final chamber's battle actors (sessions 131-132).
+"""Non-interactive actors in the game's larger battles.
 
 Chuck has wandered into someone else's climactic battle. The three
-adventurers and the beholder hold their ground — placed, y-sorted,
-deliberately NON-interactive (they never respond to E; their entrance
-lines play automatically, and Chuck cannot help them). Session 132 set
-them in motion in place: the beholder's hover breathes, and each actor
-lunges toward its target for a beat when the BattleChoreographer fires
-its attack. Do not explain who they are: the phase contract forbids it.
+adventurers and their opponent hold their ground — placed, y-sorted,
+and deliberately NON-interactive. Their entrance lines play automatically,
+and Chuck cannot help them. Each actor moves in place when its selected
+choreographer fires an attack.
 """
 
 from __future__ import annotations
@@ -21,6 +19,7 @@ _SPRITES = {
     "wizard": "npcs/wizard.png",
     "ranger": "npcs/ranger.png",
     "beholder": "npcs/beholder.png",
+    "pit_fiend": "npcs/pit_fiend.png",
 }
 
 # The beholder floats: its sprite draws lifted above its ground shadow.
@@ -34,7 +33,12 @@ class BattleActor(Entity):
         if kind not in _SPRITES:
             raise ValueError(f"Unknown battle actor {kind!r}")
         self.kind = kind
-        width, height = (24, 12) if kind == "beholder" else (12, 8)
+        if kind == "beholder":
+            width, height = 24, 12
+        elif kind == "pit_fiend":
+            width, height = 40, 20
+        else:
+            width, height = 12, 8
         super().__init__(center_x - width / 2, center_y - height / 2,
                          width, height)
         self._image = None
@@ -68,7 +72,7 @@ class BattleActor(Entity):
 
         ox, oy = camera_offset
         foot_y = self.y + self.height
-        if self.kind == "beholder":
+        if self.kind in {"beholder", "pit_fiend"}:
             # A soft ground shadow beneath the floating tyrant.
             shadow = pygame.Rect(int(self.x) - ox,
                                  int(foot_y - 3) - oy,
@@ -85,6 +89,11 @@ class BattleActor(Entity):
             # The hover breathes; a firing beat pushes the orb east.
             lift = _BEHOLDER_HOVER + round(2 * math.sin(self._time * 2.2))
             lunge = 2 if self.attack_flash > 0.0 else 0
+        elif self.kind == "pit_fiend":
+            # The Pit Fiend is planted and immense; attacks only tense the
+            # silhouette rather than making it skitter like a small actor.
+            lift = round(0.5 + 0.5 * math.sin(self._time * 1.7))
+            lunge = 1 if self.attack_flash > 0.0 else 0
         else:
             # A subtle in-place sway; attacks lunge west at the beholder.
             lift = round(0.5 + 0.5 * math.sin(self._time * 3.1))

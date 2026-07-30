@@ -290,6 +290,85 @@ class BattleChoreographer:
         )
 
 
+class InfernalBattleChoreographer:
+    """The trio's ongoing fight with the Pit Fiend.
+
+    This shares the established battle actor/projectile path while changing
+    the targets: the ranger now fires directly at the Pit Fiend, the wizard
+    drives magic into it, and the fighter holds the lesser devils nearby.
+    Chuck remains an observer navigating stray fire.
+    """
+
+    def __init__(self, actors: list[BattleActor]) -> None:
+        by_kind = {actor.kind: actor for actor in actors}
+        self._pit_fiend = by_kind["pit_fiend"]
+        self._fighter = by_kind["fighter"]
+        self._wizard = by_kind["wizard"]
+        self._ranger = by_kind["ranger"]
+        self._arrow_timer = 0.35
+        self._bolt_timer = 0.8
+        self._fiend_timer = 1.4
+        self._fighter_timer = 0.5
+        self._fiend_target = 0
+
+    @staticmethod
+    def _toward(source: BattleActor, target: BattleActor) -> tuple[float, float]:
+        return (
+            target.center_x - source.center_x,
+            target.center_y - source.center_y,
+        )
+
+    def update(self, dt: float) -> BattleTick:
+        tick = BattleTick()
+
+        self._arrow_timer -= dt
+        while self._arrow_timer <= 0.0:
+            self._arrow_timer += 0.58
+            dx, dy = self._toward(self._ranger, self._pit_fiend)
+            tick.projectiles.append(BattleProjectile(
+                self._ranger.center_x, self._ranger.center_y,
+                dx, dy, "arrow",
+            ))
+            self._ranger.attack_flash = config.BATTLE_ATTACK_FLASH
+
+        self._bolt_timer -= dt
+        while self._bolt_timer <= 0.0:
+            self._bolt_timer += 1.1
+            dx, dy = self._toward(self._wizard, self._pit_fiend)
+            for spread in (-0.16, 0.0, 0.16):
+                angle = math.atan2(dy, dx) + spread
+                tick.projectiles.append(BattleProjectile(
+                    self._wizard.center_x, self._wizard.center_y,
+                    math.cos(angle), math.sin(angle), "bolt",
+                ))
+            self._wizard.attack_flash = config.BATTLE_ATTACK_FLASH
+
+        self._fighter_timer -= dt
+        if self._fighter_timer <= 0.0:
+            self._fighter_timer += 1.25
+            self._fighter.attack_flash = config.BATTLE_ATTACK_FLASH
+
+        self._fiend_timer -= dt
+        while self._fiend_timer <= 0.0:
+            self._fiend_timer += 1.7
+            targets = (self._fighter, self._wizard, self._ranger)
+            target = targets[self._fiend_target]
+            self._fiend_target = (self._fiend_target + 1) % len(targets)
+            dx, dy = self._toward(self._pit_fiend, target)
+            tick.projectiles.append(BattleProjectile(
+                self._pit_fiend.center_x, self._pit_fiend.center_y,
+                dx, dy, "ray",
+            ))
+            self._pit_fiend.attack_flash = config.BATTLE_ATTACK_FLASH
+
+        return tick
+
+    def slash_hitbox(self):
+        # The fighter's engagement is part of the distant tableau. Unlike
+        # the cramped sanctum slash, it does not create an invisible hazard.
+        return None
+
+
 class AstralBreach:
     """The Astral Sea seals the hall once Chuck has seen the battle.
 

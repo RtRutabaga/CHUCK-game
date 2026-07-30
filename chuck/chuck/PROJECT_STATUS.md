@@ -1,7 +1,27 @@
 # CHUCK — Project Status
 
-Updated: session 180 (widened the exterior-deck gangplank).
+Updated: Phase 8 fortress battle slice.
 This file is required by the project rules and updated every session.
+
+## Current Phase 8 state
+
+- Four connected playable Phlegethos maps are complete through the fortress
+  approach: Arrival, Lava Road, Lava Lake, and Fortress Approach.
+- The complete Phase 8 enemy set is present: lemures, fire snakes, spined
+  devils, flameskulls, and horned devils, all built as variants or extensions
+  of established enemy/hazard systems.
+- The fortress yard now shows the returning fighter, wizard, and ranger
+  actively battling a new Pit Fiend. A Phlegethos-specific choreographer
+  reuses the shared battle projectile path: the ranger aims at the fiend, the
+  wizard fires bolt fans, the fighter holds lesser devils, and the fiend
+  returns fire. Automatic entry dialogue establishes that the trio is trying
+  to repair the spreading fractures.
+- Road and Lake Ashtray marker IDs now match the checkpoint registry. Their
+  previous mismatch crashed on activation; regression coverage now validates
+  every authored Phase 8 Ashtray against a saveable same-map definition.
+- The next logical Phase 8 slice is the fortress battle's escalating Astral
+  corruption. Feywild river blocks, the forced escape, and the river cutscene
+  remain after that. Phase 9 gameplay has not begun.
 
 ## Working systems
 
@@ -31,7 +51,7 @@ This file is required by the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the 22 authored Ashtrays have
+  retain the established local retry behavior; the 27 authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged

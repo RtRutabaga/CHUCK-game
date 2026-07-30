@@ -78,6 +78,18 @@ Implemented so far:
   cannot be cleared by any scratch, and floats over lava as happily as
   stone -- four haunt the lava lake's stepping stones, using lava-under
   markers so they never punch safe tiles into the lake.
+- The fortress muster yard now contains the trio already battling a towering
+  **Pit Fiend**. The existing non-interactive battle actor/projectile
+  architecture is reused with a dedicated infernal choreographer: the ranger
+  fires directly at the Pit Fiend, the wizard drives repeated bolt fans into
+  it, the fighter holds the nearby lesser devils, and the fiend answers across
+  their lanes. Entry dialogue makes clear that the trio is trying to bind and
+  repair the spreading fractures without explaining the collided worlds.
+  Chuck remains an observer navigating the crossfire. Astral escalation,
+  Feywild river intrusion, and the escape cutscene remain later slices.
+- Corrected the Road and Lake Ashtray marker IDs to match their shared
+  checkpoint definitions. Both now save and respawn through the same registry
+  path as every other checkpoint instead of crashing on contact.
 
 ------------------------------------------------------------------------
 
@@ -273,8 +285,8 @@ of the collided worlds.
 - [ ] Lava traversal and jump sequences are complete. *(the lava-lake
   island crossing is in; more lava hazards may follow)*
 - [ ] Fortress climax functions.
-- [ ] Trio battles the Pit Fiend.
-- [ ] Dialogue reinforces the trio's mission.
+- [x] Trio battles the Pit Fiend.
+- [x] Dialogue reinforces the trio's mission.
 - [ ] Astral Sea hazards escalate.
 - [ ] Feywild river blocks become the only escape.
 - [ ] Chuck washes ashore in the Feywild.

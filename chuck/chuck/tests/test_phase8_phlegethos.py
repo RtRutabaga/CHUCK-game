@@ -130,7 +130,7 @@ def test_the_lava_road_pinches_to_a_ledge_and_is_walkable_end_to_end() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 32)
     kinds = [kind for kind, _pos in tilemap.object_spawns]
     assert kinds.count("arrival:from_phlegethos_1") == 1
-    assert kinds.count("anchor:phlegethos_2_anchor") == 1
+    assert kinds.count("anchor:phlegethos_road_anchor") == 1
     assert kinds.count("arrival:from_phlegethos_3") == 1  # back from the lake
     # Far more lava than the arrival: the road is the first real gauntlet.
     assert sum(row.count("≋") for row in tilemap._grid) >= 150
@@ -157,7 +157,7 @@ def test_the_lava_road_pinches_to_a_ledge_and_is_walkable_end_to_end() -> None:
                 continue
             reached.add(nxt)
             frontier.append(nxt)
-    assert pts["phlegethos_2_anchor"] in reached
+    assert pts["phlegethos_road_anchor"] in reached
     for char in ("∇", "Δ"):
         gap = next((c, r) for r in range(tilemap.height_tiles)
                    for c in range(tilemap.width_tiles)
@@ -267,7 +267,7 @@ def test_the_lava_lake_is_crossed_by_single_hop_stepping_stones() -> None:
                 reached.add(land)
                 frontier.append(land)
     assert reached == safe, sorted(safe - reached)[:8]
-    assert pts["phlegethos_3_anchor"] in reached
+    assert pts["phlegethos_lake_anchor"] in reached
     assert pts["from_phlegethos_4"] in reached  # the far shore, onward
 
     # The crossing genuinely requires hops: the far shore is NOT reachable
@@ -440,6 +440,8 @@ def test_the_fortress_approach_establishes_the_wall_gate_and_idols() -> None:
     assert kinds.count("arrival:from_phlegethos_3") == 1
     assert kinds.count("anchor:phlegethos_4_anchor") == 1
     assert kinds.count("boundary:phlegethos_fortress") == 1  # the climax
+    for actor in ("fighter", "wizard", "ranger", "pit_fiend"):
+        assert kinds.count(f"battle:{actor}") == 1
     # The setting's remaining visual beats: an iron-black fortress wall
     # closing off the north, its shut gate, and brooding infernal idols.
     fortress = sum(row.count("▓") for row in tilemap._grid)
@@ -512,6 +514,47 @@ def test_horned_devils_reuse_the_massive_dinosaur_wholesale() -> None:
         assert frame.get_width() == config.DINOSAUR_FRAME_W
         assert frame.get_height() == config.DINOSAUR_FRAME_H
         assert frame.get_height() > config.UNDEAD_FRAME_H
+    finally:
+        game._shutdown()
+
+
+def test_phlegethos_ashtray_markers_resolve_to_saveable_definitions() -> None:
+    """Every authored Phase 8 Ashtray must activate through the registry."""
+    for map_name in (
+        "phlegethos_arrival",
+        ROAD,
+        LAKE,
+        APPROACH,
+    ):
+        tilemap = TileMap(config.MAPS_DIR / f"{map_name}.txt")
+        anchor_ids = [
+            kind.split(":", 1)[1]
+            for kind, _position in tilemap.object_spawns
+            if kind.startswith("anchor:")
+        ]
+        assert len(anchor_ids) == 1, (map_name, anchor_ids)
+        definition = CHECKPOINT_BY_ID[anchor_ids[0]]
+        assert definition.map_name == map_name
+        assert definition.saveable
+
+
+def test_the_trio_battles_the_pit_fiend_through_shared_choreography() -> None:
+    from src.entities.battle_hazards import InfernalBattleChoreographer
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(APPROACH)
+        by_kind = {actor.kind: actor for actor in scene.battle_actors}
+        assert set(by_kind) == {"fighter", "wizard", "ranger", "pit_fiend"}
+        assert isinstance(scene.battle, InfernalBattleChoreographer)
+        assert scene.breach is None  # the temple's scripted seal stays there
+
+        # A short deterministic window produces direct trio attacks and a
+        # Pit Fiend answer without starting the later reality-break climax.
+        tick = scene.battle.update(2.0)
+        kinds = {shot.kind for shot in tick.projectiles}
+        assert {"arrow", "bolt", "ray"} <= kinds
+        assert by_kind["pit_fiend"]._image.get_size() == (64, 64)
     finally:
         game._shutdown()
 
