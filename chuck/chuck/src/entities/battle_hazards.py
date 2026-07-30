@@ -374,7 +374,7 @@ class InfernalAstralCorruption:
 
     The first wave is an unjumpable two-row seal behind Chuck. Later waves
     arrive from alternating sides of the upper yard. The center remains a
-    deliberate survival spine until the separate Feywild-river slice exists.
+    readable refuge while the Feywild river becomes unavoidable.
     """
 
     _WAVE_RECTS = (
@@ -382,9 +382,6 @@ class InfernalAstralCorruption:
         ((6, 14, 9, 3), (33, 14, 9, 3)),
         ((3, 10, 8, 3), (37, 10, 8, 3),
          (13, 12, 4, 4), (31, 11, 4, 4)),
-        # The final choke consumes the temporary central refuge. By then the
-        # moving Feywild river is present: boarding it is the only answer.
-        ((21, 10, 7, 13),),
     )
 
     def __init__(self, tilemap) -> None:
@@ -394,7 +391,6 @@ class InfernalAstralCorruption:
         self.wave_index = 0
         self._pending: list[list] = []
         self._restore: list[tuple[int, int, str]] = []
-        self._forced_cells: set[tuple[int, int]] = set()
         self.flashes: list[list] = []
         ts = config.TILE_SIZE
         self._protected = {
@@ -414,15 +410,13 @@ class InfernalAstralCorruption:
         )
         self._queue(cells, lambda col, _row: abs(col - player_col) * 0.025)
 
-    def _queue(self, cells, delay_for, *, forced: bool = False) -> None:
+    def _queue(self, cells, delay_for) -> None:
         for col, row in cells:
             if (col, row) in self._protected:
                 continue
             if self._tilemap.terrain_at(col, row) not in {"·", "≡"}:
                 continue
             self._pending.append([delay_for(col, row), col, row])
-            if forced:
-                self._forced_cells.add((col, row))
         self._pending.sort()
 
     def _queue_wave(self, wave_index: int) -> None:
@@ -431,22 +425,18 @@ class InfernalAstralCorruption:
         for left, top, width, height in rects:
             for row in range(top, top + height):
                 for col in range(left, left + width):
-                    # This vertical spine is the readable temporary refuge.
-                    if wave_index < 3 and 21 <= col <= 27:
+                    # This vertical spine stays readable throughout.
+                    if 21 <= col <= 27:
                         continue
                     # Deterministic missing cells break the later incursions
                     # into jagged wrong-map fragments rather than clean
                     # rectangles. The initial retreat seal stays continuous.
-                    if (
-                        wave_index < 3
-                        and (col * 7 + row * 11 + wave_index * 3) % 6 == 0
-                    ):
+                    if (col * 7 + row * 11 + wave_index * 3) % 6 == 0:
                         continue
                     cells.append((col, row))
         self._queue(
             cells,
             lambda col, row: (abs(col - 24) + abs(row - 16)) * 0.018,
-            forced=wave_index == 3,
         )
 
     def update(self, dt: float, player_hitbox=None) -> None:
@@ -478,14 +468,8 @@ class InfernalAstralCorruption:
             ts = config.TILE_SIZE
             cell = pygame.Rect(col * ts, row * ts, ts, ts)
             if player_hitbox is not None and cell.colliderect(player_hitbox):
-                force_ready = (
-                    (col, row) in self._forced_cells
-                    and self.elapsed
-                    >= config.INFERNAL_CORRUPTION_WAVE_TIMES[-1] + 2.5
-                )
-                if not force_ready:
-                    remaining.append(entry)
-                    continue
+                remaining.append(entry)
+                continue
             old = self._tilemap.set_terrain(col, row, "V")
             self._restore.append((col, row, old))
             self.flashes.append([col, row, 0.0])
@@ -499,7 +483,6 @@ class InfernalAstralCorruption:
         self.wave_index = 0
         self._pending = []
         self._restore = []
-        self._forced_cells = set()
         self.flashes = []
 
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
@@ -522,6 +505,7 @@ class InfernalAstralCorruption:
 class FeywildRiverBlock:
     x: float
     y: float
+    surge: bool = False
 
     @property
     def rect(self):
@@ -537,21 +521,22 @@ class FeywildRiverBlock:
 class FeywildRiverField:
     """Hard-edged river fragments flowing west through the Hell arena."""
 
-    _SPACING = 144
+    _SPACING = 88
+    _SURGE_ROWS = tuple(range(7, 25))
 
     def __init__(self, map_width_px: int) -> None:
         self.map_width_px = map_width_px
         self.active = False
         self.time = 0.0
         self.blocks: list[FeywildRiverBlock] = []
+        self.surge_spawned = False
 
     def activate(self) -> None:
         if self.active:
             return
         self.active = True
-        # Two nearby lanes cross the central survival spine. Staggered east
-        # starts make the intrusion build instead of appearing all at once.
-        rows = (15, 18, 15, 18)
+        # Staggered lanes establish a dense but initially avoidable field.
+        rows = (11, 14, 17, 20, 12, 15, 18, 21, 13, 19)
         self.blocks = [
             FeywildRiverBlock(
                 self.map_width_px - config.FEYWILD_RIVER_BLOCK_W
@@ -565,23 +550,54 @@ class FeywildRiverField:
         if not self.active:
             return
         self.time += dt
+        if (
+            not self.surge_spawned
+            and self.time >= config.FEYWILD_RIVER_SURGE_TIME
+        ):
+            self.surge_spawned = True
+            # Separate blocks share one x coordinate to form an arena-height
+            # wall. It sweeps west once without recycling: Astral remains
+            # avoidable, but the late river cannot be outlasted.
+            surge_x = self.map_width_px - config.FEYWILD_RIVER_BLOCK_W
+            self.blocks.extend(
+                FeywildRiverBlock(
+                    surge_x,
+                    row * config.TILE_SIZE,
+                    surge=True,
+                )
+                for row in self._SURGE_ROWS
+            )
         for block in self.blocks:
             block.x -= config.FEYWILD_RIVER_SPEED * dt
         for block in self.blocks:
+            if block.surge:
+                continue
             if block.x + config.FEYWILD_RIVER_BLOCK_W >= 0:
                 continue
-            rightmost = max(other.x for other in self.blocks)
+            rightmost = max(
+                other.x for other in self.blocks if not other.surge
+            )
             block.x = rightmost + self._SPACING
 
-    def overlaps(self, hitbox) -> bool:
-        return self.active and any(
-            block.rect.colliderect(hitbox) for block in self.blocks
+    def colliding_block(self, hitbox) -> FeywildRiverBlock | None:
+        if not self.active:
+            return None
+        return next(
+            (
+                block for block in self.blocks
+                if block.rect.colliderect(hitbox)
+            ),
+            None,
         )
+
+    def overlaps(self, hitbox) -> bool:
+        return self.colliding_block(hitbox) is not None
 
     def reset(self) -> None:
         self.active = False
         self.time = 0.0
         self.blocks = []
+        self.surge_spawned = False
 
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
         if not self.active:

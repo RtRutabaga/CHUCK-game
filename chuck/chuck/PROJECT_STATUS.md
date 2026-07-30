@@ -29,13 +29,15 @@ This file is required by the project rules and updated every session.
 - Entering the upper fortress yard now triggers escalating Astral corruption:
   a continuous two-row band cuts off retreat, then three timed jagged waves
   advance from the arena's sides. They use the exact animated Astral fall
-  tiles, never materialize under Chuck, preserve a temporary central survival
-  spine, and restore completely on death/reset.
-- Four hard-edged Feywild river fragments now flow west through two arena
-  lanes after the third Astral wave. The fourth wave consumes the temporary
-  central refuge; after a short grace period even Chuck's occupied tile is no
-  longer protected. Jumping into a moving river fragment is the sole successful
-  exit and now enters a dedicated input-free river cutscene.
+  tiles, never materialize under Chuck, preserve a broad central route through
+  the complete climax, and restore completely on death/reset.
+- Ten hard-edged Feywild river fragments begin flowing west through staggered
+  arena lanes after the third Astral wave. Six seconds later, eighteen more
+  blocks align into a continuous arena-height surge and sweep west, making
+  river contact inevitable while Astral tiles remain easy to route around.
+  Walking or jumping into any river block now starts Chuck's shared
+  shrink-and-sink fall animation; after the animation completes, Sanity is
+  preserved and the dedicated input-free river cutscene begins.
 - The Phase 8 ending is complete. Chuck is swept rapidly down a river suspended
   between the collided worlds as basalt banks yield to moss, flowers, roots,
   and vibrant Feywild vegetation. He passes over a short waterfall, the

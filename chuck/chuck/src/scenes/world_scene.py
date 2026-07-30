@@ -794,11 +794,18 @@ class WorldScene(Scene):
         self.player.update(dt)
         if self.player.jump_just_started:
             self.game.audio.play_sfx("jump")
-        if (
-            self.player.jumping
-            and self.feywild_river.overlaps(self.player.hitbox)
-        ):
-            self._begin_river_escape()
+        river_block = self.feywild_river.colliding_block(
+            self.player.hitbox
+        )
+        if river_block is not None:
+            rect = river_block.rect
+            self._begin_fall(
+                "river",
+                target=(
+                    rect.centerx - self.player.width / 2,
+                    rect.centery - self.player.height / 2,
+                ),
+            )
             self.camera.update(dt)
             return
         fall_kind = fall_zone_kind(
@@ -1848,12 +1855,18 @@ class WorldScene(Scene):
     # ------------------------------------------------------------------
     # Astral fall hazard
     # ------------------------------------------------------------------
-    def _begin_fall(self, kind: str) -> None:
+    def _begin_fall(
+        self,
+        kind: str,
+        target: tuple[float, float] | None = None,
+    ) -> None:
         """Lock control and let Chuck quietly drop into the wrong map."""
         self._fall_kind = kind
         self._fall_t = 0.0
         self.player.fall_progress = 0.0
         self.player.moving = False
+        if kind == "river":
+            self.player.jump_remaining = 0.0
         self.player.scratch_remaining = 0.0
         self.player.hurt_blink = 0.0
         self._step_timer = 0.0
@@ -1868,7 +1881,7 @@ class WorldScene(Scene):
         center_y = self.player.y + self.player.height / 2
         col, row = int(center_x // ts), int(center_y // ts)
         self._fall_start = (self.player.x, self.player.y)
-        self._fall_target = (
+        self._fall_target = target or (
             col * ts + ts / 2 - self.player.width / 2,
             row * ts + ts / 2 - self.player.height / 2,
         )
@@ -1921,6 +1934,8 @@ class WorldScene(Scene):
             if kind == "sky":
                 from src.scenes.falling_cutscene_scene import FallingCutsceneScene
                 self.game.scenes.replace(FallingCutsceneScene(self.game))
+            elif kind == "river":
+                self._begin_river_escape()
             else:
                 self.sanity.deplete()
 

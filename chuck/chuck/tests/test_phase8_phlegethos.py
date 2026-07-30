@@ -691,7 +691,7 @@ def test_astral_corruption_never_opens_directly_beneath_chuck() -> None:
         game._shutdown()
 
 
-def test_feywild_river_flows_in_before_the_final_astral_choke() -> None:
+def test_river_builds_to_an_unavoidable_surge_while_astral_stays_open() -> None:
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint(APPROACH)
@@ -706,7 +706,7 @@ def test_feywild_river_flows_in_before_the_final_astral_choke() -> None:
         corruption.update(0.1, None)
         scene.update(0.0)
         river = scene.feywild_river
-        assert river.active and len(river.blocks) == 4
+        assert river.active and len(river.blocks) == 10
         before = [block.x for block in river.blocks]
         river.update(1.0)
         assert all(
@@ -716,20 +716,32 @@ def test_feywild_river_flows_in_before_the_final_astral_choke() -> None:
             )
         )
 
-        # The fourth Astral wave consumes the formerly protected center only
-        # after the river has had time to enter the arena.
+        # All Astral waves have landed, but the broad central refuge remains
+        # readable and safe. Purple pressure is avoidable at the climax.
         corruption.update(
             config.INFERNAL_CORRUPTION_WAVE_TIMES[-1]
             - corruption.elapsed + 1.0,
             None,
         )
-        assert corruption.wave_index == 4
+        assert corruption.wave_index == 3
         center_astral = sum(
             scene.tilemap.terrain_at(col, row) == "V"
             for row in range(10, 23)
             for col in range(21, 28)
         )
-        assert center_astral >= 60, center_astral
+        assert center_astral == 0, center_astral
+
+        # Six seconds after the river begins, eighteen additional blocks
+        # arrive aligned as a complete arena-height wall. Every playable row
+        # from the fortress gate to the retreat seal is covered at the same x,
+        # so this late river surge cannot be avoided or outlasted.
+        river.update(config.FEYWILD_RIVER_SURGE_TIME)
+        surge = [block for block in river.blocks if block.surge]
+        assert river.surge_spawned and len(river.blocks) == 28
+        assert {int(block.y // config.TILE_SIZE) for block in surge} == set(
+            range(7, 25)
+        )
+        assert len({block.x for block in surge}) == 1
 
         old_river = river
         scene._reset_enemies()
@@ -744,30 +756,36 @@ def test_feywild_river_flows_in_before_the_final_astral_choke() -> None:
         game._shutdown()
 
 
-def test_only_an_airborne_river_overlap_reaches_the_escape_boundary() -> None:
+def test_walking_or_jumping_into_river_falls_then_starts_cutscene() -> None:
     game = Game()
     try:
-        scene = game.checkpoints.load_checkpoint(APPROACH)
-        scene._pending_entrance_dialogue = None
-        scene.feywild_river.activate()
-        block = scene.feywild_river.blocks[0]
-        scene.player.x = block.x + 8
-        scene.player.y = block.y + 4
+        for jumping in (False, True):
+            scene = game.checkpoints.load_checkpoint(APPROACH)
+            scene._pending_entrance_dialogue = None
+            scene._arrival_fade_t = None
+            scene.feywild_river.activate()
+            block = scene.feywild_river.blocks[0]
+            scene.player.x = block.x + 8
+            scene.player.y = block.y + 4
+            scene.player.jump_remaining = (
+                config.JUMP_DURATION / 2 if jumping else 0.0
+            )
 
-        # Merely standing where a fragment passes is not the authored choice.
-        scene.player.jump_remaining = 0.0
-        scene.update(0.0)
-        assert scene._river_escape_t is None
-        assert scene.player.visible
+            scene.update(0.0)
+            assert scene._fall_kind == "river"
+            assert scene._fall_t == 0.0
+            assert scene.player.fall_progress == 0.0
+            assert scene.player.visible
+            assert not scene.player.jumping
 
-        # A committed jump into the same moving water wins before ordinary
-        # Astral fall handling and reaches the clean cutscene handoff.
-        scene.player.jump_remaining = config.JUMP_DURATION / 2
-        scene.update(0.0)
-        assert scene._river_escape_t == 0.0
-        assert not scene.player.visible
-        scene.update(config.FEYWILD_RIVER_ESCAPE_FADE)
-        assert scene._river_escape_t >= config.FEYWILD_RIVER_ESCAPE_FADE
+            # The complete shared shrink/sink animation plays before the
+            # success handoff. Unlike Astral/lava falls, Sanity is untouched.
+            sanity = scene.sanity.current
+            scene.update(config.FALL_DURATION)
+            assert scene._fall_t is None
+            assert scene._river_escape_t == 0.0
+            assert not scene.player.visible
+            assert scene.sanity.current == sanity
     finally:
         game._shutdown()
 

@@ -3,32 +3,39 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `f898d04` (enlarged fortress Pit Fiend)
-- Current work: reusable breakable urns across Phlegethos
+- Base commit before this pass: `dc4b250` (Phlegethos breakable urns)
+- Current work: unavoidable late river surge and shared fall handoff
 - Active phase: Phase 8 (`PHASE-8.md`)
 
 ## Completed This Pass
 
-- Added fourteen existing temple floor-urn markers across every playable Hell
-  map: Arrival 3, Lava Road 3, Lava Lake 4, and Fortress Approach 4.
-- The maps instantiate the ordinary `BreakableUrn` entity through the existing
-  WorldScene path. One scratch uses the same terracotta shard animation, clears
-  the occupied cell back to basalt, and drops the same 20-cigarette carton.
-  Map reload/death rebuilding restores every urn.
-- Placements are restricted to broad safe basalt pockets. None occupies a
-  required path, lava-lake stepping stone, checkpoint, transition, enemy
-  marker, or the fortress battle/processional lane.
-- Added a deterministic placement tool and a focused regression that validates
-  authored counts, shared entity construction, basalt restoration, and carton
-  reward behavior on all four maps. Focused Phase 8 and temple-urn suites,
-  compilation, all 65 standalone test scripts, and the headless launch smoke
-  pass; a native 4x map contact sheet was inspected.
+- Removed the fourth forced Astral conversion. The three existing jagged side
+  waves and retreat seal remain, but the seven-column central route stays open
+  throughout the climax, keeping Astral pressure readable and avoidable.
+- Increased the opening river field from four to ten staggered fragments and
+  reduced their spacing. Six seconds after activation, eighteen additional
+  river blocks enter at one x coordinate across rows 7-24, creating a complete
+  arena-height westward surge that cannot be dodged or outlasted.
+- Both grounded and airborne river contact now call the shared `_begin_fall`
+  lifecycle with the moving block's center as Chuck's glide target. Chuck stays
+  visible through the full shrink/sink animation; only afterward does the
+  existing blue-green fade hand off to the river cutscene. Sanity is preserved.
+- Focused regressions cover the permanent Astral-safe route, early fragment
+  count and motion, complete late-surge coverage, both contact states, the full
+  fall animation, Sanity preservation, reset, and cutscene handoff. All 65
+  standalone test scripts, compilation, and the headless launch smoke pass; a
+  native 4x late-surge render was inspected.
 
 ## Next Logical Task
 
 Phase 8 is complete. Do not begin Feywild gameplay until an authoritative
 Phase 9 implementation document is added. The held black riverbank ending is
 the intended handoff boundary.
+
+## Previous Pass (commit dc4b250)
+
+Added fourteen shared breakable temple urns and carton rewards across all four
+Phlegethos maps. All 65 suites passed.
 
 ## Previous Pass (commit f898d04)
 

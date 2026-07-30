@@ -108,15 +108,17 @@ Implemented so far:
   intrusion, and fully restores/re-arms on death. Phlegethos now includes the
   exact animated Astral tile language used by the sewer, pantry, Chult, and
   temple rather than a new approximation.
-- After the third Astral wave, four hard-edged **Feywild river fragments**
-  begin flowing west through two lanes of the fortress yard. They use a
+- After the third Astral wave, ten hard-edged **Feywild river fragments**
+  begin flowing west through staggered fortress-yard lanes. They use a
   distinct blue-green current with moving pixel streaks and recycle beyond the
-  map edge. A final fourth Astral wave then consumes the previously protected
-  central spine, including Chuck's occupied tile after a short grace period.
-  Ordinary contact with a river fragment is not an exit; Chuck must commit to
-  a jump into the moving water. Airborne river contact wins before Astral fall
-  resolution, hides Chuck, and fades the battlefield through a blue-green
-  flash to the dedicated river cutscene.
+  map edge. Six seconds later, eighteen additional blocks align across every
+  playable arena row and sweep west as one full-height surge. The three
+  Astral side waves leave their broad central route open; it is now the river,
+  not an unavoidable purple conversion, that forces the ending.
+- Any river contact succeeds, whether Chuck walks or jumps into it. Contact
+  starts the exact shared fall-hazard shrink/sink animation, gliding Chuck
+  toward the moving water's center. Unlike Astral or lava, completion preserves
+  Sanity and fades directly into the river cutscene instead of respawning.
 - The stable handoff now enters a dedicated, input-free **Feywild river
   cutscene**. Chuck is carried rapidly down a hard-edged blue-green river while
   infernal basalt banks scroll past and gradually yield to moss, oversized
