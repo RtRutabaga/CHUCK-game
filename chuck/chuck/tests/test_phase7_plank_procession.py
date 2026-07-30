@@ -163,7 +163,7 @@ def test_completed_state_places_captain_and_objector_at_the_approach() -> None:
         game._shutdown()
 
 
-def test_dialogue_hands_off_to_short_scripted_walk_then_returns_control() -> None:
+def test_captain_arrival_runs_uninterrupted_through_the_plank_fall() -> None:
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint(
@@ -190,20 +190,51 @@ def test_dialogue_hands_off_to_short_scripted_walk_then_returns_control() -> Non
             scene.player, 27
         )
         assert scene.player.facing == "down"
+        assert scene._plank_procession_phase == "to_plank"
         assert all(
             scene.tilemap.terrain_at(col, row) == DECK_PLANK_TERRAIN
             for col in range(42, 42 + DECK_PLANK_WIDTH)
             for row in range(32, 32 + DECK_PLANK_LENGTH)
         )
 
-        scene.update(2.0)
-        assert not scene._plank_procession_active
-        assert scene._plank_procession_target is None
+        # Chuck walks directly onto the first plank row. Control never
+        # returns; Jeffries' existing warning is the only pause.
+        for _ in range(60):
+            scene.update(0.1)
+            if isinstance(game.scenes.current, DialogueScene):
+                break
+        warning = game.scenes.current
+        assert isinstance(warning, DialogueScene)
+        assert warning._lines == ["It's back! The purple is back!"]
         assert (scene.player.x, scene.player.y) == _plank_centered_position(
-            scene.player, 31
+            scene.player, PLANK_ORIGIN[1]
         )
-        assert not scene.player.moving
-        assert game.scenes.current is scene
+        assert scene.reality_blocks.active
+        assert scene._reality_warning_shown
+        assert scene._plank_procession_phase == "warning"
+
+        game.scenes.pop()
+        scene.update(0.0)
+        assert scene._plank_procession_active
+        assert scene._plank_procession_phase == "to_end"
+        assert scene._plank_procession_target == _plank_centered_position(
+            scene.player, PLANK_ORIGIN[1] + DECK_PLANK_LENGTH - 1
+        )
+
+        # The scripted walk reaches the outer tile and flows straight into
+        # the existing captain approach, kick, and Hell-fall handoff.
+        for _ in range(240):
+            scene.update(0.1)
+            if game.scenes.current is not scene:
+                break
+            assert (
+                scene._plank_procession_active
+                or scene._plank_ending_phase is not None
+            )
+        cutscene = game.scenes.current
+        assert isinstance(cutscene, HellFallingCutsceneScene)
+        assert scene._plank_ending_block.kind == "hell"
+        assert game.progress.has(CAPTAIN_CONFRONTED_FLAG)
     finally:
         game._shutdown()
 

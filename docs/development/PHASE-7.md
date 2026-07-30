@@ -60,8 +60,8 @@ Implemented so far:
   restrained `...` dialogue beats pace the accusation, plank order, crew
   objection, and refusal. A two-tile-wide physical plank then opens through the
   starboard rail; the captain and objecting pirate flank its approach while
-  Chuck is marched to the rail and control returns. The outer endpoint remains
-  safely bounded. Stepping onto the plank now starts staggered streams of
+  Chuck is marched onto the plank without returning control. Stepping onto the
+  plank starts staggered streams of
   Astral Sea and overhead volcanic Hell blocks while Jeffries shouts `It's back!
   The purple is back!`. Astral chunks tile the exact animated fall-hazard art
   shared by the sewer, pantry, Chult, and temple. Hell chunks show a bird's-eye
@@ -70,8 +70,8 @@ Implemented so far:
   different deterministic arrangement of staggered plates and lava pools so
   neighboring chunks do not join into a uniform grid. Both materials enter at
   the east screen edge, travel completely off the west edge, and continuously
-  recycle behind the ship. They remain non-colliding. Reaching the outer
-  plank locks the final sequence: the captain walks down the plank, waits
+  recycle behind the ship. They remain non-colliding. After Jeffries' warning,
+  Chuck automatically walks to the outer tile; the captain walks down the plank, waits
   until a live Hell fragment passes below, visibly kicks Chuck into that same
   moving fragment, and hands off to a long input-free volcanic descent. The
   established fall-to-Chult cue and timing language return. Chuck falls
@@ -80,8 +80,9 @@ Implemented so far:
   descends -- a slow parallax rise that sells the fall while Chuck holds
   center screen -- and sits flush against the bottom of the frame with no
   gap. No overhead Hell terrain floats behind him. He lands on a mostly solid basalt
-  plane with only sparse lava fissures, looks left/right/down, inserts and
-  drags a cigarette using the established Chult choreography, and the tableau
+  plane with only sparse lava fissures, blips out and returns through the exact
+  Chult death choreography, looks left/right/down, inserts and drags a
+  cigarette, and the tableau
   holds without granting control, creating the stable Phase 8 arrival
   boundary. A development-only `Captain Arrival` checkpoint initializes the
   real seven-condition gate immediately before the captain walks on deck.
@@ -255,18 +256,19 @@ A pirate objects:
 The captain refuses.
 
 The crew stages a broad two-tile plank through the starboard rail. Chuck is
-marched to its approach, then the player regains control and can walk to its
-currently bounded outer end.
+marched onto it and remains under scripted control through the complete
+sequence.
 
 Moving Astral Sea blocks begin appearing over the ocean.
 
 Moving Hell blocks appear alongside them.
 
-Jeffries shouts:
+Jeffries shouts as Chuck reaches the first plank row:
 
 > "It's back! The purple is back!"
 
-Chuck is kicked from the plank and lands in a Hell block.
+After the warning, Chuck automatically walks to the outer end. The captain
+follows and kicks him into a live Hell block.
 
 ------------------------------------------------------------------------
 

@@ -3,34 +3,42 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `18b49c8` (Phlegethos presentation polish)
-- Current work: exact Chult-style death/return in the Nine Hells fall
+- Base commit before this pass: `60e0394` (Chult-style Nine Hells death/return)
+- Current work: uninterrupted captain-arrival-to-plank cinematic
 - Active scope: direct user instruction after completed Phase 8; no Phase 9
   implementation document is present
 
 ## Completed This Pass
 
-- Added the death/return interval that the Nine Hells landing had skipped.
-  Impact still occurs at 29 seconds; Chuck now vanishes at the Chult scene's
-  exact 29.15-second mark and returns at its exact 31.1-second mark.
-- Reused `FallingCutsceneScene._draw_astral_blip` directly for both the
-  contracting death particles and expanding return particles. The Phlegethos
-  version therefore uses the actual Chult animation rather than an imitation.
-- Added the matching `vanish` and `respawn` sound cues. The look-around now
-  begins at Chult's 32-second mark, followed by the same cigarette insertion,
-  lit ember, drag, and smoke timings. The later fade/handoff moved accordingly;
-  Sanity and checkpoint loading are unchanged.
-- Focused regression coverage locks every post-impact timing to the Chult
-  constants and walks through impact, vanished, return, look, cigarette,
-  smoke, fade, and playable Phlegethos handoff. Native impact, absent,
-  returning, and restored frames were inspected. All 67 standalone suites
-  pass, compilation is clean, and the headless title-loop launch smoke check
-  passes.
+- Extended the existing deck state machine so the captain's arrival, crew
+  announcement, accusation, plank order, objection, refusal, Chuck's walk,
+  Jeffries' warning, outer-plank approach, kick, and Hell-fall handoff form one
+  uninterrupted cinematic sequence.
+- Chuck now walks automatically from the staged approach onto the first plank
+  row. The existing reality field activates there and Jeffries delivers the
+  unchanged `It's back! The purple is back!` line. When its dialogue overlay
+  closes, Chuck automatically walks the remaining seven plank rows.
+- Reaching the outer tile now invokes the existing captain approach/kick state
+  directly. Reality-fragment timing, live-Hell-block targeting, fall motion,
+  Sanity carry, dialogue, character placements, and the later Hell cutscene
+  remain unchanged. Manual post-confrontation development/loading behavior is
+  preserved for existing checkpoint states.
+- Focused regressions run the whole path from captain arrival through every
+  dialogue overlay and scripted walk into `HellFallingCutsceneScene`, asserting
+  there is no idle WorldScene frame where player control resumes.
+- All 67 standalone test suites pass, compilation is clean, and the headless
+  title-loop launch smoke check passes.
 
 ## Next Logical Task
 
 Await an authoritative Phase 9 document or direct instruction before defining
 the Feywild's regional music, mechanics, enemies, narrative, or second map.
+
+## Previous Pass (commit 60e0394)
+
+Made the Nine Hells impact reuse Chult's exact death/return timing, Astral blip
+renderer, sounds, look, cigarette, fade, and handoff cadence. All 67 suites
+passed.
 
 ## Previous Pass (commit 18b49c8)
 

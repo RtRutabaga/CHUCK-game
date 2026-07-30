@@ -282,7 +282,9 @@ class WorldScene(Scene):
         self._captain_after_arrival_dialogue = False
         self._captain_after_dialogue = False
         self._plank_procession_active = False
+        self._plank_procession_phase: str | None = None
         self._plank_procession_target: tuple[float, float] | None = None
+        self._plank_after_warning_dialogue = False
         self._plank_ending_phase: str | None = None
         self._plank_ending_t = 0.0
         self._plank_ending_waypoints: list[tuple[float, float]] = []
@@ -518,6 +520,9 @@ class WorldScene(Scene):
             self._captain_after_dialogue = False
             self.game.progress.enable(CAPTAIN_CONFRONTED_FLAG)
             self._begin_plank_procession()
+        if self._plank_after_warning_dialogue:
+            self._plank_after_warning_dialogue = False
+            self._continue_plank_procession()
         if self._pending_entrance_dialogue is not None:
             lines = self.dialogue.get(self._pending_entrance_dialogue)
             self._pending_entrance_dialogue = None
@@ -642,6 +647,16 @@ class WorldScene(Scene):
             if reached:
                 self._plank_procession_active = False
                 self._plank_procession_target = None
+                if self._plank_procession_phase == "to_plank":
+                    self._plank_procession_phase = "warning"
+                    self._show_reality_warning(resume_procession=True)
+                elif self._plank_procession_phase == "to_end":
+                    self._plank_procession_phase = None
+                    if not self._maybe_begin_plank_ending():
+                        raise ValueError(
+                            "Scripted plank walk reached the endpoint "
+                            "without starting its ending"
+                        )
             self._update_footsteps(dt)
             self.camera.update(dt)
             return
@@ -1367,7 +1382,7 @@ class WorldScene(Scene):
         objector.facing = "left"
 
     def _begin_plank_procession(self) -> None:
-        """Cut to the starboard approach, then let Chuck walk to the rail."""
+        """Begin the uninterrupted walk from the accusation to the plank."""
         self._stage_deck_plank()
         self._apply_post_confrontation_tableau()
         assert self._deck_plank_origin is not None
@@ -1383,8 +1398,28 @@ class WorldScene(Scene):
         self.player.facing = "down"
         self._plank_procession_target = (
             self.player.x,
-            (rail_row - 1) * ts + (ts - self.player.height) / 2,
+            rail_row * ts + (ts - self.player.height) / 2,
         )
+        self._plank_procession_phase = "to_plank"
+        self._plank_procession_active = True
+        self.camera.follow(self.player)
+
+    def _continue_plank_procession(self) -> None:
+        """Walk Chuck from Jeffries' warning to the plank's outer tile."""
+        if self._deck_plank_origin is None:
+            raise ValueError(
+                "Ship exterior deck is missing its authored plank origin"
+            )
+        col, first_row = self._deck_plank_origin
+        last_row = first_row + DECK_PLANK_LENGTH - 1
+        ts = config.TILE_SIZE
+        plank_center_x = (col + DECK_PLANK_WIDTH / 2) * ts
+        self.player.x = plank_center_x - self.player.width / 2
+        self._plank_procession_target = (
+            self.player.x,
+            last_row * ts + (ts - self.player.height) / 2,
+        )
+        self._plank_procession_phase = "to_end"
         self._plank_procession_active = True
         self.camera.follow(self.player)
 
@@ -1429,13 +1464,20 @@ class WorldScene(Scene):
         ):
             return False
 
-        field.activate()
+        self._show_reality_warning()
+        return True
+
+    def _show_reality_warning(self, *, resume_procession: bool = False) -> None:
+        """Activate the streamed fragments and present Jeffries' warning."""
+        if self.reality_blocks is None:
+            raise ValueError("Ship exterior deck is missing its reality field")
+        self.reality_blocks.activate()
         self._reality_warning_shown = True
+        self._plank_after_warning_dialogue = resume_procession
         self.game.scenes.push(DialogueScene(
             self.game,
             self.dialogue.get("jeffries_reality_warning"),
         ))
-        return True
 
     def _maybe_begin_plank_ending(self) -> bool:
         """Lock the endpoint once Chuck reaches the end of the live plank."""

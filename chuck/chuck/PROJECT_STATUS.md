@@ -1,6 +1,6 @@
 # CHUCK — Project Status
 
-Updated: Nine Hells landing now mirrors Chult's death/return.
+Updated: captain arrival through the plank fall is one uninterrupted sequence.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -1313,11 +1313,12 @@ bounded sessions.
 11. [x] Added a staged eight-tile starboard plank that replaces one rail
         section and projects as a narrow walkable strip over animated ocean.
         After the confrontation, the captain and objecting pirate flank the
-        approach while Chuck takes a short input-locked, normally animated
-        wooden-footstep walk to the rail. Control returns one step before the
-        plank; solid ocean constrains its sides and current endpoint. Saved
-        confronted state restores the complete tableau without replaying the
-        procession (session 164).
+        approach while Chuck begins an input-locked, normally animated
+        wooden-footstep walk. The sequence no longer returns control at the
+        rail: Chuck steps onto the plank, pauses for Jeffries' warning, then
+        automatically walks to its outer tile and flows directly into the
+        captain's approach, kick, and Hell fall. Saved confronted state still
+        restores the complete tableau without replaying the procession.
    - [x] Restored the arrival compartment's unused south doorway to ordinary
          solid hull, leaving only its three real routes. Replaced the captain
          chest's direct dialogue reward with a four-frame opening action
@@ -1337,7 +1338,7 @@ bounded sessions.
          YES/NO transition, and nearby named arrivals were kept safely off
          the enlarged footprint (session 167).
 12. [x] Added a deterministic moving reality field that activates when Chuck
-        first steps onto the staged plank. Eight staggered Astral and
+        automatically steps onto the staged plank. Eight staggered Astral and
         volcanic Hell fragments enter from the native screen's east edge,
         travel fully clear of its west edge, and recycle continuously to sell
         the ship's forward motion. Astral chunks tile the exact animated
