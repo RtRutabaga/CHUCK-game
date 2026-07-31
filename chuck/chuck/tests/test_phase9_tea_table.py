@@ -169,11 +169,13 @@ def test_tea_table_uses_shared_checkpoint_save_respawn_and_continue() -> None:
 def test_rootways_and_tea_table_transition_both_ways() -> None:
     forward = AREA_WALK_EXITS[("feywild_rootways", "→")]
     backward = AREA_WALK_EXITS[(MAP_NAME, "⇧")]
+    onward = AREA_WALK_EXITS[(MAP_NAME, "⇩")]
     assert forward.destination == MAP_NAME
     assert forward.arrival == "from_feywild_4"
     assert backward.destination == "feywild_rootways"
     assert backward.arrival == "from_feywild_5"
-    assert (MAP_NAME, "⇩") not in AREA_WALK_EXITS
+    assert onward.destination == "feywild_needle_garden"
+    assert onward.arrival == "from_feywild_5"
 
     entry = CHECKPOINT_BY_ID["feywild_5"]
     anchor = CHECKPOINT_BY_ID["feywild_5_anchor"]

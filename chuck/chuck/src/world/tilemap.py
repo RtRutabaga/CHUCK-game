@@ -432,6 +432,9 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="fey_napkin", under="▤"),
     "⁙": TileDef(solid=True, color=(117, 76, 65),
                  prop="fey_crumbs", under="▤"),
+    # Needle Garden's dense flowering beds define projectile lanes. Orchids
+    # root directly into this solid terrain and fire outward across the path.
+    "✿": TileDef(solid=True, color=(42, 79, 56)),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.
@@ -736,6 +739,24 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ջ": MarkerDef(kind="anchor:feywild_5_anchor", under="."),
     "Ռ": MarkerDef(kind="boundary:feywild_6", under="⇩"),
     "Ս": MarkerDef(kind="arrival:from_feywild_6", under="."),
+    # Needle Garden: rooted cardinal launchers, one checkpoint, and the
+    # future Moonmoth Fen handoff.
+    "Վ": MarkerDef(
+        kind="spitting_orchid:down", under="✿", allow_solid=True
+    ),
+    "Տ": MarkerDef(
+        kind="spitting_orchid:up", under="✿", allow_solid=True
+    ),
+    "Ր": MarkerDef(
+        kind="spitting_orchid:left", under="✿", allow_solid=True
+    ),
+    "Ց": MarkerDef(
+        kind="spitting_orchid:right", under="✿", allow_solid=True
+    ),
+    "Ւ": MarkerDef(kind="arrival:from_feywild_5", under="."),
+    "Փ": MarkerDef(kind="anchor:feywild_6_anchor", under="."),
+    "Ք": MarkerDef(kind="boundary:feywild_7", under="→"),
+    "Օ": MarkerDef(kind="arrival:from_feywild_7", under="."),
 }
 
 _COMMENT_PREFIX = ";"

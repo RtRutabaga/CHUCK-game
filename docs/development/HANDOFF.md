@@ -3,30 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `4bc7e36` (Chult-style Feywild boundaries)
-- Current work: Phase 9 Map 5, Giant Tea Table
+- Base commit before this pass: `1712ead` (Feywild Giant Tea Table)
+- Current work: Phase 9 Map 6, Needle Garden
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Added the enemy-free 72x52 `feywild_tea_table`, with a north arrival from
-  Rootways, south future boundary, one nearby physical Ashtray, four
-  cigarette-grass rewards, and the uninterrupted regional soundtrack.
-- Built a colossal solid tabletop from long-grained procedural boards, then
-  dressed it with room-sized plates, steaming cups, napkins, crumbs, and
-  spilled tea. Six chair legs and four taller table legs read as columns.
-  Reachable place settings use only `Still warm.` and `Set for one.`
-- Added reusable under-table shadow and overhead apron terrain. Both remain
-  ordinary walkable terrain for Chuck but join the shared large-actor solid
-  set. The required route passes beneath the table; a separate root passage
-  gates an optional grass cache.
-- Added shared `Feywild 5` development/Ashtray definitions, Rootways return
-  state, future Map 6 return state, real bidirectional Rootways travel, and
-  Chult-style three-cell edge openings. The Map 6 edge remains inert.
-- Focused coverage locks map content, enemy-free pacing, prop scale, brief
-  dialogue, passage exclusivity, save/Continue/respawn, development loading,
-  and actual two-way world transitions. All 71 standalone suites pass,
-  compilation is clean, and the headless title-loop launch check passes.
+- Added the 72x50 `feywild_needle_garden`, connecting Giant Tea Table to a
+  future east-edge Map 7 boundary through Chult-style three-cell openings.
+- Added reusable stationary spitting orchids and hard seed projectiles.
+  Orchids face authored cardinal lanes, use three procedural wind-up frames,
+  fire on four evenly staggered cadence slots, and stop seeds against solid
+  terrain. Seed contact costs Sanity; the plants remain traversal hazards
+  rather than mandatory combat targets.
+- Authored a broad safe first approach, narrower later flowerbed lanes, and a
+  late horizontal/vertical crossing with a slowing-pollen side bypass. Pollen
+  appears only after two clean timing lessons. The sole Ashtray and both grass
+  rewards remain out of projectile interaction space.
+- Added shared `Feywild 6` development/Ashtray/return definitions, real
+  bidirectional Giant Tea Table travel, seamless regional music, enemy reset,
+  save/Continue/respawn behavior, and focused coverage. All 72 standalone
+  suites pass, compilation is clean, and the headless title-loop launch check
+  passes.
+
+## Previous Pass (commit 1712ead)
+
+Added the enemy-free Giant Tea Table, colossal procedural furniture and place
+settings, under-table routes, its shared checkpoint, and Rootways travel. All
+71 suites passed.
 
 ## Previous Pass (commit 4bc7e36)
 
@@ -75,8 +79,8 @@ quality regressions. All 69 suites passed.
 
 ## Next Logical Task
 
-Implement Phase 9 Map 6, Needle Garden, with stationary spitting orchids,
-readable cardinal projectile lanes, and exactly one shared Ashtray/checkpoint.
+Implement Phase 9 Map 7, Moonmoth Fen, with fixed-axis lantern moth haunts,
+static one-tile wetland jumps, and exactly one shared Ashtray/checkpoint.
 
 ## Previous Pass (commit 474435d)
 

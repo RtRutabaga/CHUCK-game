@@ -19,10 +19,11 @@ Feywild region. Its first implementation slice is complete: `Feywild 2`
 system now connect to the riverbank in both directions. `Feywild 3`
 (Pollen Orchard) is also complete, providing the safe, enemy-free slowing
 pollen lesson and the region's third Ashtray.
-`Feywild 4` (Rootways) and `Feywild 5` (Giant Tea Table) are also complete,
-establishing large-actor-blocking root/table passages, the first redcap
-pursuit, and the planned enemy-free scale respite. The regional soundtrack is
-complete and shared without interruption across all five implemented maps.
+`Feywild 4` (Rootways), `Feywild 5` (Giant Tea Table), and `Feywild 6`
+(Needle Garden) are also complete, establishing large-actor-blocking
+root/table passages, the first redcap pursuit, the planned enemy-free scale
+respite, and telegraphed cardinal projectile timing. The regional soundtrack
+is complete and shared without interruption across all six implemented maps.
 
 This phase contains **thirteen playable Feywild maps total**: the
 existing riverbank plus twelve new maps. Chult's exterior region and
@@ -1220,5 +1221,14 @@ boundary reserved for the later floating-wizard-tower phase.
   through reusable under-table/apron terrain that larger actors treat as
   solid; an optional root passage hides a grass cache. Two place settings use
   only `Still warm.` and `Set for one.` One physical Ashtray, shared
-  `Feywild 5` entry, Rootways backtracking, an inert Map 6 edge, and the
-  uninterrupted regional theme complete the slice.
+  `Feywild 5` entry, Rootways backtracking, the later-completed Needle Garden
+  handoff, and the uninterrupted regional theme complete the slice.
+- **Needle Garden / projectile-lane timing:** Added the 72x50
+  `feywild_needle_garden` and reusable stationary spitting orchids. Each faces
+  an authored cardinal lane, uses three readable wind-up stages, fires hard
+  seed projectiles on a deterministic stagger, and stops those seeds against
+  solid terrain. A broad first chamber teaches the cadence without pollen;
+  later lanes narrow, and the densest crossing offers a slower-pollen bypass.
+  One safe physical Ashtray, two grass rewards, shared `Feywild 6` entry,
+  Giant Tea Table backtracking, an inert Map 7 edge, and uninterrupted
+  regional music complete the slice.

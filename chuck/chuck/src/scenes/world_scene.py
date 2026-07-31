@@ -45,6 +45,7 @@ from src.entities.redcap import Redcap
 from src.entities.reality_blocks import RealityBlockField
 from src.entities.snake import TempleSnake
 from src.entities.flameskull import Flameskull
+from src.entities.spitting_orchid import OrchidSeed, SpittingOrchid
 from src.entities.spined_devil import FlamingSpine, SpinedDevil
 from src.entities.sword_fighter import SwordFighter
 from src.entities.undead import UndeadEnemy
@@ -382,8 +383,10 @@ class WorldScene(Scene):
                 "cat", "rat", "zombie", "skeleton", "lemure", "raptor",
                 "massive_dinosaur", "horned_devil", "snake", "fire_snake",
                 "pirate_chef", "redcap",
-            } or kind.startswith(("sword_fighter:", "spined_devil:",
-                                  "flameskull:"))
+            } or kind.startswith((
+                "sword_fighter:", "spined_devil:", "flameskull:",
+                "spitting_orchid:",
+            ))
         ]
         self._staged_undead_spawns = [
             (kind, position)
@@ -459,8 +462,10 @@ class WorldScene(Scene):
                 "pirate_chef", "redcap",
             }:
                 continue  # rebuilt with all enemies below
-            elif kind.startswith(("sword_fighter:", "spined_devil:",
-                                  "flameskull:")):
+            elif kind.startswith((
+                "sword_fighter:", "spined_devil:", "flameskull:",
+                "spitting_orchid:",
+            )):
                 continue  # rebuilt with all hazards below
             elif kind.startswith("battle:"):
                 actor = BattleActor(cx, cy, kind.split(":", 1)[1])
@@ -734,6 +739,15 @@ class WorldScene(Scene):
         for spine in self.spines:
             spine.update(dt, self.tilemap)
         self.spines = [spine for spine in self.spines if spine.alive]
+        for orchid in self.spitting_orchids:
+            seed = orchid.update(dt)
+            if seed is not None:
+                self.orchid_seeds.append(seed)
+        for seed in self.orchid_seeds:
+            seed.update(dt, self.tilemap)
+        self.orchid_seeds = [
+            seed for seed in self.orchid_seeds if seed.alive
+        ]
         for skull in self.flameskulls:
             skull.update(dt)
         for actor in self.battle_actors:
@@ -1084,6 +1098,16 @@ class WorldScene(Scene):
                     self.game.audio.play_sfx("hurt")
         self.spines = [spine for spine in self.spines if spine.alive]
 
+        for seed in self.orchid_seeds:
+            if seed.alive and overlaps(player_box, seed.hitbox):
+                seed.alive = False
+                if self.sanity.damage(seed.damage):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+        self.orchid_seeds = [
+            seed for seed in self.orchid_seeds if seed.alive
+        ]
+
         # Flameskulls cannot be cleared: they only ever cost Sanity.
         for skull in self.flameskulls:
             if overlaps(player_box, skull.hitbox):
@@ -1309,9 +1333,11 @@ class WorldScene(Scene):
                      *self.battle_actors,
                      *self.hazards, *self.rats,
                       *self.undead, *self.raptors, *self.dinosaurs,
-                      *self.redcaps, *self.snakes, *self.chefs, *self.fencers,
+                     *self.redcaps, *self.snakes, *self.chefs, *self.fencers,
                      *self.spined_devils, *self.flameskulls,
-                     *self.darts, *self.spines, *self.battle_projectiles,
+                     *self.spitting_orchids,
+                     *self.darts, *self.spines, *self.orchid_seeds,
+                     *self.battle_projectiles,
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
 
@@ -1800,6 +1826,8 @@ class WorldScene(Scene):
         self.spined_devils: list[SpinedDevil] = []
         self.spines: list[FlamingSpine] = []
         self.flameskulls: list[Flameskull] = []
+        self.spitting_orchids: list[SpittingOrchid] = []
+        self.orchid_seeds: list[OrchidSeed] = []
         # The sanctum battle restarts its cadences whenever the room does,
         # and the Astral breach heals shut and re-arms with it.
         if self.map_name == "temple_sanctum":
@@ -1920,6 +1948,10 @@ class WorldScene(Scene):
                 skull = Flameskull(cx, cy, kind.split(":", 1)[1])
                 skull.load_sprites(self.game.assets)
                 self.flameskulls.append(skull)
+            elif kind.startswith("spitting_orchid:"):
+                orchid = SpittingOrchid(cx, cy, kind.split(":", 1)[1])
+                orchid.load_sprites(self.game.assets)
+                self.spitting_orchids.append(orchid)
         if self.fencers:
             if len(self.fencers) != 2:
                 raise ValueError("Exterior fencing encounter needs two pirates")

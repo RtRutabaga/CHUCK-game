@@ -289,6 +289,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("feywild_tea_table", "⇧"): AreaExit(
         "feywild_rootways", "from_feywild_5", "left"
     ),
+    ("feywild_tea_table", "⇩"): AreaExit(
+        "feywild_needle_garden", "from_feywild_5", "down"
+    ),
+    ("feywild_needle_garden", "⇧"): AreaExit(
+        "feywild_tea_table", "from_feywild_6", "up"
+    ),
 }
 
 
@@ -336,4 +342,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "feywild_pollen_orchard": "feywild.wav",
     "feywild_rootways": "feywild.wav",
     "feywild_tea_table": "feywild.wav",
+    "feywild_needle_garden": "feywild.wav",
 }

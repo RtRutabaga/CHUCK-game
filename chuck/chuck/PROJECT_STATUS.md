@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's fifth map, Giant Tea Table, now provides an enemy-free
-scale-focused exploration respite beneath a colossal Fey place setting.
+Updated: Phase 9's sixth map, Needle Garden, now introduces telegraphed
+cardinal seed-projectile lanes and a late slowing-pollen bypass.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -121,7 +121,7 @@ This file is required by the project rules and updated every session.
   Later peaks use only isolated echo accents, reserve reed answers for
   contrasting sections, and avoid added bass/percussion fills so the hook
   remains clear rather than becoming cluttered or disharmonious.
-  All five implemented Feywild maps request the same seamless loop, so the
+  All six implemented Feywild maps request the same seamless loop, so the
   existing audio deduplication keeps it playing through map transitions,
   checkpoint respawns, and reloads without layering or restarting.
 - `Feywild 4` (Rootways) is a connected 68x46 east-west forest floor divided
@@ -147,8 +147,20 @@ This file is required by the project rules and updated every session.
   pocket hides one of four cigarette-grass rewards. Two reachable place
   settings offer only the restrained lines `Still warm.` and `Set for one.`
   The map has one physical Ashtray, shared `Feywild 5` development entry,
-  Chult-style three-cell edge openings, reversible Rootways travel, an inert
-  Map 6 boundary, and uninterrupted Feywild music.
+  Chult-style three-cell edge openings, reversible Rootways and Needle Garden
+  travel, and uninterrupted Feywild music.
+- `Feywild 6` (Needle Garden) is a 72x50 timing-focused flower maze. Four
+  rooted spitting orchids face authored cardinal lanes, remain stationary,
+  swell and flash through three readable native-scale frames, then launch hard
+  seeds that stop against solid terrain and cost 14 Sanity on contact.
+- The opening orchid fires across a broad, safe observation chamber. Later
+  orchids occupy narrower flowerbed corridors on evenly staggered cadences;
+  the final horizontal/vertical crossing has a lower bypass that replaces
+  projectile pressure with the already-established slowing pollen. The
+  Ashtray approach never intersects a firing lane. The map has two optional
+  cigarette-grass rewards, one physical Ashtray, shared `Feywild 6`
+  development entry, reversible Giant Tea Table travel, an inert Map 7 edge,
+  and uninterrupted Feywild music.
 
 ## Working systems
 
@@ -1147,8 +1159,8 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build Phase 9's next bounded map, `Feywild 6` (Needle Garden), introducing
-stationary spitting orchids and readable cardinal projectile timing with one
+Build Phase 9's next bounded map, `Feywild 7` (Moonmoth Fen), introducing
+fixed-axis lantern moth haunts around static one-tile wetland jumps with one
 physical Ashtray.
 
 ## Also open

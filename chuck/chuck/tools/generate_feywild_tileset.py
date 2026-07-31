@@ -282,6 +282,31 @@ def tea_spill(surface, variant: int, _frame: int) -> None:
     surface.set_at(((variant * 5 + 5) % 14, 7 + variant), (111, 180, 143))
 
 
+def needle_bed(surface, variant: int, _frame: int) -> None:
+    """Dense flowering foliage used to frame the orchid firing lanes."""
+    surface.fill(GROUND_DARK)
+    for index in range(7):
+        x = (variant * 5 + index * 7 + 1) % 16
+        y = (variant * 9 + index * 5 + 2) % 16
+        color = (LEAF_LIGHT if index % 3 == 0 else LEAF)
+        pygame.draw.line(
+            surface, color, (x, min(15, y + 3)), (x, max(0, y - 2)), 1
+        )
+        if index % 2:
+            pygame.draw.line(
+                surface, color,
+                (x, y), (max(0, x - 2), max(0, y - 2)), 1,
+            )
+        bloom = (
+            (211, 92, 191) if (index + variant) % 2
+            else (234, 174, 103)
+        )
+        pygame.draw.rect(
+            surface, bloom, ((x - 1) % 16, max(0, y - 3), 2, 2)
+        )
+    pygame.draw.line(surface, GROUND_LIGHT, (0, 15), (15, 15), 1)
+
+
 DRAW = {
     "fey_ground": ground,
     "fey_dense": dense,
@@ -299,6 +324,7 @@ DRAW = {
     "fey_table_shadow": table_shadow,
     "fey_table_apron": table_apron,
     "fey_tea_spill": tea_spill,
+    "fey_needle_bed": needle_bed,
 }
 
 

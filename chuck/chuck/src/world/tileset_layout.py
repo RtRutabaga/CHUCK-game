@@ -344,6 +344,7 @@ FEYWILD = Tileset(
         ("fey_table_shadow", 3, 1),
         ("fey_table_apron", 3, 1),
         ("fey_tea_spill", 3, 1),
+        ("fey_needle_bed", 4, 1),
     ],
     char_to_terrain={
         ".": "fey_ground",
@@ -356,6 +357,7 @@ FEYWILD = Tileset(
         "▤": "fey_tabletop",
         "░": "fey_table_shadow",
         "◍": "fey_tea_spill",
+        "✿": "fey_needle_bed",
     },
     overhead_char_to_terrain={
         "←": "fey_opening_w",
@@ -416,6 +418,7 @@ MAP_TILESET: dict[str, str] = {
     "feywild_pollen_orchard": "feywild",
     "feywild_rootways": "feywild",
     "feywild_tea_table": "feywild",
+    "feywild_needle_garden": "feywild",
 }
 
 

@@ -235,6 +235,20 @@ REDCAP_SANITY_DAMAGE = 18
 REDCAP_SCRATCHES = 6
 REDCAP_FRAME_DURATION = 0.22
 
+# Feywild spitting orchids are rooted cardinal launchers. Their slower seeds
+# and pronounced wind-up leave a deliberate timing window in authored lanes.
+ORCHID_FRAME_W = 20
+ORCHID_FRAME_H = 24
+ORCHID_HITBOX_W = 12
+ORCHID_HITBOX_H = 8
+ORCHID_SHOT_INTERVAL = 2.4
+ORCHID_WINDUP_TIME = 0.55
+ORCHID_FLASH_TIME = 0.16
+ORCHID_SEED_SPEED = 84.0
+ORCHID_SEED_SANITY_DAMAGE = 14
+ORCHID_SEED_HITBOX_LONG = 7
+ORCHID_SEED_HITBOX_SHORT = 3
+
 # Temple wall launchers fire narrow, readable projectiles across trap corridors.
 # Darts outrun Chuck but their authored spacing and cadence leave timing windows.
 DART_SPEED = 112.0
