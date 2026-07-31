@@ -41,6 +41,7 @@ from src.entities.player import Player
 from src.entities.prop import Prop
 from src.entities.rat import SewerRat
 from src.entities.raptor import Raptor
+from src.entities.redcap import Redcap
 from src.entities.reality_blocks import RealityBlockField
 from src.entities.snake import TempleSnake
 from src.entities.flameskull import Flameskull
@@ -380,7 +381,7 @@ class WorldScene(Scene):
             if kind in {
                 "cat", "rat", "zombie", "skeleton", "lemure", "raptor",
                 "massive_dinosaur", "horned_devil", "snake", "fire_snake",
-                "pirate_chef",
+                "pirate_chef", "redcap",
             } or kind.startswith(("sword_fighter:", "spined_devil:",
                                   "flameskull:"))
         ]
@@ -455,7 +456,7 @@ class WorldScene(Scene):
             elif kind in {
                 "rat", "zombie", "skeleton", "lemure", "raptor",
                 "massive_dinosaur", "horned_devil", "snake", "fire_snake",
-                "pirate_chef",
+                "pirate_chef", "redcap",
             }:
                 continue  # rebuilt with all enemies below
             elif kind.startswith(("sword_fighter:", "spined_devil:",
@@ -707,6 +708,8 @@ class WorldScene(Scene):
             undead.update(dt, self.player)
         for raptor in self.raptors:
             raptor.update(dt, self.player)
+        for redcap in self.redcaps:
+            redcap.update(dt, self.player)
         for dinosaur in self.dinosaurs:
             dinosaur.update(dt, self.player)
         for snake in self.snakes:
@@ -929,13 +932,14 @@ class WorldScene(Scene):
                 [*self.reactive_flowers.flowers,
                  *(prop for prop in self.props
                    if callable(getattr(prop, "on_scratched", None))),
-                 *self.breakables, *self.rats, *self.undead, *self.raptors,
-                 *self.dinosaurs, *self.snakes],
+                  *self.breakables, *self.rats, *self.undead, *self.raptors,
+                  *self.redcaps, *self.dinosaurs, *self.snakes],
             )
             self._collect_pending_drops()
         self.rats = [rat for rat in self.rats if rat.alive]
         self.undead = [enemy for enemy in self.undead if enemy.alive]
         self.raptors = [raptor for raptor in self.raptors if raptor.alive]
+        self.redcaps = [redcap for redcap in self.redcaps if redcap.alive]
         self.dinosaurs = [dinosaur for dinosaur in self.dinosaurs
                           if dinosaur.alive]
         self.snakes = [snake for snake in self.snakes if snake.alive]
@@ -968,6 +972,17 @@ class WorldScene(Scene):
         )
         if blocking_raptor is not None:
             if self.sanity.damage(blocking_raptor.damage):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+            self.player.x, self.player.y = old_player_position
+
+        blocking_redcap = next(
+            (redcap for redcap in self.redcaps
+             if overlaps(self.player.hitbox, redcap.hitbox)),
+            None,
+        )
+        if blocking_redcap is not None:
+            if self.sanity.damage(blocking_redcap.damage):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
             self.player.x, self.player.y = old_player_position
@@ -1293,8 +1308,8 @@ class WorldScene(Scene):
                      *self.reactive_flowers.flowers,
                      *self.battle_actors,
                      *self.hazards, *self.rats,
-                     *self.undead, *self.raptors, *self.dinosaurs,
-                     *self.snakes, *self.chefs, *self.fencers,
+                      *self.undead, *self.raptors, *self.dinosaurs,
+                      *self.redcaps, *self.snakes, *self.chefs, *self.fencers,
                      *self.spined_devils, *self.flameskulls,
                      *self.darts, *self.spines, *self.battle_projectiles,
                      *self.npcs, self.player]
@@ -1769,6 +1784,7 @@ class WorldScene(Scene):
         self.rats = []
         self.undead = []
         self.raptors = []
+        self.redcaps = []
         self.dinosaurs = []
         self.snakes = []
         self.chefs = []
@@ -1861,6 +1877,11 @@ class WorldScene(Scene):
                 raptor.tilemap = self.tilemap
                 raptor.load_sprites(self.game.assets)
                 self.raptors.append(raptor)
+            elif kind == "redcap":
+                redcap = Redcap(cx, cy)
+                redcap.tilemap = self.tilemap
+                redcap.load_sprites(self.game.assets)
+                self.redcaps.append(redcap)
             elif kind in {"massive_dinosaur", "horned_devil"}:
                 # A horned devil is the Chultan colossus in infernal art.
                 dinosaur = MassiveDinosaur(

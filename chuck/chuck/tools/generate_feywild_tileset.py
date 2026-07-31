@@ -33,6 +33,9 @@ BANK = (35, 85, 61)
 BANK_DARK = (22, 63, 52)
 PATH = (45, 76, 59)
 PATH_LIGHT = (68, 105, 72)
+ROOT_DARK = (42, 31, 34)
+ROOT_BROWN = (82, 55, 45)
+ROOT_LIGHT = (125, 83, 55)
 
 
 def ground(surface, variant: int, _frame: int) -> None:
@@ -197,6 +200,31 @@ def opening_s(surface, variant: int, _frame: int) -> None:
     opening(surface, variant, "s")
 
 
+def root_wall(surface, variant: int, _frame: int) -> None:
+    """Tangled roots dense enough to read as a continuous solid barrier."""
+    surface.fill(ROOT_DARK)
+    offsets = (0, 3, 6, 9)
+    for index, offset in enumerate(offsets):
+        y = (offset + variant * 2) % 13
+        color = ROOT_BROWN if index % 2 else ROOT_LIGHT
+        pygame.draw.line(surface, color, (-2, y), (17, y + 7), 3)
+        pygame.draw.line(surface, ROOT_DARK, (-2, y + 2), (17, y + 9), 1)
+    pygame.draw.line(surface, LEAF, (variant * 3, 0), (15, 12), 1)
+    surface.set_at(((variant * 5 + 3) % 16, (variant * 7 + 5) % 16),
+                   (VIOLET, BLUE, PINK, GOLD)[variant])
+
+
+def root_passage(surface, variant: int, _frame: int) -> None:
+    """A low arch drawn over Chuck while leaving the path visible beneath."""
+    surface.fill((0, 0, 0, 0))
+    pygame.draw.line(surface, ROOT_DARK, (0, 2), (15, 2 + variant), 7)
+    pygame.draw.line(surface, ROOT_BROWN, (0, 1), (15, 1 + variant), 4)
+    pygame.draw.line(surface, ROOT_LIGHT, (0, 0), (15, variant), 1)
+    pygame.draw.line(surface, ROOT_DARK, (1, 0), (1, 8), 3)
+    pygame.draw.line(surface, ROOT_DARK, (14, 2), (14, 9), 3)
+    pygame.draw.line(surface, LEAF, (2, 1), (8 + variant, 4), 1)
+
+
 DRAW = {
     "fey_ground": ground,
     "fey_dense": dense,
@@ -208,6 +236,8 @@ DRAW = {
     "fey_opening_e": opening_e,
     "fey_opening_n": opening_n,
     "fey_opening_s": opening_s,
+    "fey_root_wall": root_wall,
+    "fey_root_passage": root_passage,
 }
 
 

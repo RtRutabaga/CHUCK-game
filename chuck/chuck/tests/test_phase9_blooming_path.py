@@ -194,6 +194,7 @@ def test_feywild_boundaries_use_cardinal_vegetation_openings() -> None:
         "\u2192": "fey_opening_e",
         "\u21e7": "fey_opening_n",
         "\u21e9": "fey_opening_s",
+        "\u2240": "fey_root_passage",
     }
     assert tileset.overhead_char_to_terrain == expected
     for char, art_name in expected.items():

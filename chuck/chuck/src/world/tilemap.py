@@ -407,6 +407,11 @@ TILE_DEFS: dict[str, TileDef] = {
     # Luminous Feywild pollen is ordinary walkable ground. Its only gameplay
     # effect is derived from Chuck's grounded footprint each frame.
     "☼": TileDef(solid=False, color=(76, 99, 54)),
+    # Rootways: solid knotted root masses divide the forest floor. The narrow
+    # gap is ordinary path under an overhead root arch, traversable by Chuck.
+    "※": TileDef(solid=True, color=(58, 43, 39)),
+    "≀": TileDef(solid=False, color=(45, 76, 59),
+                 under="'", overhead="fey_root_passage"),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.
@@ -700,6 +705,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     ),
     "Ճ": MarkerDef(kind="flower_close:orchard", under="'"),
     "Մ": MarkerDef(kind="arrival:from_feywild_3", under="'"),
+    # Rootways: first redcap pursuit and Chuck-scale protected passages.
+    "Յ": MarkerDef(kind="arrival:from_feywild_3", under="'"),
+    "Ն": MarkerDef(kind="anchor:feywild_4_anchor", under="'"),
+    "Շ": MarkerDef(kind="redcap", under="."),
+    "Ո": MarkerDef(kind="boundary:feywild_5", under="→"),
+    "Չ": MarkerDef(kind="arrival:from_feywild_5", under="'"),
 }
 
 _COMMENT_PREFIX = ";"

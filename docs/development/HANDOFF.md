@@ -3,28 +3,33 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `a6af3a9` (catchier Feywild theme)
-- Current work: Feywild peak-arrangement clarity
+- Base commit before this pass: `7e627c0` (clearer Feywild theme peaks)
+- Current work: Phase 9 Map 4, Rootways
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Preserved the theme's opening, core mallet hook, F Mixolydian harmony,
-  116 BPM tempo, and 99-second structure while clearing the later peaks.
-- Replaced full-hook echo duplication with four isolated accents per
-  eight-bar peak. The breathy reed now waits through both peak statements and
-  uses one consonant response per bar only in the contrasting sections.
-- Removed the peak-only extra bass, kick, and tom fills. Lowered echo, reed,
-  bell, reverse-swell, and hat levels so the hook, elastic bass, and core hand
-  percussion remain legible instead of competing.
-- The render contains 1,544 events, down from 1,736. Peak RMS remains a gentle
-  lift over the opening rather than collapsing dynamically; the 0.92 peak and
-  exact loop seam are preserved.
-- Strengthened composition tests to enforce sparse peak echoes, absent peak
-  reed counterpoint, and consistent seven-note bass/three-hit kick/three-hit
-  tom patterns.
-- All 69 standalone suites pass, compilation is clean, and the headless launch
-  smoke check passes.
+- Added the connected 68x46 `feywild_rootways` map, running west-to-east
+  through a broad root-divided forest floor. It contains one safe arrival,
+  exactly one physical Ashtray, two exposed pursuit spaces, one protected
+  refuge, one optional cigarette-grass cache, reversible travel to Pollen
+  Orchard, and an inert authored Map 5 boundary.
+- Added reusable solid root-mass and overhead low-root-passage terrain to the
+  Feywild tileset. Chuck walks through the low openings normally; larger
+  actors treat the same authored cells as extra-solid terrain and stop visibly
+  at their mouths.
+- Added the first two procedural redcaps: gnome-sized, heavy-booted direct
+  pursuers with red caps and iron tools. They take six scratches, deal 18
+  Sanity contact damage, reset on death, and remain avoidable rather than
+  gating the main route.
+- Added shared `Feywild 4` development entry and `Feywild 4 Ashtray` save
+  definition. Save/CONTINUE, Sanity-zero respawn, and both real map transitions
+  use the existing checkpoint and world-loading architecture.
+- Rootways continues `feywild.wav` without restarting it. Focused coverage
+  locks map authorship, passage exclusivity, redcap durability/collision,
+  checkpoint saving, enemy reset, and two-way travel.
+- All 70 standalone suites pass, compilation is clean, and the headless
+  launch smoke check reaches and exits the normal game loop.
 
 ## Previous Pass (commit a6af3a9)
 
@@ -61,8 +66,10 @@ quality regressions. All 69 suites passed.
 
 ## Next Logical Task
 
-Implement Phase 9's next bounded slice: Feywild 4, Rootways, with reusable
-Chuck-sized passages, the first restrained redcap pursuit, and its Ashtray.
+Implement Phase 9 Map 5, Giant Tea Table, as the documented enemy-free
+exploration respite built around colossal place settings, under-table routes,
+restrained environmental storytelling, and one physical Ashtray. Keep the
+slice to that one map and its shared checkpoint.
 
 ## Previous Pass (commit 474435d)
 

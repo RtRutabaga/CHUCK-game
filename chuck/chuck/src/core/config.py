@@ -222,6 +222,19 @@ FLAMESKULL_SANITY_DAMAGE = 16
 UNDEAD_NOTICE_RANGE = 112.0
 THORN_SANITY_DAMAGE = 10
 
+# Feywild redcaps are gnome-sized pursuit enemies: sturdier than Chuck and
+# quick enough to pressure an exposed route, but unable to enter his narrow
+# root passages.
+REDCAP_FRAME_W = 20
+REDCAP_FRAME_H = 24
+REDCAP_HITBOX_W = 14
+REDCAP_HITBOX_H = 9
+REDCAP_SPEED = 27.0
+REDCAP_NOTICE_RANGE = 112.0
+REDCAP_SANITY_DAMAGE = 18
+REDCAP_SCRATCHES = 6
+REDCAP_FRAME_DURATION = 0.22
+
 # Temple wall launchers fire narrow, readable projectiles across trap corridors.
 # Darts outrun Chuck but their authored spacing and cadence leave timing windows.
 DART_SPEED = 112.0

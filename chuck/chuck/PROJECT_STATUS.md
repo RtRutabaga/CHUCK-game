@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's first three maps now share an original, uninterrupted
-Feywild exploration theme built for long-form wandering.
+Updated: Phase 9's fourth map, Rootways, now introduces Chuck-scale root
+passages and the first avoidable redcap pursuit.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -122,6 +122,18 @@ This file is required by the project rules and updated every session.
   Riverbank, Blooming Path, and Pollen Orchard all request the same seamless
   loop, so the existing audio deduplication keeps it playing through map
   transitions, checkpoint respawns, and reloads without layering or restarting.
+- `Feywild 4` (Rootways) is a connected 68x46 east-west forest floor divided
+  by giant knotted root masses. Two restrained, gnome-sized redcaps pursue
+  Chuck across the broad exposed route, deal 18 Sanity contact damage, and
+  take six scratches to defeat, making escape the practical response without
+  turning either encounter into a combat gate.
+- Reusable low root gaps are ordinary walkable overhead terrain for one-foot
+  Chuck but extra-solid terrain for larger pursuers. Redcaps visibly stop at
+  the mouth instead of disappearing or teleporting; one gap opens a protected
+  refuge and the other is the sole entrance to an optional cigarette-grass
+  cache. Rootways has exactly one physical Ashtray, a shared `Feywild 4`
+  development checkpoint, reversible travel to Pollen Orchard, an inert Map 5
+  boundary, and the uninterrupted regional soundtrack.
 
 ## Working systems
 
@@ -1120,9 +1132,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build Phase 9's next bounded map, `Feywild 4` (Rootways), with reusable
-Chuck-sized passages, the first restrained redcap pursuit, one physical
-Ashtray, and the shared Feywild soundtrack.
+Build Phase 9's next bounded map, `Feywild 5` (Giant Tea Table), as the
+documented enemy-free exploration respite built around human/Fey-scale table
+settings, under-table routes, and one physical Ashtray.
 
 ## Also open
 
