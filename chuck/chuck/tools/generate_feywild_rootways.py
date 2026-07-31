@@ -10,8 +10,8 @@ OUT = (
     / "assets" / "maps" / "feywild_rootways.txt"
 )
 
-RETURN_EXIT = (2, 40)
-ARRIVAL = (5, 40)
+RETURN_EXIT = (0, 40)
+ARRIVAL = (3, 40)
 ANCHOR = (11, 41)
 FUTURE_RETURN = (63, 18)
 FUTURE_EXIT = (67, 18)
@@ -98,12 +98,15 @@ def build() -> list[list[str]]:
         if grid[row][col] == ".":
             grid[row][col] = char
 
-    grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "←"
+    for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
+        grid[row][RETURN_EXIT[0]] = "←"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Յ"
     grid[ANCHOR[1]][ANCHOR[0]] = "Ն"
     for col, row in REDCAPS:
         grid[row][col] = "Շ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "Չ"
+    for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
+        grid[row][FUTURE_EXIT[0]] = "→"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "Ո"
     return grid
 
@@ -157,6 +160,14 @@ def validate(grid: list[list[str]]) -> None:
     assert text.count("Շ") == 2
     assert text.count("≀") == 2
     assert text.count("<") == 1
+    assert all(
+        grid[row][0] == "←"
+        for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2)
+    )
+    assert all(
+        grid[row][W - 1] in {"→", "Ո"}
+        for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2)
+    )
 
 
 def main() -> None:

@@ -20,8 +20,8 @@ OUT = (
 
 ARRIVAL = (15, 27)
 ANCHOR = (20, 27)
-DEEPER = (43, 6)
-RETURN = (40, 6)
+DEEPER = (51, 6)
+RETURN = (48, 6)
 
 PATH_POINTS = (
     ARRIVAL,
@@ -29,7 +29,8 @@ PATH_POINTS = (
     (26, 21),
     (36, 21),
     (36, 14),
-    (43, 14),
+    (48, 14),
+    (48, 6),
     DEEPER,
 )
 
@@ -131,6 +132,10 @@ def build() -> list[list[str]]:
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Գ"
     grid[ANCHOR[1]][ANCHOR[0]] = "Դ"
     grid[RETURN[1]][RETURN[0]] = "Խ"
+    # Chult-style wilderness handoff: a three-tile trail mouth cuts through
+    # the actual map edge, with the stable boundary marker in its center.
+    for row in range(DEEPER[1] - 1, DEEPER[1] + 2):
+        grid[row][DEEPER[0]] = "→"
     grid[DEEPER[1]][DEEPER[0]] = "Ե"
     return grid
 
@@ -156,6 +161,10 @@ def validate(grid: list[list[str]]) -> None:
     assert ANCHOR in reached, "arrival cannot reach the Feywild Ashtray"
     assert RETURN in reached, "arrival cannot reach the Blooming Path return"
     assert DEEPER in reached, "arrival cannot reach the deeper boundary"
+    assert all(
+        grid[row][W - 1] in {"→", "Ե"}
+        for row in range(DEEPER[1] - 1, DEEPER[1] + 2)
+    )
     assert sum(row.count("~") for row in grid) >= 300
     enemy_markers = set("()ѮԀԞ¡¶")
     assert not any(char in enemy_markers for row in grid for char in row)

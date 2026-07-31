@@ -10,14 +10,14 @@ OUT = (
     / "assets" / "maps" / "feywild_pollen_orchard.txt"
 )
 
-RETURN_EXIT = (6, 43)
-ARRIVAL = (8, 43)
+RETURN_EXIT = (6, 45)
+ARRIVAL = (8, 42)
 ANCHOR = (12, 43)
 FLOWER = (43, 31)
 OPEN_GATE = ((31, 27), (31, 28), (31, 29))
 CLOSE_GATE = ((51, 27), (51, 28), (51, 29))
-DEEPER_RETURN = (25, 4)
-DEEPER = (28, 2)
+DEEPER_RETURN = (28, 3)
+DEEPER = (28, 0)
 
 POLLEN_BEDS = (
     # The first strip is only one tile deep in Chuck's direction of travel.
@@ -73,8 +73,8 @@ def build() -> list[list[str]]:
     grid = [["#"] * W for _ in range(H)]
 
     # A long, alternating orchard route creates five readable crossings.
-    _carve_segment(grid, RETURN_EXIT, (15, 43))
-    _carve_segment(grid, (15, 43), (15, 35))
+    _carve_segment(grid, (6, H - 2), (15, H - 2))
+    _carve_segment(grid, (15, H - 2), (15, 35))
     _carve_segment(grid, (15, 35), (45, 35))
     _carve_segment(grid, (45, 35), (45, 28))
     _carve_segment(grid, (45, 28), (52, 28))
@@ -82,7 +82,7 @@ def build() -> list[list[str]]:
     _carve_segment(grid, (52, 20), (18, 20))
     _carve_segment(grid, (18, 20), (18, 12))
     _carve_segment(grid, (18, 12), (28, 12))
-    _carve_segment(grid, (28, 12), DEEPER)
+    _carve_segment(grid, (28, 12), (28, 1))
 
     # The direct middle lane begins sealed. Its flower trades the eastern
     # detour for this shorter route while retaining complete connectivity.
@@ -125,7 +125,8 @@ def build() -> list[list[str]]:
     # A single optional grass reward sits off the first main bend.
     grid[33][9] = "<"
 
-    grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "⇩"
+    for col in range(RETURN_EXIT[0] - 1, RETURN_EXIT[0] + 2):
+        grid[RETURN_EXIT[1]][col] = "⇩"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Լ"
     grid[ANCHOR[1]][ANCHOR[0]] = "Ծ"
     grid[FLOWER[1]][FLOWER[0]] = "Ձ"
@@ -134,6 +135,8 @@ def build() -> list[list[str]]:
     for col, row in CLOSE_GATE:
         grid[row][col] = "Ճ"
     grid[DEEPER_RETURN[1]][DEEPER_RETURN[0]] = "Հ"
+    for col in range(DEEPER[0] - 1, DEEPER[0] + 2):
+        grid[DEEPER[1]][col] = "⇧"
     grid[DEEPER[1]][DEEPER[0]] = "Կ"
     return grid
 
@@ -194,6 +197,14 @@ def validate(grid: list[list[str]]) -> None:
     )
     assert sum(row.count("☼") for row in grid) == 15
     assert sum(row.count("<") for row in grid) == 1
+    assert all(
+        grid[H - 1][col] == "⇩"
+        for col in range(RETURN_EXIT[0] - 1, RETURN_EXIT[0] + 2)
+    )
+    assert all(
+        grid[0][col] in {"⇧", "Կ"}
+        for col in range(DEEPER[0] - 1, DEEPER[0] + 2)
+    )
     map_text = "".join("".join(row) for row in grid)
     assert not any(
         marker in map_text for marker in ("(", ")", "¡", "¶", "Ѯ", "Ԟ")

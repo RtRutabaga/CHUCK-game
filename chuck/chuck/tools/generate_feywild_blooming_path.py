@@ -10,14 +10,14 @@ OUT = (
     / "assets" / "maps" / "feywild_blooming_path.txt"
 )
 
-ARRIVAL = (4, 33)
-RETURN_EXIT = (2, 33)
+ARRIVAL = (3, 33)
+RETURN_EXIT = (0, 33)
 ANCHOR = (10, 33)
 FLOWER = (22, 25)
 OPEN_GATE = ((27, 24), (27, 25), (27, 26))
 CLOSE_GATE = ((27, 19), (27, 20), (27, 21))
-DEEPER = (54, 9)
-DEEPER_RETURN = (51, 9)
+DEEPER = (59, 9)
+DEEPER_RETURN = (56, 9)
 
 HEADER = [
     "; PHASE 9 - FEYWILD 2, THE BLOOMING PATH (60x42 tiles).",
@@ -64,7 +64,7 @@ def build() -> list[list[str]]:
     grid = [["#"] * W for _ in range(H)]
 
     # Arrival lane and the broad flower clearing.
-    _carve_segment(grid, RETURN_EXIT, (18, 33))
+    _carve_segment(grid, (1, RETURN_EXIT[1]), (18, 33))
     _carve_segment(grid, (18, 33), (18, 25))
     _carve_room(grid, 15, 22, 25, 29)
 
@@ -78,7 +78,7 @@ def build() -> list[list[str]]:
     # The main path turns north and east to a stable later-phase boundary.
     _carve_segment(grid, (36, 25), (45, 25))
     _carve_segment(grid, (45, 25), (45, 9))
-    _carve_segment(grid, (45, 9), DEEPER)
+    _carve_segment(grid, (45, 9), (W - 2, DEEPER[1]))
 
     # Optional upper pocket rewards inspection before or after toggling.
     _carve_segment(grid, (22, 20), (22, 16))
@@ -132,7 +132,8 @@ def build() -> list[list[str]]:
     grid[FLOWER[1]][FLOWER[0] - 1] = "<"
 
     # Metadata and switch targets. Marker under-terrain is authoritative.
-    grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "←"
+    for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
+        grid[row][RETURN_EXIT[0]] = "←"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Զ"
     grid[ANCHOR[1]][ANCHOR[0]] = "Է"
     grid[FLOWER[1]][FLOWER[0]] = "Թ"
@@ -141,6 +142,8 @@ def build() -> list[list[str]]:
     for col, row in CLOSE_GATE:
         grid[row][col] = "Ի"
     grid[DEEPER_RETURN[1]][DEEPER_RETURN[0]] = "Մ"
+    for row in range(DEEPER[1] - 1, DEEPER[1] + 2):
+        grid[row][DEEPER[0]] = "→"
     grid[DEEPER[1]][DEEPER[0]] = "Ը"
     return grid
 
@@ -198,6 +201,14 @@ def validate(grid: list[list[str]]) -> None:
     assert all(_under(grid[row][col]) == "#" for col, row in OPEN_GATE)
     assert all(_under(grid[row][col]) == "'" for col, row in CLOSE_GATE)
     assert sum(row.count("<") for row in grid) == 2
+    assert all(
+        grid[row][0] == "←"
+        for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2)
+    )
+    assert all(
+        grid[row][W - 1] in {"→", "Ը"}
+        for row in range(DEEPER[1] - 1, DEEPER[1] + 2)
+    )
     map_text = "".join("".join(row) for row in grid)
     assert not any(
         marker in map_text for marker in ("(", ")", "¡", "¶", "Ѯ", "Ԟ")

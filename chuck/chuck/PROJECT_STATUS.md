@@ -108,10 +108,12 @@ This file is required by the project rules and updated every session.
   consistent 0.48 movement multiplier; leaving restores full speed, jumping
   remains unaffected, and pollen never damages Sanity or behaves as a fall
   hazard. `Feywild 3` and its Ashtray use the shared checkpoint loader.
-- Every current Feywild transition threshold now uses a cardinal enchanted
-  wilderness opening modeled on Chult's vegetation-framed trail handoff. A
-  dark path recess, dense leaves, vines, and saturated accents render
-  overhead while the established walk-transition terrain remains underneath.
+- Every current Feywild transition threshold now uses Chult's actual boundary
+  structure: a contiguous three-tile wilderness mouth cut through the outer
+  map edge, reached by a visible trail. Cardinal enchanted leaves, vines, and
+  saturated accents render overhead while all three cells use the established
+  walk-transition terrain. No between-map exit remains as a single opening
+  embedded inside the vegetation field.
 - The Feywild now has its own 99-second regional soundtrack at 116 BPM. Its
   recurring syncopated mallet hook, elastic scooped bass, hand percussion,
   woody reed answers, restrained reverse-bell swells, and F Mixolydian harmony

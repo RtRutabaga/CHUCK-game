@@ -3,33 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `7e627c0` (clearer Feywild theme peaks)
-- Current work: Phase 9 Map 4, Rootways
+- Base commit before this pass: `bcc1639` (Feywild Rootways)
+- Current work: Chult-style Feywild boundary correction
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Added the connected 68x46 `feywild_rootways` map, running west-to-east
-  through a broad root-divided forest floor. It contains one safe arrival,
-  exactly one physical Ashtray, two exposed pursuit spaces, one protected
-  refuge, one optional cigarette-grass cache, reversible travel to Pollen
-  Orchard, and an inert authored Map 5 boundary.
-- Added reusable solid root-mass and overhead low-root-passage terrain to the
-  Feywild tileset. Chuck walks through the low openings normally; larger
-  actors treat the same authored cells as extra-solid terrain and stop visibly
-  at their mouths.
-- Added the first two procedural redcaps: gnome-sized, heavy-booted direct
-  pursuers with red caps and iron tools. They take six scratches, deal 18
-  Sanity contact damage, reset on death, and remain avoidable rather than
-  gating the main route.
-- Added shared `Feywild 4` development entry and `Feywild 4 Ashtray` save
-  definition. Save/CONTINUE, Sanity-zero respawn, and both real map transitions
-  use the existing checkpoint and world-loading architecture.
-- Rootways continues `feywild.wav` without restarting it. Focused coverage
-  locks map authorship, passage exclusivity, redcap durability/collision,
-  checkpoint saving, enemy reset, and two-way travel.
+- Replaced every implemented Feywild map handoff's single interior opening
+  with the Chult layout language: a contiguous three-tile trail mouth cut
+  through the actual outer map edge.
+- Riverbank now exits through its east edge; Blooming Path uses west/east
+  edge mouths; Pollen Orchard uses south/north edge mouths; Rootways uses
+  west/east edge mouths. Existing map order, cardinal direction, named
+  arrivals, checkpoint state, and two-way transitions are unchanged.
+- Regenerated all four authored maps from their source generators and added a
+  regression requiring every current handoff to occupy exactly three
+  contiguous cells on its declared outer edge.
 - All 70 standalone suites pass, compilation is clean, and the headless
   launch smoke check reaches and exits the normal game loop.
+
+## Previous Pass (commit bcc1639)
+
+Added the 68x46 Rootways, reusable Chuck-scale root passages, two redcaps, its
+shared checkpoint/Ashtray, Pollen Orchard travel, procedural art, and focused
+coverage. All 70 suites passed.
 
 ## Previous Pass (commit a6af3a9)
 

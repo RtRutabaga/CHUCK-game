@@ -203,6 +203,43 @@ def test_feywild_boundaries_use_cardinal_vegetation_openings() -> None:
         assert TILE_DEFS[char].overhead == art_name
 
 
+def test_feywild_handoffs_are_three_tile_openings_on_outer_edges() -> None:
+    """Match Chult's broad boundary cut, never a portal inside the map."""
+    expected_edges = {
+        "feywild_riverbank": (("east", "→"),),
+        "feywild_blooming_path": (("west", "←"), ("east", "→")),
+        "feywild_pollen_orchard": (("north", "⇧"), ("south", "⇩")),
+        "feywild_rootways": (("west", "←"), ("east", "→")),
+    }
+    for map_name, edges in expected_edges.items():
+        tilemap = TileMap(config.MAPS_DIR / f"{map_name}.txt")
+        for side, terrain in edges:
+            if side == "west":
+                cells = [
+                    tilemap.terrain_at(0, row)
+                    for row in range(tilemap.height_tiles)
+                ]
+            elif side == "east":
+                cells = [
+                    tilemap.terrain_at(tilemap.width_tiles - 1, row)
+                    for row in range(tilemap.height_tiles)
+                ]
+            elif side == "north":
+                cells = [
+                    tilemap.terrain_at(col, 0)
+                    for col in range(tilemap.width_tiles)
+                ]
+            else:
+                cells = [
+                    tilemap.terrain_at(col, tilemap.height_tiles - 1)
+                    for col in range(tilemap.width_tiles)
+                ]
+            indices = [index for index, char in enumerate(cells)
+                       if char == terrain]
+            assert len(indices) == 3
+            assert indices == list(range(indices[0], indices[0] + 3))
+
+
 def test_blooming_path_uses_shared_transitions_and_checkpoints() -> None:
     forward = AREA_WALK_EXITS[("feywild_riverbank", "→")]
     backward = AREA_WALK_EXITS[(MAP_NAME, "←")]
