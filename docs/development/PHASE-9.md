@@ -25,6 +25,16 @@ root/table passages, the first redcap pursuit, the planned enemy-free scale
 respite, and telegraphed cardinal projectile timing. The regional soundtrack
 is complete and shared without interruption across all six implemented maps.
 
+A region-wide vegetation pass has also landed. The dense growth on all six
+implemented maps was reading as flat blocks, so Chult's rounded tree and
+shrub silhouettes are reused (`feywild_grove_tree`, `feywild_shrub`) with a
+subtle violet sheen added only to their lit faces -- the green mass and the
+un-blocky shapes are Chult's exactly. A new, deliberately ordinary oak
+(`feywild_oak`) is scattered sparsely as a landmark so the wood never
+becomes visual noise. All three stand ON already-solid dense vegetation, so
+the pass is provably cosmetic: solidity is byte-for-byte unchanged on every
+map, and no route, jump or hazard moved.
+
 This phase contains **thirteen playable Feywild maps total**: the
 existing riverbank plus twelve new maps. Chult's exterior region and
 Phlegethos each contain five maps, so Phase 9 is deliberately more than

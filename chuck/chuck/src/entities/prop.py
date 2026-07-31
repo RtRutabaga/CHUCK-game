@@ -107,6 +107,24 @@ _SPRITES = {
         f"objects/phlegethos_rubble_{i + 1}.png" for i in range(10)
     ),
     "phlegethos_lava_fall": "objects/phlegethos_lava_fall.png",
+    # Chult's rounded tree/shrub silhouettes, washed with a subtle violet
+    # sheen, plus one deliberately ordinary oak so the region reads as a
+    # wood rather than a field of blocks (Phase 9 vegetation pass).
+    "feywild_grove_tree": (
+        "objects/feywild_grove_tree_1.png",
+        "objects/feywild_grove_tree_2.png",
+        "objects/feywild_grove_tree_3.png",
+    ),
+    "feywild_shrub": (
+        "objects/feywild_shrub_1.png",
+        "objects/feywild_shrub_2.png",
+        "objects/feywild_shrub_3.png",
+    ),
+    "feywild_oak": (
+        "objects/feywild_oak_1.png",
+        "objects/feywild_oak_2.png",
+        "objects/feywild_oak_3.png",
+    ),
     "feywild_tree": (
         "objects/feywild_tree_1.png",
         "objects/feywild_tree_2.png",

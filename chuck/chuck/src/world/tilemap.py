@@ -390,6 +390,15 @@ TILE_DEFS: dict[str, TileDef] = {
     # canopy; freestanding spiral plants and mushrooms shape optional floor.
     "ł": TileDef(solid=True, color=(18, 69, 52),
                  prop="feywild_tree", under="#"),
+    # The Feywild wood: Chult's rounded silhouettes with a violet sheen,
+    # and one ordinary oak. All three stand ON the dense vegetation they
+    # dress, so they break up its blocky mass without altering any route.
+    "ŧ": TileDef(solid=True, color=(24, 74, 48),
+                 prop="feywild_grove_tree", under="#"),
+    "Ŧ": TileDef(solid=True, color=(34, 88, 46),
+                 prop="feywild_shrub", under="#"),
+    "Ɓ": TileDef(solid=True, color=(44, 86, 46),
+                 prop="feywild_oak", under="#"),
     "Ł": TileDef(solid=True, color=(20, 55, 52),
                  prop="feywild_spiral", under="."),
     "ŋ": TileDef(solid=True, color=(20, 55, 52),
