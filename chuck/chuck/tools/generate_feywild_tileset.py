@@ -36,6 +36,10 @@ PATH_LIGHT = (68, 105, 72)
 ROOT_DARK = (42, 31, 34)
 ROOT_BROWN = (82, 55, 45)
 ROOT_LIGHT = (125, 83, 55)
+TABLE_DARK = (68, 43, 47)
+TABLE = (119, 75, 65)
+TABLE_LIGHT = (170, 111, 78)
+TEA = (72, 118, 102)
 
 
 def ground(surface, variant: int, _frame: int) -> None:
@@ -225,6 +229,59 @@ def root_passage(surface, variant: int, _frame: int) -> None:
     pygame.draw.line(surface, LEAF, (2, 1), (8 + variant, 4), 1)
 
 
+def tabletop(surface, variant: int, _frame: int) -> None:
+    """Warm impossible-scale boards for the abandoned Fey tea table."""
+    surface.fill(TABLE)
+    pygame.draw.line(surface, TABLE_DARK, (0, 15), (15, 15))
+    pygame.draw.line(surface, TABLE_LIGHT, (0, 1), (15, 1))
+    for index in range(2):
+        x = (variant * 7 + index * 9 + 2) % 15
+        y = (variant * 3 + index * 7 + 5) % 14
+        length = 3 + ((variant + index) % 3)
+        pygame.draw.line(
+            surface, TABLE_LIGHT,
+            (x, y), (min(15, x + length), y),
+        )
+        if index == 1:
+            pygame.draw.line(
+                surface, TABLE_DARK,
+                (max(0, x - 2), y + 2), (min(15, x + 2), y + 2),
+            )
+
+
+def table_shadow(surface, variant: int, _frame: int) -> None:
+    """Cool under-table ground: clearly traversable, visibly sheltered."""
+    surface.fill((11, 34, 37))
+    for index in range(4):
+        x = (variant * 5 + index * 4 + 1) % 16
+        y = (variant * 7 + index * 5 + 2) % 16
+        pygame.draw.rect(surface, (19, 52, 48), (x, y, 2, 2))
+    pygame.draw.line(surface, (39, 72, 55), (0, 15), (15, 15))
+
+
+def table_apron(surface, variant: int, _frame: int) -> None:
+    """Heavy table lip overhead; Chuck remains visible beneath the lower half."""
+    surface.fill((0, 0, 0, 0))
+    pygame.draw.rect(surface, TABLE_DARK, (0, 0, 16, 6))
+    pygame.draw.rect(surface, TABLE, (0, 0, 16, 4))
+    pygame.draw.line(surface, TABLE_LIGHT, (0, 0), (15, 0))
+    pygame.draw.rect(surface, TABLE_DARK, (variant * 5, 5, 5, 2))
+    pygame.draw.line(surface, (43, 104, 69),
+                     (2 + variant * 4, 1), (4 + variant * 4, 9))
+
+
+def tea_spill(surface, variant: int, _frame: int) -> None:
+    tabletop(surface, variant, 0)
+    points = (
+        ((1, 5), (11, 3), (15, 8), (12, 14), (3, 13)),
+        ((0, 8), (5, 2), (13, 4), (15, 12), (8, 15), (2, 13)),
+        ((3, 2), (14, 5), (13, 13), (6, 15), (0, 10)),
+    )[variant]
+    pygame.draw.polygon(surface, (48, 91, 82), points)
+    pygame.draw.lines(surface, TEA, True, points, 1)
+    surface.set_at(((variant * 5 + 5) % 14, 7 + variant), (111, 180, 143))
+
+
 DRAW = {
     "fey_ground": ground,
     "fey_dense": dense,
@@ -238,6 +295,10 @@ DRAW = {
     "fey_opening_s": opening_s,
     "fey_root_wall": root_wall,
     "fey_root_passage": root_passage,
+    "fey_tabletop": tabletop,
+    "fey_table_shadow": table_shadow,
+    "fey_table_apron": table_apron,
+    "fey_tea_spill": tea_spill,
 }
 
 

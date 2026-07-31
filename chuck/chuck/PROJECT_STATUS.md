@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's fourth map, Rootways, now introduces Chuck-scale root
-passages and the first avoidable redcap pursuit.
+Updated: Phase 9's fifth map, Giant Tea Table, now provides an enemy-free
+scale-focused exploration respite beneath a colossal Fey place setting.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -121,9 +121,9 @@ This file is required by the project rules and updated every session.
   Later peaks use only isolated echo accents, reserve reed answers for
   contrasting sections, and avoid added bass/percussion fills so the hook
   remains clear rather than becoming cluttered or disharmonious.
-  Riverbank, Blooming Path, and Pollen Orchard all request the same seamless
-  loop, so the existing audio deduplication keeps it playing through map
-  transitions, checkpoint respawns, and reloads without layering or restarting.
+  All five implemented Feywild maps request the same seamless loop, so the
+  existing audio deduplication keeps it playing through map transitions,
+  checkpoint respawns, and reloads without layering or restarting.
 - `Feywild 4` (Rootways) is a connected 68x46 east-west forest floor divided
   by giant knotted root masses. Two restrained, gnome-sized redcaps pursue
   Chuck across the broad exposed route, deal 18 Sanity contact damage, and
@@ -134,8 +134,21 @@ This file is required by the project rules and updated every session.
   the mouth instead of disappearing or teleporting; one gap opens a protected
   refuge and the other is the sole entrance to an optional cigarette-grass
   cache. Rootways has exactly one physical Ashtray, a shared `Feywild 4`
-  development checkpoint, reversible travel to Pollen Orchard, an inert Map 5
-  boundary, and the uninterrupted regional soundtrack.
+  development checkpoint, reversible travel to Pollen Orchard and Giant Tea
+  Table, and the uninterrupted regional soundtrack.
+- `Feywild 5` (Giant Tea Table) is a 72x52 enemy-free north-to-south
+  exploration respite. A colossal solid tabletop, room-sized plates and cups,
+  spilled tea, crumbs, napkins, six chair-leg columns, and four immense table
+  legs make Chuck's one-foot scale architectural rather than decorative.
+- The required route cannot simply walk around the furniture: dense growth
+  closes both side aisles, sending Chuck beneath the table's heavy apron and
+  across its cool shadow before the southern clearing. Under-table and apron
+  terrain extend the shared large-actor passage rule, while an optional root
+  pocket hides one of four cigarette-grass rewards. Two reachable place
+  settings offer only the restrained lines `Still warm.` and `Set for one.`
+  The map has one physical Ashtray, shared `Feywild 5` development entry,
+  Chult-style three-cell edge openings, reversible Rootways travel, an inert
+  Map 6 boundary, and uninterrupted Feywild music.
 
 ## Working systems
 
@@ -1134,9 +1147,9 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build Phase 9's next bounded map, `Feywild 5` (Giant Tea Table), as the
-documented enemy-free exploration respite built around human/Fey-scale table
-settings, under-table routes, and one physical Ashtray.
+Build Phase 9's next bounded map, `Feywild 6` (Needle Garden), introducing
+stationary spitting orchids and readable cardinal projectile timing with one
+physical Ashtray.
 
 ## Also open
 

@@ -1,0 +1,208 @@
+"""Author Feywild 5: the enemy-free Giant Tea Table exploration respite."""
+
+from collections import deque
+from pathlib import Path
+
+
+W, H = 72, 52
+OUT = (
+    Path(__file__).resolve().parents[1]
+    / "assets" / "maps" / "feywild_tea_table.txt"
+)
+
+RETURN_EXIT = (12, 0)
+ARRIVAL = (12, 3)
+ANCHOR = (17, 5)
+FUTURE_RETURN = (60, 48)
+FUTURE_EXIT = (60, 51)
+CACHE_DOOR = (14, 27)
+CACHE = (10, 27)
+
+HEADER = [
+    "; PHASE 9 - FEYWILD 5, THE GIANT TEA TABLE (72x52 tiles).",
+    "; An abandoned Fey place setting becomes architecture to one-foot Chuck.",
+    "; The required route passes beneath the table; there are no enemies.",
+    "; One physical Ashtray serves the map; Map 6 remains an inert boundary.",
+]
+
+
+def _room(
+    grid: list[list[str]],
+    left: int,
+    top: int,
+    right: int,
+    bottom: int,
+    char: str = ".",
+) -> None:
+    for row in range(top, bottom + 1):
+        for col in range(left, right + 1):
+            grid[row][col] = char
+
+
+def _root_cache(grid: list[list[str]]) -> None:
+    left, top, right, bottom = 6, 23, 14, 31
+    for col in range(left, right + 1):
+        grid[top][col] = "※"
+        grid[bottom][col] = "※"
+    for row in range(top, bottom + 1):
+        grid[row][left] = "※"
+        grid[row][right] = "※"
+    _room(grid, left + 1, top + 1, right - 1, bottom - 1, "'")
+    grid[CACHE_DOOR[1]][CACHE_DOOR[0]] = "≀"
+    grid[CACHE[1]][CACHE[0]] = "<"
+
+
+def build() -> list[list[str]]:
+    grid = [["#"] * W for _ in range(H)]
+
+    # Broad rooms above and below the gathering are connected by the table's
+    # sheltered underside. Side aisles end at the front hedge, so progression
+    # uses Chuck's scale rather than merely walking around the furniture.
+    _room(grid, 5, 1, 66, 11)
+    _room(grid, 5, 10, 17, 37)
+    _room(grid, 56, 10, 66, 37)
+    _room(grid, 10, 39, 66, 50)
+
+    # The tabletop is an enormous solid field. Its place settings are authored
+    # directly on it, while the cool shadow below is traversable architecture.
+    _room(grid, 18, 12, 55, 28, "▤")
+    _room(grid, 18, 29, 55, 38, "░")
+
+    # Heavy overhead aprons frame every way into or out of the under-table
+    # route. Large actors treat both apron and shadow as solid terrain.
+    for col in range(18, 56):
+        grid[29][col] = "⌑"
+        grid[38][col] = "⌑"
+    for row in range(30, 38):
+        grid[row][18] = "⌑"
+        grid[row][55] = "⌑"
+
+    # Four table legs stand as columns below the surface; chair legs repeat
+    # the scale language around the exposed side aisles.
+    for col, row in ((21, 33), (52, 33), (21, 37), (52, 37)):
+        grid[row][col] = "♜"
+    for col, row in (
+        (9, 16), (14, 20), (9, 34),
+        (61, 16), (65, 22), (62, 34),
+    ):
+        grid[row][col] = "♧"
+
+    # Two complete place settings and the remnants of another gathering.
+    for col, row in ((27, 18), (45, 18), (44, 28)):
+        grid[row][col] = "◉"
+    for col, row in ((31, 22), (49, 22), (30, 28)):
+        grid[row][col] = "☕"
+    for col, row in ((22, 24), (41, 24), (52, 16)):
+        grid[row][col] = "⌁"
+    for col, row in (
+        (24, 15), (35, 17), (39, 21), (48, 26), (25, 27), (52, 12),
+    ):
+        grid[row][col] = "⁙"
+    for col, row in ((34, 24), (36, 24), (37, 25), (50, 15)):
+        grid[row][col] = "◍"
+
+    # A root pocket off the western aisle offers one entirely scale-gated
+    # cache. Ordinary breakable vegetation recurs in the quiet southern room.
+    _root_cache(grid)
+    for col, row in ((14, 43), (39, 46), (63, 43)):
+        grid[row][col] = "<"
+
+    # Dense enchanted islands keep the lower room exploratory rather than a
+    # straight walk to the future edge.
+    for left, top, right, bottom in (
+        (22, 40, 29, 44),
+        (46, 44, 54, 49),
+        (58, 39, 65, 41),
+    ):
+        _room(grid, left, top, right, bottom, "#")
+    for col, row, char in (
+        (24, 42, "ł"), (49, 46, "ł"), (61, 40, "ł"),
+        (16, 47, "Ł"), (34, 42, "ŋ"), (57, 47, "ŋ"),
+        (8, 8, "Ł"), (62, 7, "ŋ"),
+    ):
+        if grid[row][col] in {".", "#"}:
+            grid[row][col] = char
+
+    # Chult-style three-cell handoffs occupy actual outer edges.
+    for col in range(RETURN_EXIT[0] - 1, RETURN_EXIT[0] + 2):
+        grid[0][col] = "⇧"
+    grid[ARRIVAL[1]][ARRIVAL[0]] = "Պ"
+    grid[ANCHOR[1]][ANCHOR[0]] = "Ջ"
+    grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "Ս"
+    for col in range(FUTURE_EXIT[0] - 1, FUTURE_EXIT[0] + 2):
+        grid[H - 1][col] = "⇩"
+    grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "Ռ"
+    return grid
+
+
+def _under(char: str) -> str:
+    return {
+        "Պ": ".", "Ջ": ".", "Ռ": "⇩", "Ս": ".",
+        "<": ".", "♜": "░", "♧": ".",
+        "◉": "▤", "☕": "▤", "⌁": "▤", "⁙": "▤",
+    }.get(char, char)
+
+
+def _reachable(
+    grid: list[list[str]],
+    start: tuple[int, int],
+    *,
+    large_actor: bool = False,
+) -> set[tuple[int, int]]:
+    blocked = {"#", "▤", "◍", "※", "♜", "♧", "◉", "☕", "⌁", "⁙",
+               "ł", "Ł", "ŋ"}
+    reached = {start}
+    frontier = deque([start])
+    while frontier:
+        col, row = frontier.popleft()
+        for point in (
+            (col - 1, row), (col + 1, row),
+            (col, row - 1), (col, row + 1),
+        ):
+            x, y = point
+            if not (0 <= x < W and 0 <= y < H) or point in reached:
+                continue
+            terrain = _under(grid[y][x])
+            if terrain in blocked:
+                continue
+            if large_actor and terrain in {"≀", "░", "⌑"}:
+                continue
+            reached.add(point)
+            frontier.append(point)
+    return reached
+
+
+def validate(grid: list[list[str]]) -> None:
+    assert len(grid) == H and all(len(row) == W for row in grid)
+    chuck_reach = _reachable(grid, ARRIVAL)
+    assert {
+        RETURN_EXIT, ANCHOR, FUTURE_RETURN, FUTURE_EXIT,
+        CACHE_DOOR, CACHE,
+    } <= chuck_reach
+    large_reach = _reachable(grid, ARRIVAL, large_actor=True)
+    assert FUTURE_EXIT not in large_reach
+    assert CACHE not in large_reach
+    text = "".join("".join(row) for row in grid)
+    assert text.count("Ջ") == 1
+    assert text.count("<") == 4
+    assert text.count("♜") == 4
+    assert text.count("♧") == 6
+    assert text.count("◉") == 3 and text.count("☕") == 3
+    assert all(grid[0][col] == "⇧" for col in range(11, 14))
+    assert all(
+        grid[H - 1][col] in {"⇩", "Ռ"} for col in range(59, 62)
+    )
+
+
+def main() -> None:
+    grid = build()
+    validate(grid)
+    OUT.write_text(
+        "\n".join(HEADER + ["".join(row) for row in grid]) + "\n",
+        encoding="utf-8",
+    )
+    print(f"Wrote {OUT} ({W}x{H})")
+
+
+if __name__ == "__main__":
+    main()

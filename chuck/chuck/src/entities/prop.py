@@ -122,6 +122,22 @@ _SPRITES = {
         "objects/feywild_mushroom_2.png",
         "objects/feywild_mushroom_3.png",
     ),
+    "fey_table_leg": (
+        "objects/fey_table_leg_1.png",
+        "objects/fey_table_leg_2.png",
+    ),
+    "fey_chair_leg": (
+        "objects/fey_chair_leg_1.png",
+        "objects/fey_chair_leg_2.png",
+    ),
+    "fey_plate": "objects/fey_plate.png",
+    "fey_teacup": "objects/fey_teacup.png",
+    "fey_napkin": "objects/fey_napkin.png",
+    "fey_crumbs": (
+        "objects/fey_crumbs_1.png",
+        "objects/fey_crumbs_2.png",
+        "objects/fey_crumbs_3.png",
+    ),
 }
 
 _ANIMATED_SPRITES = {
@@ -141,6 +157,8 @@ PROP_DIALOGUE = {
     "herod_sign": "herod_sign",
     "house_door": "closed_door",
     "cheese": "cheese",
+    "fey_teacup": "fey_tea_warm",
+    "fey_plate": "fey_set_for_one",
 }
 
 # Props that ask a question instead of making a statement (ids live in

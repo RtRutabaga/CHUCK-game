@@ -19,8 +19,10 @@ Feywild region. Its first implementation slice is complete: `Feywild 2`
 system now connect to the riverbank in both directions. `Feywild 3`
 (Pollen Orchard) is also complete, providing the safe, enemy-free slowing
 pollen lesson and the region's third Ashtray.
-The regional soundtrack is complete and currently shared without interruption
-across all three implemented Feywild maps.
+`Feywild 4` (Rootways) and `Feywild 5` (Giant Tea Table) are also complete,
+establishing large-actor-blocking root/table passages, the first redcap
+pursuit, and the planned enemy-free scale respite. The regional soundtrack is
+complete and shared without interruption across all five implemented maps.
 
 This phase contains **thirteen playable Feywild maps total**: the
 existing riverbank plus twelve new maps. Chult's exterior region and
@@ -1205,3 +1207,18 @@ boundary reserved for the later floating-wizard-tower phase.
   respawns. Composition and rendered-WAV tests cover hook recurrence, peak
   density, modal color, instrumentation, duration, loudness, clipping, and
   loop seam.
+- **Rootways / first pursuit and scale escape:** Added the 68x46
+  `feywild_rootways`, two durable gnome-sized redcaps, and low root openings
+  that remain ordinary walkable overhead terrain for Chuck while visibly
+  stopping larger pursuers. One protected refuge, one root-only cigarette
+  cache, one physical Ashtray, the shared `Feywild 4` entry, and reversible
+  Pollen Orchard travel complete the first pursuit lesson.
+- **Giant Tea Table / major exploration respite:** Added the enemy-free 72x52
+  `feywild_tea_table`. A colossal solid tabletop, human/Fey-scale plates,
+  cups, napkins, crumbs, spilled tea, chair legs, and table legs turn the
+  abandoned gathering into level architecture. The required route passes
+  through reusable under-table/apron terrain that larger actors treat as
+  solid; an optional root passage hides a grass cache. Two place settings use
+  only `Still warm.` and `Set for one.` One physical Ashtray, shared
+  `Feywild 5` entry, Rootways backtracking, an inert Map 6 edge, and the
+  uninterrupted regional theme complete the slice.

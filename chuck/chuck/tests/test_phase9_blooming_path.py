@@ -195,11 +195,13 @@ def test_feywild_boundaries_use_cardinal_vegetation_openings() -> None:
         "\u21e7": "fey_opening_n",
         "\u21e9": "fey_opening_s",
         "\u2240": "fey_root_passage",
+        "\u2311": "fey_table_apron",
     }
     assert tileset.overhead_char_to_terrain == expected
+    under = {"\u2240": "'", "\u2311": "\u2591"}
     for char, art_name in expected.items():
         assert char not in tileset.char_to_terrain
-        assert TILE_DEFS[char].under == "'"
+        assert TILE_DEFS[char].under == under.get(char, "'")
         assert TILE_DEFS[char].overhead == art_name
 
 
@@ -210,6 +212,7 @@ def test_feywild_handoffs_are_three_tile_openings_on_outer_edges() -> None:
         "feywild_blooming_path": (("west", "←"), ("east", "→")),
         "feywild_pollen_orchard": (("north", "⇧"), ("south", "⇩")),
         "feywild_rootways": (("west", "←"), ("east", "→")),
+        "feywild_tea_table": (("north", "⇧"), ("south", "⇩")),
     }
     for map_name, edges in expected_edges.items():
         tilemap = TileMap(config.MAPS_DIR / f"{map_name}.txt")

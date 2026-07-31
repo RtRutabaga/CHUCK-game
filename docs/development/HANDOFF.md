@@ -3,24 +3,36 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `bcc1639` (Feywild Rootways)
-- Current work: Chult-style Feywild boundary correction
+- Base commit before this pass: `4bc7e36` (Chult-style Feywild boundaries)
+- Current work: Phase 9 Map 5, Giant Tea Table
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Replaced every implemented Feywild map handoff's single interior opening
-  with the Chult layout language: a contiguous three-tile trail mouth cut
-  through the actual outer map edge.
-- Riverbank now exits through its east edge; Blooming Path uses west/east
-  edge mouths; Pollen Orchard uses south/north edge mouths; Rootways uses
-  west/east edge mouths. Existing map order, cardinal direction, named
-  arrivals, checkpoint state, and two-way transitions are unchanged.
-- Regenerated all four authored maps from their source generators and added a
-  regression requiring every current handoff to occupy exactly three
-  contiguous cells on its declared outer edge.
-- All 70 standalone suites pass, compilation is clean, and the headless
-  launch smoke check reaches and exits the normal game loop.
+- Added the enemy-free 72x52 `feywild_tea_table`, with a north arrival from
+  Rootways, south future boundary, one nearby physical Ashtray, four
+  cigarette-grass rewards, and the uninterrupted regional soundtrack.
+- Built a colossal solid tabletop from long-grained procedural boards, then
+  dressed it with room-sized plates, steaming cups, napkins, crumbs, and
+  spilled tea. Six chair legs and four taller table legs read as columns.
+  Reachable place settings use only `Still warm.` and `Set for one.`
+- Added reusable under-table shadow and overhead apron terrain. Both remain
+  ordinary walkable terrain for Chuck but join the shared large-actor solid
+  set. The required route passes beneath the table; a separate root passage
+  gates an optional grass cache.
+- Added shared `Feywild 5` development/Ashtray definitions, Rootways return
+  state, future Map 6 return state, real bidirectional Rootways travel, and
+  Chult-style three-cell edge openings. The Map 6 edge remains inert.
+- Focused coverage locks map content, enemy-free pacing, prop scale, brief
+  dialogue, passage exclusivity, save/Continue/respawn, development loading,
+  and actual two-way world transitions. All 71 standalone suites pass,
+  compilation is clean, and the headless title-loop launch check passes.
+
+## Previous Pass (commit 4bc7e36)
+
+Moved every implemented Feywild handoff from a single interior opening to a
+contiguous three-cell trail mouth on the real outer map edge. All 70 suites
+passed.
 
 ## Previous Pass (commit bcc1639)
 
@@ -63,10 +75,8 @@ quality regressions. All 69 suites passed.
 
 ## Next Logical Task
 
-Implement Phase 9 Map 5, Giant Tea Table, as the documented enemy-free
-exploration respite built around colossal place settings, under-table routes,
-restrained environmental storytelling, and one physical Ashtray. Keep the
-slice to that one map and its shared checkpoint.
+Implement Phase 9 Map 6, Needle Garden, with stationary spitting orchids,
+readable cardinal projectile lanes, and exactly one shared Ashtray/checkpoint.
 
 ## Previous Pass (commit 474435d)
 

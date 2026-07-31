@@ -145,6 +145,98 @@ def reactive_flower(active: bool) -> Image.Image:
     return image
 
 
+def table_leg(variant: int) -> Image.Image:
+    image = Image.new("RGBA", (34, 70), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    lean = (-2, 2)[variant]
+    draw.ellipse((2, 62, 32, 69), fill=(7, 27, 30, 185))
+    draw.polygon(
+        ((7 + lean, 3), (27 + lean, 3), (25, 62), (9, 62)),
+        fill=(67, 42, 47, 255),
+    )
+    draw.polygon(
+        ((10 + lean, 4), (24 + lean, 4), (21, 59), (12, 59)),
+        fill=(119, 75, 65, 255),
+    )
+    draw.line((13 + lean, 5, 15, 58), fill=(174, 111, 78, 255), width=2)
+    draw.rectangle((6, 58, 28, 65), fill=(74, 45, 48, 255))
+    draw.line((8, 59, 26, 59), fill=(158, 96, 72, 255))
+    draw.line((20 + lean, 7, 22 + lean, 43), fill=(42, 116, 70, 255))
+    return image
+
+
+def chair_leg(variant: int) -> Image.Image:
+    image = Image.new("RGBA", (28, 58), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    lean = (-1, 1)[variant]
+    draw.ellipse((2, 51, 26, 57), fill=(7, 27, 30, 170))
+    draw.polygon(
+        ((6 + lean, 2), (22 + lean, 2), (20, 52), (8, 52)),
+        fill=(76, 49, 54, 255),
+    )
+    draw.polygon(
+        ((9 + lean, 3), (18 + lean, 3), (17, 49), (10, 49)),
+        fill=(136, 82, 68, 255),
+    )
+    draw.line((11 + lean, 4, 12, 47), fill=(184, 116, 79, 255), width=2)
+    draw.rectangle((5, 48, 23, 54), fill=(67, 42, 47, 255))
+    return image
+
+
+def plate() -> Image.Image:
+    image = Image.new("RGBA", (52, 28), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    draw.ellipse((2, 20, 50, 27), fill=(58, 37, 42, 150))
+    draw.ellipse((1, 2, 51, 24), fill=(205, 198, 170, 255))
+    draw.ellipse((6, 5, 46, 21), fill=(119, 177, 160, 255))
+    draw.ellipse((10, 7, 42, 19), fill=(224, 216, 183, 255))
+    draw.arc((8, 6, 44, 20), 190, 345, fill=(245, 233, 200, 255), width=2)
+    return image
+
+
+def teacup() -> Image.Image:
+    image = Image.new("RGBA", (34, 38), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    draw.ellipse((2, 31, 32, 37), fill=(53, 35, 40, 150))
+    draw.ellipse((4, 8, 27, 18), fill=(225, 211, 181, 255))
+    draw.rectangle((5, 13, 26, 30), fill=(197, 188, 163, 255))
+    draw.ellipse((5, 25, 26, 32), fill=(172, 164, 148, 255))
+    draw.ellipse((8, 10, 24, 16), fill=(66, 112, 96, 255))
+    draw.ellipse((24, 16, 33, 27), outline=(220, 207, 177, 255), width=3)
+    for x, y in ((12, 7), (17, 4), (21, 1)):
+        draw.point((x, y), fill=(151, 216, 195, 180))
+    return image
+
+
+def napkin() -> Image.Image:
+    image = Image.new("RGBA", (42, 30), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    draw.polygon(
+        ((3, 8), (30, 2), (39, 20), (12, 28)),
+        fill=(177, 92, 166, 255),
+    )
+    draw.polygon(
+        ((12, 8), (30, 3), (29, 18), (12, 27)),
+        fill=(219, 127, 193, 255),
+    )
+    draw.line((12, 8, 29, 18), fill=(245, 174, 218, 255), width=2)
+    return image
+
+
+def crumbs(variant: int) -> Image.Image:
+    image = Image.new("RGBA", (24, 14), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    colors = ((229, 188, 102, 255), (193, 143, 76, 255))
+    points = (
+        ((3, 9), (9, 4), (16, 10), (21, 3)),
+        ((2, 3), (7, 10), (14, 5), (20, 11)),
+        ((4, 11), (10, 2), (15, 8), (22, 6)),
+    )[variant]
+    for index, (x, y) in enumerate(points):
+        draw.rectangle((x, y, x + 2, y + 2), fill=colors[index % 2])
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for index in range(3):
@@ -157,7 +249,15 @@ def main() -> None:
     reactive_flower(True).save(
         OUT / "feywild_reactive_flower_open.png"
     )
-    print("Generated Feywild trees, spiral plants, and mushrooms")
+    for index in range(2):
+        table_leg(index).save(OUT / f"fey_table_leg_{index + 1}.png")
+        chair_leg(index).save(OUT / f"fey_chair_leg_{index + 1}.png")
+    plate().save(OUT / "fey_plate.png")
+    teacup().save(OUT / "fey_teacup.png")
+    napkin().save(OUT / "fey_napkin.png")
+    for index in range(3):
+        crumbs(index).save(OUT / f"fey_crumbs_{index + 1}.png")
+    print("Generated Feywild vegetation and Giant Tea Table props")
 
 
 if __name__ == "__main__":

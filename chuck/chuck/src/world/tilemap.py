@@ -412,6 +412,26 @@ TILE_DEFS: dict[str, TileDef] = {
     "※": TileDef(solid=True, color=(58, 43, 39)),
     "≀": TileDef(solid=False, color=(45, 76, 59),
                  under="'", overhead="fey_root_passage"),
+    # Giant Tea Table: a solid elevated surface, its deep walkable shadow,
+    # and a low apron Chuck can pass beneath. Place settings remain solid
+    # tabletop dressing while the legs become human/Fey-scale columns.
+    "▤": TileDef(solid=True, color=(117, 76, 65)),
+    "░": TileDef(solid=False, color=(13, 38, 39)),
+    "⌑": TileDef(solid=False, color=(13, 38, 39),
+                 under="░", overhead="fey_table_apron"),
+    "◍": TileDef(solid=True, color=(117, 76, 65)),
+    "♜": TileDef(solid=True, color=(13, 38, 39),
+                 prop="fey_table_leg", under="░"),
+    "♧": TileDef(solid=True, color=(20, 55, 52),
+                 prop="fey_chair_leg", under="."),
+    "◉": TileDef(solid=True, color=(117, 76, 65),
+                 prop="fey_plate", under="▤"),
+    "☕": TileDef(solid=True, color=(117, 76, 65),
+                 prop="fey_teacup", under="▤"),
+    "⌁": TileDef(solid=True, color=(117, 76, 65),
+                 prop="fey_napkin", under="▤"),
+    "⁙": TileDef(solid=True, color=(117, 76, 65),
+                 prop="fey_crumbs", under="▤"),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.
@@ -711,6 +731,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Շ": MarkerDef(kind="redcap", under="."),
     "Ո": MarkerDef(kind="boundary:feywild_5", under="→"),
     "Չ": MarkerDef(kind="arrival:from_feywild_5", under="'"),
+    # Giant Tea Table: quiet Map 5 respite and future Needle Garden edge.
+    "Պ": MarkerDef(kind="arrival:from_feywild_4", under="."),
+    "Ջ": MarkerDef(kind="anchor:feywild_5_anchor", under="."),
+    "Ռ": MarkerDef(kind="boundary:feywild_6", under="⇩"),
+    "Ս": MarkerDef(kind="arrival:from_feywild_6", under="."),
 }
 
 _COMMENT_PREFIX = ";"

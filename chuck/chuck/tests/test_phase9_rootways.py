@@ -147,11 +147,13 @@ def test_rootways_uses_shared_checkpoint_save_and_enemy_reset() -> None:
 def test_orchard_and_rootways_transition_both_ways() -> None:
     forward = AREA_WALK_EXITS[("feywild_pollen_orchard", "⇧")]
     backward = AREA_WALK_EXITS[(MAP_NAME, "←")]
+    onward = AREA_WALK_EXITS[(MAP_NAME, "→")]
     assert forward.destination == MAP_NAME
     assert forward.arrival == "from_feywild_3"
     assert backward.destination == "feywild_pollen_orchard"
     assert backward.arrival == "from_feywild_4"
-    assert (MAP_NAME, "→") not in AREA_WALK_EXITS
+    assert onward.destination == "feywild_tea_table"
+    assert onward.arrival == "from_feywild_4"
 
     entry = CHECKPOINT_BY_ID["feywild_4"]
     anchor = CHECKPOINT_BY_ID["feywild_4_anchor"]
