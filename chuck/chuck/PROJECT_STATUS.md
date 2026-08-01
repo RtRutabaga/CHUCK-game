@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's eleventh map, the Mushroom Underways, is somewhere to
-stop running: four dim runs under giant caps, alternating with lit clearings.
+Updated: Phase 9's twelfth map, the Luminous Rapids, adds the region up:
+jumps, pollen, moths and flowers that raise and sink the pads underfoot.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -231,8 +231,27 @@ This file is required by the project rules and updated every session.
   under a cap, so neither shade nor open ground takes over. The map has three
   quiet side chambers, six fungal tufts holding cigarettes, one physical
   Ashtray under the third canopy, shared `Feywild 11` development entry,
-  reversible Displacer Meadow travel, a reserved Map 12 edge, and
-  uninterrupted Feywild music.
+  reversible Displacer Meadow travel, and uninterrupted Feywild music. Its
+  east edge continues into the rapids.
+- `Feywild 12` (Luminous Rapids) is a 78x44 traversal synthesis with four new
+  terrains: fast bright water no one crosses, static wet stepping stones, and
+  giant lily pads in risen and furled states. Three crossings run in teaching
+  order --- static stones and one-tile jumps first, then two twin pad chains
+  where a flower raises one and sinks the other. Each chain fits on one
+  screen, so no required landing is offscreen.
+- The reactive-flower controller gained a small companion table,
+  `GROUP_TERRAIN`, so a group can declare what its change writes. These
+  flowers raise and sink pads instead of paving a river with path tiles; the
+  default vegetation behaviour is unchanged everywhere else.
+- The lower flower is the crossing: a state-space walk with the jump rule
+  built in proves the exit cannot be walked to, cannot be jumped to either,
+  and that from every reachable state the exit is still reachable. The upper
+  flower gates only the north ledge's cache. Pollen thickens approaches and
+  never touches a landing tile or a gap; three lantern moths patrol the
+  water; one spitting orchid sits on the optional ledge. The map has two
+  cigarette caches, one physical Ashtray on the middle isle, shared
+  `Feywild 12` development entry, reversible Mushroom Underways travel, a
+  reserved Map 13 edge, and uninterrupted Feywild music.
 
 ## Working systems
 

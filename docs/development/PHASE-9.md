@@ -699,6 +699,9 @@ Structure:
 Never require a blind jump onto an offscreen tile. Keep required landing
 silhouettes readable.
 
+Built as `feywild_luminous_rapids` (78x44). See the changelog entry for the
+delivered shape.
+
 ## Map 13 --- Twilight Crossroads
 
 Purpose:
@@ -1344,3 +1347,25 @@ boundary reserved for the later floating-wizard-tower phase.
   over. One physical Ashtray under the third canopy, shared `Feywild 11`
   entry, reversible Displacer Meadow travel, a reserved Map 12 edge, and
   uninterrupted regional music complete the slice.
+- **Luminous Rapids / traversal synthesis:** Added the 78x44
+  `feywild_luminous_rapids` and four terrains for it: fast bright water that
+  no one crosses, static wet stepping stones, and giant lily pads in risen
+  and furled states. Three crossings in teaching order --- the first static
+  stones and one-tile jumps exactly as the Fen taught them, the second and
+  third twin pad chains where a flower raises one and sinks the other. Each
+  whole chain fits on one screen, so no required landing is ever offscreen.
+- The reactive-flower controller gained a small companion table,
+  `GROUP_TERRAIN`, letting a group declare what its change writes. Without
+  it these flowers would have paved a river with path tiles; with it they
+  raise and sink pads, and the default vegetation behaviour is untouched
+  everywhere else.
+- The lower flower is the crossing: a state-space walk with the jump rule
+  built in proves the exit cannot be reached by walking, cannot be reached by
+  jumping either, and that from every state Chuck can reach the exit is still
+  reachable --- so no scratch strands him out on the water. The upper flower
+  gates only the north ledge's cache. Pollen thickens the approaches and is
+  asserted never to touch a landing tile or a gap; three lantern moths patrol
+  over the water; the single spitting orchid sits on the optional ledge. One
+  physical Ashtray on the middle isle, shared `Feywild 12` entry, reversible
+  Mushroom Underways travel, a reserved Map 13 edge, and uninterrupted
+  regional music complete the slice.

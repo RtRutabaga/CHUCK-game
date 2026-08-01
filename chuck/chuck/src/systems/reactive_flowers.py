@@ -8,6 +8,19 @@ from dataclasses import dataclass
 from src.core import config
 
 
+# What a group's change writes into the world. The default is the
+# vegetation the mechanic was built for -- growth retracts to path, or
+# closes back over it. A group may name its own pair instead, which is
+# how the Luminous Rapids' flowers raise and sink giant lily pads rather
+# than paving a river. Small, authored, and inspectable, per the phase
+# document's first rule.
+_DEFAULT_TERRAIN = ("'", "#")
+GROUP_TERRAIN: dict[str, tuple[str, str]] = {
+    "rapids_upper": ("ᚨ", "ᚧ"),
+    "rapids_lower": ("ᚨ", "ᚧ"),
+}
+
+
 _SWITCH_PREFIX = "flower_switch:"
 _OPEN_PREFIX = "flower_open:"
 _CLOSE_PREFIX = "flower_close:"
@@ -128,17 +141,20 @@ class ReactiveFlowerController:
             return
 
         group.active = not group.active
+        opened, closed = GROUP_TERRAIN.get(
+            self._pending_group, _DEFAULT_TERRAIN
+        )
         for target in group.opens:
             self.tilemap.set_terrain(
                 target.col,
                 target.row,
-                "'" if group.active else target.original,
+                opened if group.active else target.original,
             )
         for target in group.closes:
             self.tilemap.set_terrain(
                 target.col,
                 target.row,
-                "#" if group.active else target.original,
+                closed if group.active else target.original,
             )
         for flower in self.flowers:
             if flower.group_id == self._pending_group:

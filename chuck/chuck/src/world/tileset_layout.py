@@ -347,6 +347,10 @@ FEYWILD = Tileset(
         ("fey_needle_bed", 4, 1),
         ("fey_channel", 3, 3),
         ("fey_camp_dirt", 4, 1),
+        ("fey_rapids", 3, 3),
+        ("fey_stepping_stone", 3, 1),
+        ("fey_pad_open", 3, 1),
+        ("fey_pad_closed", 3, 1),
         ("fey_cap_shade", 4, 3),
         ("fey_glow_pool", 3, 3),
         ("fey_mushroom_thicket", 4, 1),
@@ -366,6 +370,10 @@ FEYWILD = Tileset(
         "✿": "fey_needle_bed",
         "≈": "fey_channel",
         "ᛜ": "fey_camp_dirt",
+        "ᚼ": "fey_rapids",
+        "ᚹ": "fey_stepping_stone",
+        "ᚨ": "fey_pad_open",
+        "ᚧ": "fey_pad_closed",
         "ᛥ": "fey_cap_shade",
         "ᛞ": "fey_glow_pool",
         "ᛘ": "fey_mushroom_thicket",
@@ -436,6 +444,7 @@ MAP_TILESET: dict[str, str] = {
     "feywild_shifting_hedge": "feywild",
     "feywild_displacer_meadow": "feywild",
     "feywild_mushroom_underways": "feywild",
+    "feywild_luminous_rapids": "feywild",
 }
 
 

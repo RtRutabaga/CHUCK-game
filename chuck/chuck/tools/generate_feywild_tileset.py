@@ -48,6 +48,18 @@ SHADE_LIGHT = (32, 62, 62)
 POOL_DEEP = (16, 62, 96)
 POOL = (52, 158, 186)
 POOL_LIGHT = (140, 240, 226)
+# Luminous Rapids: fast bright water, wet stones, and giant flower pads.
+RAPID_DEEP = (22, 78, 118)
+RAPID = (86, 190, 214)
+FOAM = (222, 250, 248)
+STONE_DARK = (52, 58, 62)
+STONE = (104, 112, 116)
+STONE_LIGHT = (156, 164, 164)
+PAD_DARK = (22, 78, 52)
+PAD = (58, 138, 74)
+PAD_LIGHT = (104, 190, 104)
+PAD_SUNK = (34, 96, 108)
+PAD_SUNK_LIGHT = (58, 130, 132)
 DIRT_DARK = (44, 38, 32)
 DIRT = (66, 57, 45)
 DIRT_LIGHT = (92, 80, 60)
@@ -261,6 +273,62 @@ def camp_dirt(surface, variant: int, _frame: int) -> None:
         surface.set_at((x, y), LEAF_DARK)
 
 
+def rapids(surface, variant: int, frame: int) -> None:
+    """Fast bright water: the Luminous Rapids' impassable middle."""
+    surface.fill(RAPID_DEEP)
+    for y in range(16):
+        amount = 0.45 + 0.35 * math.sin(y * 0.8 + frame * 2.2 + variant)
+        colour = tuple(round(a + (b - a) * amount)
+                       for a, b in zip(RAPID_DEEP, RAPID))
+        pygame.draw.line(surface, colour, (0, y), (15, y))
+    # Broken crests, scattered rather than ruled, so a wide river does
+    # not resolve into horizontal bands.
+    for index in range(4):
+        x = (variant * 5 + index * 6 + frame * 4) % 16
+        y = (variant * 7 + index * 4 + frame) % 16
+        pygame.draw.line(surface, FOAM, (x, y), (min(15, x + 3), y))
+    surface.set_at(((variant * 9 + frame * 3) % 16,
+                    (variant * 5 + 9) % 16), (240, 254, 250))
+
+
+def stepping_stone(surface, variant: int, _frame: int) -> None:
+    """A static safe stone: wet, blunt, and obviously standable."""
+    surface.fill(RAPID_DEEP)
+    pygame.draw.ellipse(surface, STONE_DARK, (0, 1, 16, 15))
+    pygame.draw.ellipse(surface, STONE, (1, 2, 14, 12))
+    pygame.draw.ellipse(surface, STONE_LIGHT, (3 + variant, 4, 7, 4))
+    for index in range(2):
+        x = (variant * 5 + index * 7 + 3) % 12
+        y = (variant * 3 + index * 5 + 7) % 12
+        surface.set_at((x, y), STONE_DARK)
+
+
+def pad_open(surface, variant: int, _frame: int) -> None:
+    """A giant flower pad, risen and broad enough to stand on."""
+    surface.fill(RAPID_DEEP)
+    pygame.draw.ellipse(surface, PAD_DARK, (0, 0, 16, 16))
+    pygame.draw.ellipse(surface, PAD, (1, 1, 14, 14))
+    pygame.draw.ellipse(surface, PAD_LIGHT, (4, 3, 8, 6))
+    # The notch every lily pad has, turned by variant so a chain of pads
+    # never looks stamped.
+    notch = ((7, 0), (0, 7), (7, 14))[variant % 3]
+    pygame.draw.line(surface, RAPID_DEEP, (8, 8), notch, 2)
+    surface.set_at((8, 8), GOLD)
+
+
+def pad_closed(surface, variant: int, _frame: int) -> None:
+    """The same pad furled under the water: visibly there, visibly not
+    yet safe, so a broken chain can be read before it is jumped."""
+    surface.fill(RAPID_DEEP)
+    pygame.draw.ellipse(surface, PAD_SUNK, (2, 4, 12, 10))
+    pygame.draw.ellipse(surface, PAD_SUNK_LIGHT, (4, 6, 8, 5))
+    pygame.draw.line(surface, PAD_SUNK_LIGHT, (3, 9 + variant % 2),
+                     (12, 9 + variant % 2))
+    for index in range(2):
+        x = (variant * 6 + index * 7 + 2) % 15
+        pygame.draw.line(surface, FOAM, (x, 2), (x + 2, 2))
+
+
 def cap_shade(surface, variant: int, frame: int) -> None:
     """The floor beneath a giant cap: dark, gilled, quietly alive.
 
@@ -446,6 +514,10 @@ DRAW = {
     "fey_root_wall": root_wall,
     "fey_root_passage": root_passage,
     "fey_camp_dirt": camp_dirt,
+    "fey_rapids": rapids,
+    "fey_stepping_stone": stepping_stone,
+    "fey_pad_open": pad_open,
+    "fey_pad_closed": pad_closed,
     "fey_cap_shade": cap_shade,
     "fey_glow_pool": glow_pool,
     "fey_mushroom_thicket": mushroom_thicket,

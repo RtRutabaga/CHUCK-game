@@ -421,6 +421,13 @@ TILE_DEFS: dict[str, TileDef] = {
     "※": TileDef(solid=True, color=(58, 43, 39)),
     "≀": TileDef(solid=False, color=(45, 76, 59),
                  under="'", overhead="fey_root_passage"),
+    # Luminous Rapids: fast bright water no one crosses, static wet
+    # stones, and giant flower pads that the reactive flowers raise and
+    # sink. A risen pad is standable; a furled one is water again.
+    "ᚼ": TileDef(solid=True, color=(86, 190, 214)),
+    "ᚹ": TileDef(solid=False, color=(104, 112, 116)),
+    "ᚨ": TileDef(solid=False, color=(58, 138, 74)),
+    "ᚧ": TileDef(solid=True, color=(34, 96, 108)),
     # Mushroom Underways: the shaded floor beneath a giant cap is ordinary
     # walkable ground, only darker. A luminous pool is solid -- something
     # to walk around and look at rather than through.
@@ -772,6 +779,27 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ջ": MarkerDef(kind="anchor:feywild_5_anchor", under="."),
     "Ռ": MarkerDef(kind="boundary:feywild_6", under="⇩"),
     "Ս": MarkerDef(kind="arrival:from_feywild_6", under="."),
+    # Luminous Rapids: two flower groups that raise and sink pads, the
+    # moths and orchids that watch the lanes, and the map's own points.
+    "წ": MarkerDef(kind="flower_switch:rapids_upper", under="."),
+    "ჭ": MarkerDef(
+        kind="flower_open:rapids_upper", under="ᚧ", allow_solid=True
+    ),
+    "ხ": MarkerDef(kind="flower_close:rapids_upper", under="ᚨ"),
+    "ჯ": MarkerDef(kind="flower_switch:rapids_lower", under="."),
+    "ჰ": MarkerDef(
+        kind="flower_open:rapids_lower", under="ᚧ", allow_solid=True
+    ),
+    "ჱ": MarkerDef(kind="flower_close:rapids_lower", under="ᚨ"),
+    "ჲ": MarkerDef(kind="arrival:from_feywild_11", under="'"),
+    "ჳ": MarkerDef(kind="anchor:feywild_12_anchor", under="."),
+    "ჴ": MarkerDef(kind="boundary:feywild_13", under="→"),
+    "ჵ": MarkerDef(kind="arrival:from_feywild_13", under="'"),
+    # Moths fly the lanes, so they sit over the rapids themselves.
+    "ჶ": MarkerDef(kind="lantern_moth:h", under="ᚼ", allow_solid=True),
+    "ჷ": MarkerDef(kind="lantern_moth:v", under="ᚼ", allow_solid=True),
+    "ჸ": MarkerDef(kind="spitting_orchid:left", under="#", allow_solid=True),
+    "ჹ": MarkerDef(kind="spitting_orchid:down", under="#", allow_solid=True),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),
