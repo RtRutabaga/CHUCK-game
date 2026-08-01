@@ -382,7 +382,7 @@ class WorldScene(Scene):
             if kind in {
                 "cat", "rat", "zombie", "skeleton", "lemure", "raptor",
                 "massive_dinosaur", "horned_devil", "snake", "fire_snake",
-                "pirate_chef", "redcap",
+                "pirate_chef", "redcap", "thorn_mite",
             } or kind.startswith((
                 "sword_fighter:", "spined_devil:", "flameskull:",
                 "spitting_orchid:", "lantern_moth:",
@@ -459,7 +459,7 @@ class WorldScene(Scene):
             elif kind in {
                 "rat", "zombie", "skeleton", "lemure", "raptor",
                 "massive_dinosaur", "horned_devil", "snake", "fire_snake",
-                "pirate_chef", "redcap",
+                "pirate_chef", "redcap", "thorn_mite",
             }:
                 continue  # rebuilt with all enemies below
             elif kind.startswith((
@@ -1870,7 +1870,7 @@ class WorldScene(Scene):
         rat_spawn_tiles = {
             (int(cx // config.TILE_SIZE), int(cy // config.TILE_SIZE))
             for kind, (cx, cy) in self._enemy_spawns
-            if kind == "rat"
+            if kind in {"rat", "thorn_mite"}
         }
         tutorial_tiles = {
             (config.SEWER_RAT_COL, row) for row in config.SEWER_RAT_ROWS
@@ -1881,8 +1881,8 @@ class WorldScene(Scene):
                 cat.tilemap = self.tilemap
                 cat.load_sprites(self.game.assets)
                 self.hazards.append(cat)
-            elif kind == "rat":
-                rat = SewerRat(cx, cy)
+            elif kind in {"rat", "thorn_mite"}:
+                rat = SewerRat(cx, cy, variant=kind)
                 rat.load_sprites(self.game.assets)
                 rat_tile = (
                     int(cx // config.TILE_SIZE),

@@ -607,6 +607,9 @@ Structure:
 
 The player should be able to cross without defeating a redcap.
 
+Built as `feywild_redcap_warrens` (76x50). See the changelog entry for the
+delivered shape.
+
 ## Map 9 --- Shifting Hedge
 
 Purpose:
@@ -1259,3 +1262,19 @@ boundary reserved for the later floating-wizard-tower phase.
   optional northern side island carries a cigarette-grass cache, one physical
   Ashtray anchors the route, and the reserved Needle Garden east edge now
   connects both ways under the uninterrupted regional theme.
+- **Redcap Warrens / the strongest ordinary-enemy area:** Added the 76x50
+  `feywild_redcap_warrens` and thorn mites, which reuse the rat role as fey
+  wildlife: tiny, patrolling, one committed scratch, behind a new burr-shaped
+  sprite. Four redcaps hold a camp of gnome-sized gear --- kicked-off boots, a
+  cooking cauldron, planted sickles Chuck walks under, and crude hide shelters
+  --- standing on its own trampled camp-dirt terrain so the clearing reads as
+  lived-in rather than as a room. Their notice zones are authored more than
+  two notice ranges apart, so pursuit never becomes a mob. A northern game
+  trail crosses the full width of the map outside every notice zone, making
+  the whole warrens passable without a single fight, while the camp centre
+  stays genuinely contested. New solid toadstool-thicket terrain walls the
+  trail off, and two Chuck-only openings --- one root arch, one toadstool cap
+  pair --- join it to the camp and guard the two cigarette caches; a
+  large-actor flood proves no redcap can follow. One physical Ashtray, shared
+  `Feywild 8` entry, reversible Moonmoth Fen travel, a reserved Map 9 edge,
+  and uninterrupted regional music complete the slice.

@@ -421,6 +421,25 @@ TILE_DEFS: dict[str, TileDef] = {
     "※": TileDef(solid=True, color=(58, 43, 39)),
     "≀": TileDef(solid=False, color=(45, 76, 59),
                  under="'", overhead="fey_root_passage"),
+    # Redcap Warrens: bare earth the camp has trampled flat.
+    "ᛜ": TileDef(solid=False, color=(66, 57, 45)),
+    # Redcap Warrens: fused giant toadstools form a solid thicket, and one
+    # cap arches over a gap only Chuck fits through -- the mushroom
+    # counterpart to the Rootways' root passage, and just as impassable to
+    # a gnome-sized redcap.
+    "ᛘ": TileDef(solid=True, color=(58, 40, 62)),
+    "ᚿ": TileDef(solid=False, color=(45, 76, 59),
+                 under="'", overhead="fey_mushroom_passage"),
+    # The camp's oversized gear. Each is solid standing dressing on the
+    # forest floor, sized to dwarf a one-foot-tall rat.
+    "ᚠ": TileDef(solid=True, color=(78, 52, 38),
+                 prop="redcap_boot", under="."),
+    "ᚢ": TileDef(solid=True, color=(72, 76, 86),
+                 prop="redcap_cauldron", under="."),
+    "ᚦ": TileDef(solid=True, color=(88, 64, 44),
+                 prop="redcap_sickle", under="."),
+    "ᚱ": TileDef(solid=True, color=(92, 74, 52),
+                 prop="redcap_shelter", under="."),
     # Giant Tea Table: a solid elevated surface, its deep walkable shadow,
     # and a low apron Chuck can pass beneath. Place settings remain solid
     # tabletop dressing while the legs become human/Fey-scale columns.
@@ -748,6 +767,14 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ջ": MarkerDef(kind="anchor:feywild_5_anchor", under="."),
     "Ռ": MarkerDef(kind="boundary:feywild_6", under="⇩"),
     "Ս": MarkerDef(kind="arrival:from_feywild_6", under="."),
+    # Redcap Warrens: the camp's pursuers, its mite nests, one checkpoint,
+    # and the future Shifting Hedge edge.
+    "բ": MarkerDef(kind="arrival:from_feywild_7", under="'"),
+    "գ": MarkerDef(kind="anchor:feywild_8_anchor", under="."),
+    "դ": MarkerDef(kind="boundary:feywild_9", under="→"),
+    "ե": MarkerDef(kind="arrival:from_feywild_9", under="'"),
+    "զ": MarkerDef(kind="redcap", under="."),
+    "է": MarkerDef(kind="thorn_mite", under="."),
     # Needle Garden: rooted cardinal launchers, one checkpoint, and the
     # future Moonmoth Fen handoff.
     "Վ": MarkerDef(
@@ -770,6 +797,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ֆ": MarkerDef(kind="arrival:from_feywild_6", under="'"),
     "ՙ": MarkerDef(kind="anchor:feywild_7_anchor", under="."),
     "ֈ": MarkerDef(kind="boundary:feywild_8", under="→"),
+    "ֆ": MarkerDef(kind="arrival:from_feywild_8", under=","),
     # Moths fly, so they haunt the open water itself: allow_solid keeps
     # the deep channel beneath them untouched.
     "֊": MarkerDef(kind="lantern_moth:h", under="~", allow_solid=True),

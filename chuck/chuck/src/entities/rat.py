@@ -19,7 +19,11 @@ if TYPE_CHECKING:
 class SewerRat(Entity):
     """A mundane rat, visibly smaller than Chuck and defeated in one hit."""
 
-    def __init__(self, center_x: float, center_y: float) -> None:
+    def __init__(self, center_x: float, center_y: float,
+                 variant: str = "rat") -> None:
+        # `variant` selects the sprite sheet only: the Feywild's thorn
+        # mites (Phase 9) are this exact creature with fey art.
+        self.variant = variant
         super().__init__(
             center_x - config.RAT_HITBOX_W / 2,
             center_y - config.RAT_HITBOX_H / 2,
@@ -61,7 +65,8 @@ class SewerRat(Entity):
 
     def load_sprites(self, assets: "AssetManager") -> None:
         frames = assets.sheet(
-            config.RAT_SHEET, config.RAT_FRAME_W, config.RAT_FRAME_H
+            f"hazards/{self.variant}.png",
+            config.RAT_FRAME_W, config.RAT_FRAME_H,
         )[0]
         self._idle = Animation(frames, 0.28)
 

@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's seventh map, Moonmoth Fen, now strings safe islands across
-deep water on one-tile committed hops timed against weaving lantern moths.
+Updated: Phase 9's eighth map, the Redcap Warrens, is the region's strongest
+ordinary-enemy area --- and it can be crossed without a single fight.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -172,8 +172,24 @@ This file is required by the project rules and updated every session.
   vertical lines out over the deep water, so a crossing means timing the moth
   and the hop together. No landing tile moves. The map has an optional northern
   side island with a cigarette-grass cache, one physical Ashtray, shared
-  `Feywild 7` development entry, reversible Needle Garden travel, a reserved
-  Map 8 edge, and uninterrupted Feywild music.
+  `Feywild 7` development entry, reversible Needle Garden travel, and
+  uninterrupted Feywild music. Its east edge continues into the Warrens.
+- `Feywild 8` (Redcap Warrens) is a 76x50 camp map, the region's strongest
+  ordinary-enemy area. Four redcaps hold a clearing of gnome-sized gear ---
+  kicked-off boots, a cooking cauldron, planted sickles Chuck walks under,
+  and crude hide shelters --- standing on trampled camp-dirt terrain so it
+  reads as lived-in ground rather than a room. Their notice zones sit more
+  than two notice ranges apart, so pursuit never becomes a mob.
+- A northern game trail crosses the full width of the map outside every
+  notice zone: the warrens are passable without a single fight, while the
+  camp centre stays genuinely contested. Solid toadstool thicket walls the
+  trail off from the camp, and two Chuck-only openings --- one root arch and
+  a pair of toadstool caps --- join them and guard the two cigarette caches.
+  No redcap can follow through either.
+- Thorn mites are the rat role as fey wildlife: tiny, patrolling, cleared by
+  one committed scratch, behind a new burr-shaped sprite. The map has one
+  physical Ashtray, shared `Feywild 8` development entry, reversible Moonmoth
+  Fen travel, a reserved Map 9 edge, and uninterrupted Feywild music.
 
 ## Working systems
 

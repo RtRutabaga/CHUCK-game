@@ -125,6 +125,20 @@ _SPRITES = {
         "objects/feywild_oak_2.png",
         "objects/feywild_oak_3.png",
     ),
+    # The redcap camp's gear, all of it gnome-sized and therefore enormous
+    # next to Chuck: kicked-off boots, a cooking pot, a planted sickle he
+    # can walk under, and crude hide shelters.
+    "redcap_boot": (
+        "objects/redcap_boot_1.png",
+        "objects/redcap_boot_2.png",
+        "objects/redcap_boot_3.png",
+    ),
+    "redcap_shelter": (
+        "objects/redcap_shelter_1.png",
+        "objects/redcap_shelter_2.png",
+    ),
+    "redcap_cauldron": "objects/redcap_cauldron.png",
+    "redcap_sickle": "objects/redcap_sickle.png",
     "feywild_tree": (
         "objects/feywild_tree_1.png",
         "objects/feywild_tree_2.png",

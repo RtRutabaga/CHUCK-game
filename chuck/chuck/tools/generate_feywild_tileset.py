@@ -36,6 +36,14 @@ PATH_LIGHT = (68, 105, 72)
 ROOT_DARK = (42, 31, 34)
 ROOT_BROWN = (82, 55, 45)
 ROOT_LIGHT = (125, 83, 55)
+# Redcap Warrens: giant toadstools, pale and cold beside the warm roots.
+CAP_SHADOW = (58, 40, 62)
+CAP = (146, 92, 122)
+CAP_LIGHT = (206, 158, 178)
+STALK = (198, 190, 168)
+DIRT_DARK = (44, 38, 32)
+DIRT = (66, 57, 45)
+DIRT_LIGHT = (92, 80, 60)
 TABLE_DARK = (68, 43, 47)
 TABLE = (119, 75, 65)
 TABLE_LIGHT = (170, 111, 78)
@@ -229,6 +237,54 @@ def root_passage(surface, variant: int, _frame: int) -> None:
     pygame.draw.line(surface, LEAF, (2, 1), (8 + variant, 4), 1)
 
 
+def camp_dirt(surface, variant: int, _frame: int) -> None:
+    """Packed earth the redcaps have trampled bare.
+
+    Deliberately free of the path tile's edge line: this fills wide areas,
+    and any directional mark would band into stripes across the camp.
+    """
+    surface.fill(DIRT)
+    for index in range(6):
+        x = (variant * 5 + index * 7 + 1) % 15
+        y = (variant * 11 + index * 5 + 2) % 15
+        surface.fill(DIRT_DARK if index % 2 else DIRT_LIGHT, (x, y, 2, 1))
+    for index in range(2):                 # trodden scraps of the old turf
+        x = (variant * 3 + index * 9 + 4) % 14
+        y = (variant * 7 + index * 6 + 6) % 14
+        surface.set_at((x, y), LEAF_DARK)
+
+
+def mushroom_thicket(surface, variant: int, _frame: int) -> None:
+    """Fused toadstool stalks: a solid wall of caps at redcap height."""
+    surface.fill(CAP_SHADOW)
+    for index in range(3):
+        x = (index * 6 + variant * 2) % 14
+        # Stagger the caps hard vertically: at four variants a shallow
+        # offset still resolves into visible rows across a whole thicket.
+        top = 1 + ((index * 5 + variant * 3) % 8)
+        pygame.draw.rect(surface, STALK, (x + 1, top + 4, 4, 12))
+        pygame.draw.ellipse(surface, CAP, (x - 1, top, 9, 7))
+        pygame.draw.ellipse(surface, CAP_LIGHT, (x + 1, top + 1, 5, 3))
+        surface.set_at((x + 3, top + 4), CAP_SHADOW)
+    pygame.draw.line(surface, LEAF_DARK, (0, 15), (15, 15))
+
+
+def mushroom_passage(surface, variant: int, _frame: int) -> None:
+    """A cap arching overhead: the gap beneath is Chuck's alone.
+
+    Drawn like the root passage so the two read as the same promise --
+    a way through that a gnome-sized redcap simply cannot follow.
+    """
+    surface.fill((0, 0, 0, 0))
+    pygame.draw.ellipse(surface, CAP_SHADOW, (-4, -5, 24, 11))
+    pygame.draw.ellipse(surface, CAP, (-3, -6, 22, 10))
+    pygame.draw.ellipse(surface, CAP_LIGHT, (2 + variant, -4, 8, 3))
+    for x in (1, 13):                      # the stalks framing the gap
+        pygame.draw.rect(surface, STALK, (x, 2, 2, 7))
+        pygame.draw.line(surface, CAP_SHADOW, (x, 3), (x, 8))
+    surface.set_at((6 + variant, 1), GOLD)  # a spore catching the light
+
+
 def tabletop(surface, variant: int, _frame: int) -> None:
     """Warm impossible-scale boards for the abandoned Fey tea table."""
     surface.fill(TABLE)
@@ -341,6 +397,9 @@ DRAW = {
     "fey_opening_s": opening_s,
     "fey_root_wall": root_wall,
     "fey_root_passage": root_passage,
+    "fey_camp_dirt": camp_dirt,
+    "fey_mushroom_thicket": mushroom_thicket,
+    "fey_mushroom_passage": mushroom_passage,
     "fey_tabletop": tabletop,
     "fey_table_shadow": table_shadow,
     "fey_table_apron": table_apron,

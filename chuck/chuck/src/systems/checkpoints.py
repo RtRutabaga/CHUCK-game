@@ -566,6 +566,22 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "feywild_8", "Feywild 8", "feywild_redcap_warrens",
+        arrival="from_feywild_7", facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "feywild_8_anchor", "Feywild 8 Ashtray", "feywild_redcap_warrens",
+        position=(1060.0, 453.0), facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
         "feywild_6", "Feywild 6", "feywild_needle_garden",
         arrival="from_feywild_5", facing="down",
         required_flags=frozenset({
@@ -611,6 +627,14 @@ CHECKPOINTS = (
     CheckpointDefinition(
         "feywild_5_return", "Feywild 5 Return", "feywild_tea_table",
         arrival="from_feywild_6", facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "feywild_7_return", "Feywild 7 Return", "feywild_moonmoth_fen",
+        arrival="from_feywild_8", facing="left",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
