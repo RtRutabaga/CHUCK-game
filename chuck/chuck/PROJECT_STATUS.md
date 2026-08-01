@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's tenth map, the Displacer Meadow, sets a massive stalker
-loose on an exposed crossing Chuck can only survive by ducking out of it.
+Updated: Phase 9's eleventh map, the Mushroom Underways, is somewhere to
+stop running: four dim runs under giant caps, alternating with lit clearings.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -217,8 +217,22 @@ This file is required by the project rules and updated every session.
   beast can never enter, more than a notice range from its haunt, so
   respawning never drops Chuck inside it. The map has two cigarette caches,
   three thorn mites, no redcaps, shared `Feywild 10` development entry,
-  reversible Shifting Hedge travel, a reserved Map 11 edge, and uninterrupted
-  Feywild music.
+  reversible Shifting Hedge travel, and uninterrupted Feywild music. Its
+  east edge continues into the Underways.
+- `Feywild 11` (Mushroom Underways) is a 70x46 recovery map with two new
+  terrains: canopy shade, ordinary walkable ground drawn dark and drifting
+  with spores, and luminous pools, which are solid so they shape a clearing
+  without standing in the way. One rhythm repeats four times --- a long dim
+  run under a giant cap, then an open clearing with a pool --- so the walk
+  feels like weather rather than a corridor.
+- Nothing here pursues Chuck, and that is enforced: no hostile spawn of any
+  kind, every enemy list empty at runtime, and a full minute standing still
+  costs no Sanity. Between a third and two thirds of everything reachable is
+  under a cap, so neither shade nor open ground takes over. The map has three
+  quiet side chambers, six fungal tufts holding cigarettes, one physical
+  Ashtray under the third canopy, shared `Feywild 11` development entry,
+  reversible Displacer Meadow travel, a reserved Map 12 edge, and
+  uninterrupted Feywild music.
 
 ## Working systems
 

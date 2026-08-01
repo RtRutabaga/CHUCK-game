@@ -675,6 +675,9 @@ Structure:
 
 This map should feel cozy, melancholy, and strange rather than empty.
 
+Built as `feywild_mushroom_underways` (70x46). See the changelog entry for
+the delivered shape.
+
 ## Map 12 --- Luminous Rapids
 
 Purpose:
@@ -1324,3 +1327,20 @@ boundary reserved for the later floating-wizard-tower phase.
   geometry. Two cigarette caches, three thorn mites, no redcaps, shared
   `Feywild 10` entry, reversible Shifting Hedge travel, a reserved Map 11
   edge, and uninterrupted regional music complete the slice.
+- **Mushroom Underways / the recovery map:** Added the 70x46
+  `feywild_mushroom_underways` and two new terrains: canopy shade, which is
+  ordinary walkable ground drawn dark and drifting with spores, and luminous
+  pools, which are solid so they shape a clearing without ever standing in
+  the way. The map is one rhythm repeated four times --- a long dim run under
+  a giant cap, then an open clearing with a pool in it --- so walking it
+  feels like moving through weather rather than along a corridor. Three quiet
+  side chambers hang off the clearings, and six fungal tufts open to
+  cigarettes.
+- Nothing here pursues Chuck, and the tests guard that as the map's actual
+  requirement: no hostile spawn of any kind, every enemy list empty at
+  runtime, and a full minute of standing still costing no Sanity. They also
+  hold the rhythm to account --- between a third and two thirds of everything
+  reachable is under a cap, so neither shade nor open ground takes the map
+  over. One physical Ashtray under the third canopy, shared `Feywild 11`
+  entry, reversible Displacer Meadow travel, a reserved Map 12 edge, and
+  uninterrupted regional music complete the slice.

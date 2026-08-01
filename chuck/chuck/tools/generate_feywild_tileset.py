@@ -41,6 +41,13 @@ CAP_SHADOW = (58, 40, 62)
 CAP = (146, 92, 122)
 CAP_LIGHT = (206, 158, 178)
 STALK = (198, 190, 168)
+# Mushroom Underways: canopy shade underfoot, and still luminous pools.
+SHADE_DARK = (10, 26, 30)
+SHADE = (18, 40, 44)
+SHADE_LIGHT = (32, 62, 62)
+POOL_DEEP = (16, 62, 96)
+POOL = (52, 158, 186)
+POOL_LIGHT = (140, 240, 226)
 DIRT_DARK = (44, 38, 32)
 DIRT = (66, 57, 45)
 DIRT_LIGHT = (92, 80, 60)
@@ -254,6 +261,47 @@ def camp_dirt(surface, variant: int, _frame: int) -> None:
         surface.set_at((x, y), LEAF_DARK)
 
 
+def cap_shade(surface, variant: int, frame: int) -> None:
+    """The floor beneath a giant cap: dark, gilled, quietly alive.
+
+    Tiles seamlessly in long runs, because the Underways are meant to be
+    walked under a canopy for a while rather than through a doorway.
+    """
+    surface.fill(SHADE)
+    # Gill shadows fall on the ground in broken strokes. They are kept
+    # short deliberately: a full-width line would band into stripes the
+    # moment the shade covers more than a few tiles.
+    for index in range(4):
+        x = (variant * 5 + index * 7) % 13
+        y = (variant * 3 + index * 5 + 1) % 15
+        length = 3 + ((variant + index) % 3)
+        pygame.draw.line(surface, SHADE_DARK, (x, y), (x + length, y + 1))
+    x = (variant * 7 + 2) % 12
+    y = (variant * 11 + 6) % 14
+    pygame.draw.line(surface, SHADE_LIGHT, (x, y), (x + 3, y))
+    # Spores drifting in the dark, turning over between frames.
+    for index, colour in enumerate((BLUE, VIOLET, GOLD)):
+        x = (variant * 6 + index * 5 + frame * 2) % 16
+        y = (variant * 4 + index * 7 + frame * 3) % 16
+        surface.set_at((x, y), colour)
+
+
+def glow_pool(surface, variant: int, frame: int) -> None:
+    """A still luminous pool. Solid: something to walk around and admire."""
+    surface.fill(POOL_DEEP)
+    for y in range(16):
+        amount = 0.4 + 0.3 * math.sin(y * 0.5 + frame * 2 + variant)
+        colour = tuple(round(a + (b - a) * amount)
+                       for a, b in zip(POOL_DEEP, POOL))
+        pygame.draw.line(surface, colour, (0, y), (15, y))
+    for index in range(2):
+        x = (variant * 5 + index * 8 + frame * 3) % 16
+        y = (variant * 3 + index * 9 + 2) % 15
+        pygame.draw.line(surface, POOL_LIGHT, (x, y), (min(15, x + 4), y))
+    surface.set_at(((variant * 7 + frame * 5) % 16,
+                    (variant * 9 + 6) % 16), (236, 252, 246))
+
+
 def mushroom_thicket(surface, variant: int, _frame: int) -> None:
     """Fused toadstool stalks: a solid wall of caps at redcap height."""
     surface.fill(CAP_SHADOW)
@@ -398,6 +446,8 @@ DRAW = {
     "fey_root_wall": root_wall,
     "fey_root_passage": root_passage,
     "fey_camp_dirt": camp_dirt,
+    "fey_cap_shade": cap_shade,
+    "fey_glow_pool": glow_pool,
     "fey_mushroom_thicket": mushroom_thicket,
     "fey_mushroom_passage": mushroom_passage,
     "fey_tabletop": tabletop,

@@ -421,6 +421,11 @@ TILE_DEFS: dict[str, TileDef] = {
     "※": TileDef(solid=True, color=(58, 43, 39)),
     "≀": TileDef(solid=False, color=(45, 76, 59),
                  under="'", overhead="fey_root_passage"),
+    # Mushroom Underways: the shaded floor beneath a giant cap is ordinary
+    # walkable ground, only darker. A luminous pool is solid -- something
+    # to walk around and look at rather than through.
+    "ᛥ": TileDef(solid=False, color=(18, 40, 44)),
+    "ᛞ": TileDef(solid=True, color=(52, 158, 186)),
     # Redcap Warrens: bare earth the camp has trampled flat.
     "ᛜ": TileDef(solid=False, color=(66, 57, 45)),
     # Redcap Warrens: fused giant toadstools form a solid thicket, and one
@@ -767,6 +772,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ջ": MarkerDef(kind="anchor:feywild_5_anchor", under="."),
     "Ռ": MarkerDef(kind="boundary:feywild_6", under="⇩"),
     "Ս": MarkerDef(kind="arrival:from_feywild_6", under="."),
+    # Mushroom Underways: a quiet map, so only a checkpoint, the two
+    # arrivals, and the reserved Map 12 edge.
+    "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),
+    "ჩ": MarkerDef(kind="anchor:feywild_11_anchor", under="'"),
+    "ც": MarkerDef(kind="boundary:feywild_12", under="→"),
+    "ძ": MarkerDef(kind="arrival:from_feywild_12", under="'"),
     # Displacer Meadow: one massive stalker, the meadow's checkpoint, and
     # the reserved Map 11 edge.
     "ს": MarkerDef(kind="arrival:from_feywild_9", under="'"),

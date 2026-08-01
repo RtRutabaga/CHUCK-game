@@ -347,6 +347,8 @@ FEYWILD = Tileset(
         ("fey_needle_bed", 4, 1),
         ("fey_channel", 3, 3),
         ("fey_camp_dirt", 4, 1),
+        ("fey_cap_shade", 4, 3),
+        ("fey_glow_pool", 3, 3),
         ("fey_mushroom_thicket", 4, 1),
         ("fey_mushroom_passage", 3, 1),
     ],
@@ -364,6 +366,8 @@ FEYWILD = Tileset(
         "✿": "fey_needle_bed",
         "≈": "fey_channel",
         "ᛜ": "fey_camp_dirt",
+        "ᛥ": "fey_cap_shade",
+        "ᛞ": "fey_glow_pool",
         "ᛘ": "fey_mushroom_thicket",
     },
     overhead_char_to_terrain={
@@ -431,6 +435,7 @@ MAP_TILESET: dict[str, str] = {
     "feywild_redcap_warrens": "feywild",
     "feywild_shifting_hedge": "feywild",
     "feywild_displacer_meadow": "feywild",
+    "feywild_mushroom_underways": "feywild",
 }
 
 
