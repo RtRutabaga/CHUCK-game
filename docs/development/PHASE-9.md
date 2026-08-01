@@ -653,6 +653,9 @@ Structure:
 The Ashtray must sit in a genuinely safe pocket. Respawning must never
 place Chuck inside the creature's active notice range.
 
+Built as `feywild_displacer_meadow` (74x48). See the changelog entry for the
+delivered shape.
+
 ## Map 11 --- Mushroom Underways
 
 Purpose:
@@ -1299,3 +1302,25 @@ boundary reserved for the later floating-wizard-tower phase.
   thorn mites, no redcaps or massive enemies, one physical Ashtray in the
   entry clearing, shared `Feywild 9` entry, reversible Redcap Warrens travel,
   a reserved Map 10 edge, and uninterrupted regional music complete the slice.
+- **Displacer Meadow / the massive-creature encounter:** Added the 74x48
+  `feywild_displacer_meadow` and the displacer beast, which reuses the Chult
+  colossus wholesale behind a new sprite sheet: a six-legged blue-black
+  panther with two barbed tentacles over its shoulders and a faint
+  after-image offset from its real body. One beast holds the middle of a
+  meandering, wholly exposed route thickened with slowing pollen, far enough
+  from the arrival that it is seen before it is met.
+- The answer is never to fight it. Three walled pockets and four loose root
+  arches out in the meadow are built to Chuck's scale: he walks under them
+  and the beast stops at the mouth. Both of the phase document's hard
+  requirements are proved rather than eyeballed --- the Ashtray sits in a
+  pocket a large-actor flood shows the beast can never enter, and its
+  distance from the beast's haunt exceeds the notice range, so respawning
+  never drops Chuck inside it.
+- This slice also fixed a real bug from Map 8: the toadstool passage was
+  never added to `LARGE_ACTOR_PASSAGE_TERRAIN`, so redcaps could in fact
+  follow Chuck through the caps the Warrens promised were his alone. The
+  massive-creature role did not consult that set at all. Both are fixed, and
+  the Warrens test now asserts the engine rule rather than only the map's
+  geometry. Two cigarette caches, three thorn mites, no redcaps, shared
+  `Feywild 10` entry, reversible Shifting Hedge travel, a reserved Map 11
+  edge, and uninterrupted regional music complete the slice.

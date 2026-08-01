@@ -78,7 +78,12 @@ class MassiveDinosaur(Entity):
         self.x, self.y = collision.move_and_collide(
             self.x, self.y, self.width, self.height,
             dx * step, dy * step, self.tilemap,
-            extra_solid_terrain=collision.FALL_HAZARD_TERRAIN,
+            # Root arches and toadstool caps are built to Chuck's scale:
+            # something this size stops at the mouth rather than following.
+            extra_solid_terrain=(
+                collision.FALL_HAZARD_TERRAIN
+                | collision.LARGE_ACTOR_PASSAGE_TERRAIN
+            ),
         )
         self.moving = (self.x, self.y) != old_position
         if self.moving:

@@ -381,7 +381,8 @@ class WorldScene(Scene):
             for kind, position in self.tilemap.object_spawns
             if kind in {
                 "cat", "rat", "zombie", "skeleton", "lemure", "raptor",
-                "massive_dinosaur", "horned_devil", "snake", "fire_snake",
+                "massive_dinosaur", "horned_devil", "displacer_beast",
+                "snake", "fire_snake",
                 "pirate_chef", "redcap", "thorn_mite",
             } or kind.startswith((
                 "sword_fighter:", "spined_devil:", "flameskull:",
@@ -458,7 +459,8 @@ class WorldScene(Scene):
                 )
             elif kind in {
                 "rat", "zombie", "skeleton", "lemure", "raptor",
-                "massive_dinosaur", "horned_devil", "snake", "fire_snake",
+                "massive_dinosaur", "horned_devil", "displacer_beast",
+                "snake", "fire_snake",
                 "pirate_chef", "redcap", "thorn_mite",
             }:
                 continue  # rebuilt with all enemies below
@@ -1910,13 +1912,11 @@ class WorldScene(Scene):
                 redcap.tilemap = self.tilemap
                 redcap.load_sprites(self.game.assets)
                 self.redcaps.append(redcap)
-            elif kind in {"massive_dinosaur", "horned_devil"}:
-                # A horned devil is the Chultan colossus in infernal art.
-                dinosaur = MassiveDinosaur(
-                    cx, cy,
-                    variant=("horned_devil" if kind == "horned_devil"
-                             else "massive_dinosaur"),
-                )
+            elif kind in {"massive_dinosaur", "horned_devil",
+                          "displacer_beast"}:
+                # A horned devil is the Chultan colossus in infernal art;
+                # a displacer beast is the same colossus stalking the Feywild.
+                dinosaur = MassiveDinosaur(cx, cy, variant=kind)
                 dinosaur.tilemap = self.tilemap
                 dinosaur.load_sprites(self.game.assets)
                 self.dinosaurs.append(dinosaur)

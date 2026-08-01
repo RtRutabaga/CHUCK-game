@@ -767,6 +767,14 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ջ": MarkerDef(kind="anchor:feywild_5_anchor", under="."),
     "Ռ": MarkerDef(kind="boundary:feywild_6", under="⇩"),
     "Ս": MarkerDef(kind="arrival:from_feywild_6", under="."),
+    # Displacer Meadow: one massive stalker, the meadow's checkpoint, and
+    # the reserved Map 11 edge.
+    "ს": MarkerDef(kind="arrival:from_feywild_9", under="'"),
+    "ტ": MarkerDef(kind="anchor:feywild_10_anchor", under="'"),
+    "უ": MarkerDef(kind="boundary:feywild_11", under="→"),
+    "ფ": MarkerDef(kind="arrival:from_feywild_11", under="'"),
+    "ქ": MarkerDef(kind="displacer_beast", under="."),
+    "ღ": MarkerDef(kind="thorn_mite", under="."),
     # Shifting Hedge: four reciprocal flower groups. Each opens one
     # hedge doorway and closes another, so every scratch is a trade
     # rather than a one-way unlock, and scratching again undoes it.

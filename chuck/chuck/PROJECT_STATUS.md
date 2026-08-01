@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's ninth map, the Shifting Hedge, is the region's navigation
-puzzle: four flowers trade hedge doorways, and none of them can trap Chuck.
+Updated: Phase 9's tenth map, the Displacer Meadow, sets a massive stalker
+loose on an exposed crossing Chuck can only survive by ducking out of it.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -203,8 +203,22 @@ This file is required by the project rules and updated every session.
   him. Changes still refuse to land under Chuck, and Sanity-zero restores the
   authored opening state. The map has two cigarette caches in the pocket,
   four thorn mites and no larger enemies, one physical Ashtray, shared
-  `Feywild 9` development entry, reversible Redcap Warrens travel, a reserved
-  Map 10 edge, and uninterrupted Feywild music.
+  `Feywild 9` development entry, reversible Redcap Warrens travel, and
+  uninterrupted Feywild music. Its east edge continues into the meadow.
+- `Feywild 10` (Displacer Meadow) is a 74x48 massive-creature encounter. The
+  displacer beast reuses the Chult colossus wholesale behind a new sprite: a
+  six-legged blue-black panther with barbed tentacles over its shoulders and
+  a faint after-image offset from its real body. It holds the middle of a
+  meandering, wholly exposed route thick with slowing pollen, starting far
+  enough from the arrival to be seen before it is met.
+- The answer is never to fight it. Three walled pockets and four loose root
+  arches are built to Chuck's scale: he walks under them and the beast stops
+  at the mouth. The Ashtray sits in a pocket a large-actor flood proves the
+  beast can never enter, more than a notice range from its haunt, so
+  respawning never drops Chuck inside it. The map has two cigarette caches,
+  three thorn mites, no redcaps, shared `Feywild 10` development entry,
+  reversible Shifting Hedge travel, a reserved Map 11 edge, and uninterrupted
+  Feywild music.
 
 ## Working systems
 

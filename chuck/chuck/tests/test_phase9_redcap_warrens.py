@@ -18,6 +18,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 from src.core import config
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
+from src.world import collision
 from src.world.tilemap import TILE_DEFS, TileMap
 from src.world.tileset_layout import FEYWILD, tileset_for
 from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
@@ -115,6 +116,9 @@ def test_redcaps_cannot_follow_chuck_into_the_passages() -> None:
     for char in PASSAGES:
         assert not TILE_DEFS[char].solid
         assert TILE_DEFS[char].overhead  # an arch drawn over Chuck's head
+        # The engine rule, not just the geometry: a redcap treats the
+        # opening as solid and visibly stops at its mouth.
+        assert char in collision.LARGE_ACTOR_PASSAGE_TERRAIN, char
     text = "".join(tilemap._grid)
     assert text.count("≀") == 1 and text.count("ᚿ") == 2
     # The toadstool thicket the caps grow from is a solid wall.
