@@ -767,6 +767,35 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ջ": MarkerDef(kind="anchor:feywild_5_anchor", under="."),
     "Ռ": MarkerDef(kind="boundary:feywild_6", under="⇩"),
     "Ս": MarkerDef(kind="arrival:from_feywild_6", under="."),
+    # Shifting Hedge: four reciprocal flower groups. Each opens one
+    # hedge doorway and closes another, so every scratch is a trade
+    # rather than a one-way unlock, and scratching again undoes it.
+    "ა": MarkerDef(kind="flower_switch:hedge_west", under="."),
+    "ბ": MarkerDef(
+        kind="flower_open:hedge_west", under="#", allow_solid=True
+    ),
+    "გ": MarkerDef(kind="flower_close:hedge_west", under="'"),
+    "დ": MarkerDef(kind="flower_switch:hedge_north", under="."),
+    "ე": MarkerDef(
+        kind="flower_open:hedge_north", under="#", allow_solid=True
+    ),
+    "ვ": MarkerDef(kind="flower_close:hedge_north", under="'"),
+    "ზ": MarkerDef(kind="flower_switch:hedge_east", under="."),
+    "თ": MarkerDef(
+        kind="flower_open:hedge_east", under="#", allow_solid=True
+    ),
+    "ი": MarkerDef(kind="flower_close:hedge_east", under="'"),
+    "კ": MarkerDef(kind="flower_switch:hedge_south", under="."),
+    "ლ": MarkerDef(
+        kind="flower_open:hedge_south", under="#", allow_solid=True
+    ),
+    "მ": MarkerDef(kind="flower_close:hedge_south", under="'"),
+    # Shifting Hedge arrival, Ashtray, and the reserved Map 10 edge.
+    "ნ": MarkerDef(kind="arrival:from_feywild_8", under="'"),
+    "ო": MarkerDef(kind="anchor:feywild_9_anchor", under="."),
+    "პ": MarkerDef(kind="boundary:feywild_10", under="→"),
+    "ჟ": MarkerDef(kind="arrival:from_feywild_10", under="'"),
+    "რ": MarkerDef(kind="thorn_mite", under="."),
     # Redcap Warrens: the camp's pursuers, its mite nests, one checkpoint,
     # and the future Shifting Hedge edge.
     "բ": MarkerDef(kind="arrival:from_feywild_7", under="'"),

@@ -429,6 +429,8 @@ MAP_TILESET: dict[str, str] = {
     "feywild_needle_garden": "feywild",
     "feywild_moonmoth_fen": "feywild",
     "feywild_redcap_warrens": "feywild",
+    "feywild_shifting_hedge": "feywild",
+    "feywild_shifting_hedge": "feywild",
 }
 
 

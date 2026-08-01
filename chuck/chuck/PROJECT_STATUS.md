@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's eighth map, the Redcap Warrens, is the region's strongest
-ordinary-enemy area --- and it can be crossed without a single fight.
+Updated: Phase 9's ninth map, the Shifting Hedge, is the region's navigation
+puzzle: four flowers trade hedge doorways, and none of them can trap Chuck.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -189,7 +189,22 @@ This file is required by the project rules and updated every session.
 - Thorn mites are the rat role as fey wildlife: tiny, patrolling, cleared by
   one committed scratch, behind a new burr-shaped sprite. The map has one
   physical Ashtray, shared `Feywild 8` development entry, reversible Moonmoth
-  Fen travel, a reserved Map 9 edge, and uninterrupted Feywild music.
+  Fen travel, and uninterrupted Feywild music. Its east edge continues into
+  the Shifting Hedge.
+- `Feywild 9` (Shifting Hedge) is a 68x44 ring corridor around a great hedge,
+  gated at its four corners. Two gates start open and two start shut. Four
+  reactive-flower groups each open one doorway and close another, and every
+  group is its own reciprocal, so a second scratch always undoes the first.
+  The hedge is fixed and inspectable, never randomised.
+- Its two guarantees are proved by walking the entire state space --- every
+  tile in all sixteen group combinations. Neither the exit nor the optional
+  pocket can be reached without the flowers, and from every state Chuck can
+  reach, the exit is still reachable, so no order of scratches can strand
+  him. Changes still refuse to land under Chuck, and Sanity-zero restores the
+  authored opening state. The map has two cigarette caches in the pocket,
+  four thorn mites and no larger enemies, one physical Ashtray, shared
+  `Feywild 9` development entry, reversible Redcap Warrens travel, a reserved
+  Map 10 edge, and uninterrupted Feywild music.
 
 ## Working systems
 

@@ -630,6 +630,9 @@ Structure:
 Do not randomize the hedge. The player should learn and reason about its
 deterministic states.
 
+Built as `feywild_shifting_hedge` (68x44). See the changelog entry for the
+delivered shape.
+
 ## Map 10 --- Displacer Meadow
 
 Purpose:
@@ -1278,3 +1281,21 @@ boundary reserved for the later floating-wizard-tower phase.
   large-actor flood proves no redcap can follow. One physical Ashtray, shared
   `Feywild 8` entry, reversible Moonmoth Fen travel, a reserved Map 9 edge,
   and uninterrupted regional music complete the slice.
+- **Shifting Hedge / the phase's navigation puzzle:** Added the 68x44
+  `feywild_shifting_hedge`. One ring corridor runs around a great hedge,
+  gated at its four corners: two gates start open and two start shut, so the
+  ring is never a simple lap. Four flower groups each trade one doorway for
+  another --- the north flower opens the north-east gate and closes the
+  north-west, the east flower opens the way out and severs the eastern run,
+  the west flower opens the quiet pocket and seals the run behind it --- and
+  because every group is its own reciprocal, a second scratch always undoes
+  the first. Nothing is randomised.
+- The map's two guarantees are proved by walking the entire state space
+  (every tile in all sixteen combinations of the four groups): the exit and
+  the optional pocket cannot be reached without using the flowers, and from
+  every state Chuck can possibly reach, the exit is still reachable --- so no
+  sequence of scratches in any order can strand him. Changes still refuse to
+  land under Chuck, and Sanity-zero restores the authored opening state. Four
+  thorn mites, no redcaps or massive enemies, one physical Ashtray in the
+  entry clearing, shared `Feywild 9` entry, reversible Redcap Warrens travel,
+  a reserved Map 10 edge, and uninterrupted regional music complete the slice.
