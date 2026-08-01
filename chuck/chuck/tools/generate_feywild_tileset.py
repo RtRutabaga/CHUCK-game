@@ -307,8 +307,29 @@ def needle_bed(surface, variant: int, _frame: int) -> None:
     pygame.draw.line(surface, GROUND_LIGHT, (0, 15), (15, 15), 1)
 
 
+def channel(surface, variant: int, frame: int) -> None:
+    """A narrow fen channel: shallower and brighter than the deep river,
+    with reed-lit banks so a one-tile hop reads as obviously crossable."""
+    river(surface, variant, frame)
+    # Lighter shallows: the bed shows through where Chuck can clear it.
+    phase = frame * 3 + variant * 2
+    for y in range(3, 13):
+        amount = 0.55 + 0.3 * math.sin(y * 0.5 + phase)
+        color = tuple(
+            round(a + (b - a) * amount)
+            for a, b in zip(WATER, WATER_LIGHT)
+        )
+        pygame.draw.line(surface, color, (2, y), (13, y))
+    # Reeds leaning in from both banks mark it as the narrow crossing.
+    for x, top in ((1, 4), (14, 6), (3, 11), (12, 2)):
+        pygame.draw.line(surface, GROUND_LIGHT, (x, top), (x, top + 3))
+    pygame.draw.line(surface, WATER_DEEP, (0, 0), (15, 0))
+    pygame.draw.line(surface, WATER_DEEP, (0, 15), (15, 15))
+
+
 DRAW = {
     "fey_ground": ground,
+    "fey_channel": channel,
     "fey_dense": dense,
     "fey_river": river,
     "fey_bank": bank,

@@ -766,6 +766,14 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Փ": MarkerDef(kind="anchor:feywild_6_anchor", under="."),
     "Ք": MarkerDef(kind="boundary:feywild_7", under="→"),
     "Օ": MarkerDef(kind="arrival:from_feywild_7", under="."),
+    # Feywild map 7, the Moonmoth Fen, and its lantern moths.
+    "Ֆ": MarkerDef(kind="arrival:from_feywild_6", under="'"),
+    "ՙ": MarkerDef(kind="anchor:feywild_7_anchor", under="."),
+    "ֈ": MarkerDef(kind="boundary:feywild_8", under="→"),
+    # Moths fly, so they haunt the open water itself: allow_solid keeps
+    # the deep channel beneath them untouched.
+    "֊": MarkerDef(kind="lantern_moth:h", under="~", allow_solid=True),
+    "Ա": MarkerDef(kind="lantern_moth:v", under="~", allow_solid=True),
 }
 
 _COMMENT_PREFIX = ";"

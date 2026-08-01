@@ -295,6 +295,13 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("feywild_needle_garden", "⇧"): AreaExit(
         "feywild_tea_table", "from_feywild_6", "up"
     ),
+    # The needle garden's reserved east boundary opens onto the fen.
+    ("feywild_needle_garden", "→"): AreaExit(
+        "feywild_moonmoth_fen", "from_feywild_6", "right"
+    ),
+    ("feywild_moonmoth_fen", "←"): AreaExit(
+        "feywild_needle_garden", "from_feywild_7", "left"
+    ),
 }
 
 
@@ -343,4 +350,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "feywild_rootways": "feywild.wav",
     "feywild_tea_table": "feywild.wav",
     "feywild_needle_garden": "feywild.wav",
+    "feywild_moonmoth_fen": "feywild.wav",
 }

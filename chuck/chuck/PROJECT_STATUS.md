@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's sixth map, Needle Garden, now introduces telegraphed
-cardinal seed-projectile lanes and a late slowing-pollen bypass.
+Updated: Phase 9's seventh map, Moonmoth Fen, now strings safe islands across
+deep water on one-tile committed hops timed against weaving lantern moths.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -159,8 +159,21 @@ This file is required by the project rules and updated every session.
   projectile pressure with the already-established slowing pollen. The
   Ashtray approach never intersects a firing lane. The map has two optional
   cigarette-grass rewards, one physical Ashtray, shared `Feywild 6`
-  development entry, reversible Giant Tea Table travel, an inert Map 7 edge,
-  and uninterrupted Feywild music.
+  development entry, reversible Giant Tea Table travel, and uninterrupted
+  Feywild music. Its east edge now carries on into the Moonmoth Fen.
+- `Feywild 7` (Moonmoth Fen) is a 62x40 wetland of small safe islands strung
+  across impassable deep water. Every gap is exactly one tile of the jumpable
+  `≈` channel — given new `fey_channel` art here — so each crossing is a single
+  committed hop and the fen cannot be walked; two branch islands hang off the
+  main chain.
+- Lantern moths are the flameskull hazard as living Feywild wildlife: the same
+  weaving, unscratchable, 14-Sanity contact behaviour behind a new luminous
+  moth sprite with a pale blue wing trail. They haunt fixed horizontal and
+  vertical lines out over the deep water, so a crossing means timing the moth
+  and the hop together. No landing tile moves. The map has an optional northern
+  side island with a cigarette-grass cache, one physical Ashtray, shared
+  `Feywild 7` development entry, reversible Needle Garden travel, a reserved
+  Map 8 edge, and uninterrupted Feywild music.
 
 ## Working systems
 

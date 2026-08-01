@@ -25,9 +25,12 @@ class Flameskull(Entity):
     damage = config.FLAMESKULL_SANITY_DAMAGE
 
     def __init__(self, center_x: float, center_y: float,
-                 axis: str = "h") -> None:
+                 axis: str = "h", variant: str = "flameskull") -> None:
         if axis not in {"h", "v"}:
             raise ValueError(f"Unknown flameskull axis {axis!r}")
+        # `variant` selects the sprite only: the Feywild's lantern moths
+        # (Phase 9) are this exact hazard as living wildlife.
+        self.variant = variant
         super().__init__(
             center_x - config.FLAMESKULL_HITBOX_W / 2,
             center_y - config.FLAMESKULL_HITBOX_H / 2,
@@ -41,7 +44,7 @@ class Flameskull(Entity):
         self._image = None
 
     def load_sprites(self, assets: "AssetManager") -> None:
-        self._image = assets.image("hazards/flameskull.png")
+        self._image = assets.image(f"hazards/{self.variant}.png")
 
     def update(self, dt: float, _target=None) -> None:
         """Weave along the haunt axis, bobbing across it.
@@ -78,7 +81,11 @@ class Flameskull(Entity):
             fx = round(cx + flicker * 2)
             fy = round(cy + 5 + i * 2)
             size = 3 - i
-            colour = ((255, 196, 84), (240, 128, 34), (176, 58, 20))[i]
+            colour = (
+                ((198, 236, 255), (140, 196, 246), (96, 138, 208))
+                if self.variant != "flameskull"
+                else ((255, 196, 84), (240, 128, 34), (176, 58, 20))
+            )[i]
             pygame.draw.rect(surface, colour, (fx - size // 2, fy, size, size))
         if self._image is None:
             pygame.draw.rect(surface, (226, 220, 198),

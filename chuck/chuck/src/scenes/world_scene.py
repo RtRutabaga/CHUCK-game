@@ -385,7 +385,7 @@ class WorldScene(Scene):
                 "pirate_chef", "redcap",
             } or kind.startswith((
                 "sword_fighter:", "spined_devil:", "flameskull:",
-                "spitting_orchid:",
+                "spitting_orchid:", "lantern_moth:",
             ))
         ]
         self._staged_undead_spawns = [
@@ -464,7 +464,7 @@ class WorldScene(Scene):
                 continue  # rebuilt with all enemies below
             elif kind.startswith((
                 "sword_fighter:", "spined_devil:", "flameskull:",
-                "spitting_orchid:",
+                "spitting_orchid:", "lantern_moth:",
             )):
                 continue  # rebuilt with all hazards below
             elif kind.startswith("battle:"):
@@ -1944,8 +1944,15 @@ class WorldScene(Scene):
                 devil = SpinedDevil(cx, cy, kind.split(":", 1)[1])
                 devil.load_sprites(self.game.assets)
                 self.spined_devils.append(devil)
-            elif kind.startswith("flameskull:"):
-                skull = Flameskull(cx, cy, kind.split(":", 1)[1])
+            elif kind.startswith(("flameskull:", "lantern_moth:")):
+                # A lantern moth is the flameskull hazard as Feywild
+                # wildlife: same weave, same unclearable contact danger.
+                family, axis = kind.split(":", 1)
+                skull = Flameskull(
+                    cx, cy, axis,
+                    variant=("lantern_moth" if family == "lantern_moth"
+                             else "flameskull"),
+                )
                 skull.load_sprites(self.game.assets)
                 self.flameskulls.append(skull)
             elif kind.startswith("spitting_orchid:"):

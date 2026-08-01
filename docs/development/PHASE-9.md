@@ -585,6 +585,9 @@ Structure:
 Do not create moving platforms. Keep landing tiles static and jumps
 consistent with the existing jump system.
 
+Built as `feywild_moonmoth_fen` (62x40). See the changelog entry for the
+delivered shape.
+
 ## Map 8 --- Redcap Warrens
 
 Purpose:
@@ -1242,3 +1245,17 @@ boundary reserved for the later floating-wizard-tower phase.
   One safe physical Ashtray, two grass rewards, shared `Feywild 6` entry,
   Giant Tea Table backtracking, an inert Map 7 edge, and uninterrupted
   regional music complete the slice.
+- **Moonmoth Fen / moving hazards over committed jumps:** Added the 62x40
+  `feywild_moonmoth_fen`: a dark luminous wetland of small safe islands strung
+  across impassable deep water, plus new `fey_channel` art for the existing
+  jumpable `≈` stream so the crossing needed no engine change. Every gap is
+  exactly one channel tile, making each crossing a single committed hop; a
+  walk-only flood cannot reach the far bank, and two branch islands hang off
+  the main chain. Lantern moths reuse the flameskull role as living wildlife
+  --- a new luminous sprite and pale blue wing trail over identical weaving,
+  unscratchable, contact-damage behaviour --- haunting fixed horizontal and
+  vertical lines above the deep water, so the moths and the jumps must be
+  timed together. No moving platforms: every landing tile is static. One
+  optional northern side island carries a cigarette-grass cache, one physical
+  Ashtray anchors the route, and the reserved Needle Garden east edge now
+  connects both ways under the uninterrupted regional theme.

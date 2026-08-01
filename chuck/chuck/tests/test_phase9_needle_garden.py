@@ -266,7 +266,10 @@ def test_tea_table_and_needle_garden_transition_both_ways() -> None:
     assert forward.arrival == "from_feywild_5"
     assert backward.destination == "feywild_tea_table"
     assert backward.arrival == "from_feywild_6"
-    assert (MAP_NAME, "→") not in AREA_WALK_EXITS
+    # The garden's east boundary now carries on into the Moonmoth Fen.
+    onward = AREA_WALK_EXITS[(MAP_NAME, "→")]
+    assert onward.destination == "feywild_moonmoth_fen"
+    assert onward.arrival == "from_feywild_6"
 
     entry = CHECKPOINT_BY_ID["feywild_6"]
     anchor = CHECKPOINT_BY_ID["feywild_6_anchor"]

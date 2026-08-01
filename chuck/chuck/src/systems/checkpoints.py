@@ -550,6 +550,22 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "feywild_7", "Feywild 7", "feywild_moonmoth_fen",
+        arrival="from_feywild_6", facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "feywild_7_anchor", "Feywild 7 Ashtray", "feywild_moonmoth_fen",
+        position=(116.0, 325.0), facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
         "feywild_6", "Feywild 6", "feywild_needle_garden",
         arrival="from_feywild_5", facing="down",
         required_flags=frozenset({
