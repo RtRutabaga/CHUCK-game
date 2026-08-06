@@ -3,12 +3,25 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `f541465` (rounded Zephyros Aerie)
-- Current work: Phase 10 Zephyros introduction slice
+- Base commit before this pass: `3a35b8d` (Zephyros introduction)
+- Current work: Phase 10 tower launch and horizontal flight slice
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Continued directly from Zephyros' final line into a dedicated input-free
+  launch scene. A whole-tower side view makes Chuck a two-pixel dot while one
+  small palm motion throws him effortlessly across the sky.
+- Added a close horizontal-flight composition: Chuck enters west-to-east at a
+  stable altitude, then gradually descends. Exact animated Astral hazard cells
+  arrive first; office windows and jagged concrete fragments progressively
+  join them in the same moving sky.
+- Reused the established falling motif after a short music fade and ended on a
+  clear collision with a large city fragment. The collision holds as the
+  stable boundary for the rainy-city descent; no Phase 11 gameplay was added.
+- Added focused coverage for truthful throw scale, trajectory, Astral-art
+  reuse, city-fragment accumulation, one-shot music dispatch, input-free
+  behavior, Sanity continuity, and the held collision. All 84 suites pass.
 - Connected rope `YES` to a dedicated input-free cinematic while preserving
   silent `NO` and Sanity. Chuck descends the giant rope, an impossibly large
   Zephyros enters, blinks and smiles, raises his palm, and receives Chuck.
@@ -17,10 +30,10 @@
   beard, and a separate giant hand. Chuck remains tiny and readable throughout.
 - Added the complete exact 36-beat supplied dialogue as data and an automatic
   cinematic playback schedule using the established dialogue panel. The final
-  line holds as the stable boundary for the tower-launch slice.
+  line now hands directly into the tower-launch scene.
 - Added focused coverage for exact text, validated choice dispatch, Sanity
   preservation, the distinct visual beats, input-free playback, automatic
-  line progression, and the held launch boundary. All 83 suites pass.
+  line progression, and the launch handoff. All 83 suites passed that slice.
 - Connected the exterior's embedded arch to a 60x46 open-sided Aerie and added
   a reversible three-tile southern return. The platform now has a clearly
   rounded elliptical tower silhouette. Four seven-tile-wide nests surround a
@@ -60,10 +73,11 @@
   the explicit scene dispatch; the choice menu contains no transition logic.
 - Added procedural generators for the maps, airy tower tileset, immense cloud
   stair, giant arch, nests, rope, and griffon.
-- All 83 standalone test suites pass; compilation and the headless title-frame
+- All 84 standalone test suites pass; compilation and the headless title-frame
   launch check are clean.
-- Next: continue from the held final line into the tower launch and horizontal
-  flight between worlds; stop before Phase 11 city gameplay.
+- Next: continue from the city-fragment collision into the rainy diagonal
+  descent, sidewalk death/return, contained city Ashtray tableau, and control
+  handoff; do not build Phase 11 city gameplay.
 
 ## Previous Pass (commit 23b76ed)
 

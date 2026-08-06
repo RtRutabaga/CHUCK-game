@@ -17,6 +17,9 @@ from src.scenes.zephyros_intro_cutscene_scene import (
     STEP_END,
     ZephyrosIntroCutsceneScene,
 )
+from src.scenes.zephyros_launch_cutscene_scene import (
+    ZephyrosLaunchCutsceneScene,
+)
 from src.systems.dialogue import DialogueSystem
 
 
@@ -111,7 +114,7 @@ def test_descent_face_blink_smile_hand_and_step_are_distinct_readable_beats() ->
         game._shutdown()
 
 
-def test_dialogue_auto_advances_and_holds_final_line_for_launch_slice() -> None:
+def test_dialogue_auto_advances_then_hands_off_to_launch_slice() -> None:
     game = Game()
     try:
         scene = ZephyrosIntroCutsceneScene(game, sanity=62)
@@ -125,15 +128,9 @@ def test_dialogue_auto_advances_and_holds_final_line_for_launch_slice() -> None:
             + 0.1
         )
         scene.update(final_end - scene.elapsed)
-        assert scene.dialogue_index == len(EXPECTED_DIALOGUE) - 1
-        assert scene.conversation_complete
-        # Phase 10 slice 4 will continue directly into the launch. Until
-        # then, the final portrait/line is an explicit stable boundary.
-        scene.update(30.0)
-        assert game.scenes.current is scene
-
-        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
-        scene.draw(surface)
+        launch = game.scenes.current
+        assert isinstance(launch, ZephyrosLaunchCutsceneScene)
+        assert launch.sanity == 62
     finally:
         game._shutdown()
 

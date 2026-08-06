@@ -1,11 +1,23 @@
 # CHUCK — Project Status
 
-Updated: Phase 10 now runs from the Cloud Staircase through the complete
-Zephyros introduction. This file is required by the project rules and updated
-every session.
+Updated: Phase 10 now runs from the Cloud Staircase through Zephyros' throw
+and the horizontal flight between worlds. This file is required by the project
+rules and updated every session.
 
 ## Latest implementation
 
+- The held final Zephyros line now continues directly into a dedicated launch
+  scene. A complete distant tower remains in frame while Zephyros makes one
+  small, effortless hand motion and Chuck crosses the sky as a two-pixel dot.
+- The close flight begins horizontally, with Chuck entering from the west and
+  holding altitude before gravity gradually pulls him downward. The existing
+  `fall_to_chult.wav` motif begins once after a short fade from the Feywild
+  track; Phase 10's final transition arrangement remains part of the audio
+  pass.
+- Exact animated Astral fall-hazard tiles enter first. Office-wall sections,
+  lit windows, jagged concrete pieces, and violet collision seams then mix
+  into the same moving sky until Chuck visibly strikes a large city fragment.
+  That impact now holds as the stable boundary before the rainy descent.
 - Rope `YES` now starts a dedicated, input-free Zephyros introduction scene
   while `NO` still closes silently. Chuck descends a giant rope against
   cloud-giant masonry, Zephyros' impossibly large face enters slowly, blinks,
@@ -16,9 +28,9 @@ every session.
   palm beside it.
 - The complete supplied 36-beat conversation is stored in dialogue data and
   automatically paced through the established dialogue panel. The final `I
-  shall fling you onward!` tableau holds as the stable boundary for the next
-  launch slice; the dedicated Phase 10 conversation music remains reserved
-  for the later audio pass.
+  shall fling you onward!` tableau now hands directly into the launch scene;
+  the dedicated Phase 10 conversation music remains reserved for the later
+  audio pass.
 - Added the 60x46 open-sided Aerie beyond the exterior arch. Its broad stone
   floor now follows a clearly rounded elliptical tower plan rather than a
   square-like clipped outline. Four enormous seven-tile nests ring a solid,
@@ -59,16 +71,16 @@ every session.
 - `Zephyros 1` and `Zephyros 2` use the same checkpoint loader as normal saves
   and preserve Sanity across the cinematic handoff. Focused coverage validates
   the route, exact choice behavior, maps, procedural art, and checkpoints. All
-  83 standalone test suites pass, compilation is clean, and the headless title
+  84 standalone test suites pass, compilation is clean, and the headless title
   launch succeeds.
 
 ## Next logical task
 
-Build Phase 10 slice 4: continue directly from Zephyros' held final line into
-the effortless tower throw and horizontal flight between worlds. Reuse the
-established falling motif, introduce Astral blocks and stitched modern-city
-fragments progressively, and stop at the stable boundary before the playable
-city content reserved for later work.
+Build Phase 10 slice 5: continue from the city-fragment collision into the
+diagonal rainy-city descent, sidewalk impact, established Sanity-zero vanish,
+and immediate reformation at the contained city Ashtray tableau. Finish with
+Chuck's cigarette/look-around animation and control handoff, without building
+Phase 11 city exploration, NPCs, enemies, or interiors.
 
 ## Current state
 

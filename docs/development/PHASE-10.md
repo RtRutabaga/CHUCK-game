@@ -394,9 +394,9 @@ Those city systems begin in Phase 11.
 
 ## Launch and City Arrival
 
-- [ ] Zephyros casually throws Chuck from the tower.
-- [ ] Chuck begins in horizontal flight and gradually descends.
-- [ ] Astral blocks and modern city fragments appear together.
+- [x] Zephyros casually throws Chuck from the tower.
+- [x] Chuck begins in horizontal flight and gradually descends.
+- [x] Astral blocks and modern city fragments appear together.
 - [ ] The sequence becomes a diagonal rainy-city descent.
 - [ ] Chuck hits the sidewalk, reaches zero Sanity, and vanishes.
 - [ ] Chuck reforms at the city's first Ashtray.
@@ -455,5 +455,13 @@ Do not start Phase 11 city gameplay while completing these slices.
   Chuck descends against cloud-giant masonry; Zephyros' warm blue-grey face
   enters, blinks and smiles; a giant palm rises and Chuck steps onto it. The
   exact supplied 36-beat dialogue advances automatically in the established
-  panel. Its final line holds as the stable boundary for slice 4's throw; the
-  dedicated conversation cue remains reserved for the planned audio pass.
+  panel. Its final line served as the stable boundary until slice 4 connected
+  the throw; the dedicated conversation cue remains reserved for the planned
+  audio pass.
+- Slice 4: continued directly from Zephyros' final line into an input-free
+  launch. A distant whole-tower shot reduces Chuck to a two-pixel dot during
+  the effortless throw; a close shot then follows his horizontal flight and
+  gradual descent. Exact animated Astral hazard tiles arrive before authored
+  office and concrete fragments accumulate in the same sky. The established
+  falling motif returns after a short fade, and a city-fragment collision
+  holds as the stable boundary for slice 5's rainy descent.

@@ -70,6 +70,7 @@ class ZephyrosIntroCutsceneScene(Scene):
         self._dialogue_box = DialogueBox(game.assets)
         self._line_starts = self._build_line_starts(self.dialogue)
         self._line_index = -1
+        self._launch_started = False
 
     def on_enter(self) -> None:
         grid = self.game.assets.sheet(
@@ -142,6 +143,14 @@ class ZephyrosIntroCutsceneScene(Scene):
         # Absolute local time keeps large test/frame jumps deterministic.
         self._dialogue_box.show(self.dialogue[index])
         self._dialogue_box.update(local_time)
+        if self.conversation_complete and not self._launch_started:
+            self._launch_started = True
+            from src.scenes.zephyros_launch_cutscene_scene import (
+                ZephyrosLaunchCutsceneScene,
+            )
+            self.game.scenes.replace(
+                ZephyrosLaunchCutsceneScene(self.game, sanity=self.sanity)
+            )
 
     def draw(self, surface: pygame.Surface) -> None:
         self._draw_tower_interior(surface)
