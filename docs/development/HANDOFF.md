@@ -3,13 +3,28 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `3fc3909` (Phase 11 rainy-city plan)
-- Current work: Phase 11 City Night 1 region foundation
+- Base commit before this pass: `54f1682` (Zephyros window cloud layering)
+- Current work: Phase 11 reusable office-block scale correction
 - Active scope: `docs/development/PHASE-11.md`
 - Next implementation slice: reusable traffic lanes and the first teaching
   street crossing
 
 ## Completed This Pass
+
+- Rebuilt City Night 1 as a 72x54 road-and-sidewalk grid flanked by four
+  genuinely large inaccessible office blocks. Every connected office mass is
+  at least 21x18 tiles; the unequal setbacks form explorable sidewalk pockets
+  without cutting buildings into narrow leftover strips.
+- Added reusable three-quarter-view city architecture: broad rooftop planes,
+  cornices, eight-tile-deep windowed facades, darker side columns, and quiet
+  three-frame rain/window glints. The Phase 11 contract now makes these scale
+  constraints authoritative for all later night and day city maps.
+- Kept the map/checkpoint IDs, rain, cigarettes, Astral non-exits, and Phase 10
+  handoff intact. The physical City Night 1 Ashtray position follows its new
+  authored marker.
+- All 88 test files pass in isolated processes, compilation is clean, and the
+  regenerated full-map and playable checkpoint views were inspected at native
+  resolution.
 
 - Corrected one Phase 10 presentation regression found during playtest: the
   Zephyros-room cloud now renders only within the blue window opening, behind

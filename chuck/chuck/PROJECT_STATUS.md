@@ -7,13 +7,29 @@ rules and updated every session.
 
 ## Latest implementation
 
+- Reworked City Night 1 around a true city grid and increased it from 56x36
+  to 72x54 tiles. Four large, indivisible office blocks now flank the road and
+  sidewalk cross; each solid building mass is at least 21x18 tiles, and broad
+  setbacks provide the optional sidewalk pockets without leaving narrow
+  freestanding office strips.
+- Replaced the flat repeated wall treatment with a reusable three-quarter-view
+  office language: broad inaccessible roof planes, cornices, eight-tile-deep
+  facades, darker side columns, and restrained three-frame rain/window glints.
+  The Phase 11 contract and topology tests now prohibit thin office masses in
+  future city maps.
+- Preserved all four cigarette pickups, the rainy presentation, exact Astral
+  edge hazards, and the authoritative City Night 1 checkpoint/save IDs; the
+  physical Ashtray coordinates now match the larger grid.
+- All 88 isolated test suites pass, compilation is clean, and both full-map
+  and playable-checkpoint renders were visually inspected.
+
 - Corrected the Zephyros introduction window layering. Its drifting exterior
   cloud is now clipped to the blue opening, so the dark reveal and tower
   masonry remain in front and the cloud can no longer appear inside the room.
   Focused visual/pixel regression coverage and compilation are clean.
 
 - Began Phase 11 with a bounded City Night 1 foundation pass. The former
-  24x16 endpoint is now a 56x36 rainy city map built around a broad cross
+  24x16 endpoint became a rainy city map built around a broad cross
   street, four human-scale building masses, wet sidewalk lanes, two optional
   pockets, window bands, and four scattered single-cigarette pickups.
 - Every currently unauthored street or sidewalk continuation ends visibly in

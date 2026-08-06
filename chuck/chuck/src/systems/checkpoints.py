@@ -840,7 +840,7 @@ CHECKPOINTS = (
     ),
     CheckpointDefinition(
         "modern_city_anchor", "City Night 1 Ashtray", "modern_city_arrival",
-        position=(340.0, 453.0), facing="down",
+        position=(436.0, 693.0), facing="down",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
             "modern_city_reached",

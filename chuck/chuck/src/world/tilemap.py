@@ -296,6 +296,12 @@ TILE_DEFS: dict[str, TileDef] = {
     "M": TileDef(solid=False, color=config.COLOR_SEWER_MUD),
     "%": TileDef(solid=True, color=config.COLOR_SEWER_CHANNEL),
     "V": TileDef(solid=False, color=config.COLOR_ASTRAL),
+    # Modern-city office masses. These are all solid building footprint,
+    # separated into roof/cornice/facade materials only for three-quarter-view
+    # rendering; none are short freestanding walls or playable platforms.
+    "▱": TileDef(solid=True, color=(55, 58, 67)),
+    "▤": TileDef(solid=True, color=(49, 52, 61)),
+    "▥": TileDef(solid=True, color=(39, 42, 51)),
     # Rat-scale drainage gate: dirt beneath, iron bars overhead. Walking
     # through it is resolved by the area's transition configuration.
     "Q": TileDef(solid=False, color=config.COLOR_SEWER_DIRT,

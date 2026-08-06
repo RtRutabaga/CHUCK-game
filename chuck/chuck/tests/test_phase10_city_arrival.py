@@ -142,8 +142,8 @@ def test_city_handoff_enters_the_rainy_phase11_start_map() -> None:
         assert not world.npcs
         assert not world.hazards
         assert not world._enemy_spawns
-        assert world.tilemap.width_tiles == 56
-        assert world.tilemap.height_tiles == 36
+        assert world.tilemap.width_tiles == 72
+        assert world.tilemap.height_tiles == 54
         assert len(world.pickups) == 4
         assert CHECKPOINT_BY_ID["modern_city_anchor"].saveable
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))

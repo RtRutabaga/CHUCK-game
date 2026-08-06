@@ -10,6 +10,7 @@ from src.world.transitions import AREA_WALK_EXITS
 
 
 MAP_NAME = "modern_city_arrival"
+OFFICE_TERRAIN = frozenset("#▱▤▥w")
 
 
 def _markers(tilemap: TileMap) -> dict[str, list[tuple[int, int]]]:
@@ -42,11 +43,36 @@ def _reachable_without_falling(
     return reached
 
 
+def _office_components(tilemap: TileMap) -> list[set[tuple[int, int]]]:
+    remaining = {
+        (col, row)
+        for row in range(tilemap.height_tiles)
+        for col in range(tilemap.width_tiles)
+        if tilemap.terrain_at(col, row) in OFFICE_TERRAIN
+    }
+    components = []
+    while remaining:
+        component = {remaining.pop()}
+        frontier = list(component)
+        while frontier:
+            col, row = frontier.pop()
+            for point in (
+                (col - 1, row), (col + 1, row),
+                (col, row - 1), (col, row + 1),
+            ):
+                if point in remaining:
+                    remaining.remove(point)
+                    component.add(point)
+                    frontier.append(point)
+        components.append(component)
+    return components
+
+
 def test_city_night_1_establishes_the_region_without_future_encounters() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     kinds = Counter(kind for kind, _position in tilemap.object_spawns)
 
-    assert (tilemap.width_tiles, tilemap.height_tiles) == (56, 36)
+    assert (tilemap.width_tiles, tilemap.height_tiles) == (72, 54)
     assert MAP_TILESET[MAP_NAME] == "city"
     assert kinds["arrival:from_flight"] == 1
     assert kinds["anchor:modern_city_anchor"] == 1
@@ -59,11 +85,24 @@ def test_city_night_1_establishes_the_region_without_future_encounters() -> None
     )
 
     terrain = "".join(tilemap._grid)
-    assert terrain.count("V") >= 150
-    assert terrain.count("=") >= 400
-    assert terrain.count("w") >= 25
-    assert not tilemap.is_solid(21, 31)
-    assert not tilemap.is_solid(21, 28)
+    assert terrain.count("V") >= 250
+    assert terrain.count("=") >= 650
+    assert terrain.count("w") >= 250
+    assert not tilemap.is_solid(27, 47)
+    assert not tilemap.is_solid(27, 43)
+
+
+def test_offices_are_four_large_inaccessible_city_blocks() -> None:
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    components = _office_components(tilemap)
+    assert len(components) == 4
+    assert sum(map(len, components)) >= 1500
+    for component in components:
+        cols = [point[0] for point in component]
+        rows = [point[1] for point in component]
+        assert max(cols) - min(cols) + 1 >= 21
+        assert max(rows) - min(rows) + 1 >= 18
+        assert all(tilemap.is_solid(*point) for point in component)
 
 
 def test_every_city_night_1_discovery_is_reachable_without_astral_fall() -> None:
@@ -85,7 +124,7 @@ def test_city_checkpoint_registry_preserves_phase10_save_compatibility() -> None
     assert entry.arrival == "from_flight"
     assert anchor.display_name == "City Night 1 Ashtray"
     assert anchor.map_name == MAP_NAME
-    assert anchor.position == (340.0, 453.0)
+    assert anchor.position == (436.0, 693.0)
     assert anchor.saveable
 
 
@@ -93,3 +132,8 @@ def test_city_tileset_uses_the_shared_animated_astral_hazard() -> None:
     tileset = tileset_for(MAP_NAME)
     assert tileset.char_to_terrain["V"] == "astral_void"
     assert tileset.info()["astral_void"] == (2, 3)
+    assert tileset.char_to_terrain["#"] == "city_roof"
+    assert tileset.char_to_terrain["▱"] == "city_cornice"
+    assert tileset.char_to_terrain["▤"] == "city_facade"
+    assert tileset.char_to_terrain["▥"] == "city_side_facade"
+    assert tileset.info()["city_window"] == (4, 3)

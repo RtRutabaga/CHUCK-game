@@ -127,6 +127,15 @@ Chuck's scale must remain clear. Curbs are substantial edges, bottles are
 large props, vehicle tires dwarf him, and ordinary human pedestrians read as
 much larger than Chuck without drifting beyond the established NPC scale.
 
+City maps use a readable road-and-sidewalk grid flanked by genuinely large,
+solid office-building footprints. Never use narrow freestanding stretches of
+office terrain: at Chuck's scale they read as implausible two-foot-tall walls,
+not buildings. Most of each city block should be inaccessible building mass.
+Use broad rooftop planes, deep multi-row facades, cornices, side faces, and
+restrained animated office windows to establish three-quarter-view height.
+Sidewalk pockets and alleys may interrupt the street edge, but must not carve
+an office footprint into thin leftover strips.
+
 ------------------------------------------------------------------------
 
 # 3. Night City Maps
