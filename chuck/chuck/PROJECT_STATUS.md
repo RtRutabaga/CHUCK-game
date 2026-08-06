@@ -186,8 +186,10 @@ This file is required by the project rules and updated every session.
   trail off from the camp, and two Chuck-only openings --- one root arch and
   a pair of toadstool caps --- join them and guard the two cigarette caches.
   No redcap can follow through either.
-- Thorn mites are the rat role as fey wildlife: tiny, patrolling, cleared by
-  one committed scratch, behind a new burr-shaped sprite. The map has one
+- Thorn mites are the rat role as fey wildlife: tiny, burr-shaped creatures
+  cleared by one committed scratch. They now use the ship-hold rats' exact
+  short-notice direct pursuit instead of the sewer rats' fixed patrol. The map
+  has one
   physical Ashtray, shared `Feywild 8` development entry, reversible Moonmoth
   Fen travel, and uninterrupted Feywild music. Its east edge continues into
   the Shifting Hedge.

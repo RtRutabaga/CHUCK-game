@@ -1,4 +1,4 @@
-"""Ordinary rats: small sewer patrols and aggressive ship-hold pursuers."""
+"""Small sewer patrols and aggressive ship-hold/Feywild pursuers."""
 
 from __future__ import annotations
 

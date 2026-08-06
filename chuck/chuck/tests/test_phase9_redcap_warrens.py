@@ -151,8 +151,10 @@ def test_thorn_mites_are_the_rat_role_as_fey_wildlife() -> None:
         assert all(isinstance(m, SewerRat) for m in mites)
         assert all(m.variant == "thorn_mite" for m in mites)
         assert all(m.damage == config.RAT_SANITY_DAMAGE for m in mites)
-        # They patrol; they do not hunt Chuck across the map.
-        assert not any(m.attack_chase_enabled for m in mites)
+        # They use the ship-hold rats' exact short-notice pursuit rather than
+        # the sewer rats' fixed patrol configuration.
+        assert all(m.attack_chase_enabled for m in mites)
+        assert not any(m.patrolling for m in mites)
 
         # One committed scratch clears one mite, exactly like a rat.
         mite = mites[0]

@@ -1890,7 +1890,10 @@ class WorldScene(Scene):
                     int(cx // config.TILE_SIZE),
                     int(cy // config.TILE_SIZE),
                 )
-                if self.map_name == "ship_lower_hold":
+                # Feywild thorn mites fill the same small aggressive role as
+                # the ship-hold rats: short notice, direct pursuit, one
+                # scratch. Ordinary sewer rats keep their authored patrols.
+                if kind == "thorn_mite" or self.map_name == "ship_lower_hold":
                     rat.configure_attack_chase(self.tilemap)
                 else:
                     rat.configure_patrol(

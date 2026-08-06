@@ -3,30 +3,26 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `d728b28` (Feywild Luminous Rapids)
-- Current work: Phase 9 Map 13, Twilight Crossroads
+- Base commit before this pass: `fd81259` (Feywild Twilight Crossroads)
+- Current work: Phase 9 thorn-mite pursuit polish
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Added the 76x52 `feywild_twilight_crossroads`, the thirteenth and final Phase
-  9 map. The Luminous Rapids' east edge now arrives at its southern trail, a
-  deliberate impossible-geography handoff that remains locally readable.
-- Combined established systems in one low-pressure culmination: a reciprocal
-  flower opens the final west route while closing a harmless northern decoy,
-  a pollen-heavy direct line has a dry detour, and a two-mouth low-root
-  shortcut protects an optional cache from larger enemies. Five thorn mites
-  and one distant redcap provide restrained pressure without gating progression.
-- Added shared `Feywild 13`, physical `feywild_13_anchor`, and Rapids return
-  checkpoints. Save, Continue, Sanity-zero respawn, enemy reset, backtracking,
-  development selection, and uninterrupted regional music all use the existing
-  systems. The west wilderness opening is intentionally inert: no wizard
-  tower, boss, cutscene, or new-region transition was started.
-- Added a deterministic map generator and focused regressions for route state,
-  scale blocking, enemy placement, three-cell edges, wrong geography,
-  checkpoint persistence, respawn, and the round trip to Map 12.
-- All 80 standalone suites pass, compilation is clean, and the headless boot
-  smoke check reaches `TitleScene` after rendering four native frames.
+- Feywild thorn mites now use the exact ship-lower-hold rat configuration:
+  short notice range, direct collision-aware pursuit, fall-hazard avoidance,
+  and no fixed patrol. Their Feywild sprite, small scale, low damage,
+  one-scratch defeat, and checkpoint reset lifecycle are unchanged.
+- Ordinary sewer rats retain their existing fixed patrol behavior. The shared
+  rat entity remains the single implementation for both roles.
+- Focused Warrens and Twilight Crossroads coverage now asserts that every
+  thorn mite is configured for pursuit and that it is restored after death.
+
+## Previous Pass (commit fd81259)
+
+Completed Phase 9 with the 76x52 Twilight Crossroads, its flower route,
+pollen route, Chuck-only root shortcut, restrained enemies, shared checkpoint,
+Rapids travel, and inert pre-tower boundary. All 80 suites passed.
 
 ## Previous Pass (commit d728b28)
 

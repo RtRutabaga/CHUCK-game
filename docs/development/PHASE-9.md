@@ -335,7 +335,7 @@ They fill the rats/snakes combat role:
 
 - low Sanity damage
 - short notice range
-- brief chase or patrol
+- the ship-hold rats' short-notice direct pursuit
 - defeated by one committed scratch
 - reset when the map resets
 
@@ -1271,14 +1271,14 @@ boundary reserved for the later floating-wizard-tower phase.
   connects both ways under the uninterrupted regional theme.
 - **Redcap Warrens / the strongest ordinary-enemy area:** Added the 76x50
   `feywild_redcap_warrens` and thorn mites, which reuse the rat role as fey
-  wildlife: tiny, patrolling, one committed scratch, behind a new burr-shaped
-  sprite. Four redcaps hold a camp of gnome-sized gear --- kicked-off boots, a
-  cooking cauldron, planted sickles Chuck walks under, and crude hide shelters
-  --- standing on its own trampled camp-dirt terrain so the clearing reads as
-  lived-in rather than as a room. Their notice zones are authored more than
-  two notice ranges apart, so pursuit never becomes a mob. A northern game
-  trail crosses the full width of the map outside every notice zone, making
-  the whole warrens passable without a single fight, while the camp centre
+  wildlife: tiny, short-notice pursuers, one committed scratch, behind a new
+  burr-shaped sprite. Four redcaps hold a camp of gnome-sized gear ---
+  kicked-off boots, a cooking cauldron, planted sickles Chuck walks under, and
+  crude hide shelters --- standing on its own trampled camp-dirt terrain so
+  the clearing reads as lived-in rather than as a room. Their notice zones are
+  authored more than two notice ranges apart, so pursuit never becomes a mob.
+  A northern game trail crosses the full width of the map outside every notice
+  zone, making the whole warrens passable without a single fight, while the camp centre
   stays genuinely contested. New solid toadstool-thicket terrain walls the
   trail off, and two Chuck-only openings --- one root arch, one toadstool cap
   pair --- join it to the camp and guard the two cigarette caches; a

@@ -204,6 +204,7 @@ def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:
             scene.update(config.RESPAWN_FADE_IN)
             assert len(scene.rats) == 5
             assert all(rat.variant == "thorn_mite" for rat in scene.rats)
+            assert all(rat.attack_chase_enabled for rat in scene.rats)
             assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
 
             south = next((col, row)
