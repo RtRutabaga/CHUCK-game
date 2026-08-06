@@ -215,6 +215,9 @@ def test_feywild_handoffs_are_three_tile_openings_on_outer_edges() -> None:
         "feywild_rootways": (("west", "←"), ("east", "→")),
         "feywild_tea_table": (("north", "⇧"), ("south", "⇩")),
         "feywild_needle_garden": (("north", "⇧"), ("east", "→")),
+        "feywild_twilight_crossroads": (
+            ("south", "⇩"), ("west", "←")
+        ),
     }
     for map_name, edges in expected_edges.items():
         tilemap = TileMap(config.MAPS_DIR / f"{map_name}.txt")

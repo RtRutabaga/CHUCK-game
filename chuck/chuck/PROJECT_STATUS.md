@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's twelfth map, the Luminous Rapids, adds the region up:
-jumps, pollen, moths and flowers that raise and sink the pads underfoot.
+Updated: Phase 9's thirteenth and final map, the Twilight Crossroads, brings
+the complete Feywild route to a stable boundary before the later wizard tower.
 This file is required by the project rules and updated every session.
 
 ## Current state
@@ -121,7 +121,7 @@ This file is required by the project rules and updated every session.
   Later peaks use only isolated echo accents, reserve reed answers for
   contrasting sections, and avoid added bass/percussion fills so the hook
   remains clear rather than becoming cluttered or disharmonious.
-  All six implemented Feywild maps request the same seamless loop, so the
+  All thirteen Feywild maps request the same seamless loop, so the
   existing audio deduplication keeps it playing through map transitions,
   checkpoint respawns, and reloads without layering or restarting.
 - `Feywild 4` (Rootways) is a connected 68x46 east-west forest floor divided
@@ -251,7 +251,23 @@ This file is required by the project rules and updated every session.
   water; one spitting orchid sits on the optional ledge. The map has two
   cigarette caches, one physical Ashtray on the middle isle, shared
   `Feywild 12` development entry, reversible Mushroom Underways travel, a
-  reserved Map 13 edge, and uninterrupted Feywild music.
+  connected Map 13 edge, and uninterrupted Feywild music.
+- `Feywild 13` (Twilight Crossroads) completes the Phase 9 region with a 76x52
+  twilight clearing and several ordinary-looking trails whose connections are
+  geographically wrong: leaving the Rapids eastward arrives from the south.
+  One reversible flower closes a harmless northern decoy while opening the
+  western route, a pollen-heavy direct line offers a slower shortcut, and a
+  two-mouth low-root shortcut protects an optional cigarette cache from the
+  restrained lone redcap. Five thorn mites provide light wildlife pressure
+  without making the route a combat gate.
+- The map has one physical Ashtray, shared `Feywild 13` development entry,
+  save/Continue and Sanity-zero reset through the existing checkpoint loader,
+  and reversible travel to the Luminous Rapids. Its three-cell western
+  wilderness opening is deliberately inert: it is the stable boundary for a
+  later floating-wizard-tower phase, with no cutscene, tower map, boss, or new
+  region transition implemented here. Phase 9's authored content is complete;
+  the next pass is the full thirteen-map human acceptance playtest and any
+  narrowly evidenced polish it reveals.
 
 ## Working systems
 
@@ -281,7 +297,7 @@ This file is required by the project rules and updated every session.
   facing, required progression flags, and visibility/save rules. NEW GAME,
   CONTINUE, and the development selector all call the same
   `CheckpointLoader.load_checkpoint(checkpoint_id)` path. Map-entry definitions
-  retain the established local retry behavior; the 28 authored Ashtrays have
+  retain the established local retry behavior; the 29 authored Ashtrays have
   stable IDs and save on first contact. A small version-1 JSON slot under the
   user's application-data folder stores only checkpoint ID, current Sanity, and
   durable progression flags. Invalid, missing, outdated, unknown, or forged
@@ -1180,22 +1196,13 @@ This file is required by the project rules and updated every session.
 
 ## Tests
 
-49 suites (most pure Python/headless): collision, tilemap,
-camera, animation, sanity, hazard, dialogue, audio, props, tileset,
-tutorial, choice, music, transitions, jump, combat, outflow, enemy_reset,
-tavern, pantry, packaging, checkpoints, Chult landing, Chult undead,
-Chult terrain hazard, Chult route-deeper boundary,
-Chult dense vegetation, breakable grass, Phase 5 Chult Map 2 foundation,
-Phase 5 raptors, the massive Chult dinosaur, the Phase 5 thorn-maze/Chult 3
-transition, the finite Chult 3 undead run, the Chult Map 4 jungle respite,
-the Chult Map 5 temple exterior, the Phase 6 temple entrance hall, the Temple
-Map 2 spike corridor, the Temple Map 3 skeleton chamber, the Temple Map 4
-dart corridor, the Temple Map 5 snake chamber, the Temple Map 6 Astral wind,
-the temple interior dressing, the breakable temple urns, and the
-pantry jar shelves
-(`python -m tests.test_<name>` from the project root, or `pytest`).
-The map-transition flow (grate YES -> sewer) is also verified
-end-to-end headlessly with dummy SDL drivers.
+80 standalone suites (most pure Python/headless) cover the shared engine and
+content from Waterdeep through the complete thirteen-map Feywild region. The
+Phase 9 coverage includes every map transition and development checkpoint,
+reactive-flower state and reset guarantees, pollen, Chuck-only passage
+blocking, enemy roles and reset, save/Continue/respawn, uninterrupted music,
+and the inert final boundary. All 80 pass, compilation is clean, and the dummy
+SDL launch reaches `TitleScene` after the boot frame.
 
 ## Phase 2 progress (starting area + sewer tutorial)
 
@@ -1250,9 +1257,10 @@ end-to-end headlessly with dummy SDL drivers.
 
 ## Next recommended session
 
-Build Phase 9's next bounded map, `Feywild 7` (Moonmoth Fen), introducing
-fixed-axis lantern moth haunts around static one-tile wetland jumps with one
-physical Ashtray.
+Run the Phase 9 full regional acceptance playtest from `Feywild 1` through
+`Feywild 13`, then load each development checkpoint individually. Keep any
+follow-up strictly to issues observed during that playtest; do not begin the
+floating wizard tower without its own phase document.
 
 ## Also open
 

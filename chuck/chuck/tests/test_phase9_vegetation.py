@@ -22,6 +22,7 @@ from src.world.tilemap import TILE_DEFS, TileMap
 FEYWILD_MAPS = (
     "feywild_riverbank", "feywild_blooming_path", "feywild_pollen_orchard",
     "feywild_rootways", "feywild_tea_table", "feywild_needle_garden",
+    "feywild_twilight_crossroads",
 )
 VEGETATION = {
     "ŧ": "feywild_grove_tree",

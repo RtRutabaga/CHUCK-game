@@ -332,6 +332,14 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("feywild_luminous_rapids", "←"): AreaExit(
         "feywild_mushroom_underways", "from_feywild_12", "left"
     ),
+    # The Rapids' east bank arrives from the south: readable locally,
+    # geographically impossible across the map boundary, as the Feywild is.
+    ("feywild_luminous_rapids", "→"): AreaExit(
+        "feywild_twilight_crossroads", "from_feywild_12", "up"
+    ),
+    ("feywild_twilight_crossroads", "⇩"): AreaExit(
+        "feywild_luminous_rapids", "from_feywild_13", "left"
+    ),
 }
 
 
@@ -386,4 +394,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "feywild_displacer_meadow": "feywild.wav",
     "feywild_mushroom_underways": "feywild.wav",
     "feywild_luminous_rapids": "feywild.wav",
+    "feywild_twilight_crossroads": "feywild.wav",
 }

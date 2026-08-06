@@ -800,6 +800,18 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ჷ": MarkerDef(kind="lantern_moth:v", under="ᚼ", allow_solid=True),
     "ჸ": MarkerDef(kind="spitting_orchid:left", under="#", allow_solid=True),
     "ჹ": MarkerDef(kind="spitting_orchid:down", under="#", allow_solid=True),
+    # Twilight Crossroads: one reciprocal route exchange, a southern return
+    # from the geographically wrong Rapids connection, and an intentionally
+    # inert western boundary reserved for the later floating wizard tower.
+    "Ꭰ": MarkerDef(kind="flower_switch:twilight", under="."),
+    "Ꭱ": MarkerDef(
+        kind="flower_open:twilight", under="#", allow_solid=True
+    ),
+    "Ꭲ": MarkerDef(kind="flower_close:twilight", under="'"),
+    "Ꭳ": MarkerDef(kind="arrival:from_feywild_12", under="'"),
+    "Ꭴ": MarkerDef(kind="anchor:feywild_13_anchor", under="."),
+    "Ꭵ": MarkerDef(kind="boundary:feywild_tower", under="←"),
+    "Ꭶ": MarkerDef(kind="arrival:from_feywild_tower", under="'"),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

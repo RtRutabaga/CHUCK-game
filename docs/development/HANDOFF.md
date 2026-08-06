@@ -3,34 +3,36 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `1712ead` (Feywild Giant Tea Table)
-- Current work: Phase 9 Map 6, Needle Garden
+- Base commit before this pass: `d728b28` (Feywild Luminous Rapids)
+- Current work: Phase 9 Map 13, Twilight Crossroads
 - Active scope: `docs/development/PHASE-9.md`
 
 ## Completed This Pass
 
-- Added the 72x50 `feywild_needle_garden`, connecting Giant Tea Table to a
-  future east-edge Map 7 boundary through Chult-style three-cell openings.
-- Added reusable stationary spitting orchids and hard seed projectiles.
-  Orchids face authored cardinal lanes, use three procedural wind-up frames,
-  fire on four evenly staggered cadence slots, and stop seeds against solid
-  terrain. Seed contact costs Sanity; the plants remain traversal hazards
-  rather than mandatory combat targets.
-- Authored a broad safe first approach, narrower later flowerbed lanes, and a
-  late horizontal/vertical crossing with a slowing-pollen side bypass. Pollen
-  appears only after two clean timing lessons. The sole Ashtray and both grass
-  rewards remain out of projectile interaction space.
-- Added shared `Feywild 6` development/Ashtray/return definitions, real
-  bidirectional Giant Tea Table travel, seamless regional music, enemy reset,
-  save/Continue/respawn behavior, and focused coverage. All 72 standalone
-  suites pass, compilation is clean, and the headless title-loop launch check
-  passes.
+- Added the 76x52 `feywild_twilight_crossroads`, the thirteenth and final Phase
+  9 map. The Luminous Rapids' east edge now arrives at its southern trail, a
+  deliberate impossible-geography handoff that remains locally readable.
+- Combined established systems in one low-pressure culmination: a reciprocal
+  flower opens the final west route while closing a harmless northern decoy,
+  a pollen-heavy direct line has a dry detour, and a two-mouth low-root
+  shortcut protects an optional cache from larger enemies. Five thorn mites
+  and one distant redcap provide restrained pressure without gating progression.
+- Added shared `Feywild 13`, physical `feywild_13_anchor`, and Rapids return
+  checkpoints. Save, Continue, Sanity-zero respawn, enemy reset, backtracking,
+  development selection, and uninterrupted regional music all use the existing
+  systems. The west wilderness opening is intentionally inert: no wizard
+  tower, boss, cutscene, or new-region transition was started.
+- Added a deterministic map generator and focused regressions for route state,
+  scale blocking, enemy placement, three-cell edges, wrong geography,
+  checkpoint persistence, respawn, and the round trip to Map 12.
+- All 80 standalone suites pass, compilation is clean, and the headless boot
+  smoke check reaches `TitleScene` after rendering four native frames.
 
-## Previous Pass (commit 1712ead)
+## Previous Pass (commit d728b28)
 
-Added the enemy-free Giant Tea Table, colossal procedural furniture and place
-settings, under-table routes, its shared checkpoint, and Rootways travel. All
-71 suites passed.
+Added the Luminous Rapids traversal synthesis, reactive lily-pad groups,
+stepping-stone jumps, pollen approaches, moth lanes, one optional orchid, its
+shared checkpoint, and Mushroom Underways travel.
 
 ## Previous Pass (commit 4bc7e36)
 
@@ -79,8 +81,10 @@ quality regressions. All 69 suites passed.
 
 ## Next Logical Task
 
-Implement Phase 9 Map 7, Moonmoth Fen, with fixed-axis lantern moth haunts,
-static one-tile wetland jumps, and exactly one shared Ashtray/checkpoint.
+Run the complete Phase 9 human acceptance route from `Feywild 1` through
+`Feywild 13`, then load each development checkpoint independently. Make only
+narrow fixes evidenced by that playtest; do not begin the floating wizard
+tower without its own phase document.
 
 ## Previous Pass (commit 474435d)
 

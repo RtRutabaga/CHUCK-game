@@ -13,20 +13,15 @@ The first playable Feywild map already exists:
 - physical checkpoint `Feywild Ashtray`
 - durable progression flag `feywild_reached`
 
-Phase 9 begins on that riverbank and builds the first large playable
-Feywild region. Its first implementation slice is complete: `Feywild 2`
-(Blooming Path), its Ashtray, and the reusable scratch-reactive flower
-system now connect to the riverbank in both directions. `Feywild 3`
-(Pollen Orchard) is also complete, providing the safe, enemy-free slowing
-pollen lesson and the region's third Ashtray.
-`Feywild 4` (Rootways), `Feywild 5` (Giant Tea Table), and `Feywild 6`
-(Needle Garden) are also complete, establishing large-actor-blocking
-root/table passages, the first redcap pursuit, the planned enemy-free scale
-respite, and telegraphed cardinal projectile timing. The regional soundtrack
-is complete and shared without interruption across all six implemented maps.
+Phase 9 is content-complete. All thirteen playable maps now connect from the
+Riverbank through the Twilight Crossroads, with one physical Ashtray per map,
+shared development entries `Feywild 1` through `Feywild 13`, and uninterrupted
+regional music. The final western wilderness opening is stable and inert; it
+does not begin the later floating wizard tower, play a cutscene, or transition
+to a new region.
 
-A region-wide vegetation pass has also landed. The dense growth on all six
-implemented maps was reading as flat blocks, so Chult's rounded tree and
+A region-wide vegetation pass has also landed. The dense growth was reading
+as flat blocks, so Chult's rounded tree and
 shrub silhouettes are reused (`feywild_grove_tree`, `feywild_shrub`) with a
 subtle violet sheen added only to their lit faces -- the green mass and the
 un-blocky shapes are Chult's exactly. A new, deliberately ordinary oak
@@ -1367,5 +1362,20 @@ boundary reserved for the later floating-wizard-tower phase.
   asserted never to touch a landing tile or a gap; three lantern moths patrol
   over the water; the single spitting orchid sits on the optional ledge. One
   physical Ashtray on the middle isle, shared `Feywild 12` entry, reversible
-  Mushroom Underways travel, a reserved Map 13 edge, and uninterrupted
+  Mushroom Underways travel, a connected Map 13 edge, and uninterrupted
   regional music complete the slice.
+- **Twilight Crossroads / regional culmination:** Added the 76x52
+  `feywild_twilight_crossroads`, a broad twilight clearing whose ordinary
+  trails connect wrongly across map boundaries: the Rapids' east edge arrives
+  here from the south. One reciprocal flower closes a harmless northern decoy
+  while opening the actual westward route; scratching again restores the
+  authored state. A pollen-heavy direct line, dry detour, three optional grass
+  caches, and a two-mouth low-root shortcut combine the region's established
+  traversal language without adding another mechanic.
+- Five thorn mites supply light small-enemy pressure and one distant redcap
+  contests an optional branch without becoming a combat gate. The arrival and
+  Ashtray sit more than two notice ranges away. The map uses the shared
+  `Feywild 13` entry, physical Ashtray save/Continue/respawn, enemy reset,
+  reversible Luminous Rapids travel, three-cell wilderness openings, and the
+  uninterrupted regional theme. The final west opening is deliberately inert,
+  leaving a stable boundary for the later floating-wizard-tower phase.

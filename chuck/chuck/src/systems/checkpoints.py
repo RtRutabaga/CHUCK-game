@@ -738,6 +738,32 @@ CHECKPOINTS = (
         development_visible=False, runtime_entry=True,
     ),
     CheckpointDefinition(
+        "feywild_13", "Feywild 13", "feywild_twilight_crossroads",
+        arrival="from_feywild_12", facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "feywild_13_anchor", "Feywild 13 Ashtray",
+        "feywild_twilight_crossroads",
+        position=(612.0, 709.0), facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "feywild_12_return", "Feywild 12 Return",
+        "feywild_luminous_rapids",
+        arrival="from_feywild_13", facing="left",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "feywild_6_return", "Feywild 6 Return", "feywild_needle_garden",
         arrival="from_feywild_7", facing="left",
         required_flags=frozenset({
