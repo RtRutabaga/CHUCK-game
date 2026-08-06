@@ -426,6 +426,7 @@ CITY = Tileset(
         ("city_sidewalk", 4, 1),
         ("city_curb", 4, 1),
         ("city_road", 4, 3),
+        ("city_crosswalk", 2, 1),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -437,6 +438,7 @@ CITY = Tileset(
         ".": "city_sidewalk",
         ",": "city_curb",
         "=": "city_road",
+        "▦": "city_crosswalk",
         "V": "astral_void",
     },
     overhead_char_to_terrain={},

@@ -49,6 +49,7 @@ from src.entities.flameskull import Flameskull
 from src.entities.spitting_orchid import OrchidSeed, SpittingOrchid
 from src.entities.spined_devil import FlamingSpine, SpinedDevil
 from src.entities.sword_fighter import SwordFighter
+from src.entities.traffic import ROAD_TERRAIN, TrafficLane
 from src.entities.undead import UndeadEnemy
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
@@ -208,6 +209,7 @@ class WorldScene(Scene):
             self.player.facing = "up"
         self.player.tilemap = self.tilemap
         self.player.load_sprites(self.game.assets)
+        self._traffic_safe_position = (self.player.x, self.player.y)
         # The adventurers' entrance lines (session 131): entering the
         # final chamber from the gauntlet, each delivers one heroic,
         # non-interactive line before control returns.
@@ -380,6 +382,11 @@ class WorldScene(Scene):
             for kind, position in self.tilemap.object_spawns
             if kind.startswith("dart_trap:")
         ]
+        self._traffic_lane_spawns = [
+            (kind.split(":")[1], int(kind.split(":")[2]), position)
+            for kind, position in self.tilemap.object_spawns
+            if kind.startswith("traffic_lane:")
+        ]
         self._enemy_spawns = [
             (kind, position)
             for kind, position in self.tilemap.object_spawns
@@ -488,6 +495,8 @@ class WorldScene(Scene):
                 # Authored handoff metadata for a future destination.  It is
                 # deliberately inert until that destination map exists.
                 continue
+            elif kind.startswith("traffic_lane:"):
+                continue  # rebuilt as a fixed-size lane field on reset
             elif kind.startswith(
                 ("flower_switch:", "flower_open:", "flower_close:")
             ):
@@ -740,6 +749,8 @@ class WorldScene(Scene):
                 return
         for cat in self.hazards:
             cat.update(dt)
+        for lane in self.traffic_lanes:
+            lane.update(dt)
         for rat in self.rats:
             rat.update(dt, self.player)
         for kind, position in self.undead_release.release_for_row(
@@ -902,6 +913,9 @@ class WorldScene(Scene):
             self.camera.update(dt)
             return
         if self._maybe_begin_plank_ending():
+            self.camera.update(dt)
+            return
+        if self._handle_traffic_contact():
             self.camera.update(dt)
             return
         if (
@@ -1375,10 +1389,44 @@ class WorldScene(Scene):
                      *self.redcaps, *self.snakes, *self.chefs, *self.fencers,
                      *self.spined_devils, *self.flameskulls,
                      *self.spitting_orchids,
+                     *self.traffic_vehicles,
                      *self.darts, *self.spines, *self.orchid_seeds,
                      *self.battle_projectiles,
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
+
+    @property
+    def traffic_vehicles(self):
+        return [
+            vehicle
+            for lane in self.traffic_lanes
+            for vehicle in lane.vehicles
+        ]
+
+    def _handle_traffic_contact(self) -> bool:
+        """Apply a severe road hit and return Chuck to his last sidewalk."""
+        vehicle = next(
+            (
+                vehicle for vehicle in self.traffic_vehicles
+                if overlaps(self.player.hitbox, vehicle.hitbox)
+            ),
+            None,
+        )
+        if vehicle is not None:
+            if self.sanity.damage(vehicle.damage):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+                self.camera.shake(3.0)
+            # A car never carries Chuck, embeds him, or shoves him out of the
+            # map. Like a Frogger miss, the hit returns him to the last safe
+            # non-road footing while normal Sanity/respawn rules continue.
+            self.player.x, self.player.y = self._traffic_safe_position
+            return True
+
+        center_col, center_row = self._player_tile()
+        if self.tilemap.terrain_at(center_col, center_row) not in ROAD_TERRAIN:
+            self._traffic_safe_position = (self.player.x, self.player.y)
+        return False
 
     def _spawn_deck_captain(self) -> DeckPirateNPC:
         """Materialize the authored captain once the confrontation is due."""
@@ -1857,6 +1905,17 @@ class WorldScene(Scene):
         self.snakes = []
         self.chefs = []
         self.fencers = []
+        self.traffic_lanes = [
+            TrafficLane(
+                cx, cy, direction, phase,
+                self.tilemap.width_tiles * config.TILE_SIZE,
+                self.tilemap.height_tiles * config.TILE_SIZE,
+            )
+            for direction, phase, (cx, cy) in self._traffic_lane_spawns
+        ]
+        for lane in self.traffic_lanes:
+            lane.load_sprites(self.game.assets)
+        self._traffic_safe_position = (self.player.x, self.player.y)
         self._chef_notice_shown = False
         self._chef_start_after_dialogue = False
         self.dart_traps = [

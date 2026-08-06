@@ -3,13 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `54f1682` (Zephyros window cloud layering)
-- Current work: Phase 11 reusable office-block scale correction
+- Base commit before this pass: `babf34b` (city blocks at proper scale)
+- Current work: Phase 11 reusable traffic and teaching crossing
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: reusable traffic lanes and the first teaching
-  street crossing
+- Next implementation slice: City Night 2 with its Ashtray, first
+  businesspeople, and first raccoon encounter
 
 ## Completed This Pass
+
+- Added a reusable four-direction traffic-lane controller with fixed car
+  populations, deterministic spacing/phases, clean boundary wrapping, and no
+  entity accumulation. Four procedural top-down modern-car variants make each
+  vehicle enormous beside one-foot Chuck.
+- Authored two fast opposed lanes across City Night 1's horizontal road and a
+  worn zebra crossing aligned with the southern sidewalk approach. This is a
+  readable two-lane teaching beat, not the later highway challenge.
+- Vehicle impact costs 50 Sanity and returns Chuck to his last safe non-road
+  footing, preventing embedding and out-of-bounds pushing. Lethal impact uses
+  the ordinary Ashtray return and restores both lanes to their authored phase.
+- Focused coverage validates deterministic wrapping, fixed populations,
+  marker/road alignment, impact, checkpoint return, reset, generated art, and
+  map/cutscene regressions.
+- All 89 isolated test suites pass, compilation is clean, and the live
+  checkpoint crossing was inspected at native resolution with rain and moving
+  traffic active.
 
 - Rebuilt City Night 1 as a 72x54 road-and-sidewalk grid flanked by four
   genuinely large inaccessible office blocks. Every connected office mass is

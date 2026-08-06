@@ -65,6 +65,12 @@ def build_map() -> list[str]:
             elif vertical_walk or horizontal_walk:
                 grid[row][col] = "."
 
+    # A worn zebra crossing aligns exactly with the southern sidewalk route,
+    # telling the player where to pause and observe the two teaching lanes.
+    for row in range(24, 30):
+        for col in (27, 29):
+            grid[row][col] = "▦"
+
     # Reality has visibly severed every route not yet authored.  These are
     # real Astral fall-hazard tiles, not decorative blockers or portals.
     for row in range(0, 3):
@@ -85,6 +91,10 @@ def build_map() -> list[str]:
     grid[43][27] = "ሌ"
     for col, row in ((23, 8), (48, 9), (29, 20), (44, 33)):
         grid[row][col] = "ል"
+    # Two opposed, widely spaced lanes teach observation and timing before
+    # later maps increase the number and density of vehicles.
+    grid[25][36] = "ሎ"
+    grid[28][36] = "ሏ"
 
     return ["".join(row) for row in grid]
 

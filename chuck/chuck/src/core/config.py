@@ -381,6 +381,16 @@ DINOSAUR_HITBOX_H = 24
 DINOSAUR_SPEED = 14.0
 DINOSAUR_NOTICE_RANGE = 128.0
 DINOSAUR_SANITY_DAMAGE = 40
+
+# Modern-city traffic. Cars are environmental timing hazards rather than
+# enemies: two impacts deplete full Sanity, and fixed spacing keeps every
+# crossing observable and deterministic.
+TRAFFIC_SPEED = 150.0
+TRAFFIC_SPACING = 256.0
+TRAFFIC_MARGIN = 48.0
+TRAFFIC_SANITY_DAMAGE = 50
+TRAFFIC_HITBOX_LONG = 34
+TRAFFIC_HITBOX_SHORT = 14
 DINOSAUR_SCRATCHES = 20
 DINOSAUR_FRAME_DURATION = 0.30
 

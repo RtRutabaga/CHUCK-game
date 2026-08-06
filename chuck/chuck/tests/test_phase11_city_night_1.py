@@ -137,3 +137,4 @@ def test_city_tileset_uses_the_shared_animated_astral_hazard() -> None:
     assert tileset.char_to_terrain["▤"] == "city_facade"
     assert tileset.char_to_terrain["▥"] == "city_side_facade"
     assert tileset.info()["city_window"] == (4, 3)
+    assert tileset.char_to_terrain["▦"] == "city_crosswalk"

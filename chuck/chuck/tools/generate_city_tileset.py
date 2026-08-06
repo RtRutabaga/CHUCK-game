@@ -92,6 +92,16 @@ def road(surface, variant, frame):
     surface.set_at(((variant * 11 + frame * 3) % 16, 2 + frame * 4), (64, 84, 94))
 
 
+def crosswalk(surface, variant, frame):
+    road(surface, variant, frame)
+    paint = (174, 178, 176) if variant == 0 else (151, 156, 155)
+    pygame.draw.rect(surface, paint, (2, 0, 11, 16))
+    pygame.draw.line(surface, (112, 118, 118), (3, 0), (3, 15))
+    # Small asphalt breaks keep the rain-worn markings from feeling pristine.
+    for y in (4 + variant * 3, 12 - variant * 2):
+        pygame.draw.rect(surface, (49, 54, 61), (9, y, 4, 2))
+
+
 DRAW = {
     "city_roof": roof,
     "city_cornice": cornice,
@@ -101,6 +111,7 @@ DRAW = {
     "city_sidewalk": sidewalk,
     "city_curb": curb,
     "city_road": road,
+    "city_crosswalk": crosswalk,
     "astral_void": draw_astral_void,
 }
 

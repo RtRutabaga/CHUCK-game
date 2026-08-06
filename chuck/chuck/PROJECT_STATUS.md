@@ -7,6 +7,22 @@ rules and updated every session.
 
 ## Latest implementation
 
+- Added Phase 11's reusable deterministic traffic system and City Night 1's
+  first teaching crossing. Two opposed lanes carry fixed populations of
+  fast, human-scale cars across a worn zebra crossing; broad deterministic
+  gaps let the player observe a safe window before committing.
+- Traffic is a non-combat environmental hazard. Each impact costs 50 Sanity,
+  plays the established hurt feedback, and returns Chuck to his last safe
+  non-road footing so a vehicle cannot embed him or push him out of bounds.
+  A lethal second impact uses the normal active-Ashtray death/return and resets
+  every lane to its authored phase.
+- The reusable lane controller supports all four directions, wraps cars at
+  credible map boundaries, and owns a fixed vehicle count so extended play
+  cannot accumulate entities. Four procedural top-down car variants establish
+  the modern human scale.
+- All 89 isolated test suites pass, compilation is clean, and the active rainy
+  crossing was visually inspected from its playable approach.
+
 - Reworked City Night 1 around a true city grid and increased it from 56x36
   to 72x54 tiles. Four large, indivisible office blocks now flank the road and
   sidewalk cross; each solid building mass is at least 21x18 tiles, and broad
@@ -219,10 +235,10 @@ rules and updated every session.
 
 ## Next logical task
 
-Continue Phase 11 with reusable traffic lanes and the first readable teaching
-street crossing in City Night 1. Keep the crossing learnable before Chuck
-commits, preserve the completed quiet arrival/checkpoint area, and do not add
-City Night 2, NPCs, or raccoons in the same pass.
+Continue Phase 11 with City Night 2 as one bounded map slice, using the shared
+office-block, rain, Astral-boundary, checkpoint, and traffic systems. Introduce
+the first businesspeople and raccoon encounter there; do not build Maps 3--4
+or the highway in the same pass.
 
 ## Current state
 
