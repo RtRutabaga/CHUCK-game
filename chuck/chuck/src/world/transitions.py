@@ -407,11 +407,10 @@ AREA_MUSIC: dict[str, str | None] = {
     "feywild_mushroom_underways": "feywild.wav",
     "feywild_luminous_rapids": "feywild.wav",
     "feywild_twilight_crossroads": "feywild.wav",
-    # The first Phase 10 slice keeps the regional theme uninterrupted. The
-    # dedicated airy tower score is the next contained audio pass.
-    "feywild_cloud_staircase": "feywild.wav",
-    "zephyros_tower_exterior": "feywild.wav",
-    "zephyros_aerie": "feywild.wav",
+    # One uninterrupted airy cue spans the ascent and playable tower maps.
+    "feywild_cloud_staircase": "zephyros_tower.wav",
+    "zephyros_tower_exterior": "zephyros_tower.wav",
+    "zephyros_aerie": "zephyros_tower.wav",
     # The dedicated modern-city theme belongs to Phase 11. Silence the
     # completed one-shot flight cue at the contained playable endpoint.
     "modern_city_arrival": None,

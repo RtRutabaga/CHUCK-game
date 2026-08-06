@@ -105,8 +105,9 @@ def test_route_uses_normal_transitions_and_shared_checkpoints() -> None:
     assert CHECKPOINT_BY_ID["zephyros_staircase_anchor"].saveable
     assert CHECKPOINT_BY_ID["zephyros_2"].map_name == "zephyros_tower_exterior"
     assert CHECKPOINT_BY_ID["zephyros_exterior_anchor"].saveable
-    assert AREA_MUSIC["feywild_cloud_staircase"] == "feywild.wav"
-    assert AREA_MUSIC["zephyros_tower_exterior"] == "feywild.wav"
+    assert AREA_MUSIC["feywild_cloud_staircase"] == "zephyros_tower.wav"
+    assert AREA_MUSIC["zephyros_tower_exterior"] == "zephyros_tower.wav"
+    assert AREA_MUSIC["zephyros_aerie"] == "zephyros_tower.wav"
 
 
 def test_yes_starts_input_free_cutscene_and_preserves_sanity() -> None:

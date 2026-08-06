@@ -51,7 +51,7 @@ def test_aerie_is_a_vast_open_platform_with_four_giant_nests() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     assert (tilemap.width_tiles, tilemap.height_tiles) == (60, 46)
     assert MAP_TILESET[MAP_NAME] == "tower"
-    assert AREA_MUSIC[MAP_NAME] == "feywild.wav"
+    assert AREA_MUSIC[MAP_NAME] == "zephyros_tower.wav"
 
     kinds = Counter(kind for kind, _ in tilemap.object_spawns)
     props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)

@@ -152,6 +152,22 @@ def reverse_bell(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     return gain(out, vel * 0.43)
 
 
+def cloud_pad(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Wide, slow-blooming 16-bit pad for open sky and immense spaces."""
+    body = mix(
+        _vibrato_sine(freq, dur, rate=3.1, depth=0.004),
+        gain(_vibrato_sine(freq * 1.005, dur, rate=2.7, depth=0.003), 0.52),
+        gain(tone(freq / 2, dur, "triangle"), 0.24),
+        gain(tone(freq * 2, dur), 0.08),
+    )
+    body = lowpass(body, 2400)
+    return gain(
+        envelope(body, min(0.42, dur * 0.22), min(0.7, dur * 0.3),
+                 sustain=0.94),
+        vel * 0.38,
+    )
+
+
 def elastic_bass(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     """Rubbery funk bass with a quick upward pitch scoop on each note."""
     n = int(dur * SAMPLE_RATE)

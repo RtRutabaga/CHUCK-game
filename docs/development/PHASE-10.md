@@ -488,3 +488,9 @@ Do not start Phase 11 city gameplay while completing these slices.
   the bottom edge, and consolidated the unchanged conversation wording into 19
   normally advanced panels. The launch motif now waits 3.5 seconds, and the
   unexplained converging black road shape was removed from the rainy descent.
+- Audio slice 1: added an original 105-second Cloud Staircase/Tower loop in C
+  Lydian at 82 BPM. Its recurring flute theme, glassy mallets, open-fifth bass,
+  sparse bells, reverse swells, and broad cloud pads establish peaceful ancient
+  wonder without becoming ambient wallpaper. One uninterrupted request spans
+  the staircase, exterior, and Aerie; the conversation and launch-transition
+  cues remain separate future audio slices.

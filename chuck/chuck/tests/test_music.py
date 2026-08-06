@@ -21,6 +21,7 @@ from data.music import chult as chult_song
 from data.music import temple as temple_song
 from data.music import sewer as sewer_song
 from data.music import waterdeep_docks as song
+from data.music import zephyros_tower as zephyros_song
 from src.audio.sequencer import Note, Track, note_to_freq, render_song
 from src.audio.synth import SAMPLE_RATE
 from src.core import config
@@ -486,6 +487,61 @@ def test_rendered_feywild_theme_respects_loop_and_mix_quality_gates() -> None:
     ) ** 0.5
     # Strong enough to follow Chult/Phlegethos, but not mixed like combat.
     assert 0.95 <= rms / chult_rms <= 1.25, (rms, chult_rms)
+
+
+def test_zephyros_tower_theme_is_airy_ancient_and_wonder_filled() -> None:
+    tracks = zephyros_song.build_tracks()
+    duration = (
+        zephyros_song.TOTAL_BEATS * 60.0 / zephyros_song.TEMPO_BPM
+    )
+    assert duration >= 100.0
+    assert 76 <= zephyros_song.TEMPO_BPM <= 88
+    named = {track.name: track for track in tracks}
+    assert len([track for track in tracks if track.notes]) >= 8
+    assert "kick" not in named and "snare" not in named
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < zephyros_song.TOTAL_BEATS
+
+    # A memorable theme returns intact after the suspended chamber section.
+    flute = named["flute"]
+    first = [
+        (note.beat - 4 * 4, note.dur, note.pitch)
+        for note in flute.notes if 4 * 4 <= note.beat < 12 * 4
+    ]
+    returned = [
+        (note.beat - 28 * 4, note.dur, note.pitch)
+        for note in flute.notes if 28 * 4 <= note.beat < 36 * 4
+    ]
+    assert first == returned and len(first) >= 20
+    assert any(note.pitch.startswith("F#") for note in flute.notes)
+
+    # Openness comes from sustained pad coverage and restrained percussion.
+    pad_bars = {int(note.beat // 4) for note in named["cloud_pad"].notes}
+    assert len(pad_bars) == zephyros_song.TOTAL_BARS
+    assert len(named["ceremonial"].notes) < zephyros_song.TOTAL_BARS * 2
+    assert named["high_bells"].notes and named["swells"].notes
+
+
+def test_rendered_zephyros_tower_theme_respects_loop_and_mix_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "zephyros_tower.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 100 * SAMPLE_RATE
+    assert max(abs(sample) for sample in samples) <= 0.92
+    assert abs(samples[-1] - samples[0]) < 0.15
+
+    with wave.open(str(config.MUSIC_DIR / "feywild.wav")) as f:
+        fey_raw = f.readframes(f.getnframes())
+    fey_samples = [x / 32767 for (x,) in struct.iter_unpack("<h", fey_raw)]
+    rms = (sum(sample * sample for sample in samples) / len(samples)) ** 0.5
+    fey_rms = (
+        sum(sample * sample for sample in fey_samples) / len(fey_samples)
+    ) ** 0.5
+    # Peaceful and spacious, but still clearly audible after the Feywild.
+    assert 0.65 <= rms / fey_rms <= 1.0, (rms, fey_rms)
 
 
 def _run_all() -> None:
