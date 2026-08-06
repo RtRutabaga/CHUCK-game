@@ -53,10 +53,21 @@ def edge(surface, variant, _frame):
         pygame.draw.line(surface, GOLD, (4, 4), (11, 4))
 
 
+def interior(surface, variant, _frame):
+    """Unlit depth inside the tower's central shaft."""
+    surface.fill((7, 8, 14))
+    # Sparse, subdued masonry catches far below give the black area depth
+    # without making it look like animated sky or a traversable floor.
+    if variant % 2:
+        pygame.draw.line(surface, (16, 17, 27), (0, 14), (15, 12))
+    surface.set_at(((variant * 5 + 3) % 16, 5 + variant * 2), (24, 22, 31))
+
+
 DRAW = {
     "tower_sky": sky,
     "tower_stone": stone,
     "tower_edge": edge,
+    "tower_interior": interior,
 }
 
 

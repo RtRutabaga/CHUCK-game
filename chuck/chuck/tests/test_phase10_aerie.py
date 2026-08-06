@@ -70,6 +70,21 @@ def test_aerie_is_a_vast_open_platform_with_four_giant_nests() -> None:
     assert nest.size[1] >= 4 * config.TILE_SIZE
 
 
+def test_aerie_floor_has_a_rounded_profile_not_a_square_footprint() -> None:
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+
+    def platform_width(row):
+        return sum(char != "~" for char in tilemap._grid[row])
+
+    # The ellipse is broad through its middle and tapers sharply at both
+    # ends. The short southern entry neck does not flatten the round body.
+    assert platform_width(23) > 50
+    assert platform_width(5) < 20
+    assert platform_width(41) < 25
+    assert tilemap.terrain_at(2, 3) == "~"
+    assert tilemap.terrain_at(57, 42) == "~"
+
+
 def test_arrival_anchor_rope_and_return_are_connected_around_the_hole() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     points = _markers(tilemap)
@@ -84,10 +99,13 @@ def test_arrival_anchor_rope_and_return_are_connected_around_the_hole() -> None:
     }
     assert len(return_tiles) == 3 and return_tiles <= reached
 
-    # The animated sky in the middle is a true, solid floor opening, not blue
-    # paint on walkable stone. Its south lip is the safe rope approach.
-    assert tilemap.terrain_at(30, 22) == "~"
+    # The near-black tower interior is a true, solid floor opening, not blue
+    # sky paint or walkable stone. Its south lip is the safe rope approach,
+    # and the rope is visibly based on solid stone rather than in the void.
+    assert tilemap.terrain_at(30, 22) == "●"
     assert tilemap.is_solid(30, 22)
+    assert tilemap.terrain_at(29, 27) == "℞"
+    assert tilemap.is_solid(29, 27)
     assert points["choice:zephyros_rope"] == (29, 28)
 
 

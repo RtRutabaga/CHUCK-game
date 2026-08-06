@@ -10,9 +10,9 @@ OUT = Path(__file__).resolve().parents[1] / "assets/maps/zephyros_aerie.txt"
 ARRIVAL = (30, 41)
 ANCHOR = (23, 38)
 ROPE_CHOICE = (29, 28)
-ROPE_PROP = (29, 25)
-GRIFFON = (12, 14)
-NESTS = ((12, 12), (47, 12), (12, 34), (47, 34))
+ROPE_PROP = (29, 27)
+GRIFFON = (13, 15)
+NESTS = ((13, 13), (46, 13), (13, 32), (46, 32))
 
 HEADER = [
     "; PHASE 10 - ZEPHYROS' AERIE (60x46 tiles).",
@@ -26,11 +26,18 @@ def build():
     grid = [["~"] * W for _ in range(H)]
     center = 30
 
-    # Broad clipped-octagon platform with open sky beyond every wall break.
-    for row in range(4, 42):
-        half = min(26, 14 + (row - 4) * 3, 14 + (41 - row) * 3)
-        for col in range(center - half, center + half + 1):
-            grid[row][col] = "."
+    # A broad elliptical platform.  The previous clipped octagon had long
+    # straight sides that read as a square at gameplay scale; this stepped
+    # ellipse keeps the same useful floor area while making the tower's round
+    # plan unmistakable.
+    center_x, center_y = 29.5, 23.0
+    radius_x, radius_y = 27.0, 19.0
+    for row in range(3, 43):
+        for col in range(2, 58):
+            dx = (col - center_x) / radius_x
+            dy = (row - center_y) / radius_y
+            if dx * dx + dy * dy <= 1.0:
+                grid[row][col] = "."
     stone = {(col, row) for row in range(H) for col in range(W)
              if grid[row][col] == "."}
     for col, row in stone:
@@ -39,14 +46,14 @@ def build():
             grid[row][col] = "#"
 
     # Southern arch landing and three-cell return threshold.
-    for row in range(38, 46):
+    for row in range(40, 46):
         for col in range(27, 34):
             grid[row][col] = "."
     for col in range(29, 32):
         grid[45][col] = "⇓"
 
     # Four giant nests use authored solid footprints matching their sprites.
-    footprints = ((9, 9), (44, 9), (9, 31), (44, 31))
+    footprints = ((10, 10), (43, 10), (10, 29), (43, 29))
     for left, top in footprints:
         for row in range(top, top + 4):
             for col in range(left, left + 7):
@@ -54,13 +61,14 @@ def build():
     for col, row in NESTS:
         grid[row][col] = "♘"
 
-    # The central opening exposes moving sky below. A two-tile break in the
-    # south rim is the only safe approach to the hanging giant rope.
+    # The central opening is the black interior of the tower, not exposed sky.
+    # A two-tile break in the south rim is the only safe approach.  The rope's
+    # prop tile is itself part of that stone lip so its giant cleat has a
+    # visible physical attachment rather than levitating over the shaft.
     for row in range(18, 28):
         for col in range(25, 35):
             rim = row in (18, 27) or col in (25, 34)
-            grid[row][col] = "#" if rim else "~"
-    grid[27][29] = "."
+            grid[row][col] = "#" if rim else "●"
     grid[27][30] = "."
     grid[ROPE_PROP[1]][ROPE_PROP[0]] = "℞"
 
@@ -74,7 +82,7 @@ def build():
 def _base(char):
     return {
         "ሇ": ".", "ለ": ".", "ሉ": ".", "ሊ": ".",
-        "♘": "#", "℞": "~",
+        "♘": "#", "℞": "#",
     }.get(char, char)
 
 

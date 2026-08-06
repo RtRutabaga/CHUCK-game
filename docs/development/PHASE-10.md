@@ -442,8 +442,12 @@ Do not start Phase 11 city gameplay while completing these slices.
   stair visibly retracts upward. The Aerie arch is a deliberate stable
   boundary for slice 2.
 - Slice 2: connected the arch to a 60x46 open-sided Aerie with four enormous
-  nests, one slow griffon emerging from a nest, a central solid sky opening
+  nests, one slow griffon emerging from a nest, a central solid interior shaft
   and giant rope, reversible exterior travel, one physical Ashtray, and the
   `Zephyros 3` shared development checkpoint. The exact rope prompt is live;
   both answers close silently until slice 3 can connect `YES` to the complete
   Zephyros introduction without a partial cinematic placeholder.
+- Slice 2 visual polish: replaced the square-reading clipped platform with a
+  rounded elliptical tower floor, changed the central opening from animated
+  sky to the near-black tower interior, and anchored the rope to a giant iron
+  cleat on the south stone lip.

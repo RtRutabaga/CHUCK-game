@@ -10,8 +10,10 @@
 ## Completed This Pass
 
 - Connected the exterior's embedded arch to a 60x46 open-sided Aerie and added
-  a reversible three-tile southern return. Four seven-tile-wide nests surround
-  a central solid sky opening with a visibly descending giant rope.
+  a reversible three-tile southern return. The platform now has a clearly
+  rounded elliptical tower silhouette. Four seven-tile-wide nests surround a
+  near-black interior shaft; its giant rope is visibly lashed to an iron cleat
+  on the south stone lip instead of floating over the opening.
 - Added one griffon emerging from the northwest nest. It uses the existing
   `MassiveDinosaur` behavior/configuration under regional art, begins outside
   notice range, is easy to outrun, resets normally, and does not gate travel.

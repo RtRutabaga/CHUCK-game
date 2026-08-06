@@ -6,9 +6,11 @@ session.
 
 ## Latest implementation
 
-- Added the 60x46 open-sided Aerie beyond the exterior arch. Four enormous
-  seven-tile nests ring a solid central sky opening and its giant descending
-  rope; the broad stone floor remains navigable around both sides.
+- Added the 60x46 open-sided Aerie beyond the exterior arch. Its broad stone
+  floor now follows a clearly rounded elliptical tower plan rather than a
+  square-like clipped outline. Four enormous seven-tile nests ring a solid,
+  near-black opening into the tower interior; the giant descending rope is
+  visibly lashed to an iron cleat on the south stone lip.
 - One griffon emerges from the northwest nest and reuses the established slow
   massive-hazard behavior and reset lifecycle. It begins far outside notice
   range, is much slower than Chuck, and never gates the rope or return route.

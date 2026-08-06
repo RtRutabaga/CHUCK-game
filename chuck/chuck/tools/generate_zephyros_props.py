@@ -141,23 +141,34 @@ def griffon_nest() -> Image.Image:
 
 
 def aerie_rope() -> Image.Image:
-    """A thick giant rope dropping visibly through the central floor hole."""
-    image = Image.new("RGBA", (32, 80), TRANSPARENT)
+    """A giant rope lashed to a cleat on the shaft's southern stone lip."""
+    image = Image.new("RGBA", (48, 80), TRANSPARENT)
     draw = ImageDraw.Draw(image)
     dark = (91, 65, 42, 255)
     rope = (185, 139, 75, 255)
     light = (232, 194, 116, 255)
-    draw.ellipse((8, 1, 24, 9), fill=dark)
-    draw.ellipse((10, 0, 22, 7), fill=rope)
-    for y in range(6, 70, 6):
+    iron_dark = (50, 52, 65, 255)
+    iron = (112, 116, 132, 255)
+
+    # The free length recedes northward into the black shaft.
+    draw.ellipse((16, 1, 30, 8), fill=dark)
+    draw.ellipse((18, 1, 28, 6), fill=rope)
+    for y in range(6, 62, 6):
         sway = 1 if (y // 6) % 2 else -1
-        draw.line((14 + sway, y, 15 - sway, y + 7), fill=dark, width=5)
-        draw.line((15 + sway, y, 16 - sway, y + 7), fill=rope, width=3)
-        draw.point((15 + sway, y + 1), fill=light)
-    draw.ellipse((9, 68, 23, 78), fill=dark)
-    draw.ellipse((11, 67, 21, 75), fill=rope)
-    draw.line((12, 73, 7, 79), fill=rope, width=3)
-    draw.line((20, 73, 25, 79), fill=dark, width=3)
+        draw.line((22 + sway, y, 23 - sway, y + 7), fill=dark, width=7)
+        draw.line((23 + sway, y, 24 - sway, y + 7), fill=rope, width=4)
+        draw.point((23 + sway, y + 1), fill=light)
+
+    # A huge iron cleat and rope turns occupy the bottom stone tile.  This is
+    # the unambiguous attachment point the player sees at the lip of the hole.
+    draw.ellipse((7, 67, 41, 78), fill=iron_dark)
+    draw.rectangle((11, 66, 37, 74), fill=iron)
+    draw.rectangle((20, 59, 28, 78), fill=iron_dark)
+    draw.rectangle((22, 59, 26, 76), fill=iron)
+    draw.arc((12, 58, 36, 78), 175, 355, fill=dark, width=5)
+    draw.arc((13, 57, 35, 76), 175, 355, fill=rope, width=3)
+    draw.line((8, 72, 3, 77), fill=iron, width=3)
+    draw.line((40, 72, 45, 77), fill=iron_dark, width=3)
     return image
 
 

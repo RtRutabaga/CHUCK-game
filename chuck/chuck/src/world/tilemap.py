@@ -411,8 +411,12 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="cloud_tower_arch", under="."),
     "♘": TileDef(solid=True, color=(154, 160, 169),
                  prop="griffon_nest", under="#"),
-    "℞": TileDef(solid=True, color=(116, 190, 226),
-                 prop="aerie_rope", under="~"),
+    "℞": TileDef(solid=True, color=(154, 160, 169),
+                 prop="aerie_rope", under="#"),
+    # The Aerie's central shaft looks into the unlit tower interior.  It is
+    # solid collision like open sky, but deliberately has separate art so it
+    # cannot read as another gap through the clouds.
+    "●": TileDef(solid=True, color=(8, 9, 15)),
     "⇓": TileDef(solid=False, color=(154, 160, 169), under="."),
     # Feywild path thresholds retain the regional path art while keeping
     # opposite directions distinct for authored two-way transitions.
