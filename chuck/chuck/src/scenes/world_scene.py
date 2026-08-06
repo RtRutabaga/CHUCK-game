@@ -43,6 +43,7 @@ from src.entities.rat import SewerRat
 from src.entities.raptor import Raptor
 from src.entities.redcap import Redcap
 from src.entities.reality_blocks import RealityBlockField
+from src.entities.city_rain import CityRain
 from src.entities.snake import TempleSnake
 from src.entities.flameskull import Flameskull
 from src.entities.spitting_orchid import OrchidSeed, SpittingOrchid
@@ -169,6 +170,7 @@ class WorldScene(Scene):
             self.tilemap.open_tavern_entrance()
         self.tilemap.load_tileset(self.game.assets, tileset_for(self.map_name))
         self._world_time = 0.0  # drives water shimmer
+        self.city_rain = CityRain() if map_name == "modern_city_arrival" else None
         self._arrival_fade_t: float | None = 0.0 if fade_in else None
 
         arrivals = {
@@ -637,6 +639,8 @@ class WorldScene(Scene):
 
         # The world keeps moving whether or not Chuck is in it.
         self._world_time += dt
+        if self.city_rain is not None:
+            self.city_rain.update(dt)
         if self.reality_blocks is not None:
             self.reality_blocks.update(dt)
         if self._arrival_fade_t is not None:
@@ -1257,6 +1261,8 @@ class WorldScene(Scene):
         for cone in self.battle_cones:
             cone.draw(surface, offset)
         self.tilemap.draw_overhead(surface, offset, self._world_time)
+        if self.city_rain is not None:
+            self.city_rain.draw(surface)
         self.hud.draw(surface)
         # Tutorial hint (temporary; Waterdeep + sewer only). Hidden
         # while a dialogue is open — it has already been taken up on.

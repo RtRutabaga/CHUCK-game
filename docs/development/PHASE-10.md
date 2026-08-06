@@ -397,11 +397,11 @@ Those city systems begin in Phase 11.
 - [x] Zephyros casually throws Chuck from the tower.
 - [x] Chuck begins in horizontal flight and gradually descends.
 - [x] Astral blocks and modern city fragments appear together.
-- [ ] The sequence becomes a diagonal rainy-city descent.
-- [ ] Chuck hits the sidewalk, reaches zero Sanity, and vanishes.
-- [ ] Chuck reforms at the city's first Ashtray.
-- [ ] Chuck lights a cigarette and looks around as in the Chult landing.
-- [ ] Control returns only at the contained city arrival endpoint.
+- [x] The sequence becomes a diagonal rainy-city descent.
+- [x] Chuck hits the sidewalk, reaches zero Sanity, and vanishes.
+- [x] Chuck reforms at the city's first Ashtray.
+- [x] Chuck lights a cigarette and looks around as in the Chult landing.
+- [x] Control returns only at the contained city arrival endpoint.
 
 ## Audio and Technical Quality
 
@@ -464,4 +464,12 @@ Do not start Phase 11 city gameplay while completing these slices.
   gradual descent. Exact animated Astral hazard tiles arrive before authored
   office and concrete fragments accumulate in the same sky. The established
   falling motif returns after a short fade, and a city-fragment collision
-  holds as the stable boundary for slice 5's rainy descent.
+  hands directly into slice 5's rainy descent.
+- Slice 5: continued the collision into an input-free diagonal descent through
+  a rain-dark modern street canyon. Chuck loses horizontal momentum, strikes
+  the sidewalk, reaches zero Sanity, vanishes, and reforms beside the first
+  city Ashtray using the established return presentation. He looks around,
+  inserts a cigarette, and takes a drag before a fade hands control to a
+  deliberately contained rainy city block. `City 1` and the saveable City
+  Ashtray use the shared checkpoint loader; the map has exactly one physical
+  Ashtray and no exits, NPCs, enemies, interiors, or other Phase 11 content.

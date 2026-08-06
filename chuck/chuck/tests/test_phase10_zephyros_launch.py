@@ -109,9 +109,12 @@ def test_launch_reuses_falling_music_after_a_soft_gap() -> None:
         game._shutdown()
 
 
-def test_collision_is_a_stable_input_free_boundary_before_rainy_descent() -> None:
+def test_collision_hands_off_to_the_rainy_descent_without_player_input() -> None:
     game = Game()
     try:
+        from src.scenes.modern_city_arrival_cutscene_scene import (
+            ModernCityArrivalCutsceneScene,
+        )
         scene = _scene(game, sanity=44)
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
         scene.elapsed = COLLISION_TIME
@@ -119,14 +122,8 @@ def test_collision_is_a_stable_input_free_boundary_before_rainy_descent() -> Non
         scene.draw(surface)
         scene.update(CUTSCENE_END)
         assert scene.complete
-        assert game.scenes.current is scene
-        scene.update(30.0)
-        assert game.scenes.current is scene
-
-        before = scene.elapsed
-        scene.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_f))
-        assert scene.elapsed == before
-        assert game.scenes.current is scene
+        assert isinstance(game.scenes.current, ModernCityArrivalCutsceneScene)
+        assert game.scenes.current.starting_sanity == 44
     finally:
         game._shutdown()
 

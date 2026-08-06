@@ -3,12 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `3a35b8d` (Zephyros introduction)
-- Current work: Phase 10 tower launch and horizontal flight slice
+- Base commit before this pass: `691cc46` (Zephyros tower launch)
+- Current work: Phase 10 rainy modern-city arrival slice
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Continued the city-fragment collision directly into an input-free rainy-city
+  descent. Chuck crosses a modern street canyon diagonally, loses horizontal
+  momentum, and falls the remaining distance to the sidewalk.
+- Reused the established impact, zero-Sanity vanish, Astral reformation,
+  look-around, cigarette insertion, and drag language. The camera remains fixed
+  throughout and control returns only after the final fade.
+- Added a contained 24x16 playable endpoint with procedural modern-city art,
+  persistent screen-space rain, exactly one physical Ashtray, and no exits,
+  NPCs, enemies, interiors, or Phase 11 content.
+- Added `City 1` to the development selector and the saveable
+  `modern_city_anchor`. The cutscene activates and persists that real Ashtray,
+  then enters it through the shared checkpoint loader; Continue restores the
+  same map, world flag, full Sanity, and lit anchor.
+- Added focused coverage for trajectory, cues, death/return phases, cigarette
+  tableau, save/Continue restoration, dev loading, map containment, and rain.
+- All 85 standalone test suites pass; compilation and the headless title-frame
+  launch check are clean.
 - Continued directly from Zephyros' final line into a dedicated input-free
   launch scene. A whole-tower side view makes Chuck a two-pixel dot while one
   small palm motion throws him effortlessly across the sky.
@@ -73,11 +90,8 @@
   the explicit scene dispatch; the choice menu contains no transition logic.
 - Added procedural generators for the maps, airy tower tileset, immense cloud
   stair, giant arch, nests, rope, and griffon.
-- All 84 standalone test suites pass; compilation and the headless title-frame
-  launch check are clean.
-- Next: continue from the city-fragment collision into the rainy diagonal
-  descent, sidewalk death/return, contained city Ashtray tableau, and control
-  handoff; do not build Phase 11 city gameplay.
+- Next: implement Phase 10 slice 6's three-cue music pass and run the full
+  Phase 10 acceptance route; do not build Phase 11 city gameplay.
 
 ## Previous Pass (commit 23b76ed)
 

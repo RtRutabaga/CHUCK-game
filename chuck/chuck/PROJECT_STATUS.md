@@ -1,11 +1,29 @@
 # CHUCK — Project Status
 
-Updated: Phase 10 now runs from the Cloud Staircase through Zephyros' throw
-and the horizontal flight between worlds. This file is required by the project
-rules and updated every session.
+Updated: Phase 10 now runs from the Cloud Staircase through Zephyros' throw,
+rainy modern-city descent, death/return, and the contained playable city
+endpoint. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The city-fragment collision now continues automatically into a long
+  diagonal descent through a rain-dark modern street canyon. Chuck gradually
+  loses horizontal momentum before dropping the remaining distance to a wet
+  sidewalk.
+- Sidewalk impact sets the cinematic Sanity state to zero, plays the
+  established hurt/vanish/respawn sequence, and reforms Chuck beside the first
+  city Ashtray. He quietly looks left, right, and forward, puts in a cigarette,
+  and takes a drag before the scene fades back to gameplay.
+- Added a contained 24x16 modern-city arrival map with procedural rain-dark
+  masonry, office windows, wet sidewalk, curb, animated road glints, and
+  persistent screen-space rain. It has exactly one physical Ashtray and no
+  exits, NPCs, enemies, interiors, or Phase 11 gameplay.
+- `City 1` is available in the development selector. The cinematic activates
+  and saves `modern_city_anchor`, then loads it through the same shared
+  checkpoint path used by Continue; the new `modern_city_reached` flag restores
+  the endpoint reliably.
+- All 85 standalone test suites pass. Compilation and the headless title-frame
+  launch check are clean.
 - The held final Zephyros line now continues directly into a dedicated launch
   scene. A complete distant tower remains in frame while Zephyros makes one
   small, effortless hand motion and Chuck crosses the sky as a two-pixel dot.
@@ -70,17 +88,14 @@ rules and updated every session.
   Ashtray. The arch connects normally to the playable Aerie.
 - `Zephyros 1` and `Zephyros 2` use the same checkpoint loader as normal saves
   and preserve Sanity across the cinematic handoff. Focused coverage validates
-  the route, exact choice behavior, maps, procedural art, and checkpoints. All
-  84 standalone test suites pass, compilation is clean, and the headless title
-  launch succeeds.
+  the route, exact choice behavior, maps, procedural art, and checkpoints.
 
 ## Next logical task
 
-Build Phase 10 slice 5: continue from the city-fragment collision into the
-diagonal rainy-city descent, sidewalk impact, established Sanity-zero vanish,
-and immediate reformation at the contained city Ashtray tableau. Finish with
-Chuck's cigarette/look-around animation and control handoff, without building
-Phase 11 city exploration, NPCs, enemies, or interiors.
+Build Phase 10 slice 6: compose and integrate the three specified phase music
+identities (Cloud Staircase/Tower, warm Zephyros conversation, and the evolving
+launch/modern-city transition), then run the complete Phase 10 acceptance
+playtest. Do not begin Phase 11 city gameplay.
 
 ## Current state
 

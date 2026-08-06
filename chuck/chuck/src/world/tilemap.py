@@ -841,6 +841,8 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ለ": MarkerDef(kind="anchor:zephyros_aerie_anchor", under="."),
     "ሉ": MarkerDef(kind="griffon", under="."),
     "ሊ": MarkerDef(kind="choice:zephyros_rope", under="."),
+    "ላ": MarkerDef(kind="arrival:from_flight", under="."),
+    "ሌ": MarkerDef(kind="anchor:modern_city_anchor", under="."),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

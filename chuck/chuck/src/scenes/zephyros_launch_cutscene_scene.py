@@ -77,6 +77,7 @@ class ZephyrosLaunchCutsceneScene(Scene):
         self._chuck: pygame.Surface | None = None
         self._astral_frames: tuple[pygame.Surface, ...] = ()
         self._music_started = False
+        self._arrival_started = False
         self.fragments = (
             FlightFragment("astral", 48, 32, 17, 43.0, ASTRAL_START, 7),
             FlightFragment("astral", 32, 48, 118, 51.0, ASTRAL_START + 1.2, 41),
@@ -136,6 +137,14 @@ class ZephyrosLaunchCutsceneScene(Scene):
         if previous < MUSIC_START <= self.elapsed and not self._music_started:
             self._music_started = True
             self.game.audio.play_music("fall_to_chult.wav", loop=False)
+        if previous < CUTSCENE_END <= self.elapsed and not self._arrival_started:
+            from src.scenes.modern_city_arrival_cutscene_scene import (
+                ModernCityArrivalCutsceneScene,
+            )
+            self._arrival_started = True
+            self.game.scenes.replace(
+                ModernCityArrivalCutsceneScene(self.game, sanity=self.sanity)
+            )
 
     def draw(self, surface: pygame.Surface) -> None:
         if self.elapsed < TOWER_SHOT_END:

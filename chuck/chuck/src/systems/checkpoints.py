@@ -31,6 +31,7 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "deck_jeffries_met",
     "captain_confronted",
     "feywild_reached",
+    "modern_city_reached",
 })
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
@@ -827,6 +828,24 @@ CHECKPOINTS = (
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
         development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "modern_city_1", "City 1", "modern_city_arrival",
+        arrival="from_flight", facing="down",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "modern_city_anchor", "City 1 Ashtray", "modern_city_arrival",
+        position=(180.0, 133.0), facing="down",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached",
+        }),
+        saveable=True, development_visible=False, fade_in=True,
     ),
     CheckpointDefinition(
         "feywild_6_return", "Feywild 6 Return", "feywild_needle_garden",

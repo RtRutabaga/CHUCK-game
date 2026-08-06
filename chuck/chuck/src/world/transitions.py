@@ -412,4 +412,7 @@ AREA_MUSIC: dict[str, str | None] = {
     "feywild_cloud_staircase": "feywild.wav",
     "zephyros_tower_exterior": "feywild.wav",
     "zephyros_aerie": "feywild.wav",
+    # The dedicated modern-city theme belongs to Phase 11. Silence the
+    # completed one-shot flight cue at the contained playable endpoint.
+    "modern_city_arrival": None,
 }

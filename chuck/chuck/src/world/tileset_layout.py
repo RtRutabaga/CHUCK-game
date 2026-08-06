@@ -411,6 +411,28 @@ TOWER = Tileset(
     overhead_char_to_terrain={},
 )
 
+# --------------------------------------------------------------------------
+# Modern city arrival (Phase 10): rain-dark masonry, sidewalk, curb, street.
+# --------------------------------------------------------------------------
+CITY = Tileset(
+    sheet="city.png",
+    order=[
+        ("city_wall", 4, 1),
+        ("city_window", 4, 1),
+        ("city_sidewalk", 4, 1),
+        ("city_curb", 4, 1),
+        ("city_road", 4, 3),
+    ],
+    char_to_terrain={
+        "#": "city_wall",
+        "w": "city_window",
+        ".": "city_sidewalk",
+        ",": "city_curb",
+        "=": "city_road",
+    },
+    overhead_char_to_terrain={},
+)
+
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
     "sewer": SEWER,
@@ -422,6 +444,7 @@ TILESETS: dict[str, Tileset] = {
     "phlegethos": PHLEGETHOS,
     "feywild": FEYWILD,
     "tower": TOWER,
+    "city": CITY,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -472,6 +495,7 @@ MAP_TILESET: dict[str, str] = {
     "feywild_cloud_staircase": "feywild",
     "zephyros_tower_exterior": "tower",
     "zephyros_aerie": "tower",
+    "modern_city_arrival": "city",
 }
 
 
