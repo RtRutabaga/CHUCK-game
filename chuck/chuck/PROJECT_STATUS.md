@@ -6,6 +6,16 @@ endpoint. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Authored `docs/development/PHASE-11.md` from the approved rainy-city notes.
+  The next phase is scoped to sixteen playable maps: six rainy night-city
+  maps, four modern urban-sewer maps, and six rainy day-city maps, ending at
+  the short Doug Fir Forest at Night handoff. This documentation-only pass
+  adds no Phase 11 gameplay yet.
+- The contract formalizes traffic/Frogger traversal, city NPC dialogue,
+  raccoons, aggressive sewer rats, one crocodile, combined toxic-sludge
+  slowing/damage, Animal Control net capture, police projectiles, the final
+  Chult/Astral collision tableau, regional audio, one Ashtray per map, and
+  shared-loader development checkpoints.
 - Added a denser freestanding-mushroom pass across the later Feywild. Giant
   Tea Table through Twilight Crossroads now receive six additional, widely
   spaced mushrooms per map, and the peaceful Cloud Staircase approach receives

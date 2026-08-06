@@ -3,12 +3,24 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `6bdc909` (Giant Tea Table leg correction)
-- Current work: later-Feywild mushroom dressing
+- Base commit before this pass: `afd7a08` (later-Feywild mushroom dressing)
+- Current work: Phase 11 rainy-city design contract
 - Active scope: `docs/development/PHASE-10.md`
+- Next authored scope: `docs/development/PHASE-11.md`
 
 ## Completed This Pass
 
+- Added the complete Phase 11 contract without beginning implementation. It
+  preserves the existing `modern_city_arrival` / `City 1` handoff and scopes
+  sixteen maps: six rainy night streets, four modern sewer maps, and six rainy
+  daytime streets.
+- Formalized the supplied NPC dialogue, raccoon/rat/crocodile roles,
+  Frogger-like traffic and highway, toxic sludge, harder sewer Astral jumps,
+  Animal Control net capture, stationary and spinning police projectiles,
+  final Chult/Astral collision tableau, cigarettes, regional music, one
+  Ashtray per map, and the Douglas fir transition boundary.
+- No game code, maps, art, audio, or runtime state changed in this
+  documentation-only pass.
 - Added six new freestanding mushrooms to every Feywild map from Giant Tea
   Table through Twilight Crossroads, plus six to the Cloud Staircase approach.
   Maps 1--4 already retain 3--4 each, so the density now increases from Map 5
