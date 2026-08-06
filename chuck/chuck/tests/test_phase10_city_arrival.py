@@ -129,7 +129,7 @@ def test_handoff_saves_and_loads_the_real_city_ashtray() -> None:
         directory.cleanup()
 
 
-def test_city_endpoint_is_contained_rainy_and_phase11_free() -> None:
+def test_city_handoff_enters_the_rainy_phase11_start_map() -> None:
     directory, game, _scene = _game_and_scene()
     try:
         world = game.checkpoints.load_checkpoint("modern_city_1")
@@ -142,8 +142,9 @@ def test_city_endpoint_is_contained_rainy_and_phase11_free() -> None:
         assert not world.npcs
         assert not world.hazards
         assert not world._enemy_spawns
-        assert world.tilemap.width_tiles == 24
-        assert world.tilemap.height_tiles == 16
+        assert world.tilemap.width_tiles == 56
+        assert world.tilemap.height_tiles == 36
+        assert len(world.pickups) == 4
         assert CHECKPOINT_BY_ID["modern_city_anchor"].saveable
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
         world.update(0.1)

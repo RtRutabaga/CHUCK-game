@@ -3,12 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `afd7a08` (later-Feywild mushroom dressing)
-- Current work: Phase 11 rainy-city design contract
-- Active scope: `docs/development/PHASE-10.md`
-- Next authored scope: `docs/development/PHASE-11.md`
+- Base commit before this pass: `3fc3909` (Phase 11 rainy-city plan)
+- Current work: Phase 11 City Night 1 region foundation
+- Active scope: `docs/development/PHASE-11.md`
+- Next implementation slice: reusable traffic lanes and the first teaching
+  street crossing
 
 ## Completed This Pass
+
+- Began Phase 11 by expanding the former 24x16 contained city endpoint into
+  the 56x36 `City Night 1` map. The existing `modern_city_arrival`,
+  `modern_city_1`, and `modern_city_anchor` IDs remain intact for save and
+  cutscene compatibility; only their player-facing display names and authored
+  Ashtray position changed.
+- Established the rainy-city map language with a broad wet cross street, four
+  human-scale building masses, readable window bands, two optional sidewalk
+  pockets, four loose cigarettes, continuous rain, and exact shared animated
+  Astral fall tiles visibly severing every not-yet-authored route.
+- Added a deterministic map generator, extended the city tileset with the
+  established Astral terrain, and added Phase 11 topology/checkpoint/art
+  coverage. The Phase 10 arrival, save, Continue, death-return, and music
+  handoff remain unchanged.
+- All 88 test files pass in isolated processes, compilation is clean, and
+  both the title and City Night 1 frames launch and draw headlessly.
+- This slice intentionally adds no traffic, people, raccoons, or City Night 2.
+  The dedicated night-city soundtrack also remains pending its audio pass.
 
 - Added the complete Phase 11 contract without beginning implementation. It
   preserves the existing `modern_city_arrival` / `City 1` handoff and scopes

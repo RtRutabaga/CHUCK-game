@@ -780,6 +780,19 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
 
 ------------------------------------------------------------------------
 
+## Implementation Progress
+
+- [x] Slice 1: expanded the authoritative Phase 10 endpoint into a 56x36
+      `City Night 1` region start while preserving its map/checkpoint IDs.
+- [x] Established wet modern building, window, sidewalk, curb, road, rain,
+      loose-cigarette, and exact shared Astral fall-hazard language.
+- [x] Kept the first physical Ashtray wired through save, Continue, direct
+      development loading, and Sanity-zero respawn.
+- [ ] Next: reusable traffic lanes and City Night 1's teaching crossing.
+- [ ] The dedicated night-city soundtrack remains an authored audio pass.
+
+------------------------------------------------------------------------
+
 # 21. Suggested Implementation Sequence
 
 Keep each pass bounded to one coherent slice:

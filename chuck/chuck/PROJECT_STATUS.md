@@ -1,10 +1,30 @@
 # CHUCK — Project Status
 
-Updated: Phase 10 now runs from the Cloud Staircase through Zephyros' throw,
-rainy modern-city descent, death/return, and the contained playable city
-endpoint. This file is required by the project rules and updated every session.
+Updated: Phase 11 is active. City Night 1 now expands the Phase 10 arrival
+endpoint into the first explorable rainy-city map while preserving its save,
+Continue, respawn, and cinematic handoff. This file is required by the project
+rules and updated every session.
 
 ## Latest implementation
+
+- Began Phase 11 with a bounded City Night 1 foundation pass. The former
+  24x16 endpoint is now a 56x36 rainy city map built around a broad cross
+  street, four human-scale building masses, wet sidewalk lanes, two optional
+  pockets, window bands, and four scattered single-cigarette pickups.
+- Every currently unauthored street or sidewalk continuation ends visibly in
+  exact shared animated Astral fall-hazard terrain. No decorative blocker or
+  separate portal behavior was introduced.
+- Preserved the authoritative `modern_city_arrival`, `modern_city_1`, and
+  `modern_city_anchor` IDs so existing cutscene and save data remain valid.
+  Their display names now read `City Night 1` / `City Night 1 Ashtray`, and
+  the Ashtray checkpoint position matches the expanded map.
+- Added deterministic map generation plus focused tests for safe discovery
+  reachability, map scale/materials, exact Astral-art reuse, checkpoint
+  compatibility, and the unchanged Phase 10 handoff. Traffic, city NPCs,
+  raccoons, City Night 2, and the night-city soundtrack remain deliberately
+  outside this slice.
+- All 88 test files pass in isolated processes. Compilation and headless title
+  plus City Night 1 frame launches are clean.
 
 - Authored `docs/development/PHASE-11.md` from the approved rainy-city notes.
   The next phase is scoped to sixteen playable maps: six rainy night-city
@@ -178,9 +198,10 @@ endpoint. This file is required by the project rules and updated every session.
 
 ## Next logical task
 
-Continue Phase 10 slice 6 with the second music identity: Zephyros'
-conversation cue, gentle, wise, warm, and slightly whimsical. Preserve the
-completed Cloud Staircase/Tower cue and do not begin Phase 11 city gameplay.
+Continue Phase 11 with reusable traffic lanes and the first readable teaching
+street crossing in City Night 1. Keep the crossing learnable before Chuck
+commits, preserve the completed quiet arrival/checkpoint area, and do not add
+City Night 2, NPCs, or raccoons in the same pass.
 
 ## Current state
 

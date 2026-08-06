@@ -412,7 +412,8 @@ TOWER = Tileset(
 )
 
 # --------------------------------------------------------------------------
-# Modern city arrival (Phase 10): rain-dark masonry, sidewalk, curb, street.
+# Modern rainy city: rain-dark masonry, sidewalk, curb, street, and the
+# same hard-edged Astral collision used throughout the earlier regions.
 # --------------------------------------------------------------------------
 CITY = Tileset(
     sheet="city.png",
@@ -422,6 +423,7 @@ CITY = Tileset(
         ("city_sidewalk", 4, 1),
         ("city_curb", 4, 1),
         ("city_road", 4, 3),
+        ("astral_void", 2, 3),
     ],
     char_to_terrain={
         "#": "city_wall",
@@ -429,6 +431,7 @@ CITY = Tileset(
         ".": "city_sidewalk",
         ",": "city_curb",
         "=": "city_road",
+        "V": "astral_void",
     },
     overhead_char_to_terrain={},
 )

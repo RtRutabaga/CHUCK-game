@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 import pygame
 
 from src.world.tileset_layout import CITY, TILE_PX
+from generate_sewer_tileset import draw_astral_void
 
 
 def wall(surface, variant, _frame):
@@ -64,6 +65,7 @@ DRAW = {
     "city_sidewalk": sidewalk,
     "city_curb": curb,
     "city_road": road,
+    "astral_void": draw_astral_void,
 }
 
 

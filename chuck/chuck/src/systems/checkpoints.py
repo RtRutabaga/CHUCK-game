@@ -830,7 +830,7 @@ CHECKPOINTS = (
         development_visible=False, runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_1", "City 1", "modern_city_arrival",
+        "modern_city_1", "City Night 1", "modern_city_arrival",
         arrival="from_flight", facing="down",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
@@ -839,8 +839,8 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_anchor", "City 1 Ashtray", "modern_city_arrival",
-        position=(180.0, 133.0), facing="down",
+        "modern_city_anchor", "City Night 1 Ashtray", "modern_city_arrival",
+        position=(340.0, 453.0), facing="down",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
             "modern_city_reached",
