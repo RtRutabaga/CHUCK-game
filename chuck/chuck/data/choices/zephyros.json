@@ -9,7 +9,7 @@
   "zephyros_rope": {
     "prompt": "Climb down the rope?",
     "options": [
-      { "label": "YES" },
+      { "label": "YES", "action": "zephyros_intro" },
       { "label": "NO" }
     ]
   }

@@ -36,7 +36,7 @@ from typing import NamedTuple
 from src.core import config
 
 
-KNOWN_CHOICE_ACTIONS = frozenset({"tower_arrival"})
+KNOWN_CHOICE_ACTIONS = frozenset({"tower_arrival", "zephyros_intro"})
 
 
 class Option(NamedTuple):

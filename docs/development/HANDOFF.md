@@ -3,12 +3,24 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `23b76ed` (Feywild thorn-mite pursuit)
-- Current work: Phase 10 Aerie gameplay slice
+- Base commit before this pass: `f541465` (rounded Zephyros Aerie)
+- Current work: Phase 10 Zephyros introduction slice
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Connected rope `YES` to a dedicated input-free cinematic while preserving
+  silent `NO` and Sanity. Chuck descends the giant rope, an impossibly large
+  Zephyros enters, blinks and smiles, raises his palm, and receives Chuck.
+- Added a warm blue-grey procedural portrait at native scale: raised brows,
+  readable eyes and smile, gold earrings, purple-and-gold clothing, long white
+  beard, and a separate giant hand. Chuck remains tiny and readable throughout.
+- Added the complete exact 36-beat supplied dialogue as data and an automatic
+  cinematic playback schedule using the established dialogue panel. The final
+  line holds as the stable boundary for the tower-launch slice.
+- Added focused coverage for exact text, validated choice dispatch, Sanity
+  preservation, the distinct visual beats, input-free playback, automatic
+  line progression, and the held launch boundary. All 83 suites pass.
 - Connected the exterior's embedded arch to a 60x46 open-sided Aerie and added
   a reversible three-tile southern return. The platform now has a clearly
   rounded elliptical tower silhouette. Four seven-tile-wide nests surround a
@@ -18,9 +30,8 @@
   `MassiveDinosaur` behavior/configuration under regional art, begins outside
   notice range, is easy to outrun, resets normally, and does not gate travel.
 - Added one physical `Zephyros 3 Ashtray`, the shared `Zephyros 3` development
-  entry, and the exact walk-triggered `Climb down the rope?` prompt. Both
-  options close silently at this stable boundary until the next slice adds the
-  complete introduction scene.
+  entry, and the exact walk-triggered `Climb down the rope?` prompt. `YES`
+  starts the complete introduction scene and `NO` closes silently.
 - Added procedural Aerie map, nest, rope, and griffon generation plus focused
   coverage for layout, connectivity, scale, choice, behavior, transitions,
   checkpoint saving, and direct development loading.
@@ -38,21 +49,21 @@
   tower wall. Its masonry continues north beyond the frame and fully surrounds
   the centered black threshold, so the boundary reads as the Aerie entrance
   rather than a freestanding doorway to open sky. Map geometry, checkpoint,
-  and the still-inert Aerie boundary are unchanged.
+  and the connected Aerie boundary are unchanged.
 - Added the peaceful Cloud Staircase map, exact approach-triggered YES/NO
   prompt, input-free side-view climbing/retraction cutscene, and playable
   circular tower exterior.
-- Both new gameplay maps have one physical Ashtray. `Zephyros 1` and
-  `Zephyros 2` are development-visible entries in the shared checkpoint loader.
+- All three Phase 10 gameplay maps have one physical Ashtray. `Zephyros 1`,
+  `Zephyros 2`, and `Zephyros 3` are development-visible entries in the shared
+  checkpoint loader.
 - Choice JSON now supports a small validated `action` target. WorldScene owns
   the explicit scene dispatch; the choice menu contains no transition logic.
 - Added procedural generators for the maps, airy tower tileset, immense cloud
-  stair, and giant arch. The north arch is intentionally inert until the next
-  slice.
-- All 82 standalone test suites pass; compilation and the headless title-frame
+  stair, giant arch, nests, rope, and griffon.
+- All 83 standalone test suites pass; compilation and the headless title-frame
   launch check are clean.
-- Next: implement the complete Zephyros introduction cutscene and connect rope
-  `YES` to it; preserve silent `NO` and stop before the tower launch.
+- Next: continue from the held final line into the tower launch and horizontal
+  flight between worlds; stop before Phase 11 city gameplay.
 
 ## Previous Pass (commit 23b76ed)
 

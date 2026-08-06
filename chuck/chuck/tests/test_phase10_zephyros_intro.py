@@ -1,0 +1,170 @@
+"""Phase 10's rope descent, giant-scale reveal, and exact conversation."""
+
+import os
+
+os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
+os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
+
+import pygame
+
+from src.core import config
+from src.core.game import Game
+from src.scenes.zephyros_intro_cutscene_scene import (
+    DIALOGUE_START,
+    FACE_ENTER_END,
+    HAND_RISE_START,
+    ROPE_DESCENT_END,
+    STEP_END,
+    ZephyrosIntroCutsceneScene,
+)
+from src.systems.dialogue import DialogueSystem
+
+
+EXPECTED_DIALOGUE = [
+    "Hello little friend!",
+    "...",
+    "Yes... YES!",
+    "...",
+    "The Entity said you would be coming.",
+    "Now, as you know, the worlds have been shuffled.",
+    "Smashed.",
+    "A little bit crinkled.",
+    "Most don't know.",
+    "Most don't see.",
+    "The typical being, you see, is like the halfling leaf inside a cigarette.",
+    "They don't know whether they're still neat inside the pack...",
+    "...or whether they've already been smashed together in the ashtray.",
+    "But you, Chuck...",
+    "You're part of the ashtray.",
+    "You see.",
+    "...",
+    "The Entity has gone quiet.",
+    "It is frightened, Chuck.",
+    "Yes...",
+    "Yes...",
+    "Something must be done.",
+    "...",
+    "Oh...",
+    "No.",
+    "Not you.",
+    "Heavens, no.",
+    "You're more of a fighter than a winner, aren't you, Chuck?",
+    "Not to worry.",
+    "I have my best people working on it.",
+    "Your role in all this...",
+    "...is simply to make it through.",
+    "As you always do.",
+    "...",
+    "Now then!",
+    "I shall fling you onward!",
+]
+
+
+def test_rope_yes_uses_validated_action_and_preserves_sanity() -> None:
+    game = Game()
+    try:
+        aerie = game.checkpoints.load_checkpoint("zephyros_3", sanity=37)
+        choice = aerie.choices.get("zephyros_rope")
+        assert choice.options[0].action == "zephyros_intro"
+        assert choice.options[1].action is None
+        aerie._on_choice(choice.options[0])
+        aerie.update(0.0)
+        intro = game.scenes.current
+        assert isinstance(intro, ZephyrosIntroCutsceneScene)
+        assert intro.sanity == 37
+    finally:
+        game._shutdown()
+
+
+def test_complete_supplied_dialogue_is_data_driven_and_exact() -> None:
+    assert DialogueSystem().get("zephyros_intro") == EXPECTED_DIALOGUE
+
+
+def test_descent_face_blink_smile_hand_and_step_are_distinct_readable_beats() -> None:
+    game = Game()
+    try:
+        scene = ZephyrosIntroCutsceneScene(game, sanity=45)
+        scene.on_enter()
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+
+        scene.elapsed = 3.0
+        assert scene.phase == "rope_descent"
+        scene.draw(surface)
+        assert surface.get_at((78, 40))[:3] != surface.get_at((20, 40))[:3]
+
+        scene.elapsed = ROPE_DESCENT_END + 1.0
+        assert scene.phase == "face_reveal"
+        scene.draw(surface)
+
+        scene.elapsed = 9.55
+        assert scene._blink_amount() > 0.9
+        scene.draw(surface)
+
+        scene.elapsed = HAND_RISE_START + 2.0
+        assert scene.phase == "hand_rise"
+        scene.draw(surface)
+
+        scene.elapsed = STEP_END
+        assert scene.phase == "conversation"
+        scene.draw(surface)
+    finally:
+        game._shutdown()
+
+
+def test_dialogue_auto_advances_and_holds_final_line_for_launch_slice() -> None:
+    game = Game()
+    try:
+        scene = ZephyrosIntroCutsceneScene(game, sanity=62)
+        game.scenes.replace(scene)
+        scene.update(DIALOGUE_START + 0.1)
+        assert scene.dialogue_index == 0
+
+        final_end = (
+            scene._line_starts[-1]
+            + scene._line_duration(scene.dialogue[-1])
+            + 0.1
+        )
+        scene.update(final_end - scene.elapsed)
+        assert scene.dialogue_index == len(EXPECTED_DIALOGUE) - 1
+        assert scene.conversation_complete
+        # Phase 10 slice 4 will continue directly into the launch. Until
+        # then, the final portrait/line is an explicit stable boundary.
+        scene.update(30.0)
+        assert game.scenes.current is scene
+
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+        scene.draw(surface)
+    finally:
+        game._shutdown()
+
+
+def test_non_escape_input_cannot_skip_the_cinematic() -> None:
+    game = Game()
+    try:
+        scene = ZephyrosIntroCutsceneScene(game, sanity=50)
+        game.scenes.replace(scene)
+        before = scene.elapsed
+        scene.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_f))
+        assert game.scenes.current is scene
+        assert scene.elapsed == before
+    finally:
+        game._shutdown()
+
+
+def _run_all() -> None:
+    failures = 0
+    for name, fn in sorted(globals().items()):
+        if name.startswith("test_") and callable(fn):
+            try:
+                fn()
+                print(f"  PASS  {name}")
+            except AssertionError as exc:
+                failures += 1
+                print(f"  FAIL  {name}: {exc}")
+    if failures:
+        raise SystemExit(f"{failures} test(s) failed")
+    print("All Phase 10 Zephyros introduction tests passed.")
+
+
+if __name__ == "__main__":
+    _run_all()

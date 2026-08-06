@@ -118,16 +118,16 @@ def test_arch_and_aerie_use_normal_reversible_map_transitions() -> None:
     assert outward.arrival == "from_aerie" and outward.facing == "down"
 
 
-def test_rope_prompt_is_exact_walk_triggered_and_stable_for_next_slice() -> None:
+def test_rope_prompt_is_exact_walk_triggered_and_starts_intro() -> None:
     choice = ChoiceSystem().get("zephyros_rope")
     assert choice.prompt == "Climb down the rope?"
     assert [option.label for option in choice.options] == ["YES", "NO"]
-    # Zephyros' introduction is the next cinematic slice. Until then both
-    # branches close silently rather than starting a partial or fake scene.
-    assert all(
-        option.dialogue is None and option.goto is None and option.action is None
-        for option in choice.options
-    )
+    assert choice.options[0].action == "zephyros_intro"
+    assert choice.options[0].dialogue is None
+    assert choice.options[0].goto is None
+    assert choice.options[1].dialogue is None
+    assert choice.options[1].goto is None
+    assert choice.options[1].action is None
     trigger = ChoiceTrigger(0, 0, "zephyros_rope")
     assert trigger.walk_triggered
     assert (trigger.width, trigger.height) == (

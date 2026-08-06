@@ -386,11 +386,11 @@ Those city systems begin in Phase 11.
 ## Zephyros
 
 - [x] Rope interaction uses the exact YES/NO prompt.
-- [ ] The side-view descent establishes Chuck's scale.
-- [ ] Zephyros' face, blink, smile, and hand are readable.
-- [ ] Chuck steps onto Zephyros' palm.
-- [ ] The complete supplied dialogue is implemented exactly.
-- [ ] Zephyros remains kindly and warm rather than ominous.
+- [x] The side-view descent establishes Chuck's scale.
+- [x] Zephyros' face, blink, smile, and hand are readable.
+- [x] Chuck steps onto Zephyros' palm.
+- [x] The complete supplied dialogue is implemented exactly.
+- [x] Zephyros remains kindly and warm rather than ominous.
 
 ## Launch and City Arrival
 
@@ -451,3 +451,9 @@ Do not start Phase 11 city gameplay while completing these slices.
   rounded elliptical tower floor, changed the central opening from animated
   sky to the near-black tower interior, and anchored the rope to a giant iron
   cleat on the south stone lip.
+- Slice 3: connected rope `YES` to a dedicated input-free introduction scene.
+  Chuck descends against cloud-giant masonry; Zephyros' warm blue-grey face
+  enters, blinks and smiles; a giant palm rises and Chuck steps onto it. The
+  exact supplied 36-beat dialogue advances automatically in the established
+  panel. Its final line holds as the stable boundary for slice 4's throw; the
+  dedicated conversation cue remains reserved for the planned audio pass.

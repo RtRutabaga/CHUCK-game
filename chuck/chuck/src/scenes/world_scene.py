@@ -596,6 +596,16 @@ class WorldScene(Scene):
                     )
                 )
                 return
+            if action == "zephyros_intro":
+                from src.scenes.zephyros_intro_cutscene_scene import (
+                    ZephyrosIntroCutsceneScene,
+                )
+                self.game.scenes.replace(
+                    ZephyrosIntroCutsceneScene(
+                        self.game, sanity=self.sanity.current
+                    )
+                )
+                return
             raise ValueError(f"Unhandled choice action {action!r}")
 
         # A transition chosen during a conversation waits until that
