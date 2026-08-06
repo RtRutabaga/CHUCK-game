@@ -5,6 +5,12 @@ slice. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Recut the tower ascent into a 19.5-second two-scale sequence. The first
+  eight-plus seconds keep Chuck readable against a frame-filling giant stone
+  wall; a cloud-white cut then reveals the complete tower and staircase from a
+  distance where Chuck is intentionally too small to draw. The distant shot
+  holds for a clear six-and-a-half-second upward stair retraction before the
+  existing exterior handoff.
 - Tightened the Cloud Staircase prompt from a broad five-by-three-tile zone to
   a shallow two-by-one zone directly against the stair's base. Chuck can now
   approach close enough to see the cloud plinth and ascending steps before the

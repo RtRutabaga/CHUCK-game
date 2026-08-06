@@ -437,4 +437,7 @@ Do not start Phase 11 city gameplay while completing these slices.
   arrival cutscene, circular tower exterior, two shared development
   checkpoints, and one physical Ashtray per gameplay map. The existing
   Feywild theme remains uninterrupted pending Phase 10's dedicated audio
-  slice. The Aerie arch is a deliberate stable boundary for slice 2.
+  slice. The arrival now uses a long close-scale wall climb followed by a
+  distant complete-tower shot where Chuck is too small to render and the cloud
+  stair visibly retracts upward. The Aerie arch is a deliberate stable
+  boundary for slice 2.

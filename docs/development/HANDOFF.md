@@ -9,6 +9,12 @@
 
 ## Completed This Pass
 
+- Reworked the tower arrival into two truthful scales and extended it from
+  roughly nine to 19.5 seconds. Close framing shows Chuck climbing against
+  nothing but enormous masonry; a cloud-white scale cut then shows the whole
+  tower and cloud stair without drawing an impossibly visible Chuck. The wide
+  shot holds through a 6.5-second step-by-step upward retraction, then uses the
+  existing fade/checkpoint handoff unchanged.
 - Moved the Cloud Staircase choice marker directly below the stair prop and
   reduced its walk-trigger from five-by-three tiles to two-by-one. The player
   now sees the staircase at close range before the YES/NO prompt takes over;

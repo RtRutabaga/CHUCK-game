@@ -13,7 +13,8 @@ from src.core import config
 from src.core.game import Game
 from src.entities.choice_trigger import ChoiceTrigger
 from src.scenes.tower_arrival_cutscene_scene import (
-    CUTSCENE_END, TowerArrivalCutsceneScene,
+    CLOSE_CLIMB_END, CUTSCENE_END, RETRACT_END, RETRACT_START, WIDE_START,
+    TowerArrivalCutsceneScene,
 )
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.systems.choice import ChoiceSystem
@@ -125,6 +126,44 @@ def test_yes_starts_input_free_cutscene_and_preserves_sanity() -> None:
         exterior = game.scenes.current
         assert exterior.map_name == "zephyros_tower_exterior"
         assert exterior.sanity.current == 27
+    finally:
+        game._shutdown()
+
+
+def test_ascent_uses_two_truthful_scales_and_a_long_visible_retraction() -> None:
+    assert CLOSE_CLIMB_END >= 8.0
+    assert RETRACT_END - RETRACT_START >= 6.0
+    assert CUTSCENE_END >= 19.0
+
+    game = Game()
+    try:
+        cutscene = TowerArrivalCutsceneScene(game, sanity=30)
+        cutscene.on_enter()
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+
+        cutscene.elapsed = 4.0
+        assert cutscene.phase == "close_climb" and cutscene.chuck_visible
+        cutscene.draw(surface)
+        # Even the far-right background is masonry: no complete tower or sky
+        # can fit while Chuck remains readable.
+        assert surface.get_at((310, 90))[:3] != (116, 190, 226)
+
+        cutscene.elapsed = WIDE_START
+        assert cutscene.phase == "wide_retraction"
+        assert not cutscene.chuck_visible
+        initial_steps = cutscene._wide_step_layout()
+        assert len(initial_steps) == 24
+
+        cutscene.elapsed = (RETRACT_START + RETRACT_END) / 2
+        moving_steps = cutscene._wide_step_layout()
+        assert moving_steps
+        assert any(progress > 0.0 for *_position, progress in moving_steps)
+        assert min(y for _x, y, _width, _progress in moving_steps) <= 66
+        cutscene.draw(surface)
+
+        cutscene.elapsed = RETRACT_END
+        assert cutscene._wide_step_layout() == []
+        cutscene.draw(surface)
     finally:
         game._shutdown()
 
