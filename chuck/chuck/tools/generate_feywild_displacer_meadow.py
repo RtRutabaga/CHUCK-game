@@ -15,6 +15,11 @@ from collections import deque
 import math
 from pathlib import Path
 
+try:
+    from tools.feywild_mushroom_dressing import dress_grid
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_mushroom_dressing import dress_grid
+
 W, H = 74, 48
 OUT = (
     Path(__file__).resolve().parents[1]
@@ -133,6 +138,7 @@ def build() -> list[list[str]]:
     grid[BEAST[1]][BEAST[0]] = "ქ"
     for col, row in MITES:
         grid[row][col] = "ღ"
+    dress_grid("feywild_displacer_meadow", grid)
     return grid
 
 
@@ -154,7 +160,7 @@ def _dress_with_vegetation(grid) -> None:
                 grid[row][col] = "Ɓ"
 
 
-SOLID = {"#", "※", "ᛘ", "ŧ", "Ŧ", "Ɓ"}
+SOLID = {"#", "※", "ᛘ", "ŧ", "Ŧ", "Ɓ", "ŋ"}
 PASSAGES = {"≀", "ᚿ"}
 
 

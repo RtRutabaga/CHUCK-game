@@ -3,12 +3,23 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `6d96c3b` (Feywild water landing fix)
-- Current work: Feywild Tea Table leg correction
+- Base commit before this pass: `6bdc909` (Giant Tea Table leg correction)
+- Current work: later-Feywild mushroom dressing
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Added six new freestanding mushrooms to every Feywild map from Giant Tea
+  Table through Twilight Crossroads, plus six to the Cloud Staircase approach.
+  Maps 1--4 already retain 3--4 each, so the density now increases from Map 5
+  onward as requested.
+- Centralized the new authored coordinates in one dressing module used by all
+  available procedural map generators and by the map-update tool. Placements
+  use broad ground pockets or already-solid hedge cells and do not occupy jump
+  landings, flower mutations, entrances, checkpoints, or enemy markers.
+- Added focused coordinate/generator coverage. All 87 standalone suites pass,
+  including every affected Map 5--13 suite and the Phase 10 Cloud Staircase
+  suite.
 - Corrected the previous Tea Table cleanup after visual review: restored all
   four structural table legs beneath the tabletop and removed only the three
   unexplained freestanding chair-leg props in the eastern aisle. The three

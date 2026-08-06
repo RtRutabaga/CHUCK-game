@@ -14,6 +14,11 @@ but this pass stops at a stable, readable wilderness opening.
 from collections import deque
 from pathlib import Path
 
+try:
+    from tools.feywild_mushroom_dressing import dress_grid
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_mushroom_dressing import dress_grid
+
 
 W, H = 76, 52
 OUT = (
@@ -153,6 +158,7 @@ def build() -> list[list[str]]:
     grid[ANCHOR[1]][ANCHOR[0]] = MARKERS["anchor"]
     grid[TOWER_EXIT[1]][TOWER_EXIT[0]] = MARKERS["tower"]
     grid[TOWER_RETURN[1]][TOWER_RETURN[0]] = MARKERS["tower_return"]
+    dress_grid("feywild_twilight_crossroads", grid)
     return grid
 
 
@@ -193,7 +199,7 @@ def _base(char: str) -> str:
 
 
 def _reachable(grid, *, flower_active: bool) -> set[tuple[int, int]]:
-    solid = {"#", "ŧ", "Ŧ", "Ɓ", "※"}
+    solid = {"#", "ŧ", "Ŧ", "Ɓ", "※", "ŋ"}
     open_tiles = set()
     for row in range(H):
         for col in range(W):

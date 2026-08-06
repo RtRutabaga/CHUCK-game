@@ -3,6 +3,11 @@
 from collections import deque
 from pathlib import Path
 
+try:
+    from tools.feywild_mushroom_dressing import dress_grid
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_mushroom_dressing import dress_grid
+
 
 W, H = 72, 52
 OUT = (
@@ -132,6 +137,7 @@ def build() -> list[list[str]]:
     for col in range(FUTURE_EXIT[0] - 1, FUTURE_EXIT[0] + 2):
         grid[H - 1][col] = "⇩"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "Ռ"
+    dress_grid("feywild_tea_table", grid)
     return grid
 
 

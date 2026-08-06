@@ -17,6 +17,11 @@ from collections import deque
 from itertools import product
 from pathlib import Path
 
+try:
+    from tools.feywild_mushroom_dressing import dress_grid
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_mushroom_dressing import dress_grid
+
 W, H = 68, 44
 OUT = (
     Path(__file__).resolve().parents[1]
@@ -126,6 +131,7 @@ def build() -> list[list[str]]:
     grid[ANCHOR[1]][ANCHOR[0]] = "ო"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ჟ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "პ"
+    dress_grid("feywild_shifting_hedge", grid)
     return grid
 
 
@@ -147,7 +153,7 @@ def _dress_with_vegetation(grid) -> None:
                 grid[row][col] = "Ɓ"
 
 
-SOLID = {"#", "ŧ", "Ŧ", "Ɓ"}
+SOLID = {"#", "ŧ", "Ŧ", "Ɓ", "ŋ"}
 
 
 def _base_char(grid, col, row) -> str:

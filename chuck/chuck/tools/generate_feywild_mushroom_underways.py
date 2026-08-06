@@ -15,6 +15,11 @@ chamber and tuft can actually be found.
 from collections import deque
 from pathlib import Path
 
+try:
+    from tools.feywild_mushroom_dressing import dress_grid
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_mushroom_dressing import dress_grid
+
 W, H = 70, 46
 OUT = (
     Path(__file__).resolve().parents[1]
@@ -108,6 +113,7 @@ def build() -> list[list[str]]:
     grid[ANCHOR[1]][ANCHOR[0]] = "ჩ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ძ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ც"
+    dress_grid("feywild_mushroom_underways", grid)
     return grid
 
 
@@ -131,7 +137,7 @@ def _dress_with_vegetation(grid) -> None:
                 grid[row][col] = "Ɓ"
 
 
-SOLID = {"#", "ᛞ", "ŧ", "Ŧ", "Ɓ", "ł"}
+SOLID = {"#", "ᛞ", "ŧ", "Ŧ", "Ɓ", "ł", "ŋ"}
 
 
 def _under(char: str) -> str:

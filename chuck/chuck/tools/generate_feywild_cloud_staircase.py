@@ -3,6 +3,11 @@
 from collections import deque
 from pathlib import Path
 
+try:
+    from tools.feywild_mushroom_dressing import dress_grid
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_mushroom_dressing import dress_grid
+
 
 W, H = 64, 44
 OUT = Path(__file__).resolve().parents[1] / "assets/maps/feywild_cloud_staircase.txt"
@@ -64,6 +69,7 @@ def build():
     grid[STAIR_TRIGGER[1]][STAIR_TRIGGER[0]] = "ሂ"
     for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
         grid[row][W - 1] = "→"
+    dress_grid("feywild_cloud_staircase", grid)
     return grid
 
 
@@ -92,7 +98,7 @@ def _base(char):
 
 
 def _reachable(grid):
-    solid = {"#", "ŧ", "Ŧ", "Ɓ", "☁"}
+    solid = {"#", "ŧ", "Ŧ", "Ɓ", "ŋ", "☁"}
     reached = {ARRIVAL}
     frontier = deque([ARRIVAL])
     while frontier:

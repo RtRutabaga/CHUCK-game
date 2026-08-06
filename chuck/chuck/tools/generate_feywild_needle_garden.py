@@ -3,6 +3,11 @@
 from collections import deque
 from pathlib import Path
 
+try:
+    from tools.feywild_mushroom_dressing import dress_grid
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_mushroom_dressing import dress_grid
+
 
 W, H = 72, 50
 OUT = (
@@ -130,6 +135,7 @@ def build() -> list[list[str]]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][W - 1] = "→"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "Ք"
+    dress_grid("feywild_needle_garden", grid)
     return grid
 
 
@@ -155,7 +161,7 @@ def _reachable(
             x, y = point
             if not (0 <= x < W and 0 <= y < H) or point in reached:
                 continue
-            if _under(grid[y][x]) in {"#", "✿"}:
+            if _under(grid[y][x]) in {"#", "✿", "ŋ"}:
                 continue
             reached.add(point)
             frontier.append(point)
@@ -177,7 +183,7 @@ def _ray(
         row += dy
         if not (0 <= col < W and 0 <= row < H):
             break
-        if _under(grid[row][col]) in {"#", "✿"}:
+        if _under(grid[row][col]) in {"#", "✿", "ŋ"}:
             break
         cells.append((col, row))
     return cells

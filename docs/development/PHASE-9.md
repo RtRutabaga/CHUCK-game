@@ -1389,3 +1389,10 @@ boundary reserved for the later floating-wizard-tower phase.
   shadow passage, western chair legs, place settings, routes, and scale rules
   remain intact. A transition-registry-driven test now enforces the alignment
   across the complete Feywild chain.
+- **Later-region mushroom dressing:** Added six widely spaced freestanding
+  mushrooms to each map from Giant Tea Table through Twilight Crossroads.
+  Maps 1--4 keep their existing 3--4 mushrooms, so visual density increases
+  from Map 5 onward without changing the region's traversal language. Shared
+  authored coordinates keep map files and all available generators aligned;
+  placements avoid entrances, checkpoints, encounters, switches, jump
+  landings, and narrow routes.

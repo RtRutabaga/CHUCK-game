@@ -6,6 +6,15 @@ endpoint. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Added a denser freestanding-mushroom pass across the later Feywild. Giant
+  Tea Table through Twilight Crossroads now receive six additional, widely
+  spaced mushrooms per map, and the peaceful Cloud Staircase approach receives
+  six as well. Maps 1--4 retain their existing 3--4 mushrooms, making the
+  region's visual progression intentionally fuller from Map 5 onward.
+- Mushroom coordinates are shared by procedural generators and authored map
+  files. Placements occupy broad pockets or already-solid hedge growth; all
+  87 standalone suites pass, including every affected Map 5--13
+  traversal/encounter suite and the Cloud Staircase suite.
 - Fixed committed-jump landing validation across solid-but-jumpable water.
   Chuck may still clear a one-tile channel and land normally on dry ground,
   Feywild stepping stones, or raised lily pads, but a hop that ends over water
