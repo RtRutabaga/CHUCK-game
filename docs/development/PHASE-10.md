@@ -161,7 +161,9 @@ than threatening.
 
 # 8. Zephyros Dialogue
 
-Use this dialogue exactly, preserving the pauses as separate dialogue beats:
+Use this dialogue exactly in wording and order. Nearby short phrases and pauses
+may share a panel where that reduces excessive clicking without creating large
+text blocks:
 
 > Hello little friend!
 >
@@ -328,7 +330,9 @@ audio systems.
 - `CONTINUE` and Sanity-zero return use the same authored checkpoints.
 - YES/NO prompts must use the established choice presentation.
 - `NO` closes silently.
-- Cutscenes remain input-free apart from `ESC` quitting the application.
+- Cinematic motion remains input-free apart from `ESC` quitting the
+  application. Zephyros' conversation advances with the normal interact-driven
+  dialogue behavior.
 - Sanity carries across non-death transitions.
 - The city impact uses the established death/return presentation rather than
   inventing a second death system.
@@ -459,10 +463,11 @@ Do not start Phase 11 city gameplay while completing these slices.
 - Slice 3: connected rope `YES` to a dedicated input-free introduction scene.
   Chuck descends against cloud-giant masonry; Zephyros' warm blue-grey face
   enters, blinks and smiles; a giant palm rises and Chuck steps onto it. The
-  exact supplied 36-beat dialogue advances automatically in the established
-  panel. Its final line served as the stable boundary until slice 4 connected
-  the throw; the dedicated conversation cue remains reserved for the planned
-  audio pass.
+  supplied dialogue wording appears in the established panel. Its final line
+  served as the stable boundary until slice 4 connected the throw; the later
+  cinematic-polish pass consolidated the beats and restored normal manual
+  advancement. The dedicated conversation cue remains reserved for the
+  planned audio pass.
 - Slice 4: continued directly from Zephyros' final line into an input-free
   launch. A distant whole-tower shot reduces Chuck to a two-pixel dot during
   the effortless throw; a close shot then follows his horizontal flight and
@@ -478,3 +483,8 @@ Do not start Phase 11 city gameplay while completing these slices.
   deliberately contained rainy city block. `City 1` and the saveable City
   Ashtray use the shared checkpoint loader; the map has exactly one physical
   Ashtray and no exits, NPCs, enemies, interiors, or other Phase 11 content.
+- Cinematic polish: reversed the introduction staging so Zephyros' enormous
+  hand crosses the room to stationary Chuck, extended his purple robe through
+  the bottom edge, and consolidated the unchanged conversation wording into 19
+  normally advanced panels. The launch motif now waits 3.5 seconds, and the
+  unexplained converging black road shape was removed from the rainy descent.

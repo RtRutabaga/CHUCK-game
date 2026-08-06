@@ -20,7 +20,7 @@ from src.scenes.scene import Scene
 from src.world.tileset_layout import ANIM_FPS, SEWER, TILE_PX
 
 
-MUSIC_START = 0.9
+MUSIC_START = 3.5
 THROW_RELEASE = 2.5
 TOWER_SHOT_END = 6.2
 ASTRAL_START = 7.5

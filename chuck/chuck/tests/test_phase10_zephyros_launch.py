@@ -99,6 +99,7 @@ def test_launch_reuses_falling_music_after_a_soft_gap() -> None:
         scene = ZephyrosLaunchCutsceneScene(game, sanity=51)
         scene.on_enter()
         assert stopped == [650]
+        assert MUSIC_START >= 3.0
         scene.update(MUSIC_START - 0.1)
         assert played == []
         scene.update(0.2)

@@ -3,12 +3,21 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `691cc46` (Zephyros tower launch)
-- Current work: Phase 10 rainy modern-city arrival slice
+- Base commit before this pass: `880c41a` (rescaled Zephyros exterior)
+- Current work: Phase 10 Zephyros/launch/city cinematic polish
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Reversed the Zephyros introduction staging: Chuck stays at the rope landing
+  while the giant hand travels from offscreen to collect him. Extended the
+  purple robe through the frame bottom so Zephyros reads as a body rather than
+  a floating bust.
+- Consolidated the unchanged speech into 19 modest panels and replaced the
+  automatic timer with the standard interact-to-complete/interact-to-advance
+  dialogue rhythm. The final completed panel alone dispatches the launch.
+- Delayed the launch motif from 0.9 to 3.5 seconds and removed the unexplained
+  black perspective-road rectangle from the rainy city canyon.
 - Rescaled the playable exterior platform into a compact roughly 20x20-tile
   stone island and enlarged the embedded tower/arch facade from 192x128 to
   320x224 pixels. The facade now exceeds the native viewport and the doorway
@@ -44,18 +53,18 @@
 - Added focused coverage for truthful throw scale, trajectory, Astral-art
   reuse, city-fragment accumulation, one-shot music dispatch, input-free
   behavior, Sanity continuity, and the held collision. All 84 suites pass.
-- Connected rope `YES` to a dedicated input-free cinematic while preserving
+- Connected rope `YES` to a dedicated cinematic while preserving
   silent `NO` and Sanity. Chuck descends the giant rope, an impossibly large
   Zephyros enters, blinks and smiles, raises his palm, and receives Chuck.
 - Added a warm blue-grey procedural portrait at native scale: raised brows,
   readable eyes and smile, gold earrings, purple-and-gold clothing, long white
   beard, and a separate giant hand. Chuck remains tiny and readable throughout.
-- Added the complete exact 36-beat supplied dialogue as data and an automatic
-  cinematic playback schedule using the established dialogue panel. The final
-  line now hands directly into the tower-launch scene.
+- Added the complete supplied dialogue as data using the established dialogue
+  panel. The current polished version groups it into 19 manually advanced
+  panels, and the final line hands directly into the tower-launch scene.
 - Added focused coverage for exact text, validated choice dispatch, Sanity
-  preservation, the distinct visual beats, input-free playback, automatic
-  line progression, and the launch handoff. All 83 suites passed that slice.
+  preservation, distinct visual beats, manual line progression, and the launch
+  handoff. All 83 suites passed that original slice.
 - Connected the exterior's embedded arch to a 60x46 open-sided Aerie and added
   a reversible three-tile southern return. The platform now has a clearly
   rounded elliptical tower silhouette. Four seven-tile-wide nests surround a

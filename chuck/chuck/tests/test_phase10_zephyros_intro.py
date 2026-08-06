@@ -12,9 +12,9 @@ from src.core.game import Game
 from src.scenes.zephyros_intro_cutscene_scene import (
     DIALOGUE_START,
     FACE_ENTER_END,
+    HAND_SETTLE_END,
     HAND_RISE_START,
     ROPE_DESCENT_END,
-    STEP_END,
     ZephyrosIntroCutsceneScene,
 )
 from src.scenes.zephyros_launch_cutscene_scene import (
@@ -24,41 +24,24 @@ from src.systems.dialogue import DialogueSystem
 
 
 EXPECTED_DIALOGUE = [
-    "Hello little friend!",
-    "...",
-    "Yes... YES!",
-    "...",
-    "The Entity said you would be coming.",
-    "Now, as you know, the worlds have been shuffled.",
-    "Smashed.",
-    "A little bit crinkled.",
-    "Most don't know.",
-    "Most don't see.",
+    "Hello little friend! ... Yes... YES!",
+    "... The Entity said you would be coming.",
+    "Now, as you know, the worlds have been shuffled. Smashed.",
+    "A little bit crinkled. Most don't know. Most don't see.",
     "The typical being, you see, is like the halfling leaf inside a cigarette.",
     "They don't know whether they're still neat inside the pack...",
     "...or whether they've already been smashed together in the ashtray.",
-    "But you, Chuck...",
-    "You're part of the ashtray.",
-    "You see.",
-    "...",
-    "The Entity has gone quiet.",
-    "It is frightened, Chuck.",
-    "Yes...",
-    "Yes...",
+    "But you, Chuck... You're part of the ashtray. You see.",
+    "... The Entity has gone quiet.",
+    "It is frightened, Chuck. Yes... Yes...",
     "Something must be done.",
-    "...",
-    "Oh...",
-    "No.",
-    "Not you.",
-    "Heavens, no.",
+    "... Oh... No.",
+    "Not you. Heavens, no.",
     "You're more of a fighter than a winner, aren't you, Chuck?",
-    "Not to worry.",
-    "I have my best people working on it.",
+    "Not to worry. I have my best people working on it.",
     "Your role in all this...",
-    "...is simply to make it through.",
-    "As you always do.",
-    "...",
-    "Now then!",
+    "...is simply to make it through. As you always do.",
+    "... Now then!",
     "I shall fling you onward!",
 ]
 
@@ -83,7 +66,7 @@ def test_complete_supplied_dialogue_is_data_driven_and_exact() -> None:
     assert DialogueSystem().get("zephyros_intro") == EXPECTED_DIALOGUE
 
 
-def test_descent_face_blink_smile_hand_and_step_are_distinct_readable_beats() -> None:
+def test_descent_face_blink_smile_and_reaching_hand_are_distinct_beats() -> None:
     game = Game()
     try:
         scene = ZephyrosIntroCutsceneScene(game, sanity=45)
@@ -105,29 +88,41 @@ def test_descent_face_blink_smile_hand_and_step_are_distinct_readable_beats() ->
 
         scene.elapsed = HAND_RISE_START + 2.0
         assert scene.phase == "hand_rise"
+        midpoint = scene.hand_position()
         scene.draw(surface)
 
-        scene.elapsed = STEP_END
+        scene.elapsed = HAND_SETTLE_END
         assert scene.phase == "conversation"
+        assert scene.hand_position()[0] < midpoint[0] - 100
         scene.draw(surface)
     finally:
         game._shutdown()
 
 
-def test_dialogue_auto_advances_then_hands_off_to_launch_slice() -> None:
+def _press_interact(game, scene) -> None:
+    game.input.begin_frame()
+    game.input._actions_just_pressed.add("interact")
+    scene.update(0.0)
+
+
+def test_dialogue_uses_normal_manual_advance_then_hands_off() -> None:
     game = Game()
     try:
         scene = ZephyrosIntroCutsceneScene(game, sanity=62)
         game.scenes.replace(scene)
         scene.update(DIALOGUE_START + 0.1)
         assert scene.dialogue_index == 0
+        # Time alone never advances a conversation or starts the launch.
+        scene.update(300.0)
+        assert scene.dialogue_index == 0
+        assert game.scenes.current is scene
 
-        final_end = (
-            scene._line_starts[-1]
-            + scene._line_duration(scene.dialogue[-1])
-            + 0.1
-        )
-        scene.update(final_end - scene.elapsed)
+        for expected_index in range(1, len(scene.dialogue)):
+            _press_interact(game, scene)  # complete current typewriter
+            _press_interact(game, scene)  # advance exactly one panel
+            assert scene.dialogue_index == expected_index
+        assert scene.conversation_complete
+        _press_interact(game, scene)  # leave the completed conversation
         launch = game.scenes.current
         assert isinstance(launch, ZephyrosLaunchCutsceneScene)
         assert launch.sanity == 62
@@ -135,7 +130,7 @@ def test_dialogue_auto_advances_then_hands_off_to_launch_slice() -> None:
         game._shutdown()
 
 
-def test_non_escape_input_cannot_skip_the_cinematic() -> None:
+def test_non_dialogue_input_cannot_skip_the_cinematic() -> None:
     game = Game()
     try:
         scene = ZephyrosIntroCutsceneScene(game, sanity=50)

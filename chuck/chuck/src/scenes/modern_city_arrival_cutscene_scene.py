@@ -158,10 +158,6 @@ class ModernCityArrivalCutsceneScene(Scene):
                     color = (188, 166, 93) if lit else (31, 68, 88)
                     pygame.draw.rect(surface, color, (x, y, 10, 8))
             pygame.draw.line(surface, (99, 105, 116), points[1], points[2], 2)
-        horizon = round(138 - 18 * _ease(self.elapsed / DESCENT_END))
-        pygame.draw.rect(surface, (17, 22, 30), (78, horizon, 168, 180 - horizon))
-        for x in range(86, 243, 18):
-            pygame.draw.line(surface, (68, 74, 83), (160, horizon), (x, 180), 1)
 
     def _draw_flying_chuck(self, surface: pygame.Surface) -> None:
         frame = self._frames.get("down")

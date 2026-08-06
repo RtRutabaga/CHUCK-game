@@ -6,6 +6,16 @@ endpoint. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Polished the Zephyros/launch/city cinematic chain. Zephyros' hand now travels
+  across the room to Chuck at the rope instead of Chuck sliding toward a fixed
+  palm, and his purple robe continues through the bottom of the frame rather
+  than ending as a floating bust.
+- Consolidated the unchanged Zephyros speech from 36 tiny automatic beats into
+  19 readable panels. The conversation now uses normal player-controlled
+  typewriter completion and advance behavior and waits on every panel.
+- Delayed the launch music until 3.5 seconds into the fling and removed the
+  unexplained black perspective-road rectangle and converging lines from the
+  rainy modern-city descent.
 - Rescaled Zephyros' exterior approach: the suspended platform is now a
   compact stone island roughly half its previous footprint, while the tower
   facade and embedded Aerie arch have expanded from 192x128 to 320x224 pixels.
@@ -41,7 +51,7 @@ endpoint. This file is required by the project rules and updated every session.
   lit windows, jagged concrete pieces, and violet collision seams then mix
   into the same moving sky until Chuck visibly strikes a large city fragment.
   That impact now holds as the stable boundary before the rainy descent.
-- Rope `YES` now starts a dedicated, input-free Zephyros introduction scene
+- Rope `YES` now starts a dedicated Zephyros introduction scene
   while `NO` still closes silently. Chuck descends a giant rope against
   cloud-giant masonry, Zephyros' impossibly large face enters slowly, blinks,
   smiles, and raises a palm for Chuck to step onto.
@@ -49,11 +59,10 @@ endpoint. This file is required by the project rules and updated every session.
   gold earrings, purple-and-gold clothes, and a long white beard. His face
   fills the native frame while Chuck remains a tiny readable figure on the
   palm beside it.
-- The complete supplied 36-beat conversation is stored in dialogue data and
-  automatically paced through the established dialogue panel. The final `I
-  shall fling you onward!` tableau now hands directly into the launch scene;
-  the dedicated Phase 10 conversation music remains reserved for the later
-  audio pass.
+- The complete supplied conversation is stored in dialogue data and grouped
+  into 19 normally advanced panels. The final `I shall fling you onward!`
+  tableau hands directly into the launch scene; the dedicated Phase 10
+  conversation music remains reserved for the later audio pass.
 - Added the 60x46 open-sided Aerie beyond the exterior arch. Its broad stone
   floor now follows a clearly rounded elliptical tower plan rather than a
   square-like clipped outline. Four enormous seven-tile nests ring a solid,

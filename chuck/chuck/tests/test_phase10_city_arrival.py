@@ -51,6 +51,8 @@ def test_close_flight_moves_diagonally_then_loses_horizontal_momentum() -> None:
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
         scene.elapsed = 5.0
         scene.draw(surface)
+        # The old unexplained black perspective-road rectangle is gone.
+        assert surface.get_at((160, 155))[:3] != (17, 22, 30)
     finally:
         game._shutdown()
         directory.cleanup()

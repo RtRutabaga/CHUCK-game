@@ -3,8 +3,8 @@
 This is Phase 10's quiet exposition scene, not a threat reveal.  The opening
 uses a readable side view to compare one-foot Chuck with cloud-giant masonry,
 rope, face, and hand.  Once Chuck reaches Zephyros' palm, the exact authored
-dialogue advances automatically over a held warm portrait.  The final line is
-the stable boundary for the following launch slice.
+dialogue advances with the same player-controlled typewriter rhythm as ordinary
+conversation. The final line hands off to the following launch slice.
 """
 
 from __future__ import annotations
@@ -25,8 +25,7 @@ FACE_ENTER_END = 10.8
 SMILE_END = 13.0
 HAND_RISE_START = 12.0
 HAND_RISE_END = 16.0
-STEP_START = 15.5
-STEP_END = 18.5
+HAND_SETTLE_END = 18.5
 DIALOGUE_START = 19.5
 
 _SKY = (130, 190, 222)
@@ -59,7 +58,7 @@ def _ease(value: float) -> float:
 
 
 class ZephyrosIntroCutsceneScene(Scene):
-    """Input-free rope descent and the complete Zephyros conversation."""
+    """Authored reveal followed by a normally advanced conversation."""
 
     def __init__(self, game, *, sanity: int) -> None:
         super().__init__(game)
@@ -68,7 +67,6 @@ class ZephyrosIntroCutsceneScene(Scene):
         self._chuck: dict[str, pygame.Surface] = {}
         self.dialogue = DialogueSystem().get("zephyros_intro")
         self._dialogue_box = DialogueBox(game.assets)
-        self._line_starts = self._build_line_starts(self.dialogue)
         self._line_index = -1
         self._launch_started = False
 
@@ -81,28 +79,13 @@ class ZephyrosIntroCutsceneScene(Scene):
             "right": pygame.transform.flip(grid[2][0], True, False),
         }
 
-    @staticmethod
-    def _line_duration(line: str) -> float:
-        # Let the existing typewriter finish, then hold long enough to read.
-        # The authored ellipses are deliberate cinematic breaths.
-        if line == "...":
-            return 2.1
-        return max(1.85, len(line) / config.DIALOGUE_CPS + 1.15)
-
-    @classmethod
-    def _build_line_starts(cls, lines: list[str]) -> list[float]:
-        starts = [DIALOGUE_START]
-        for line in lines[:-1]:
-            starts.append(starts[-1] + cls._line_duration(line))
-        return starts
-
     @property
     def phase(self) -> str:
         if self.elapsed < ROPE_DESCENT_END:
             return "rope_descent"
         if self.elapsed < HAND_RISE_START:
             return "face_reveal"
-        if self.elapsed < STEP_END:
+        if self.elapsed < HAND_SETTLE_END:
             return "hand_rise"
         return "conversation"
 
@@ -112,11 +95,9 @@ class ZephyrosIntroCutsceneScene(Scene):
 
     @property
     def conversation_complete(self) -> bool:
-        if not self.dialogue:
-            return False
-        final_start = self._line_starts[-1]
-        return self.elapsed >= final_start + self._line_duration(
-            self.dialogue[-1]
+        return (
+            self._line_index == len(self.dialogue) - 1
+            and self._dialogue_box.is_complete
         )
 
     def handle_event(self, event: pygame.event.Event) -> None:
@@ -130,20 +111,20 @@ class ZephyrosIntroCutsceneScene(Scene):
         if self.elapsed < DIALOGUE_START:
             return
 
-        index = 0
-        for candidate, start in enumerate(self._line_starts):
-            if start <= self.elapsed:
-                index = candidate
-            else:
-                break
-        if index != self._line_index:
-            self._line_index = index
-            self._dialogue_box.show(self.dialogue[index])
-        local_time = self.elapsed - self._line_starts[index]
-        # Absolute local time keeps large test/frame jumps deterministic.
-        self._dialogue_box.show(self.dialogue[index])
-        self._dialogue_box.update(local_time)
-        if self.conversation_complete and not self._launch_started:
+        if self._line_index < 0:
+            self._line_index = 0
+            self.game.audio.play_sfx("interact")
+            self._dialogue_box.show(self.dialogue[0])
+        self._dialogue_box.update(dt)
+        if not self.game.input.was_pressed("interact"):
+            return
+        if not self._dialogue_box.is_complete:
+            self._dialogue_box.complete()
+        elif self._line_index + 1 < len(self.dialogue):
+            self._line_index += 1
+            self.game.audio.play_sfx("interact")
+            self._dialogue_box.show(self.dialogue[self._line_index])
+        elif not self._launch_started:
             self._launch_started = True
             from src.scenes.zephyros_launch_cutscene_scene import (
                 ZephyrosLaunchCutsceneScene,
@@ -168,10 +149,10 @@ class ZephyrosIntroCutsceneScene(Scene):
             / (HAND_RISE_END - HAND_RISE_START)
         )
         if hand_progress > 0.0:
-            hand_y = round(181 + (111 - 181) * hand_progress)
-            # The palm rises beside the beard, in front of the giant, rather
-            # than disappearing behind his portrait or covering his smile.
-            self._draw_hand(surface, 165, hand_y)
+            hand_x, hand_y = self.hand_position()
+            # Zephyros reaches all the way to Chuck. Chuck does not cross the
+            # room or fly toward a conveniently stationary palm.
+            self._draw_hand(surface, hand_x, hand_y)
 
         self._draw_rope(surface)
         self._draw_chuck(surface)
@@ -180,6 +161,16 @@ class ZephyrosIntroCutsceneScene(Scene):
         pygame.draw.rect(surface, (20, 25, 42), (0, 173, 320, 7))
         if self._line_index >= 0:
             self._dialogue_box.draw(surface)
+
+    def hand_position(self) -> tuple[int, int]:
+        progress = _ease(
+            (self.elapsed - HAND_RISE_START)
+            / (HAND_RISE_END - HAND_RISE_START)
+        )
+        return (
+            round(330 + (75 - 330) * progress),
+            round(181 + (111 - 181) * progress),
+        )
 
     def _draw_tower_interior(self, surface: pygame.Surface) -> None:
         surface.fill(_STONE)
@@ -210,19 +201,12 @@ class ZephyrosIntroCutsceneScene(Scene):
     def _draw_chuck(self, surface: pygame.Surface) -> None:
         if not self._chuck:
             return
-        if self.elapsed < STEP_START:
-            progress = _ease(self.elapsed / ROPE_DESCENT_END)
-            x = 82
-            y = round(18 + 91 * progress)
-            bob = 1 if int(self.elapsed * 7) % 2 else 0
-            surface.blit(self._chuck["down"], (x, y + bob))
-            return
-
-        progress = _ease((self.elapsed - STEP_START) / (STEP_END - STEP_START))
-        x = round(82 + 118 * progress)
-        y = round(108 - 3 * progress)
-        bob = -1 if 0.08 < progress < 0.92 and int(self.elapsed * 7) % 2 else 0
-        surface.blit(self._chuck["right"], (x, y + bob))
+        progress = _ease(self.elapsed / ROPE_DESCENT_END)
+        x = 82
+        y = round(18 + 91 * progress)
+        bob = 1 if self.elapsed < ROPE_DESCENT_END and int(self.elapsed * 7) % 2 else 0
+        facing = "down" if self.elapsed < HAND_RISE_START else "right"
+        surface.blit(self._chuck[facing], (x, y + bob))
 
     def _blink_amount(self) -> float:
         # One clear introductory blink, then sparse calm blinks during speech.
@@ -235,11 +219,18 @@ class ZephyrosIntroCutsceneScene(Scene):
     def _draw_zephyros(self, surface: pygame.Surface, x: int, y: int) -> None:
         # Purple shoulders and gold-trimmed collar establish the kindly cloud
         # giant before the face dominates the composition.
-        pygame.draw.ellipse(surface, _PURPLE, (x - 36, y + 99, 224, 83))
+        # The robe continues below the frame. A closed shoulder ellipse made
+        # Zephyros read as a floating portrait instead of a giant body.
+        pygame.draw.polygon(
+            surface, _PURPLE,
+            ((x - 36, y + 105), (x + 180, y + 105),
+             (x + 219, y + 236), (x - 69, y + 236)),
+        )
+        pygame.draw.ellipse(surface, _PURPLE, (x - 36, y + 94, 224, 68))
         pygame.draw.polygon(surface, _PURPLE_LIGHT,
                             ((x + 7, y + 110), (x + 72, y + 80),
-                             (x + 133, y + 112), (x + 122, y + 166),
-                             (x + 3, y + 166)))
+                             (x + 133, y + 112), (x + 146, y + 236),
+                             (x - 13, y + 236)))
         pygame.draw.line(surface, _GOLD,
                          (x - 17, y + 122), (x + 35, y + 102), 4)
         pygame.draw.line(surface, _GOLD,
