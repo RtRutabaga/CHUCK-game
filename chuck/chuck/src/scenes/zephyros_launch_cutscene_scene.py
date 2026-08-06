@@ -136,7 +136,7 @@ class ZephyrosLaunchCutsceneScene(Scene):
         self.elapsed = min(CUTSCENE_END, self.elapsed + max(0.0, dt))
         if previous < MUSIC_START <= self.elapsed and not self._music_started:
             self._music_started = True
-            self.game.audio.play_music("fall_to_chult.wav", loop=False)
+            self.game.audio.play_music("zephyros_launch_city.wav", loop=False)
         if previous < CUTSCENE_END <= self.elapsed and not self._arrival_started:
             from src.scenes.modern_city_arrival_cutscene_scene import (
                 ModernCityArrivalCutsceneScene,

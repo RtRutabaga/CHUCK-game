@@ -22,6 +22,7 @@ from data.music import temple as temple_song
 from data.music import sewer as sewer_song
 from data.music import waterdeep_docks as song
 from data.music import zephyros_conversation as conversation_song
+from data.music import zephyros_launch_city as transition_song
 from data.music import zephyros_tower as zephyros_song
 from src.audio.sequencer import Note, Track, note_to_freq, render_song
 from src.audio.synth import SAMPLE_RATE
@@ -600,6 +601,64 @@ def test_rendered_zephyros_conversation_theme_respects_quality_gates() -> None:
         sum(sample * sample for sample in tower_samples) / len(tower_samples)
     ) ** 0.5
     assert 0.75 <= rms / tower_rms <= 1.1, (rms, tower_rms)
+
+
+def test_zephyros_launch_cue_evolves_the_established_falling_motif() -> None:
+    tracks = transition_song.build_tracks()
+    named = {track.name: track for track in tracks}
+    duration = (
+        transition_song.TOTAL_BEATS * 60.0 / transition_song.TEMPO_BPM
+    )
+    assert 47.0 <= duration <= 49.0
+    assert transition_song.TEMPO_BPM == fall_song.TEMPO_BPM
+    assert len([track for track in tracks if track.notes]) >= 10
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < transition_song.TOTAL_BEATS
+
+    old_lead = next(track for track in fall_song.build_tracks()
+                    if track.name == "lead")
+    old_opening = [
+        (note.beat, note.dur, note.pitch)
+        for note in old_lead.notes if note.beat < 4
+    ]
+    new_opening = [
+        (note.beat, note.dur, note.pitch)
+        for note in named["falling_lead"].notes if note.beat < 4
+    ]
+    assert new_opening == old_opening
+
+    # The city arrives by accumulation, not by replacing the action cue.
+    assert min(note.beat for note in named["wind_pad"].notes) == 0
+    assert min(note.beat for note in named["astral_pulse"].notes) == 2 * 4
+    for layer in ("rain", "urban_metal", "city_synth"):
+        assert min(note.beat for note in named[layer].notes) >= 5 * 4
+    assert min(note.beat for note in named["kick"].notes) >= 6 * 4
+
+    impact = 17 * 4 + 1.5
+    for layer in ("falling_lead", "astral_pulse", "bass", "kick", "snare"):
+        assert max(note.beat + note.dur for note in named[layer].notes) <= impact
+    assert min(note.beat for note in named["return_flute"].notes) >= impact
+    assert max(note.beat for note in named["rain"].notes) >= 23 * 4
+
+
+def test_rendered_zephyros_launch_cue_respects_one_shot_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "zephyros_launch_city.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert 47 * SAMPLE_RATE <= len(samples) <= 49 * SAMPLE_RATE
+    assert max(abs(sample) for sample in samples) <= 0.92
+
+    with wave.open(str(config.MUSIC_DIR / "fall_to_chult.wav")) as f:
+        fall_raw = f.readframes(f.getnframes())
+    fall_samples = [x / 32767 for (x,) in struct.iter_unpack("<h", fall_raw)]
+    rms = (sum(sample * sample for sample in samples) / len(samples)) ** 0.5
+    fall_rms = (
+        sum(sample * sample for sample in fall_samples) / len(fall_samples)
+    ) ** 0.5
+    assert 0.75 <= rms / fall_rms <= 1.15, (rms, fall_rms)
 
 
 def _run_all() -> None:

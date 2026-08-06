@@ -6,6 +6,19 @@ endpoint. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Completed Phase 10's three-cue audio pass with
+  `zephyros_launch_city.wav`, an original 48-second D-minor one-shot at 120
+  BPM. It preserves the established falling motif while progressively adding
+  Astral pulse, wind swells, rain-like percussion, struck-city metal, and a
+  restrained low synth as modern fragments overtake the sky.
+- The cue continues unchanged across the launch-to-rainy-city scene handoff.
+  Its action layers stop at sidewalk impact, leaving rain, distant metal,
+  bells, and tired flute beneath Chuck's death, return, look-around, and
+  cigarette drag; it fades with the final visual fade into the contained city
+  checkpoint rather than cutting abruptly.
+- All three specified Phase 10 cues and their transitions are complete. The
+  next development boundary is Phase 11's modern-city gameplay, which should
+  not begin until its authoritative phase document is available.
 - Added the second Phase 10 soundtrack: `zephyros_conversation.wav`, an
   original 111-second G-major/Mixolydian loop at 78 BPM. A warm reed carries a
   recurring patient melody over soft mallets, round bass, gentle plucks,

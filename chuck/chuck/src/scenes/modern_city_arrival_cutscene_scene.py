@@ -46,6 +46,7 @@ class ModernCityArrivalCutsceneScene(Scene):
         self._frames: dict[str, pygame.Surface] = {}
         self._left_without_cigarette: pygame.Surface | None = None
         self._handed_off = False
+        self._music_fade_started = False
 
     def on_enter(self) -> None:
         grid = self.game.assets.sheet(
@@ -115,6 +116,14 @@ class ModernCityArrivalCutsceneScene(Scene):
             self.sanity = 0
         if previous < RESPAWN_TIME <= self.elapsed:
             self.sanity = config.SANITY_MAX
+        if (
+            previous < FADE_OUT_START <= self.elapsed
+            and not self._music_fade_started
+        ):
+            self._music_fade_started = True
+            self.game.audio.stop_music(
+                fade_ms=round(config.AREA_FADE_DURATION * 1000)
+            )
         if previous < HANDOFF_TIME <= self.elapsed and not self._handed_off:
             self._handed_off = True
             self.game.checkpoints.activate_checkpoint(

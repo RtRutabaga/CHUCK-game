@@ -14,6 +14,7 @@ from src.core.game import Game
 from src.scenes.modern_city_arrival_cutscene_scene import (
     CIGARETTE_SEATED,
     DESCENT_END,
+    FADE_OUT_START,
     HANDOFF_TIME,
     IMPACT_TIME,
     LOOK_START,
@@ -147,6 +148,26 @@ def test_city_endpoint_is_contained_rainy_and_phase11_free() -> None:
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
         world.update(0.1)
         world.draw(surface)
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_arrival_does_not_restart_or_replace_the_transition_cue() -> None:
+    directory, game, scene = _game_and_scene()
+    try:
+        played = []
+        stopped = []
+        game.audio.play_music = lambda filename, loop=True: played.append(
+            (filename, loop)
+        )
+        game.audio.stop_music = lambda fade_ms=0: stopped.append(fade_ms)
+        scene.on_enter()
+        scene.update(FADE_OUT_START - 0.1)
+        assert played == [] and stopped == []
+        scene.update(0.2)
+        assert played == []
+        assert stopped == [round(config.AREA_FADE_DURATION * 1000)]
     finally:
         game._shutdown()
         directory.cleanup()

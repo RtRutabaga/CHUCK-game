@@ -409,8 +409,8 @@ Those city systems begin in Phase 11.
 
 ## Audio and Technical Quality
 
-- [ ] Three phase cues are implemented with the specified identities.
-- [ ] Music transitions do not hard-cut or layer accidentally.
+- [x] Three phase cues are implemented with the specified identities.
+- [x] Music transitions do not hard-cut or layer accidentally.
 - [x] Development checkpoints load every playable Phase 10 map.
 - [x] Save, Continue, death, and respawn remain stable.
 - [x] Existing tests pass.
@@ -501,3 +501,11 @@ Do not start Phase 11 city gameplay while completing these slices.
   theme fades for 900 ms as Zephyros settles his hand; the conversation cue
   enters with the first manually advanced dialogue panel without a hard cut.
   The launch/modern-city transition arrangement remains the final audio slice.
+- Audio slice 3: replaced the reused Chult one-shot with an original 48-second
+  launch/city transition in D minor at 120 BPM. Its opening preserves the
+  established falling motif while Astral pulse, rushing wind, rain-like hats,
+  struck-city metal, and a restrained low synth accumulate with the visuals.
+  The action breaks at sidewalk impact; rain, distant metal, bells, and tired
+  flute carry Chuck's vanish, return, look, and cigarette drag. One playback
+  spans both cinematic scenes without restarting and fades with the final
+  visual fade. All three Phase 10 musical identities are now implemented.

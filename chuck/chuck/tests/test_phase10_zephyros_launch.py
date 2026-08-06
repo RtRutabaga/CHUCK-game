@@ -87,7 +87,7 @@ def test_astral_then_city_fragments_accumulate_in_the_same_sky() -> None:
         game._shutdown()
 
 
-def test_launch_reuses_falling_music_after_a_soft_gap() -> None:
+def test_launch_starts_the_evolving_falling_cue_after_a_soft_gap() -> None:
     game = Game()
     try:
         stopped = []
@@ -103,9 +103,9 @@ def test_launch_reuses_falling_music_after_a_soft_gap() -> None:
         scene.update(MUSIC_START - 0.1)
         assert played == []
         scene.update(0.2)
-        assert played == [("fall_to_chult.wav", False)]
+        assert played == [("zephyros_launch_city.wav", False)]
         scene.update(10.0)
-        assert played == [("fall_to_chult.wav", False)]
+        assert played == [("zephyros_launch_city.wav", False)]
     finally:
         game._shutdown()
 
