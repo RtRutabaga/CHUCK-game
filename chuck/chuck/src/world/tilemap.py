@@ -409,6 +409,11 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="cloud_staircase", under="#"),
     "Ƶ": TileDef(solid=False, color=(154, 160, 169),
                  prop="cloud_tower_arch", under="."),
+    "♘": TileDef(solid=True, color=(154, 160, 169),
+                 prop="griffon_nest", under="#"),
+    "℞": TileDef(solid=True, color=(116, 190, 226),
+                 prop="aerie_rope", under="~"),
+    "⇓": TileDef(solid=False, color=(154, 160, 169), under="."),
     # Feywild path thresholds retain the regional path art while keeping
     # opposite directions distinct for authored two-way transitions.
     "←": TileDef(solid=False, color=(45, 76, 59),
@@ -826,6 +831,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሄ": MarkerDef(kind="anchor:zephyros_exterior_anchor", under="."),
     "ህ": MarkerDef(kind="boundary:zephyros_aerie", under="Ƶ"),
     "ሆ": MarkerDef(kind="arrival:from_aerie", under="."),
+    # The Aerie: exterior return, local anchor, one colossal griffon, and
+    # the stable rope boundary for Zephyros' introduction slice.
+    "ሇ": MarkerDef(kind="arrival:from_exterior", under="."),
+    "ለ": MarkerDef(kind="anchor:zephyros_aerie_anchor", under="."),
+    "ሉ": MarkerDef(kind="griffon", under="."),
+    "ሊ": MarkerDef(kind="choice:zephyros_rope", under="."),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

@@ -1,6 +1,7 @@
 """Generate Phase 10's giant-scale staircase and tower arch props."""
 
 from pathlib import Path
+import math
 
 from PIL import Image, ImageDraw
 
@@ -102,11 +103,71 @@ def tower_arch() -> Image.Image:
     return image
 
 
+def griffon_nest() -> Image.Image:
+    """A cloud-giant aerie nest broad enough to dwarf Chuck."""
+    image = Image.new("RGBA", (112, 68), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    shadow = (55, 54, 70, 165)
+    hollow = (61, 48, 39, 255)
+    reed_dark = (104, 78, 48, 255)
+    reed = (164, 126, 67, 255)
+    reed_light = (220, 183, 104, 255)
+
+    draw.ellipse((3, 49, 109, 67), fill=shadow)
+    draw.ellipse((7, 12, 105, 63), fill=reed_dark)
+    draw.ellipse((16, 18, 96, 56), fill=reed)
+    draw.ellipse((25, 24, 87, 51), fill=hollow)
+    for inset, color in ((3, reed_light), (8, reed), (13, reed_dark)):
+        draw.arc((inset, 9 + inset // 2, 111 - inset, 65 - inset // 3),
+                 5, 175, fill=color, width=3)
+        draw.arc((inset, 7 + inset // 2, 111 - inset, 63 - inset // 3),
+                 185, 355, fill=color, width=3)
+    # Short tangential sticks build a ragged rim without turning the hollow
+    # into a uniform grate. Every fifth stick juts farther out.
+    colors = (reed_dark, reed, reed_light)
+    for index in range(30):
+        angle = math.tau * index / 30
+        cx = 56 + math.cos(angle) * 46
+        cy = 36 + math.sin(angle) * 22
+        length = 15 + (7 if index % 5 == 0 else 0)
+        tx = -math.sin(angle) * length / 2
+        ty = math.cos(angle) * length / 4
+        draw.line((round(cx - tx), round(cy - ty),
+                   round(cx + tx), round(cy + ty)),
+                  fill=colors[index % len(colors)], width=2)
+    for x, y in ((31, 29), (43, 24), (67, 25), (79, 32)):
+        draw.line((x - 8, y + 5, x + 9, y - 4), fill=reed_light, width=2)
+    return image
+
+
+def aerie_rope() -> Image.Image:
+    """A thick giant rope dropping visibly through the central floor hole."""
+    image = Image.new("RGBA", (32, 80), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    dark = (91, 65, 42, 255)
+    rope = (185, 139, 75, 255)
+    light = (232, 194, 116, 255)
+    draw.ellipse((8, 1, 24, 9), fill=dark)
+    draw.ellipse((10, 0, 22, 7), fill=rope)
+    for y in range(6, 70, 6):
+        sway = 1 if (y // 6) % 2 else -1
+        draw.line((14 + sway, y, 15 - sway, y + 7), fill=dark, width=5)
+        draw.line((15 + sway, y, 16 - sway, y + 7), fill=rope, width=3)
+        draw.point((15 + sway, y + 1), fill=light)
+    draw.ellipse((9, 68, 23, 78), fill=dark)
+    draw.ellipse((11, 67, 21, 75), fill=rope)
+    draw.line((12, 73, 7, 79), fill=rope, width=3)
+    draw.line((20, 73, 25, 79), fill=dark, width=3)
+    return image
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     cloud_staircase().save(OUT / "cloud_staircase.png")
     tower_arch().save(OUT / "cloud_tower_arch.png")
-    print("Generated Zephyros staircase and tower arch props")
+    griffon_nest().save(OUT / "griffon_nest.png")
+    aerie_rope().save(OUT / "aerie_rope.png")
+    print("Generated Zephyros staircase, tower, and Aerie props")
 
 
 if __name__ == "__main__":

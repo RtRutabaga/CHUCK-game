@@ -5,5 +5,12 @@
       { "label": "YES", "action": "tower_arrival" },
       { "label": "NO" }
     ]
+  },
+  "zephyros_rope": {
+    "prompt": "Climb down the rope?",
+    "options": [
+      { "label": "YES" },
+      { "label": "NO" }
+    ]
   }
 }

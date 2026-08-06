@@ -384,6 +384,7 @@ class WorldScene(Scene):
             if kind in {
                 "cat", "rat", "zombie", "skeleton", "lemure", "raptor",
                 "massive_dinosaur", "horned_devil", "displacer_beast",
+                "griffon",
                 "snake", "fire_snake",
                 "pirate_chef", "redcap", "thorn_mite",
             } or kind.startswith((
@@ -462,6 +463,7 @@ class WorldScene(Scene):
             elif kind in {
                 "rat", "zombie", "skeleton", "lemure", "raptor",
                 "massive_dinosaur", "horned_devil", "displacer_beast",
+                "griffon",
                 "snake", "fire_snake",
                 "pirate_chef", "redcap", "thorn_mite",
             }:
@@ -1938,9 +1940,10 @@ class WorldScene(Scene):
                 redcap.load_sprites(self.game.assets)
                 self.redcaps.append(redcap)
             elif kind in {"massive_dinosaur", "horned_devil",
-                          "displacer_beast"}:
+                          "displacer_beast", "griffon"}:
                 # A horned devil is the Chultan colossus in infernal art;
-                # a displacer beast is the same colossus stalking the Feywild.
+                # displacer beasts and griffons are the same readable massive
+                # hazard behavior in their own regional art.
                 dinosaur = MassiveDinosaur(cx, cy, variant=kind)
                 dinosaur.tilemap = self.tilemap
                 dinosaur.load_sprites(self.game.assets)

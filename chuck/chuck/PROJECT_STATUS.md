@@ -1,10 +1,24 @@
 # CHUCK — Project Status
 
-Updated: Phase 10 has begun with the complete Cloud Staircase-to-tower-exterior
-slice. This file is required by the project rules and updated every session.
+Updated: Phase 10 now runs from the Cloud Staircase through the complete
+playable Aerie. This file is required by the project rules and updated every
+session.
 
 ## Latest implementation
 
+- Added the 60x46 open-sided Aerie beyond the exterior arch. Four enormous
+  seven-tile nests ring a solid central sky opening and its giant descending
+  rope; the broad stone floor remains navigable around both sides.
+- One griffon emerges from the northwest nest and reuses the established slow
+  massive-hazard behavior and reset lifecycle. It begins far outside notice
+  range, is much slower than Chuck, and never gates the rope or return route.
+- Added the exact walk-triggered `Climb down the rope?` YES/NO prompt. Both
+  branches currently close silently at the stable boundary; the next slice
+  will connect `YES` to the complete Zephyros introduction rather than a
+  partial placeholder scene.
+- Added the physical `Zephyros 3 Ashtray`, shared `Zephyros 3` development
+  checkpoint, reversible exterior travel, procedural nest/rope/griffon art,
+  and focused navigation, scale, enemy, choice, transition, and save coverage.
 - Recut the tower ascent into a 19.5-second two-scale sequence. The first
   eight-plus seconds keep Chuck readable against a frame-filling giant stone
   wall; a cloud-white cut then reveals the complete tower and staircase from a
@@ -31,15 +45,15 @@ slice. This file is required by the project rules and updated every session.
 - `Zephyros 1` and `Zephyros 2` use the same checkpoint loader as normal saves
   and preserve Sanity across the cinematic handoff. Focused coverage validates
   the route, exact choice behavior, maps, procedural art, and checkpoints. All
-  81 standalone test suites pass, compilation is clean, and the headless title
+  82 standalone test suites pass, compilation is clean, and the headless title
   launch succeeds.
 
 ## Next logical task
 
-Build Phase 10 slice 2: the Aerie map with four enormous nests, one roaming
-griffon hazard, a central opening and rope, one physical Ashtray, and the exact
-`Climb down the rope?` YES/NO interaction. Stop before the Zephyros dialogue
-cutscene so it remains its own coherent implementation slice.
+Build Phase 10 slice 3: the full Zephyros introduction cutscene. Begin with
+Chuck descending the rope, establish the impossible face/hand scale, animate
+Zephyros blinking and smiling, place Chuck on his palm, and deliver the exact
+supplied dialogue. Upgrade rope `YES` to launch that scene; keep `NO` silent.
 
 ## Current state
 

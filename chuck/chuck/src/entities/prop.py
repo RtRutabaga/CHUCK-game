@@ -156,6 +156,8 @@ _SPRITES = {
     ),
     "cloud_staircase": "objects/cloud_staircase.png",
     "cloud_tower_arch": "objects/cloud_tower_arch.png",
+    "griffon_nest": "objects/griffon_nest.png",
+    "aerie_rope": "objects/aerie_rope.png",
     "fey_table_leg": (
         "objects/fey_table_leg_1.png",
         "objects/fey_table_leg_2.png",

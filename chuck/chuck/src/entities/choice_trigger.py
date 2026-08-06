@@ -11,10 +11,11 @@ _TRIGGER_TILES = {
     # A shallow base-only trigger: Chuck gets close enough to see the whole
     # stair before the climb prompt takes over the screen.
     "cloud_staircase": (2, 1),
+    "zephyros_rope": (2, 1),
 }
 
 # Choices that pop by simply walking into the zone — no interact press.
-_WALK_TRIGGERS = {"crevice", "cloud_staircase"}
+_WALK_TRIGGERS = {"crevice", "cloud_staircase", "zephyros_rope"}
 
 
 class ChoiceTrigger:

@@ -805,6 +805,30 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "zephyros_3", "Zephyros 3", "zephyros_aerie",
+        arrival="from_exterior", facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "zephyros_aerie_anchor", "Zephyros 3 Ashtray",
+        "zephyros_aerie", position=(372.0, 613.0), facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "zephyros_exterior_return", "Zephyros Exterior Return",
+        "zephyros_tower_exterior", arrival="from_aerie", facing="down",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "feywild_6_return", "Feywild 6 Return", "feywild_needle_garden",
         arrival="from_feywild_7", facing="left",
         required_flags=frozenset({

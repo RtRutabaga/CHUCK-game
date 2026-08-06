@@ -346,6 +346,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("feywild_cloud_staircase", "→"): AreaExit(
         "feywild_twilight_crossroads", "from_feywild_tower", "right"
     ),
+    ("zephyros_tower_exterior", "Ƶ"): AreaExit(
+        "zephyros_aerie", "from_exterior", "up"
+    ),
+    ("zephyros_aerie", "⇓"): AreaExit(
+        "zephyros_tower_exterior", "from_aerie", "down"
+    ),
 }
 
 
@@ -405,4 +411,5 @@ AREA_MUSIC: dict[str, str | None] = {
     # dedicated airy tower score is the next contained audio pass.
     "feywild_cloud_staircase": "feywild.wav",
     "zephyros_tower_exterior": "feywild.wav",
+    "zephyros_aerie": "feywild.wav",
 }

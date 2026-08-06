@@ -4,11 +4,24 @@
 
 - Branch: main
 - Base commit before this pass: `23b76ed` (Feywild thorn-mite pursuit)
-- Current work: Phase 10 Cloud Staircase and tower-arrival slice
+- Current work: Phase 10 Aerie gameplay slice
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Connected the exterior's embedded arch to a 60x46 open-sided Aerie and added
+  a reversible three-tile southern return. Four seven-tile-wide nests surround
+  a central solid sky opening with a visibly descending giant rope.
+- Added one griffon emerging from the northwest nest. It uses the existing
+  `MassiveDinosaur` behavior/configuration under regional art, begins outside
+  notice range, is easy to outrun, resets normally, and does not gate travel.
+- Added one physical `Zephyros 3 Ashtray`, the shared `Zephyros 3` development
+  entry, and the exact walk-triggered `Climb down the rope?` prompt. Both
+  options close silently at this stable boundary until the next slice adds the
+  complete introduction scene.
+- Added procedural Aerie map, nest, rope, and griffon generation plus focused
+  coverage for layout, connectivity, scale, choice, behavior, transitions,
+  checkpoint saving, and direct development loading.
 - Reworked the tower arrival into two truthful scales and extended it from
   roughly nine to 19.5 seconds. Close framing shows Chuck climbing against
   nothing but enormous masonry; a cloud-white scale cut then shows the whole
@@ -34,10 +47,10 @@
 - Added procedural generators for the maps, airy tower tileset, immense cloud
   stair, and giant arch. The north arch is intentionally inert until the next
   slice.
-- All 81 standalone test suites pass; compilation and the headless title-frame
+- All 82 standalone test suites pass; compilation and the headless title-frame
   launch check are clean.
-- Next: build the Aerie with four nests, one roaming griffon, its checkpoint,
-  central hole/rope, and exact rope prompt. Stop before Zephyros' conversation.
+- Next: implement the complete Zephyros introduction cutscene and connect rope
+  `YES` to it; preserve silent `NO` and stop before the tower launch.
 
 ## Previous Pass (commit 23b76ed)
 

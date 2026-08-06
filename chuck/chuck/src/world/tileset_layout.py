@@ -404,6 +404,7 @@ TOWER = Tileset(
         ".": "tower_stone",
         "'": "tower_stone",
         "#": "tower_edge",
+        "⇓": "tower_stone",
     },
     overhead_char_to_terrain={},
 )
@@ -468,6 +469,7 @@ MAP_TILESET: dict[str, str] = {
     "feywild_twilight_crossroads": "feywild",
     "feywild_cloud_staircase": "feywild",
     "zephyros_tower_exterior": "tower",
+    "zephyros_aerie": "tower",
 }
 
 

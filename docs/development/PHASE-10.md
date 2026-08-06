@@ -376,16 +376,16 @@ Those city systems begin in Phase 11.
 
 ## Aerie and Griffon
 
-- [ ] The Aerie contains four enormous nests.
-- [ ] One nest contains a griffon.
-- [ ] The griffon reuses the established massive-hazard behavior.
-- [ ] It is easy to outrun and not a mandatory fight.
-- [ ] The central hole and descending rope are visually readable.
-- [ ] One physical Ashtray saves and respawns correctly.
+- [x] The Aerie contains four enormous nests.
+- [x] One nest contains a griffon.
+- [x] The griffon reuses the established massive-hazard behavior.
+- [x] It is easy to outrun and not a mandatory fight.
+- [x] The central hole and descending rope are visually readable.
+- [x] One physical Ashtray saves and respawns correctly.
 
 ## Zephyros
 
-- [ ] Rope interaction uses the exact YES/NO prompt.
+- [x] Rope interaction uses the exact YES/NO prompt.
 - [ ] The side-view descent establishes Chuck's scale.
 - [ ] Zephyros' face, blink, smile, and hand are readable.
 - [ ] Chuck steps onto Zephyros' palm.
@@ -407,10 +407,10 @@ Those city systems begin in Phase 11.
 
 - [ ] Three phase cues are implemented with the specified identities.
 - [ ] Music transitions do not hard-cut or layer accidentally.
-- [ ] Development checkpoints load every playable Phase 10 map.
-- [ ] Save, Continue, death, and respawn remain stable.
-- [ ] Existing tests pass.
-- [ ] Targeted regression tests cover new choices, cutscenes, and checkpoints.
+- [x] Development checkpoints load every playable Phase 10 map.
+- [x] Save, Continue, death, and respawn remain stable.
+- [x] Existing tests pass.
+- [x] Targeted regression tests cover new choices, cutscenes, and checkpoints.
 
 ------------------------------------------------------------------------
 
@@ -441,3 +441,9 @@ Do not start Phase 11 city gameplay while completing these slices.
   distant complete-tower shot where Chuck is too small to render and the cloud
   stair visibly retracts upward. The Aerie arch is a deliberate stable
   boundary for slice 2.
+- Slice 2: connected the arch to a 60x46 open-sided Aerie with four enormous
+  nests, one slow griffon emerging from a nest, a central solid sky opening
+  and giant rope, reversible exterior travel, one physical Ashtray, and the
+  `Zephyros 3` shared development checkpoint. The exact rope prompt is live;
+  both answers close silently until slice 3 can connect `YES` to the complete
+  Zephyros introduction without a partial cinematic placeholder.
