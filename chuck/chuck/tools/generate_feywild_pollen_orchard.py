@@ -11,12 +11,12 @@ OUT = (
 )
 
 RETURN_EXIT = (6, 45)
-ARRIVAL = (8, 42)
+ARRIVAL = (6, 44)
 ANCHOR = (12, 43)
 FLOWER = (43, 31)
 OPEN_GATE = ((31, 27), (31, 28), (31, 29))
 CLOSE_GATE = ((51, 27), (51, 28), (51, 29))
-DEEPER_RETURN = (28, 3)
+DEEPER_RETURN = (28, 1)
 DEEPER = (28, 0)
 
 POLLEN_BEDS = (

@@ -22,10 +22,10 @@ OUT = (
 )
 
 RETURN_EXIT = (38, 51)
-ARRIVAL = (38, 47)
+ARRIVAL = (38, 50)
 ANCHOR = (38, 44)
 TOWER_EXIT = (0, 14)
-TOWER_RETURN = (4, 14)
+TOWER_RETURN = (1, 14)
 SWITCH = (20, 17)
 OPENS = tuple((13, row) for row in range(13, 16))
 CLOSES = tuple((col, 9) for col in range(36, 39))

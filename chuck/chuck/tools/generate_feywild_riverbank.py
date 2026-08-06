@@ -21,7 +21,7 @@ OUT = (
 ARRIVAL = (15, 27)
 ANCHOR = (20, 27)
 DEEPER = (51, 6)
-RETURN = (48, 6)
+RETURN = (50, 6)
 
 PATH_POINTS = (
     ARRIVAL,

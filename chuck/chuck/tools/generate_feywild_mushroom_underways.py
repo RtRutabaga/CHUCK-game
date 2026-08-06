@@ -22,9 +22,9 @@ OUT = (
 )
 
 RETURN_EXIT = (0, 8)
-ARRIVAL = (3, 8)
+ARRIVAL = (1, 8)
 ANCHOR = (34, 23)
-FUTURE_RETURN = (65, 40)
+FUTURE_RETURN = (68, 40)
 FUTURE_EXIT = (69, 40)
 
 # The route descends south-east in four shaded runs, each opening into a

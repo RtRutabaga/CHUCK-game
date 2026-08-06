@@ -10,14 +10,14 @@ OUT = (
     / "assets" / "maps" / "feywild_blooming_path.txt"
 )
 
-ARRIVAL = (3, 33)
+ARRIVAL = (1, 33)
 RETURN_EXIT = (0, 33)
 ANCHOR = (10, 33)
 FLOWER = (22, 25)
 OPEN_GATE = ((27, 24), (27, 25), (27, 26))
 CLOSE_GATE = ((27, 19), (27, 20), (27, 21))
 DEEPER = (59, 9)
-DEEPER_RETURN = (56, 9)
+DEEPER_RETURN = (58, 9)
 
 HEADER = [
     "; PHASE 9 - FEYWILD 2, THE BLOOMING PATH (60x42 tiles).",

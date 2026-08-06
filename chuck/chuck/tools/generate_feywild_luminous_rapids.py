@@ -27,9 +27,9 @@ OUT = (
 )
 
 RETURN_EXIT = (0, 21)
-ARRIVAL = (3, 21)
+ARRIVAL = (1, 21)
 ANCHOR = (33, 21)
-FUTURE_RETURN = (73, 21)
+FUTURE_RETURN = (76, 21)
 FUTURE_EXIT = (77, 21)
 
 # Each group raises one pad chain and sinks the other. Because a group is

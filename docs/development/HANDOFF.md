@@ -3,12 +3,25 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `45c6e44` (Zephyros conversation theme)
-- Current work: Phase 10 launch/modern-city transition soundtrack
+- Base commit before this pass: `7f7346b` (Phase 10 transition soundtrack)
+- Current work: Feywild entrance and Giant Tea Table visual polish
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Removed the four isolated giant-table-leg props from the Tea Table's shadow
+  floor. The continuous apron/shadow, Chuck-sized passage, chair legs, place
+  settings, checkpoint, and all authored routes remain unchanged.
+- Audited all reciprocal Feywild transitions through the shared registry and
+  moved all 26 destination arrivals to the center tile immediately inside the
+  corresponding visible opening. This also fixes the Pollen Orchard's
+  off-center southern arrival. Updated every available procedural map source
+  alongside its generated map.
+- Added one region-wide invariant test that derives the reverse visual opening
+  for every Feywild transition and requires the named arrival to be centered
+  exactly one safe tile inward.
+- All 86 standalone suites pass; compilation and the headless title-frame
+  launch check are clean.
 - Composed and rendered the final Phase 10 cue: an original 48-second D-minor
   launch/city one-shot at 120 BPM. Its opening quotes the established falling
   motif, then accumulates Astral pulse, wind, rain-like hats, urban metal, and

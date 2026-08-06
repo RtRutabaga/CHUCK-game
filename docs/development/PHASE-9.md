@@ -1379,3 +1379,12 @@ boundary reserved for the later floating-wizard-tower phase.
   reversible Luminous Rapids travel, three-cell wilderness openings, and the
   uninterrupted regional theme. The final west opening is deliberately inert,
   leaving a stable boundary for the later floating-wizard-tower phase.
+- **Feywild entrance alignment polish:** Moved every named reciprocal arrival
+  across the region's 13 connected boundaries to the center tile immediately
+  inside its visible wilderness opening. All 26 directions now place Chuck at
+  the art that represents the entrance rather than several tiles inward; the
+  Pollen Orchard's southern return is also centered correctly. Removed the
+  four isolated table-leg columns from the Giant Tea Table while preserving
+  its apron, shadow passage, chair legs, place settings, routes, and scale
+  rules. A transition-registry-driven test now enforces the alignment across
+  the complete Feywild chain.

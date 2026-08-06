@@ -11,9 +11,9 @@ OUT = (
 )
 
 RETURN_EXIT = (12, 0)
-ARRIVAL = (12, 3)
+ARRIVAL = (12, 1)
 ANCHOR = (17, 5)
-FUTURE_RETURN = (60, 48)
+FUTURE_RETURN = (60, 50)
 FUTURE_EXIT = (60, 51)
 CACHE_DOOR = (14, 27)
 CACHE = (10, 27)
@@ -77,10 +77,9 @@ def build() -> list[list[str]]:
         grid[row][18] = "⌑"
         grid[row][55] = "⌑"
 
-    # Four table legs stand as columns below the surface; chair legs repeat
-    # the scale language around the exposed side aisles.
-    for col, row in ((21, 33), (52, 33), (21, 37), (52, 37)):
-        grid[row][col] = "♜"
+    # Chair legs repeat the human-scale furniture language around the exposed
+    # side aisles. The isolated table-leg columns were visually misleading and
+    # are intentionally omitted; the apron and shadow define the table above.
     for col, row in (
         (9, 16), (14, 20), (9, 34),
         (61, 16), (65, 22), (62, 34),
@@ -185,7 +184,7 @@ def validate(grid: list[list[str]]) -> None:
     text = "".join("".join(row) for row in grid)
     assert text.count("Ջ") == 1
     assert text.count("<") == 4
-    assert text.count("♜") == 4
+    assert text.count("♜") == 0
     assert text.count("♧") == 6
     assert text.count("◉") == 3 and text.count("☕") == 3
     assert all(grid[0][col] == "⇧" for col in range(11, 14))

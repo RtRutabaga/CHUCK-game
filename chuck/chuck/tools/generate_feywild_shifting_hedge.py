@@ -24,9 +24,9 @@ OUT = (
 )
 
 RETURN_EXIT = (0, 22)
-ARRIVAL = (3, 22)
+ARRIVAL = (1, 22)
 ANCHOR = (8, 22)
-FUTURE_RETURN = (63, 22)
+FUTURE_RETURN = (66, 22)
 FUTURE_EXIT = (67, 22)
 
 # Each group: the flower, the hedge it opens, the hedge it closes. Every

@@ -78,7 +78,7 @@ def test_tea_table_is_a_large_enemy_free_scale_respite() -> None:
     )
 
     props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
-    assert props["fey_table_leg"] == 4
+    assert props["fey_table_leg"] == 0
     assert props["fey_chair_leg"] == 6
     assert props["fey_plate"] == 3
     assert props["fey_teacup"] == 3

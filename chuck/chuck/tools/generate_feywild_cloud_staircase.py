@@ -7,7 +7,7 @@ from pathlib import Path
 W, H = 64, 44
 OUT = Path(__file__).resolve().parents[1] / "assets/maps/feywild_cloud_staircase.txt"
 
-ARRIVAL = (59, 30)
+ARRIVAL = (62, 30)
 RETURN_EXIT = (63, 30)
 ANCHOR = (52, 33)
 STAIR_ANCHOR = (28, 21)

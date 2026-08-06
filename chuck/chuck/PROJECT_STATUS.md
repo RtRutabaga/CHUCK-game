@@ -6,6 +6,19 @@ endpoint. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Removed the four isolated giant table-leg columns from the Feywild Tea Table
+  map. Its continuous apron and shadow still define the overhead table and
+  preserve the Chuck-sized route; chair legs and all tabletop place settings
+  remain intact.
+- Realigned all 26 reciprocal arrivals across the 13 connected Feywild map
+  boundaries. Chuck now appears on the centerline exactly one safe tile inside
+  the visible wilderness opening instead of several tiles away; the Pollen
+  Orchard's formerly off-center southern arrival is also corrected.
+- Added a region-wide regression test deriving each destination entrance from
+  the shared transition registry, so future Feywild arrivals must remain
+  centered and adjacent to their actual visual threshold.
+- All 86 standalone suites pass; compilation and the headless title-frame
+  launch check are clean.
 - Completed Phase 10's three-cue audio pass with
   `zephyros_launch_city.wav`, an original 48-second D-minor one-shot at 120
   BPM. It preserves the established falling motif while progressively adding
