@@ -8,25 +8,25 @@ W, H = 44, 34
 OUT = Path(__file__).resolve().parents[1] / "assets/maps/zephyros_tower_exterior.txt"
 ARRIVAL = (22, 27)
 ANCHOR = (17, 25)
-ARCH_PROP = (22, 6)
-ARCH = (22, 9)
-FUTURE_RETURN = (22, 10)
+ARCH_PROP = (22, 9)
+ARCH = (22, 10)
+FUTURE_RETURN = (22, 11)
 
 HEADER = [
     "; PHASE 10 - ZEPHYROS TOWER EXTERIOR (44x34 tiles).",
-    "; A circular pale-stone platform suspended in animated open sky.",
-    "; Chuck arrives on the south platform; the giant north arch is inert",
-    "; until the Aerie slice is implemented.",
+    "; A compact circular pale-stone platform at an immense tower facade.",
+    "; Chuck arrives on the southern tongue; the giant north arch enters",
+    "; Zephyros' Aerie.",
 ]
 
 
 def build():
     grid = [["~"] * W for _ in range(H)]
-    cx, cy = 22, 18
-    for row in range(4, 31):
-        for col in range(5, 39):
-            dx = (col - cx) / 16.0
-            dy = (row - cy) / 13.0
+    cx, cy = 22, 19
+    for row in range(8, 31):
+        for col in range(11, 34):
+            dx = (col - cx) / 10.0
+            dy = (row - cy) / 10.0
             if dx * dx + dy * dy <= 1.0:
                 grid[row][col] = "."
 
@@ -38,11 +38,12 @@ def build():
                for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1))):
             grid[row][col] = "#"
 
-    # Southern landing tongue and the broad approach to the immense arch.
+    # Southern landing tongue and a short approach. The surrounding sky now
+    # presses close, keeping the platform subordinate to the tower facade.
     for row in range(24, 30):
         for col in range(19, 26):
             grid[row][col] = "."
-    for row in range(7, 26):
+    for row in range(9, 26):
         for col in range(19, 26):
             if grid[row][col] != "~":
                 grid[row][col] = "."

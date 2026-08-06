@@ -6,6 +6,11 @@ endpoint. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Rescaled Zephyros' exterior approach: the suspended platform is now a
+  compact stone island roughly half its previous footprint, while the tower
+  facade and embedded Aerie arch have expanded from 192x128 to 320x224 pixels.
+  The tower fills and extends beyond the native viewport, and its doorway alone
+  dwarfs Chuck. The existing Ashtray, arrival, and Aerie transition are intact.
 - The city-fragment collision now continues automatically into a long
   diagonal descent through a rain-dark modern street canyon. Chuck gradually
   loses horizontal momentum before dropping the remaining distance to a wet

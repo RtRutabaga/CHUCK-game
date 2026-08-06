@@ -185,12 +185,20 @@ def test_exterior_is_open_sky_with_giant_arch_and_one_anchor() -> None:
         config.SPRITES_DIR / "objects" / "cloud_tower_arch.png"
     ).convert("RGBA")
     assert arch.size[0] >= 12 * config.TILE_SIZE
+    assert arch.size == (320, 224)
     # Opaque masonry must flank and continue above the dark threshold: the
     # arch is part of the tower facade, not a portal standing in open sky.
-    assert arch.getpixel((24, 8))[3] == 255
-    assert arch.getpixel((167, 8))[3] == 255
-    assert arch.getpixel((96, 12))[3] == 255
-    assert arch.getpixel((96, 100))[:3] == (7, 9, 17)
+    assert arch.getpixel((40, 8))[3] == 255
+    assert arch.getpixel((280, 8))[3] == 255
+    assert arch.getpixel((160, 12))[3] == 255
+    assert arch.getpixel((160, 180))[:3] == (7, 9, 17)
+
+    # The compact platform is less than half of the old broad 34x27 ellipse,
+    # leaving open sky close on every side of Chuck's route.
+    stone_tiles = sum(
+        terrain != "~" for row in tilemap._grid for terrain in row
+    )
+    assert stone_tiles < 400
 
 
 def _run_all() -> None:

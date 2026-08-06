@@ -9,6 +9,11 @@
 
 ## Completed This Pass
 
+- Rescaled the playable exterior platform into a compact roughly 20x20-tile
+  stone island and enlarged the embedded tower/arch facade from 192x128 to
+  320x224 pixels. The facade now exceeds the native viewport and the doorway
+  visibly dwarfs Chuck, while the Ashtray and reversible Aerie transition keep
+  their established behavior.
 - Continued the city-fragment collision directly into an input-free rainy-city
   descent. Chuck crosses a modern street canyon diagonally, loses horizontal
   momentum, and falls the remaining distance to the sidewalk.

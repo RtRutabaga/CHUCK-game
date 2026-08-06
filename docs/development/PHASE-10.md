@@ -451,6 +451,11 @@ Do not start Phase 11 city gameplay while completing these slices.
   rounded elliptical tower floor, changed the central opening from animated
   sky to the near-black tower interior, and anchored the rope to a giant iron
   cleat on the south stone lip.
+- Exterior scale polish: reduced the southern exterior platform from a broad
+  34x27-tile ellipse to a compact roughly 20x20-tile stone island while
+  expanding the embedded tower facade from 192x128 to 320x224 pixels. The
+  tower and arch now extend beyond the native viewport and visibly dwarf
+  Chuck; checkpoint and Aerie transition behavior are unchanged.
 - Slice 3: connected rope `YES` to a dedicated input-free introduction scene.
   Chuck descends against cloud-giant masonry; Zephyros' warm blue-grey face
   enters, blinks and smiles; a giant palm rises and Chuck steps onto it. The
