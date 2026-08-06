@@ -108,6 +108,41 @@ def test_jump_clears_one_jungle_stream_tile_but_walking_does_not() -> None:
     assert player.y > 3 * config.TILE_SIZE
 
 
+def test_jump_cannot_finish_on_jumpable_water() -> None:
+    controls = FakeInput()
+    player = Player(19.0, 20.0, controls)
+    player.tilemap = _map("###\n#.#\n#≈#\n#≈#\n#.#\n###\n")
+    player.facing = "down"
+    controls.press_jump = True
+    for _ in range(12):
+        player.update(0.03)
+
+    assert not player.jumping
+    assert not player.tilemap.is_solid(
+        int(player.hitbox.centerx // config.TILE_SIZE),
+        int(player.hitbox.centery // config.TILE_SIZE),
+    )
+    assert player.y < 2 * config.TILE_SIZE
+
+
+def test_jump_can_finish_on_feywild_stones_and_raised_lily_pads() -> None:
+    for landing in ("ᚹ", "ᚨ"):
+        controls = FakeInput()
+        player = Player(19.0, 20.0, controls)
+        player.tilemap = _map(f"###\n#.#\n#≈#\n#{landing}#\n###\n")
+        player.facing = "down"
+        controls.press_jump = True
+        for _ in range(12):
+            player.update(0.03)
+
+        assert not player.jumping
+        assert player.y >= 3 * config.TILE_SIZE
+        assert player.tilemap.terrain_at(
+            int(player.hitbox.centerx // config.TILE_SIZE),
+            int(player.hitbox.centery // config.TILE_SIZE),
+        ) == landing
+
+
 def test_jump_clears_one_temple_spike_band_walking_means_falling() -> None:
     # Session 124: spikes are Astral-style fall hazards — walking is no
     # longer stopped by them, it walks Chuck into the fall; only the

@@ -6,6 +6,14 @@ endpoint. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Fixed committed-jump landing validation across solid-but-jumpable water.
+  Chuck may still clear a one-tile channel and land normally on dry ground,
+  Feywild stepping stones, or raised lily pads, but a hop that ends over water
+  now returns him to the last safe point instead of leaving him walking inside
+  the water collision.
+- Added focused regression coverage for rejected water landings and successful
+  stone/pad landings. The Moonmoth Fen, Luminous Rapids, and Phlegethos river
+  suites remain clean.
 - Removed the four isolated giant table-leg columns from the Feywild Tea Table
   map. Its continuous apron and shadow still define the overhead table and
   preserve the Chuck-sized route; chair legs and all tabletop place settings

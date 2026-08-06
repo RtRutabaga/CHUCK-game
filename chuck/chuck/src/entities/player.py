@@ -59,6 +59,7 @@ class Player(Entity):
         self.jump_remaining = 0.0
         self.jump_just_started = False
         self._jump_direction = (0.0, 1.0)
+        self._jump_last_safe_position = (self.x, self.y)
         self.scratch_remaining = 0.0
         self.scratch_just_started = False
         # Set by WorldScene while Chuck drops into an Astral fall zone.
@@ -115,6 +116,7 @@ class Player(Entity):
         ):
             self.jump_remaining = config.JUMP_DURATION
             self.jump_just_started = True
+            self._jump_last_safe_position = (self.x, self.y)
             self._jump_direction = {
                 "up": (0.0, -1.0),
                 "down": (0.0, 1.0),
@@ -130,7 +132,8 @@ class Player(Entity):
             self.scratch_remaining = config.SCRATCH_DURATION
             self.scratch_just_started = True
 
-        if self.jumping:
+        jumping_this_frame = self.jumping
+        if jumping_this_frame:
             dx, dy = self._jump_direction
             move_speed = config.JUMP_SPEED
             # Chuck's committed hop clears the established Astral gaps and
@@ -162,6 +165,23 @@ class Player(Entity):
                     self.tilemap,
                     ignored_terrain=ignored_terrain,
                 )
+                if jumping_this_frame:
+                    if collision.overlaps_solid(
+                        self.x,
+                        self.y,
+                        self.width,
+                        self.height,
+                        self.tilemap,
+                    ):
+                        # Crossing water is permitted only while the hop is in
+                        # flight. If its fixed travel ends short of a bank,
+                        # stepping stone, or raised lily pad, return Chuck to
+                        # the last grounded point instead of leaving him able
+                        # to walk around inside the solid water tiles.
+                        if not self.jumping:
+                            self.x, self.y = self._jump_last_safe_position
+                    else:
+                        self._jump_last_safe_position = (self.x, self.y)
 
         if self._animations:
             self._update_animation(dt)

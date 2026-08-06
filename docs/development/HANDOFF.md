@@ -3,12 +3,21 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `7f7346b` (Phase 10 transition soundtrack)
-- Current work: Feywild entrance and Giant Tea Table visual polish
+- Base commit before this pass: `c5997ef` (Feywild entrance/table polish)
+- Current work: Feywild jump-landing safety
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Added grounded landing validation to the shared committed jump. Its existing
+  airborne collision exemptions still clear authored one-tile channels, but a
+  hop that expires while overlapping solid terrain now restores Chuck to the
+  last safe point reached during that hop.
+- Verified that valid Feywild landings on both stepping stones and raised lily
+  pads remain unchanged, while incomplete hops can no longer strand Chuck on
+  channel water and let him walk through it.
+- Added focused jump regressions; all 86 standalone suites pass. Compilation
+  and the headless title-frame launch check are clean.
 - Removed the four isolated giant-table-leg props from the Tea Table's shadow
   floor. The continuous apron/shadow, Chuck-sized passage, chair legs, place
   settings, checkpoint, and all authored routes remain unchanged.

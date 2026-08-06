@@ -29,6 +29,31 @@ class SolidGrid(Protocol):
     def is_solid(self, col: int, row: int) -> bool: ...
 
 
+def overlaps_solid(
+    x: float,
+    y: float,
+    width: float,
+    height: float,
+    grid: SolidGrid,
+) -> bool:
+    """Return whether a world-space hitbox currently overlaps solid terrain.
+
+    Normal movement prevents this state as it enters a tile. Traversal states
+    such as Chuck's committed jump can temporarily ignore selected solids, so
+    they use this check before returning control to grounded movement.
+    """
+    ts = config.TILE_SIZE
+    left_col = int(x // ts)
+    right_col = int((x + width - _EPS) // ts)
+    top_row = int(y // ts)
+    bottom_row = int((y + height - _EPS) // ts)
+    return any(
+        grid.is_solid(col, row)
+        for row in range(top_row, bottom_row + 1)
+        for col in range(left_col, right_col + 1)
+    )
+
+
 # Terrain that swallows whoever stands on it. Chuck may step onto these
 # (the fall system owns the consequence) and his jump crosses them, but
 # enemies have no fall choreography — their movement treats every fall
