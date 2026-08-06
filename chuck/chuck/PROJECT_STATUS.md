@@ -5,6 +5,10 @@ slice. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Reworked the tower exterior's north entrance from a freestanding arch into
+  a twelve-tile-wide curved tower facade. Pale masonry now continues behind
+  and around the black threshold and off the north side of the view, making it
+  clear the arch enters the Aerie rather than opening onto empty sky.
 - Added the peaceful 64x44 Cloud Staircase map west of Twilight Crossroads.
   Its immense stair dominates a quiet Feywild clearing with no combat, one
   physical Ashtray, and a wilderness opening back to Feywild 13.

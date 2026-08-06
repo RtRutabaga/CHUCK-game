@@ -7,6 +7,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 import pygame
+from PIL import Image
 
 from src.core import config
 from src.core.game import Game
@@ -127,6 +128,17 @@ def test_exterior_is_open_sky_with_giant_arch_and_one_anchor() -> None:
         "cloud_tower_arch"
     ] == 1
     assert MAP_TILESET["zephyros_tower_exterior"] == "tower"
+
+    arch = Image.open(
+        config.SPRITES_DIR / "objects" / "cloud_tower_arch.png"
+    ).convert("RGBA")
+    assert arch.size[0] >= 12 * config.TILE_SIZE
+    # Opaque masonry must flank and continue above the dark threshold: the
+    # arch is part of the tower facade, not a portal standing in open sky.
+    assert arch.getpixel((24, 8))[3] == 255
+    assert arch.getpixel((167, 8))[3] == 255
+    assert arch.getpixel((96, 12))[3] == 255
+    assert arch.getpixel((96, 100))[:3] == (7, 9, 17)
 
 
 def _run_all() -> None:

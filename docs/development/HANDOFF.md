@@ -9,6 +9,11 @@
 
 ## Completed This Pass
 
+- Reworked the exterior arch into a broad curved section of Zephyros' pale
+  tower wall. Its masonry continues north beyond the frame and fully surrounds
+  the centered black threshold, so the boundary reads as the Aerie entrance
+  rather than a freestanding doorway to open sky. Map geometry, checkpoint,
+  and the still-inert Aerie boundary are unchanged.
 - Added the peaceful Cloud Staircase map, exact approach-triggered YES/NO
   prompt, input-free side-view climbing/retraction cutscene, and playable
   circular tower exterior.

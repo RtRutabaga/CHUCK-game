@@ -48,31 +48,57 @@ def cloud_staircase() -> Image.Image:
 
 
 def tower_arch() -> Image.Image:
-    """A cloud-giant-scale pale stone arch around a black threshold."""
-    image = Image.new("RGBA", (96, 78), TRANSPARENT)
+    """A giant arch embedded in the tower's broad curved outer wall."""
+    image = Image.new("RGBA", (192, 128), TRANSPARENT)
     draw = ImageDraw.Draw(image)
-    shadow = (81, 78, 103, 210)
-    stone_dark = (116, 122, 145, 255)
-    stone = (189, 194, 205, 255)
-    light = (232, 229, 218, 255)
+    shadow = (72, 71, 94, 225)
+    stone_dark = (119, 126, 149, 255)
+    stone = (192, 197, 207, 255)
+    light = (235, 232, 220, 255)
     gold = (210, 176, 82, 255)
 
-    draw.ellipse((2, 69, 94, 77), fill=shadow)
-    draw.rectangle((8, 27, 29, 72), fill=stone_dark)
-    draw.rectangle((67, 27, 88, 72), fill=stone_dark)
-    draw.pieslice((8, 0, 88, 69), 180, 360, fill=stone_dark)
-    draw.rectangle((15, 29, 81, 72), fill=(8, 10, 18, 255))
-    draw.pieslice((15, 7, 81, 72), 180, 360, fill=(8, 10, 18, 255))
-    draw.rectangle((8, 27, 16, 72), fill=stone)
-    draw.rectangle((80, 27, 88, 72), fill=stone)
-    draw.arc((8, 0, 88, 70), 180, 360, fill=stone, width=8)
-    draw.arc((12, 4, 84, 68), 190, 350, fill=light, width=2)
-    draw.line((8, 71, 88, 71), fill=light, width=2)
-    for x in (13, 83):
-        for y in (36, 52, 66):
-            draw.line((x - 4, y, x + 4, y), fill=stone_dark)
-    draw.ellipse((44, 7, 52, 15), fill=gold)
-    draw.point((48, 10), fill=(255, 242, 172, 255))
+    # The wall continues beyond the north edge and widens toward its base.
+    # That mass is the important perspective cue: this is a tower entrance,
+    # never a freestanding portal with open sky immediately behind it.
+    draw.polygon(
+        ((18, 0), (173, 0), (191, 119), (184, 127), (8, 127), (0, 119)),
+        fill=shadow,
+    )
+    draw.polygon(
+        ((23, 0), (168, 0), (184, 116), (177, 123), (15, 123), (7, 116)),
+        fill=stone,
+    )
+    draw.polygon(((23, 0), (49, 0), (41, 116), (15, 123), (7, 116)),
+                 fill=light)
+    draw.polygon(((151, 0), (168, 0), (184, 116), (177, 123), (160, 116)),
+                 fill=stone_dark)
+
+    # Broad masonry courses curve around the cylindrical tower body.
+    for y in range(15, 108, 16):
+        inset = max(0, (105 - y) // 18)
+        draw.line((16 + inset, y, 176 - inset, y), fill=stone_dark, width=2)
+    for y, offsets in ((15, (64, 121)), (31, (46, 101, 148)),
+                       (47, (70, 130)), (63, (45, 151))):
+        for x in offsets:
+            draw.line((x, y, x - 1, y + 15), fill=stone_dark)
+
+    # The black opening is cut into the wall and framed by massive piers.
+    doorway = (65, 43, 127, 122)
+    draw.ellipse((doorway[0], doorway[1], doorway[2], 105),
+                 fill=(7, 9, 17, 255))
+    draw.rectangle((doorway[0], 74, doorway[2], doorway[3]),
+                   fill=(7, 9, 17, 255))
+    draw.rectangle((56, 79, 68, 123), fill=stone_dark)
+    draw.rectangle((124, 79, 136, 123), fill=stone_dark)
+    draw.arc((56, 39, 136, 112), 180, 360, fill=stone_dark, width=12)
+    draw.rectangle((59, 82, 65, 123), fill=light)
+    draw.rectangle((127, 82, 133, 123), fill=stone)
+    draw.arc((60, 43, 132, 108), 185, 355, fill=light, width=3)
+    draw.line((15, 122, 177, 122), fill=light, width=2)
+
+    # A restrained giant-scale crest centers the entrance in the facade.
+    draw.ellipse((91, 44, 101, 54), fill=gold)
+    draw.point((96, 48), fill=(255, 242, 172, 255))
     return image
 
 
