@@ -21,6 +21,7 @@ from data.music import chult as chult_song
 from data.music import temple as temple_song
 from data.music import sewer as sewer_song
 from data.music import waterdeep_docks as song
+from data.music import zephyros_conversation as conversation_song
 from data.music import zephyros_tower as zephyros_song
 from src.audio.sequencer import Note, Track, note_to_freq, render_song
 from src.audio.synth import SAMPLE_RATE
@@ -542,6 +543,63 @@ def test_rendered_zephyros_tower_theme_respects_loop_and_mix_gates() -> None:
     ) ** 0.5
     # Peaceful and spacious, but still clearly audible after the Feywild.
     assert 0.65 <= rms / fey_rms <= 1.0, (rms, fey_rms)
+
+
+def test_zephyros_conversation_theme_is_warm_wise_and_whimsical() -> None:
+    tracks = conversation_song.build_tracks()
+    duration = (
+        conversation_song.TOTAL_BEATS * 60.0
+        / conversation_song.TEMPO_BPM
+    )
+    assert duration >= 105.0
+    assert 72 <= conversation_song.TEMPO_BPM <= 82
+    named = {track.name: track for track in tracks}
+    assert len([track for track in tracks if track.notes]) >= 8
+    assert "kick" not in named and "snare" not in named
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < conversation_song.TOTAL_BEATS
+
+    # The kindly main thought returns intact after the questioning middle.
+    reed = named["warm_reed"]
+    first = [
+        (note.beat - 4 * 4, note.dur, note.pitch)
+        for note in reed.notes if 4 * 4 <= note.beat < 12 * 4
+    ]
+    returned = [
+        (note.beat - 28 * 4, note.dur, note.pitch)
+        for note in reed.notes if 28 * 4 <= note.beat < 36 * 4
+    ]
+    assert len(first) >= 20 and first == returned
+    assert any(note.pitch == "F4" for note in reed.notes)
+
+    # The giant's room remains warm while details stay deliberately sparse.
+    pad_bars = {int(note.beat // 4) for note in named["room_pad"].notes}
+    assert len(pad_bars) == conversation_song.TOTAL_BARS
+    assert len(named["wood_ticks"].notes) < conversation_song.TOTAL_BARS * 2
+    assert named["small_bells"].notes and named["soft_swells"].notes
+
+
+def test_rendered_zephyros_conversation_theme_respects_quality_gates() -> None:
+    with wave.open(str(config.MUSIC_DIR / "zephyros_conversation.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 105 * SAMPLE_RATE
+    assert max(abs(sample) for sample in samples) <= 0.92
+    assert abs(samples[-1] - samples[0]) < 0.15
+
+    with wave.open(str(config.MUSIC_DIR / "zephyros_tower.wav")) as f:
+        tower_raw = f.readframes(f.getnframes())
+    tower_samples = [
+        x / 32767 for (x,) in struct.iter_unpack("<h", tower_raw)
+    ]
+    rms = (sum(sample * sample for sample in samples) / len(samples)) ** 0.5
+    tower_rms = (
+        sum(sample * sample for sample in tower_samples) / len(tower_samples)
+    ) ** 0.5
+    assert 0.75 <= rms / tower_rms <= 1.1, (rms, tower_rms)
 
 
 def _run_all() -> None:

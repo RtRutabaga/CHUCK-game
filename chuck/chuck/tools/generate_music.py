@@ -8,6 +8,7 @@ Run from the project root (pure stdlib):
     python tools/generate_music.py chult            # the Chult jungle theme
     python tools/generate_music.py temple           # the temple interior theme
     python tools/generate_music.py zephyros_tower   # Phase 10 airy tower cue
+    python tools/generate_music.py zephyros_conversation  # warm giant cue
 
 Reads the composition from data/music/<name>.py, renders it through
 src/audio (sequencer + instruments + synth), and writes

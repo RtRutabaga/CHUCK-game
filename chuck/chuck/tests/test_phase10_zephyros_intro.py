@@ -10,6 +10,8 @@ import pygame
 from src.core import config
 from src.core.game import Game
 from src.scenes.zephyros_intro_cutscene_scene import (
+    CONVERSATION_FADE_START,
+    CONVERSATION_MUSIC_START,
     DIALOGUE_START,
     FACE_ENTER_END,
     HAND_SETTLE_END,
@@ -139,6 +141,46 @@ def test_non_dialogue_input_cannot_skip_the_cinematic() -> None:
         scene.handle_event(pygame.event.Event(pygame.KEYDOWN, key=pygame.K_f))
         assert game.scenes.current is scene
         assert scene.elapsed == before
+    finally:
+        game._shutdown()
+
+
+def test_tower_music_fades_before_conversation_theme_begins() -> None:
+    game = Game()
+    try:
+        scene = ZephyrosIntroCutsceneScene(game, sanity=50)
+        stopped = []
+        played = []
+        game.audio.stop_music = lambda fade_ms=0: stopped.append(fade_ms)
+        game.audio.play_music = lambda name, loops=True: played.append(
+            (name, loops)
+        )
+
+        scene.update(CONVERSATION_FADE_START - 0.1)
+        assert stopped == [] and played == []
+        scene.update(0.2)
+        assert stopped == [900] and played == []
+        scene.update(CONVERSATION_MUSIC_START - scene.elapsed - 0.01)
+        assert played == []
+        scene.update(0.02)
+        assert played == [("zephyros_conversation.wav", True)]
+    finally:
+        game._shutdown()
+
+
+def test_large_frame_still_gives_the_tower_theme_a_real_fade() -> None:
+    game = Game()
+    try:
+        scene = ZephyrosIntroCutsceneScene(game, sanity=50)
+        stopped = []
+        played = []
+        game.audio.stop_music = lambda fade_ms=0: stopped.append(fade_ms)
+        game.audio.play_music = lambda name, loops=True: played.append(name)
+
+        scene.update(CONVERSATION_MUSIC_START + 1.0)
+        assert stopped == [900] and played == []
+        scene.update(0.0)
+        assert played == ["zephyros_conversation.wav"]
     finally:
         game._shutdown()
 

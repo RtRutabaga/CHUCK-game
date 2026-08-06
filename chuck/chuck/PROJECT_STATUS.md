@@ -6,6 +6,15 @@ endpoint. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Added the second Phase 10 soundtrack: `zephyros_conversation.wav`, an
+  original 111-second G-major/Mixolydian loop at 78 BPM. A warm reed carries a
+  recurring patient melody over soft mallets, round bass, gentle plucks,
+  cloud pads, sparse bells, reverse swells, and small wooden ticks.
+- The existing tower cue now fades for 900 ms while Zephyros' hand settles;
+  the warmer conversation theme begins with the first manually advanced
+  dialogue panel. The transition is guarded against accidental hard cuts on
+  unusually long frames. The launch/modern-city arrangement is the next and
+  final Phase 10 audio slice.
 - Added the first Phase 10 soundtrack: `zephyros_tower.wav`, an original
   105-second C-Lydian loop at 82 BPM. A patient recurring flute melody floats
   over glassy mallets, open-fifth bass, sparse high bells, reverse swells, and
@@ -13,8 +22,7 @@ endpoint. This file is required by the project rules and updated every session.
 - The Cloud Staircase, tower exterior, and Aerie all request the same cue, so
   the audio system carries it continuously between maps without restarting.
   Its sustained mix is level-matched to the Feywild theme without sacrificing
-  the quieter arrangement. Zephyros' conversation cue remains the next audio
-  slice.
+  the quieter arrangement. Zephyros' conversation now has its own warmer cue.
 - Polished the Zephyros/launch/city cinematic chain. Zephyros' hand now travels
   across the room to Chuck at the rope instead of Chuck sliding toward a fixed
   palm, and his purple robe continues through the bottom of the frame rather
@@ -71,7 +79,7 @@ endpoint. This file is required by the project rules and updated every session.
 - The complete supplied conversation is stored in dialogue data and grouped
   into 19 normally advanced panels. The final `I shall fling you onward!`
   tableau hands directly into the launch scene; the dedicated Phase 10
-  conversation music remains reserved for the later audio pass.
+  conversation music is now implemented by the second audio pass.
 - Added the 60x46 open-sided Aerie beyond the exterior arch. Its broad stone
   floor now follows a clearly rounded elliptical tower plan rather than a
   square-like clipped outline. Four enormous seven-tile nests ring a solid,

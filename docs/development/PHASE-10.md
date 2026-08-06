@@ -466,8 +466,8 @@ Do not start Phase 11 city gameplay while completing these slices.
   supplied dialogue wording appears in the established panel. Its final line
   served as the stable boundary until slice 4 connected the throw; the later
   cinematic-polish pass consolidated the beats and restored normal manual
-  advancement. The dedicated conversation cue remains reserved for the
-  planned audio pass.
+  advancement. The dedicated conversation cue is now implemented by audio
+  slice 2.
 - Slice 4: continued directly from Zephyros' final line into an input-free
   launch. A distant whole-tower shot reduces Chuck to a two-pixel dot during
   the effortless throw; a close shot then follows his horizontal flight and
@@ -494,3 +494,10 @@ Do not start Phase 11 city gameplay while completing these slices.
   wonder without becoming ambient wallpaper. One uninterrupted request spans
   the staircase, exterior, and Aerie; the conversation and launch-transition
   cues remain separate future audio slices.
+- Audio slice 2: added an original 111-second Zephyros conversation loop in G
+  major with restrained Mixolydian color at 78 BPM. A warm reed states and
+  returns to a patient theme over soft mallets, round bass, gentle plucks,
+  cloud pads, sparse bells, reverse swells, and dry wooden ticks. The tower
+  theme fades for 900 ms as Zephyros settles his hand; the conversation cue
+  enters with the first manually advanced dialogue panel without a hard cut.
+  The launch/modern-city transition arrangement remains the final audio slice.

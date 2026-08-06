@@ -3,12 +3,23 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `d102230` (Zephyros cinematic polish)
-- Current work: Phase 10 Cloud Staircase/Tower soundtrack
+- Base commit before this pass: `815776b` (Zephyros tower theme)
+- Current work: Phase 10 Zephyros conversation soundtrack
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Composed and rendered the second Phase 10 cue: a 111-second warm Zephyros
+  conversation theme in G major with a restrained Mixolydian turn at 78 BPM.
+  Warm reed, soft mallets, round bass, plucks, cloud pads, sparse bells,
+  reverse swells, and wooden ticks keep it gentle, wise, and lightly whimsical.
+- Integrated the cue at the conversation boundary. The uninterrupted tower
+  theme fades for 900 ms while Zephyros' hand settles, then the new loop begins
+  with the first player-advanced dialogue panel. A two-step dispatch preserves
+  the fade even if a single unusually long frame crosses both cue points.
+- Added focused composition, motif-return, arrangement, render, loop-seam,
+  loudness, and cutscene-transition regression checks. The launch/modern-city
+  transition cue remains the next bounded Phase 10 task.
 - Composed and rendered the first Phase 10 cue: a 105-second C-Lydian Cloud
   Staircase/Tower theme at 82 BPM. A recurring flute melody, glassy mallets,
   open-fifth bass, high bells, reverse swells, and a new slow cloud-pad voice
@@ -114,8 +125,9 @@
   the explicit scene dispatch; the choice menu contains no transition logic.
 - Added procedural generators for the maps, airy tower tileset, immense cloud
   stair, giant arch, nests, rope, and griffon.
-- Next: compose the second Phase 10 cue for Zephyros' warm, wise, gently
-  whimsical conversation; preserve the completed tower cue and do not build
+- Next: compose the third Phase 10 cue by evolving the established falling
+  motif through wind, rain, urban texture, and subtle synth elements into the
+  modern-city arrival; preserve both completed Zephyros cues and do not build
   Phase 11 city gameplay.
 
 ## Previous Pass (commit 23b76ed)

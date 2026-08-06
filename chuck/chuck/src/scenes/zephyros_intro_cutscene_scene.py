@@ -27,6 +27,8 @@ HAND_RISE_START = 12.0
 HAND_RISE_END = 16.0
 HAND_SETTLE_END = 18.5
 DIALOGUE_START = 19.5
+CONVERSATION_FADE_START = 18.3
+CONVERSATION_MUSIC_START = DIALOGUE_START
 
 _SKY = (130, 190, 222)
 _STONE = (190, 194, 203)
@@ -69,6 +71,8 @@ class ZephyrosIntroCutsceneScene(Scene):
         self._dialogue_box = DialogueBox(game.assets)
         self._line_index = -1
         self._launch_started = False
+        self._conversation_music_fading = False
+        self._conversation_music_started = False
 
     def on_enter(self) -> None:
         grid = self.game.assets.sheet(
@@ -107,7 +111,22 @@ class ZephyrosIntroCutsceneScene(Scene):
             self.game.quit()
 
     def update(self, dt: float) -> None:
+        previous = self.elapsed
         self.elapsed += max(0.0, dt)
+        if previous < CONVERSATION_FADE_START <= self.elapsed:
+            self._conversation_music_fading = True
+            self.game.audio.stop_music(fade_ms=900)
+        # A second frame is deliberate: even a large dt cannot issue fade and
+        # replacement playback simultaneously and turn the crossfade into a
+        # hard cut.
+        if (
+            not self._conversation_music_started
+            and self._conversation_music_fading
+            and self.elapsed >= CONVERSATION_MUSIC_START
+            and previous >= CONVERSATION_FADE_START
+        ):
+            self._conversation_music_started = True
+            self.game.audio.play_music("zephyros_conversation.wav")
         if self.elapsed < DIALOGUE_START:
             return
 
