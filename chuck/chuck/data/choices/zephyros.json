@@ -1,0 +1,9 @@
+{
+  "cloud_staircase": {
+    "prompt": "Climb the cloud staircase?",
+    "options": [
+      { "label": "YES", "action": "tower_arrival" },
+      { "label": "NO" }
+    ]
+  }
+}

@@ -1,8 +1,9 @@
 """Dialogue choices — data, loaded and validated loudly.
 
 A choice is a prompt plus two or more options. Picking an option either
-plays dialogue, carries Chuck straight to another map, or simply closes the
-choice. An option may declare one of `dialogue` or `goto`, never both. Choices live in
+plays dialogue, carries Chuck straight to another map, starts a validated
+scene action, or simply closes the choice. An option may declare one of
+`dialogue`, `goto`, or `action`, never more than one. Choices live in
 data/choices/*.json, exactly like dialogue lines live in
 data/dialogue/*.json:
 
@@ -35,12 +36,16 @@ from typing import NamedTuple
 from src.core import config
 
 
+KNOWN_CHOICE_ACTIONS = frozenset({"tower_arrival"})
+
+
 class Option(NamedTuple):
     label: str                    # what the player reads: "YES"
     dialogue: str | None = None   # dialogue id played when chosen, or...
     goto: str | None = None       # ...a map to enter at once (no lines)
     arrival: str | None = None    # optional named marker in that map
     climb_from_water: bool = False
+    action: str | None = None     # validated scene action, handled by the world
 
 
 class Choice(NamedTuple):
@@ -79,14 +84,25 @@ class ChoiceSystem:
                 goto = opt.get("goto")
                 arrival = opt.get("arrival")
                 climb_from_water = opt.get("climb_from_water", False)
+                action = opt.get("action")
                 if not isinstance(label, str) or not label.strip():
                     raise ValueError(f"{choice_id}: an option has no label")
                 has_dialogue = isinstance(dialogue, str) and bool(dialogue.strip())
                 has_goto = isinstance(goto, str) and bool(goto.strip())
-                if has_dialogue and has_goto:
+                has_action = isinstance(action, str) and bool(action.strip())
+                if sum((has_dialogue, has_goto, has_action)) > 1:
                     raise ValueError(
-                        f"{choice_id}: option {label!r} cannot have both "
-                        f"'dialogue' and 'goto'"
+                        f"{choice_id}: option {label!r} may have only one of "
+                        "'dialogue', 'goto', and 'action'"
+                    )
+                if action is not None and not has_action:
+                    raise ValueError(
+                        f"{choice_id}: option {label!r} has an invalid action"
+                    )
+                if has_action and action not in KNOWN_CHOICE_ACTIONS:
+                    raise ValueError(
+                        f"{choice_id}: option {label!r} has unknown action "
+                        f"{action!r}"
                     )
                 has_arrival = isinstance(arrival, str) and bool(arrival.strip())
                 if arrival is not None and not has_arrival:
@@ -109,6 +125,7 @@ class ChoiceSystem:
                     goto=goto if has_goto else None,
                     arrival=arrival if has_arrival else None,
                     climb_from_water=climb_from_water,
+                    action=action if has_action else None,
                 ))
             self._choices[choice_id] = Choice(prompt=prompt, options=parsed)
 

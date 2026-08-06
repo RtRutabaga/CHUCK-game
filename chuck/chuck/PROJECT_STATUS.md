@@ -1,8 +1,31 @@
 # CHUCK — Project Status
 
-Updated: Phase 9's thirteenth and final map, the Twilight Crossroads, brings
-the complete Feywild route to a stable boundary before the later wizard tower.
-This file is required by the project rules and updated every session.
+Updated: Phase 10 has begun with the complete Cloud Staircase-to-tower-exterior
+slice. This file is required by the project rules and updated every session.
+
+## Latest implementation
+
+- Added the peaceful 64x44 Cloud Staircase map west of Twilight Crossroads.
+  Its immense stair dominates a quiet Feywild clearing with no combat, one
+  physical Ashtray, and a wilderness opening back to Feywild 13.
+- Approaching the stair asks `Climb the cloud staircase?`; `NO` closes
+  silently and `YES` runs a dedicated, input-free side-view climb in which the
+  cloud stair retracts into Zephyros' tall pale tower.
+- The cutscene fades into the playable 44x34 circular tower exterior with
+  animated open sky, drifting clouds, a giant north arch, and its own physical
+  Ashtray. The arch is intentionally inert until the Aerie slice.
+- `Zephyros 1` and `Zephyros 2` use the same checkpoint loader as normal saves
+  and preserve Sanity across the cinematic handoff. Focused coverage validates
+  the route, exact choice behavior, maps, procedural art, and checkpoints. All
+  81 standalone test suites pass, compilation is clean, and the headless title
+  launch succeeds.
+
+## Next logical task
+
+Build Phase 10 slice 2: the Aerie map with four enormous nests, one roaming
+griffon hazard, a central opening and rope, one physical Ashtray, and the exact
+`Climb down the rope?` YES/NO interaction. Stop before the Zephyros dialogue
+cutscene so it remains its own coherent implementation slice.
 
 ## Current state
 

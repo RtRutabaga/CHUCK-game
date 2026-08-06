@@ -8,10 +8,11 @@ from src.core import config
 _TRIGGER_TILES = {
     "sewer_exit": (3, 1),
     "crevice": (2, 2),
+    "cloud_staircase": (5, 3),
 }
 
 # Choices that pop by simply walking into the zone — no interact press.
-_WALK_TRIGGERS = {"crevice"}
+_WALK_TRIGGERS = {"crevice", "cloud_staircase"}
 
 
 class ChoiceTrigger:

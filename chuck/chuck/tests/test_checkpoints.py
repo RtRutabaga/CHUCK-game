@@ -292,6 +292,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             "Feywild 4", "Feywild 5", "Feywild 6", "Feywild 7",
             "Feywild 8", "Feywild 9",
             "Feywild 10", "Feywild 11", "Feywild 12", "Feywild 13",
+            "Zephyros 1", "Zephyros 2",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)

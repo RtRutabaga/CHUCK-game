@@ -165,9 +165,12 @@ def test_arrival_anchor_and_main_route_do_not_force_the_redcap() -> None:
     distance = math.dist(start, redcap) * config.TILE_SIZE
     assert distance > config.REDCAP_NOTICE_RANGE * 2
 
-    # The tower remains an inert promise: it has no walk-exit configured, and
-    # Phase 9 therefore cannot silently begin the later tower phase.
-    assert (MAP_NAME, "←") not in AREA_WALK_EXITS
+    # Phase 10 now fulfills the former inert promise. Its west opening uses the
+    # normal wilderness handoff and does not alter the safe arrival-to-anchor
+    # route this Phase 9 regression protects.
+    tower = AREA_WALK_EXITS[(MAP_NAME, "←")]
+    assert tower.destination == "feywild_cloud_staircase"
+    assert tower.arrival == "from_feywild_13"
 
 
 def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:

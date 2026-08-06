@@ -115,6 +115,7 @@ class WorldScene(Scene):
         # Set by a transition choice; applied once the conversation that
         # triggered it has closed (see update()).
         self._pending_map: str | None = None
+        self._pending_choice_action: str | None = None
         self._pending_arrival: str | None = None
         self._pending_climb_from_water = False
         self._pending_fade_in = False
@@ -156,6 +157,7 @@ class WorldScene(Scene):
         self.game.checkpoints.set_runtime_checkpoint(checkpoint_id)
         self._sewer_completed = self.game.progress.has("sewer_completed")
         self._pending_map = None
+        self._pending_choice_action = None
         self._pending_arrival = None
         self._pending_climb_from_water = False
         self._pending_facing = None
@@ -576,6 +578,23 @@ class WorldScene(Scene):
             self._fireball_after_dialogue = False
             self._begin_fireball()
             return
+
+        # A validated cutscene action chosen in a prompt waits until the
+        # overlay has closed, just like an ordinary map transition.
+        if self._pending_choice_action is not None:
+            action = self._pending_choice_action
+            self._pending_choice_action = None
+            if action == "tower_arrival":
+                from src.scenes.tower_arrival_cutscene_scene import (
+                    TowerArrivalCutsceneScene,
+                )
+                self.game.scenes.replace(
+                    TowerArrivalCutsceneScene(
+                        self.game, sanity=self.sanity.current
+                    )
+                )
+                return
+            raise ValueError(f"Unhandled choice action {action!r}")
 
         # A transition chosen during a conversation waits until that
         # conversation has closed and control returns here — only then
@@ -1491,7 +1510,10 @@ class WorldScene(Scene):
         the transition here; DialogueScene closes itself, and the actual
         load happens back in update() once it has.
         """
-        self.last_choice = option.dialogue or option.goto
+        action = getattr(option, "action", None)
+        self.last_choice = option.dialogue or option.goto or action
+        if action is not None:
+            self._pending_choice_action = action
         if option.goto is not None:
             self._pending_map = option.goto
             self._pending_arrival = option.arrival

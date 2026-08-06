@@ -45,3 +45,6 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
   Chuck-sized root/table/mushroom passages that exclude larger enemies.
 - Phase 9 ends at a stable Feywild boundary. The floating wizard's tower, its
   cutscene, and the transition beyond it are reserved for a later phase.
+- Phase 10 is governed by `PHASE-10.md`. It begins at the Cloud Staircase,
+  introduces Zephyros, and ends at a contained modern-city arrival. Playable
+  modern-city content is reserved for Phase 11.

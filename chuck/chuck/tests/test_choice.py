@@ -11,7 +11,9 @@ import tempfile
 from pathlib import Path
 
 from src.scenes.dialogue_scene import DialogueScene
-from src.systems.choice import Choice, ChoiceSystem, Option
+from src.systems.choice import (
+    KNOWN_CHOICE_ACTIONS, Choice, ChoiceSystem, Option,
+)
 from src.systems.dialogue import DialogueSystem
 
 
@@ -66,6 +68,13 @@ def test_malformed_choices_are_loud() -> None:
         ]}},
         {"c": {"prompt": "Q?", "options": [
             {"label": "A", "goto": "map", "climb_from_water": "yes"},
+            {"label": "B"},
+        ]}},
+        {"c": {"prompt": "Q?", "options": [
+            {"label": "A", "action": "not_a_real_action"}, {"label": "B"},
+        ]}},
+        {"c": {"prompt": "Q?", "options": [
+            {"label": "A", "goto": "map", "action": "tower_arrival"},
             {"label": "B"},
         ]}},
     ]
@@ -144,6 +153,8 @@ def test_every_choice_branch_resolves() -> None:
                 assert lines and all(isinstance(l, str) for l in lines)
             elif option.goto is not None:
                 assert (config.MAPS_DIR / f"{option.goto}.txt").is_file()
+            elif option.action is not None:
+                assert option.action in KNOWN_CHOICE_ACTIONS
 
 
 def test_choice_text_is_renderable_by_the_pixel_font() -> None:

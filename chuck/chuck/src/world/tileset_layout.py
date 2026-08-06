@@ -389,6 +389,25 @@ FEYWILD = Tileset(
     },
 )
 
+# --------------------------------------------------------------------------
+# Zephyros' tower (Phase 10): pale stone platforms suspended in animated sky.
+# --------------------------------------------------------------------------
+TOWER = Tileset(
+    sheet="tower.png",
+    order=[
+        ("tower_sky", 4, 3),
+        ("tower_stone", 4, 1),
+        ("tower_edge", 4, 1),
+    ],
+    char_to_terrain={
+        "~": "tower_sky",
+        ".": "tower_stone",
+        "'": "tower_stone",
+        "#": "tower_edge",
+    },
+    overhead_char_to_terrain={},
+)
+
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
     "sewer": SEWER,
@@ -399,6 +418,7 @@ TILESETS: dict[str, Tileset] = {
     "ship": SHIP,
     "phlegethos": PHLEGETHOS,
     "feywild": FEYWILD,
+    "tower": TOWER,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -446,6 +466,8 @@ MAP_TILESET: dict[str, str] = {
     "feywild_mushroom_underways": "feywild",
     "feywild_luminous_rapids": "feywild",
     "feywild_twilight_crossroads": "feywild",
+    "feywild_cloud_staircase": "feywild",
+    "zephyros_tower_exterior": "tower",
 }
 
 

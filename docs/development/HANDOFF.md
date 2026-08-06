@@ -3,20 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `fd81259` (Feywild Twilight Crossroads)
-- Current work: Phase 9 thorn-mite pursuit polish
-- Active scope: `docs/development/PHASE-9.md`
+- Base commit before this pass: `23b76ed` (Feywild thorn-mite pursuit)
+- Current work: Phase 10 Cloud Staircase and tower-arrival slice
+- Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
-- Feywild thorn mites now use the exact ship-lower-hold rat configuration:
-  short notice range, direct collision-aware pursuit, fall-hazard avoidance,
-  and no fixed patrol. Their Feywild sprite, small scale, low damage,
-  one-scratch defeat, and checkpoint reset lifecycle are unchanged.
-- Ordinary sewer rats retain their existing fixed patrol behavior. The shared
-  rat entity remains the single implementation for both roles.
-- Focused Warrens and Twilight Crossroads coverage now asserts that every
-  thorn mite is configured for pursuit and that it is restored after death.
+- Added the peaceful Cloud Staircase map, exact approach-triggered YES/NO
+  prompt, input-free side-view climbing/retraction cutscene, and playable
+  circular tower exterior.
+- Both new gameplay maps have one physical Ashtray. `Zephyros 1` and
+  `Zephyros 2` are development-visible entries in the shared checkpoint loader.
+- Choice JSON now supports a small validated `action` target. WorldScene owns
+  the explicit scene dispatch; the choice menu contains no transition logic.
+- Added procedural generators for the maps, airy tower tileset, immense cloud
+  stair, and giant arch. The north arch is intentionally inert until the next
+  slice.
+- All 81 standalone test suites pass; compilation and the headless title-frame
+  launch check are clean.
+- Next: build the Aerie with four nests, one roaming griffon, its checkpoint,
+  central hole/rope, and exact rope prompt. Stop before Zephyros' conversation.
+
+## Previous Pass (commit 23b76ed)
+
+Feywild thorn mites gained the ship-hold rats' pursuit behavior while
+preserving their existing scale, damage, scratch defeat, and reset lifecycle.
 
 ## Previous Pass (commit fd81259)
 

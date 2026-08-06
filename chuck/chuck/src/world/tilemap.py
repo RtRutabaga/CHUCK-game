@@ -403,6 +403,12 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="feywild_spiral", under="."),
     "ŋ": TileDef(solid=True, color=(20, 55, 52),
                  prop="feywild_mushroom", under="."),
+    # Phase 10 landmarks. The cloud staircase stands on dense Feywild growth;
+    # the tower arch is walkable pale stone whose huge sprite frames Chuck.
+    "☁": TileDef(solid=True, color=(20, 55, 52),
+                 prop="cloud_staircase", under="#"),
+    "Ƶ": TileDef(solid=False, color=(154, 160, 169),
+                 prop="cloud_tower_arch", under="."),
     # Feywild path thresholds retain the regional path art while keeping
     # opposite directions distinct for authored two-way transitions.
     "←": TileDef(solid=False, color=(45, 76, 59),
@@ -812,6 +818,14 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ꭴ": MarkerDef(kind="anchor:feywild_13_anchor", under="."),
     "Ꭵ": MarkerDef(kind="boundary:feywild_tower", under="←"),
     "Ꭶ": MarkerDef(kind="arrival:from_feywild_tower", under="'"),
+    # Phase 10 Cloud Staircase and first tower platform.
+    "ሀ": MarkerDef(kind="arrival:from_feywild_13", under="'"),
+    "ሁ": MarkerDef(kind="anchor:zephyros_staircase_anchor", under="'"),
+    "ሂ": MarkerDef(kind="choice:cloud_staircase", under="'"),
+    "ሃ": MarkerDef(kind="arrival:from_staircase", under="."),
+    "ሄ": MarkerDef(kind="anchor:zephyros_exterior_anchor", under="."),
+    "ህ": MarkerDef(kind="boundary:zephyros_aerie", under="Ƶ"),
+    "ሆ": MarkerDef(kind="arrival:from_aerie", under="."),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

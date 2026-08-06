@@ -154,6 +154,8 @@ _SPRITES = {
         "objects/feywild_mushroom_2.png",
         "objects/feywild_mushroom_3.png",
     ),
+    "cloud_staircase": "objects/cloud_staircase.png",
+    "cloud_tower_arch": "objects/cloud_tower_arch.png",
     "fey_table_leg": (
         "objects/fey_table_leg_1.png",
         "objects/fey_table_leg_2.png",

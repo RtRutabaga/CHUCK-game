@@ -340,6 +340,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("feywild_twilight_crossroads", "⇩"): AreaExit(
         "feywild_luminous_rapids", "from_feywild_13", "left"
     ),
+    ("feywild_twilight_crossroads", "←"): AreaExit(
+        "feywild_cloud_staircase", "from_feywild_13", "left"
+    ),
+    ("feywild_cloud_staircase", "→"): AreaExit(
+        "feywild_twilight_crossroads", "from_feywild_tower", "right"
+    ),
 }
 
 
@@ -395,4 +401,8 @@ AREA_MUSIC: dict[str, str | None] = {
     "feywild_mushroom_underways": "feywild.wav",
     "feywild_luminous_rapids": "feywild.wav",
     "feywild_twilight_crossroads": "feywild.wav",
+    # The first Phase 10 slice keeps the regional theme uninterrupted. The
+    # dedicated airy tower score is the next contained audio pass.
+    "feywild_cloud_staircase": "feywild.wav",
+    "zephyros_tower_exterior": "feywild.wav",
 }

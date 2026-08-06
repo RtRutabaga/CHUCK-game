@@ -764,6 +764,47 @@ CHECKPOINTS = (
         development_visible=False, runtime_entry=True,
     ),
     CheckpointDefinition(
+        "zephyros_1", "Zephyros 1", "feywild_cloud_staircase",
+        arrival="from_feywild_13", facing="left",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "zephyros_staircase_anchor", "Zephyros 1 Ashtray",
+        "feywild_cloud_staircase", position=(836.0, 533.0), facing="left",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "feywild_13_return", "Feywild 13 Return",
+        "feywild_twilight_crossroads", arrival="from_feywild_tower",
+        facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "zephyros_2", "Zephyros 2", "zephyros_tower_exterior",
+        arrival="from_staircase", facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        runtime_entry=True, fade_in=True,
+    ),
+    CheckpointDefinition(
+        "zephyros_exterior_anchor", "Zephyros 2 Ashtray",
+        "zephyros_tower_exterior", position=(276.0, 405.0), facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
         "feywild_6_return", "Feywild 6 Return", "feywild_needle_garden",
         arrival="from_feywild_7", facing="left",
         required_flags=frozenset({
