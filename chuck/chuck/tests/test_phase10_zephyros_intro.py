@@ -101,6 +101,23 @@ def test_descent_face_blink_smile_and_reaching_hand_are_distinct_beats() -> None
         game._shutdown()
 
 
+def test_exterior_cloud_is_clipped_behind_the_tower_window() -> None:
+    game = Game()
+    try:
+        scene = ZephyrosIntroCutsceneScene(game, sanity=45)
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+        scene.elapsed = 6.0  # cloud overlaps the opening's west edge
+        scene._draw_tower_interior(surface)
+
+        # The cloud remains visible through the blue opening but cannot paint
+        # across the surrounding dark reveal or interior masonry.
+        assert surface.get_at((260, 48))[:3] == (225, 237, 238)
+        assert surface.get_at((253, 48))[:3] == (34, 34, 51)
+        assert surface.get_at((251, 48))[:3] != (225, 237, 238)
+    finally:
+        game._shutdown()
+
+
 def _press_interact(game, scene) -> None:
     game.input.begin_frame()
     game.input._actions_just_pressed.add("interact")

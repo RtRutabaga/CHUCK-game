@@ -203,10 +203,17 @@ class ZephyrosIntroCutsceneScene(Scene):
         # One tall opening supplies airy blue light without shrinking the
         # masonry into an ordinary human room.
         pygame.draw.rect(surface, _SHADOW, (252, 13, 30, 84))
-        pygame.draw.rect(surface, _SKY, (256, 17, 22, 76))
+        sky_rect = pygame.Rect(256, 17, 22, 76)
+        pygame.draw.rect(surface, _SKY, sky_rect)
         drift = int(self.elapsed * 4) % 34
+        # Clouds belong to the exterior sky layer. Clip them to the opening
+        # so they can pass behind the window without ever painting over its
+        # dark reveal and appearing to enter the room.
+        previous_clip = surface.get_clip()
+        surface.set_clip(sky_rect)
         pygame.draw.ellipse(surface, (225, 237, 238),
                             (259 - drift, 44, 31, 9))
+        surface.set_clip(previous_clip)
 
     def _draw_rope(self, surface: pygame.Surface) -> None:
         # The rope is giant-scale: nearly as thick as Chuck's torso.

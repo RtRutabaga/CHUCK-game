@@ -11,6 +11,13 @@
 
 ## Completed This Pass
 
+- Corrected one Phase 10 presentation regression found during playtest: the
+  Zephyros-room cloud now renders only within the blue window opening, behind
+  the intact dark reveal, instead of crossing the frame into the interior.
+- Added a focused pixel-layer regression. All eight Zephyros introduction
+  tests pass, compilation is clean, and the corrected frame was visually
+  inspected at native resolution.
+
 - Began Phase 11 by expanding the former 24x16 contained city endpoint into
   the 56x36 `City Night 1` map. The existing `modern_city_arrival`,
   `modern_city_1`, and `modern_city_anchor` IDs remain intact for save and

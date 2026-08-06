@@ -7,6 +7,11 @@ rules and updated every session.
 
 ## Latest implementation
 
+- Corrected the Zephyros introduction window layering. Its drifting exterior
+  cloud is now clipped to the blue opening, so the dark reveal and tower
+  masonry remain in front and the cloud can no longer appear inside the room.
+  Focused visual/pixel regression coverage and compilation are clean.
+
 - Began Phase 11 with a bounded City Night 1 foundation pass. The former
   24x16 endpoint is now a 56x36 rainy city map built around a broad cross
   street, four human-scale building masses, wet sidewalk lanes, two optional
