@@ -3,12 +3,19 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `c5997ef` (Feywild entrance/table polish)
-- Current work: Feywild jump-landing safety
+- Base commit before this pass: `6d96c3b` (Feywild water landing fix)
+- Current work: Feywild Tea Table leg correction
 - Active scope: `docs/development/PHASE-10.md`
 
 ## Completed This Pass
 
+- Corrected the previous Tea Table cleanup after visual review: restored all
+  four structural table legs beneath the tabletop and removed only the three
+  unexplained freestanding chair-leg props in the eastern aisle. The three
+  western chair legs and all traversal geometry remain unchanged.
+- Added exact-coordinate coverage for both structural and freestanding legs.
+  All 86 standalone suites pass; compilation and the headless title-frame
+  launch check are clean.
 - Added grounded landing validation to the shared committed jump. Its existing
   airborne collision exemptions still clear authored one-tile channels, but a
   hop that expires while overlapping solid terrain now restores Chuck to the
@@ -18,9 +25,8 @@
   channel water and let him walk through it.
 - Added focused jump regressions; all 86 standalone suites pass. Compilation
   and the headless title-frame launch check are clean.
-- Removed the four isolated giant-table-leg props from the Tea Table's shadow
-  floor. The continuous apron/shadow, Chuck-sized passage, chair legs, place
-  settings, checkpoint, and all authored routes remain unchanged.
+- The earlier pass misidentified the four under-table supports as the stray
+  props. This is superseded by the correction above.
 - Audited all reciprocal Feywild transitions through the shared registry and
   moved all 26 destination arrivals to the center tile immediately inside the
   corresponding visible opening. This also fixes the Pollen Orchard's

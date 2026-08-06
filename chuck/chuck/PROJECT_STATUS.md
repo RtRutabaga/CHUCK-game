@@ -14,10 +14,12 @@ endpoint. This file is required by the project rules and updated every session.
 - Added focused regression coverage for rejected water landings and successful
   stone/pad landings. The Moonmoth Fen, Luminous Rapids, and Phlegethos river
   suites remain clean.
-- Removed the four isolated giant table-leg columns from the Feywild Tea Table
-  map. Its continuous apron and shadow still define the overhead table and
-  preserve the Chuck-sized route; chair legs and all tabletop place settings
-  remain intact.
+- Corrected the Giant Tea Table furniture cleanup: restored the four structural
+  table legs beneath the tabletop and removed the three unexplained
+  freestanding chair-leg props east of it. Western chair legs, the under-table
+  route, apron, shadow, and tabletop place settings remain intact.
+- Exact-coordinate coverage now protects both sets of furniture. All 86
+  standalone suites pass; compilation and the title-frame launch are clean.
 - Realigned all 26 reciprocal arrivals across the 13 connected Feywild map
   boundaries. Chuck now appears on the centerline exactly one safe tile inside
   the visible wilderness opening instead of several tiles away; the Pollen

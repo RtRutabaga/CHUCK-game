@@ -1383,8 +1383,9 @@ boundary reserved for the later floating-wizard-tower phase.
   across the region's 13 connected boundaries to the center tile immediately
   inside its visible wilderness opening. All 26 directions now place Chuck at
   the art that represents the entrance rather than several tiles inward; the
-  Pollen Orchard's southern return is also centered correctly. Removed the
-  four isolated table-leg columns from the Giant Tea Table while preserving
-  its apron, shadow passage, chair legs, place settings, routes, and scale
-  rules. A transition-registry-driven test now enforces the alignment across
-  the complete Feywild chain.
+  Pollen Orchard's southern return is also centered correctly. The Giant Tea
+  Table keeps its four structural legs beneath the tabletop while omitting the
+  three unexplained freestanding leg props from its eastern aisle; its apron,
+  shadow passage, western chair legs, place settings, routes, and scale rules
+  remain intact. A transition-registry-driven test now enforces the alignment
+  across the complete Feywild chain.

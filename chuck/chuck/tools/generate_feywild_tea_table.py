@@ -77,12 +77,13 @@ def build() -> list[list[str]]:
         grid[row][18] = "⌑"
         grid[row][55] = "⌑"
 
-    # Chair legs repeat the human-scale furniture language around the exposed
-    # side aisles. The isolated table-leg columns were visually misleading and
-    # are intentionally omitted; the apron and shadow define the table above.
+    # Four structural legs support the enormous tabletop from inside its
+    # shadow. Western chair legs retain the human-scale furniture language;
+    # the unexplained freestanding legs formerly east of the table are omitted.
+    for col, row in ((21, 33), (52, 33), (21, 37), (52, 37)):
+        grid[row][col] = "♜"
     for col, row in (
         (9, 16), (14, 20), (9, 34),
-        (61, 16), (65, 22), (62, 34),
     ):
         grid[row][col] = "♧"
 
@@ -184,8 +185,8 @@ def validate(grid: list[list[str]]) -> None:
     text = "".join("".join(row) for row in grid)
     assert text.count("Ջ") == 1
     assert text.count("<") == 4
-    assert text.count("♜") == 0
-    assert text.count("♧") == 6
+    assert text.count("♜") == 4
+    assert text.count("♧") == 3
     assert text.count("◉") == 3 and text.count("☕") == 3
     assert all(grid[0][col] == "⇧" for col in range(11, 14))
     assert all(
