@@ -77,7 +77,20 @@ def test_staircase_prompt_is_exact_and_walk_triggered() -> None:
     assert choice.options[1].dialogue is None
     assert choice.options[1].goto is None
     assert choice.options[1].action is None
-    assert ChoiceTrigger(0, 0, "cloud_staircase").walk_triggered
+    trigger = ChoiceTrigger(0, 0, "cloud_staircase")
+    assert trigger.walk_triggered
+    assert (trigger.width, trigger.height) == (
+        2 * config.TILE_SIZE, config.TILE_SIZE,
+    )
+
+    tilemap = TileMap(config.MAPS_DIR / "feywild_cloud_staircase.txt")
+    markers = _markers(tilemap)
+    prop = next(
+        (col, row) for kind, col, row in tilemap.prop_tiles
+        if kind == "cloud_staircase"
+    )
+    prompt = markers["choice:cloud_staircase"]
+    assert prompt == (prop[0], prop[1] + 1)
 
 
 def test_route_uses_normal_transitions_and_shared_checkpoints() -> None:

@@ -9,6 +9,10 @@
 
 ## Completed This Pass
 
+- Moved the Cloud Staircase choice marker directly below the stair prop and
+  reduced its walk-trigger from five-by-three tiles to two-by-one. The player
+  now sees the staircase at close range before the YES/NO prompt takes over;
+  choice text, silent `NO`, cutscene dispatch, and route geometry are unchanged.
 - Reworked the exterior arch into a broad curved section of Zephyros' pale
   tower wall. Its masonry continues north beyond the frame and fully surrounds
   the centered black threshold, so the boundary reads as the Aerie entrance

@@ -5,6 +5,10 @@ slice. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Tightened the Cloud Staircase prompt from a broad five-by-three-tile zone to
+  a shallow two-by-one zone directly against the stair's base. Chuck can now
+  approach close enough to see the cloud plinth and ascending steps before the
+  YES/NO overlay appears and the cutscene can begin.
 - Reworked the tower exterior's north entrance from a freestanding arch into
   a twelve-tile-wide curved tower facade. Pale masonry now continues behind
   and around the black threshold and off the north side of the view, making it

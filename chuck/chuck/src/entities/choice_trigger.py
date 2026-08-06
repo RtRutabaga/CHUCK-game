@@ -8,7 +8,9 @@ from src.core import config
 _TRIGGER_TILES = {
     "sewer_exit": (3, 1),
     "crevice": (2, 2),
-    "cloud_staircase": (5, 3),
+    # A shallow base-only trigger: Chuck gets close enough to see the whole
+    # stair before the climb prompt takes over the screen.
+    "cloud_staircase": (2, 1),
 }
 
 # Choices that pop by simply walking into the zone — no interact press.
