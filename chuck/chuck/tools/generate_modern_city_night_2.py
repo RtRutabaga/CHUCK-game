@@ -56,6 +56,14 @@ def build_map() -> list[str]:
         for col in range(73, WIDTH):
             grid[row][col] = "V"
 
+    # The lower eastern sidewalk turns into City Night 3, breaking the
+    # previous northbound rhythm. The named return sits one safe tile in.
+    for row in range(33, 38):
+        for col in range(73, WIDTH):
+            grid[row][col] = "⮞"
+    grid[35][75] = "መ"
+    grid[35][71] = "ሙ"
+
     # South returns to City Night 1 through the same five-tile street mouth.
     for row in range(53, HEIGHT):
         for col in range(28, 33):

@@ -3,13 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `438adb4` (City Night 1 traffic crossing)
-- Current work: Phase 11 City Night 2, people, and raccoon
+- Base commit before this pass: `af5c10f` (City Night 2 encounters)
+- Current work: Phase 11 City Night 3 and homeless sidewalk scene
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Night 3 with the one homeless man, shared
+- Next implementation slice: City Night 4 with another route turn, shared
   city systems, and no expansion into the City Night 5 highway
 
 ## Completed This Pass
+
+- Opened City Night 2's east sidewalk into the new reciprocal 80x56 City
+  Night 3. Four large office blocks retain credible city scale; all other
+  unauthored directions end visibly in the shared Astral fall hazard.
+- Added the map's physical Ashtray/shared-loader checkpoint, rain, four loose
+  cigarettes, two optional-arm raccoons, one stationary businessperson, one
+  vertical-patrol businessperson, and two vertical traffic lanes.
+- Added the region's one homeless man as a seated non-patrolling NPC beside
+  two clusters of human-scale bottles. His exact sole line is
+  `Hey there buddy!`; the businesspeople's existing line remains unchanged.
+- Focused tests cover topology, large-building bounds, reachability, exact
+  entrance alignment, checkpoint/dialogue registration, scene composition,
+  traffic direction, rain, sprites, props, and native rendering.
+- All 91 suites pass in isolated processes; compilation is clean. The title
+  loop and City Night 3 checkpoint launch headlessly, and the native arrival
+  composition was visually inspected.
 
 - Connected City Night 1's north sidewalk to a new 76x56 City Night 2 and
   provided a reciprocal southern return. Four office masses remain at real

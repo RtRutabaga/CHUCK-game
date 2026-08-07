@@ -806,8 +806,13 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
 - [x] Added the first two stationary businesspeople, one patrol
       businessperson, exact `Ah! A rat!` dialogue, and an avoidable
       three-scratch raccoon using the normal damage/combat/reset lifecycle.
-- [ ] Next: City Night 3, including the one homeless man and continued use of
-      the shared city systems; reserve the major highway for City Night 5.
+- [x] Added east-turning `City Night 3` with its own Ashtray, four cigarettes,
+      two avoidable raccoons, north/south traffic, one stationary and one
+      patrol businessperson, and only Astral-severed unauthored edges.
+- [x] Added the one seated homeless man beside oversized bottle clusters with
+      exact `Hey there buddy!` dialogue and no patrol or extra exposition.
+- [ ] Next: City Night 4 using the shared city systems and another route turn;
+      reserve the major highway for City Night 5.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------

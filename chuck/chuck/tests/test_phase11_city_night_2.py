@@ -85,6 +85,8 @@ def test_city_night_2_is_a_large_city_grid_with_authored_content() -> None:
     assert kinds["arrival:from_city_night_1"] == 1
     assert kinds["anchor:modern_city_2_anchor"] == 1
     assert kinds["boundary:modern_city_night_1"] == 1
+    assert kinds["boundary:modern_city_night_3"] == 1
+    assert kinds["arrival:from_city_night_3"] == 1
     assert kinds["npc:businessman"] == 2
     assert kinds["patrol_npc:businessman:h"] == 1
     assert kinds["raccoon"] == 1
@@ -108,6 +110,7 @@ def test_city_night_2_content_and_return_are_reachable_without_falling() -> None
     required = {
         markers["anchor:modern_city_2_anchor"][0],
         markers["boundary:modern_city_night_1"][0],
+        markers["boundary:modern_city_night_3"][0],
         *markers["npc:businessman"],
         *markers["patrol_npc:businessman:h"],
         *markers["raccoon"],
@@ -121,6 +124,9 @@ def test_city_night_2_content_and_return_are_reachable_without_falling() -> None
     assert outward.arrival == "from_city_night_1"
     assert backward.destination == "modern_city_arrival"
     assert backward.arrival == "from_city_night_2"
+    onward = AREA_WALK_EXITS[(MAP_NAME, "⮞")]
+    assert onward.destination == "modern_city_night_3"
+    assert onward.arrival == "from_city_night_2"
 
 
 def test_city_night_2_checkpoint_and_dialogue_are_registered() -> None:

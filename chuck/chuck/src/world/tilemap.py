@@ -305,6 +305,10 @@ TILE_DEFS: dict[str, TileDef] = {
     "▦": TileDef(solid=False, color=(45, 49, 56)),
     "⮝": TileDef(solid=False, color=(43, 47, 55)),
     "⮟": TileDef(solid=False, color=(43, 47, 55)),
+    "⮞": TileDef(solid=False, color=(43, 47, 55)),
+    "⮜": TileDef(solid=False, color=(43, 47, 55)),
+    "Ƀ": TileDef(solid=False, color=(43, 47, 55),
+                 prop="city_bottles", under="."),
     # Rat-scale drainage gate: dirt beneath, iron bars overhead. Walking
     # through it is resolved by the area's transition configuration.
     "Q": TileDef(solid=False, color=config.COLOR_SEWER_DIRT,
@@ -865,6 +869,16 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሕ": MarkerDef(kind="npc:businessman", under="."),
     "ሖ": MarkerDef(kind="patrol_npc:businessman:h", under="."),
     "ሗ": MarkerDef(kind="raccoon", under="."),
+    # City Night 2/3 east-west handoff and Map 3's authored scene.
+    "መ": MarkerDef(kind="boundary:modern_city_night_3", under="⮞"),
+    "ሙ": MarkerDef(kind="arrival:from_city_night_3", under="."),
+    "ሚ": MarkerDef(kind="arrival:from_city_night_2", under="."),
+    "ማ": MarkerDef(kind="anchor:modern_city_3_anchor", under="."),
+    "ሜ": MarkerDef(kind="boundary:modern_city_night_2", under="⮜"),
+    "ም": MarkerDef(kind="npc:homeless_man", under="."),
+    "ሞ": MarkerDef(kind="patrol_npc:businessman:v", under="."),
+    "ሟ": MarkerDef(kind="traffic_lane:down:0", under="="),
+    "ሠ": MarkerDef(kind="traffic_lane:up:1", under="="),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

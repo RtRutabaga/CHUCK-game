@@ -441,6 +441,8 @@ CITY = Tileset(
         "▦": "city_crosswalk",
         "⮝": "city_sidewalk",
         "⮟": "city_sidewalk",
+        "⮞": "city_sidewalk",
+        "⮜": "city_sidewalk",
         "V": "astral_void",
     },
     overhead_char_to_terrain={},
@@ -510,6 +512,7 @@ MAP_TILESET: dict[str, str] = {
     "zephyros_aerie": "tower",
     "modern_city_arrival": "city",
     "modern_city_night_2": "city",
+    "modern_city_night_3": "city",
 }
 
 
