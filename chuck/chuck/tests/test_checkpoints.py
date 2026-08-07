@@ -296,6 +296,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             "City Night 2",
             "City Night 3",
             "City Night 4",
+            "City Night 5",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)

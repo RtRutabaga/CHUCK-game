@@ -53,6 +53,14 @@ def build_map() -> list[str]:
         for col in range(81, WIDTH):
             grid[row][col] = "V"
 
+    # The western lower sidewalk now turns into the highway map. Its return
+    # arrival remains one safe tile inside this five-tile opening.
+    for row in range(34, 39):
+        for col in range(0, 3):
+            grid[row][col] = "⮜"
+    grid[36][0] = "ሦ"
+    grid[36][4] = "ሧ"
+
     # The only authored route is the southern return to City Night 3.
     for row in range(57, HEIGHT):
         for col in range(34, 39):

@@ -1,11 +1,28 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Night 4 now completes the ordinary rainy
-street-map sequence before the major highway crossing, preserving the shared
-checkpoint, traffic, pedestrian, raccoon, and large-office architecture. This
-file is required by the project rules and updated every session.
+Updated: Phase 11 is active. City Night 5 now provides the major staged
+highway crossing, preserving the shared checkpoint, traffic, pedestrian,
+raccoon, rain, and large-office architecture. This file is required by the
+project rules and updated every session.
 
 ## Latest implementation
+
+- Added the connected 112x48 `City Night 5` highway map and opened City Night
+  4's western sidewalk as its aligned reciprocal route. Four full-size office
+  masses frame an east/west pedestrian corridor; the still-unauthored western
+  route remains visibly severed by exact shared Astral fall terrain.
+- Built two sixteen-tile carriageways with eight alternating north/south
+  traffic lanes, broad zebra markings, safe approach sidewalks, and a
+  ten-tile central median. Deterministic spacing creates staged readable
+  pauses without adding a second traffic implementation or accumulating cars.
+- Added the map's physical Ashtray and shared-loader `City Night 5`
+  checkpoint, five loose cigarettes, persistent rain, one avoidable raccoon,
+  two stationary businesspeople, and one median patrol businessperson. Sanity
+  return resets both the raccoon and all eight lanes to their authored state.
+- Added focused topology, office-scale, median/crosswalk, entrance-alignment,
+  checkpoint, entity, traffic-population, native-render, and respawn coverage.
+  All 93 test suites pass in isolated processes; compilation and headless
+  title/City Night 5 launch checks are clean.
 
 - Added the connected 84x60 `City Night 4` map and opened City Night 3's
   northern sidewalk as its reciprocal route. Unequal setbacks distinguish the
@@ -293,10 +310,10 @@ file is required by the project rules and updated every session.
 
 ## Next logical task
 
-Continue Phase 11 with the highway-focused City Night 5 as one bounded map
-slice. Build the substantially larger multi-lane Frogger challenge with safe
-medians, readable deterministic timing, one safe Ashtray, and shared city
-systems. Do not add City Night 6 or the sewer entrance in the same pass.
+Continue Phase 11 with City Night 6 as one bounded map slice. Connect the
+highway's western route to a final rainy night-city block with its own
+Ashtray, then add the visible open modern-sewer entrance and exact YES/NO
+interaction. Do not begin the playable sewer maps in the same pass.
 
 ## Current state
 

@@ -3,13 +3,28 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `05f1d1e` (City Night 3 sidewalk scene)
-- Current work: Phase 11 City Night 4 ordinary rainy block
+- Base commit before this pass: `699bdae` (City Night 4 street block)
+- Current work: Phase 11 City Night 5 highway crossing
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: highway-focused City Night 5 with safe medians;
-  do not expand into City Night 6 or its sewer entrance
+- Next implementation slice: City Night 6 and its open modern-sewer entrance;
+  do not expand into the playable sewer maps
 
 ## Completed This Pass
+
+- Opened City Night 4's western sidewalk into the reciprocal 112x48 City
+  Night 5. Four full-scale office blocks frame the highway corridor, while
+  the unauthored western continuation remains exact shared Astral fall terrain.
+- Added two sixteen-tile carriageways carrying eight fixed-population,
+  alternating vertical traffic lanes. Zebra markings, broad approaches, and
+  a safe ten-tile median make the main Frogger challenge readable in stages.
+- Added the map's own physical Ashtray/shared-loader checkpoint, rain, five
+  cigarettes, one avoidable raccoon, two stationary businesspeople, and one
+  horizontal-patrol businessperson. Death return resets the raccoon and all
+  lane phases through the existing shared world-reset path.
+- Focused tests cover topology, office bounds, highway staging, lane markers,
+  safe reachability, exact Map 4/5 alignment, shared checkpoint loading,
+  native rendering, and Sanity-zero reset. All 93 suites pass in isolated
+  processes; compilation and headless title/City Night 5 launches are clean.
 
 - Opened City Night 3's north sidewalk into the reciprocal 84x60 City Night 4.
   Four offset, full-size office blocks retain the city's scale and every

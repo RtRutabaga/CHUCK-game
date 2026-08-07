@@ -514,6 +514,7 @@ MAP_TILESET: dict[str, str] = {
     "modern_city_night_2": "city",
     "modern_city_night_3": "city",
     "modern_city_night_4": "city",
+    "modern_city_night_5": "city",
 }
 
 

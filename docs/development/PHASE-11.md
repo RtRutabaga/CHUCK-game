@@ -718,8 +718,8 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
 - [ ] Vehicles move quickly in readable lanes and clean themselves up.
 - [ ] Traffic timing is observable and fair.
 - [ ] Vehicle contact uses Sanity and checkpoint return correctly.
-- [ ] One larger highway map makes multi-lane crossing its primary challenge.
-- [ ] Safe medians or staged pauses keep the highway readable.
+- [x] One larger highway map makes multi-lane crossing its primary challenge.
+- [x] Safe medians or staged pauses keep the highway readable.
 - [ ] Respawn never occurs in active traffic.
 
 ## Urban Sewer
@@ -814,8 +814,13 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
 - [x] Added north-connected `City Night 4` with its own Ashtray, four
       cigarettes, two raccoons, three businesspeople, horizontal traffic, and
       offset full-scale office blocks; all unauthored edges remain Astral.
-- [ ] Next: City Night 5 as the major multi-lane highway crossing with safe
-      medians; do not begin City Night 6 or its sewer entrance in that pass.
+- [x] Added west-connected `City Night 5` as a 112x48 highway map with its own
+      Ashtray, five cigarettes, one raccoon, three businesspeople, two broad
+      four-lane carriageways, and a safe ten-tile central median.
+- [x] Reused the fixed-population traffic controller for eight alternating
+      vertical lanes and reset every lane through the normal Ashtray return.
+- [ ] Next: City Night 6 with the open modern-sewer entrance and its YES/NO
+      interaction; do not begin the playable sewer maps in that pass.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------
