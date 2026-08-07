@@ -3,14 +3,32 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `1746a17` (City Night 5 highway crossing)
-- Current work: Phase 11 City Night 6 and modern-sewer threshold
+- Base commit before this pass: `f7ba658` (City Night 6 sewer threshold)
+- Current work: Phase 11 City Sewer 1 foundation
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Sewer 1, its Ashtray and aggressive rats,
-  plus wiring the existing entrance YES branch; do not add City Sewer 2 or
-  toxic sludge
+- Next implementation slice: City Sewer 2, its Ashtray, reciprocal transition,
+  and aggressive rats; do not add toxic sludge or the harder jump sequence
 
 ## Completed This Pass
+
+- Added the 92x38 City Sewer 1 as a narrow three-leg route running north,
+  east, then south. Its future continuation remains visibly severed by exact
+  Astral fall tiles rather than pretending City Sewer 2 already exists.
+- Added a dedicated procedural modern-sewer tileset: poured concrete, gray
+  brick repairs, exposed metal pipes, animated utility lights, slab walkways,
+  safe wet floor, warning stripes, animated runoff, and shared Astral art.
+  Waterdeep's medieval dirt/mud sewer remains unchanged.
+- Completed City Night 6's YES transition into the named sewer arrival and
+  added an aligned walk-back route. The reusable choice schema now supports a
+  validated optional arrival-facing direction; NO remains a silent close.
+- Added the map's physical Ashtray/shared-loader checkpoint, three cigarettes,
+  and five spaced rats using exact ship-hold pursuit. Rats respect walls and
+  Astral terrain and reset normally after Sanity-zero return.
+- Focused tests cover map topology/materials, exact transitions, choice data,
+  shared checkpoint loading, aggressive pursuit/collision/reset, native
+  rendering, and the absence of exterior rain inside the sewer. All 95 suites
+  pass in isolated processes; compilation and headless title/City Sewer 1
+  launches are clean.
 
 - Opened City Night 5's western approach into the reciprocal 88x60 City Night
   6. Four intact 32x20 office masses frame a turning intersection, while all

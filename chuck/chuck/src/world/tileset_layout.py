@@ -126,6 +126,42 @@ SEWER = Tileset(
     overhead_char_to_terrain={"Q": "sewer_outflow"},
 )
 
+# Modern urban sewer: poured concrete and utility infrastructure rather than
+# Waterdeep's packed dirt and medieval brick drain.
+CITY_SEWER = Tileset(
+    sheet="city_sewer.png",
+    order=[
+        ("city_sewer_wall", 3, 1),
+        ("city_sewer_brick", 3, 1),
+        ("city_sewer_pipe_wall", 3, 1),
+        ("city_sewer_light", 2, 2),
+        ("city_sewer_floor", 4, 1),
+        ("city_sewer_walkway", 3, 1),
+        ("city_sewer_wet", 3, 2),
+        ("city_sewer_warning", 2, 1),
+        ("city_sewer_channel", 2, 3),
+        ("astral_void", 2, 3),
+    ],
+    char_to_terrain={
+        "#": "city_sewer_wall",
+        "b": "city_sewer_brick",
+        "R": "city_sewer_pipe_wall",
+        "i": "city_sewer_light",
+        ".": "city_sewer_floor",
+        "d": "city_sewer_floor",
+        ",": "city_sewer_walkway",
+        "M": "city_sewer_wet",
+        "ƻ": "city_sewer_warning",
+        "%": "city_sewer_channel",
+        "V": "astral_void",
+        "⮝": "city_sewer_floor",
+        "⮟": "city_sewer_floor",
+        "⮞": "city_sewer_floor",
+        "⮜": "city_sewer_floor",
+    },
+    overhead_char_to_terrain={},
+)
+
 TAVERN = Tileset(
     sheet="tavern.png",
     order=[
@@ -460,6 +496,7 @@ TILESETS: dict[str, Tileset] = {
     "feywild": FEYWILD,
     "tower": TOWER,
     "city": CITY,
+    "city_sewer": CITY_SEWER,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -516,6 +553,7 @@ MAP_TILESET: dict[str, str] = {
     "modern_city_night_4": "city",
     "modern_city_night_5": "city",
     "modern_city_night_6": "city",
+    "modern_city_sewer_1": "city_sewer",
 }
 
 

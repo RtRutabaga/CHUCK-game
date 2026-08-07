@@ -18,8 +18,8 @@ data/dialogue/*.json:
     }
 
 YES drops Chuck into the sewer with no further words; NO simply closes.
-Navigation options may also name an `arrival` marker and request the existing
-`climb_from_water` arrival choreography.
+Navigation options may also name an `arrival` marker, an arrival-facing
+direction, and request the existing `climb_from_water` choreography.
 Content, not code: a new decision anywhere in the game is a
 JSON entry and (if it's a prop) one line in PROP_CHOICE.
 
@@ -44,6 +44,7 @@ class Option(NamedTuple):
     dialogue: str | None = None   # dialogue id played when chosen, or...
     goto: str | None = None       # ...a map to enter at once (no lines)
     arrival: str | None = None    # optional named marker in that map
+    facing: str | None = None     # optional direction after arrival
     climb_from_water: bool = False
     action: str | None = None     # validated scene action, handled by the world
 
@@ -83,6 +84,7 @@ class ChoiceSystem:
                 dialogue = opt.get("dialogue")
                 goto = opt.get("goto")
                 arrival = opt.get("arrival")
+                facing = opt.get("facing")
                 climb_from_water = opt.get("climb_from_water", False)
                 action = opt.get("action")
                 if not isinstance(label, str) or not label.strip():
@@ -109,12 +111,20 @@ class ChoiceSystem:
                     raise ValueError(
                         f"{choice_id}: option {label!r} has an invalid arrival"
                     )
+                has_facing = facing in {"up", "down", "left", "right"}
+                if facing is not None and not has_facing:
+                    raise ValueError(
+                        f"{choice_id}: option {label!r} has an invalid facing"
+                    )
                 if not isinstance(climb_from_water, bool):
                     raise ValueError(
                         f"{choice_id}: option {label!r} climb_from_water "
                         "must be a boolean"
                     )
-                if (has_arrival or climb_from_water) and not has_goto:
+                has_transition_detail = (
+                    has_arrival or has_facing or climb_from_water
+                )
+                if has_transition_detail and not has_goto:
                     raise ValueError(
                         f"{choice_id}: option {label!r} transition details "
                         "require 'goto'"
@@ -124,6 +134,7 @@ class ChoiceSystem:
                     dialogue=dialogue if has_dialogue else None,
                     goto=goto if has_goto else None,
                     arrival=arrival if has_arrival else None,
+                    facing=facing if has_facing else None,
                     climb_from_water=climb_from_water,
                     action=action if has_action else None,
                 ))

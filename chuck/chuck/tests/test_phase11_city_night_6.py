@@ -87,6 +87,7 @@ def test_city_night_6_is_a_full_scale_final_night_block() -> None:
     assert kinds["anchor:modern_city_6_anchor"] == 1
     assert kinds["boundary:modern_city_night_5"] == 1
     assert kinds["choice:city_sewer_entrance"] == 1
+    assert kinds["arrival:from_city_sewer_1"] == 1
     assert kinds["npc:businessman"] == 2
     assert kinds["patrol_npc:businessman:v"] == 1
     assert kinds["npc:homeless_man"] == 0
@@ -115,6 +116,7 @@ def test_route_turns_from_east_entry_to_the_sewer_threshold() -> None:
         markers["anchor:modern_city_6_anchor"][0],
         markers["boundary:modern_city_night_5"][0],
         markers["choice:city_sewer_entrance"][0],
+        markers["arrival:from_city_sewer_1"][0],
         *markers["npc:businessman"],
         *markers["patrol_npc:businessman:v"],
         *markers["raccoon"],
@@ -123,6 +125,7 @@ def test_route_turns_from_east_entry_to_the_sewer_threshold() -> None:
     assert required <= reached
     assert markers["choice:city_sewer_entrance"] == [(20, 21)]
     assert markers["arrival:from_city_night_5"] == [(83, 24)]
+    assert markers["arrival:from_city_sewer_1"] == [(20, 24)]
     exits = [exit_def for (source, _), exit_def in AREA_WALK_EXITS.items()
              if source == MAP_NAME]
     assert len(exits) == 1

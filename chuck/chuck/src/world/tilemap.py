@@ -312,6 +312,7 @@ TILE_DEFS: dict[str, TileDef] = {
     # Human-worker-sized open concrete tunnel in an office foundation.
     "ƺ": TileDef(solid=True, color=(49, 52, 61),
                  prop="city_sewer_entrance", under="▤"),
+    "ƻ": TileDef(solid=False, color=(181, 142, 48)),
     # Rat-scale drainage gate: dirt beneath, iron bars overhead. Walking
     # through it is resolved by the area's transition configuration.
     "Q": TileDef(solid=False, color=config.COLOR_SEWER_DIRT,
@@ -909,6 +910,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሶ": MarkerDef(kind="anchor:modern_city_6_anchor", under="."),
     "ሷ": MarkerDef(kind="boundary:modern_city_night_5", under="⮞"),
     "ሸ": MarkerDef(kind="choice:city_sewer_entrance", under="."),
+    # City Sewer 1 arrival, local Ashtray, return, and city-side return point.
+    "ሹ": MarkerDef(kind="arrival:from_city_night_6", under="d"),
+    "ሺ": MarkerDef(kind="anchor:modern_city_sewer_1_anchor", under="d"),
+    "ሻ": MarkerDef(kind="boundary:modern_city_night_6", under="⮟"),
+    "ሼ": MarkerDef(kind="arrival:from_city_sewer_1", under="."),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

@@ -2,7 +2,12 @@
   "city_sewer_entrance": {
     "prompt": "Enter the sewer?",
     "options": [
-      { "label": "YES" },
+      {
+        "label": "YES",
+        "goto": "modern_city_sewer_1",
+        "arrival": "from_city_night_6",
+        "facing": "up"
+      },
       { "label": "NO" }
     ]
   }

@@ -824,9 +824,15 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
       full-size office blocks around a turning street route.
 - [x] Added a clearly open, human-worker-sized concrete sewer entrance with
       descending steps and the exact approach-triggered `Enter the sewer?`
-      YES/NO prompt. Both branches close silently until City Sewer 1 exists.
-- [ ] Next: establish City Sewer 1 and wire the entrance's YES branch to it;
-      do not add toxic sludge or City Sewer 2 in that pass.
+      YES/NO prompt. YES now enters the authored first sewer map; NO closes.
+- [x] Added `City Sewer 1` as a long, narrow three-leg utility route with its
+      own Ashtray, three cigarettes, five aggressive ship-hold-pattern rats,
+      reciprocal city return, and an Astral-severed future continuation.
+- [x] Established a dedicated modern-sewer tileset using poured concrete,
+      brick repairs, exposed pipes, artificial lights, maintenance slabs,
+      runoff, wet floor, warning stripes, and exact shared Astral terrain.
+- [ ] Next: extend the route through City Sewer 2 with its own Ashtray and
+      aggressive rats; leave sludge and the harder jump sequence for later.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------

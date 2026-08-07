@@ -1,12 +1,36 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Night 6 now completes the rainy night-city
-map sequence at a visible modern-sewer threshold, preserving the shared
-checkpoint, traffic, pedestrian, raccoon, rain, choice, and large-office
-architecture. This file is required by the project rules and updated every
-session.
+Updated: Phase 11 is active. City Sewer 1 now begins the modern utility-tunnel
+region through the completed City Night 6 entrance, preserving shared choice,
+map, checkpoint, rat-combat, collision, and respawn architecture. This file is
+required by the project rules and updated every session.
 
 ## Latest implementation
+
+- Added the 92x38 `City Sewer 1` map as a long three-leg route: north from the
+  city stairs, east beside a drainage channel, then south toward an
+  Astral-severed future continuation. Its narrow camera framing and route turns
+  establish the intended urban-sewer movement rhythm without adding City
+  Sewer 2, toxic sludge, or the later jump challenge.
+- Added a dedicated procedural `city_sewer` tileset with poured concrete,
+  gray brick repairs, exposed metal pipes, animated utility lamps, slab and
+  maintenance floors, safe wet patches, warning stripes, animated runoff,
+  and exact shared Astral fall tiles. It is visually and technically distinct
+  from Waterdeep's medieval dirt-and-mud sewer.
+- Wired City Night 6's existing `Enter the sewer?` YES branch to the authored
+  `from_city_night_6` arrival; NO still closes with no further text. Added a
+  validated optional facing field to the reusable data-driven choice path so
+  Chuck enters facing into the tunnel. The southern sewer threshold returns
+  normally to an aligned arrival outside the city entrance.
+- Added the map's physical Ashtray/shared-loader `City Sewer 1` checkpoint,
+  three loose cigarettes, and five spaced rats using the exact aggressive
+  ship-hold notice/pursuit behavior. Pursuit respects solid and Astral fall
+  collision, and Sanity-zero return restores every rat at the local Ashtray.
+- Focused coverage validates topology, material language, entrance/return
+  transitions, checkpoint loading, choice facing, rat pursuit/collision/reset,
+  native rendering, and removal of exterior rain inside the tunnel. All 95
+  test suites pass in isolated processes; compilation and headless title/City
+  Sewer 1 launches are clean.
 
 - Added the connected 88x60 `City Night 6` map and opened City Night 5's
   western approach as its aligned reciprocal route. Four intact 32x20 office
@@ -333,11 +357,11 @@ session.
 
 ## Next logical task
 
-Continue Phase 11 with `City Sewer 1` as one bounded map slice. Establish the
-modern concrete/utility-tunnel visual language, its Ashtray, and aggressive
-ship-hold-pattern rats, then wire the existing entrance's YES option to that
-shared-loader destination. Do not add toxic sludge or City Sewer 2 in the
-same pass.
+Continue Phase 11 with `City Sewer 2` as one bounded map slice. Extend the
+modern utility-tunnel route in a different direction with its own Ashtray,
+reciprocal transition, and another readable set of aggressive rats. Preserve
+the Astral-severed boundary until the next map exists; leave toxic sludge and
+the harder Astral jump sequence for their dedicated pass.
 
 ## Current state
 

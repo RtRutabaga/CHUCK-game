@@ -20,6 +20,7 @@ REAL_MAPS = (
     "waterdeep_docks", "sewer", "waterdeep_tavern", "waterdeep_pantry",
     "chult_jungle", "chult_cog", "chult_run", "chult_respite",
     "chult_temple",
+    "modern_city_sewer_1",
 )
 
 

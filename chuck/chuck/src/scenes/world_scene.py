@@ -1611,6 +1611,7 @@ class WorldScene(Scene):
         if option.goto is not None:
             self._pending_map = option.goto
             self._pending_arrival = option.arrival
+            self._pending_facing = option.facing
             self._pending_climb_from_water = option.climb_from_water
 
     def _on_ladder_choice(self, option, exit_config) -> None:
@@ -2021,7 +2022,11 @@ class WorldScene(Scene):
                 # Feywild thorn mites fill the same small aggressive role as
                 # the ship-hold rats: short notice, direct pursuit, one
                 # scratch. Ordinary sewer rats keep their authored patrols.
-                if kind == "thorn_mite" or self.map_name == "ship_lower_hold":
+                if (
+                    kind == "thorn_mite"
+                    or self.map_name == "ship_lower_hold"
+                    or self.map_name.startswith("modern_city_sewer_")
+                ):
                     rat.configure_attack_chase(self.tilemap)
                 else:
                     rat.configure_patrol(

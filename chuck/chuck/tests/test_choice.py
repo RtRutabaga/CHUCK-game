@@ -71,6 +71,10 @@ def test_malformed_choices_are_loud() -> None:
             {"label": "B"},
         ]}},
         {"c": {"prompt": "Q?", "options": [
+            {"label": "A", "goto": "map", "facing": "sideways"},
+            {"label": "B"},
+        ]}},
+        {"c": {"prompt": "Q?", "options": [
             {"label": "A", "action": "not_a_real_action"}, {"label": "B"},
         ]}},
         {"c": {"prompt": "Q?", "options": [
@@ -107,14 +111,15 @@ def test_real_sewer_exit_choice_carries_arrival_choreography() -> None:
     assert no.dialogue is None and no.goto is None
 
 
-def test_city_sewer_threshold_uses_exact_silent_yes_no_prompt() -> None:
+def test_city_sewer_threshold_uses_exact_yes_no_prompt_and_destination() -> None:
     choice = ChoiceSystem().get("city_sewer_entrance")
     assert choice.prompt == "Enter the sewer?"
     assert [option.label for option in choice.options] == ["YES", "NO"]
-    # City Sewer 1 is deliberately the next map slice. Until it exists,
-    # neither branch may point at a broken or invented destination.
-    assert all(option.goto is None and option.dialogue is None
-               and option.action is None for option in choice.options)
+    yes, no = choice.options
+    assert yes.goto == "modern_city_sewer_1"
+    assert yes.arrival == "from_city_night_6"
+    assert yes.facing == "up"
+    assert no.goto is None and no.dialogue is None and no.action is None
 
 
 def test_silent_choice_closes_dialogue_immediately() -> None:

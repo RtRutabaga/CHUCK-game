@@ -65,6 +65,7 @@ def build_map() -> list[str]:
     # Human-sized open concrete tunnel and shallow approach-only prompt.
     grid[19][20] = "ƺ"
     grid[21][20] = "ሸ"
+    grid[24][20] = "ሼ"
 
     grid[22][72] = "ሕ"
     grid[37][18] = "ሕ"
