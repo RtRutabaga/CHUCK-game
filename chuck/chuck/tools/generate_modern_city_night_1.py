@@ -7,30 +7,12 @@ visible Astral truncation before traffic, people, or enemies are introduced.
 
 from pathlib import Path
 
+from generate_city_map_common import paint_office
+
 
 ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 72
 HEIGHT = 54
-
-
-def _paint_office(
-    grid: list[list[str]], left: int, top: int, right: int, bottom: int,
-) -> None:
-    """Paint one large, indivisible three-quarter-view office mass."""
-    facade_top = bottom - 8
-    for row in range(top, bottom + 1):
-        for col in range(left, right + 1):
-            if row < facade_top:
-                char = "#"  # broad inaccessible roof plane
-            elif row == facade_top:
-                char = "▱"  # roof lip establishes the perspective break
-            elif col in (left, right):
-                char = "▥"  # darker side columns imply the building's depth
-            elif row == bottom:
-                char = "▤"
-            else:
-                char = "w" if (col - left + row) % 3 else "▤"
-            grid[row][col] = char
 
 
 def build_map() -> list[str]:
@@ -44,7 +26,7 @@ def build_map() -> list[str]:
         (0, 36, 24, 53), (47, 36, 71, 53),
     )
     for bounds in offices:
-        _paint_office(grid, *bounds)
+        paint_office(grid, *bounds)
 
     # A broad boulevard crosses a narrower north/south street.  Sidewalks
     # remain generous enough for a one-foot rat to explore around the roads.
@@ -76,6 +58,11 @@ def build_map() -> list[str]:
     for row in range(0, 3):
         for col in range(21, 51):
             grid[row][col] = "V"
+    # The northern sidewalk now continues into City Night 2. A five-tile
+    # opening reads like the same city street carrying on between blocks.
+    for row in range(0, 3):
+        for col in range(26, 31):
+            grid[row][col] = "⮝"
     for row in range(51, HEIGHT):
         for col in range(25, 47):
             grid[row][col] = "V"
@@ -89,6 +76,8 @@ def build_map() -> list[str]:
     # Its nearby Ashtray remains both the save point and death return point.
     grid[47][27] = "ላ"
     grid[43][27] = "ሌ"
+    grid[0][28] = "ሐ"
+    grid[4][28] = "ሑ"
     for col, row in ((23, 8), (48, 9), (29, 20), (44, 33)):
         grid[row][col] = "ል"
     # Two opposed, widely spaced lanes teach observation and timing before

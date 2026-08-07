@@ -177,6 +177,21 @@ RAT_PATROL_RANGE = 6.0
 HOLD_RAT_CHASE_SPEED = 32.0
 HOLD_RAT_NOTICE_RANGE = 96.0
 
+# City raccoons occupy the middle ground between one-hit rats and durable
+# Chultan undead: quick enough to pressure Chuck, but still a brief fight.
+RACCOON_FRAME_W = 20
+RACCOON_FRAME_H = 14
+RACCOON_HITBOX_W = 14
+RACCOON_HITBOX_H = 8
+RACCOON_SPEED = 30.0
+RACCOON_SANITY_DAMAGE = 15
+RACCOON_SCRATCHES = 3
+RACCOON_NOTICE_RANGE = 104.0
+
+# A walking businessperson moves slowly along one authored sidewalk segment.
+CITY_PEDESTRIAN_SPEED = 12.0
+CITY_PEDESTRIAN_RANGE = 42.0
+
 # Chult undead share the established human footprint and sprite scale. Both
 # are deliberately durable; their low speeds leave room to evade them.
 UNDEAD_FRAME_W = 16

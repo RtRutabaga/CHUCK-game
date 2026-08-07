@@ -1,11 +1,32 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Night 1 now expands the Phase 10 arrival
-endpoint into the first explorable rainy-city map while preserving its save,
-Continue, respawn, and cinematic handoff. This file is required by the project
-rules and updated every session.
+Updated: Phase 11 is active. City Night 2 now continues north from the first
+traffic crossing with its own Ashtray, businesspeople, a raccoon encounter,
+and the established full-scale rainy-city grid. This file is required by the
+project rules and updated every session.
 
 ## Latest implementation
+
+- Added the connected 76x56 `City Night 2` map. Four indivisible office
+  blocks (each at least 28x18 tiles) frame a broad street/sidewalk grid, and
+  every unauthored route still ends visibly in shared Astral fall terrain.
+  The reciprocal southern street opening lines up with City Night 1's newly
+  authored northern continuation.
+- Added this map's physical Ashtray and shared-loader `City Night 2`
+  development checkpoint, four loose cigarettes, continuous rain, and a
+  second two-lane crossing. The checkpoint uses the normal save, Continue,
+  Sanity-zero return, and enemy-reset paths.
+- Introduced two stationary businesspeople plus one short-patrol pedestrian,
+  all using the exact dialogue `Ah! A rat!`. Introduced one avoidable raccoon
+  with direct pursuit, 15 Sanity contact damage, and three-scratch durability:
+  stronger than rats, substantially weaker than Chult zombies.
+- Extracted the large-office painter for reuse by later city generators and
+  added focused topology, transition, checkpoint, dialogue, rain, pedestrian,
+  combat, and reset coverage. The homeless NPC, highway, City Night 3, and
+  dedicated night-city soundtrack remain outside this slice.
+- All 90 test suites pass in isolated processes, compilation is clean, and
+  both the title loop and City Night 2 checkpoint render launch headlessly.
+  The native checkpoint view was visually inspected.
 
 - Added Phase 11's reusable deterministic traffic system and City Night 1's
   first teaching crossing. Two opposed lanes carry fixed populations of
@@ -235,10 +256,10 @@ rules and updated every session.
 
 ## Next logical task
 
-Continue Phase 11 with City Night 2 as one bounded map slice, using the shared
-office-block, rain, Astral-boundary, checkpoint, and traffic systems. Introduce
-the first businesspeople and raccoon encounter there; do not build Maps 3--4
-or the highway in the same pass.
+Continue Phase 11 with City Night 3 as one bounded map slice. Reuse the shared
+large-office, rain, Astral-boundary, checkpoint, traffic, businessperson, and
+raccoon systems; introduce the one homeless man and his exact approved
+dialogue there. Do not begin the highway-focused City Night 5.
 
 ## Current state
 

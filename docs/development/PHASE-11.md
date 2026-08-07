@@ -800,8 +800,14 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
 - [x] Added reusable deterministic four-direction traffic lanes and City
       Night 1's two-lane teaching crossing, with fixed populations, severe
       Sanity contact, safe-footing recovery, and normal Ashtray reset.
-- [ ] Next: City Night 2 with its Ashtray, first businesspeople, and first
-      raccoon encounter.
+- [x] Added connected `City Night 2` with its own Ashtray, four loose
+      cigarettes, reciprocal street opening, full-scale office blocks, rain,
+      and a second deterministic two-lane crossing.
+- [x] Added the first two stationary businesspeople, one patrol
+      businessperson, exact `Ah! A rat!` dialogue, and an avoidable
+      three-scratch raccoon using the normal damage/combat/reset lifecycle.
+- [ ] Next: City Night 3, including the one homeless man and continued use of
+      the shared city systems; reserve the major highway for City Night 5.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------

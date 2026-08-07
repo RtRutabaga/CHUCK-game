@@ -68,7 +68,7 @@ def _office_components(tilemap: TileMap) -> list[set[tuple[int, int]]]:
     return components
 
 
-def test_city_night_1_establishes_the_region_without_future_encounters() -> None:
+def test_city_night_1_establishes_the_region_and_opens_city_night_2() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     kinds = Counter(kind for kind, _position in tilemap.object_spawns)
 
@@ -77,15 +77,18 @@ def test_city_night_1_establishes_the_region_without_future_encounters() -> None
     assert kinds["arrival:from_flight"] == 1
     assert kinds["anchor:modern_city_anchor"] == 1
     assert kinds["cigarette"] == 4
-    assert not any(kind.startswith("boundary:") for kind in kinds)
-    assert not any(key[0] == MAP_NAME for key in AREA_WALK_EXITS)
+    assert kinds["boundary:modern_city_night_2"] == 1
+    assert kinds["arrival:from_city_night_2"] == 1
+    exit_config = AREA_WALK_EXITS[(MAP_NAME, "⮝")]
+    assert exit_config.destination == "modern_city_night_2"
+    assert exit_config.arrival == "from_city_night_1"
     assert not any(
-        kind.startswith(("npc:", "rat", "raccoon", "traffic:"))
+        kind.startswith(("npc:", "rat", "raccoon"))
         for kind in kinds
     )
 
     terrain = "".join(tilemap._grid)
-    assert terrain.count("V") >= 250
+    assert terrain.count("V") >= 240
     assert terrain.count("=") >= 650
     assert terrain.count("w") >= 250
     assert not tilemap.is_solid(27, 47)
@@ -111,6 +114,7 @@ def test_every_city_night_1_discovery_is_reachable_without_astral_fall() -> None
     start = markers["arrival:from_flight"][0]
     required = {
         markers["anchor:modern_city_anchor"][0],
+        markers["boundary:modern_city_night_2"][0],
         *markers["cigarette"],
     }
     assert required <= _reachable_without_falling(tilemap, start)

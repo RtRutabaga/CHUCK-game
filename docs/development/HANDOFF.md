@@ -3,13 +3,32 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `babf34b` (city blocks at proper scale)
-- Current work: Phase 11 reusable traffic and teaching crossing
+- Base commit before this pass: `438adb4` (City Night 1 traffic crossing)
+- Current work: Phase 11 City Night 2, people, and raccoon
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Night 2 with its Ashtray, first
-  businesspeople, and first raccoon encounter
+- Next implementation slice: City Night 3 with the one homeless man, shared
+  city systems, and no expansion into the City Night 5 highway
 
 ## Completed This Pass
+
+- Connected City Night 1's north sidewalk to a new 76x56 City Night 2 and
+  provided a reciprocal southern return. Four office masses remain at real
+  city-block scale; all unauthored edges end in the established Astral fall
+  tiles rather than narrow fake buildings.
+- Added the map's own Ashtray/shared-loader checkpoint, continuous rain, four
+  cigarettes, and a second two-lane crossing. Extracted the office painter so
+  later city maps use the same three-quarter-view building language.
+- Added two stationary businesspeople and one short-patrol businessperson with
+  exact `Ah! A rat!` dialogue. Added one raccoon: direct pursuit, 15 Sanity
+  contact damage, three scratches to defeat, full scratch/contact rendering,
+  and normal death reset.
+- Focused tests cover the map topology and large-building invariant, safe
+  route reachability, reciprocal transitions, checkpoint registration, exact
+  dialogue, rain, pedestrian patrol, raccoon stats/pursuit/defeat/reset, and
+  the existing City Night 1/Phase 10 handoff.
+- All 90 suites pass in isolated processes; compilation is clean. The title
+  loop and City Night 2 checkpoint both launch headlessly, and the native
+  checkpoint render was visually inspected.
 
 - Added a reusable four-direction traffic-lane controller with fixed car
   populations, deterministic spacing/phases, clean boundary wrapping, and no

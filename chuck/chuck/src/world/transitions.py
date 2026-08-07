@@ -20,6 +20,12 @@ class AreaExit(NamedTuple):
 
 
 AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
+    ("modern_city_arrival", "⮝"): AreaExit(
+        "modern_city_night_2", "from_city_night_1", "up"
+    ),
+    ("modern_city_night_2", "⮟"): AreaExit(
+        "modern_city_arrival", "from_city_night_2", "down"
+    ),
     ("waterdeep_docks", "v"): AreaExit(
         "waterdeep_tavern", "front_entrance", "up"
     ),
@@ -414,4 +420,5 @@ AREA_MUSIC: dict[str, str | None] = {
     # The dedicated modern-city theme belongs to Phase 11. Silence the
     # completed one-shot flight cue at the contained playable endpoint.
     "modern_city_arrival": None,
+    "modern_city_night_2": None,
 }

@@ -34,12 +34,14 @@ from src.entities.deck_pirate import DeckPirateNPC
 from src.entities.hazard import Cat
 from src.entities.massive_dinosaur import MassiveDinosaur
 from src.entities.npc import NPC
+from src.entities.pedestrian import PedestrianNPC
 from src.entities.pickup import Cigarette
 from src.entities.pirate_chef import PirateChef
 from src.entities.pirate_npc import PirateNPC
 from src.entities.player import Player
 from src.entities.prop import Prop
 from src.entities.rat import SewerRat
+from src.entities.raccoon import Raccoon
 from src.entities.raptor import Raptor
 from src.entities.redcap import Redcap
 from src.entities.reality_blocks import RealityBlockField
@@ -84,7 +86,7 @@ from src.ui.hud import HUD
 from src.world.camera import Camera
 from src.world.collision import overlaps
 from src.world.tilemap import TileMap
-from src.world.tileset_layout import tileset_for
+from src.world.tileset_layout import MAP_TILESET, tileset_for
 from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 
@@ -171,7 +173,9 @@ class WorldScene(Scene):
             self.tilemap.open_tavern_entrance()
         self.tilemap.load_tileset(self.game.assets, tileset_for(self.map_name))
         self._world_time = 0.0  # drives water shimmer
-        self.city_rain = CityRain() if map_name == "modern_city_arrival" else None
+        self.city_rain = (
+            CityRain() if MAP_TILESET.get(map_name) == "city" else None
+        )
         self._arrival_fade_t: float | None = 0.0 if fade_in else None
 
         arrivals = {
@@ -391,7 +395,8 @@ class WorldScene(Scene):
             (kind, position)
             for kind, position in self.tilemap.object_spawns
             if kind in {
-                "cat", "rat", "zombie", "skeleton", "lemure", "raptor",
+                "cat", "rat", "raccoon", "zombie", "skeleton", "lemure",
+                "raptor",
                 "massive_dinosaur", "horned_devil", "displacer_beast",
                 "griffon",
                 "snake", "fire_snake",
@@ -429,6 +434,14 @@ class WorldScene(Scene):
             elif kind.startswith("npc:"):
                 npc_id = kind.split(":", 1)[1]
                 npc = NPC(cx, cy, npc_id=npc_id, dialogue_id=npc_id)
+                npc.load_sprites(self.game.assets)
+                self.npcs.append(npc)
+            elif kind.startswith("patrol_npc:"):
+                _prefix, npc_id, axis = kind.split(":", 2)
+                npc = PedestrianNPC(
+                    cx, cy, npc_id=npc_id, dialogue_id=npc_id, axis=axis,
+                )
+                npc.tilemap = self.tilemap
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
             elif kind.startswith("elevated_npc:"):
@@ -470,7 +483,7 @@ class WorldScene(Scene):
                     int(cy // config.TILE_SIZE),
                 )
             elif kind in {
-                "rat", "zombie", "skeleton", "lemure", "raptor",
+                "rat", "raccoon", "zombie", "skeleton", "lemure", "raptor",
                 "massive_dinosaur", "horned_devil", "displacer_beast",
                 "griffon",
                 "snake", "fire_snake",
@@ -753,6 +766,8 @@ class WorldScene(Scene):
             lane.update(dt)
         for rat in self.rats:
             rat.update(dt, self.player)
+        for raccoon in self.raccoons:
+            raccoon.update(dt, self.player)
         for kind, position in self.undead_release.release_for_row(
             self._player_tile()[1]
         ):
@@ -997,11 +1012,13 @@ class WorldScene(Scene):
                 [*self.reactive_flowers.flowers,
                  *(prop for prop in self.props
                    if callable(getattr(prop, "on_scratched", None))),
-                  *self.breakables, *self.rats, *self.undead, *self.raptors,
+                  *self.breakables, *self.rats, *self.raccoons,
+                  *self.undead, *self.raptors,
                   *self.redcaps, *self.dinosaurs, *self.snakes],
             )
             self._collect_pending_drops()
         self.rats = [rat for rat in self.rats if rat.alive]
+        self.raccoons = [enemy for enemy in self.raccoons if enemy.alive]
         self.undead = [enemy for enemy in self.undead if enemy.alive]
         self.raptors = [raptor for raptor in self.raptors if raptor.alive]
         self.redcaps = [redcap for redcap in self.redcaps if redcap.alive]
@@ -1015,6 +1032,17 @@ class WorldScene(Scene):
         )
         if blocking_rat is not None:
             if self.sanity.damage(blocking_rat.damage):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+            self.player.x, self.player.y = old_player_position
+
+        blocking_raccoon = next(
+            (enemy for enemy in self.raccoons
+             if overlaps(self.player.hitbox, enemy.hitbox)),
+            None,
+        )
+        if blocking_raccoon is not None:
+            if self.sanity.damage(blocking_raccoon.damage):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
             self.player.x, self.player.y = old_player_position
@@ -1384,7 +1412,7 @@ class WorldScene(Scene):
         drawables = [*standing_props, *self.breakables, *self.anchors,
                      *self.reactive_flowers.flowers,
                      *self.battle_actors,
-                     *self.hazards, *self.rats,
+                     *self.hazards, *self.rats, *self.raccoons,
                       *self.undead, *self.raptors, *self.dinosaurs,
                      *self.redcaps, *self.snakes, *self.chefs, *self.fencers,
                      *self.spined_devils, *self.flameskulls,
@@ -1898,6 +1926,7 @@ class WorldScene(Scene):
         """Rebuild this area's enemies from map markers after Chuck returns."""
         self.hazards = []
         self.rats = []
+        self.raccoons = []
         self.undead = []
         self.raptors = []
         self.redcaps = []
@@ -2002,6 +2031,11 @@ class WorldScene(Scene):
                 self.rats.append(rat)
                 if self.map_name == "sewer" and rat_tile in tutorial_tiles:
                     self._scratch_tutorial_rats.append(rat)
+            elif kind == "raccoon":
+                raccoon = Raccoon(cx, cy)
+                raccoon.tilemap = self.tilemap
+                raccoon.load_sprites(self.game.assets)
+                self.raccoons.append(raccoon)
             elif kind in {"zombie", "skeleton", "lemure"}:
                 self._spawn_undead(kind, (cx, cy))
             elif kind == "raptor":

@@ -136,7 +136,9 @@ def test_city_handoff_enters_the_rainy_phase11_start_map() -> None:
         assert world.map_name == "modern_city_arrival"
         assert MAP_TILESET[world.map_name] == "city"
         assert AREA_MUSIC[world.map_name] is None
-        assert not any(key[0] == world.map_name for key in AREA_WALK_EXITS)
+        assert AREA_WALK_EXITS[(world.map_name, "⮝")].destination == (
+            "modern_city_night_2"
+        )
         assert world.city_rain is not None
         assert len(world.anchors) == 1
         assert not world.npcs
