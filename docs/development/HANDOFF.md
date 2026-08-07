@@ -3,13 +3,26 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `af5c10f` (City Night 2 encounters)
-- Current work: Phase 11 City Night 3 and homeless sidewalk scene
+- Base commit before this pass: `05f1d1e` (City Night 3 sidewalk scene)
+- Current work: Phase 11 City Night 4 ordinary rainy block
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Night 4 with another route turn, shared
-  city systems, and no expansion into the City Night 5 highway
+- Next implementation slice: highway-focused City Night 5 with safe medians;
+  do not expand into City Night 6 or its sewer entrance
 
 ## Completed This Pass
+
+- Opened City Night 3's north sidewalk into the reciprocal 84x60 City Night 4.
+  Four offset, full-size office blocks retain the city's scale and every
+  unauthored edge remains exact shared Astral fall terrain.
+- Added the map's own physical Ashtray/shared-loader checkpoint, rain, four
+  cigarettes, two optional-arm raccoons, two stationary businesspeople, one
+  horizontal-patrol businessperson, and two horizontal traffic lanes.
+- Focused tests cover topology, building bounds, safe reachability, exact
+  Map 3/4 entrance alignment, checkpoint/world initialization, traffic, native
+  rendering, and Sanity-zero return with raccoon reset.
+- All 92 suites pass in isolated processes; compilation is clean. The title
+  loop and City Night 4 checkpoint launch headlessly, and the native arrival
+  composition was visually inspected.
 
 - Opened City Night 2's east sidewalk into the new reciprocal 80x56 City
   Night 3. Four large office blocks retain credible city scale; all other

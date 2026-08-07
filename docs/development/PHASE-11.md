@@ -811,8 +811,11 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
       patrol businessperson, and only Astral-severed unauthored edges.
 - [x] Added the one seated homeless man beside oversized bottle clusters with
       exact `Hey there buddy!` dialogue and no patrol or extra exposition.
-- [ ] Next: City Night 4 using the shared city systems and another route turn;
-      reserve the major highway for City Night 5.
+- [x] Added north-connected `City Night 4` with its own Ashtray, four
+      cigarettes, two raccoons, three businesspeople, horizontal traffic, and
+      offset full-scale office blocks; all unauthored edges remain Astral.
+- [ ] Next: City Night 5 as the major multi-lane highway crossing with safe
+      medians; do not begin City Night 6 or its sewer entrance in that pass.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------

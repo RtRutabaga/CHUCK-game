@@ -1,11 +1,27 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Night 3 now turns east from the first two
-rainy blocks, introduces the restrained homeless-man sidewalk scene, and
-continues the shared checkpoint, traffic, pedestrian, and raccoon systems.
-This file is required by the project rules and updated every session.
+Updated: Phase 11 is active. City Night 4 now completes the ordinary rainy
+street-map sequence before the major highway crossing, preserving the shared
+checkpoint, traffic, pedestrian, raccoon, and large-office architecture. This
+file is required by the project rules and updated every session.
 
 ## Latest implementation
+
+- Added the connected 84x60 `City Night 4` map and opened City Night 3's
+  northern sidewalk as its reciprocal route. Unequal setbacks distinguish the
+  new intersection while retaining four indivisible office masses at credible
+  city-block scale; every unused edge remains visibly severed by Astral Sea.
+- Added the map's physical Ashtray and shared-loader `City Night 4`
+  checkpoint, four loose cigarettes, persistent rain, two avoidable raccoons,
+  two stationary businesspeople, one horizontal-patrol businessperson, and a
+  two-lane east/west crossing. The one homeless man remains only in Map 3.
+- Added focused coverage for topology, large-building bounds, discovery
+  reachability, exact Map 3/4 entrance alignment, checkpoint registration,
+  scene composition, traffic direction, native rendering, and Sanity-zero
+  Ashtray return with raccoon reset. City Night 5 remains outside this slice.
+- All 92 test suites pass in isolated processes, compilation is clean, and
+  the title loop plus City Night 4 checkpoint launch headlessly. The native
+  arrival composition was visually inspected.
 
 - Added the connected 80x56 `City Night 3` map and opened City Night 2's
   eastern sidewalk as its reciprocal route. Four full city-block office
@@ -24,9 +40,6 @@ This file is required by the project rules and updated every session.
   visual/actual entrance alignment, exact NPC counts and dialogue, checkpoint
   registration, vertical traffic, props, rain, rendering, and regional
   regressions. City Night 4 and the highway remain outside this slice.
-- All 91 test suites pass in isolated processes, compilation is clean, and
-  the title loop plus City Night 3 checkpoint launch headlessly. The native
-  arrival/homeless-scene composition was visually inspected.
 - All 91 test suites pass in isolated processes, compilation is clean, and
   the title loop plus City Night 3 checkpoint launch headlessly. The native
   arrival/homeless-scene composition was visually inspected.
@@ -280,11 +293,10 @@ This file is required by the project rules and updated every session.
 
 ## Next logical task
 
-Continue Phase 11 with City Night 4 as one bounded map slice. Reuse the shared
-large-office, rain, Astral-boundary, checkpoint, traffic, businessperson, and
-raccoon systems while giving the route another readable turn. Preserve the
-one homeless man in City Night 3 and do not begin the highway-focused City
-Night 5 in the same pass.
+Continue Phase 11 with the highway-focused City Night 5 as one bounded map
+slice. Build the substantially larger multi-lane Frogger challenge with safe
+medians, readable deterministic timing, one safe Ashtray, and shared city
+systems. Do not add City Night 6 or the sewer entrance in the same pass.
 
 ## Current state
 

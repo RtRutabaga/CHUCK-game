@@ -54,6 +54,14 @@ def build_map() -> list[str]:
         for col in range(77, WIDTH):
             grid[row][col] = "V"
 
+    # The northern sidewalk now continues into City Night 4. The return
+    # arrival stays one safe tile inside the same visible opening.
+    for row in range(0, 3):
+        for col in range(43, 48):
+            grid[row][col] = "⮝"
+    grid[0][45] = "ሡ"
+    grid[4][45] = "ሢ"
+
     # West returns to Map 2. All other continuations remain visibly severed
     # until their destination maps actually exist.
     for row in range(31, 36):

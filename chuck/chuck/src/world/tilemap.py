@@ -879,6 +879,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሞ": MarkerDef(kind="patrol_npc:businessman:v", under="."),
     "ሟ": MarkerDef(kind="traffic_lane:down:0", under="="),
     "ሠ": MarkerDef(kind="traffic_lane:up:1", under="="),
+    # City Night 3/4 north-south handoff and Map 4's local checkpoint.
+    "ሡ": MarkerDef(kind="boundary:modern_city_night_4", under="⮝"),
+    "ሢ": MarkerDef(kind="arrival:from_city_night_4", under="."),
+    "ሣ": MarkerDef(kind="arrival:from_city_night_3", under="."),
+    "ሤ": MarkerDef(kind="anchor:modern_city_4_anchor", under="."),
+    "ሥ": MarkerDef(kind="boundary:modern_city_night_3", under="⮟"),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),
