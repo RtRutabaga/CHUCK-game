@@ -819,8 +819,14 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
       four-lane carriageways, and a safe ten-tile central median.
 - [x] Reused the fixed-population traffic controller for eight alternating
       vertical lanes and reset every lane through the normal Ashtray return.
-- [ ] Next: City Night 6 with the open modern-sewer entrance and its YES/NO
-      interaction; do not begin the playable sewer maps in that pass.
+- [x] Added `City Night 6` with its own Ashtray, four cigarettes, one raccoon,
+      three businesspeople, two traffic lanes, reciprocal highway return, and
+      full-size office blocks around a turning street route.
+- [x] Added a clearly open, human-worker-sized concrete sewer entrance with
+      descending steps and the exact approach-triggered `Enter the sewer?`
+      YES/NO prompt. Both branches close silently until City Sewer 1 exists.
+- [ ] Next: establish City Sewer 1 and wire the entrance's YES branch to it;
+      do not add toxic sludge or City Sewer 2 in that pass.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------

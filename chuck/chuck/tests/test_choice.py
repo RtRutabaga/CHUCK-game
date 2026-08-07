@@ -107,6 +107,16 @@ def test_real_sewer_exit_choice_carries_arrival_choreography() -> None:
     assert no.dialogue is None and no.goto is None
 
 
+def test_city_sewer_threshold_uses_exact_silent_yes_no_prompt() -> None:
+    choice = ChoiceSystem().get("city_sewer_entrance")
+    assert choice.prompt == "Enter the sewer?"
+    assert [option.label for option in choice.options] == ["YES", "NO"]
+    # City Sewer 1 is deliberately the next map slice. Until it exists,
+    # neither branch may point at a broken or invented destination.
+    assert all(option.goto is None and option.dialogue is None
+               and option.action is None for option in choice.options)
+
+
 def test_silent_choice_closes_dialogue_immediately() -> None:
     class Input:
         @staticmethod

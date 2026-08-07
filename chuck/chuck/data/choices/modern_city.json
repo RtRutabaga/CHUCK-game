@@ -1,0 +1,9 @@
+{
+  "city_sewer_entrance": {
+    "prompt": "Enter the sewer?",
+    "options": [
+      { "label": "YES" },
+      { "label": "NO" }
+    ]
+  }
+}

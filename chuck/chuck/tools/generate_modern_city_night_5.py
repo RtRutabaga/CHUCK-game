@@ -37,8 +37,7 @@ def build_map() -> list[str]:
         for col in (*range(35, 51), *range(61, 77)):
             grid[row][col] = "▦"
 
-    # The east/west pedestrian corridor splits the office pairs. The west is
-    # still unauthored and therefore ends in Astral rather than a fake street.
+    # The east/west pedestrian corridor splits the office pairs.
     for row in range(18, 30):
         for col in (*range(0, 24), *range(88, WIDTH)):
             grid[row][col] = "."
@@ -47,6 +46,13 @@ def build_map() -> list[str]:
             grid[row][col] = "V"
         for col in range(109, WIDTH):
             grid[row][col] = "V"
+
+    # The western approach now continues into the final night-city block.
+    for row in range(22, 27):
+        for col in range(0, 3):
+            grid[row][col] = "⮜"
+    grid[24][0] = "ሳ"
+    grid[24][4] = "ሴ"
 
     # East returns to City Night 4 through the only currently authored edge.
     for row in range(22, 27):

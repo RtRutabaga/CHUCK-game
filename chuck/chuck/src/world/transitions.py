@@ -44,6 +44,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("modern_city_night_5", "⮞"): AreaExit(
         "modern_city_night_4", "from_city_night_5", "right"
     ),
+    ("modern_city_night_5", "⮜"): AreaExit(
+        "modern_city_night_6", "from_city_night_5", "left"
+    ),
+    ("modern_city_night_6", "⮞"): AreaExit(
+        "modern_city_night_5", "from_city_night_6", "right"
+    ),
     ("waterdeep_docks", "v"): AreaExit(
         "waterdeep_tavern", "front_entrance", "up"
     ),
@@ -442,4 +448,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "modern_city_night_3": None,
     "modern_city_night_4": None,
     "modern_city_night_5": None,
+    "modern_city_night_6": None,
 }

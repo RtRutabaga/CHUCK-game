@@ -162,6 +162,7 @@ _SPRITES = {
         "objects/city_bottles_1.png",
         "objects/city_bottles_2.png",
     ),
+    "city_sewer_entrance": "objects/city_sewer_entrance.png",
     "fey_table_leg": (
         "objects/fey_table_leg_1.png",
         "objects/fey_table_leg_2.png",

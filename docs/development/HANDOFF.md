@@ -3,13 +3,30 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `699bdae` (City Night 4 street block)
-- Current work: Phase 11 City Night 5 highway crossing
+- Base commit before this pass: `1746a17` (City Night 5 highway crossing)
+- Current work: Phase 11 City Night 6 and modern-sewer threshold
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Night 6 and its open modern-sewer entrance;
-  do not expand into the playable sewer maps
+- Next implementation slice: City Sewer 1, its Ashtray and aggressive rats,
+  plus wiring the existing entrance YES branch; do not add City Sewer 2 or
+  toxic sludge
 
 ## Completed This Pass
+
+- Opened City Night 5's western approach into the reciprocal 88x60 City Night
+  6. Four intact 32x20 office masses frame a turning intersection, while all
+  unauthored exterior routes remain exact shared Astral fall terrain.
+- Added the map's physical Ashtray/shared-loader checkpoint, rain, four
+  cigarettes, one avoidable raccoon, two stationary businesspeople, one
+  vertical patrol, and two fixed-population traffic lanes. Death return resets
+  the traffic and raccoon through the existing shared world-reset path.
+- Added an 80x64 open concrete sewer entrance with a black worker-scale arch,
+  descending stairs, handrails, and a shallow approach trigger. It presents
+  exact `Enter the sewer?` / YES / NO text; both choices close silently until
+  City Sewer 1 is authored in the next bounded slice.
+- Focused tests cover topology, office scale, safe reachability, exact Map 5/6
+  alignment, shared checkpoint loading, entrance art/scale/prompt behavior,
+  native rendering, and Sanity-zero reset. All 94 suites pass in isolated
+  processes; compilation and headless title/City Night 6 launches are clean.
 
 - Opened City Night 4's western sidewalk into the reciprocal 112x48 City
   Night 5. Four full-scale office blocks frame the highway corridor, while

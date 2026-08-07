@@ -1,11 +1,34 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Night 5 now provides the major staged
-highway crossing, preserving the shared checkpoint, traffic, pedestrian,
-raccoon, rain, and large-office architecture. This file is required by the
-project rules and updated every session.
+Updated: Phase 11 is active. City Night 6 now completes the rainy night-city
+map sequence at a visible modern-sewer threshold, preserving the shared
+checkpoint, traffic, pedestrian, raccoon, rain, choice, and large-office
+architecture. This file is required by the project rules and updated every
+session.
 
 ## Latest implementation
+
+- Added the connected 88x60 `City Night 6` map and opened City Night 5's
+  western approach as its aligned reciprocal route. Four intact 32x20 office
+  masses frame an east/west street and north/south crossing; every unauthored
+  exterior edge remains visibly severed by exact shared Astral fall terrain.
+- Added the map's physical Ashtray/shared-loader `City Night 6` checkpoint,
+  four loose cigarettes, persistent rain, one avoidable raccoon, two
+  stationary businesspeople, one vertical-patrol businessperson, and two
+  deterministic traffic lanes. Normal Sanity return resets both traffic and
+  the raccoon.
+- Added an 80x64 procedural open concrete sewer entrance embedded in the
+  northwest office facade. Its black worker-scale arch, descending steps,
+  rails, and shallow walk trigger clearly distinguish it from the Waterdeep
+  grate and display the exact `Enter the sewer?` YES/NO prompt on approach.
+- Both options close silently for this bounded threshold pass. The YES branch
+  remains deliberately data-local and gains its `City Sewer 1` destination
+  when that next map is authored, avoiding either a broken goto or a premature
+  placeholder sewer map.
+- Focused coverage validates topology, office scale, safe reachability,
+  Map 5/6 alignment, entrance scale/art/prompt, shared checkpoint loading,
+  native rendering, and death reset. All 94 test suites pass in isolated
+  processes; compilation and headless title/City Night 6 launches are clean.
 
 - Added the connected 112x48 `City Night 5` highway map and opened City Night
   4's western sidewalk as its aligned reciprocal route. Four full-size office
@@ -310,10 +333,11 @@ project rules and updated every session.
 
 ## Next logical task
 
-Continue Phase 11 with City Night 6 as one bounded map slice. Connect the
-highway's western route to a final rainy night-city block with its own
-Ashtray, then add the visible open modern-sewer entrance and exact YES/NO
-interaction. Do not begin the playable sewer maps in the same pass.
+Continue Phase 11 with `City Sewer 1` as one bounded map slice. Establish the
+modern concrete/utility-tunnel visual language, its Ashtray, and aggressive
+ship-hold-pattern rats, then wire the existing entrance's YES option to that
+shared-loader destination. Do not add toxic sludge or City Sewer 2 in the
+same pass.
 
 ## Current state
 

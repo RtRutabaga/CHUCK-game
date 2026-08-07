@@ -956,6 +956,33 @@ CHECKPOINTS = (
         development_visible=False, runtime_entry=True,
     ),
     CheckpointDefinition(
+        "modern_city_6", "City Night 6", "modern_city_night_6",
+        arrival="from_city_night_5", facing="left",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "modern_city_6_anchor", "City Night 6 Ashtray",
+        "modern_city_night_6", position=(1284.0, 389.0), facing="left",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "modern_city_5_return", "City Night 5 Return",
+        "modern_city_night_5", arrival="from_city_night_6", facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached",
+        }),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "feywild_6_return", "Feywild 6 Return", "feywild_needle_garden",
         arrival="from_feywild_7", facing="left",
         required_flags=frozenset({

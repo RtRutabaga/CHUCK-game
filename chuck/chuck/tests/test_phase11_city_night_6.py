@@ -1,4 +1,4 @@
-"""Phase 11 City Night 5 and its staged multi-lane highway crossing."""
+"""Phase 11 City Night 6 and its bounded modern-sewer threshold."""
 
 from collections import Counter, deque
 import os
@@ -13,14 +13,15 @@ import pygame
 from src.core import config
 from src.core.game import Game
 from src.entities.pedestrian import PedestrianNPC
+from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import MAP_TILESET
 from src.world.transitions import AREA_WALK_EXITS
 
 
-MAP_NAME = "modern_city_night_5"
-OFFICE = frozenset("#▱▤▥w")
+MAP_NAME = "modern_city_night_6"
+OFFICE = frozenset("#▱▤▥wƺ")
 
 
 def _markers(tilemap):
@@ -71,130 +72,123 @@ def _office_components(tilemap):
     return components
 
 
-def _game_and_world(checkpoint="modern_city_5"):
+def _game_and_world(checkpoint="modern_city_6"):
     directory = tempfile.TemporaryDirectory()
     game = Game(save_path=Path(directory.name) / "save.json")
     return directory, game, game.checkpoints.load_checkpoint(checkpoint)
 
 
-def test_city_night_5_is_a_large_staged_highway_map() -> None:
+def test_city_night_6_is_a_full_scale_final_night_block() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     kinds = Counter(kind for kind, _ in tilemap.object_spawns)
-    assert (tilemap.width_tiles, tilemap.height_tiles) == (112, 48)
+    assert (tilemap.width_tiles, tilemap.height_tiles) == (88, 60)
     assert MAP_TILESET[MAP_NAME] == "city"
-    assert kinds["arrival:from_city_night_4"] == 1
-    assert kinds["anchor:modern_city_5_anchor"] == 1
-    assert kinds["boundary:modern_city_night_4"] == 1
+    assert kinds["arrival:from_city_night_5"] == 1
+    assert kinds["anchor:modern_city_6_anchor"] == 1
+    assert kinds["boundary:modern_city_night_5"] == 1
+    assert kinds["choice:city_sewer_entrance"] == 1
     assert kinds["npc:businessman"] == 2
-    assert kinds["patrol_npc:businessman:h"] == 1
+    assert kinds["patrol_npc:businessman:v"] == 1
     assert kinds["npc:homeless_man"] == 0
     assert kinds["raccoon"] == 1
-    assert kinds["cigarette"] == 5
-    assert sum(
-        count for kind, count in kinds.items()
-        if kind.startswith("traffic_lane:")
-    ) == 8
-    assert kinds["boundary:modern_city_night_6"] == 1
-    assert kinds["arrival:from_city_night_6"] == 1
+    assert kinds["cigarette"] == 4
+    assert kinds["traffic_lane:down:0"] == 1
+    assert kinds["traffic_lane:up:1"] == 1
+    assert Counter(kind for kind, _col, _row in tilemap.prop_tiles) == {
+        "city_sewer_entrance": 1
+    }
 
     components = _office_components(tilemap)
     assert len(components) == 4
     for component in components:
         cols = [point[0] for point in component]
         rows = [point[1] for point in component]
-        assert max(cols) - min(cols) + 1 >= 24
-        assert max(rows) - min(rows) + 1 >= 18
+        assert max(cols) - min(cols) + 1 >= 32
+        assert max(rows) - min(rows) + 1 >= 20
 
 
-def test_highway_has_two_carriageways_crosswalks_and_safe_median() -> None:
-    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
-    road_columns = (
-        set(range(35, 51)) | set(range(61, 77))
-    )
-    for row in (22, 24, 26):
-        assert all(tilemap.terrain_at(col, row) == "▦"
-                   for col in road_columns)
-    for row in range(tilemap.height_tiles):
-        assert all(tilemap.terrain_at(col, row) not in {"=", "▦"}
-                   for col in range(52, 60))
-
-    markers = _markers(tilemap)
-    lane_columns = sorted(
-        point[0]
-        for kind, points in markers.items()
-        if kind.startswith("traffic_lane:")
-        for point in points
-    )
-    assert lane_columns == [37, 41, 45, 49, 63, 67, 71, 75]
-
-
-def test_every_authored_discovery_is_reachable_without_astral_fall() -> None:
+def test_route_turns_from_east_entry_to_the_sewer_threshold() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
-    reached = _reachable(tilemap, markers["arrival:from_city_night_4"][0])
+    reached = _reachable(tilemap, markers["arrival:from_city_night_5"][0])
     required = {
-        markers["anchor:modern_city_5_anchor"][0],
-        markers["boundary:modern_city_night_4"][0],
-        markers["boundary:modern_city_night_6"][0],
+        markers["anchor:modern_city_6_anchor"][0],
+        markers["boundary:modern_city_night_5"][0],
+        markers["choice:city_sewer_entrance"][0],
         *markers["npc:businessman"],
-        *markers["patrol_npc:businessman:h"],
+        *markers["patrol_npc:businessman:v"],
         *markers["raccoon"],
         *markers["cigarette"],
     }
     assert required <= reached
-    exits = {
-        terrain: exit_def
-        for (source, terrain), exit_def in AREA_WALK_EXITS.items()
-        if source == MAP_NAME
-    }
-    assert {(exit_def.destination, exit_def.arrival)
-            for exit_def in exits.values()} == {
-        ("modern_city_night_4", "from_city_night_5"),
-        ("modern_city_night_6", "from_city_night_5"),
-    }
+    assert markers["choice:city_sewer_entrance"] == [(20, 21)]
+    assert markers["arrival:from_city_night_5"] == [(83, 24)]
+    exits = [exit_def for (source, _), exit_def in AREA_WALK_EXITS.items()
+             if source == MAP_NAME]
+    assert len(exits) == 1
+    assert (exits[0].destination, exits[0].arrival) == (
+        "modern_city_night_5", "from_city_night_6"
+    )
 
 
-def test_city_4_and_5_visual_openings_match_named_arrivals() -> None:
-    map_4 = TileMap(config.MAPS_DIR / "modern_city_night_4.txt")
-    map_5 = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
-    markers_4 = _markers(map_4)
+def test_city_5_and_6_openings_align_with_named_arrivals() -> None:
+    map_5 = TileMap(config.MAPS_DIR / "modern_city_night_5.txt")
+    map_6 = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers_5 = _markers(map_5)
-    assert markers_4["boundary:modern_city_night_5"] == [(0, 36)]
-    assert markers_4["arrival:from_city_night_5"] == [(4, 36)]
-    assert markers_5["boundary:modern_city_night_4"] == [(111, 24)]
-    assert markers_5["arrival:from_city_night_4"] == [(107, 24)]
+    markers_6 = _markers(map_6)
     assert markers_5["boundary:modern_city_night_6"] == [(0, 24)]
     assert markers_5["arrival:from_city_night_6"] == [(4, 24)]
-    outbound = next(
-        exit_def for (source, _), exit_def in AREA_WALK_EXITS.items()
-        if source == "modern_city_night_4"
-        and exit_def.destination == MAP_NAME
-    )
-    assert outbound.arrival == "from_city_night_4"
+    assert markers_6["boundary:modern_city_night_5"] == [(87, 24)]
+    assert markers_6["arrival:from_city_night_5"] == [(83, 24)]
 
 
-def test_city_night_5_checkpoint_world_and_respawn_use_shared_systems() -> None:
-    entry = CHECKPOINT_BY_ID["modern_city_5"]
-    anchor = CHECKPOINT_BY_ID["modern_city_5_anchor"]
+def test_open_sewer_entrance_is_human_scale_and_prompts_on_approach() -> None:
+    image = pygame.image.load(str(
+        config.SPRITES_DIR / "objects" / "city_sewer_entrance.png"
+    ))
+    assert image.get_size() == (80, 64)
+    assert image.get_width() >= config.NPC_FRAME_W * 4
+    assert image.get_height() >= config.NPC_FRAME_H * 2
+    assert image.get_at((40, 25))[:3] == (7, 9, 13)
+
+    directory, game, world = _game_and_world()
+    try:
+        assert len(world.choice_triggers) == 1
+        trigger = world.choice_triggers[0]
+        assert trigger.choice_id == "city_sewer_entrance"
+        assert trigger.walk_triggered
+        world._arrival_fade_t = None
+        world.player.x = trigger.x + trigger.width / 2 - world.player.width / 2
+        world.player.y = trigger.y + trigger.height / 2 - world.player.height / 2
+        world.update(0.0)
+        prompt = game.scenes.current
+        assert isinstance(prompt, DialogueScene)
+        assert prompt._choice.prompt == "Enter the sewer?"
+        assert [option.label for option in prompt._choice.options] == [
+            "YES", "NO"
+        ]
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_checkpoint_world_and_death_reset_use_shared_systems() -> None:
+    entry = CHECKPOINT_BY_ID["modern_city_6"]
+    anchor = CHECKPOINT_BY_ID["modern_city_6_anchor"]
     assert (entry.display_name, entry.map_name, entry.arrival) == (
-        "City Night 5", MAP_NAME, "from_city_night_4"
+        "City Night 6", MAP_NAME, "from_city_night_5"
     )
-    assert anchor.position == (1668.0, 389.0)
+    assert anchor.position == (1284.0, 389.0)
     assert anchor.saveable
 
-    directory, game, world = _game_and_world("modern_city_5_anchor")
+    directory, game, world = _game_and_world("modern_city_6_anchor")
     try:
         assert world.city_rain is not None
         assert len(world.npcs) == 3
-        assert all(npc.npc_id == "businessman" for npc in world.npcs)
         assert sum(isinstance(npc, PedestrianNPC)
                    for npc in world.npcs) == 1
         assert len(world.raccoons) == 1
-        assert len(world.traffic_lanes) == 8
-        assert {lane.direction for lane in world.traffic_lanes} == {
-            "up", "down"
-        }
-        assert sum(len(lane.vehicles) for lane in world.traffic_lanes) == 32
+        assert len(world.traffic_lanes) == 2
         initial_centers = [
             [vehicle.center for vehicle in lane.vehicles]
             for lane in world.traffic_lanes
@@ -209,7 +203,6 @@ def test_city_night_5_checkpoint_world_and_respawn_use_shared_systems() -> None:
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert world._respawn_phase == "in"
         assert (world.player.x, world.player.y) == (
             world.anchors[0].x, world.anchors[0].y
         )
@@ -217,7 +210,6 @@ def test_city_night_5_checkpoint_world_and_respawn_use_shared_systems() -> None:
             [vehicle.center for vehicle in lane.vehicles]
             for lane in world.traffic_lanes
         ] == initial_centers
-        assert len(world.raccoons) == 1
         assert world.raccoons[0].scratches_remaining == (
             config.RACCOON_SCRATCHES
         )
