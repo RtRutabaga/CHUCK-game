@@ -37,6 +37,9 @@ BUSINESSPEOPLE = (((20, 27), "h"), ((56, 38), "h"), ((30, 50), "v"))
 # Two officers, both on wide pavement with a road between them and the
 # route, so they can be walked around rather than fought.
 OFFICERS = ((26, 38), (52, 27))
+# Two police posts, each firing along a pavement rather than across the
+# route, so their lanes are hazards to time rather than walls.
+POLICE = (((44, 27), "ቝ"), ((32, 48), "በ"))
 CIGARETTES = ((24, 27), (46, 27), (36, 14), (62, 38))
 PUDDLES = ((10, 38), (26, 28), (44, 38), (30, 22), (58, 27), (36, 49))
 
@@ -118,6 +121,9 @@ def build_map() -> list[str]:
     for col, row in OFFICERS:
         assert grid[row][col] == ".", (col, row, grid[row][col])
         grid[row][col] = "ቛ"
+    for (col, row), char in POLICE:
+        assert grid[row][col] == ".", (col, row, grid[row][col])
+        grid[row][col] = char
     for (col, row), axis in BUSINESSPEOPLE:
         assert grid[row][col] == ".", (col, row, grid[row][col])
         grid[row][col] = "ሖ" if axis == "h" else "ሞ"
@@ -132,7 +138,8 @@ SOLID = {"▥", "#", "▱", "▤", "w", "V"}
 
 def _under(char: str) -> str:
     return {"ቔ": "⮜", "ቕ": "⮟", "ቖ": ".", "ቘ": ".", "ሖ": ".", "ሞ": ".",
-            "ል": ".", "ꞏ": ".", "ቛ": ".", "ሎ": "=", "ሏ": "=", "ሟ": "=",
+            "ል": ".", "ꞏ": ".", "ቛ": ".", "ቝ": ".", "በ": ".",
+            "ሎ": "=", "ሏ": "=", "ሟ": "=",
             "ሠ": "="}.get(char, char)
 
 
@@ -175,6 +182,17 @@ def validate(rows: list[str]) -> None:
     assert text.count("V") > day_one.read_text(encoding="utf-8").count("V")
 
     assert text.count("ቛ") == len(OFFICERS)
+    assert sum(text.count(char) for _pos, char in POLICE) == len(POLICE)
+    # An officer's lane must never point at the Ashtray or the arrival.
+    for (col, row), char in POLICE:
+        lane = {"ቝ": (1, 0), "ቜ": (-1, 0), "በ": (0, -1), "ቡ": (0, 1)}[char]
+        for step in range(1, 40):
+            point = (col + lane[0] * step, row + lane[1] * step)
+            if not (0 <= point[0] < WIDTH and 0 <= point[1] < HEIGHT):
+                break
+            if _under(rows[point[1]][point[0]]) in SOLID:
+                break
+            assert point not in {ANCHOR, ARRIVAL}, (char, point)
     # Neither officer starts within reach of the Ashtray Chuck respawns
     # at, so returning is never straight back into a net.
     for col, row in OFFICERS:

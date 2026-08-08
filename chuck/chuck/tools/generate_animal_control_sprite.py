@@ -1,4 +1,4 @@
-"""Generate the Animal Control officer sheet (Phase 11).
+"""Generate the Animal Control and police officer sheets (Phase 11).
 
 An officer is an UndeadEnemy kind, so this sheet matches that layout
 exactly: three facings (down, up, left) in 16x30 frames. He reads as
@@ -63,6 +63,34 @@ def draw_officer(surface: pygame.Surface, facing: str) -> None:
         surface.set_at((5, 11), (40, 34, 30))
 
 
+def draw_police(surface: pygame.Surface, facing: str) -> None:
+    """A police officer: the same municipal build in navy, with a cap
+    shield and a drawn sidearm. He never moves, so the read that matters
+    is which way he is pointing it."""
+    navy = (44, 54, 92)
+    navy_dark = (30, 38, 68)
+    pygame.draw.rect(surface, navy_dark, (4, 5, 8, 3))       # peaked cap
+    pygame.draw.rect(surface, navy_dark, (3, 7, 10, 1))
+    pygame.draw.rect(surface, (186, 196, 214), (7, 5, 2, 2))  # cap shield
+    pygame.draw.rect(surface, SKIN, (5, 8, 6, 5))
+    pygame.draw.rect(surface, navy, (4, 13, 8, 11))
+    pygame.draw.rect(surface, navy_dark, (4, 13, 2, 11))
+    pygame.draw.rect(surface, (22, 26, 36), (4, 19, 8, 1))    # duty belt
+    pygame.draw.rect(surface, BOOT, (4, 24, 3, 5))
+    pygame.draw.rect(surface, BOOT, (9, 24, 3, 5))
+    pygame.draw.rect(surface, BADGE, (5, 15, 2, 2))
+    # The sidearm, held out along whichever way he is facing.
+    if facing == "left":
+        pygame.draw.rect(surface, (28, 30, 34), (0, 16, 5, 2))
+    elif facing == "down":
+        pygame.draw.rect(surface, (28, 30, 34), (11, 16, 4, 2))
+        surface.set_at((6, 11), (40, 34, 30))
+        surface.set_at((9, 11), (40, 34, 30))
+    else:
+        pygame.draw.rect(surface, navy_dark, (4, 8, 8, 4))
+        pygame.draw.rect(surface, (28, 30, 34), (11, 15, 3, 2))
+
+
 def main() -> None:
     pygame.init()
     sheet = pygame.Surface((W * 3, H), pygame.SRCALPHA)
@@ -73,6 +101,15 @@ def main() -> None:
     out = ROOT / "assets" / "sprites" / "hazards" / "animal_control.png"
     pygame.image.save(sheet, out)
     print(f"Wrote {out} ({W * 3}x{H})")
+
+    police = pygame.Surface((W * 3, H), pygame.SRCALPHA)
+    for index, facing in enumerate(("down", "up", "left")):
+        frame = pygame.Surface((W, H), pygame.SRCALPHA)
+        draw_police(frame, facing)
+        police.blit(frame, (index * W, 0))
+    police_out = ROOT / "assets" / "sprites" / "hazards" / "police.png"
+    pygame.image.save(police, police_out)
+    print(f"Wrote {police_out} ({W * 3}x{H})")
 
 
 if __name__ == "__main__":

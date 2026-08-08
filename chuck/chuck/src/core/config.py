@@ -209,6 +209,23 @@ NET_RANGE = 26.0
 NET_WIND_UP_SECONDS = 0.55
 NET_CAPTURE_SECONDS = 4.0
 
+# Police officers: stationary ranged hazards to route around, never a
+# cover-shooter. They reuse the spined devil's projectile wholesale --
+# bullets simply travel faster and are stopped by the same solid
+# geometry -- and add the one thing the devil lacks: a visible aim
+# before every shot, so a lane can always be read before it is fired.
+POLICE_HITBOX_W = 12
+POLICE_HITBOX_H = 10
+POLICE_FRAME_W = 16
+POLICE_FRAME_H = 30
+POLICE_INTERVAL = 2.4
+POLICE_AIM_SECONDS = 0.7
+POLICE_CONTACT_DAMAGE = 15
+BULLET_SPEED = 210.0
+BULLET_SANITY_DAMAGE = 18
+BULLET_HITBOX_LONG = 6
+BULLET_HITBOX_SHORT = 3
+
 # Chult undead share the established human footprint and sprite scale. Both
 # are deliberately durable; their low speeds leave room to evade them.
 UNDEAD_FRAME_W = 16

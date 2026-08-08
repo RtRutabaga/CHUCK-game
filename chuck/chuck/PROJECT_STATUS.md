@@ -1,8 +1,28 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. Animal Control officers now walk the daytime
-city, and their net holds Chuck still while it drains him. This file is
-required by the project rules and updated every session.
+Updated: Phase 11 is active. Police officers hold posts in the daytime city
+and fire down authored lanes, always aiming first. This file is required by
+the project rules and updated every session.
+
+## Latest implementation
+
+- Added police officers as stationary ranged hazards. The phase document asks
+  to reuse the spined devil's projectile architecture where practical, so a
+  bullet is literally that projectile subclassed: the same travel, the same
+  "stops dead against solid geometry" rule, retuned faster and smaller. The
+  devil's spine gained a `speed` class attribute so this reuse needed no
+  copying, and its behaviour is unchanged.
+- What the devil lacks and an officer has is a tell. The weapon comes up for
+  most of a second before each shot, with a muzzle flash on the shot itself,
+  so a lane can always be read before it is live. That is the difference
+  between a hazard to route around and an ambush, and a test asserts the aim
+  immediately precedes the round rather than merely occurring sometimes.
+- Officers never move and reset with the map. Two hold posts on City Day 2,
+  and a test walks each lane tile by tile to prove it reaches neither the
+  Ashtray nor the arrival before hitting a wall -- a hazard to route around
+  must never fire on a respawn point.
+- Chuck gains nothing ranged of his own; a test asserts the player has no
+  firing method and that officers cannot be scratched.
 
 ## Latest implementation
 

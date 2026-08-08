@@ -4,10 +4,10 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 Animal Control officers and the net capture
+- Current work: Phase 11 police officers and their bullets
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: Police officers as stationary ranged hazards
-  reusing the Spined Devil projectile architecture; then City Day 3-5
+- Next implementation slice: City Day 3-5 with increasing Astral damage;
+  then City Day 6's collision tableau and the forest fragment
 
 ## Completed This Pass
 

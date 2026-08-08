@@ -27,9 +27,15 @@ _VECTORS = {
 
 
 class FlamingSpine(Entity):
-    """One thrown spine, burning out against stone."""
+    """One thrown spine, burning out against stone.
+
+    Damage and speed are class attributes so other launchers can reuse
+    this travel-and-stop-at-solid behaviour without copying it; the
+    daytime city's police bullets are the same projectile, retuned.
+    """
 
     damage = config.SPINE_SANITY_DAMAGE
+    speed = config.SPINE_SPEED
 
     def __init__(self, center_x: float, center_y: float,
                  direction: str) -> None:
@@ -46,8 +52,8 @@ class FlamingSpine(Entity):
 
     def update(self, dt: float, tilemap) -> None:
         vx, vy = _VECTORS[self.direction]
-        dx = vx * config.SPINE_SPEED * dt
-        dy = vy * config.SPINE_SPEED * dt
+        dx = vx * self.speed * dt
+        dy = vy * self.speed * dt
         target_x, target_y = self.x + dx, self.y + dy
         new_x, new_y = collision.move_and_collide(
             self.x, self.y, self.width, self.height, dx, dy, tilemap

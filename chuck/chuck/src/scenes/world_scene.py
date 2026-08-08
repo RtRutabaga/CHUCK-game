@@ -49,6 +49,7 @@ from src.entities.city_rain import CityRain
 from src.entities.snake import TempleSnake
 from src.entities.flameskull import Flameskull
 from src.entities.spitting_orchid import OrchidSeed, SpittingOrchid
+from src.entities.police import Bullet, PoliceOfficer
 from src.entities.spined_devil import FlamingSpine, SpinedDevil
 from src.entities.sword_fighter import SwordFighter
 from src.entities.traffic import ROAD_TERRAIN, TrafficLane
@@ -412,7 +413,7 @@ class WorldScene(Scene):
                 "snake", "fire_snake",
                 "pirate_chef", "redcap", "thorn_mite",
             } or kind.startswith((
-                "sword_fighter:", "spined_devil:", "flameskull:",
+                "sword_fighter:", "spined_devil:", "police:", "flameskull:",
                 "spitting_orchid:", "lantern_moth:",
             ))
         ]
@@ -503,7 +504,7 @@ class WorldScene(Scene):
             }:
                 continue  # rebuilt with all enemies below
             elif kind.startswith((
-                "sword_fighter:", "spined_devil:", "flameskull:",
+                "sword_fighter:", "spined_devil:", "police:", "flameskull:",
                 "spitting_orchid:", "lantern_moth:",
             )):
                 continue  # rebuilt with all hazards below
@@ -814,6 +815,13 @@ class WorldScene(Scene):
         for spine in self.spines:
             spine.update(dt, self.tilemap)
         self.spines = [spine for spine in self.spines if spine.alive]
+        for officer in self.police:
+            bullet = officer.update(dt)
+            if bullet is not None:
+                self.bullets.append(bullet)
+        for bullet in self.bullets:
+            bullet.update(dt, self.tilemap)
+        self.bullets = [bullet for bullet in self.bullets if bullet.alive]
         for orchid in self.spitting_orchids:
             seed = orchid.update(dt)
             if seed is not None:
@@ -1217,6 +1225,22 @@ class WorldScene(Scene):
                     self.player.hurt_blink = config.HURT_COOLDOWN
                     self.game.audio.play_sfx("hurt")
                 break
+        for officer in self.police:
+            if overlaps(player_box, officer.hitbox):
+                if self.sanity.damage(officer.damage):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+                break
+        for bullet in self.bullets:
+            if bullet.alive and overlaps(player_box, bullet.hitbox):
+                bullet.alive = False
+                if self.sanity.damage(bullet.damage):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
+                break
+        # Spent rounds leave immediately, exactly as spines do, so a
+        # bullet can never land twice on its way out of the list.
+        self.bullets = [bullet for bullet in self.bullets if bullet.alive]
 
         for shot in self.battle_projectiles:
             if shot.alive and overlaps(player_box, shot.hitbox):
@@ -1434,10 +1458,11 @@ class WorldScene(Scene):
                      *self.hazards, *self.rats, *self.raccoons,
                       *self.undead, *self.raptors, *self.dinosaurs,
                      *self.redcaps, *self.snakes, *self.chefs, *self.fencers,
-                     *self.spined_devils, *self.flameskulls,
+                     *self.spined_devils, *self.police, *self.flameskulls,
                      *self.spitting_orchids,
                      *self.traffic_vehicles,
-                     *self.darts, *self.spines, *self.orchid_seeds,
+                     *self.darts, *self.spines, *self.bullets,
+                     *self.orchid_seeds,
                      *self.battle_projectiles,
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
@@ -1976,6 +2001,9 @@ class WorldScene(Scene):
         # Phlegethos hazards: perched spine-throwers and weaving skulls.
         self.spined_devils: list[SpinedDevil] = []
         self.spines: list[FlamingSpine] = []
+        # The daytime city's stationary shooters and their rounds.
+        self.police: list[PoliceOfficer] = []
+        self.bullets: list[Bullet] = []
         self.flameskulls: list[Flameskull] = []
         self.spitting_orchids: list[SpittingOrchid] = []
         self.orchid_seeds: list[OrchidSeed] = []
@@ -2107,6 +2135,10 @@ class WorldScene(Scene):
                 devil = SpinedDevil(cx, cy, kind.split(":", 1)[1])
                 devil.load_sprites(self.game.assets)
                 self.spined_devils.append(devil)
+            elif kind.startswith("police:"):
+                officer = PoliceOfficer(cx, cy, kind.split(":", 1)[1])
+                officer.load_sprites(self.game.assets)
+                self.police.append(officer)
             elif kind.startswith(("flameskull:", "lantern_moth:")):
                 # A lantern moth is the flameskull hazard as Feywild
                 # wildlife: same weave, same unclearable contact danger.
