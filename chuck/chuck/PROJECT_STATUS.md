@@ -1,8 +1,30 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. The night city has its soundtrack: a jazzy synth
-loop running unbroken across all six night maps. This file is required by the
-project rules and updated every session.
+Updated: Phase 11 is active. The sewer has its soundtrack too: dark funk in a
+concrete tunnel, running unbroken through all four. This file is required by
+the project rules and updated every session.
+
+## Latest implementation
+
+- Composed `city_sewer.wav`, an original 28-bar loop in G minor at 104 BPM,
+  sixty-five seconds long. The phase document points at the memorable groove
+  of classic underground music as a broad reference, so what was taken is the
+  idea -- a short low-register motif under a long walk -- and nothing else.
+  The riff is straight-feel sixteenth funk rising to a blue flat five and
+  falling back, where the reference is a swung chromatic descent.
+- The tests enforce that distance rather than trusting it: every onset lands
+  on a quarter of a beat (no triplet feel), the contour must rise and return,
+  and consecutive descending semitones are capped at one.
+- There is no lead melody at all. The sewer maps are long and winding and a
+  tune would wear out before they did, so the arrangement is bass, kit,
+  clipped wood, struck pipes answering from further down the tunnel, and
+  water. A test asserts every bass note sits below the night theme's melody.
+- Added two instrument voices: a hollow pipe built from odd harmonics only,
+  which is what makes it read as a tube rather than a bell, and a falling
+  drip. Both live in the shared palette.
+- Wired across all four sewer maps. The cue changes at the region boundary
+  and nowhere else, and a test asserts the medieval Waterdeep sewer keeps its
+  own quite different theme.
 
 ## Latest implementation
 

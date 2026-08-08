@@ -135,7 +135,8 @@ def test_the_culvert_joins_the_two_sewer_maps_both_ways() -> None:
     )
     # Sewer 1's own way back up to the night city is untouched.
     assert AREA_WALK_EXITS[(SEWER_1, "⮟")].destination == "modern_city_night_6"
-    assert AREA_MUSIC[MAP_NAME] is None  # the sewer theme is a later pass
+    # The sewer theme now runs unbroken through all four tunnels.
+    assert AREA_MUSIC[MAP_NAME] == "city_sewer.wav"
 
     directory, game, world = _game_and_world("modern_city_sewer_1")
     try:

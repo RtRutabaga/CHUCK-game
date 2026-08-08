@@ -228,6 +228,42 @@ def rain_wash(freq: float, dur: float, vel: float = 1.0) -> list[float]:
                 vel * 0.14)
 
 
+def hollow_pipe(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """A struck utility pipe: odd harmonics only, ringing in a tube.
+
+    Suppressing the even partials is what makes it read as hollow rather
+    than as a bell, and the short noise chiff at the front is the sound
+    of something small hitting metal in a concrete tunnel.
+    """
+    body = mix(
+        tone(freq, dur),
+        gain(tone(freq * 3.0, dur), 0.34),     # odd partials only: a tube
+        gain(tone(freq * 5.0, dur), 0.16),
+        gain(tone(freq * 7.0, dur), 0.07),
+    )
+    ring = envelope(lowpass(body, 3400), 0.002, dur * 0.72)
+    chiff = envelope(_highpassed_noise(0.02, 2200, seed=57), 0.001, 0.02)
+    return gain(mix(ring, gain(chiff, 0.35)), vel * 0.34)
+
+
+def sewer_drip(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """One drip landing in standing water: a fast downward blip.
+
+    Pitched by freq only loosely -- it falls away too quickly to be
+    heard as a note, which is the point.
+    """
+    n = int(min(dur, 0.16) * SAMPLE_RATE)
+    phase = 0.0
+    body = []
+    for index in range(n):
+        seconds = index / SAMPLE_RATE
+        # A sharp downward sweep: the classic drip contour.
+        sweep = max(0.25, 1.0 - seconds * 7.0)
+        phase = (phase + freq * sweep / SAMPLE_RATE) % 1.0
+        body.append(math.sin(phase * 2.0 * math.pi))
+    return gain(envelope(lowpass(body, 3000), 0.001, 0.09), vel * 0.22)
+
+
 # ---------------------------------------------------------------------------
 # Percussion (freq is ignored or used loosely for tuning)
 # ---------------------------------------------------------------------------

@@ -856,7 +856,9 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
       collision tableau and the Doug fir forest fragment.
 - [x] The night-city soundtrack is composed and wired across all six night
       maps: `city_night.wav`, a 32-bar D-minor jazz-synth loop.
-- [ ] The urban-sewer and day-city themes remain to be composed.
+- [x] The urban-sewer theme is composed and wired across all four tunnels:
+      `city_sewer.wav`, a 28-bar G-minor dark-funk loop, original throughout.
+- [ ] The day-city theme remains to be composed.
 
 ------------------------------------------------------------------------
 

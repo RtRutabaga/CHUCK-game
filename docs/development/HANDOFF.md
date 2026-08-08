@@ -4,10 +4,10 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 Night City soundtrack
+- Current work: Phase 11 Urban Sewer soundtrack
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: the urban-sewer theme (dark funk, original),
-  then the day-city counterpart; then City Day 3-5
+- Next implementation slice: the day-city theme, a cold overcast
+  counterpart to the night cue; then City Day 3-5
 
 ## Completed This Pass
 
