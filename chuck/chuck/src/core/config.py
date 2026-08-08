@@ -191,6 +191,12 @@ RACCOON_NOTICE_RANGE = 104.0
 # A walking businessperson moves slowly along one authored sidewalk segment.
 CITY_PEDESTRIAN_SPEED = 12.0
 CITY_PEDESTRIAN_RANGE = 42.0
+# Pedestrians who walk further than the default beat. The woman in the
+# red dress covers most of a block, which -- with the dress -- is what
+# makes her readable as a distinct figure rather than another commuter.
+PEDESTRIAN_PATROL_RANGES = {
+    "red_dress_woman": 168.0,
+}
 
 # Chult undead share the established human footprint and sprite scale. Both
 # are deliberately durable; their low speeds leave room to evade them.

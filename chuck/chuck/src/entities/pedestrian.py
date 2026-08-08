@@ -11,11 +11,19 @@ class PedestrianNPC(NPC):
     """An interactable NPC with a short, deterministic street patrol."""
 
     def __init__(self, center_x: float, center_y: float, npc_id: str,
-                 dialogue_id: str, axis: str = "h") -> None:
+                 dialogue_id: str, axis: str = "h",
+                 patrol_range: float | None = None) -> None:
         if axis not in {"h", "v"}:
             raise ValueError(f"Unknown pedestrian axis {axis!r}")
         super().__init__(center_x, center_y, npc_id, dialogue_id)
         self.axis = axis
+        # Most pedestrians share one short beat. The woman in the red
+        # dress is given a longer one, which is the whole of what makes
+        # her a landmark rather than another commuter.
+        self.patrol_range = (
+            config.CITY_PEDESTRIAN_RANGE if patrol_range is None
+            else patrol_range
+        )
         self.tilemap = None
         self._origin = self.x if axis == "h" else self.y
         self._direction = 1.0
@@ -33,7 +41,7 @@ class PedestrianNPC(NPC):
         )
         coordinate = self.x if self.axis == "h" else self.y
         if (
-            abs(coordinate - self._origin) >= config.CITY_PEDESTRIAN_RANGE
+            abs(coordinate - self._origin) >= self.patrol_range
             or (self.x, self.y) == old
         ):
             self._direction *= -1.0

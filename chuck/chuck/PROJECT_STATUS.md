@@ -1,8 +1,33 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Sewer 4 completes the four-map sewer region
-and ends at a maintenance ladder with daylight at its head. This file is
-required by the project rules and updated every session.
+Updated: Phase 11 is active. Chuck can now climb out of the sewer into the
+rainy daytime city, which is the same city at noon. This file is required by
+the project rules and updated every session.
+
+## Latest implementation
+
+- Added the `city_day` tileset. The daytime city is the same city, so its
+  generator imports the night sheet's own draw functions and washes flat
+  overcast daylight over the result rather than authoring a second set of
+  buildings that could drift out of step. Only two rows are authored
+  separately: windows, which stop glowing because nobody leaves a lamp on at
+  noon, and standing puddles, because rain reads on the ground in daylight
+  and vanished into the dark at night. A test asserts the day sheet is
+  measurably brighter than the night sheet row for row.
+- Added the 88x44 `City Day 1`, reached by the ladder. Its geometry is
+  deliberately looser than the night blocks -- one broad avenue, a plaza off
+  it, and a side street north -- and daylight shows the damage: the avenue
+  runs west and simply stops in Astral blocks rather than an invisible wall.
+- Wired City Sewer 4's `Climb up ladder?` prompt, which fires from the floor
+  at the ladder's foot so Chuck is on ordinary ground when asked. NO closes
+  silently. The reservation test that guarded this is now replaced by one
+  that exercises the real climb.
+- Added the woman in the red dress. She is the businessperson's exact
+  silhouette and umbrella in the one colour nothing else in this city wears,
+  and she says what everyone says. Pedestrian patrol range became per-NPC so
+  hers can be four times the default: that length, plus the dress, is the
+  whole of what makes her a landmark rather than another commuter.
+- It is still raining in the daytime city; only the sewer below is dry.
 
 ## Latest implementation
 

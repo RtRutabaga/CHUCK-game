@@ -8,7 +8,23 @@
         "arrival": "from_city_night_6",
         "facing": "up"
       },
-      { "label": "NO" }
+      {
+        "label": "NO"
+      }
+    ]
+  },
+  "city_sewer_ladder": {
+    "prompt": "Climb up ladder?",
+    "options": [
+      {
+        "label": "YES",
+        "goto": "modern_city_day_1",
+        "arrival": "from_city_sewer_4_ladder",
+        "facing": "up"
+      },
+      {
+        "label": "NO"
+      }
     ]
   }
 }

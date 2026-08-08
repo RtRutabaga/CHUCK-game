@@ -316,6 +316,9 @@ TILE_DEFS: dict[str, TileDef] = {
     # Toxic runoff: walkable, unmistakably not water, and the only sewer
     # terrain that both slows Chuck and takes Sanity.
     "ʓ": TileDef(solid=False, color=(126, 196, 44)),
+    # Standing rainwater on a daytime sidewalk. Purely cosmetic: it is
+    # ordinary pavement underfoot, not sludge and not a hazard.
+    "ꞏ": TileDef(solid=False, color=(138, 152, 164)),
     # The maintenance ladder out of the sewer: one human-scale 16x32
     # structure in two cells, the same shape as the ship's ladder.
     "Ɫ": TileDef(solid=False, color=(88, 96, 104)),
@@ -917,6 +920,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሶ": MarkerDef(kind="anchor:modern_city_6_anchor", under="."),
     "ሷ": MarkerDef(kind="boundary:modern_city_night_5", under="⮞"),
     "ሸ": MarkerDef(kind="choice:city_sewer_entrance", under="."),
+    "ቓ": MarkerDef(kind="choice:city_sewer_ladder", under="d"),
     # City Sewer 1 arrival, local Ashtray, return, and city-side return point.
     "ሹ": MarkerDef(kind="arrival:from_city_night_6", under="d"),
     "ሺ": MarkerDef(kind="anchor:modern_city_sewer_1_anchor", under="d"),
@@ -942,6 +946,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ቊ": MarkerDef(kind="anchor:modern_city_sewer_4_anchor", under="d"),
     "ቋ": MarkerDef(kind="boundary:modern_city_sewer_3", under="⮞"),
     "ቌ": MarkerDef(kind="arrival:from_city_sewer_4", under="d"),
+    # City Day 1: the first daylight map, its Ashtray, the woman in the
+    # red dress on her long patrol, and the reserved way on to Day 2.
+    "ቍ": MarkerDef(kind="arrival:from_city_sewer_4_ladder", under="."),
+    "ቐ": MarkerDef(kind="anchor:modern_city_day_1_anchor", under="."),
+    "ቑ": MarkerDef(kind="boundary:modern_city_day_2", under="⮞"),
+    "ቒ": MarkerDef(kind="patrol_npc:red_dress_woman:h", under="."),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

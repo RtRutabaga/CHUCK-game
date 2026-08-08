@@ -474,4 +474,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "modern_city_sewer_2": None,
     "modern_city_sewer_3": None,
     "modern_city_sewer_4": None,
+    "modern_city_day_1": None,
 }

@@ -5,10 +5,8 @@ turns north and climbs. It is the shortest of the four on the map but the
 tallest, and it ends at a human-scale maintenance ladder with grey
 daylight showing at the top of it.
 
-The ladder is authored scenery for now. Its "Climb up ladder?" prompt
-belongs to the pass that builds City Day 1, exactly as the sewer
-entrance's prompt waited for City Sewer 1 -- a visible way on is honest;
-a prompt that leads nowhere is not.
+Standing at its foot asks "Climb up ladder?", which is how Chuck leaves
+the sewer for the rainy daytime city.
 """
 
 from collections import deque
@@ -83,6 +81,9 @@ def build_map() -> list[str]:
     # ceiling rather than standing free in the middle of the room.
     grid[LADDER[1]][LADDER[0]] = "Ɫ"
     grid[LADDER[1] + 1][LADDER[0]] = "ɬ"
+    # The climb prompt fires from the floor at its foot, not from the
+    # ladder itself, so Chuck is standing on ordinary ground when asked.
+    grid[LADDER[1] + 2][LADDER[0]] = "ቓ"
 
     for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
         grid[row][RETURN_EXIT[0]] = "⮞"
@@ -103,7 +104,7 @@ SOLID = {"#", "b", "R", "i", "V"}
 
 def _under(char: str) -> str:
     return {"ቈ": "d", "ቊ": "d", "ቋ": "⮞", "q": "d", "ል": ".",
-            "Ɫ": "d", "ɬ": "d"}.get(char, char)
+            "Ɫ": "d", "ɬ": "d", "ቓ": "d"}.get(char, char)
 
 
 def _flood(rows, start):
@@ -142,6 +143,7 @@ def validate(rows: list[str]) -> None:
 
     text = "".join(rows)
     assert text.count("Ɫ") == 1 and text.count("ɬ") == 1
+    assert text.count("ቓ") == 1
     assert text.count("ቊ") == 1
     assert text.count("q") == len(RATS)
     assert text.count("ል") == len(CIGARETTES)

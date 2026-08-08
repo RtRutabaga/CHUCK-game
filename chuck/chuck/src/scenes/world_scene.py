@@ -173,8 +173,12 @@ class WorldScene(Scene):
             self.tilemap.open_tavern_entrance()
         self.tilemap.load_tileset(self.game.assets, tileset_for(self.map_name))
         self._world_time = 0.0  # drives water shimmer
+        # It is still raining in the daytime city, so both surface city
+        # tilesets get weather; only the sewer below them is dry.
         self.city_rain = (
-            CityRain() if MAP_TILESET.get(map_name) == "city" else None
+            CityRain()
+            if MAP_TILESET.get(map_name) in {"city", "city_day"}
+            else None
         )
         self._arrival_fade_t: float | None = 0.0 if fade_in else None
 
@@ -441,6 +445,7 @@ class WorldScene(Scene):
                 _prefix, npc_id, axis = kind.split(":", 2)
                 npc = PedestrianNPC(
                     cx, cy, npc_id=npc_id, dialogue_id=npc_id, axis=axis,
+                    patrol_range=config.PEDESTRIAN_PATROL_RANGES.get(npc_id),
                 )
                 npc.tilemap = self.tilemap
                 npc.load_sprites(self.game.assets)

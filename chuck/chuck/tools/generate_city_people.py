@@ -57,6 +57,39 @@ def draw_homeless_man(surface: pygame.Surface, facing: str) -> None:
         pygame.draw.rect(surface, (67, 49, 39), (6, 11, 4, 3))
 
 
+def draw_red_dress(surface: pygame.Surface, facing: str) -> None:
+    """The woman in the red dress: the businessperson's exact silhouette
+    and umbrella, in the one colour nothing else in this city wears. She
+    is a landmark to recognise on a long stretch of pavement, not a
+    character -- her line is the same as everyone else's."""
+    dress = (168, 34, 46)
+    dress_dark = (122, 22, 34)
+    skin = (214, 172, 136)
+    pygame.draw.ellipse(surface, (36, 40, 52), (0, 0, 16, 7))   # umbrella
+    pygame.draw.rect(surface, (17, 19, 26), (7, 4, 2, 11))
+    pygame.draw.rect(surface, skin, (5, 7, 6, 6))
+    # A coat that flares below the waist, so the silhouette reads as a
+    # dress at native scale rather than a recoloured suit.
+    pygame.draw.rect(surface, dress, (4, 13, 8, 8))
+    pygame.draw.polygon(surface, dress,
+                        ((4, 20), (12, 20), (13, 26), (3, 26)))
+    pygame.draw.line(surface, dress_dark, (4, 20), (3, 26))
+    pygame.draw.rect(surface, dress_dark, (7, 13, 2, 7))
+    pygame.draw.rect(surface, (31, 26, 30), (4, 26, 3, 3))
+    pygame.draw.rect(surface, (31, 26, 30), (9, 26, 3, 3))
+    if facing == "down":
+        pygame.draw.rect(surface, (52, 32, 24), (5, 7, 6, 3))   # dark hair
+        pygame.draw.rect(surface, (52, 32, 24), (4, 9, 2, 4))
+        pygame.draw.rect(surface, (52, 32, 24), (10, 9, 2, 4))
+        pygame.draw.rect(surface, (38, 32, 27), (6, 11, 1, 1))
+        pygame.draw.rect(surface, (38, 32, 27), (9, 11, 1, 1))
+    elif facing == "up":
+        pygame.draw.rect(surface, (52, 32, 24), (4, 7, 8, 6))
+    else:
+        pygame.draw.rect(surface, (52, 32, 24), (5, 7, 6, 5))
+        pygame.draw.rect(surface, (38, 32, 27), (5, 10, 1, 1))
+
+
 def draw_bottles(surface: pygame.Surface, variant: int) -> None:
     colours = ((74, 116, 92), (113, 83, 48), (55, 94, 113))
     placements = (
@@ -92,6 +125,15 @@ def main() -> None:
     )
     pygame.image.save(homeless, homeless_output)
     print(f"Wrote {homeless_output} ({W * 3}x{H})")
+
+    red_dress = pygame.Surface((W * 3, H), pygame.SRCALPHA)
+    for index, facing in enumerate(("down", "up", "left")):
+        frame = pygame.Surface((W, H), pygame.SRCALPHA)
+        draw_red_dress(frame, facing)
+        red_dress.blit(frame, (index * W, 0))
+    red_output = ROOT / "assets" / "sprites" / "npcs" / "red_dress_woman.png"
+    pygame.image.save(red_dress, red_output)
+    print(f"Wrote {red_output} ({W * 3}x{H})")
 
     for variant in range(2):
         bottles = pygame.Surface((16, 16), pygame.SRCALPHA)

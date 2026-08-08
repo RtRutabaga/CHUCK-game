@@ -490,6 +490,48 @@ CITY = Tileset(
     overhead_char_to_terrain={},
 )
 
+# --------------------------------------------------------------------------
+# The same city at noon (assets/tilesets/city_day.png). Its generator reuses
+# the night sheet's draw functions and washes overcast daylight over them, so
+# the two can never drift apart; only the windows and the new puddles are
+# authored separately.
+# --------------------------------------------------------------------------
+CITY_DAY = Tileset(
+    sheet="city_day.png",
+    order=[
+        ("city_day_roof", 4, 1),
+        ("city_day_cornice", 4, 1),
+        ("city_day_facade", 4, 1),
+        ("city_day_side_facade", 4, 1),
+        ("city_day_window", 4, 3),
+        ("city_day_sidewalk", 4, 1),
+        ("city_day_curb", 4, 1),
+        ("city_day_road", 4, 3),
+        ("city_day_crosswalk", 2, 1),
+        ("city_day_puddle", 3, 3),
+        ("astral_void", 2, 3),
+    ],
+    char_to_terrain={
+        "#": "city_day_roof",
+        "▱": "city_day_cornice",
+        "▤": "city_day_facade",
+        "▥": "city_day_side_facade",
+        "w": "city_day_window",
+        ".": "city_day_sidewalk",
+        ",": "city_day_curb",
+        "=": "city_day_road",
+        "▦": "city_day_crosswalk",
+        "ꞏ": "city_day_puddle",
+        "⮝": "city_day_sidewalk",
+        "⮟": "city_day_sidewalk",
+        "⮞": "city_day_sidewalk",
+        "⮜": "city_day_sidewalk",
+        "V": "astral_void",
+    },
+    overhead_char_to_terrain={},
+)
+
+
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
     "sewer": SEWER,
@@ -502,6 +544,7 @@ TILESETS: dict[str, Tileset] = {
     "feywild": FEYWILD,
     "tower": TOWER,
     "city": CITY,
+    "city_day": CITY_DAY,
     "city_sewer": CITY_SEWER,
 }
 
@@ -563,6 +606,7 @@ MAP_TILESET: dict[str, str] = {
     "modern_city_sewer_2": "city_sewer",
     "modern_city_sewer_3": "city_sewer",
     "modern_city_sewer_4": "city_sewer",
+    "modern_city_day_1": "city_day",
 }
 
 

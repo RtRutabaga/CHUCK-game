@@ -4,10 +4,8 @@ The region has run east, dropped south, and doubled back west; this map
 turns north and climbs to a human-scale maintenance ladder with daylight
 at its head.
 
-The ladder is deliberately still scenery. Its "Climb up ladder?" prompt
-belongs to the pass that builds City Day 1 -- the same way the sewer
-entrance's prompt waited for City Sewer 1 -- and one of these tests
-holds that reservation so it cannot be quietly forgotten.
+Its "Climb up ladder?" prompt now leads to City Day 1, which is where
+the phase's daytime half begins.
 """
 
 from collections import Counter, deque
@@ -120,23 +118,41 @@ def test_the_ladder_is_one_human_scale_structure_at_the_end() -> None:
     assert markers["anchor:modern_city_sewer_4_anchor"][0] in reachable
 
 
-def test_the_climb_prompt_is_still_reserved_for_the_day_city() -> None:
-    """A visible way on is honest; a prompt that leads nowhere is not.
-
-    When City Day 1 is authored, this test should be replaced by one that
-    exercises the real YES branch.
-    """
-    choices = ChoiceSystem()
+def test_the_ladder_asks_before_it_climbs() -> None:
+    """The prompt this map was built toward. Walking to the ladder's foot
+    asks; NO closes silently; YES leaves the sewer for the day city."""
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
-    kinds = {kind for kind, _pos in tilemap.object_spawns}
-    assert not any(kind.startswith("choice:") for kind in kinds)
-    assert "modern_city_day_1" not in AREA_WALK_EXITS.get(
-        (MAP_NAME, "Ɫ"), ("",))[0:1]
-    # The sewer entrance's prompt is the pattern this one will follow.
-    entrance = choices.get("city_sewer_entrance")
-    yes, no = entrance.options
-    assert yes.goto == "modern_city_sewer_1"
-    assert no.goto is None
+    triggers = [pos for kind, pos in tilemap.object_spawns
+                if kind == "choice:city_sewer_ladder"]
+    assert len(triggers) == 1
+    ladder = next(
+        (col, row)
+        for row in range(tilemap.height_tiles)
+        for col in range(tilemap.width_tiles)
+        if tilemap.terrain_at(col, row) == LADDER_TOP
+    )
+    trigger = (int(triggers[0][0] // config.TILE_SIZE),
+               int(triggers[0][1] // config.TILE_SIZE))
+    # It fires from the floor at the ladder's foot, so Chuck is standing
+    # on ordinary ground when the question appears.
+    assert trigger == (ladder[0], ladder[1] + 2)
+    assert not tilemap.is_solid(*trigger)
+
+    choice = ChoiceSystem().get("city_sewer_ladder")
+    assert choice.prompt == "Climb up ladder?"
+    yes, no = choice.options
+    assert yes.goto == "modern_city_day_1"
+    assert yes.arrival == "from_city_sewer_4_ladder" and yes.facing == "up"
+    assert no.goto is None and no.dialogue is None and no.action is None
+
+    directory, game, world = _game_and_world()
+    try:
+        world._on_choice(yes)
+        world.update(0.0)
+        assert game.scenes.current.map_name == "modern_city_day_1"
+    finally:
+        game._shutdown()
+        directory.cleanup()
 
 
 def test_sewer_3_leads_west_into_sewer_4_and_back() -> None:
