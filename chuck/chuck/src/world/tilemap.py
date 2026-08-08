@@ -915,6 +915,13 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሺ": MarkerDef(kind="anchor:modern_city_sewer_1_anchor", under="d"),
     "ሻ": MarkerDef(kind="boundary:modern_city_night_6", under="⮟"),
     "ሼ": MarkerDef(kind="arrival:from_city_sewer_1", under="."),
+    # City Sewer 2: the culvert on from Sewer 1, its own arrival,
+    # Ashtray, and the reciprocal way back.
+    "ሽ": MarkerDef(kind="boundary:modern_city_sewer_2", under="⮞"),
+    "ሾ": MarkerDef(kind="boundary:modern_city_sewer_1", under="⮜"),
+    "ሿ": MarkerDef(kind="arrival:from_city_sewer_1_culvert", under="d"),
+    "ቀ": MarkerDef(kind="anchor:modern_city_sewer_2_anchor", under="d"),
+    "ቁ": MarkerDef(kind="arrival:from_city_sewer_2", under="d"),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

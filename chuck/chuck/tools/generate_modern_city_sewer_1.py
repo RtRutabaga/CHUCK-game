@@ -59,6 +59,21 @@ def build_map() -> list[str]:
         for col in range(76, 81):
             grid[row][col] = "ƻ"
 
+    # The way on is a side culvert off the east leg. The southern end
+    # stays collided and ruined -- that damage is scenery now, not a
+    # placeholder, so the route turns rather than pushing through it.
+    for row in range(29, 34):
+        for col in range(84, WIDTH):
+            grid[row][col] = "d"
+    for col in range(84, WIDTH):
+        grid[28][col] = "R" if (col // 4) % 2 == 0 else "b"
+        grid[34][col] = "b" if (col // 5) % 2 == 0 else "R"
+    grid[28][86] = "i"
+    for row in range(30, 33):
+        grid[row][WIDTH - 1] = "⮞"
+    grid[31][WIDTH - 1] = "ሽ"
+    grid[31][88] = "ቁ"    # where Sewer 2 sets Chuck back down
+
     # Aggressive rats are spaced into distinct pressure beats, never at the
     # entry Ashtray. Loose cigarettes reward inspecting the long turns.
     for col, row in ((27, 20), (42, 18), (56, 21), (75, 17), (80, 29)):

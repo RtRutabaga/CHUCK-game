@@ -1,9 +1,30 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Sewer 1 now begins the modern utility-tunnel
-region through the completed City Night 6 entrance, preserving shared choice,
-map, checkpoint, rat-combat, collision, and respawn architecture. This file is
+Updated: Phase 11 is active. City Sewer 2 continues the modern utility-tunnel
+region as a deep vertical descent, so the sewer turns through north-south
+travel instead of repeating Sewer 1's long horizontal run. This file is
 required by the project rules and updated every session.
+
+## Latest implementation
+
+- Added the 46x62 `City Sewer 2`: three shafts stepping down and back west,
+  joined by two jogs, so the route turns four times and never runs straight.
+  It is deliberately the opposite shape to Sewer 1, which is wider than it is
+  tall, and the tests assert that contrast directly.
+- Opened Sewer 1's reserved continuation as a side culvert off its east leg,
+  wired both ways. Its southern Astral damage stays exactly as authored --
+  that ruin is scenery now rather than a placeholder, so the route turns
+  instead of pushing through it.
+- Added the map's physical Ashtray/shared-loader `City Sewer 2` checkpoint,
+  three cigarettes, and six spaced rats using the same aggressive ship-hold
+  pursuit. Pursuit respects shaft walls, no rat waits on the Ashtray Chuck
+  respawns at, and Sanity-zero return restores all six.
+- Wall decoration only ever redecorates a tile that is already wall, so a
+  brick or pipe run can never accidentally close a shaft; it is laid as a
+  continuous band rather than scattered, which is what gives Sewer 1 its
+  crisp tunnel edges.
+- The southern end stays visibly collided, reserved for Sewer 3. No toxic
+  sludge and no Astral jump sequence in this slice.
 
 ## Latest implementation
 

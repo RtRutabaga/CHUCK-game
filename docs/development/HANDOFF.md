@@ -3,11 +3,11 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `f7ba658` (City Night 6 sewer threshold)
-- Current work: Phase 11 City Sewer 1 foundation
+- Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
+- Current work: Phase 11 City Sewer 2 vertical descent
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Sewer 2, its Ashtray, reciprocal transition,
-  and aggressive rats; do not add toxic sludge or the harder jump sequence
+- Next implementation slice: toxic green sludge and the harder Astral jump
+  sequence, then Sewer Maps 3-4, the crocodile, and the daytime ladder
 
 ## Completed This Pass
 
