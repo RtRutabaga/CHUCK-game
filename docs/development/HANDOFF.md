@@ -4,10 +4,10 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 City Sewer 3 and the crocodile
+- Current work: Phase 11 City Sewer 4 and the maintenance ladder
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Sewer 4 and the maintenance ladder up into
-  the daytime city
+- Next implementation slice: rainy daytime art and City Day 1-2. That pass
+  owns wiring City Sewer 4's ladder prompt, which is deliberately reserved
 
 ## Completed This Pass
 

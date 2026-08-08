@@ -840,8 +840,11 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
 - [x] City Sewer 3 is built as an 84x40 flooded hall running east to west,
       with the region's single crocodile in its sludge channel and two ways
       across it.
-- [ ] Next: City Sewer 4 and the maintenance ladder up into the daytime
-      city, which begins the rainy day-city half of the phase.
+- [x] City Sewer 4 completes the four-map sewer region and ends at the
+      maintenance ladder. The ladder is authored scenery; its climb prompt
+      is reserved for the pass that builds City Day 1.
+- [ ] Next: rainy daytime art and City Day 1-2, wiring the ladder's
+      "Climb up ladder?" YES branch as that pass lands.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------

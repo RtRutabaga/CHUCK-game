@@ -1046,6 +1046,33 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "modern_city_sewer_4", "City Sewer 4", "modern_city_sewer_4",
+        arrival="from_city_sewer_3_west", facing="left",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "modern_city_sewer_4_anchor", "City Sewer 4 Ashtray",
+        "modern_city_sewer_4", position=(484.0, 533.0), facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "modern_city_sewer_3_return", "City Sewer 3 Return",
+        "modern_city_sewer_3", arrival="from_city_sewer_4", facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached",
+        }),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "modern_city_sewer_2_return", "City Sewer 2 Return",
         "modern_city_sewer_2", arrival="from_city_sewer_3", facing="up",
         required_flags=frozenset({

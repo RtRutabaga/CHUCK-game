@@ -1,9 +1,28 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Sewer 3 turns the region back west into a
-flooded hall where the phase's one crocodile holds a sludge channel -- and
-can always be walked around. This file is required by the project rules and
-updated every session.
+Updated: Phase 11 is active. City Sewer 4 completes the four-map sewer region
+and ends at a maintenance ladder with daylight at its head. This file is
+required by the project rules and updated every session.
+
+## Latest implementation
+
+- Added the 54x50 `City Sewer 4`. All four sewer maps are now playable and
+  connected, and the region turns four times rather than running in
+  parallel: east, then south, then back west, and now north and climbing.
+  The test asserts the route climbs more than it runs, which is the property
+  that matters -- not the shape of the bounding box.
+- Added a modern maintenance ladder as two cells forming one human-scale
+  16x32 structure, the same shape as the ship's ladder. It is set against
+  the chamber's north wall so it climbs into the ceiling, and its head shows
+  grey daylight -- the only light down here that is not a utility lamp, so
+  the way out reads before it is reached.
+- The ladder is deliberately still scenery. Its `Climb up ladder?` prompt
+  belongs to the pass that authors City Day 1, exactly as the sewer
+  entrance's prompt waited for City Sewer 1: a visible way on is honest, a
+  prompt that leads nowhere is not. A test holds that reservation so it
+  cannot be quietly forgotten.
+- The map carries its own Ashtray, four pursuing rats, three cigarettes, and
+  two sludge pools, and reciprocal travel to City Sewer 3 both ways.
 
 ## Latest implementation
 

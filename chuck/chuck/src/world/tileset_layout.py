@@ -141,6 +141,8 @@ CITY_SEWER = Tileset(
         ("city_sewer_warning", 2, 1),
         ("city_sewer_channel", 2, 3),
         ("city_sewer_sludge", 3, 3),
+        ("city_sewer_ladder_top", 1, 1),
+        ("city_sewer_ladder_bottom", 1, 1),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -155,6 +157,8 @@ CITY_SEWER = Tileset(
         "ƻ": "city_sewer_warning",
         "%": "city_sewer_channel",
         "ʓ": "city_sewer_sludge",
+        "Ɫ": "city_sewer_ladder_top",
+        "ɬ": "city_sewer_ladder_bottom",
         "V": "astral_void",
         "⮝": "city_sewer_floor",
         "⮟": "city_sewer_floor",
@@ -558,6 +562,7 @@ MAP_TILESET: dict[str, str] = {
     "modern_city_sewer_1": "city_sewer",
     "modern_city_sewer_2": "city_sewer",
     "modern_city_sewer_3": "city_sewer",
+    "modern_city_sewer_4": "city_sewer",
 }
 
 

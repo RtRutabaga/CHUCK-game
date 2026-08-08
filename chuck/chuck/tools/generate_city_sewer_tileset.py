@@ -120,6 +120,29 @@ def sludge(surface, variant, frame):
     surface.set_at(((phase * 3) % 16, (phase * 5 + 4) % 16), (226, 250, 168))
 
 
+def ladder_top(surface, variant, frame):
+    """The head of the maintenance ladder, and the daylight above it."""
+    wall(surface, variant, frame)
+    pygame.draw.rect(surface, (88, 96, 104), (3, 0, 3, 16))
+    pygame.draw.rect(surface, (88, 96, 104), (10, 0, 3, 16))
+    for y in range(1, 16, 4):
+        pygame.draw.rect(surface, (146, 154, 160), (3, y, 10, 2))
+    # A hatch open on grey daylight: the only light in the sewer that is
+    # not a utility lamp, so the way out reads before it is reached.
+    pygame.draw.rect(surface, (150, 162, 170), (5, 0, 6, 3))
+    pygame.draw.rect(surface, (196, 206, 210), (6, 0, 4, 2))
+
+
+def ladder_bottom(surface, variant, frame):
+    """Its foot, where Chuck stands to look up."""
+    floor(surface, variant, frame)
+    pygame.draw.rect(surface, (72, 80, 88), (3, 0, 3, 14))
+    pygame.draw.rect(surface, (72, 80, 88), (10, 0, 3, 14))
+    for y in range(1, 14, 4):
+        pygame.draw.rect(surface, (124, 132, 140), (3, y, 10, 2))
+    pygame.draw.rect(surface, (46, 52, 56), (2, 14, 12, 2))
+
+
 DRAW = {
     "city_sewer_wall": wall,
     "city_sewer_brick": brick,
@@ -131,6 +154,8 @@ DRAW = {
     "city_sewer_warning": warning,
     "city_sewer_channel": channel,
     "city_sewer_sludge": sludge,
+    "city_sewer_ladder_top": ladder_top,
+    "city_sewer_ladder_bottom": ladder_bottom,
     "astral_void": draw_astral_void,
 }
 

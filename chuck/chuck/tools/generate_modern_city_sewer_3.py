@@ -105,6 +105,7 @@ def build_map() -> list[str]:
     grid[ANCHOR[1]][ANCHOR[0]] = "ቃ"
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "ቄ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ቅ"
+    grid[FUTURE_EXIT[1]][3] = "ቌ"    # where Sewer 4 sets Chuck back down
     grid[CROCODILE[1]][CROCODILE[0]] = "ቆ"
     for col, row in RATS:
         assert grid[row][col] in {"d", ","}, (col, row, grid[row][col])
@@ -120,7 +121,7 @@ SOLID = {"#", "b", "R", "i", "V"}
 
 def _under(char: str) -> str:
     return {"ቂ": "d", "ቃ": "d", "ቄ": "⮞", "ቅ": "⮜", "ቆ": "ʓ",
-            "q": "d", "ል": "."}.get(char, char)
+            "q": "d", "ል": ".", "ቌ": "d"}.get(char, char)
 
 
 def _flood(rows, start, *, avoid_crocodile=False):

@@ -316,6 +316,10 @@ TILE_DEFS: dict[str, TileDef] = {
     # Toxic runoff: walkable, unmistakably not water, and the only sewer
     # terrain that both slows Chuck and takes Sanity.
     "ʓ": TileDef(solid=False, color=(126, 196, 44)),
+    # The maintenance ladder out of the sewer: one human-scale 16x32
+    # structure in two cells, the same shape as the ship's ladder.
+    "Ɫ": TileDef(solid=False, color=(88, 96, 104)),
+    "ɬ": TileDef(solid=False, color=(72, 80, 88)),
     # Rat-scale drainage gate: dirt beneath, iron bars overhead. Walking
     # through it is resolved by the area's transition configuration.
     "Q": TileDef(solid=False, color=config.COLOR_SEWER_DIRT,
@@ -933,6 +937,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ቅ": MarkerDef(kind="boundary:modern_city_sewer_4", under="⮜"),
     "ቆ": MarkerDef(kind="crocodile", under="ʓ", allow_solid=False),
     "ቇ": MarkerDef(kind="arrival:from_city_sewer_3", under="d"),
+    # City Sewer 4: the last tunnel, and the ladder up into daylight.
+    "ቈ": MarkerDef(kind="arrival:from_city_sewer_3_west", under="d"),
+    "ቊ": MarkerDef(kind="anchor:modern_city_sewer_4_anchor", under="d"),
+    "ቋ": MarkerDef(kind="boundary:modern_city_sewer_3", under="⮞"),
+    "ቌ": MarkerDef(kind="arrival:from_city_sewer_4", under="d"),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),
