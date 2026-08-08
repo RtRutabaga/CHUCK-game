@@ -958,6 +958,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ቖ": MarkerDef(kind="arrival:from_city_day_1", under="."),
     "ቘ": MarkerDef(kind="anchor:modern_city_day_2_anchor", under="."),
     "ቚ": MarkerDef(kind="arrival:from_city_day_2", under="."),
+    "ቛ": MarkerDef(kind="animal_control", under="."),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

@@ -198,6 +198,17 @@ PEDESTRIAN_PATROL_RANGES = {
     "red_dress_woman": 168.0,
 }
 
+# Animal Control officers. Durability and contact match a Chult zombie --
+# they are the same role -- and the net is what makes them their own
+# thing: a close-range hold that drains Sanity to zero over four seconds
+# and then hands off to the ordinary depletion the whole game uses.
+ANIMAL_CONTROL_SPEED = 21.0
+ANIMAL_CONTROL_SANITY_DAMAGE = 20
+ANIMAL_CONTROL_SCRATCHES = 8
+NET_RANGE = 26.0
+NET_WIND_UP_SECONDS = 0.55
+NET_CAPTURE_SECONDS = 4.0
+
 # Chult undead share the established human footprint and sprite scale. Both
 # are deliberately durable; their low speeds leave room to evade them.
 UNDEAD_FRAME_W = 16

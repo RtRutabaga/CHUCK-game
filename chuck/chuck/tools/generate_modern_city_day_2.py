@@ -19,8 +19,10 @@ ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 76
 HEIGHT = 58
 
-ARRIVAL = (2, 33)
-RETURN_EXIT = (0, 33)
+# Both edge crossings sit on pavement, never mid-road: nobody should
+# arrive standing in a live traffic lane.
+ARRIVAL = (2, 38)
+RETURN_EXIT = (0, 38)
 ANCHOR = (12, 38)
 FUTURE_EXIT = (38, 57)
 
@@ -32,6 +34,9 @@ TRAFFIC = (
     ((38, 24), "ሠ"), ((38, 52), "ሠ"),
 )
 BUSINESSPEOPLE = (((20, 27), "h"), ((56, 38), "h"), ((30, 50), "v"))
+# Two officers, both on wide pavement with a road between them and the
+# route, so they can be walked around rather than fought.
+OFFICERS = ((26, 38), (52, 27))
 CIGARETTES = ((24, 27), (46, 27), (36, 14), (62, 38))
 PUDDLES = ((10, 38), (26, 28), (44, 38), (30, 22), (58, 27), (36, 49))
 
@@ -110,6 +115,9 @@ def build_map() -> list[str]:
     for (col, row), char in TRAFFIC:
         assert grid[row][col] == "=", (col, row, grid[row][col])
         grid[row][col] = char
+    for col, row in OFFICERS:
+        assert grid[row][col] == ".", (col, row, grid[row][col])
+        grid[row][col] = "ቛ"
     for (col, row), axis in BUSINESSPEOPLE:
         assert grid[row][col] == ".", (col, row, grid[row][col])
         grid[row][col] = "ሖ" if axis == "h" else "ሞ"
@@ -124,7 +132,7 @@ SOLID = {"▥", "#", "▱", "▤", "w", "V"}
 
 def _under(char: str) -> str:
     return {"ቔ": "⮜", "ቕ": "⮟", "ቖ": ".", "ቘ": ".", "ሖ": ".", "ሞ": ".",
-            "ል": ".", "ꞏ": ".", "ሎ": "=", "ሏ": "=", "ሟ": "=",
+            "ል": ".", "ꞏ": ".", "ቛ": ".", "ሎ": "=", "ሏ": "=", "ሟ": "=",
             "ሠ": "="}.get(char, char)
 
 
@@ -166,6 +174,11 @@ def validate(rows: list[str]) -> None:
     day_one = (ROOT / "assets" / "maps" / "modern_city_day_1.txt")
     assert text.count("V") > day_one.read_text(encoding="utf-8").count("V")
 
+    assert text.count("ቛ") == len(OFFICERS)
+    # Neither officer starts within reach of the Ashtray Chuck respawns
+    # at, so returning is never straight back into a net.
+    for col, row in OFFICERS:
+        assert abs(col - ANCHOR[0]) + abs(row - ANCHOR[1]) > 8, (col, row)
     assert text.count("ቘ") == 1
     assert text.count("ል") == len(CIGARETTES)
     assert "ም" not in text, "no homeless man in the daytime city"

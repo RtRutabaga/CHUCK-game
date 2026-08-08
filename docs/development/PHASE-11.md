@@ -847,8 +847,10 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
       the red dress patrols the avenue.
 - [x] City Day 2 is a live crossroads with traffic on both streets and a
       whole quarter lost to Astral damage.
-- [ ] Next: Animal Control net capture and Police projectile behaviour,
-      then City Day 3-5 with increasing Astral damage.
+- [x] Animal Control officers and the net capture are in, standing on
+      City Day 2's pavements where they can be walked around.
+- [ ] Next: Police officers as stationary ranged hazards reusing the
+      Spined Devil projectile architecture, then City Day 3-5.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------

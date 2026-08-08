@@ -41,6 +41,13 @@ _STATS = {
         config.CROCODILE_SANITY_DAMAGE,
         config.CROCODILE_SCRATCHES,
     ),
+    # The daytime city (Phase 11). Animal Control officers are this role
+    # too; their net lives in the subclass, not here.
+    "animal_control": (
+        config.ANIMAL_CONTROL_SPEED,
+        config.ANIMAL_CONTROL_SANITY_DAMAGE,
+        config.ANIMAL_CONTROL_SCRATCHES,
+    ),
 }
 
 

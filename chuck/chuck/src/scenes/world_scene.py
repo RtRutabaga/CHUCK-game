@@ -52,6 +52,7 @@ from src.entities.spitting_orchid import OrchidSeed, SpittingOrchid
 from src.entities.spined_devil import FlamingSpine, SpinedDevil
 from src.entities.sword_fighter import SwordFighter
 from src.entities.traffic import ROAD_TERRAIN, TrafficLane
+from src.entities.animal_control import AnimalControlOfficer
 from src.entities.undead import UndeadEnemy
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
@@ -80,6 +81,7 @@ from src.systems.undead_release import (
     UndeadReleaseController, is_staged_undead,
 )
 from src.ui.tutorial_hint import TutorialHint
+from src.systems.net_capture import NetCapture
 from src.systems.sanity import SanitySystem
 from src.systems.ship_motion import deck_rock_offset
 from src.ui.hud import HUD
@@ -270,6 +272,9 @@ class WorldScene(Scene):
             default_position=(self.player.x, self.player.y),
             default_checkpoint_id=checkpoint_id,
         )
+        # Being netted holds Chuck still and drains him; it never becomes
+        # a second way to die. Map reset clears it like any enemy state.
+        self.net_capture = NetCapture()
         self._respawn_phase: str | None = None  # "out" | "hold" | "in"
         self._respawn_t = 0.0
         self._fall_t: float | None = None
@@ -400,7 +405,7 @@ class WorldScene(Scene):
             for kind, position in self.tilemap.object_spawns
             if kind in {
                 "cat", "rat", "raccoon", "zombie", "skeleton", "lemure",
-                "crocodile",
+                "crocodile", "animal_control",
                 "raptor",
                 "massive_dinosaur", "horned_devil", "displacer_beast",
                 "griffon",
@@ -490,7 +495,7 @@ class WorldScene(Scene):
                 )
             elif kind in {
                 "rat", "raccoon", "zombie", "skeleton", "lemure", "crocodile",
-                "raptor",
+                "animal_control", "raptor",
                 "massive_dinosaur", "horned_devil", "displacer_beast",
                 "griffon",
                 "snake", "fire_snake",
@@ -902,6 +907,11 @@ class WorldScene(Scene):
             self.camera.update(dt)
             return
 
+        if self.net_capture.active:
+            self._update_net_capture(dt)
+            self.camera.update(dt)
+            return
+
         self.sanity.update(dt)
         old_player_position = (self.player.x, self.player.y)
         self.player.ground_speed_multiplier = ground_speed_multiplier(
@@ -1230,6 +1240,7 @@ class WorldScene(Scene):
                     self.game.audio.play_sfx("hurt")
                 break
 
+        self._check_net_capture()
         terrain_hazard = touching_terrain_hazard(
             self.tilemap, player_box, self.player.jumping
         )
@@ -1329,6 +1340,7 @@ class WorldScene(Scene):
                 self._hint.draw(surface, config.HINT_ANCHOR)
             elif self._interactable_in_range() is not None:
                 self._hint.draw(surface, config.HINT_INTERACT)
+        self._draw_net_overlay(surface, offset)
         self._draw_respawn_overlay(surface)
         self._draw_arrival_fade(surface)
         self._draw_river_escape_boundary(surface)
@@ -1936,6 +1948,7 @@ class WorldScene(Scene):
         self.rats = []
         self.raccoons = []
         self.undead = []
+        self.net_capture.clear()
         self.raptors = []
         self.redcaps = []
         self.dinosaurs = []
@@ -2048,7 +2061,8 @@ class WorldScene(Scene):
                 raccoon.tilemap = self.tilemap
                 raccoon.load_sprites(self.game.assets)
                 self.raccoons.append(raccoon)
-            elif kind in {"zombie", "skeleton", "lemure", "crocodile"}:
+            elif kind in {"zombie", "skeleton", "lemure", "crocodile",
+                          "animal_control"}:
                 self._spawn_undead(kind, (cx, cy))
             elif kind == "raptor":
                 raptor = Raptor(cx, cy)
@@ -2116,12 +2130,67 @@ class WorldScene(Scene):
     def _spawn_undead(
         self, kind: str, position: tuple[float, float]
     ) -> None:
-        enemy = UndeadEnemy(*position, kind)
+        enemy = (
+            AnimalControlOfficer(*position) if kind == "animal_control"
+            else UndeadEnemy(*position, kind)
+        )
         enemy.tilemap = self.tilemap
         enemy.load_sprites(self.game.assets)
         self.undead.append(enemy)
 
     # ------------------------------------------------------------------
+    # Animal Control's net
+    # ------------------------------------------------------------------
+    def _update_net_capture(self, dt: float) -> None:
+        """Hold Chuck and drain him, then hand off to ordinary depletion.
+
+        Nothing here respawns anybody. When the drain runs out this calls
+        the same deplete() a lethal fall does, and the existing quiet
+        disappearance takes over from there.
+        """
+        self.sanity.update(dt)
+        for officer in self.undead:
+            officer.update(dt, self.player)
+        remaining = self.net_capture.advance(dt)
+        if remaining is None:
+            self.net_capture.clear()
+            self.sanity.deplete()
+            return
+        self.sanity.current = remaining
+
+    def _check_net_capture(self) -> None:
+        """Throw the net if any officer has finished winding up on Chuck."""
+        if self.net_capture.active or self._respawn_phase is not None:
+            return
+        for officer in self.undead:
+            if not isinstance(officer, AnimalControlOfficer):
+                continue
+            if officer.net_ready(self.player):
+                self.net_capture.begin(self.sanity.current)
+                self.game.audio.play_sfx("hurt")
+                return
+
+    def _draw_net_overlay(self, surface, camera_offset) -> None:
+        """The mesh over Chuck: the readable part of being caught."""
+        if not self.net_capture.active:
+            return
+        import pygame
+
+        ox, oy = camera_offset
+        box = self.player.hitbox
+        left = int(box.centerx) - 10 - ox
+        top = int(box.centery) - 12 - oy
+        rect = pygame.Rect(left, top, 20, 20)
+        pygame.draw.ellipse(surface, (60, 66, 74), rect, 2)
+        for offset in range(-8, 9, 4):
+            pygame.draw.line(surface, (208, 216, 222),
+                             (rect.centerx + offset, rect.top + 2),
+                             (rect.centerx + offset, rect.bottom - 2))
+            pygame.draw.line(surface, (208, 216, 222),
+                             (rect.left + 2, rect.centery + offset),
+                             (rect.right - 2, rect.centery + offset))
+
+    # ------------------------------------------------------------------
     # Astral fall hazard
     # ------------------------------------------------------------------
     def _begin_fall(

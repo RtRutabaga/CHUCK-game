@@ -1,8 +1,32 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Day 2 is a live crossroads with traffic on
-both streets and a whole quarter lost to Astral damage. This file is required
-by the project rules and updated every session.
+Updated: Phase 11 is active. Animal Control officers now walk the daytime
+city, and their net holds Chuck still while it drains him. This file is
+required by the project rules and updated every session.
+
+## Latest implementation
+
+- Added Animal Control officers as a subclass of the undead pursuer rather
+  than a new entity. Durability, contact damage and the straightforward walk
+  are inherited whole and match a Chult zombie exactly; the only new thing is
+  the net.
+- The net winds up visibly before it is thrown, so being caught is always
+  something Chuck had a moment to see coming, and the throw is a one-frame
+  event the scene consumes rather than a state that re-arms itself.
+- Being caught is deliberately not a second way to die. It is a scene state
+  alongside the climb, the fall and the respawn: Chuck is held still, Sanity
+  drains continuously to zero over four seconds, and then the *existing*
+  depletion hook runs -- the same quiet disappearance and Astral Anchor
+  return as anything else. A test asserts exactly one depletion fires.
+- The drain is computed from total elapsed time rather than subtracted frame
+  by frame, so a quarter-second frame and a 240Hz frame leave Sanity in the
+  same place. The tests check that at four different step sizes.
+- Map reset and leaving the map both clear any active net, and a net overlay
+  draws over Chuck so the held state is readable.
+- Two officers stand on City Day 2's wide pavements with a road between them
+  and the route. Tests assert neither the Ashtray nor the arrival is inside
+  an officer's notice range, and that neither stands in a traffic lane.
+- Fixed City Day 2's west arrival, which sat in a live traffic lane.
 
 ## Latest implementation
 
