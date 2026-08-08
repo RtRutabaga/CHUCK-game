@@ -1011,7 +1011,7 @@ CHECKPOINTS = (
     ),
     CheckpointDefinition(
         "modern_city_sewer_2_anchor", "City Sewer 2 Ashtray",
-        "modern_city_sewer_2", position=(148.0, 309.0), facing="down",
+        "modern_city_sewer_2", position=(212.0, 661.0), facing="down",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
             "modern_city_reached",

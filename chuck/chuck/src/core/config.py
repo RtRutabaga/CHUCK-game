@@ -237,6 +237,14 @@ FLAMESKULL_SANITY_DAMAGE = 16
 UNDEAD_NOTICE_RANGE = 112.0
 THORN_SANITY_DAMAGE = 10
 
+# Toxic sewer sludge is the modern city's single new terrain hazard. It is
+# deliberately built from two effects the game already has -- Chult's thorn
+# damage and the Feywild pollen slowdown -- rather than a sewer-only rule.
+# It bites harder than thorns and drags harder than pollen, so a sludge
+# channel reads as something to cross deliberately, never to stand in.
+SLUDGE_SANITY_DAMAGE = 14
+SLUDGE_SPEED_MULTIPLIER = 0.42
+
 # Feywild redcaps are gnome-sized pursuit enemies: sturdier than Chuck and
 # quick enough to pressure an exposed route, but unable to enter his narrow
 # root passages.

@@ -14,6 +14,7 @@ class TerrainHazard(NamedTuple):
 
 TERRAIN_HAZARDS = {
     "|": TerrainHazard("thorns", config.THORN_SANITY_DAMAGE),
+    "ʓ": TerrainHazard("sludge", config.SLUDGE_SANITY_DAMAGE),
 }
 
 

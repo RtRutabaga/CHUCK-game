@@ -10,6 +10,8 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+import math
+
 import pygame
 
 from generate_sewer_tileset import draw_astral_void
@@ -98,6 +100,26 @@ def channel(surface, variant, frame):
                 surface.set_at((x, y), (58, 77, 73))
 
 
+def sludge(surface, variant, frame):
+    """Toxic runoff. Deliberately a colour nothing else in the sewer uses,
+    so it can never be mistaken for the channel or a safe wet patch."""
+    surface.fill((44, 74, 22))
+    phase = variant * 2 + frame * 3
+    for y in range(16):
+        amount = 0.5 + 0.4 * math.sin(y * 0.7 + phase)
+        colour = tuple(
+            round(a + (b - a) * amount)
+            for a, b in zip((44, 74, 22), (126, 196, 44))
+        )
+        pygame.draw.line(surface, colour, (0, y), (15, y))
+    # Slow bubbles surfacing and popping between frames.
+    for index in range(3):
+        x = (variant * 5 + index * 6 + frame * 2) % 16
+        y = (variant * 3 + index * 7 + frame * 4) % 16
+        pygame.draw.circle(surface, (196, 236, 118), (x, y), 1)
+    surface.set_at(((phase * 3) % 16, (phase * 5 + 4) % 16), (226, 250, 168))
+
+
 DRAW = {
     "city_sewer_wall": wall,
     "city_sewer_brick": brick,
@@ -108,6 +130,7 @@ DRAW = {
     "city_sewer_wet": wet,
     "city_sewer_warning": warning,
     "city_sewer_channel": channel,
+    "city_sewer_sludge": sludge,
     "astral_void": draw_astral_void,
 }
 

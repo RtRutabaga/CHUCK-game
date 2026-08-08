@@ -313,6 +313,9 @@ TILE_DEFS: dict[str, TileDef] = {
     "ƺ": TileDef(solid=True, color=(49, 52, 61),
                  prop="city_sewer_entrance", under="▤"),
     "ƻ": TileDef(solid=False, color=(181, 142, 48)),
+    # Toxic runoff: walkable, unmistakably not water, and the only sewer
+    # terrain that both slows Chuck and takes Sanity.
+    "ʓ": TileDef(solid=False, color=(126, 196, 44)),
     # Rat-scale drainage gate: dirt beneath, iron bars overhead. Walking
     # through it is resolved by the area's transition configuration.
     "Q": TileDef(solid=False, color=config.COLOR_SEWER_DIRT,

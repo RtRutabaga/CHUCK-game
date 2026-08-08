@@ -834,8 +834,10 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
 - [x] City Sewer 2 is built as a 46x62 vertical descent: three shafts joined
       by two jogs, its own Ashtray, six pursuing rats, and a reciprocal
       culvert to Sewer 1. Sludge and the jump sequence remain for later.
-- [ ] Next: toxic green sludge and the harder Astral jump sequence, then
-      Sewer Maps 3-4, the crocodile, and the daytime ladder.
+- [x] Toxic green sludge is implemented as a terrain that registers in the
+      existing thorn-damage and pollen-slowdown tables, and the harder Astral
+      jump course occupies City Sewer 2's lower shaft.
+- [ ] Next: Sewer Maps 3-4, the crocodile encounter, and the daytime ladder.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------

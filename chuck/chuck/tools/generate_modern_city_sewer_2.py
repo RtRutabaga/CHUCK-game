@@ -21,11 +21,50 @@ HEIGHT = 62
 
 ARRIVAL = (5, 6)
 RETURN_EXIT = (0, 6)
-ANCHOR = (9, 19)
+# The map's one Ashtray sits on the jog, in clear sight of the drop but
+# outside it: the phase document forbids putting it inside the jump
+# sequence, and a failed jump should cost the course, not the whole map.
+ANCHOR = (13, 41)
 FUTURE_EXIT = (14, 61)
 
-RATS = ((10, 13), (22, 24), (34, 34), (33, 42), (15, 52), (12, 22))
-CIGARETTES = ((12, 8), (35, 30), (14, 56))
+# Narrow ledges, each cleared by one committed jump over a single Astral
+# gap. The course turns twice so it is never one straight drop.
+LEDGES = (
+    (10, 45, 14, 45),
+    (10, 47, 14, 47),
+    (10, 49, 14, 49),
+    (16, 49, 19, 49),
+    (21, 49, 24, 49),
+    (21, 51, 24, 51),
+    (21, 53, 24, 53),
+    (16, 53, 19, 53),
+    (10, 53, 14, 53),
+)
+# The chamber the course drops into. Not a ledge: sludge may pressure it.
+CHAMBER = (10, 55, 24, 58)
+# Every gap is exactly one tile across the axis it is crossed on, so no
+# required jump ever asks for more than the committed jump gives.
+GAPS = (
+    (10, 46, 14, 46),
+    (10, 48, 14, 48),
+    (15, 49, 15, 49),
+    (20, 49, 20, 49),
+    (21, 50, 24, 50),
+    (21, 52, 24, 52),
+    (20, 53, 20, 53),
+    (15, 53, 15, 53),
+    (10, 54, 14, 54),
+)
+# Sludge pressures the approaches and the landing chamber. It is never
+# laid on a ledge -- a slowed launch off a one-tile ledge is not fair.
+SLUDGE = (
+    (30, 22, 36, 25),
+    (11, 39, 20, 40),
+    (16, 56, 22, 58),
+)
+
+RATS = ((10, 13), (22, 24), (34, 34), (33, 43), (12, 22), (35, 39))
+CIGARETTES = ((12, 8), (35, 30), (22, 53))
 
 
 def build_map() -> list[str]:
@@ -43,8 +82,7 @@ def build_map() -> list[str]:
     room(6, 20, 38, 26)        # jog east
     room(30, 20, 38, 44)       # second shaft
     room(10, 38, 38, 44)       # jog back west
-    room(10, 38, 20, 58)       # third shaft, down to the collided end
-    room(10, 55, 24, 58)
+    room(10, 38, 24, 44)       # the landing above the drop
 
     # A slab walkway runs beside the runoff wherever the shaft is wide
     # enough to carry both, so the descent still reads as maintained.
@@ -54,17 +92,15 @@ def build_map() -> list[str]:
     for col in range(14, 30):
         grid[25][col] = ","
         grid[26][col] = ","
-    for row in range(45, 58):
-        grid[row][11] = ","
-        grid[row][12] = ","
+    for col in range(10, 25):
+        grid[44][col] = ","
     for row in range(11, 23):
         grid[row][13] = "%"
     for row in range(27, 43):
         grid[row][37] = "%"
-    for row in range(46, 57):
-        grid[row][19] = "%"
+
     for col, row in ((9, 12), (11, 22), (24, 24), (35, 29),
-                     (32, 41), (17, 47), (14, 57), (21, 56)):
+                     (32, 41), (14, 57), (21, 57)):
         grid[row][col] = "M"
 
     # Brick repairs, exposed pipe runs, and regularly spaced utility
@@ -89,6 +125,17 @@ def build_map() -> list[str]:
             grid[row][col] = "b" if run == 0 else "R"
             if (col * 3 + row * 7) % 19 == 0:
                 grid[row][col] = "i"
+
+    # The Astral jump course. The shaft below the jog is solid rock except
+    # for the ledges and the single-tile gaps between them, so the course
+    # is the only way down rather than one option beside a safe path.
+    for left, top, right, bottom in GAPS:
+        room(left, top, right, bottom, "V")
+    for left, top, right, bottom in LEDGES:
+        room(left, top, right, bottom, "d")
+    room(*CHAMBER, "d")
+    for left, top, right, bottom in SLUDGE:
+        room(left, top, right, bottom, "ʓ")
 
     # The culvert back to Sewer 1, and the Ashtray on the first landing.
     for row in range(5, 8):
@@ -119,25 +166,39 @@ def _under(char: str) -> str:
     return {"ሾ": "⮜", "ሿ": "d", "ቀ": "d", "q": "d", "ል": "."}.get(char, char)
 
 
+def _flood(rows, start, *, hops):
+    """Walk the map; optionally allow the established committed jump,
+    which clears exactly one tile of Astral onto safe floor."""
+    found = {start}
+    queue = deque([start])
+    while queue:
+        col, row = queue.popleft()
+        for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            step = (col + dc, row + dr)
+            land = (col + 2 * dc, row + 2 * dr)
+            for point in (step, land) if hops else (step,):
+                x, y = point
+                if not (0 <= x < WIDTH and 0 <= y < HEIGHT):
+                    continue
+                if point in found:
+                    continue
+                if point is land:
+                    gap = _under(rows[step[1]][step[0]])
+                    if gap != "V" or _under(rows[y][x]) in SOLID | {"V"}:
+                        continue
+                elif _under(rows[y][x]) in SOLID | {"V"}:
+                    continue
+                found.add(point)
+                queue.append(point)
+    return found
+
+
 def validate(rows: list[str]) -> None:
     assert len(rows) == HEIGHT and all(len(row) == WIDTH for row in rows)
     # The opposite shape to Sewer 1, which is wider than it is tall.
     assert HEIGHT > WIDTH
 
-    found = {ARRIVAL}
-    queue = deque([ARRIVAL])
-    while queue:
-        col, row = queue.popleft()
-        for point in ((col - 1, row), (col + 1, row),
-                      (col, row - 1), (col, row + 1)):
-            x, y = point
-            if not (0 <= x < WIDTH and 0 <= y < HEIGHT) or point in found:
-                continue
-            if _under(rows[y][x]) in SOLID:
-                continue
-            found.add(point)
-            queue.append(point)
-
+    found = _flood(rows, ARRIVAL, hops=True)
     assert RETURN_EXIT in found
     assert ANCHOR in found
     for point in (*RATS, *CIGARETTES):
@@ -145,15 +206,75 @@ def validate(rows: list[str]) -> None:
     # No rat waits on top of the Ashtray Chuck respawns at.
     assert ANCHOR not in set(RATS)
 
+    # The bottom chamber is only reachable by making the jumps.
+    landing = (CHAMBER[0] + 2, CHAMBER[1] + 1)
+    assert landing in found, landing
+    walked = _flood(rows, ARRIVAL, hops=False)
+    assert landing not in walked, "the jump course can be walked around"
+
+    # Every gap is exactly one tile wide on the axis it is crossed, so no
+    # required jump ever asks for more than the committed jump gives.
+    for left, top, right, bottom in GAPS:
+        # A gap is crossed across its narrow axis; that axis must be one
+        # tile. A wide gap crossed the long way would be unjumpable.
+        assert min(right - left, bottom - top) == 0, (left, top)
+        assert right - left == 0 or bottom - top == 0, (left, top)
+
+    # ...and no two gaps may meet, which would silently create a two-tile
+    # crossing that the committed jump cannot clear.
+    void = {(col, row)
+            for row in range(HEIGHT) for col in range(WIDTH)
+            if _under(rows[row][col]) == "V"}
+    for col, row in void:
+        # The reserved southern block is collided ground, not a crossing.
+        if not 44 <= row < 59:
+            continue
+        horizontal = {(col - 1, row), (col + 1, row)} & void
+        vertical = {(col, row - 1), (col, row + 1)} & void
+        assert not (horizontal and vertical), (col, row)
+
+    # Sludge pressures approaches, never a ledge: launching off a one-tile
+    # ledge while slowed would not be fair.
+    ledge_tiles = {
+        (col, row)
+        for left, top, right, bottom in LEDGES
+        for row in range(top, bottom + 1)
+        for col in range(left, right + 1)
+    }
+    sludge_tiles = {
+        (col, row)
+        for row in range(HEIGHT) for col in range(WIDTH)
+        if rows[row][col] == "ʓ"
+    }
+    assert sludge_tiles, "the sewer's new hazard never appears"
+    assert not (sludge_tiles & ledge_tiles), sorted(sludge_tiles & ledge_tiles)
+    # The tiles a jump actually launches from and lands on must be clean,
+    # including where the course drops into the chamber.
+    landings = set()
+    for left, top, right, bottom in GAPS:
+        for row in range(top, bottom + 1):
+            for col in range(left, right + 1):
+                for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    neighbour = (col + dc, row + dr)
+                    if not (0 <= neighbour[0] < WIDTH
+                            and 0 <= neighbour[1] < HEIGHT):
+                        continue
+                    if _under(rows[neighbour[1]][neighbour[0]]) not in SOLID | {
+                            "V"}:
+                        landings.add(neighbour)
+    assert not (sludge_tiles & landings), sorted(sludge_tiles & landings)
+    # ...and the Ashtray sits outside the course entirely.
+    assert ANCHOR not in ledge_tiles and ANCHOR not in sludge_tiles
+    assert ANCHOR[1] < LEDGES[0][1], "the Ashtray is inside the jump course"
+
     text = "".join(rows)
     assert text.count("ቀ") == 1
     assert text.count("ሿ") == 1 and text.count("ሾ") == 1
     assert text.count("q") == len(RATS)
     assert text.count("ል") == len(CIGARETTES)
-    for material in ("#", "b", "R", "i", "d", ",", "M", "%", "ƻ", "V"):
+    for material in ("#", "b", "R", "i", "d", ",", "M", "%", "ƻ", "V",
+                     "ʓ"):
         assert material in text, material
-    # Sludge and the jump sequence are a later slice; nothing here yet.
-    assert "≈" not in text
 
 
 def main() -> None:

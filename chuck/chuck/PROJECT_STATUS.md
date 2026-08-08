@@ -1,9 +1,32 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Sewer 2 continues the modern utility-tunnel
-region as a deep vertical descent, so the sewer turns through north-south
-travel instead of repeating Sewer 1's long horizontal run. This file is
-required by the project rules and updated every session.
+Updated: Phase 11 is active. Toxic sludge and the phase's harder Astral jump
+course now occupy City Sewer 2's lower shaft, both built from systems the
+game already had. This file is required by the project rules and updated
+every session.
+
+## Latest implementation
+
+- Added toxic green sludge as the sewer's single new terrain hazard. It is
+  not new code: it registers in the same table that gives Chult thorns their
+  Sanity damage and the same table that gives Feywild pollen its slowdown.
+  Generalising the second of those from one pollen constant to a small
+  terrain-to-multiplier map was the only engine change, and the slowest
+  terrain under the footprint now wins. Sludge bites harder than thorns and
+  drags harder than pollen, so it reads as something to cross deliberately.
+- Sludge is deliberately its own colour: bright toxic green with surfacing
+  bubbles, unmistakable against the dark channel and the grey wet floor.
+- Rebuilt City Sewer 2's lower shaft as the phase's harder jump course: nine
+  single-tile Astral gaps between narrow concrete ledges, turning twice
+  rather than dropping straight. The shaft either side of the course is
+  solid, so the course is the only way down. Validation proves the chamber
+  below is reachable with the committed jump, unreachable by walking, that
+  every gap is one tile across its crossed axis, and that no two gaps meet
+  at a corner -- which would silently create an unjumpable two-tile crossing.
+- Sludge pressures the approaches and the landing chamber but never a ledge
+  or a jump's launch or landing tile; a slowed launch off a one-tile ledge
+  would not be fair. The map's one Ashtray moved onto the jog above the drop,
+  outside the course and clear of every rat.
 
 ## Latest implementation
 

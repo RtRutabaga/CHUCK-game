@@ -140,6 +140,7 @@ CITY_SEWER = Tileset(
         ("city_sewer_wet", 3, 2),
         ("city_sewer_warning", 2, 1),
         ("city_sewer_channel", 2, 3),
+        ("city_sewer_sludge", 3, 3),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -153,6 +154,7 @@ CITY_SEWER = Tileset(
         "M": "city_sewer_wet",
         "ƻ": "city_sewer_warning",
         "%": "city_sewer_channel",
+        "ʓ": "city_sewer_sludge",
         "V": "astral_void",
         "⮝": "city_sewer_floor",
         "⮟": "city_sewer_floor",
