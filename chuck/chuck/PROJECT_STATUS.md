@@ -1,9 +1,32 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. Toxic sludge and the phase's harder Astral jump
-course now occupy City Sewer 2's lower shaft, both built from systems the
-game already had. This file is required by the project rules and updated
-every session.
+Updated: Phase 11 is active. City Sewer 3 turns the region back west into a
+flooded hall where the phase's one crocodile holds a sludge channel -- and
+can always be walked around. This file is required by the project rules and
+updated every session.
+
+## Latest implementation
+
+- Added the 84x40 `City Sewer 3`. The region now turns three ways: Sewer 1
+  ran east, Sewer 2 dropped south, and this one doubles back west, so the
+  four sewer maps never become parallel corridors.
+- Added the crocodile as a fourth kind in the existing undead role rather
+  than a new entity: as durable and as dangerous on contact as a Chult
+  zombie, but half again as fast, with the same straightforward pursuit. Its
+  16x30 sheet is the undead frame read top-down, where a long narrow animal
+  fits better than an upright person does; the turning frame is drawn curved
+  so its mass matches the head-on frames instead of halving.
+- The hall's middle is a sludge channel the crocodile lives in, crossed by a
+  north maintenance walkway and a south ledge with two connectors between
+  them. The phase document requires the animal stay avoidable, so a
+  notice-aware flood proves a route to the far side exists that never enters
+  its notice range -- while the channel itself stays contested.
+- Sludge is what makes it dangerous: slowed to 0.42 speed Chuck is still
+  quicker than it, but not by much, and the test asserts that margin rather
+  than assuming it.
+- Sewer 2's reserved southern end is now a marked hole in the collapsed
+  floor dropping into Sewer 3, wired both ways, with the return arrival set
+  down beside the hole rather than in it.
 
 ## Latest implementation
 

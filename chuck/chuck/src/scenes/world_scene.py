@@ -396,6 +396,7 @@ class WorldScene(Scene):
             for kind, position in self.tilemap.object_spawns
             if kind in {
                 "cat", "rat", "raccoon", "zombie", "skeleton", "lemure",
+                "crocodile",
                 "raptor",
                 "massive_dinosaur", "horned_devil", "displacer_beast",
                 "griffon",
@@ -483,7 +484,8 @@ class WorldScene(Scene):
                     int(cy // config.TILE_SIZE),
                 )
             elif kind in {
-                "rat", "raccoon", "zombie", "skeleton", "lemure", "raptor",
+                "rat", "raccoon", "zombie", "skeleton", "lemure", "crocodile",
+                "raptor",
                 "massive_dinosaur", "horned_devil", "displacer_beast",
                 "griffon",
                 "snake", "fire_snake",
@@ -2041,7 +2043,7 @@ class WorldScene(Scene):
                 raccoon.tilemap = self.tilemap
                 raccoon.load_sprites(self.game.assets)
                 self.raccoons.append(raccoon)
-            elif kind in {"zombie", "skeleton", "lemure"}:
+            elif kind in {"zombie", "skeleton", "lemure", "crocodile"}:
                 self._spawn_undead(kind, (cx, cy))
             elif kind == "raptor":
                 raptor = Raptor(cx, cy)

@@ -112,10 +112,12 @@ def test_everything_authored_is_reachable_and_nothing_waits_on_the_ashtray() -> 
     # Respawning must never drop Chuck onto a rat.
     assert anchor not in set(markers["rat"])
 
-    # The southern continuation stays collided rather than pretending
-    # Sewer 3 already exists.
+    # The southern end is collided either side of a marked opening: the
+    # floor gave way here, and that hole is now the way down to Sewer 3.
     assert all(tilemap.terrain_at(col, row) == "V"
-               for row in range(59, 62) for col in range(12, 18))
+               for row in range(59, 62) for col in (12, 13, 16, 17))
+    assert all(tilemap.terrain_at(col, row) == "⮟"
+               for row in range(59, 62) for col in (14, 15))
     # The sewer's new hazard is present, and shapes rather than covers.
     sludge = sum(row.count(SLUDGE) for row in tilemap._grid)
     total = tilemap.width_tiles * tilemap.height_tiles

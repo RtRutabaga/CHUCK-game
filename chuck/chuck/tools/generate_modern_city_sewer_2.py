@@ -144,11 +144,20 @@ def build_map() -> list[str]:
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ሿ"
     grid[ANCHOR[1]][ANCHOR[0]] = "ቀ"
 
-    # The southern continuation is still collided, marked before it drops.
+    # The southern end: collided either side, with a marked opening in the
+    # middle where the floor gave way into Sewer 3.
     for col in range(12, 18):
         for row in range(59, HEIGHT):
             grid[row][col] = "V"
         grid[58][col] = "ƻ"
+    for col in (14, 15):
+        for row in range(59, HEIGHT):
+            grid[row][col] = "⮟"
+        grid[58][col] = "d"
+    # The way back up sets Chuck down on the floor beside the hole, not
+    # in it -- standing on a transition tile would bounce him straight
+    # back through.
+    grid[58][15] = "ቇ"
 
     for col, row in RATS:
         assert grid[row][col] in {"d", ","}, (col, row, grid[row][col])
@@ -163,7 +172,8 @@ SOLID = {"#", "b", "R", "i", "V"}
 
 
 def _under(char: str) -> str:
-    return {"ሾ": "⮜", "ሿ": "d", "ቀ": "d", "q": "d", "ል": "."}.get(char, char)
+    return {"ሾ": "⮜", "ሿ": "d", "ቀ": "d", "q": "d", "ል": ".",
+            "ቇ": "⮟"}.get(char, char)
 
 
 def _flood(rows, start, *, hops):

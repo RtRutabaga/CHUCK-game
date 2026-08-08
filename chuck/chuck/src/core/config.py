@@ -199,6 +199,14 @@ UNDEAD_FRAME_H = 30
 ZOMBIE_SPEED = 18.0
 ZOMBIE_SANITY_DAMAGE = 20
 ZOMBIE_SCRATCHES = 8
+
+# The urban sewer's one large predator. It fills the zombie's role -- as
+# durable, as dangerous on contact -- but it is markedly faster, because a
+# crocodile in a straight tunnel should be something Chuck runs from rather
+# than something he backs away from.
+CROCODILE_SPEED = 27.0
+CROCODILE_SANITY_DAMAGE = 22
+CROCODILE_SCRATCHES = 9
 SKELETON_SPEED = 25.0
 SKELETON_SANITY_DAMAGE = 15
 SKELETON_SCRATCHES = 6

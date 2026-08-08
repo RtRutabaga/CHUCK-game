@@ -925,6 +925,14 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሿ": MarkerDef(kind="arrival:from_city_sewer_1_culvert", under="d"),
     "ቀ": MarkerDef(kind="anchor:modern_city_sewer_2_anchor", under="d"),
     "ቁ": MarkerDef(kind="arrival:from_city_sewer_2", under="d"),
+    # City Sewer 3: the flooded hall, its crocodile, and the reserved
+    # way on to Sewer 4.
+    "ቂ": MarkerDef(kind="arrival:from_city_sewer_2_drop", under="d"),
+    "ቃ": MarkerDef(kind="anchor:modern_city_sewer_3_anchor", under="d"),
+    "ቄ": MarkerDef(kind="boundary:modern_city_sewer_2", under="⮞"),
+    "ቅ": MarkerDef(kind="boundary:modern_city_sewer_4", under="⮜"),
+    "ቆ": MarkerDef(kind="crocodile", under="ʓ", allow_solid=False),
+    "ቇ": MarkerDef(kind="arrival:from_city_sewer_3", under="d"),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

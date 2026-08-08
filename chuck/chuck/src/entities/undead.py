@@ -33,6 +33,14 @@ _STATS = {
         config.LEMURE_SANITY_DAMAGE,
         config.LEMURE_SCRATCHES,
     ),
+    # The modern sewer (Phase 11): not undead at all, but the same role --
+    # durable, dangerous to touch, straightforward in pursuit. The upright
+    # 16x30 frame suits a top-down crocodile better than it suits a person.
+    "crocodile": (
+        config.CROCODILE_SPEED,
+        config.CROCODILE_SANITY_DAMAGE,
+        config.CROCODILE_SCRATCHES,
+    ),
 }
 
 

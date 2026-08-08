@@ -4,10 +4,10 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 toxic sludge and the Astral jump course
+- Current work: Phase 11 City Sewer 3 and the crocodile
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: Sewer Maps 3-4, the crocodile encounter, and the
-  maintenance ladder up into the daytime city
+- Next implementation slice: City Sewer 4 and the maintenance ladder up into
+  the daytime city
 
 ## Completed This Pass
 
