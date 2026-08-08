@@ -845,8 +845,10 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
 - [x] Rainy daytime art and City Day 1 are in: the day tileset reuses the
       night sheet's draw functions under an overcast wash, and the woman in
       the red dress patrols the avenue.
-- [ ] Next: City Day 2, then Animal Control net capture and Police
-      projectile behaviour.
+- [x] City Day 2 is a live crossroads with traffic on both streets and a
+      whole quarter lost to Astral damage.
+- [ ] Next: Animal Control net capture and Police projectile behaviour,
+      then City Day 3-5 with increasing Astral damage.
 - [ ] The dedicated night-city soundtrack remains an authored audio pass.
 
 ------------------------------------------------------------------------

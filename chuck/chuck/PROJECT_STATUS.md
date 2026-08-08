@@ -1,8 +1,25 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. Chuck can now climb out of the sewer into the
-rainy daytime city, which is the same city at noon. This file is required by
-the project rules and updated every session.
+Updated: Phase 11 is active. City Day 2 is a live crossroads with traffic on
+both streets and a whole quarter lost to Astral damage. This file is required
+by the project rules and updated every session.
+
+## Latest implementation
+
+- Added the 76x58 `City Day 2`. City Day 1 was one broad avenue with a plaza;
+  this is the other thing a city is -- a junction, two streets meeting at
+  right angles with traffic running on both, so a crossing has to be timed
+  twice rather than once. The traffic-lane markers are the night region's,
+  reused unchanged.
+- The daytime damage is spreading, as the phase document asks: the whole
+  north-west quarter of the junction is simply gone, and the streets that
+  served it end in it rather than at an invisible wall. The test compares
+  this map's Astral count against City Day 1's rather than just counting it,
+  so the progression is enforced and not merely intended.
+- The map carries its own Ashtray on a safe pavement, four cigarettes, three
+  businesspeople, and reciprocal travel with City Day 1. The woman in the red
+  dress deliberately stays on City Day 1, where her long patrol makes her
+  that street's landmark. No homeless man in the daytime region.
 
 ## Latest implementation
 

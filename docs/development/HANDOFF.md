@@ -4,10 +4,10 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 rainy daytime art, City Day 1, and the ladder
+- Current work: Phase 11 City Day 2, the crossroads
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Day 2, then Animal Control net capture
-  and Police projectile behaviour
+- Next implementation slice: Animal Control net capture and Police
+  projectile behaviour; then City Day 3-5
 
 ## Completed This Pass
 

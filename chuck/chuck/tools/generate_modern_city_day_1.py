@@ -95,6 +95,7 @@ def build_map() -> list[str]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][WIDTH - 1] = "⮞"
     grid[FUTURE_EXIT[1]][WIDTH - 1] = "ቑ"
+    grid[FUTURE_EXIT[1]][WIDTH - 3] = "ቚ"  # where Day 2 sets Chuck down
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቍ"
     grid[ANCHOR[1]][ANCHOR[0]] = "ቐ"
     for (col, row), axis in BUSINESSPEOPLE:
@@ -112,7 +113,7 @@ SOLID = {"▥", "#", "▱", "▤", "w", "V"}
 
 def _under(char: str) -> str:
     return {"ቍ": ".", "ቐ": ".", "ቑ": "⮞", "ሖ": ".", "ሞ": ".", "ቒ": ".",
-            "ል": ".", "ꞏ": "."}.get(char, char)
+            "ል": ".", "ꞏ": ".", "ቚ": "."}.get(char, char)
 
 
 def _flood(rows, start):

@@ -952,6 +952,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ቐ": MarkerDef(kind="anchor:modern_city_day_1_anchor", under="."),
     "ቑ": MarkerDef(kind="boundary:modern_city_day_2", under="⮞"),
     "ቒ": MarkerDef(kind="patrol_npc:red_dress_woman:h", under="."),
+    # City Day 2: the crossroads, and the reserved way on to Day 3.
+    "ቔ": MarkerDef(kind="boundary:modern_city_day_1", under="⮜"),
+    "ቕ": MarkerDef(kind="boundary:modern_city_day_3", under="⮟"),
+    "ቖ": MarkerDef(kind="arrival:from_city_day_1", under="."),
+    "ቘ": MarkerDef(kind="anchor:modern_city_day_2_anchor", under="."),
+    "ቚ": MarkerDef(kind="arrival:from_city_day_2", under="."),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),
