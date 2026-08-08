@@ -185,6 +185,49 @@ def elastic_bass(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     )
 
 
+def electric_key(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """A tine electric piano: the modern city's jazz harmony voice.
+
+    A struck metal tine over a soft body -- the bell partial rings a
+    little sharp and dies quickly, leaving a rounded sine to sustain, so
+    a stacked chord reads as an electric piano rather than a chime.
+    """
+    tine = gain(envelope(tone(freq * 4.02, dur), 0.001, min(0.09, dur)), 0.30)
+    body = mix(
+        tone(freq, dur),
+        gain(tone(freq * 2.0, dur), 0.22),
+        gain(tone(freq / 2, dur), 0.18),
+    )
+    voiced = envelope(lowpass(body, 2600), 0.004, dur * 0.75)
+    return gain(mix(voiced, tine), vel * 0.42)
+
+
+def synth_bass(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """A clipped, syncopated square bass with a fast filter thump.
+
+    Rounder than the temple's low pulse and drier than the elastic funk
+    bass: it wants to sit under a jazz chord and get out of the way.
+    """
+    body = mix(
+        tone(freq, dur, "square"),
+        gain(tone(freq / 2, dur), 0.42),
+    )
+    thump = envelope(lowpass(body, 480), 0.002, min(0.05, dur * 0.4))
+    voiced = envelope(lowpass(body, 900), 0.004, min(0.22, dur * 0.55))
+    return gain(mix(voiced, gain(thump, 0.5)), vel * 0.66)
+
+
+def rain_wash(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Wet reflected air: filtered noise swelling and falling away.
+
+    Pitched loosely by freq so it can follow the harmony without ever
+    being heard as a note.
+    """
+    body = lowpass(noise(dur), max(400.0, min(2400.0, freq * 3.0)))
+    return gain(tremolo(envelope(body, dur * 0.35, dur * 0.6), 0.6, 0.25),
+                vel * 0.14)
+
+
 # ---------------------------------------------------------------------------
 # Percussion (freq is ignored or used loosely for tuning)
 # ---------------------------------------------------------------------------

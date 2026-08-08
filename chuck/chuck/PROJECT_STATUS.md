@@ -1,8 +1,31 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. Police officers hold posts in the daytime city
-and fire down authored lanes, always aiming first. This file is required by
-the project rules and updated every session.
+Updated: Phase 11 is active. The night city has its soundtrack: a jazzy synth
+loop running unbroken across all six night maps. This file is required by the
+project rules and updated every session.
+
+## Latest implementation
+
+- Composed `city_night.wav`, an original 32-bar loop in D minor at 96 BPM,
+  eighty seconds long. The harmony is jazz rather than pop -- ii-V motion, a
+  flat-six detour, sevenths and ninths stacked four notes deep -- and the
+  hook is deliberately short enough to whistle after one map, because it is
+  heard across six.
+- Its shape is state, harmonise, rest, return: the melody drops out entirely
+  for a six-bar underpass so that its return an octave up lands. Tests assert
+  that structure from the note data rather than trusting the arrangement.
+- Added three instrument voices for the region: a tine electric piano for the
+  jazz harmony, a clipped syncopated square bass, and a filtered noise wash
+  that keeps wet air under everything. They live in the shared instrument
+  palette, not in the composition.
+- The render clears the same gates the earlier area themes are held to:
+  eighty seconds, peak 0.72, RMS level with Chult and the Feywild, and a loop
+  seam far tighter than the temple's. The first render sat noticeably quieter
+  than its neighbours and the headroom was lifted to match.
+- Wired across all six night maps so the cue never restarts between them, per
+  the phase document's continuity rule. The sewer and day city stay silent
+  until their own themes are composed, and a test asserts they never borrow
+  this one.
 
 ## Latest implementation
 

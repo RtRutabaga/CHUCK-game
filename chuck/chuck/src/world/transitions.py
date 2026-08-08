@@ -470,12 +470,12 @@ AREA_MUSIC: dict[str, str | None] = {
     "zephyros_aerie": "zephyros_tower.wav",
     # The dedicated modern-city theme belongs to Phase 11. Silence the
     # completed one-shot flight cue at the contained playable endpoint.
-    "modern_city_arrival": None,
-    "modern_city_night_2": None,
-    "modern_city_night_3": None,
-    "modern_city_night_4": None,
-    "modern_city_night_5": None,
-    "modern_city_night_6": None,
+    "modern_city_arrival": "city_night.wav",
+    "modern_city_night_2": "city_night.wav",
+    "modern_city_night_3": "city_night.wav",
+    "modern_city_night_4": "city_night.wav",
+    "modern_city_night_5": "city_night.wav",
+    "modern_city_night_6": "city_night.wav",
     "modern_city_sewer_1": None,
     "modern_city_sewer_2": None,
     "modern_city_sewer_3": None,

@@ -135,7 +135,8 @@ def test_city_handoff_enters_the_rainy_phase11_start_map() -> None:
         world = game.checkpoints.load_checkpoint("modern_city_1")
         assert world.map_name == "modern_city_arrival"
         assert MAP_TILESET[world.map_name] == "city"
-        assert AREA_MUSIC[world.map_name] is None
+        # The night-city theme now starts the moment Chuck lands.
+        assert AREA_MUSIC[world.map_name] == "city_night.wav"
         assert AREA_WALK_EXITS[(world.map_name, "⮝")].destination == (
             "modern_city_night_2"
         )
