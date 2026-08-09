@@ -4,10 +4,11 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 City Day 6 -- the chase and the spinning officer
+- Current work: Phase 11 is feature-complete -- the Doug fir exit has landed
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: wire the Doug fir portal's YES branch to a
-  short side-view cutscene, then close Phase 11
+- Next implementation slice: walk the Phase 11 acceptance criteria against
+  the built region, then open Phase 12 from the recorded
+  `doug_fir_transition_completed` flag
 
 ## Completed This Pass
 

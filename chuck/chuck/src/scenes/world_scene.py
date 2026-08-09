@@ -640,6 +640,16 @@ class WorldScene(Scene):
                     )
                 )
                 return
+            if action == "doug_fir_portal":
+                from src.scenes.doug_fir_cutscene_scene import (
+                    DougFirCutsceneScene,
+                )
+                self.game.scenes.replace(
+                    DougFirCutsceneScene(
+                        self.game, sanity=self.sanity.current
+                    )
+                )
+                return
             if action == "zephyros_intro":
                 from src.scenes.zephyros_intro_cutscene_scene import (
                     ZephyrosIntroCutsceneScene,

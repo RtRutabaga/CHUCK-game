@@ -284,8 +284,10 @@ def test_the_portal_asks_and_the_beholder_theme_returns() -> None:
     assert choice.prompt == "Enter planar portal?"
     yes, no = choice.options
     assert (yes.label, no.label) == ("YES", "NO")
-    # NO closes with no further text; YES is wired by the exit pass.
+    # NO closes with no further text; YES leaves the phase.
     assert no.goto is None and no.dialogue is None and no.action is None
+    assert yes.action == "doug_fir_portal"
+    assert yes.goto is None and yes.dialogue is None
 
     # The phase's one deliberate music switch.
     assert AREA_MUSIC[MAP_NAME] == "boss_battle.wav"

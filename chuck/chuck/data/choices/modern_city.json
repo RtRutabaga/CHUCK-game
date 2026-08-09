@@ -31,7 +31,8 @@
     "prompt": "Enter planar portal?",
     "options": [
       {
-        "label": "YES"
+        "label": "YES",
+        "action": "doug_fir_portal"
       },
       {
         "label": "NO"

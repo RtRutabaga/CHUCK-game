@@ -1,10 +1,25 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Day 6 puts three worlds on one screen and is
-now in motion; only the phase exit remains. This file is required by the
-project rules and updated every session.
+Updated: Phase 11 is feature-complete. Sixteen city maps, three soundtracks,
+and an exit through a tree. This file is required by the project rules and
+updated every session.
 
 ## Latest implementation
+
+- The Douglas fir portal is wired. Choosing YES at the forest block plays a
+  short side-view cutscene: black, a night stand fading up, Chuck walking out
+  of the trunk of the largest fir as if the tree were a doorway, a hold, then
+  black again.
+- The reveal is ordered so the environment lands first -- nothing moves until
+  the fade has finished, because Chuck walking during it would steal the one
+  moment the new region gets.
+- The boundary is the interesting part. Phase 11 ends with no playable forest,
+  so rather than inventing a holding map the cutscene records the crossing as
+  the `doug_fir_transition_completed` progress flag, writes it into the save
+  that still points at the City Day 6 Ashtray, and returns to the title. That
+  means Continue comes back to the portal rather than to a region that has not
+  been built, and Phase 12 opens from a recorded fact instead of a half-entered
+  state.
 
 - City Day 6 is now in motion. Two businesspeople run for their lives with a
   raptor harrying each, and one police officer spins on the spot firing wide.

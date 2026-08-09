@@ -32,6 +32,7 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "captain_confronted",
     "feywild_reached",
     "modern_city_reached",
+    "doug_fir_transition_completed",
 })
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
