@@ -862,8 +862,10 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
       the dinosaur over the prone businessperson, raptors, the damaged
       northern building, the Douglas fir block, and the Beholder-theme
       switch. All sixteen playable maps now exist.
-- [ ] Next: the fleeing businesspeople and the spinning police officer,
-      then the planar-portal cutscene and phase exit.
+- [x] City Day 6's moving cast is in: two businesspeople running
+      authored safe segments with a raptor harrying each, and the
+      spinning officer firing wide on the Beholder archer's language.
+- [ ] Next: the planar-portal cutscene and the phase exit.
 - Note: the "increasingly common Astral blocks" rule is enforced as a
   density ratchet across the daytime maps -- no map may be a smaller
   share of void than the one before it. Density rather than raw count,

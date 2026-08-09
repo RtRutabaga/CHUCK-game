@@ -4,10 +4,10 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 City Day 6 ground and standing cast
+- Current work: Phase 11 City Day 6 -- the chase and the spinning officer
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: the fleeing businesspeople and the spinning
-  police officer; then the planar-portal cutscene and phase exit
+- Next implementation slice: wire the Doug fir portal's YES branch to a
+  short side-view cutscene, then close Phase 11
 
 ## Completed This Pass
 

@@ -1,4 +1,10 @@
-"""Simple city pedestrians that patrol one authored sidewalk segment."""
+"""Simple city pedestrians that patrol one authored sidewalk segment.
+
+The same walk covers somebody running for their life. A fleeing
+pedestrian is a patrol at sprint speed on an authored segment, which
+is what keeps the City Day 6 chase honest: the path was drawn safe, so
+no amount of panic can run a businessperson into the Astral Sea.
+"""
 
 from __future__ import annotations
 
@@ -12,7 +18,8 @@ class PedestrianNPC(NPC):
 
     def __init__(self, center_x: float, center_y: float, npc_id: str,
                  dialogue_id: str, axis: str = "h",
-                 patrol_range: float | None = None) -> None:
+                 patrol_range: float | None = None,
+                 fleeing: bool = False) -> None:
         if axis not in {"h", "v"}:
             raise ValueError(f"Unknown pedestrian axis {axis!r}")
         super().__init__(center_x, center_y, npc_id, dialogue_id)
@@ -24,6 +31,9 @@ class PedestrianNPC(NPC):
             config.CITY_PEDESTRIAN_RANGE if patrol_range is None
             else patrol_range
         )
+        self.fleeing = fleeing
+        self.speed = (config.CITY_FLEEING_SPEED if fleeing
+                      else config.CITY_PEDESTRIAN_SPEED)
         self.tilemap = None
         self._origin = self.x if axis == "h" else self.y
         self._direction = 1.0
@@ -32,7 +42,7 @@ class PedestrianNPC(NPC):
     def update(self, dt: float) -> None:
         if self.tilemap is None:
             return
-        amount = self._direction * config.CITY_PEDESTRIAN_SPEED * dt
+        amount = self._direction * self.speed * dt
         dx, dy = (amount, 0.0) if self.axis == "h" else (0.0, amount)
         old = (self.x, self.y)
         self.x, self.y = collision.move_and_collide(

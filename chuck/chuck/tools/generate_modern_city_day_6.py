@@ -13,8 +13,11 @@ create unavoidable damage at the Ashtray or the arrival. The validator
 proves exactly that: a clear route exists from the arrival to the portal
 that never crosses a police lane or comes within notice of the dinosaur.
 
-This slice lays the ground and the standing cast. The fleeing
-businesspeople and the spinning officer are their own pass.
+The chase is authored rather than emergent: each fleeing businessperson
+runs a segment that was drawn safe, and a raptor sits close enough
+behind to be visibly after them rather than after Chuck. The spinning
+officer is the one hazard here with no lane to read, so his rounds fall
+short and the validator keeps the safe route outside that disc.
 """
 
 from collections import deque
@@ -37,7 +40,15 @@ RAPTORS = ((30, 32), (44, 38), (36, 41))
 DINOSAUR = (40, 34)
 PRONE = (42, 36)
 
+# Two people running, each with a raptor a couple of tiles behind. One
+# is on the plaza above the jungle and one on its southern edge, and
+# both runs are authored safe ground: however hard they panic, and
+# whichever way the raptor drives them, the path cannot end in the Sea.
+FLEEING = (((30, 24), "h"), ((50, 44), "h"))
+CHASERS = ((34, 24), (46, 44))
+
 POLICE = (((22, 34), "ቝ"), ((54, 30), "ቜ"))
+SPIN_OFFICER = (60, 52)
 BUSINESSPEOPLE = (((12, 50), "h"), ((70, 50), "h"))
 CIGARETTES = ((8, 21), (72, 21), (22, 40), (54, 40))
 JUMPS = ((18, 18), (62, 18), (18, 48), (62, 48))
@@ -137,6 +148,14 @@ def build_map() -> list[str]:
     grid[PRONE[1]][PRONE[0]] = "ቷ"
     for col, row in RAPTORS:
         grid[row][col] = "ቸ"
+    for (col, row), axis in FLEEING:
+        assert grid[row][col] in {".", ",", "ᵹ"}, (col, row, grid[row][col])
+        grid[row][col] = "ቻ" if axis == "h" else "ቼ"
+    for col, row in CHASERS:
+        assert grid[row][col] in {".", ",", "ᵹ"}, (col, row, grid[row][col])
+        grid[row][col] = "ች"
+    assert grid[SPIN_OFFICER[1]][SPIN_OFFICER[0]] in {".", ","}
+    grid[SPIN_OFFICER[1]][SPIN_OFFICER[0]] = "ቺ"
     for (col, row), char in POLICE:
         assert grid[row][col] == ".", (col, row, grid[row][col])
         grid[row][col] = char
@@ -150,11 +169,20 @@ SOLID = {"#", "▱", "▤", "▥", "w", "ᵺ", "ᶂ"}
 LANES = {"ቝ": (1, 0), "ቜ": (-1, 0), "በ": (0, -1), "ቡ": (0, 1)}
 # config.DINOSAUR_NOTICE_RANGE is 128px; at 16px tiles that is eight.
 DINOSAUR_NOTICE = 8.0
+# config.SPIN_BULLET_RANGE is 84px -- five and a quarter tiles -- rounded
+# up and given a tile of margin. The lane officers cover a line that can
+# be read and timed; the spinning one covers a disc that cannot, so the
+# safe route has to stay out of it entirely.
+SPIN_DANGER = 7.0
+# config.CITY_PEDESTRIAN_RANGE is 42px: a runner covers three tiles
+# either side of where they start.
+FLEE_TILES = 3
 
 
 def _under(char: str) -> str:
     return {"ቲ": "⮝", "ታ": ".", "ቴ": ".", "ት": ".", "ቶ": "ᵹ", "ቷ": "ᵹ",
             "ቸ": "ᵹ", "ሖ": ".", "ሞ": ".", "ል": ".",
+            "ች": ".", "ቺ": ".", "ቻ": ".", "ቼ": "ᵹ",
             **{char: "." for char in LANES}}.get(char, char)
 
 
@@ -212,6 +240,7 @@ def validate(rows: list[str]) -> None:
         (col, row)
         for row in range(HEIGHT) for col in range(WIDTH)
         if math.dist((col, row), DINOSAUR) <= DINOSAUR_NOTICE
+        or math.dist((col, row), SPIN_OFFICER) <= SPIN_DANGER
     }
     assert ANCHOR not in hazard and ARRIVAL not in hazard
     clear = _flood(rows, ARRIVAL, avoid=hazard)
@@ -225,6 +254,22 @@ def validate(rows: list[str]) -> None:
     for point in (DINOSAUR, PRONE, *RAPTORS):
         assert CHULT_PATCH[0] <= point[0] <= CHULT_PATCH[2], point
         assert CHULT_PATCH[1] <= point[1] <= CHULT_PATCH[3], point
+
+    # The runs are authored safe: a fleeing person covers the patrol
+    # range either side of where they start, and none of it may be Sea.
+    # This is the whole reason the chase is authored rather than a
+    # pursuit AI -- panic must not be able to run somebody off the edge.
+    for (col, row), axis in FLEEING:
+        for offset in range(-FLEE_TILES, FLEE_TILES + 1):
+            point = ((col + offset, row) if axis == "h"
+                     else (col, row + offset))
+            char = _under(rows[point[1]][point[0]])
+            assert char not in SOLID and char != "V", (point, char)
+
+    # ...and each raptor is close enough behind its runner to read as
+    # chasing that person rather than as loose scenery near Chuck.
+    for chaser, (runner, _axis) in zip(CHASERS, FLEEING):
+        assert math.dist(chaser, runner) <= 4, (chaser, runner)
 
     text = "".join(rows)
     # The phase document calls this the most visibly damaged *city* map,
@@ -241,6 +286,10 @@ def validate(rows: list[str]) -> None:
                           / (len(lines) * len(lines[0]))), name
 
     assert text.count("ቴ") == 1 and text.count("ት") == 1
+    assert text.count("ቺ") == 1, "one officer has lost the plot"
+    assert text.count("ቻ") + text.count("ቼ") == len(FLEEING)
+    assert text.count("ች") == len(CHASERS)
+    assert text.count("ቸ") == len(RAPTORS), "the jungle animals stay put"
     assert text.count("ቶ") == 1, "exactly one massive dinosaur"
     assert text.count("ቷ") == 1, "exactly one prone businessperson"
     assert text.count("ቸ") == len(RAPTORS)

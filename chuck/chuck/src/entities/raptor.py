@@ -31,6 +31,10 @@ class Raptor(Entity):
         self.scratches_remaining = self.max_scratches
         self.facing = "down"
         self.moving = False
+        # Chuck is prey and gets chased down; an authored chaser harries
+        # its quarry instead, so the person stays visible underneath it.
+        self.chases_people = False
+        self.standoff = 0.0
         self.tilemap: "TileMap | None" = None
         self._frames: dict[str, tuple[object, object]] = {}
         self._step_time = 0.0
@@ -67,6 +71,8 @@ class Raptor(Entity):
             self.facing = "right" if dx > 0 else "left"
         else:
             self.facing = "down" if dy > 0 else "up"
+        if distance <= self.standoff:
+            return  # close enough: keep facing it, stop crowding it
         step = self.speed * dt / distance
         old_position = (self.x, self.y)
         self.x, self.y = collision.move_and_collide(

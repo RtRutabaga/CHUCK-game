@@ -7,9 +7,13 @@ rather than fight, and the phase document is explicit that the chaos
 must not create unavoidable damage at the Ashtray or the arrival.
 
 That is the test worth having: a clear route from the arrival to the
-portal that never crosses a police lane nor comes within the dinosaur's
-notice. This covers the ground and the standing cast; the fleeing
-businesspeople and the spinning officer are their own pass.
+portal that never crosses a police lane, never comes within the
+dinosaur's notice, and stays outside the spinning officer's spray.
+
+The chase is the other thing worth proving. Both fleeing people run
+segments that were drawn safe, and the raptors behind them are actually
+after those people rather than after Chuck -- which is what makes the
+tableau a chase and also what makes it Chuck's cover.
 """
 
 from collections import Counter, deque
@@ -26,6 +30,7 @@ import pygame
 from src.core import config
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
+from src.entities.police import SpinningPoliceOfficer
 from src.systems.choice import ChoiceSystem
 from src.world.tilemap import TILE_DEFS, TileMap
 from src.world.tileset_layout import MAP_TILESET, tileset_for
@@ -136,13 +141,16 @@ def test_the_chaos_never_traps_the_ashtray_or_the_arrival() -> None:
     portal = markers["choice:doug_fir_portal"][0]
     dinosaur = markers["massive_dinosaur"][0]
 
+    spinner = markers["police:spin"][0]
     hazard = set(_lane_tiles(tilemap, markers))
     notice = config.DINOSAUR_NOTICE_RANGE / config.TILE_SIZE
+    spray = config.SPIN_BULLET_RANGE / config.TILE_SIZE
     hazard |= {
         (col, row)
         for row in range(tilemap.height_tiles)
         for col in range(tilemap.width_tiles)
         if math.dist((col, row), dinosaur) <= notice
+        or math.dist((col, row), spinner) <= spray
     }
     assert anchor not in hazard and start not in hazard
 
@@ -164,19 +172,108 @@ def test_the_tableau_is_one_animal_over_one_person() -> None:
     prone = markers["npc:prone_businessman"][0]
     assert math.dist(dinosaur, prone) <= 3, math.dist(dinosaur, prone)
 
-    # The whole tableau stands in the jungle, not on the pavement.
+    # The whole tableau stands in the jungle, not on the pavement. The
+    # two chasers out on the ring road are a separate authored pair.
     for point in [dinosaur, prone, *markers["raptor"]]:
         assert tilemap.terrain_at(*point) == CHULT_GROUND, point
 
     directory, game, world = _game_and_world()
     try:
-        assert len(world.dinosaurs) == 1 and len(world.raptors) == 3
+        assert len(world.dinosaurs) == 1 and len(world.raptors) == 5
         prone_npc = next(npc for npc in world.npcs
                          if npc.npc_id == "prone_businessman")
         # He is scenery: one restrained line, no sequence.
         lines = world.dialogue.get("prone_businessman")
         assert len(lines) == 1 and len(lines[0]) <= 8, lines
         assert prone_npc is not None
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_the_raptors_are_chasing_the_people_not_the_rat() -> None:
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    markers = _markers(tilemap)
+    runners = markers["patrol_npc:businessman:h:flee"]
+    assert len(runners) == 2
+
+    # Each run was drawn safe: nothing along it is Sea or solid, so no
+    # amount of panic puts a businessperson over the edge.
+    reach = int(config.CITY_PEDESTRIAN_RANGE // config.TILE_SIZE) + 1
+    for col, row in runners:
+        for offset in range(-reach, reach + 1):
+            point = (col + offset, row)
+            assert not tilemap.is_solid(*point), point
+            assert tilemap.terrain_at(*point) != "V", point
+
+    directory, game, world = _game_and_world()
+    try:
+        fleeing = [npc for npc in world.npcs if getattr(npc, "fleeing", False)]
+        assert len(fleeing) == 2
+        # They run; they do not commute.
+        assert all(npc.speed > config.CITY_PEDESTRIAN_SPEED
+                   for npc in fleeing)
+        # ...and they are still businesspeople, with the one line.
+        assert all(npc.dialogue_id == "businessman" for npc in fleeing)
+
+        chasing = [raptor for raptor in world.raptors if raptor.chases_people]
+        assert len(chasing) == 2, "both runners should have a raptor on them"
+        assert {id(world._raptor_quarry(raptor)) for raptor in chasing} == {
+            id(npc) for npc in fleeing
+        }, "one chaser each, not both on the same person"
+
+        pairs = [(raptor, world._raptor_quarry(raptor)) for raptor in chasing]
+        before = [math.dist((raptor.x, raptor.y), (quarry.x, quarry.y))
+                  for raptor, quarry in pairs]
+        for _ in range(20):
+            world.update(0.05)
+        after = [math.dist((raptor.x, raptor.y), (quarry.x, quarry.y))
+                 for raptor, quarry in pairs]
+        assert all(b > a for a, b in zip(after, before)), (before, after)
+
+        # The jungle animals are unchanged: still in the jungle, still
+        # after Chuck. This is cover, not a truce.
+        others = [raptor for raptor in world.raptors
+                  if not raptor.chases_people]
+        assert len(others) == 3
+        assert all(world._raptor_quarry(raptor) is world.player
+                   for raptor in others)
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_the_spinning_officer_sprays_wide_and_falls_short() -> None:
+    directory, game, world = _game_and_world()
+    try:
+        spinner = next(officer for officer in world.police
+                       if isinstance(officer, SpinningPoliceOfficer))
+        assert len([o for o in world.police
+                    if isinstance(o, SpinningPoliceOfficer)]) == 1
+        # No aim tell: the spin never stops, so there is nothing to read.
+        assert not spinner.aiming
+
+        start = spinner.spin
+        rounds = [bullet for _ in range(60)
+                  if (bullet := spinner.update(1 / 60)) is not None]
+        assert spinner.spin != start, "the body must whirl"
+        assert len(rounds) >= 3, len(rounds)
+        # The aim sweeps rather than tracks: every round leaves at its
+        # own angle, exactly as the Beholder fight's archer does.
+        angles = {round(bullet.angle, 4) for bullet in rounds}
+        assert len(angles) == len(rounds), angles
+
+        # ...and the rounds fall short, which is what makes him a disc
+        # to walk around rather than map-wide denial.
+        bullet = rounds[0]
+        origin = (bullet.x, bullet.y)
+        for _ in range(600):
+            if not bullet.alive:
+                break
+            bullet.update(1 / 60, world.tilemap)
+        assert not bullet.alive, "a spray round must not travel forever"
+        assert math.dist(origin, (bullet.x, bullet.y)) <= (
+            config.SPIN_BULLET_RANGE + config.TILE_SIZE)
     finally:
         game._shutdown()
         directory.cleanup()

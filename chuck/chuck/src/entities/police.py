@@ -9,17 +9,24 @@ raises his weapon for most of a second first, with a muzzle flash on the
 shot itself, so a lane can always be read before it is live. That is the
 difference between a hazard to route around and an ambush.
 
+One officer on the final map has stopped aiming at anything: he spins
+and fires wide, which is the Beholder fight's whirling archer standing
+in a street. His rounds fall short by design, so he is a disc to walk
+around rather than a lane to time.
+
 Chuck never gains a ranged attack of his own. These are scenery with
 consequences.
 """
 
 from __future__ import annotations
 
+import math
 from typing import TYPE_CHECKING
 
 from src.core import config
 from src.entities.entity import Entity
 from src.entities.spined_devil import _VECTORS, FlamingSpine
+from src.world import collision
 
 if TYPE_CHECKING:
     from src.core.assets import AssetManager
@@ -50,6 +57,49 @@ class Bullet(FlamingSpine):
         pygame.draw.rect(surface, (246, 226, 148),
                          (round(self.x) - ox, round(self.y) - oy,
                           self.width, self.height))
+
+
+class SpinBullet(Bullet):
+    """A round fired at a free angle, and it falls short.
+
+    The lane officers get their readability from the aim tell. This one
+    has no lane to tell, so it is bounded instead: the rounds die at
+    `SPIN_BULLET_RANGE`, which turns the spinning officer into a disc on
+    the floor to walk around rather than a map-wide denial.
+    """
+
+    def __init__(self, center_x: float, center_y: float,
+                 angle: float) -> None:
+        super().__init__(center_x, center_y, "right")
+        size = config.BULLET_HITBOX_SHORT + 1
+        self.x = center_x - size / 2
+        self.y = center_y - size / 2
+        self.width = self.height = size
+        self.angle = angle
+        self._ux, self._uy = math.cos(angle), math.sin(angle)
+        self._travel_left = config.SPIN_BULLET_RANGE
+
+    def update(self, dt: float, tilemap) -> None:
+        dx = self._ux * self.speed * dt
+        dy = self._uy * self.speed * dt
+        target_x, target_y = self.x + dx, self.y + dy
+        self.x, self.y = collision.move_and_collide(
+            self.x, self.y, self.width, self.height, dx, dy, tilemap
+        )
+        if (abs(self.x - target_x) > 1e-4 or abs(self.y - target_y) > 1e-4):
+            self.alive = False
+        self._travel_left -= math.hypot(dx, dy)
+        if self._travel_left <= 0.0:
+            self.alive = False
+
+    def draw(self, surface, camera_offset: tuple[int, int]) -> None:
+        import pygame
+
+        ox, oy = camera_offset
+        pygame.draw.circle(
+            surface, (246, 226, 148),
+            (round(self.x + self.width / 2) - ox,
+             round(self.y + self.height / 2) - oy), 2)
 
 
 class PoliceOfficer(Entity):
@@ -148,3 +198,64 @@ class PoliceOfficer(Entity):
                 (muzzle_x, muzzle_y),
                 (muzzle_x + round(vx * 7), muzzle_y + round(vy * 7)), 2,
             )
+
+
+class SpinningPoliceOfficer(PoliceOfficer):
+    """The officer who lost the plot: whirls on the spot, firing wide.
+
+    This is the Beholder fight's whirling archer brought into the world
+    -- the body spins about its own centre and the aim advances a fixed
+    step between rounds, so the spray sweeps rather than tracks. He is
+    shooting at a dinosaur and hitting everything else, which is the
+    whole joke, and Chuck is not exempt.
+    """
+
+    def __init__(self, center_x: float, center_y: float) -> None:
+        super().__init__(center_x, center_y, "down")
+        self.spin = 0.0
+        self._aim = 0.0
+        self._until_shot = config.POLICE_SPIN_INTERVAL
+
+    @property
+    def aiming(self) -> bool:
+        """Never: the spin itself is the tell, and it never stops."""
+        return False
+
+    def update(self, dt: float) -> "SpinBullet | None":
+        self.spin = (self.spin + config.POLICE_SPIN_SPEED * dt) % math.tau
+        self._flash_t = max(0.0, self._flash_t - dt)
+        self._until_shot -= dt
+        if self._until_shot > 0.0:
+            return None
+        while self._until_shot <= 0.0:
+            self._until_shot += config.POLICE_SPIN_INTERVAL
+        self._aim = (self._aim + config.POLICE_SPIN_STEP) % math.tau
+        self._flash_t = 0.06
+        offset = config.TILE_SIZE / 2
+        return SpinBullet(
+            self.x + self.width / 2 + math.cos(self._aim) * offset,
+            self.y + self.height / 2 + math.sin(self._aim) * offset,
+            self._aim,
+        )
+
+    def draw(self, surface, camera_offset: tuple[int, int]) -> None:
+        import pygame
+
+        ox, oy = camera_offset
+        frame = self._frames.get("down")
+        if frame is None:
+            super().draw(surface, camera_offset)
+            return
+        # Spin about the sprite's own centre so the boots stay put.
+        _fw, fh = frame.get_size()
+        image = pygame.transform.rotate(frame, math.degrees(self.spin))
+        iw, ih = image.get_size()
+        center_x = self.x + self.width / 2
+        center_y = self.y + self.height - fh / 2
+        surface.blit(image, (round(center_x - iw / 2) - ox,
+                             round(center_y - ih / 2) - oy))
+        if self._flash_t > 0.0:
+            pygame.draw.circle(
+                surface, (255, 236, 158),
+                (round(center_x + math.cos(self._aim) * 10) - ox,
+                 round(center_y + math.sin(self._aim) * 10) - oy), 3)

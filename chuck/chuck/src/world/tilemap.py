@@ -998,6 +998,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ቷ": MarkerDef(kind="npc:prone_businessman", under="ᵹ"),
     "ቸ": MarkerDef(kind="raptor", under="ᵹ"),
     "ቹ": MarkerDef(kind="arrival:from_city_day_6", under="."),
+    "ቺ": MarkerDef(kind="police:spin", under="."),
+    "ች": MarkerDef(kind="raptor:chasing", under="."),
+    "ቻ": MarkerDef(kind="patrol_npc:businessman:h:flee", under="."),
+    "ቼ": MarkerDef(kind="patrol_npc:businessman:v:flee", under="ᵹ"),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

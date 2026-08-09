@@ -190,6 +190,8 @@ RACCOON_NOTICE_RANGE = 104.0
 
 # A walking businessperson moves slowly along one authored sidewalk segment.
 CITY_PEDESTRIAN_SPEED = 12.0
+# A commuter strolls; somebody with a raptor behind them does not.
+CITY_FLEEING_SPEED = 46.0
 CITY_PEDESTRIAN_RANGE = 42.0
 # Pedestrians who walk further than the default beat. The woman in the
 # red dress covers most of a block, which -- with the dress -- is what
@@ -225,6 +227,10 @@ BULLET_SPEED = 210.0
 BULLET_SANITY_DAMAGE = 18
 BULLET_HITBOX_LONG = 6
 BULLET_HITBOX_SHORT = 3
+POLICE_SPIN_SPEED = 3.4        # body spin, rad/s
+POLICE_SPIN_STEP = 0.9        # radians the aim whirls between rounds
+POLICE_SPIN_INTERVAL = 0.28
+SPIN_BULLET_RANGE = 84.0      # rounds fall short; the danger is a disc
 
 # Chult undead share the established human footprint and sprite scale. Both
 # are deliberately durable; their low speeds leave room to evade them.
@@ -433,6 +439,9 @@ RAPTOR_HITBOX_W = 30
 RAPTOR_HITBOX_H = 15
 RAPTOR_SPEED = 68.0
 RAPTOR_NOTICE_RANGE = 152.0
+# How close an authored chaser closes on the person it is chasing.
+# Harrying reads as a chase; standing on top of them hides the person.
+RAPTOR_CHASE_STANDOFF = 26.0
 RAPTOR_SANITY_DAMAGE = 25
 RAPTOR_SCRATCHES = 10
 RAPTOR_FRAME_DURATION = 0.13

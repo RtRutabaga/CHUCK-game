@@ -14,6 +14,8 @@ Responsibilities (future):
 
 from __future__ import annotations
 
+import math
+
 import pygame
 
 from src.core import config
@@ -49,7 +51,9 @@ from src.entities.city_rain import CityRain
 from src.entities.snake import TempleSnake
 from src.entities.flameskull import Flameskull
 from src.entities.spitting_orchid import OrchidSeed, SpittingOrchid
-from src.entities.police import Bullet, PoliceOfficer
+from src.entities.police import (
+    Bullet, PoliceOfficer, SpinningPoliceOfficer,
+)
 from src.entities.spined_devil import FlamingSpine, SpinedDevil
 from src.entities.sword_fighter import SwordFighter
 from src.entities.traffic import ROAD_TERRAIN, TrafficLane
@@ -414,7 +418,7 @@ class WorldScene(Scene):
                 "pirate_chef", "redcap", "thorn_mite",
             } or kind.startswith((
                 "sword_fighter:", "spined_devil:", "police:", "flameskull:",
-                "spitting_orchid:", "lantern_moth:",
+                "spitting_orchid:", "lantern_moth:", "raptor:",
             ))
         ]
         self._staged_undead_spawns = [
@@ -448,10 +452,13 @@ class WorldScene(Scene):
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
             elif kind.startswith("patrol_npc:"):
-                _prefix, npc_id, axis = kind.split(":", 2)
+                _prefix, npc_id, rest = kind.split(":", 2)
+                # "h" or "v", optionally ":flee" for the City Day 6 chase.
+                axis, _, mode = rest.partition(":")
                 npc = PedestrianNPC(
                     cx, cy, npc_id=npc_id, dialogue_id=npc_id, axis=axis,
                     patrol_range=config.PEDESTRIAN_PATROL_RANGES.get(npc_id),
+                    fleeing=(mode == "flee"),
                 )
                 npc.tilemap = self.tilemap
                 npc.load_sprites(self.game.assets)
@@ -501,7 +508,7 @@ class WorldScene(Scene):
                 "griffon",
                 "snake", "fire_snake",
                 "pirate_chef", "redcap", "thorn_mite",
-            }:
+            } or kind.startswith("raptor:"):
                 continue  # rebuilt with all enemies below
             elif kind.startswith((
                 "sword_fighter:", "spined_devil:", "police:", "flameskull:",
@@ -788,7 +795,10 @@ class WorldScene(Scene):
         for undead in self.undead:
             undead.update(dt, self.player)
         for raptor in self.raptors:
-            raptor.update(dt, self.player)
+            # A raptor already chasing somebody is busy. On City Day 6
+            # that is the whole tableau -- and it is also Chuck's cover,
+            # so the choice has to be real rather than decorative.
+            raptor.update(dt, self._raptor_quarry(raptor))
         for redcap in self.redcaps:
             redcap.update(dt, self.player)
         for dinosaur in self.dinosaurs:
@@ -1869,6 +1879,29 @@ class WorldScene(Scene):
                     create_pickup(drop, self.game.assets)
                 )
 
+    def _raptor_quarry(self, raptor):
+        """Who this raptor is after: a fleeing person, or failing that Chuck.
+
+        Only raptors authored as chasers look at anybody but Chuck, which
+        keeps the City Day 6 tableau put -- the jungle animals stay in
+        the jungle and stay dangerous, and the two on the ring road are
+        visibly after the two people running. Every other map has nobody
+        to flee, so nothing outside City Day 6 changes.
+        """
+        if not getattr(raptor, "chases_people", False):
+            return self.player
+        nearest, best = None, config.RAPTOR_NOTICE_RANGE
+        for npc in self.npcs:
+            if not getattr(npc, "fleeing", False):
+                continue
+            distance = math.dist(
+                (raptor.x + raptor.width / 2, raptor.y + raptor.height / 2),
+                (npc.x + npc.width / 2, npc.y + npc.height / 2),
+            )
+            if distance < best:
+                nearest, best = npc, distance
+        return nearest if nearest is not None else self.player
+
     def _player_tile(self) -> tuple[int, int]:
         """Tile under Chuck's footprint center."""
         ts = config.TILE_SIZE
@@ -2092,8 +2125,12 @@ class WorldScene(Scene):
             elif kind in {"zombie", "skeleton", "lemure", "crocodile",
                           "animal_control"}:
                 self._spawn_undead(kind, (cx, cy))
-            elif kind == "raptor":
+            elif kind == "raptor" or kind.startswith("raptor:"):
                 raptor = Raptor(cx, cy)
+                # An authored chaser is after the people, not the rat.
+                raptor.chases_people = kind.endswith(":chasing")
+                if raptor.chases_people:
+                    raptor.standoff = config.RAPTOR_CHASE_STANDOFF
                 raptor.tilemap = self.tilemap
                 raptor.load_sprites(self.game.assets)
                 self.raptors.append(raptor)
@@ -2136,7 +2173,9 @@ class WorldScene(Scene):
                 devil.load_sprites(self.game.assets)
                 self.spined_devils.append(devil)
             elif kind.startswith("police:"):
-                officer = PoliceOfficer(cx, cy, kind.split(":", 1)[1])
+                aim = kind.split(":", 1)[1]
+                officer = (SpinningPoliceOfficer(cx, cy) if aim == "spin"
+                           else PoliceOfficer(cx, cy, aim))
                 officer.load_sprites(self.game.assets)
                 self.police.append(officer)
             elif kind.startswith(("flameskull:", "lantern_moth:")):
@@ -2222,7 +2261,7 @@ class WorldScene(Scene):
                              (rect.left + 2, rect.centery + offset),
                              (rect.right - 2, rect.centery + offset))
 
-    # ------------------------------------------------------------------
+    # ------------------------------------------------------------------
     # Astral fall hazard
     # ------------------------------------------------------------------
     def _begin_fall(

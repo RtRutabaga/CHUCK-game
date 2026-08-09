@@ -1,10 +1,30 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Day 6 puts three worlds on one screen, and
-all sixteen playable city maps now exist. This file is required by the
+Updated: Phase 11 is active. City Day 6 puts three worlds on one screen and is
+now in motion; only the phase exit remains. This file is required by the
 project rules and updated every session.
 
 ## Latest implementation
+
+- City Day 6 is now in motion. Two businesspeople run for their lives with a
+  raptor harrying each, and one police officer spins on the spot firing wide.
+- Fleeing is a variant of the ordinary pedestrian patrol rather than a new
+  behaviour: the same walk at sprint speed along a segment the map generator
+  proved safe. That is deliberate. A pursuit AI could route somebody into the
+  Astral Sea; an authored segment cannot, however hard the panic.
+- Only raptors authored as chasers look at anybody but Chuck. Left emergent,
+  the jungle animals drifted out of the jungle to join the chase and the
+  tableau came apart, so the pairing is authored: two on the ring road after
+  the two runners, three still in the undergrowth and still after Chuck. The
+  chase is Chuck's cover, not a truce.
+- A chaser harries rather than tackles: it closes to a standoff and holds. At
+  full speed it ended up standing on the person, hiding them completely.
+- The spinning officer is the Beholder fight's whirling archer standing in a
+  street: the body rotates about its own centre and the aim advances a fixed
+  step between rounds, so the spray sweeps rather than tracks. The lane
+  officers are readable because of the aim tell; this one has no lane to read,
+  so his rounds fall short instead and he is a disc to walk around. The map
+  validator holds the safe route outside it.
 
 - Added the 80x60 `City Day 6`, the phase's culminating map. Three worlds are
   visible at once: the daytime street, a patch of Chult grown up through the
