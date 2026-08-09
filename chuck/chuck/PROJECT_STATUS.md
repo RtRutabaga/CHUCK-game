@@ -1,8 +1,28 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. All three regional soundtracks are composed and
-wired; the music now changes exactly twice across the phase. This file is
-required by the project rules and updated every session.
+Updated: Phase 11 is active. City Day 3 narrows the daytime city to one
+street running along the edge of nothing. This file is required by the
+project rules and updated every session.
+
+## Latest implementation
+
+- Added the 58x64 `City Day 3`. The daytime geometry keeps changing: an
+  avenue, then a crossroads, and now a single street running south between
+  tall faces with two alleys off it and a loading yard at the bottom. It is
+  narrower than either map before it, and taller.
+- The damage has stopped taking frontages and started taking buildings. The
+  whole east side of the block is gone, so the pavement runs along the open
+  Astral Sea for the map's full height with only a rail of collapsed kerb
+  between. The test asserts the entire east column is Astral and that this
+  map carries more of it than City Day 2 -- the progression is enforced from
+  map to map rather than merely intended.
+- Both officer types work this street: two Animal Control on the pavements
+  and two police holding corners. The phase document requires both to stay
+  avoidable, so the validator floods the map while excluding every net's
+  notice radius *and* every police lane out to the first wall, and proves a
+  clear route runs from the arrival to the way onward. It also proves no
+  lane fires along the Ashtray or either doorway, and the runtime test
+  checks a respawn never lands on the road or inside a net's reach.
 
 ## Latest implementation
 

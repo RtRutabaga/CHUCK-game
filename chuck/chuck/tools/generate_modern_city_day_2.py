@@ -113,6 +113,7 @@ def build_map() -> list[str]:
         grid[HEIGHT - 1][col] = "⮟"
     grid[RETURN_EXIT[1]][0] = "ቔ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ቕ"
+    grid[FUTURE_EXIT[1] - 2][FUTURE_EXIT[0]] = "ቦ"  # back up from Day 3
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቖ"
     grid[ANCHOR[1]][ANCHOR[0]] = "ቘ"
     for (col, row), char in TRAFFIC:
@@ -138,7 +139,7 @@ SOLID = {"▥", "#", "▱", "▤", "w", "V"}
 
 def _under(char: str) -> str:
     return {"ቔ": "⮜", "ቕ": "⮟", "ቖ": ".", "ቘ": ".", "ሖ": ".", "ሞ": ".",
-            "ል": ".", "ꞏ": ".", "ቛ": ".", "ቝ": ".", "በ": ".",
+            "ል": ".", "ꞏ": ".", "ቛ": ".", "ቝ": ".", "በ": ".", "ቦ": ".",
             "ሎ": "=", "ሏ": "=", "ሟ": "=",
             "ሠ": "="}.get(char, char)
 

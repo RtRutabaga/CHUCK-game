@@ -852,8 +852,10 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
 - [x] Police officers are in as stationary ranged hazards; a bullet is
       the spined devil's projectile subclassed and retuned, and every shot
       is preceded by a visible aim.
-- [ ] Next: City Day 3-5 with increasing Astral damage, then City Day 6's
-      collision tableau and the Doug fir forest fragment.
+- [x] City Day 3 is built: the street narrows and runs along an open
+      Astral edge, with both officer types working it.
+- [ ] Next: City Day 4-5, then City Day 6's collision tableau and the
+      Doug fir forest fragment.
 - [x] The night-city soundtrack is composed and wired across all six night
       maps: `city_night.wav`, a 32-bar D-minor jazz-synth loop.
 - [x] The urban-sewer theme is composed and wired across all four tunnels:
