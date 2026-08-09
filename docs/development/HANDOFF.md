@@ -4,10 +4,10 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 Urban Sewer soundtrack
+- Current work: Phase 11 Day City soundtrack (all three cues now done)
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: the day-city theme, a cold overcast
-  counterpart to the night cue; then City Day 3-5
+- Next implementation slice: City Day 3-5 with increasing Astral damage;
+  then City Day 6's collision tableau, which reuses the Beholder theme
 
 ## Completed This Pass
 

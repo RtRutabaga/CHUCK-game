@@ -480,6 +480,6 @@ AREA_MUSIC: dict[str, str | None] = {
     "modern_city_sewer_2": "city_sewer.wav",
     "modern_city_sewer_3": "city_sewer.wav",
     "modern_city_sewer_4": "city_sewer.wav",
-    "modern_city_day_1": None,
-    "modern_city_day_2": None,
+    "modern_city_day_1": "city_day.wav",
+    "modern_city_day_2": "city_day.wav",
 }

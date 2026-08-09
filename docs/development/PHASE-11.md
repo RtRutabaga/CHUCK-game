@@ -858,7 +858,10 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
       maps: `city_night.wav`, a 32-bar D-minor jazz-synth loop.
 - [x] The urban-sewer theme is composed and wired across all four tunnels:
       `city_sewer.wav`, a 28-bar G-minor dark-funk loop, original throughout.
-- [ ] The day-city theme remains to be composed.
+- [x] The day-city theme is composed and wired: `city_day.wav`, the night
+      hook augmented under cold overcast daylight. All three regional cues
+      now exist; only City Day 6's Beholder-theme reuse remains, and it
+      waits on that map being built.
 
 ------------------------------------------------------------------------
 

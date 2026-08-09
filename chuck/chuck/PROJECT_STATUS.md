@@ -1,8 +1,30 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. The sewer has its soundtrack too: dark funk in a
-concrete tunnel, running unbroken through all four. This file is required by
-the project rules and updated every session.
+Updated: Phase 11 is active. All three regional soundtracks are composed and
+wired; the music now changes exactly twice across the phase. This file is
+required by the project rules and updated every session.
+
+## Latest implementation
+
+- Composed `city_day.wav`, an original 26-bar loop in D minor at 76 BPM,
+  eighty-two seconds long. The phase document allows the daytime theme to
+  share a motif with the night one, so this takes that literally: the melody
+  is *derived from* `city_night._HOOK` in code -- the same pitches in the
+  same order, every duration stretched, the phrase spread across twice the
+  bars. A test asserts the pitch sequence matches exactly, so the two can
+  never drift into merely resembling each other.
+- Everything around the melody changed instead. The electronic kit is gone
+  entirely -- one soft brush every other bar is the only pulse -- the
+  electric piano holds instead of comping, a pad sits underneath throughout,
+  and the rain is mixed louder than at night because in daylight you can see
+  it falling. Tests check each of those against the night arrangement rather
+  than in isolation.
+- The unease the document asks for is one note: a major seventh over the
+  minor tonic that never resolves, so the daylight stays wrong.
+- The city now runs on three cues across twelve maps, changing exactly twice
+  -- at the sewer entrance and at the ladder. A test asserts each region is
+  internally unbroken, that the three cues are distinct, and that all three
+  files exist.
 
 ## Latest implementation
 
