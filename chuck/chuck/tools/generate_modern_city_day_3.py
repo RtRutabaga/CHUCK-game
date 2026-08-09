@@ -103,6 +103,7 @@ def build_map() -> list[str]:
         grid[HEIGHT - 1][col] = "⮟"
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "ቢ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ባ"
+    grid[FUTURE_EXIT[1] - 2][FUTURE_EXIT[0]] = "ቬ"  # back up from Day 4
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቤ"
     grid[ANCHOR[1]][ANCHOR[0]] = "ብ"
     for col, row in OFFICERS:
@@ -126,6 +127,7 @@ LANES = {"ቝ": (1, 0), "ቜ": (-1, 0), "በ": (0, -1), "ቡ": (0, 1)}
 
 def _under(char: str) -> str:
     return {"ቢ": "⮝", "ባ": "⮟", "ቤ": ".", "ብ": ".", "ቛ": ".", "ሖ": ".",
+            "ቬ": ".",
             "ሞ": ".", "ል": ".", "ꞏ": ".",
             **{char: "." for char in LANES}}.get(char, char)
 

@@ -1,8 +1,30 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Day 3 narrows the daytime city to one
-street running along the edge of nothing. This file is required by the
-project rules and updated every session.
+Updated: Phase 11 is active. City Day 4 takes the floor away: a civic square
+broken into slabs over the Astral Sea. This file is required by the project
+rules and updated every session.
+
+## Latest implementation
+
+- Added the 70x52 `City Day 4`. The first three daytime maps lost buildings;
+  this one loses the ground. Almost 40% of it is void, and what survives is a
+  street in, a ridge of pavement running round, and a civic square floating
+  between them, broken into slabs with single-tile cracks showing the Astral
+  Sea between.
+- Crossing the square uses the committed jump the Moonmoth Fen and the sewer
+  taught -- now on concrete in daylight, ramping toward City Day 6's heavier
+  jump hazards. The square is tempting rather than mandatory: every cigarette
+  is out on the slabs, and the tests prove both halves, that each cache needs
+  a jump and that somebody who refuses to jump can still cross the map, save,
+  and leave.
+- The "increasingly common Astral blocks" rule is now enforced as a density
+  ratchet across the whole daytime run: no map may be a smaller share of void
+  than the one before it. Density rather than raw count, because a larger map
+  at the same proportion is not a more damaged one. The test walks all four
+  daytime maps in order and asserts the sequence never decreases.
+- This map has no side facades at all, and its validator says so explicitly
+  rather than inheriting the earlier maps' material checklist: there are no
+  side streets left here to face onto.
 
 ## Latest implementation
 

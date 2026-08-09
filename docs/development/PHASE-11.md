@@ -854,8 +854,14 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
       is preceded by a visible aim.
 - [x] City Day 3 is built: the street narrows and runs along an open
       Astral edge, with both officer types working it.
-- [ ] Next: City Day 4-5, then City Day 6's collision tableau and the
-      Doug fir forest fragment.
+- [x] City Day 4 is built: a civic square broken into slabs over the
+      Astral Sea, introducing city jumps ahead of City Day 6.
+- [ ] Next: City Day 5, then City Day 6's collision tableau and the Doug
+      fir forest fragment.
+- Note: the "increasingly common Astral blocks" rule is enforced as a
+  density ratchet across the daytime maps -- no map may be a smaller
+  share of void than the one before it. Density rather than raw count,
+  because a larger map at the same proportion is not more damaged.
 - [x] The night-city soundtrack is composed and wired across all six night
       maps: `city_night.wav`, a 32-bar D-minor jazz-synth loop.
 - [x] The urban-sewer theme is composed and wired across all four tunnels:

@@ -970,6 +970,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ቤ": MarkerDef(kind="arrival:from_city_day_2", under="."),
     "ብ": MarkerDef(kind="anchor:modern_city_day_3_anchor", under="."),
     "ቦ": MarkerDef(kind="arrival:from_city_day_3", under="."),
+    # City Day 4: the square whose floor gave way.
+    "ቨ": MarkerDef(kind="boundary:modern_city_day_3", under="⮝"),
+    "ቩ": MarkerDef(kind="boundary:modern_city_day_5", under="⮞"),
+    "ቪ": MarkerDef(kind="arrival:from_city_day_3", under="."),
+    "ቫ": MarkerDef(kind="anchor:modern_city_day_4_anchor", under="."),
+    "ቬ": MarkerDef(kind="arrival:from_city_day_4", under="."),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

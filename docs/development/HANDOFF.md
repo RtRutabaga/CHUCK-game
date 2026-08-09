@@ -4,10 +4,10 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 City Day 3, the open edge
+- Current work: Phase 11 City Day 4, the broken square
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Day 4, then City Day 5; then City Day 6's
-  collision tableau, which reuses the Beholder theme
+- Next implementation slice: City Day 5; then City Day 6's collision
+  tableau, which reuses the Beholder theme
 
 ## Completed This Pass
 
