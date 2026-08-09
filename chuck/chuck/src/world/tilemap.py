@@ -319,6 +319,12 @@ TILE_DEFS: dict[str, TileDef] = {
     # Standing rainwater on a daytime sidewalk. Purely cosmetic: it is
     # ordinary pavement underfoot, not sludge and not a hazard.
     "ꞏ": TileDef(solid=False, color=(138, 152, 164)),
+    # City Day 6: another world showing through the street. Chult ground
+    # is walkable, its dense growth is not, and the Douglas fir block is
+    # the phase's one planar portal.
+    "ᵹ": TileDef(solid=False, color=(56, 92, 58)),
+    "ᵺ": TileDef(solid=True, color=(26, 60, 40)),
+    "ᶂ": TileDef(solid=True, color=(10, 18, 20)),
     # The maintenance ladder out of the sewer: one human-scale 16x32
     # structure in two cells, the same shape as the ship's ladder.
     "Ɫ": TileDef(solid=False, color=(88, 96, 104)),
@@ -982,6 +988,16 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ቯ": MarkerDef(kind="arrival:from_city_day_4", under="."),
     "ተ": MarkerDef(kind="anchor:modern_city_day_5_anchor", under="."),
     "ቱ": MarkerDef(kind="arrival:from_city_day_5", under="."),
+    # City Day 6: the collision. Its cast stands in the Chult patch, and
+    # the portal trigger sits on the street outside the forest block.
+    "ቲ": MarkerDef(kind="boundary:modern_city_day_5", under="⮝"),
+    "ታ": MarkerDef(kind="arrival:from_city_day_5", under="."),
+    "ቴ": MarkerDef(kind="anchor:modern_city_day_6_anchor", under="."),
+    "ት": MarkerDef(kind="choice:doug_fir_portal", under="."),
+    "ቶ": MarkerDef(kind="massive_dinosaur", under="ᵹ"),
+    "ቷ": MarkerDef(kind="npc:prone_businessman", under="ᵹ"),
+    "ቸ": MarkerDef(kind="raptor", under="ᵹ"),
+    "ቹ": MarkerDef(kind="arrival:from_city_day_6", under="."),
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),

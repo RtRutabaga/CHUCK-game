@@ -1,8 +1,36 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Day 5 is a broken overpass -- the last
-ordinary daytime map before the collision tableau. This file is required by
-the project rules and updated every session.
+Updated: Phase 11 is active. City Day 6 puts three worlds on one screen, and
+all sixteen playable city maps now exist. This file is required by the
+project rules and updated every session.
+
+## Latest implementation
+
+- Added the 80x60 `City Day 6`, the phase's culminating map. Three worlds are
+  visible at once: the daytime street, a patch of Chult grown up through the
+  plaza, and -- inside the damaged northern building -- a block of Douglas
+  fir forest at night, which is the phase's one planar portal.
+- The Chult patch uses Chult's own tile draws, imported unwashed into the
+  day-city sheet, so it reads as another world showing through rather than
+  as city scenery. The forest block is authored against the Astral damage it
+  stands beside: a cold night sky with black conifers, because the Sea is
+  already a purple starfield on this map and the two must not blur.
+- The tableau is one animal over one person: the massive dinosaur stands at
+  the feet of a prone businessperson, with three raptors in the undergrowth.
+  The prone sprite is laid across the frame rather than up it -- from this
+  camera a vertical body reads as somebody standing -- and is deliberately
+  restrained, a suit and a dropped umbrella with no gore. His only line is
+  an ellipsis.
+- The phase document forbids the chaos from making the Ashtray or the
+  arrival unsafe, so the validator floods the map excluding every police
+  lane and the dinosaur's whole notice radius, and proves a clear route
+  still runs from the arrival to the portal.
+- This is the most damaged city map: more void than every street-block map.
+  City Day 5 is deliberately excluded from that comparison -- an overpass is
+  three quarters sky because it is a bridge, not because the city there is
+  more broken.
+- The map switches to the Beholder fight theme, which is the phase's one
+  deliberate music change away from a regional cue.
 
 ## Latest implementation
 

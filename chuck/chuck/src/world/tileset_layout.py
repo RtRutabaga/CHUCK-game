@@ -509,6 +509,9 @@ CITY_DAY = Tileset(
         ("city_day_road", 4, 3),
         ("city_day_crosswalk", 2, 1),
         ("city_day_puddle", 3, 3),
+        ("chult_ground", 4, 1),
+        ("chult_dense", 4, 1),
+        ("doug_fir_block", 3, 2),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -522,6 +525,9 @@ CITY_DAY = Tileset(
         "=": "city_day_road",
         "▦": "city_day_crosswalk",
         "ꞏ": "city_day_puddle",
+        "ᵹ": "chult_ground",
+        "ᵺ": "chult_dense",
+        "ᶂ": "doug_fir_block",
         "⮝": "city_day_sidewalk",
         "⮟": "city_day_sidewalk",
         "⮞": "city_day_sidewalk",
@@ -611,6 +617,7 @@ MAP_TILESET: dict[str, str] = {
     "modern_city_day_3": "city_day",
     "modern_city_day_4": "city_day",
     "modern_city_day_5": "city_day",
+    "modern_city_day_6": "city_day",
 }
 
 

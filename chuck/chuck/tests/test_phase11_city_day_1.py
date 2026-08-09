@@ -71,10 +71,15 @@ def _game_and_world(checkpoint=MAP_NAME):
 
 def test_the_daytime_sheet_is_the_night_city_in_daylight() -> None:
     """Same geometry, different light: the two sheets must stay in step."""
+    # The shared rows must stay in step. The day sheet also carries rows
+    # the night city has no use for: puddles, and -- on City Day 6 -- the
+    # Chult patch and the Douglas fir block showing through the street.
+    day_only = {"astral_void", "city_day_puddle", "chult_ground",
+                "chult_dense", "doug_fir_block"}
     assert [name for name, _v, _f in CITY.order if name != "astral_void"] == [
         name.replace("city_day_", "city_")
         for name, _v, _f in CITY_DAY.order
-        if name not in {"astral_void", "city_day_puddle"}
+        if name not in day_only
     ]
     # Every terrain char the night city uses reads in daylight too.
     assert set(CITY.char_to_terrain) <= set(CITY_DAY.char_to_terrain)

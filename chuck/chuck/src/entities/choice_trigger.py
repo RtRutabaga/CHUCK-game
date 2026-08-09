@@ -16,12 +16,13 @@ _TRIGGER_TILES = {
     # Narrow: the climb prompt should fire at the ladder, not across
     # the whole chamber floor in front of it.
     "city_sewer_ladder": (2, 2),
+    "doug_fir_portal": (3, 2),
 }
 
 # Choices that pop by simply walking into the zone — no interact press.
 _WALK_TRIGGERS = {
     "crevice", "cloud_staircase", "zephyros_rope",
-    "city_sewer_entrance", "city_sewer_ladder",
+    "city_sewer_entrance", "city_sewer_ladder", "doug_fir_portal",
 }
 
 

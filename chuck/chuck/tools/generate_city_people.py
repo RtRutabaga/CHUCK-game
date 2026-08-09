@@ -90,6 +90,32 @@ def draw_red_dress(surface: pygame.Surface, facing: str) -> None:
         pygame.draw.rect(surface, (38, 32, 27), (5, 10, 1, 1))
 
 
+def draw_prone(surface: pygame.Surface, facing: str) -> None:
+    """A businessperson on the ground, seen from above.
+
+    Laid out across the frame rather than up it: from this camera a
+    vertical body reads as somebody standing, so the whole point of the
+    pose is that he runs head-to-heels left to right. Deliberately
+    restrained -- a suit, an umbrella dropped beside him, no blood. The
+    horror is the animal standing over him, and the player supplies it.
+    """
+    del facing                      # he is not facing anywhere any more
+    suit = (38, 44, 56)
+    pygame.draw.ellipse(surface, (24, 27, 34, 110), (0, 20, 16, 8))
+    pygame.draw.rect(surface, suit, (4, 15, 9, 6))          # torso, sideways
+    pygame.draw.rect(surface, (213, 215, 207), (6, 17, 5, 2))
+    pygame.draw.rect(surface, (202, 159, 121), (1, 15, 4, 5))   # head, left
+    pygame.draw.rect(surface, (73, 52, 39), (1, 14, 4, 2))
+    pygame.draw.rect(surface, suit, (6, 12, 3, 3))           # one arm flung up
+    pygame.draw.rect(surface, suit, (8, 21, 3, 3))           # one arm out
+    for x in (12, 12):                                       # legs, trailing
+        pygame.draw.rect(surface, (27, 29, 37), (x, 15, 4, 2))
+        pygame.draw.rect(surface, (27, 29, 37), (x, 19, 4, 2))
+    # The umbrella, dropped and rolled a little way off.
+    pygame.draw.line(surface, (17, 19, 26), (3, 24), (8, 26))
+    pygame.draw.arc(surface, (27, 31, 42), (1, 22, 5, 5), 1, 4, 2)
+
+
 def draw_bottles(surface: pygame.Surface, variant: int) -> None:
     colours = ((74, 116, 92), (113, 83, 48), (55, 94, 113))
     placements = (
@@ -134,6 +160,15 @@ def main() -> None:
     red_output = ROOT / "assets" / "sprites" / "npcs" / "red_dress_woman.png"
     pygame.image.save(red_dress, red_output)
     print(f"Wrote {red_output} ({W * 3}x{H})")
+
+    prone = pygame.Surface((W * 3, H), pygame.SRCALPHA)
+    for index, facing in enumerate(("down", "up", "left")):
+        frame = pygame.Surface((W, H), pygame.SRCALPHA)
+        draw_prone(frame, facing)
+        prone.blit(frame, (index * W, 0))
+    prone_out = ROOT / "assets" / "sprites" / "npcs" / "prone_businessman.png"
+    pygame.image.save(prone, prone_out)
+    print(f"Wrote {prone_out} ({W * 3}x{H})")
 
     for variant in range(2):
         bottles = pygame.Surface((16, 16), pygame.SRCALPHA)

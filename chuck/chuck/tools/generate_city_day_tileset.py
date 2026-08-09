@@ -25,6 +25,7 @@ sys.path.insert(0, str(ROOT))
 import pygame
 
 from src.world.tileset_layout import CITY_DAY, TILE_PX
+import generate_chult_tileset as chult
 import generate_city_tileset as night
 from generate_sewer_tileset import draw_astral_void
 
@@ -89,6 +90,37 @@ def puddle(surface, variant, frame):
         pygame.draw.circle(surface, (196, 208, 214), (x, y), 1)
 
 
+def doug_fir_block(surface, variant, frame):
+    """A block of Douglas fir forest at night, standing in the street.
+
+    The Astral damage on this map is a purple starfield, so this has to
+    read as a different kind of elsewhere or the two blur together: a
+    cold blue night sky with black conifer silhouettes against it, and
+    the moon catching one edge of the needles.
+    """
+    for y in range(TILE_PX):
+        shade = 34 + y                       # sky, darker toward the floor
+        pygame.draw.line(surface, (18, shade - 6, shade + 14), (0, y), (15, y))
+    for index in range(2):
+        x = 3 + index * 8 + (variant % 3)
+        base = 15
+        top = 2 + ((variant + index) % 3)
+        # A conifer: stacked skirts narrowing to a point.
+        for step, half in enumerate(range(1, 6)):
+            y = top + step * 3
+            if y >= base:
+                break
+            pygame.draw.line(surface, (8, 26, 22),
+                             (x - half, y), (x + half, y), 3)
+        pygame.draw.line(surface, (30, 24, 18), (x, base - 2), (x, base))
+        # Moonlight down one side of the tree.
+        pygame.draw.line(surface, (96, 132, 122),
+                         (x - 1, top + 1), (x - 3, top + 7))
+    pygame.draw.line(surface, (16, 30, 26), (0, 15), (15, 15), 2)
+    surface.set_at(((variant * 5 + frame * 4) % 16,
+                    (variant * 3 + 1) % 6), (188, 208, 198))
+
+
 DRAW = {
     "city_day_roof": _lit(night.roof),
     "city_day_cornice": _lit(night.cornice),
@@ -100,6 +132,12 @@ DRAW = {
     "city_day_road": _lit(night.road),
     "city_day_crosswalk": _lit(night.crosswalk),
     "city_day_puddle": puddle,
+    # A patch of Chult, embedded in the street exactly as it is in
+    # the jungle: the same draws, unwashed, so it reads as another
+    # world showing through rather than as city scenery.
+    "chult_ground": chult.draw_ground,
+    "chult_dense": chult.draw_dense_jungle,
+    "doug_fir_block": doug_fir_block,
     "astral_void": draw_astral_void,
 }
 

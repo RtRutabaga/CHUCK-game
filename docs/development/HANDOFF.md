@@ -4,10 +4,10 @@
 
 - Branch: main
 - Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
-- Current work: Phase 11 City Day 5, the overpass
+- Current work: Phase 11 City Day 6 ground and standing cast
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: City Day 6's collision tableau, which reuses
-  the Beholder theme; then the Doug fir forest fragment and phase exit
+- Next implementation slice: the fleeing businesspeople and the spinning
+  police officer; then the planar-portal cutscene and phase exit
 
 ## Completed This Pass
 

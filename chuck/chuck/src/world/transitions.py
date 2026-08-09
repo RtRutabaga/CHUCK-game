@@ -92,6 +92,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("modern_city_day_5", "⮝"): AreaExit(
         "modern_city_day_4", "from_city_day_5", "up"
     ),
+    ("modern_city_day_5", "⮟"): AreaExit(
+        "modern_city_day_6", "from_city_day_5", "down"
+    ),
+    ("modern_city_day_6", "⮝"): AreaExit(
+        "modern_city_day_5", "from_city_day_6", "up"
+    ),
     ("modern_city_sewer_4", "⮞"): AreaExit(
         "modern_city_sewer_3", "from_city_sewer_4", "right"
     ),
@@ -503,4 +509,7 @@ AREA_MUSIC: dict[str, str | None] = {
     "modern_city_day_3": "city_day.wav",
     "modern_city_day_4": "city_day.wav",
     "modern_city_day_5": "city_day.wav",
+    # The phase document's one deliberate switch: the collision map
+    # reuses the Beholder fight theme rather than the day-city cue.
+    "modern_city_day_6": "boss_battle.wav",
 }

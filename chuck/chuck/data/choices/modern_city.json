@@ -26,5 +26,16 @@
         "label": "NO"
       }
     ]
+  },
+  "doug_fir_portal": {
+    "prompt": "Enter planar portal?",
+    "options": [
+      {
+        "label": "YES"
+      },
+      {
+        "label": "NO"
+      }
+    ]
   }
 }
