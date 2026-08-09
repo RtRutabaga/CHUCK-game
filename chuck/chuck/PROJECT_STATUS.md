@@ -1,8 +1,28 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is active. City Day 4 takes the floor away: a civic square
-broken into slabs over the Astral Sea. This file is required by the project
-rules and updated every session.
+Updated: Phase 11 is active. City Day 5 is a broken overpass -- the last
+ordinary daytime map before the collision tableau. This file is required by
+the project rules and updated every session.
+
+## Latest implementation
+
+- Added the 46x68 `City Day 5`. A raised deck is all that survives: nine
+  tiles wide with the Astral Sea on both sides, top to bottom, and traffic
+  still running on it because the lights have not been told. Five of the six
+  daytime maps now exist, and the density ratchet holds across all of them.
+- Two spans have dropped clean out of the deck. Unlike City Day 4's square
+  these jumps are the route rather than a reward -- the test asserts the exit
+  is reachable by jumping and *not* reachable by walking -- which is the
+  point at which the committed jump becomes load-bearing in the city.
+- Because they are mandatory, fairness is what the tests prove: each gap is a
+  single row with deck directly either side, and a footway crosses every gap
+  so a player is never forced to launch from or land in a live traffic lane.
+  The Ashtray sits before the first gap, so a missed jump costs the crossing
+  rather than the map.
+- The first version of that lane check was unsatisfiable -- it asked that no
+  landing be road, on a deck whose middle is carriageway by construction. The
+  rule that actually matters is that a pavement route exists across each gap,
+  and that is what is now asserted.
 
 ## Latest implementation
 

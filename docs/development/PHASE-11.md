@@ -856,8 +856,11 @@ increasing Astral collision damage, and the short Doug Fir Forest handoff.**
       Astral edge, with both officer types working it.
 - [x] City Day 4 is built: a civic square broken into slabs over the
       Astral Sea, introducing city jumps ahead of City Day 6.
-- [ ] Next: City Day 5, then City Day 6's collision tableau and the Doug
-      fir forest fragment.
+- [x] City Day 5 is built: a broken overpass where the committed jump
+      stops being a reward and becomes the route.
+- [ ] Next: City Day 6's collision tableau -- raptors, the massive
+      dinosaur, the spinning police officer, the Beholder-theme switch --
+      and then the Doug fir forest fragment that closes the phase.
 - Note: the "increasingly common Astral blocks" rule is enforced as a
   density ratchet across the daytime maps -- no map may be a smaller
   share of void than the one before it. Density rather than raw count,

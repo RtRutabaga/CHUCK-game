@@ -104,6 +104,7 @@ def build_map() -> list[str]:
         grid[row][WIDTH - 1] = "⮞"
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "ቨ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ቩ"
+    grid[FUTURE_EXIT[1]][WIDTH - 3] = "ቱ"  # back west from Day 5
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቪ"
     grid[ANCHOR[1]][ANCHOR[0]] = "ቫ"
     for col, row in OFFICERS:
@@ -126,6 +127,7 @@ SOLID = {"▥", "#", "▱", "▤", "w"}
 
 def _under(char: str) -> str:
     return {"ቨ": "⮝", "ቩ": "⮞", "ቪ": ".", "ቫ": ".", "ቛ": ".", "ሖ": ".",
+            "ቱ": ".",
             "ሞ": ".", "ል": ".", "ꞏ": ".", "ቜ": "."}.get(char, char)
 
 
