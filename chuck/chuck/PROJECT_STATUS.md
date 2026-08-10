@@ -6,6 +6,29 @@ updated every session.
 
 ## Latest implementation
 
+- The sewer theme plays louder. It already sat in the same measured RMS window
+  as the street cues, but almost all of it lives below 300Hz, and low material
+  measures loud while playing quiet. Two changes: the mix leans on the pipes,
+  blocks and hats that carry perceived loudness instead of piling everything
+  onto the bass, and cues can now carry an authored trim applied on top of the
+  stream volume, which is what actually closes the gap.
+- The day-city theme is a jazz trio now rather than a slowed, held arrangement.
+  The melody is still derived from the night hook in code -- that is the
+  region's identity -- but underneath it there is a walking bass four to the
+  bar, a ride on swung eighths, brushes on two and four, and an electric piano
+  comping in syncopated stabs. The harmony moves through sixteen bars of ii-V
+  motion instead of sitting on four roots, and a tenor answers the hook where
+  the arrangement used to just hold. Tempo is up from 76 to 88.
+- The sewer entrance is an open manhole in the sidewalk with its cover levered
+  off beside it and SEWER cast into the face. It was a human-sized concrete
+  opening cut into an office foundation, which read as the mouth of a subway. A
+  sewer is reached through the street, so it moved out of the wall and onto the
+  pavement, and the sprite canvas is sized so the *hole* -- not the sprite --
+  sits over the tile that is actually solid.
+- Eight test files have no `__main__` runner and were being silently skipped by
+  the module-based test loop. They are run by importing and calling their
+  `test_*` functions instead; all 110 suites genuinely pass.
+
 - The Douglas fir portal is wired. Choosing YES at the forest block plays a
   short side-view cutscene: black, a night stand fading up, Chuck walking out
   of the trunk of the largest fir as if the tree were a doorway, a hold, then
