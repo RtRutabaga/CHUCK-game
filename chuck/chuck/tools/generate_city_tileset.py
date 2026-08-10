@@ -131,9 +131,10 @@ def facade(surface, variant, _frame):
 def side_facade(surface, variant, _frame):
     """The wall that turns away from the camera.
 
-    This is the face that makes the city three-quarter rather than flat,
-    so it carries its own windows -- squeezed narrow and stepped down
-    the tile, the way a receding wall foreshortens.
+    Deliberately blank. Windows were tried here and cut: staggered down
+    a receding wall they read as a wavy column of dots rather than as
+    glass, and they fought the front face they sit beside. What sells
+    the turn is the shading and the vertical pier, not detail.
     """
     surface.fill((34, 37, 46))
     pygame.draw.line(surface, (57, 59, 67), (0, 0), (15, 0))
@@ -142,15 +143,6 @@ def side_facade(surface, variant, _frame):
         pygame.draw.line(surface, (43, 46, 55), (0, y), (15, y + 2))
     pygame.draw.line(surface, (71, 73, 79),
                      (2 + variant % 2, 0), (2 + variant % 2, 15))
-    # Two narrow panes, offset down the tile so the run of them reads as
-    # a wall going away rather than a column of dots.
-    for index, top in enumerate((1, 8)):
-        left = 8 + ((variant + index) % 2) * 3
-        lit = (variant + index) % 4 == 3
-        pygame.draw.rect(surface, (22, 25, 33), (left - 1, top, 6, 6))
-        pygame.draw.rect(
-            surface, (150, 132, 74) if lit else (44, 74, 94),
-            (left, top + 1, 4, 4))
 
 
 def window(surface, variant, frame):

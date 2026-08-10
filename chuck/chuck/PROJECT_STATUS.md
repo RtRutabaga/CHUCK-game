@@ -17,8 +17,10 @@ updated every session.
 - Parapets come in three tiles, not one. A cap laid down a vertical edge reads
   as rungs, so the left and right edges have their own tiles lit on the face
   that actually turns outward.
-- The side facade gained windows. It is the face that makes the city
-  three-quarter rather than flat, and blank it read as a shadow.
+- The side facade stays blank. Windows were tried there and cut: staggered down
+  a receding wall they read as a wavy column of dots rather than as glass, and
+  they fought the front face beside them. The shading and the vertical pier
+  sell the turn on their own.
 - None of this changed where Chuck can walk: the footprints are solid before
   and after, tile for tile, so every route and reachability check on top of
   these blocks still measures the same thing.
