@@ -132,8 +132,8 @@ def test_the_broken_spans_are_the_route_and_are_fair() -> None:
         # ...and a footway crosses it, so no jump is forced into a lane.
         pavement = (DECK_LEFT, DECK_LEFT + 1, DECK_RIGHT - 1, DECK_RIGHT)
         assert any(
-            tilemap.terrain_at(col, row - 1) not in {"=", "V"}
-            and tilemap.terrain_at(col, row + 1) not in {"=", "V"}
+            tilemap.terrain_at(col, row - 1) not in {"=", "≡", "‖", "V"}
+            and tilemap.terrain_at(col, row + 1) not in {"=", "≡", "‖", "V"}
             for col in pavement
         ), row
 
@@ -196,7 +196,7 @@ def test_traffic_still_runs_on_a_road_that_goes_nowhere() -> None:
         # Respawning lands on the footway, never in a lane or a gap.
         tile = (int(world.player.x // config.TILE_SIZE),
                 int(world.player.y // config.TILE_SIZE))
-        assert world.tilemap.terrain_at(*tile) not in {"=", "V"}
+        assert world.tilemap.terrain_at(*tile) not in {"=", "≡", "‖", "V"}
     finally:
         game._shutdown()
         directory.cleanup()

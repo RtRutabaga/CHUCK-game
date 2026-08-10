@@ -184,6 +184,28 @@ def road(surface, variant, frame):
     surface.set_at(((variant * 11 + frame * 3) % 16, 2 + frame * 4), (64, 84, 94))
 
 
+def road_line_h(surface, variant, frame):
+    """Centre line down an east-west carriageway.
+
+    The gap is drawn into the tile rather than made by alternating two
+    chars on the map, so a run of these is a dashed line automatically
+    and a road can be marked without knowing where its dashes fall.
+    """
+    road(surface, variant, frame)
+    pygame.draw.rect(surface, (196, 198, 190), (2, 7, 11, 2))
+    pygame.draw.line(surface, (150, 154, 150), (2, 9), (12, 9))
+    # Worn through in places: fresh paint on a rained-on road reads new.
+    surface.set_at(((variant * 5 + frame * 3) % 11 + 2, 7), (108, 112, 112))
+
+
+def road_line_v(surface, variant, frame):
+    """...and the same line down a north-south carriageway."""
+    road(surface, variant, frame)
+    pygame.draw.rect(surface, (196, 198, 190), (7, 2, 2, 11))
+    pygame.draw.line(surface, (150, 154, 150), (9, 2), (9, 12))
+    surface.set_at((7, (variant * 5 + frame * 3) % 11 + 2), (108, 112, 112))
+
+
 def crosswalk(surface, variant, frame):
     road(surface, variant, frame)
     paint = (174, 178, 176) if variant == 0 else (151, 156, 155)
@@ -208,6 +230,8 @@ DRAW = {
     "city_sidewalk": sidewalk,
     "city_curb": curb,
     "city_road": road,
+    "city_road_line_h": road_line_h,
+    "city_road_line_v": road_line_v,
     "city_crosswalk": crosswalk,
     "astral_void": draw_astral_void,
 }

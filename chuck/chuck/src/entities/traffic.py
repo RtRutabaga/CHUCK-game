@@ -14,7 +14,10 @@ _VECTORS = {
     "up": (0.0, -1.0),
     "down": (0.0, 1.0),
 }
-ROAD_TERRAIN = frozenset({"=", "▦"})
+# Carriageway: plain asphalt, painted lane markings, and crossings.
+# A centre line is road with paint on it, and a lane that stops at one
+# would leave cars turning round in the middle of the street.
+ROAD_TERRAIN = frozenset({"=", "≡", "‖", "▦"})
 
 
 class TrafficVehicle(Entity):

@@ -137,6 +137,8 @@ DRAW = {
     "city_day_sidewalk": _lit(night.sidewalk),
     "city_day_curb": _lit(night.curb),
     "city_day_road": _lit(night.road),
+    "city_day_road_line_h": _lit(night.road_line_h),
+    "city_day_road_line_v": _lit(night.road_line_v),
     "city_day_crosswalk": _lit(night.crosswalk),
     "city_day_puddle": puddle,
     # A patch of Chult, embedded in the street exactly as it is in

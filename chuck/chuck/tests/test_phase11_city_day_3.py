@@ -207,7 +207,7 @@ def test_the_open_edge_draws_and_respawns_safely() -> None:
         # Respawning never lands on the road, in a net's reach, or in a lane.
         tile = (int(world.player.x // config.TILE_SIZE),
                 int(world.player.y // config.TILE_SIZE))
-        assert world.tilemap.terrain_at(*tile) != "="
+        assert world.tilemap.terrain_at(*tile) not in {"=", "≡", "‖"}
         notice = config.UNDEAD_NOTICE_RANGE
         for officer in world.undead:
             assert math.dist((officer.x, officer.y),

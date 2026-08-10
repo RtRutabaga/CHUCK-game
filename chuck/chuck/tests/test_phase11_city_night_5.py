@@ -117,7 +117,7 @@ def test_highway_has_two_carriageways_crosswalks_and_safe_median() -> None:
         assert all(tilemap.terrain_at(col, row) == "▦"
                    for col in road_columns)
     for row in range(tilemap.height_tiles):
-        assert all(tilemap.terrain_at(col, row) not in {"=", "▦"}
+        assert all(tilemap.terrain_at(col, row) not in {"=", "≡", "‖", "▦"}
                    for col in range(52, 60))
 
     markers = _markers(tilemap)

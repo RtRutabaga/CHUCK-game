@@ -6,6 +6,26 @@ updated every session.
 
 ## Latest implementation
 
+- The day city is built out of buildings now too, and every carriageway in the
+  region -- night and day -- has a painted centre line.
+- The day maps were laid out by filling everything that is not street with one
+  solid char and cutting a three-row front into it where a building was wanted,
+  so most of each map was a single flat colour. A new shared pass walks whatever
+  building mass a map leaves behind and gives it the night treatment: parapets,
+  a stepped roofline, fronts with windows, side walls turning away. It works a
+  column at a time rather than on rectangles, so it dresses ragged and L-shaped
+  masses without being told their shape, and it only ever writes solid chars, so
+  nothing about where Chuck can walk changes.
+- Road markings are measured, not authored. A road records no direction, so the
+  pass measures the run of carriageway through each tile -- longer along the way
+  the traffic goes -- and lays the line on the middle of it. Junctions, where
+  the run is long both ways, are left unpainted. Crosswalks count as
+  carriageway when measuring, or a crossing shortens the run and scatters the
+  dashes across three different rows.
+- The markings are their own terrain chars, so everything that asks "is this
+  tile road?" had to learn them: the traffic lanes, and every respawn and
+  landing check that was making sure Chuck does not come back in a live lane.
+
 - The night city is built out of buildings now rather than blocks. A block used
   to be one mass: an unbroken field of roof with a strip of windows along its
   bottom edge, which at map scale read as a slab of plain stone taking up half

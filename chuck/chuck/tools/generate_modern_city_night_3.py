@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from generate_city_map_common import paint_office
+from generate_city_map_common import mark_roads, paint_office
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -86,6 +86,7 @@ def build_map() -> list[str]:
 
     grid[26][39] = "ሟ"
     grid[27][42] = "ሠ"
+    mark_roads(grid)
     return ["".join(row) for row in grid]
 
 

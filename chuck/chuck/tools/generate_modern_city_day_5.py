@@ -14,7 +14,11 @@ so a jump is never taken blind into a car.
 
 from collections import deque
 from pathlib import Path
+import sys
 
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_city_map_common import mark_roads, terrace_mass
 
 ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 46
@@ -97,6 +101,7 @@ def build_map() -> list[str]:
     for col, row in CIGARETTES:
         assert grid[row][col] in {".", "="}, (col, row, grid[row][col])
         grid[row][col] = "ል"
+    mark_roads(grid)
     return ["".join(row) for row in grid]
 
 
@@ -162,8 +167,8 @@ def validate(rows: list[str]) -> None:
     for row in BROKEN_SPANS:
         safe = [
             col for col in pavement
-            if _under(rows[row - 1][col]) not in {"=", "V"}
-            and _under(rows[row + 1][col]) not in {"=", "V"}
+            if _under(rows[row - 1][col]) not in {"=", "≡", "‖", "V"}
+            and _under(rows[row + 1][col]) not in {"=", "≡", "‖", "V"}
         ]
         assert safe, row
 

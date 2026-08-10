@@ -54,7 +54,9 @@ def test_city_night_1_authors_two_observable_opposed_lanes() -> None:
     kinds = Counter(kind for kind, _position in tilemap.object_spawns)
     assert kinds["traffic_lane:right:0"] == 1
     assert kinds["traffic_lane:left:1"] == 1
-    assert ROAD_TERRAIN == frozenset({"=", "▦"})
+    # Painted markings are carriageway too: a lane that stopped at a
+    # centre line would turn cars round in the middle of the street.
+    assert ROAD_TERRAIN == frozenset({"=", "≡", "‖", "▦"})
     assert "".join(tilemap._grid).count("▦") == 12
 
     for kind, (x, y) in tilemap.object_spawns:

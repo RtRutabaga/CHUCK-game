@@ -16,7 +16,11 @@ nor crosses a police lane.
 from collections import deque
 import math
 from pathlib import Path
+import sys
 
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_city_map_common import mark_roads, terrace_mass
 
 ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 58
@@ -52,11 +56,9 @@ def _room(grid, left, top, right, bottom, char="."):
 
 
 def _building(grid, left, top, right, bottom):
+    # Just the mass. The terrace pass at the end of the map gives it a
+    # parapet, a roofline and a front, the same as a night block gets.
     _room(grid, left, top, right, bottom, "#")
-    _room(grid, left, bottom - 2, right, bottom - 2, "▱")
-    _room(grid, left, bottom - 1, right, bottom, "▤")
-    for col in range(left + 1, right, 3):
-        grid[bottom - 1][col] = "w"
 
 
 def build_map() -> list[str]:
@@ -118,6 +120,10 @@ def build_map() -> list[str]:
     for col, row in CIGARETTES:
         assert grid[row][col] in {".", "="}, (col, row, grid[row][col])
         grid[row][col] = "ል"
+    # Dress the whole map: undifferentiated mass becomes buildings, and
+    # every carriageway gets its centre line.
+    terrace_mass(grid)
+    mark_roads(grid)
     return ["".join(row) for row in grid]
 
 

@@ -189,6 +189,9 @@ TILE_DEFS: dict[str, TileDef] = {
     ".": TileDef(solid=False, color=config.COLOR_FLOOR_PLACEHOLDER),
     ",": TileDef(solid=False, color=config.COLOR_STONE_PLACEHOLDER),
     "=": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER),
+    # Painted lane markings: road, walkable, just with a line on it.
+    "≡": TileDef(solid=False, color=(96, 100, 104)),
+    "‖": TileDef(solid=False, color=(96, 100, 104)),
     # Standing props (solid; drawn y-sorted by the WorldScene):
     "o": TileDef(solid=True, color=(0, 0, 0), prop="barrel", under="="),
     "O": TileDef(solid=True, color=(0, 0, 0), prop="barrel", under=","),

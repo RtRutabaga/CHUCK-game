@@ -95,7 +95,9 @@ def test_city_night_1_establishes_the_region_and_opens_city_night_2() -> None:
 
     terrain = "".join(tilemap._grid)
     assert terrain.count("V") >= 240
-    assert terrain.count("=") >= 650
+    # Carriageway, counted with its markings: a painted centre line is
+    # still road, and it is written as its own char.
+    assert sum(terrain.count(char) for char in "=≡‖") >= 650
     assert terrain.count("w") >= 250
     assert not tilemap.is_solid(27, 47)
     assert not tilemap.is_solid(27, 43)
