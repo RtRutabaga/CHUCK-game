@@ -1,11 +1,11 @@
 """Phase 11 Day City theme, and the region's three-cue music plan.
 
 The phase document allows the daytime theme to share a motif with the
-night one while its arrangement reflects cold overcast daylight rather
-than neon. This composition takes that literally -- the melody is
-derived from the night hook in code -- so the first test here proves the
-shared motif is the same tune rather than a similar one, and the rest
-prove the arrangement around it genuinely changed.
+night one while its arrangement differs. This composition takes that
+literally -- the melody is derived from the night hook in code -- so
+the first test here proves the shared motif is the same tune rather
+than a similar one, and the rest prove the arrangement around it
+genuinely changed: the same tune handed to a lunchtime jazz trio.
 
 The last test covers the whole region: three cues, each unbroken across
 its own maps, changing only at the two boundaries.
@@ -82,27 +82,48 @@ def test_the_day_melody_is_the_night_hook_slowed_down() -> None:
     assert city_day.TEMPO_BPM < city_night.TEMPO_BPM
 
 
-def test_daylight_changed_everything_around_the_melody() -> None:
+def test_daylight_handed_the_tune_to_a_trio() -> None:
     day = {track.name: track for track in city_day.build_tracks()}
     night = {track.name: track for track in city_night.build_tracks()}
 
-    # The kit is gone. One brush is not a backbeat.
+    # The electronic kit is gone, but it was replaced rather than
+    # removed: a ride and brushes, not a four-on-the-floor.
     assert "kick" in night and "hats" in night
     assert "kick" not in day and "hats" not in day
-    assert len(day["brush"].notes) < len(night["snare"].notes) / 4
+    assert day["ride"].notes and day["brush"].notes
 
-    # The piano holds instead of comping: fewer, longer chord events.
-    assert len(day["keys"].notes) < len(night["keys"].notes)
+    # The bass walks: four to the bar, every bar, all different notes.
+    bass = sorted(day["bass"].notes, key=lambda note: note.beat)
+    assert len(bass) == city_day.TOTAL_BARS * 4
+    for bar in range(4, city_day.TOTAL_BARS):
+        in_bar = [note for note in bass
+                  if bar * 4 <= note.beat < (bar + 1) * 4]
+        assert [note.beat % 4 for note in in_bar] == [0, 1, 2, 3], bar
+        assert len({note.pitch for note in in_bar}) >= 3, bar
+
+    # The piano comps instead of holding: more, shorter chord events
+    # than the night theme, placed off the beat as often as on it.
+    assert len(day["keys"].notes) > len(night["keys"].notes)
     assert (sum(note.dur for note in day["keys"].notes)
-            / len(day["keys"].notes)) > (
-        sum(note.dur for note in night["keys"].notes)
-        / len(night["keys"].notes))
+            / len(day["keys"].notes)) < 1.5
+    offbeat = [note for note in day["keys"].notes
+               if abs(note.beat - round(note.beat)) > 1e-6]
+    assert len(offbeat) > len(day["keys"].notes) / 4
 
-    # A pad underneath throughout, and rain louder than it was at night.
+    # A tenor answers the hook where the arrangement used to just hold.
+    assert day["answer"].instrument is ins.breathy_reed
+    answer_bars = {int(note.beat // 4) for note in day["answer"].notes}
+    assert min(answer_bars) >= 16 and max(answer_bars) < 28
+
+    # The harmony moves: sixteen bars with ii-V motion, not four roots.
+    assert len(city_day._ROOTS) >= 16
+    assert len(set(city_day._ROOTS)) >= 6
+
+    # A pad still underneath, and rain still louder than it was at night.
     assert day["pad"].instrument is ins.cloud_pad
     assert day["rain"].level > night["rain"].level
 
-    # The unease is one note: a major seventh over the minor tonic.
+    # The unease survives the daylight: a major seventh over the tonic.
     assert "C#5" in city_day._VOICING["D3"], city_day._VOICING["D3"]
 
 

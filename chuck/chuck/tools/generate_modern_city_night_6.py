@@ -62,10 +62,12 @@ def build_map() -> list[str]:
     grid[24][83] = "ስ"
     grid[24][80] = "ሶ"
 
-    # Human-sized open concrete tunnel and shallow approach-only prompt.
-    grid[19][20] = "ƺ"
-    grid[21][20] = "ሸ"
-    grid[24][20] = "ሼ"
+    # An open manhole in the pavement, with the prompt on the approach
+    # to it. It is out in the sidewalk rather than cut into the building
+    # behind: a sewer is reached through the street, not through a wall.
+    grid[22][20] = "ƺ"
+    grid[24][20] = "ሸ"
+    grid[26][20] = "ሼ"
 
     grid[22][72] = "ሕ"
     grid[37][18] = "ሕ"

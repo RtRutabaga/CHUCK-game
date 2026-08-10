@@ -15,13 +15,15 @@ from src.core.game import Game
 from src.entities.pedestrian import PedestrianNPC
 from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import CHECKPOINT_BY_ID
-from src.world.tilemap import TileMap
+from src.world.tilemap import TILE_DEFS, TileMap
 from src.world.tileset_layout import MAP_TILESET
 from src.world.transitions import AREA_WALK_EXITS
 
 
 MAP_NAME = "modern_city_night_6"
-OFFICE = frozenset("#▱▤▥wƺ")
+# The manhole used to be counted as masonry because it was cut into a
+# building. It is a hole in the sidewalk now, so it is not an office.
+OFFICE = frozenset("#▱▤▥w")
 
 
 def _markers(tilemap):
@@ -123,9 +125,9 @@ def test_route_turns_from_east_entry_to_the_sewer_threshold() -> None:
         *markers["cigarette"],
     }
     assert required <= reached
-    assert markers["choice:city_sewer_entrance"] == [(20, 21)]
+    assert markers["choice:city_sewer_entrance"] == [(20, 24)]
     assert markers["arrival:from_city_night_5"] == [(83, 24)]
-    assert markers["arrival:from_city_sewer_1"] == [(20, 24)]
+    assert markers["arrival:from_city_sewer_1"] == [(20, 26)]
     exits = [exit_def for (source, _), exit_def in AREA_WALK_EXITS.items()
              if source == MAP_NAME]
     assert len(exits) == 1
@@ -145,14 +147,33 @@ def test_city_5_and_6_openings_align_with_named_arrivals() -> None:
     assert markers_6["arrival:from_city_night_5"] == [(83, 24)]
 
 
-def test_open_sewer_entrance_is_human_scale_and_prompts_on_approach() -> None:
+def test_the_sewer_entrance_is_an_open_manhole_in_the_pavement() -> None:
+    """A hole in the street with its cover beside it, not a portal.
+
+    The first attempt was a human-sized concrete opening cut into the
+    building behind, which read as the mouth of a subway. A sewer is
+    reached through the street, so the geometry is checked here: the
+    hole is over the solid tile, the cover is off to one side of it,
+    and the tile underneath is sidewalk rather than masonry.
+    """
     image = pygame.image.load(str(
         config.SPRITES_DIR / "objects" / "city_sewer_entrance.png"
     ))
-    assert image.get_size() == (80, 64)
-    assert image.get_width() >= config.NPC_FRAME_W * 4
-    assert image.get_height() >= config.NPC_FRAME_H * 2
-    assert image.get_at((40, 25))[:3] == (7, 9, 13)
+    width, height = image.get_size()
+    # Props draw centred on their tile, so the hole -- not the sprite --
+    # has to sit over the middle of the tile that is actually solid.
+    assert image.get_at((width // 2, height - 12))[:3] == (6, 7, 9)
+    # ...and the cover is beside it rather than behind it, so it never
+    # reads as a second, closed hole.
+    cover = [x for x in range(width)
+             if image.get_at((x, 22))[:3][0] > image.get_at((x, 22))[:3][2]
+             and image.get_at((x, 22))[3] > 0]
+    assert cover and min(cover) > width // 2, (min(cover) if cover else None)
+
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    assert tilemap.is_solid(20, 22), "the open hole is not walked over"
+    assert TILE_DEFS["ƺ"].under == ".", "the manhole is in the sidewalk"
+    assert TILE_DEFS["ƺ"].prop == "city_sewer_entrance"
 
     directory, game, world = _game_and_world()
     try:

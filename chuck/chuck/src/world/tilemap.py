@@ -309,9 +309,9 @@ TILE_DEFS: dict[str, TileDef] = {
     "⮜": TileDef(solid=False, color=(43, 47, 55)),
     "Ƀ": TileDef(solid=False, color=(43, 47, 55),
                  prop="city_bottles", under="."),
-    # Human-worker-sized open concrete tunnel in an office foundation.
-    "ƺ": TileDef(solid=True, color=(49, 52, 61),
-                 prop="city_sewer_entrance", under="▤"),
+    # An open manhole in the sidewalk, its cover levered off beside it.
+    "ƺ": TileDef(solid=True, color=(24, 26, 30),
+                 prop="city_sewer_entrance", under="."),
     "ƻ": TileDef(solid=False, color=(181, 142, 48)),
     # Toxic runoff: walkable, unmistakably not water, and the only sewer
     # terrain that both slows Chuck and takes Sanity.

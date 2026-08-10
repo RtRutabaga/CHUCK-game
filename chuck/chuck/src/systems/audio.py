@@ -59,9 +59,14 @@ class AudioSystem:
                 f"Missing music {path}. Run: python tools/generate_music.py"
             )
         pygame.mixer.music.load(str(path))
-        pygame.mixer.music.set_volume(self.music_volume)
+        pygame.mixer.music.set_volume(self.volume_for(filename))
         pygame.mixer.music.play(-1 if loop else 0)
         self._current_music = request
+
+    def volume_for(self, filename: str) -> float:
+        """Stream volume for one cue, including its authored trim."""
+        trim = config.MUSIC_TRIM.get(filename, 1.0)
+        return min(1.0, self.music_volume * trim)
 
     def stop_music(self, fade_ms: int = 0) -> None:
         self._current_music = None

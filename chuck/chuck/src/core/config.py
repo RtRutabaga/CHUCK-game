@@ -498,6 +498,11 @@ SWORD_FIGHTER_SANITY_DAMAGE = 15
 # Audio
 # ---------------------------------------------------------------------------
 AUDIO_MUSIC_VOLUME = 0.6   # ambience / music stream
+# Per-cue trim, applied on top of the stream volume. The mastering
+# gates level every theme by measured RMS, but low material measures
+# loud and plays quiet: the sewer theme lives almost entirely below
+# 300Hz and needs the trim to sit where the street cues already do.
+MUSIC_TRIM = {"city_sewer.wav": 1.55}
 AUDIO_SFX_VOLUME = 0.8
 MUSIC_FILE = "waterdeep_docks.wav"
 FOOTSTEP_INTERVAL = 0.28   # seconds between steps while walking

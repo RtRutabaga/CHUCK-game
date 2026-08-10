@@ -10,7 +10,9 @@ low-register motif under a long walk, not the reference itself.
 
 import math
 import os
+from pathlib import Path
 import struct
+import tempfile
 import wave
 
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
@@ -18,6 +20,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from data.music import city_night, city_sewer
 from src.audio import instruments as ins
+from src.core.game import Game
 from src.core import config
 from src.world.transitions import AREA_MUSIC
 
@@ -115,6 +118,38 @@ def test_the_tunnel_sounds_like_a_tunnel_not_a_street() -> None:
     groove = [note for track in tracks.values() for note in track.notes
               if 24 <= note.beat < 28]
     assert len({round(note.beat * 4) for note in groove}) >= 10
+
+
+def test_the_tunnel_plays_as_loud_as_the_street() -> None:
+    """Measured level is not played level when the material is this low.
+
+    The mastering gates put every area theme in the same RMS window, and
+    by that meter the sewer cue was already level with the night one.
+    It still played noticeably quieter, because nearly all of it sits
+    below 300Hz and low material measures loud. The fix is in two
+    places: the mix leans harder on the pipes, blocks and hats that
+    carry perceived loudness, and the cue carries an authored trim on
+    top of the stream volume.
+    """
+    tracks = {track.name: track for track in city_sewer.build_tracks()}
+    # The mid and high voices are no longer buried under the bass.
+    assert tracks["pipes"].level >= tracks["bass"].level * 0.9
+    for name in ("blocks", "hats", "snare"):
+        assert tracks[name].level >= 0.44, (name, tracks[name].level)
+
+    assert config.MUSIC_TRIM[TRACK] > 1.0
+    directory = tempfile.TemporaryDirectory()
+    game = Game(save_path=Path(directory.name) / "save.json")
+    try:
+        street = game.audio.volume_for("city_night.wav")
+        tunnel = game.audio.volume_for(TRACK)
+        assert street == config.AUDIO_MUSIC_VOLUME
+        assert tunnel > street, (tunnel, street)
+        # ...but never past the mixer's own ceiling.
+        assert tunnel <= 1.0
+    finally:
+        game._shutdown()
+        directory.cleanup()
 
 
 def test_the_cue_runs_unbroken_through_the_sewer_only() -> None:

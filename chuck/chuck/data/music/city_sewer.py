@@ -30,9 +30,11 @@ TEMPO_BPM = 104
 BEATS_PER_BAR = 4
 TOTAL_BARS = 28
 TOTAL_BEATS = TOTAL_BARS * BEATS_PER_BAR
-# Almost everything here lives below 300Hz, which reads far louder than a
-# spread arrangement. The ceiling keeps the tunnel level with the street.
-MASTER_HEADROOM = 0.78
+# Almost everything here lives below 300Hz. Low material measures loud
+# and plays quiet, so matching the street cue by the meter left the
+# tunnel sounding half a room away: the ceiling is now near the top of
+# the gate, and the mid voices carry more of the level than the bass.
+MASTER_HEADROOM = 0.95
 
 
 def _bars(pattern: dict[int, list[tuple]]) -> list[Note]:
@@ -128,12 +130,12 @@ def build_tracks() -> list[Track]:
         drips[bar] = [(beat, .16, pitch, .40) for beat, pitch in offsets]
 
     return [
-        Track("bass", ins.elastic_bass, 1.05, _bars(bass)),
-        Track("pipes", ins.hollow_pipe, .78, _bars(pipes)),
-        Track("throb", ins.low_pulse, .58, _bars(throb)),
-        Track("kick", ins.kick, .78, _bars(kick)),
-        Track("snare", ins.snare, .44, _bars(snare)),
-        Track("hats", ins.hat, .30, _bars(hats)),
-        Track("blocks", ins.woodblock, .40, _bars(blocks)),
-        Track("drips", ins.sewer_drip, .62, _bars(drips)),
+        Track("bass", ins.elastic_bass, 1.00, _bars(bass)),
+        Track("pipes", ins.hollow_pipe, .95, _bars(pipes)),
+        Track("throb", ins.low_pulse, .60, _bars(throb)),
+        Track("kick", ins.kick, .86, _bars(kick)),
+        Track("snare", ins.snare, .60, _bars(snare)),
+        Track("hats", ins.hat, .44, _bars(hats)),
+        Track("blocks", ins.woodblock, .60, _bars(blocks)),
+        Track("drips", ins.sewer_drip, .72, _bars(drips)),
     ]
