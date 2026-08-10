@@ -17,13 +17,98 @@ from generate_sewer_tileset import draw_astral_void
 
 
 def roof(surface, variant, _frame):
-    """Flat upper plane of a very large office building."""
-    surface.fill((43, 46, 55))
-    pygame.draw.line(surface, (58, 61, 70), (0, 0), (15, 0))
-    pygame.draw.line(surface, (32, 35, 43), (0, 15), (15, 15))
-    seam = 4 + (variant % 3) * 4
-    pygame.draw.line(surface, (37, 40, 48), (seam, 0), (seam, 15))
-    surface.set_at(((variant * 5 + 3) % 15, 5), (82, 88, 91))
+    """Tar and gravel, seen from above.
+
+    A roof is the single most common tile in the night city, so a flat
+    fill of it reads as unpainted stone across half the screen. What
+    stops that is texture at two scales: the big membrane panels a roof
+    is actually built from, and the grit lying on top of them.
+    """
+    surface.fill((41, 44, 52))
+    # The membrane seams: a panel grid, offset per variant so a block
+    # never tiles into stripes.
+    seam = (38, 41, 49)
+    bright = (52, 55, 63)
+    across = (variant * 5) % 16
+    down = (variant * 7 + 3) % 16
+    pygame.draw.line(surface, seam, (across, 0), (across, 15))
+    pygame.draw.line(surface, bright, (across + 1, 0), (across + 1, 15))
+    pygame.draw.line(surface, seam, (0, down), (15, down))
+    pygame.draw.line(surface, bright, (0, down + 1), (15, down + 1))
+    # Grit, and one puddle per few tiles catching what light there is.
+    for index in range(7):
+        x = (variant * 11 + index * 5) % 16
+        y = (variant * 3 + index * 7) % 16
+        surface.set_at((x, y), (49, 52, 60) if index % 2 else (35, 38, 46))
+    if variant == 2:
+        pygame.draw.ellipse(surface, (54, 60, 68), (4, 8, 8, 4))
+        pygame.draw.ellipse(surface, (72, 80, 88), (5, 9, 4, 2))
+
+
+def parapet(surface, variant, _frame):
+    """The low wall around a roof, seen from just off vertical.
+
+    This is what gives a block a top edge instead of ending at nothing:
+    a lit cap, a shadowed inner face, and the roof carrying on below.
+    """
+    roof(surface, variant, 0)
+    pygame.draw.rect(surface, (74, 77, 85), (0, 1, 16, 6))
+    pygame.draw.line(surface, (118, 121, 126), (0, 1), (15, 1))
+    pygame.draw.line(surface, (92, 95, 102), (0, 2), (15, 2))
+    pygame.draw.line(surface, (24, 27, 34), (0, 7), (15, 7), 2)
+    surface.set_at(((variant * 5 + 2) % 16, 4), (146, 148, 147))
+
+
+def _parapet_side(surface, variant, mirrored: bool) -> None:
+    """The same low wall, running down a roof's left or right edge.
+
+    The back parapet is a horizontal cap; laid down a vertical edge it
+    reads as rungs. A wall running away from the camera catches light on
+    its outer face instead, so this is drawn as its own tile rather than
+    reusing the horizontal one turned on its side.
+    """
+    roof(surface, variant, 0)
+    pygame.draw.rect(surface, (74, 77, 85), (0, 0, 6, 16))
+    pygame.draw.line(surface, (118, 121, 126), (0, 0), (0, 15))
+    pygame.draw.line(surface, (92, 95, 102), (1, 0), (1, 15))
+    pygame.draw.line(surface, (24, 27, 34), (6, 0), (6, 15), 2)
+    surface.set_at((3, (variant * 5 + 2) % 16), (146, 148, 147))
+    if mirrored:
+        flipped = pygame.transform.flip(surface, True, False)
+        surface.blit(flipped, (0, 0))
+
+
+def parapet_left(surface, variant, _frame):
+    """The parapet down a roof's left edge: lit face outward, to the left."""
+    _parapet_side(surface, variant, mirrored=False)
+
+
+def parapet_right(surface, variant, _frame):
+    """...and down its right edge."""
+    _parapet_side(surface, variant, mirrored=True)
+
+
+def roof_vent(surface, variant, _frame):
+    """A boxed air handler bolted to the roof, with its own shadow."""
+    roof(surface, variant, 0)
+    pygame.draw.rect(surface, (18, 20, 26), (4, 11, 11, 4))
+    pygame.draw.rect(surface, (62, 65, 72), (2, 4, 11, 8))
+    pygame.draw.rect(surface, (86, 89, 96), (2, 4, 11, 3))
+    pygame.draw.line(surface, (110, 113, 118), (2, 4), (12, 4))
+    for x in range(4, 12, 3):
+        pygame.draw.line(surface, (40, 43, 50), (x, 8), (x, 11))
+
+
+def skylight(surface, variant, _frame):
+    """A run of dirty glass, lit faintly from the floor below."""
+    roof(surface, variant, 0)
+    pygame.draw.rect(surface, (20, 22, 28), (2, 12, 13, 3))
+    pygame.draw.rect(surface, (74, 77, 84), (1, 3, 14, 10))
+    pygame.draw.rect(surface, (58, 74, 84), (2, 4, 12, 8))
+    for x in (5, 9):
+        pygame.draw.line(surface, (74, 77, 84), (x, 4), (x, 11))
+    pygame.draw.line(surface, (74, 77, 84), (2, 8), (13, 8))
+    surface.set_at((3 + variant % 8, 5), (128, 146, 152))
 
 
 def cornice(surface, variant, _frame):
@@ -44,13 +129,28 @@ def facade(surface, variant, _frame):
 
 
 def side_facade(surface, variant, _frame):
-    surface.fill((36, 39, 48))
-    pygame.draw.line(surface, (59, 61, 69), (0, 0), (15, 0))
-    pygame.draw.line(surface, (25, 28, 36), (0, 15), (15, 15))
+    """The wall that turns away from the camera.
+
+    This is the face that makes the city three-quarter rather than flat,
+    so it carries its own windows -- squeezed narrow and stepped down
+    the tile, the way a receding wall foreshortens.
+    """
+    surface.fill((34, 37, 46))
+    pygame.draw.line(surface, (57, 59, 67), (0, 0), (15, 0))
+    pygame.draw.line(surface, (23, 26, 34), (0, 15), (15, 15))
     for y in (5, 11):
-        pygame.draw.line(surface, (45, 48, 57), (0, y), (15, y + 2))
-    pygame.draw.line(surface, (73, 75, 81),
+        pygame.draw.line(surface, (43, 46, 55), (0, y), (15, y + 2))
+    pygame.draw.line(surface, (71, 73, 79),
                      (2 + variant % 2, 0), (2 + variant % 2, 15))
+    # Two narrow panes, offset down the tile so the run of them reads as
+    # a wall going away rather than a column of dots.
+    for index, top in enumerate((1, 8)):
+        left = 8 + ((variant + index) % 2) * 3
+        lit = (variant + index) % 4 == 3
+        pygame.draw.rect(surface, (22, 25, 33), (left - 1, top, 6, 6))
+        pygame.draw.rect(
+            surface, (150, 132, 74) if lit else (44, 74, 94),
+            (left, top + 1, 4, 4))
 
 
 def window(surface, variant, frame):
@@ -104,6 +204,11 @@ def crosswalk(surface, variant, frame):
 
 DRAW = {
     "city_roof": roof,
+    "city_parapet": parapet,
+    "city_parapet_left": parapet_left,
+    "city_parapet_right": parapet_right,
+    "city_roof_vent": roof_vent,
+    "city_skylight": skylight,
     "city_cornice": cornice,
     "city_facade": facade,
     "city_side_facade": side_facade,

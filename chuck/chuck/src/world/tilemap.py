@@ -299,6 +299,12 @@ TILE_DEFS: dict[str, TileDef] = {
     # Modern-city office masses. These are all solid building footprint,
     # separated into roof/cornice/facade materials only for three-quarter-view
     # rendering; none are short freestanding walls or playable platforms.
+    # The roof volume: its parapet wall, and the plant standing on it.
+    "▘": TileDef(solid=True, color=(74, 77, 85)),
+    "▖": TileDef(solid=True, color=(74, 77, 85)),
+    "▗": TileDef(solid=True, color=(74, 77, 85)),
+    "▙": TileDef(solid=True, color=(62, 65, 72)),
+    "▟": TileDef(solid=True, color=(58, 74, 84)),
     "▱": TileDef(solid=True, color=(55, 58, 67)),
     "▤": TileDef(solid=True, color=(49, 52, 61)),
     "▥": TileDef(solid=True, color=(39, 42, 51)),

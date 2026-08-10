@@ -123,6 +123,13 @@ def doug_fir_block(surface, variant, frame):
 
 DRAW = {
     "city_day_roof": _lit(night.roof),
+    # The roof volume is drawn once, at night, and washed for daylight
+    # like every other shared row. No day map places these chars yet.
+    "city_day_parapet": _lit(night.parapet),
+    "city_day_parapet_left": _lit(night.parapet_left),
+    "city_day_parapet_right": _lit(night.parapet_right),
+    "city_day_roof_vent": _lit(night.roof_vent),
+    "city_day_skylight": _lit(night.skylight),
     "city_day_cornice": _lit(night.cornice),
     "city_day_facade": _lit(night.facade),
     "city_day_side_facade": _lit(night.side_facade),

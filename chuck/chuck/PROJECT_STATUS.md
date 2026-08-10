@@ -6,6 +6,26 @@ updated every session.
 
 ## Latest implementation
 
+- The night city is built out of buildings now rather than blocks. A block used
+  to be one mass: an unbroken field of roof with a strip of windows along its
+  bottom edge, which at map scale read as a slab of plain stone taking up half
+  the screen. Each block is now a terrace of several buildings sharing the
+  footprint, each with its own parapet, roofline, front and side wall.
+- The roof tile is tar and gravel with membrane seams and grit instead of a
+  flat fill, and roofs carry plant -- air handlers and skylights -- scattered on
+  a coarse lattice so nothing clumps or leaves half a roof bare.
+- Parapets come in three tiles, not one. A cap laid down a vertical edge reads
+  as rungs, so the left and right edges have their own tiles lit on the face
+  that actually turns outward.
+- The side facade gained windows. It is the face that makes the city
+  three-quarter rather than flat, and blank it read as a shadow.
+- None of this changed where Chuck can walk: the footprints are solid before
+  and after, tile for tile, so every route and reachability check on top of
+  these blocks still measures the same thing.
+- The day sheet carries the same new rows, washed for daylight, because it is
+  generated from the night draws and the two sheets have to stay in step. No
+  day map places the new chars yet -- that pass has not started.
+
 - The sewer theme plays louder. It already sat in the same measured RMS window
   as the street cues, but almost all of it lives below 300Hz, and low material
   measures loud while playing quiet. Two changes: the mix leans on the pipes,

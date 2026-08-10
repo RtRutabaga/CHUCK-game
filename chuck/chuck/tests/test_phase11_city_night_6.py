@@ -23,7 +23,9 @@ from src.world.transitions import AREA_WALK_EXITS
 MAP_NAME = "modern_city_night_6"
 # The manhole used to be counted as masonry because it was cut into a
 # building. It is a hole in the sidewalk now, so it is not an office.
-OFFICE = frozenset("#▱▤▥w")
+# The roof volume: field, parapets on three edges, and the vents and
+# skylights standing on it. All of it is one solid office mass.
+OFFICE = frozenset("#▘▖▗▙▟▱▤▥w")
 
 
 def _markers(tilemap):

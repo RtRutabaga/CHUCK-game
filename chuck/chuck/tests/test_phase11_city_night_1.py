@@ -10,7 +10,13 @@ from src.world.transitions import AREA_WALK_EXITS
 
 
 MAP_NAME = "modern_city_arrival"
-OFFICE_TERRAIN = frozenset("#▱▤▥w")
+# The roof volume: field, parapets on three edges, and the vents and
+# skylights standing on it. All of it is one solid office mass.
+OFFICE_TERRAIN = frozenset("#▘▖▗▙▟▱▤▥w")
+NIGHT_MAPS = (
+    "modern_city_arrival", "modern_city_night_2", "modern_city_night_3",
+    "modern_city_night_4", "modern_city_night_5", "modern_city_night_6",
+)
 
 
 def _markers(tilemap: TileMap) -> dict[str, list[tuple[int, int]]]:
@@ -142,3 +148,46 @@ def test_city_tileset_uses_the_shared_animated_astral_hazard() -> None:
     assert tileset.char_to_terrain["▥"] == "city_side_facade"
     assert tileset.info()["city_window"] == (4, 3)
     assert tileset.char_to_terrain["▦"] == "city_crosswalk"
+
+
+def test_night_blocks_are_terraces_of_buildings_not_slabs_of_stone() -> None:
+    """A block has to read as several buildings seen from above.
+
+    It used to be painted as one mass: an unbroken field of roof with a
+    strip of windows along the bottom. That is a slab of plain stone
+    across half the screen, because a roof with no edge and nothing
+    standing on it is only a colour. What is checked here is the shape
+    that fixes it -- a parapet around every roof, plant on top of it, a
+    stepped roofline, and side walls turning away from the camera.
+    """
+    for name in NIGHT_MAPS:
+        tilemap = TileMap(config.MAPS_DIR / f"{name}.txt")
+        grid = tilemap._grid
+        used = Counter(char for row in grid for char in row)
+
+        # Every roof is walled: back parapet, and one down each side.
+        for char in "▘▖▗":
+            assert used[char] > 0, (name, char)
+        # ...and has plant standing on it, not just texture.
+        assert used["▙"] + used["▟"] >= 12, (name, used)
+
+        # The roofline steps: cornices sit at more than one height in a
+        # block, which is what makes a terrace rather than one building.
+        cornice_rows = {row for row, line in enumerate(grid)
+                        if "▱" in line}
+        assert len(cornice_rows) >= 4, (name, sorted(cornice_rows))
+
+        # Side walls turn away from the camera on every block, and there
+        # are now more of them than there were flat masses.
+        assert used["▥"] >= 40, (name, used["▥"])
+
+        # No unbroken field of bare roof is left anywhere: the widest
+        # run of plain roof tiles in a row is bounded by the buildings
+        # the block is divided into.
+        widest = 0
+        for line in grid:
+            run = 0
+            for char in line:
+                run = run + 1 if char == "#" else 0
+                widest = max(widest, run)
+        assert widest <= 24, (name, widest)
