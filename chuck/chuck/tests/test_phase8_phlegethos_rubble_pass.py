@@ -20,6 +20,7 @@ from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 MAP_NAME = "phlegethos_rubble_pass"
 LAKE = "phlegethos_lake"
 FORTRESS = "phlegethos_fortress_approach"
+FRACTURED = "phlegethos_fractured_way"
 
 
 def _points(tilemap: TileMap, prefix: str) -> dict[str, tuple[int, int]]:
@@ -149,12 +150,13 @@ def test_rubble_pass_checkpoint_and_both_connections_use_shared_loading() -> Non
     assert entry.display_name == "Phlegethos 4"
     assert entry.runtime_entry and entry.development_visible
     assert anchor.map_name == MAP_NAME and anchor.saveable
-    assert fortress.display_name == "Phlegethos 5"
+    assert CHECKPOINT_BY_ID[FRACTURED].display_name == "Phlegethos 5"
+    assert fortress.display_name == "Phlegethos 6"
 
     assert AREA_WALK_EXITS[(LAKE, "∇")].destination == MAP_NAME
     assert AREA_WALK_EXITS[(MAP_NAME, "«")].destination == LAKE
-    assert AREA_WALK_EXITS[(MAP_NAME, "›")].destination == FORTRESS
-    assert AREA_WALK_EXITS[(FORTRESS, "Δ")].destination == MAP_NAME
+    assert AREA_WALK_EXITS[(MAP_NAME, "›")].destination == FRACTURED
+    assert AREA_WALK_EXITS[(FRACTURED, "«")].destination == MAP_NAME
 
     game = Game()
     try:
@@ -176,15 +178,14 @@ def test_rubble_pass_checkpoint_and_both_connections_use_shared_loading() -> Non
         scene.player.x = east[0] * config.TILE_SIZE + 3
         scene.player.y = east[1] * config.TILE_SIZE + 4
         scene.update(0.0)
-        assert scene.map_name == FORTRESS
-        assert game.active_checkpoint_id == FORTRESS
+        assert scene.map_name == FRACTURED
+        assert game.active_checkpoint_id == FRACTURED
 
-        scene._pending_entrance_dialogue = None
         back = next(
             (col, row)
             for row in range(scene.tilemap.height_tiles)
             for col in range(scene.tilemap.width_tiles)
-            if scene.tilemap.terrain_at(col, row) == "Δ"
+            if scene.tilemap.terrain_at(col, row) == "«"
         )
         scene.player.x = back[0] * config.TILE_SIZE + 3
         scene.player.y = back[1] * config.TILE_SIZE + 4

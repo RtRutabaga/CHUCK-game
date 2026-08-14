@@ -428,6 +428,11 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="phlegethos_rubble", under="·"),
     "ƒ": TileDef(solid=True, color=(178, 45, 12),
                  prop="phlegethos_lava_fall", under="≋"),
+    # A whole modern bus shelter displaced into Phlegethos. Its one solid
+    # anchor tile is the rear post/bench footprint; the tall transparent
+    # sprite carries the human scale without blocking Chuck's approach.
+    "☂": TileDef(solid=True, color=(42, 45, 50),
+                 prop="city_bus_stop", under="·"),
     # Phase 9's first Feywild silhouettes: tall trees grow from the solid
     # canopy; freestanding spiral plants and mushrooms shape optional floor.
     "ł": TileDef(solid=True, color=(18, 69, 52),
@@ -798,6 +803,13 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ԯ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
     "԰": MarkerDef(kind="anchor:phlegethos_rubble_anchor", under="≡"),
     "Բ": MarkerDef(kind="arrival:from_phlegethos_fortress", under="≡"),
+    # The fractured way inserted before the fortress battle. Existing
+    # fortress marker IDs remain untouched so old saves stay valid.
+    "ዐ": MarkerDef(kind="arrival:from_phlegethos_rubble", under="≡"),
+    "ዑ": MarkerDef(kind="anchor:phlegethos_fractured_anchor", under="≡"),
+    "ዒ": MarkerDef(kind="arrival:from_phlegethos_fortress", under="≡"),
+    "ዓ": MarkerDef(kind="pit_fiend", under="·"),
+    "ዕ": MarkerDef(kind="npc:businessman", under="≡"),
     # Phase 9 opens on the bank reached by the river cutscene.
     "Գ": MarkerDef(kind="arrival:from_river", under=","),
     "Դ": MarkerDef(kind="anchor:feywild_anchor", under="'"),

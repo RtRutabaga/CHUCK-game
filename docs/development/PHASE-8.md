@@ -48,10 +48,20 @@ Implemented so far:
   on one intact basalt slab. Its only enemies are one slow lemure whose pocket
   delays its approach and one slow horned devil kept beyond notice range from
   the required path. The map owns one Ashtray and development-visible
-  `Phlegethos 4`; the fortress display advances to `Phlegethos 5` while its
-  persisted checkpoint IDs remain stable.
+  `Phlegethos 4`; the later fortress checkpoint IDs remain stable.
+- A new pre-fortress traversal map, `phlegethos_fractured_way` (76x48), now
+  sits between Rubble Pass and Fortress Approach. Its broad path winds around
+  dark rubble and three small lava ponds while three flameskulls remain over
+  the molten terrain as distant setting motion. One full-scale Pit Fiend uses
+  the established slow colossus behavior and begins beyond notice range from
+  the route, making it wholly avoidable. A displaced modern bus shelter and
+  umbrella-carrying businessman form an accessible collided-world tableau;
+  the commuter retains the city's `Ah! A rat!` response. Four mandatory
+  one-tile Astral bands form the map's only required challenge. The map owns
+  `Phlegethos 5` and its Ashtray; Fortress Approach now displays as
+  `Phlegethos 6` without changing its persisted IDs or battle trigger.
 - The Phlegethos soundtrack (`data/music/phlegethos.py` -> phlegethos.wav),
-  replacing the jungle placeholder across all five maps. An original 48-bar,
+  replacing the jungle placeholder across all six maps. An original 48-bar,
   ~87s loop at 132 BPM in E Phrygian dominant (E F G# A B C D) -- the flat
   second against the raised third gives the exotic infernal heat, and keeps
   it clearly distinct from the temple's D minor and the boss theme's D
@@ -64,7 +74,7 @@ Implemented so far:
   added for the brief: `metal_hit` (inharmonic struck metal) and
   `low_pulse` (a tremolo'd filtered square). Renders at 0.93 headroom, RMS
   0.183 (level with temple/boss), seam 0.011.
-- The fifth map, the fortress approach
+- The final map, the fortress approach
   (`phlegethos_fortress_approach`, 48x34), and the
   last enemy. The iron-black fortress wall now closes off the north with
   its gate shut (new `fortress` / `fortress_gate` tileset rows -- the
@@ -74,7 +84,7 @@ Implemented so far:
   `MassiveDinosaur` variant -- the Chultan colossus's gameplay exactly,
   wearing infernal art: a slab-muscled, batwinged, horned soldier dragging
   a barbed iron fork, towering over Chuck. One holds the yard, with lemures,
-  fire snakes and spined devils scattered below. Checkpoints `Phlegethos 5`
+  fire snakes and spined devils scattered below. Checkpoints `Phlegethos 6`
   + Ashtray + a Rubble Pass return; the gate approach is an inert boundary
   awaiting the climax. This completes the bestiary and the setting's visual
   brief.
@@ -88,8 +98,8 @@ Implemented so far:
   cannot be cleared by any scratch, and floats over lava as happily as
   stone -- four haunt the lava lake's stepping stones, using lava-under
   markers so they never punch safe tiles into the lake.
-- Seventeen of the Chult temple's **breakable terracotta urns** now appear
-  across the five Phlegethos maps. Arrival and Lava Road hold three each;
+- Seventeen of the Chult temple's **breakable terracotta urns** remain across
+  the five original Phlegethos maps. Arrival and Lava Road hold three each;
   four sit only on the Lava Lake's safe shores; three sit off the Rubble
   Pass route; four flank the Fortress yard away from its battle aisle. They
   reuse the exact scratch, shard, carton-drop, and map-reset implementation,
@@ -326,7 +336,7 @@ of the collided worlds.
 
 # 11. Acceptance Criteria
 
-- [x] Multiple connected Phlegethos maps are implemented. *(five)*
+- [x] Multiple connected Phlegethos maps are implemented. *(six)*
 - [x] Basalt, lava, statues and fortress exteriors establish the setting.
 - [x] Lemures reuse zombie gameplay.
 - [x] Fire snakes reuse temple-snake gameplay.

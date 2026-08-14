@@ -6,6 +6,26 @@ updated every session.
 
 ## Latest implementation
 
+- Added the 76x48 Fractured Way immediately before the Phlegethos fortress
+  fight. The reciprocal chain is now Rubble Pass -> Fractured Way -> Fortress
+  Approach, while the existing fortress arrival name and fight trigger remain
+  unchanged.
+- A wide route meanders around 306 dark rubble pieces and three small lava
+  ponds. Three flameskulls weave only above those ponds as environmental
+  motion; the sole true enemy is a full-scale, slow Pit Fiend positioned
+  beyond notice range from the required path so it is easy to avoid.
+- A procedural modern bus shelter and the existing umbrella businessman form
+  a reachable collided-world tableau with the exact `Ah! A rat!` dialogue.
+  Five nearby Astral fragments establish the collision without fencing Chuck
+  away from the NPC.
+- Four one-tile Astral cross-bands form the only mandatory challenge and are
+  cliff-backed so they cannot be walked around. The map has its own Ashtray
+  and shared-loader `Phlegethos 5` checkpoint; Fortress Approach is now shown
+  as `Phlegethos 6`, with stable checkpoint IDs.
+- Focused map, reachability, hazard-spacing, shared-checkpoint, NPC dialogue,
+  runtime entity, rendering, and transition tests pass. All 111 repository
+  suites pass in isolated processes, and source/tools/tests compile cleanly.
+
 - City Night 6's `Enter the sewer?` walk trigger is now one tile at the
   manhole lip instead of a broad approach zone, and City Sewer 4's
   `Climb up ladder?` trigger is likewise confined to the exact tile at the
@@ -808,16 +828,14 @@ updated every session.
 
 ## Next logical task
 
-Continue Phase 11 with `City Sewer 2` as one bounded map slice. Extend the
-modern utility-tunnel route in a different direction with its own Ashtray,
-reciprocal transition, and another readable set of aggressive rats. Preserve
-the Astral-severed boundary until the next map exists; leave toxic sludge and
-the harder Astral jump sequence for their dedicated pass.
+Playtest the inserted Fractured Way in normal sequence and from its development
+checkpoint. Phase 11 is otherwise feature-complete; begin Phase 12 only after
+its scope document exists.
 
 ## Current state
 
-- Phase 8 is complete. Five connected playable Phlegethos maps lead through the fortress
-  approach: Arrival, Lava Road, Lava Lake, Rubble Pass, and Fortress Approach.
+- Phase 8 now has six connected playable Phlegethos maps: Arrival, Lava Road,
+  Lava Lake, Rubble Pass, Fractured Way, and Fortress Approach.
 - The new 64x34 Rubble Pass sits between the Lava Lake and Fortress and turns
   the route west-to-east. A broad paved lane winds through 127 pieces of dark
   basalt-and-ember rubble, crosses a narrow two-tile lava river on an intact
@@ -825,8 +843,9 @@ the harder Astral jump sequence for their dedicated pass.
   notice range at the west end; one slow horned devil remains optional beyond
   notice range from the required route. The map has its own Ashtray,
   development checkpoint `Phlegethos 4`, three breakable carton urns, and
-  uninterrupted Phlegethos music. The fortress is now displayed as
-  `Phlegethos 5`; its stable persisted checkpoint IDs are unchanged.
+  uninterrupted Phlegethos music. Fractured Way is displayed as
+  `Phlegethos 5`, and the fortress as `Phlegethos 6`; their persisted
+  checkpoint IDs are stable.
 - The Rubble Pass's east exit no longer borrows a misaligned temple arch. A
   three-tile-tall infernal wall cleft is centered on the paved approach, and
   every visible dark doorway cell is the actual transition trigger. The
@@ -837,8 +856,8 @@ the harder Astral jump sequence for their dedicated pass.
 - The complete Phase 8 enemy set is present: lemures, fire snakes, spined
   devils, flameskulls, and horned devils, all built as variants or extensions
   of established enemy/hazard systems.
-- Seventeen temple-style breakable urns are distributed across all five
-  Phlegethos maps: three each in Arrival and Lava Road, four on the Lava
+- Seventeen temple-style breakable urns are distributed across the five
+  original Phlegethos maps: three each in Arrival and Lava Road, four on the Lava
   Lake's two safe shores, three in the Rubble Pass, and four around the
   Fortress yard. They reuse the
   exact temple scratch/shatter/reset lifecycle and each drops the established

@@ -3,14 +3,31 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `54842f0` (overlapping-enemy scratch fix)
-- Current work: Phase 11 is feature-complete -- the Doug fir exit has landed
+- Base commit before this pass: `81f8930` (sewer prompts/highway edge fix)
+- Current work: inserted the requested pre-fight Phlegethos traversal map
 - Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: walk the Phase 11 acceptance criteria against
-  the built region, then open Phase 12 from the recorded
-  `doug_fir_transition_completed` flag
+- Next implementation slice: playtest Fractured Way in sequence; Phase 12
+  remains unopened until its scope document exists
 
 ## Completed This Pass
+
+- Inserted `phlegethos_fractured_way` between Rubble Pass and the unchanged
+  Fortress Approach fight. The 76x48 route winds around dense dark rubble and
+  three small lava ponds before a cliff-backed, four-jump Astral course.
+- Added one slow 128x128 Pit Fiend beyond notice range from the required path,
+  plus three lava-bound flameskulls that provide setting motion without
+  blocking progression.
+- Added a procedural modern bus shelter and reused the umbrella businessman
+  with exact city dialogue (`Ah! A rat!`). Five nearby Astral fragments leave
+  a broad clear approach so Chuck can reach and interact with him.
+- Added one Ashtray and shared-loader/development checkpoint `Phlegethos 5`.
+  Fortress Approach now displays as `Phlegethos 6`; its IDs, arrival name,
+  entry dialogue, battle boundary, and cutscene choreography are unchanged.
+- Focused Fractured Way, Rubble Pass, Phase 8, and checkpoint/save suites all
+  pass. All 111 repository suites pass in isolated processes; source, tools,
+  and tests compile cleanly. The map loads and draws at native resolution
+  headlessly, and the bus-stop, Astral-course, and Pit-Fiend compositions were
+  visually inspected.
 
 - Tightened the automatic modern-sewer choices to exact one-tile zones. The
   manhole marker now sits immediately at its lip, and the final sewer ladder

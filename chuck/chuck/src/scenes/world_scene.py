@@ -412,7 +412,8 @@ class WorldScene(Scene):
                 "cat", "rat", "raccoon", "zombie", "skeleton", "lemure",
                 "crocodile", "animal_control",
                 "raptor",
-                "massive_dinosaur", "horned_devil", "displacer_beast",
+                "massive_dinosaur", "horned_devil", "pit_fiend",
+                "displacer_beast",
                 "griffon",
                 "snake", "fire_snake",
                 "pirate_chef", "redcap", "thorn_mite",
@@ -504,7 +505,8 @@ class WorldScene(Scene):
             elif kind in {
                 "rat", "raccoon", "zombie", "skeleton", "lemure", "crocodile",
                 "animal_control", "raptor",
-                "massive_dinosaur", "horned_devil", "displacer_beast",
+                "massive_dinosaur", "horned_devil", "pit_fiend",
+                "displacer_beast",
                 "griffon",
                 "snake", "fire_snake",
                 "pirate_chef", "redcap", "thorn_mite",
@@ -2153,7 +2155,7 @@ class WorldScene(Scene):
                 redcap.tilemap = self.tilemap
                 redcap.load_sprites(self.game.assets)
                 self.redcaps.append(redcap)
-            elif kind in {"massive_dinosaur", "horned_devil",
+            elif kind in {"massive_dinosaur", "horned_devil", "pit_fiend",
                           "displacer_beast", "griffon"}:
                 # A horned devil is the Chultan colossus in infernal art;
                 # displacer beasts and griffons are the same readable massive

@@ -613,6 +613,7 @@ MAP_TILESET: dict[str, str] = {
     "phlegethos_road": "phlegethos",
     "phlegethos_lake": "phlegethos",
     "phlegethos_rubble_pass": "phlegethos",
+    "phlegethos_fractured_way": "phlegethos",
     "phlegethos_fortress_approach": "phlegethos",
     "feywild_riverbank": "feywild",
     "feywild_blooming_path": "feywild",

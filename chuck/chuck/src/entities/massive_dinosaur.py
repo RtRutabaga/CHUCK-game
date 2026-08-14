@@ -44,6 +44,17 @@ class MassiveDinosaur(Entity):
     def load_sprites(self, assets: "AssetManager") -> None:
         import pygame
 
+        if self.variant == "pit_fiend":
+            # The fortress tableau already owns the authoritative enormous
+            # Pit Fiend silhouette. Reuse it for this slow roaming hazard;
+            # repeated frames keep the standard movement lifecycle without
+            # inventing a second visual design for the same creature.
+            image = assets.image("npcs/pit_fiend.png")
+            pair = (image, image)
+            self._frames = {
+                "down": pair, "up": pair, "left": pair, "right": pair,
+            }
+            return
         rows = assets.sheet(
             f"hazards/{self.variant}.png",
             config.DINOSAUR_FRAME_W,

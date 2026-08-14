@@ -105,6 +105,7 @@ def test_phlegethos_uses_its_own_tileset_and_infernal_theme() -> None:
         "phlegethos_road",
         "phlegethos_lake",
         "phlegethos_rubble_pass",
+        "phlegethos_fractured_way",
         "phlegethos_fortress_approach",
     ):
         assert AREA_MUSIC[name] == "phlegethos.wav", name
@@ -588,6 +589,7 @@ def test_phlegethos_ashtray_markers_resolve_to_saveable_definitions() -> None:
         ROAD,
         LAKE,
         "phlegethos_rubble_pass",
+        "phlegethos_fractured_way",
         APPROACH,
     ):
         tilemap = TileMap(config.MAPS_DIR / f"{map_name}.txt")

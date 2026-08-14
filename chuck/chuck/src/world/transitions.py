@@ -340,10 +340,16 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
         "phlegethos_lake", "from_phlegethos_4", "down"
     ),
     ("phlegethos_rubble_pass", "›"): AreaExit(
+        "phlegethos_fractured_way", "from_phlegethos_rubble", "right"
+    ),
+    ("phlegethos_fractured_way", "«"): AreaExit(
+        "phlegethos_rubble_pass", "from_phlegethos_fortress", "left"
+    ),
+    ("phlegethos_fractured_way", "∇"): AreaExit(
         "phlegethos_fortress_approach", "from_phlegethos_rubble", "up"
     ),
     ("phlegethos_fortress_approach", "Δ"): AreaExit(
-        "phlegethos_rubble_pass", "from_phlegethos_fortress", "left"
+        "phlegethos_fractured_way", "from_phlegethos_fortress", "down"
     ),
     # Phase 9 --- ordinary paths connect in geographically wrong directions.
     ("feywild_riverbank", "→"): AreaExit(
@@ -473,6 +479,7 @@ AREA_MUSIC: dict[str, str | None] = {
     "phlegethos_road": "phlegethos.wav",
     "phlegethos_lake": "phlegethos.wav",
     "phlegethos_rubble_pass": "phlegethos.wav",
+    "phlegethos_fractured_way": "phlegethos.wav",
     "phlegethos_fortress_approach": "phlegethos.wav",
     # One uninterrupted regional theme follows Chuck between Feywild maps.
     "feywild_riverbank": "feywild.wav",
