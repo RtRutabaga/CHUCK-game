@@ -127,7 +127,7 @@ def test_route_turns_from_east_entry_to_the_sewer_threshold() -> None:
         *markers["cigarette"],
     }
     assert required <= reached
-    assert markers["choice:city_sewer_entrance"] == [(20, 24)]
+    assert markers["choice:city_sewer_entrance"] == [(20, 23)]
     assert markers["arrival:from_city_night_5"] == [(83, 24)]
     assert markers["arrival:from_city_sewer_1"] == [(20, 26)]
     exits = [exit_def for (source, _), exit_def in AREA_WALK_EXITS.items()
@@ -183,7 +183,16 @@ def test_the_sewer_entrance_is_an_open_manhole_in_the_pavement() -> None:
         trigger = world.choice_triggers[0]
         assert trigger.choice_id == "city_sewer_entrance"
         assert trigger.walk_triggered
+        assert (trigger.width, trigger.height) == (
+            config.TILE_SIZE, config.TILE_SIZE
+        )
         world._arrival_fade_t = None
+        # The sewer return arrival is only three tiles from the manhole, but
+        # must not display the prompt until Chuck walks to its actual lip.
+        world.player.x = 20 * config.TILE_SIZE + 3
+        world.player.y = 26 * config.TILE_SIZE + 4
+        world.update(0.0)
+        assert game.scenes.current is world
         world.player.x = trigger.x + trigger.width / 2 - world.player.width / 2
         world.player.y = trigger.y + trigger.height / 2 - world.player.height / 2
         world.update(0.0)

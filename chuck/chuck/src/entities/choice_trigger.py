@@ -12,10 +12,11 @@ _TRIGGER_TILES = {
     # stair before the climb prompt takes over the screen.
     "cloud_staircase": (2, 1),
     "zephyros_rope": (2, 1),
-    "city_sewer_entrance": (4, 2),
-    # Narrow: the climb prompt should fire at the ladder, not across
-    # the whole chamber floor in front of it.
-    "city_sewer_ladder": (2, 2),
+    # These prompts belong to the exact feature at Chuck's feet.  A single
+    # tile prevents either question appearing while the manhole or ladder is
+    # still several steps away.
+    "city_sewer_entrance": (1, 1),
+    "city_sewer_ladder": (1, 1),
     "doug_fir_portal": (3, 2),
 }
 

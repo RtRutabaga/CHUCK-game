@@ -78,6 +78,12 @@ def build_map() -> list[str]:
     for col, row in ((99, 27), (82, 20), (56, 20), (29, 27), (8, 24)):
         grid[row][col] = "ል"
     mark_roads(grid)
+    # The highway does not continue north into another authored map. Sever
+    # the whole apparent street opening only after measuring its centre lines;
+    # otherwise the shortened road misses the shared marking heuristic.
+    for row in range(0, 3):
+        for col in range(24, 88):
+            grid[row][col] = "V"
     return ["".join(row) for row in grid]
 
 

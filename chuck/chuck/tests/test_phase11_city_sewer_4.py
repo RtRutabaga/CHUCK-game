@@ -20,6 +20,7 @@ import pygame
 
 from src.core import config
 from src.core.game import Game
+from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.systems.choice import ChoiceSystem
 from src.world.tilemap import TILE_DEFS, TileMap
@@ -147,6 +148,30 @@ def test_the_ladder_asks_before_it_climbs() -> None:
 
     directory, game, world = _game_and_world()
     try:
+        runtime_trigger = world.choice_triggers[0]
+        assert runtime_trigger.choice_id == "city_sewer_ladder"
+        assert (runtime_trigger.width, runtime_trigger.height) == (
+            config.TILE_SIZE, config.TILE_SIZE
+        )
+        world._arrival_fade_t = None
+        # One tile below the authored foot is still approach space, not the
+        # ladder itself, and must leave play uninterrupted.
+        world.player.x = trigger[0] * config.TILE_SIZE + 3
+        world.player.y = (trigger[1] + 1) * config.TILE_SIZE + 4
+        world.update(0.0)
+        assert game.scenes.current is world
+        world.player.x = (
+            runtime_trigger.x + runtime_trigger.width / 2
+            - world.player.width / 2
+        )
+        world.player.y = (
+            runtime_trigger.y + runtime_trigger.height / 2
+            - world.player.height / 2
+        )
+        world.update(0.0)
+        assert isinstance(game.scenes.current, DialogueScene)
+        game.scenes.pop()
+
         world._on_choice(yes)
         world.update(0.0)
         assert game.scenes.current.map_name == "modern_city_day_1"

@@ -6,6 +6,18 @@ updated every session.
 
 ## Latest implementation
 
+- City Night 6's `Enter the sewer?` walk trigger is now one tile at the
+  manhole lip instead of a broad approach zone, and City Sewer 4's
+  `Climb up ladder?` trigger is likewise confined to the exact tile at the
+  ladder's foot. Nearby arrivals and approach floor no longer interrupt the
+  player before the feature is reached.
+- City Night 5's unauthored northern highway and pavement opening now ends in
+  a three-tile-deep strip of shared Astral fall terrain. The real east/west
+  connections are unchanged, while the north edge no longer suggests a route
+  to a nonexistent map.
+- Focused Night 5, Night 6, Sewer 4, and Day 1 checks pass; all three affected
+  checkpoints load and draw cleanly headlessly, and source/tools compile.
+
 - Scratch resolution now protects Chuck from tiny pursuit enemies entering
   his footprint. A living enemy overlapping Chuck is the first target of the
   same committed swipe; otherwise the existing forward hitbox and authored

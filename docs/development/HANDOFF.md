@@ -3,7 +3,7 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `857fc94` (day-city buildings and road lines)
+- Base commit before this pass: `54842f0` (overlapping-enemy scratch fix)
 - Current work: Phase 11 is feature-complete -- the Doug fir exit has landed
 - Active scope: `docs/development/PHASE-11.md`
 - Next implementation slice: walk the Phase 11 acceptance criteria against
@@ -11,6 +11,19 @@
   `doug_fir_transition_completed` flag
 
 ## Completed This Pass
+
+- Tightened the automatic modern-sewer choices to exact one-tile zones. The
+  manhole marker now sits immediately at its lip, and the final sewer ladder
+  asks only when Chuck reaches its foot; nearby arrival and approach tiles do
+  not raise either prompt. Prompt text, YES/NO behavior, and destinations are
+  unchanged.
+- Closed City Night 5's misleading unauthored northern highway opening with a
+  three-tile-deep shared Astral fall band across its roads, median, and
+  pavement. The authored east/west transitions and highway challenge remain
+  unchanged.
+- Focused Night 5, Night 6, Sewer 4, and Day 1 tests pass, including explicit
+  non-trigger proximity and full-boundary assertions. The three affected
+  checkpoints load and render headlessly, and source/tools compile cleanly.
 
 - Fixed close-contact scratch resolution without changing its presentation.
   If a living enemy has entered Chuck's own footprint, that enemy receives the

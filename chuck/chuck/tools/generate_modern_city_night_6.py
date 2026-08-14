@@ -66,7 +66,8 @@ def build_map() -> list[str]:
     # to it. It is out in the sidewalk rather than cut into the building
     # behind: a sewer is reached through the street, not through a wall.
     grid[22][20] = "ƺ"
-    grid[24][20] = "ሸ"
+    # The one-tile prompt sits directly at the lip, not out on the approach.
+    grid[23][20] = "ሸ"
     grid[26][20] = "ሼ"
 
     grid[22][72] = "ሕ"

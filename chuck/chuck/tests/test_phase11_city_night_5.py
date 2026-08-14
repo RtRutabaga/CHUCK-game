@@ -130,6 +130,24 @@ def test_highway_has_two_carriageways_crosswalks_and_safe_median() -> None:
     assert lane_columns == [37, 41, 45, 49, 63, 67, 71, 75]
 
 
+def test_the_unauthored_north_highway_is_visibly_severed() -> None:
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    # Buildings occupy both corners. Every apparent road, pavement, and
+    # median tile between them ends in a three-tile-deep Astral fall band.
+    assert all(
+        tilemap.terrain_at(col, row) == "V"
+        for row in range(3)
+        for col in range(24, 88)
+    )
+    # The boundary is a cap, not a road-style regression: the authored road
+    # immediately below it retains both measured centre lines.
+    assert all(
+        tilemap.terrain_at(col, row) == "‖"
+        for row in range(3, 12)
+        for col in (42, 68)
+    )
+
+
 def test_every_authored_discovery_is_reachable_without_astral_fall() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
