@@ -3,7 +3,7 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `45b2e28` (City Sewer 1 utility tunnel)
+- Base commit before this pass: `857fc94` (day-city buildings and road lines)
 - Current work: Phase 11 is feature-complete -- the Doug fir exit has landed
 - Active scope: `docs/development/PHASE-11.md`
 - Next implementation slice: walk the Phase 11 acceptance criteria against
@@ -11,6 +11,17 @@
   `doug_fir_transition_completed` flag
 
 ## Completed This Pass
+
+- Fixed close-contact scratch resolution without changing its presentation.
+  If a living enemy has entered Chuck's own footprint, that enemy receives the
+  committed swipe before normal forward targets are considered. Otherwise the
+  original forward hitbox, target order, and one-target-per-swipe rule remain
+  exact. Scenery and reactive flowers do not receive the overlap allowance.
+- Added focused system coverage for trapped-enemy reach and target priority,
+  plus a live Feywild thorn-mite regression with the mite fully inside Chuck
+  and outside the forward paw rectangle. Combat and Feywild checks pass,
+  modern-sewer/Twilight regressions pass, compilation is clean, and the
+  headless title scene renders successfully.
 
 - Added the 92x38 City Sewer 1 as a narrow three-leg route running north,
   east, then south. Its future continuation remains visibly severed by exact

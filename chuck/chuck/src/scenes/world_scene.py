@@ -1052,14 +1052,18 @@ class WorldScene(Scene):
                    for devil in self.spined_devils):
                 self.sanity.deplete()
                 return
+            enemies = [
+                *self.rats, *self.raccoons, *self.undead, *self.raptors,
+                *self.redcaps, *self.dinosaurs, *self.snakes,
+            ]
             scratch_first_target(
-                self.player.scratch_hitbox(),
+                reach,
                 [*self.reactive_flowers.flowers,
                  *(prop for prop in self.props
                    if callable(getattr(prop, "on_scratched", None))),
-                  *self.breakables, *self.rats, *self.raccoons,
-                  *self.undead, *self.raptors,
-                  *self.redcaps, *self.dinosaurs, *self.snakes],
+                  *self.breakables, *enemies],
+                overlap_box=self.player.hitbox,
+                overlap_targets=enemies,
             )
             self._collect_pending_drops()
         self.rats = [rat for rat in self.rats if rat.alive]

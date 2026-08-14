@@ -53,6 +53,42 @@ def test_one_swipe_defeats_only_one_rat() -> None:
     assert not first.alive and second.alive
 
 
+def test_scratch_hits_a_small_enemy_overlapping_chuck() -> None:
+    player = Player(20, 20, FakeInput())
+    player.facing = "right"
+    trapped_rat = SewerRat(player.hitbox.centerx, player.hitbox.centery)
+
+    # The rat is inside Chuck and therefore behind the ordinary forward paw
+    # reach.  This is the contact-pursuit case that used to pin the player.
+    assert not player.scratch_hitbox().colliderect(trapped_rat.hitbox)
+    assert scratch_first_target(
+        player.scratch_hitbox(),
+        [trapped_rat],
+        overlap_box=player.hitbox,
+        overlap_targets=[trapped_rat],
+    )
+    assert not trapped_rat.alive
+
+
+def test_overlapping_enemy_takes_priority_without_hitting_two_targets() -> None:
+    player = Player(20, 20, FakeInput())
+    player.facing = "right"
+    trapped_rat = SewerRat(player.hitbox.centerx, player.hitbox.centery)
+    forward_rat = SewerRat(
+        player.scratch_hitbox().centerx,
+        player.scratch_hitbox().centery,
+    )
+
+    assert scratch_first_target(
+        player.scratch_hitbox(),
+        [forward_rat, trapped_rat],
+        overlap_box=player.hitbox,
+        overlap_targets=[trapped_rat, forward_rat],
+    )
+    assert not trapped_rat.alive
+    assert forward_rat.alive
+
+
 def test_rat_is_smaller_than_chuck_and_dies_in_one_hit() -> None:
     rat = SewerRat(20, 20)
     assert config.RAT_FRAME_W < config.CHUCK_FRAME_W

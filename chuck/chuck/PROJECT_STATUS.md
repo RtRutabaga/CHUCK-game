@@ -6,6 +6,16 @@ updated every session.
 
 ## Latest implementation
 
+- Scratch resolution now protects Chuck from tiny pursuit enemies entering
+  his footprint. A living enemy overlapping Chuck is the first target of the
+  same committed swipe; otherwise the existing forward hitbox and authored
+  target order are unchanged. This fixes rats and Feywild thorn mites pinning
+  Chuck where his visible forward scratch could not reach them, without
+  changing the scratch animation, range, controls, or one-target rule.
+- Focused combat, Feywild thorn-mite, Twilight Crossroads, and modern-sewer
+  checks pass; source compilation is clean and the headless game reaches and
+  renders the title screen.
+
 - The day city is built out of buildings now too, and every carriageway in the
   region -- night and day -- has a painted centre line.
 - The day maps were laid out by filling everything that is not street with one

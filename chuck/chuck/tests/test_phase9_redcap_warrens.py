@@ -156,11 +156,14 @@ def test_thorn_mites_are_the_rat_role_as_fey_wildlife() -> None:
         assert all(m.attack_chase_enabled for m in mites)
         assert not any(m.patrolling for m in mites)
 
-        # One committed scratch clears one mite, exactly like a rat.
+        # One committed scratch clears a mite even after the tiny pursuer has
+        # entered Chuck's footprint and slipped behind the forward paw reach.
         mite = mites[0]
-        scene.player.x = mite.x - 4
-        scene.player.y = mite.y
+        mite.x = scene.player.hitbox.centerx - mite.width / 2
+        mite.y = scene.player.hitbox.centery - mite.height / 2
         scene.player.facing = "right"
+        assert scene.player.hitbox.colliderect(mite.hitbox)
+        assert not scene.player.scratch_hitbox().colliderect(mite.hitbox)
         before = len(scene.rats)
         game.input.begin_frame()
         game.input._actions_just_pressed.add("scratch")
