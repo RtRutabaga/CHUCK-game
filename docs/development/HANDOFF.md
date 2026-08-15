@@ -3,13 +3,20 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `81f8930` (sewer prompts/highway edge fix)
-- Current work: inserted the requested pre-fight Phlegethos traversal map
+- Base commit before this pass: `2edf883` (Fractured Phlegethos approach)
+- Current work: raised only the City Sewer soundtrack's authored playback trim
 - Active scope: `docs/development/PHASE-11.md`
 - Next implementation slice: playtest Fractured Way in sequence; Phase 12
   remains unopened until its scope document exists
 
 ## Completed This Pass
+
+- Raised `city_sewer.wav`'s per-cue playback trim from 1.55 to 1.65. With the
+  unchanged 0.6 global music level, the sewer now plays at 0.99 rather than
+  0.93. Other music and SFX levels are untouched; the WAV master is unchanged.
+- The focused sewer-music suite verifies the exact trim, effective playback
+  level, mixer ceiling, soundtrack routing, composition gates, and continuity
+  across all four sewer maps.
 
 - Inserted `phlegethos_fractured_way` between Rubble Pass and the unchanged
   Fortress Approach fight. The 76x48 route winds around dense dark rubble and

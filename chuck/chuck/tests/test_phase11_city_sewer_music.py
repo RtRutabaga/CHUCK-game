@@ -137,7 +137,7 @@ def test_the_tunnel_plays_as_loud_as_the_street() -> None:
     for name in ("blocks", "hats", "snare"):
         assert tracks[name].level >= 0.44, (name, tracks[name].level)
 
-    assert config.MUSIC_TRIM[TRACK] > 1.0
+    assert config.MUSIC_TRIM[TRACK] == 1.65
     directory = tempfile.TemporaryDirectory()
     game = Game(save_path=Path(directory.name) / "save.json")
     try:
@@ -145,6 +145,7 @@ def test_the_tunnel_plays_as_loud_as_the_street() -> None:
         tunnel = game.audio.volume_for(TRACK)
         assert street == config.AUDIO_MUSIC_VOLUME
         assert tunnel > street, (tunnel, street)
+        assert math.isclose(tunnel, 0.99)
         # ...but never past the mixer's own ceiling.
         assert tunnel <= 1.0
     finally:

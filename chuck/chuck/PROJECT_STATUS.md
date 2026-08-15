@@ -6,6 +6,11 @@ updated every session.
 
 ## Latest implementation
 
+- Raised the authored City Sewer music trim from 1.55 to 1.65. At the standard
+  0.6 music-stream level the cue now plays at 0.99, just below the mixer's
+  ceiling, without changing the WAV master or the volumes of either city cue,
+  the medieval sewer, sound effects, or any other region.
+
 - Added the 76x48 Fractured Way immediately before the Phlegethos fortress
   fight. The reciprocal chain is now Rubble Pass -> Fractured Way -> Fortress
   Approach, while the existing fortress arrival name and fight trigger remain

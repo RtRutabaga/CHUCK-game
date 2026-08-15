@@ -502,7 +502,7 @@ AUDIO_MUSIC_VOLUME = 0.6   # ambience / music stream
 # gates level every theme by measured RMS, but low material measures
 # loud and plays quiet: the sewer theme lives almost entirely below
 # 300Hz and needs the trim to sit where the street cues already do.
-MUSIC_TRIM = {"city_sewer.wav": 1.55}
+MUSIC_TRIM = {"city_sewer.wav": 1.65}
 AUDIO_SFX_VOLUME = 0.8
 MUSIC_FILE = "waterdeep_docks.wav"
 FOOTSTEP_INTERVAL = 0.28   # seconds between steps while walking
