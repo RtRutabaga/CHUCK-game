@@ -296,19 +296,6 @@ class HellFallingCutsceneScene(Scene):
                     (min(x + 10, width - 1), min(y + 7, height - 1)),
                     1,
                 )
-        fissure = [
-            (0, max(2, height - 13)),
-            (49, max(2, height - 15)),
-            (83, max(2, height - 10)),
-            (126, max(2, height - 12)),
-        ]
-        pygame.draw.lines(surface, HELL_LAVA_COLORS[1], False, fissure, 1)
-        for x in (48, 126):
-            pygame.draw.rect(
-                surface,
-                HELL_LAVA_COLORS[2],
-                (x, max(1, height - 14), 2, 1),
-            )
         pygame.draw.line(
             surface,
             HELL_BASALT_COLORS[0],

@@ -6,6 +6,12 @@ updated every session.
 
 ## Latest implementation
 
+- Removed the thin molten fissure from the Phlegethos fall cutscene's landing
+  plane. Because that line was positioned relative to the rising ground
+  surface, it appeared to slide in from the lower-left during approach. The
+  foreground is now uninterrupted basalt; the distant volcano and all playable
+  Phlegethos lava remain unchanged.
+
 - Raised the authored City Sewer music trim from 1.55 to 1.65. At the standard
   0.6 music-stream level the cue now plays at 0.99, just below the mixer's
   ceiling, without changing the WAV master or the volumes of either city cue,

@@ -572,9 +572,11 @@ def test_hell_fall_reuses_cue_and_holds_at_phase8_arrival_boundary() -> None:
             for x in range(ground.get_width())
         ]
         basalt = sum(pixel in HELL_BASALT_COLORS for pixel in ground_pixels)
-        lava = sum(pixel in HELL_LAVA_COLORS for pixel in ground_pixels)
         assert basalt > len(ground_pixels) * 0.9
-        assert lava < len(ground_pixels) * 0.02
+        # The landing plane is pure basalt. A former height-relative lava
+        # fissure entered from the left and appeared to slide as this surface
+        # rose into frame; no molten pixels belong in the foreground now.
+        assert not set(ground_pixels) & set(HELL_LAVA_COLORS)
 
         # The tableau completes, then a fade hands Chuck off to playable
         # Phlegethos -- the start of Phase 8.

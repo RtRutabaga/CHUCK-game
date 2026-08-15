@@ -3,13 +3,22 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `2edf883` (Fractured Phlegethos approach)
-- Current work: raised only the City Sewer soundtrack's authored playback trim
+- Base commit before this pass: `e37797d` (City Sewer soundtrack volume)
+- Current work: removed the moving foreground lava line from the Hell landing
 - Active scope: `docs/development/PHASE-11.md`
 - Next implementation slice: playtest Fractured Way in sequence; Phase 12
   remains unopened until its scope document exists
 
 ## Completed This Pass
+
+- Removed the height-relative lava fissure and its two highlights from the
+  Phlegethos fall cutscene's rising foreground plane. The landing surface now
+  contains only basalt colors, so no red line slides in from the lower-left.
+  The volcano's distant lava scars and playable Phlegethos terrain are
+  untouched.
+- The focused Phase 7 cutscene regression now explicitly requires a lava-free
+  landing plane while preserving the established timing, music, death/return,
+  cigarette tableau, fade, and Phase 8 checkpoint handoff.
 
 - Raised `city_sewer.wav`'s per-cue playback trim from 1.55 to 1.65. With the
   unchanged 0.6 global music level, the sewer now plays at 0.99 rather than
