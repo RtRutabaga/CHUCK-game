@@ -17,7 +17,9 @@ _TRIGGER_TILES = {
     # still several steps away.
     "city_sewer_entrance": (1, 1),
     "city_sewer_ladder": (1, 1),
-    "doug_fir_portal": (3, 2),
+    # The marker is directly at the forest block's threshold. Keep this to
+    # one tile so the prompt waits until Chuck is nearly touching the portal.
+    "doug_fir_portal": (1, 1),
 }
 
 # Choices that pop by simply walking into the zone — no interact press.

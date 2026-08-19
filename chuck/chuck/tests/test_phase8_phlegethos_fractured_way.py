@@ -158,7 +158,7 @@ def test_bus_stop_is_a_close_reachable_city_tableau() -> None:
         for col in range(bus_stop[0] - 8, bus_stop[0] + 9)
         if tilemap.terrain_at(col, row) == ASTRAL
     ]
-    assert 4 <= len(nearby_astral) <= 8
+    assert 10 <= len(nearby_astral) <= 14
 
     image = pygame.image.load(str(
         config.SPRITES_DIR / "objects" / "city_bus_stop.png"

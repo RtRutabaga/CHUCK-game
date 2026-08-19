@@ -32,6 +32,8 @@ from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.entities.police import SpinningPoliceOfficer
 from src.systems.choice import ChoiceSystem
+from src.entities.choice_trigger import ChoiceTrigger
+from src.scenes.dialogue_scene import DialogueScene
 from src.world.tilemap import TILE_DEFS, TileMap
 from src.world.tileset_layout import MAP_TILESET, tileset_for
 from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
@@ -117,8 +119,25 @@ def test_three_worlds_are_visible_at_once() -> None:
     assert sheet.char_to_terrain[CHULT_GROUND] == "chult_ground"
     assert sheet.char_to_terrain[CHULT_DENSE] == "chult_dense"
     assert sheet.char_to_terrain[FIR] == "doug_fir_block"
+    assert sheet.info()["doug_fir_block"] == (3, 4)
     assert not TILE_DEFS[CHULT_GROUND].solid
     assert TILE_DEFS[CHULT_DENSE].solid and TILE_DEFS[FIR].solid
+
+    # Four genuinely different palettes pulse behind the fir silhouettes;
+    # this is a color oscillation, not just one star changing position.
+    row = next(index for index, item in enumerate(sheet.order)
+               if item[0] == "doug_fir_block")
+    image = pygame.image.load(str(config.TILESETS_DIR / sheet.sheet))
+    averages = []
+    for frame in range(4):
+        tile = image.subsurface((frame * 16, row * 16, 16, 16))
+        pixels = [tile.get_at((x, y))[:3] for y in range(16) for x in range(16)]
+        averages.append(tuple(sum(pixel[channel] for pixel in pixels) // 256
+                              for channel in range(3)))
+    assert len(set(averages)) >= 3  # pulse 0 -> 1 -> 2 -> 1, with motion
+    assert max(color[0] for color in averages) - min(
+        color[0] for color in averages
+    ) >= 8
 
     # The most visibly damaged city map: more void than every street map.
     def density(name):
@@ -288,6 +307,33 @@ def test_the_portal_asks_and_the_beholder_theme_returns() -> None:
     assert no.goto is None and no.dialogue is None and no.action is None
     assert yes.action == "doug_fir_portal"
     assert yes.goto is None and yes.dialogue is None
+
+    # The automatic question waits at the block's threshold instead of
+    # reaching several tiles into the room.
+    trigger = ChoiceTrigger(100.0, 100.0, "doug_fir_portal")
+    assert (trigger.width, trigger.height) == (
+        config.TILE_SIZE, config.TILE_SIZE,
+    )
+
+    directory, game, world = _game_and_world()
+    try:
+        live_trigger = next(item for item in world.choice_triggers
+                            if item.choice_id == "doug_fir_portal")
+        # Two tiles south can see the whole portal without losing control.
+        world.player.x = live_trigger.x + 4
+        world.player.y = live_trigger.y + config.TILE_SIZE * 2
+        world.update(0.0)
+        assert game.scenes.current is world
+        # The question appears only at the authored threshold.
+        world.player.x = live_trigger.x + 4
+        world.player.y = live_trigger.y + 4
+        world.update(0.0)
+        prompt = game.scenes.current
+        assert isinstance(prompt, DialogueScene)
+        assert prompt._choice.prompt == "Enter planar portal?"
+    finally:
+        game._shutdown()
+        directory.cleanup()
 
     # The phase's one deliberate music switch.
     assert AREA_MUSIC[MAP_NAME] == "boss_battle.wav"

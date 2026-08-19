@@ -98,9 +98,25 @@ def doug_fir_block(surface, variant, frame):
     cold blue night sky with black conifer silhouettes against it, and
     the moon catching one edge of the needles.
     """
+    # A four-frame blue-violet pulse makes this singular explicit portal read
+    # immediately against the static city, while retaining the authored forest
+    # view instead of turning it into generic glowing magic.
+    pulse = (0, 1, 2, 1)[frame % 4]
+    skies = ((14, 25, 48), (22, 28, 63), (38, 24, 78))
+    edge = ((72, 154, 164), (128, 118, 204), (202, 92, 218))[pulse]
+    sky = skies[pulse]
     for y in range(TILE_PX):
-        shade = 34 + y                       # sky, darker toward the floor
-        pygame.draw.line(surface, (18, shade - 6, shade + 14), (0, y), (15, y))
+        depth = y // 3
+        pygame.draw.line(
+            surface,
+            (sky[0] + depth, sky[1] + depth, sky[2] + depth),
+            (0, y), (15, y),
+        )
+    # Thin aurora ribbons oscillate laterally behind the silhouettes. Their
+    # stagger across tile variants prevents the 3x3 block reading as a grid.
+    for ribbon in range(2):
+        x = (variant * 5 + ribbon * 9 + frame * (2 + ribbon)) % 18 - 1
+        pygame.draw.line(surface, edge, (x, 1), (x - 2, 14), 1)
     for index in range(2):
         x = 3 + index * 8 + (variant % 3)
         base = 15
@@ -114,11 +130,14 @@ def doug_fir_block(surface, variant, frame):
                              (x - half, y), (x + half, y), 3)
         pygame.draw.line(surface, (30, 24, 18), (x, base - 2), (x, base))
         # Moonlight down one side of the tree.
-        pygame.draw.line(surface, (96, 132, 122),
+        pygame.draw.line(surface, edge,
                          (x - 1, top + 1), (x - 3, top + 7))
     pygame.draw.line(surface, (16, 30, 26), (0, 15), (15, 15), 2)
-    surface.set_at(((variant * 5 + frame * 4) % 16,
-                    (variant * 3 + 1) % 6), (188, 208, 198))
+    for star in range(2):
+        surface.set_at((
+            (variant * 5 + frame * 4 + star * 7) % 16,
+            (variant * 3 + frame + star * 3 + 1) % 7,
+        ), (212, 208 - pulse * 18, 238))
 
 
 DRAW = {

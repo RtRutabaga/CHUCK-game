@@ -6,6 +6,20 @@ updated every session.
 
 ## Latest implementation
 
+- Increased the collided-world dressing around the Fractured Way bus stop
+  from five to eleven Astral fragments. Every fragment remains off the paved
+  approach, so Chuck can still stand beside and interact with the umbrella
+  businessman without crossing a fall tile.
+- Reworked City Day 6's Douglas fir fragment into a four-frame blue-to-violet
+  portal pulse. The forest silhouettes remain visible while the sky, aurora
+  ribbons, tree-edge light, and stars oscillate, making the only explicit
+  planar portal visually distinct from ordinary wrong-map blocks.
+- Reduced the Doug fir automatic choice zone from 3x2 tiles to the single tile
+  at its threshold. Chuck can now approach closely enough to inspect the full
+  animation before `Enter planar portal?` appears.
+- Focused Fractured Way, all six daytime-city maps, Doug fir handoff, music,
+  and shared tileset tests pass; source, tools, and tests compile cleanly.
+
 - Removed the thin molten fissure from the Phlegethos fall cutscene's landing
   plane. Because that line was positioned relative to the rising ground
   surface, it appeared to slide in from the lower-left during approach. The

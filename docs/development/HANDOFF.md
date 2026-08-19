@@ -3,13 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `e37797d` (City Sewer soundtrack volume)
-- Current work: removed the moving foreground lava line from the Hell landing
+- Base commit before this pass: `19ac6c9` (Hell landing fissure removal)
+- Current work: strengthened the bus-stop collision and Doug fir portal read
 - Active scope: `docs/development/PHASE-11.md`
 - Next implementation slice: playtest Fractured Way in sequence; Phase 12
   remains unopened until its scope document exists
 
 ## Completed This Pass
+
+- Expanded the Fractured Way bus-stop collision from five to eleven nearby
+  Astral fragments. All additions remain off the broad paved route, and the
+  existing reachability proof still places Chuck safely beside the oblivious
+  umbrella businessman.
+- Expanded the Douglas fir terrain from two to four animation frames and
+  regenerated the City Day tileset. Its night forest now oscillates between
+  blue, indigo, and violet with moving aurora ribbons, edge light, and stars;
+  the tree silhouettes remain recognizable through the portal effect.
+- Tightened `doug_fir_portal` from a 3x2 automatic trigger to one exact tile at
+  the forest threshold. Runtime coverage proves two tiles away remains fully
+  playable and the YES/NO prompt appears only on close approach.
+- Focused Fractured Way, all six City Day maps, Doug fir exit, city music, and
+  shared tileset suites pass. Source/tools/tests compile, and both portal pulse
+  extremes plus the revised bus-stop composition were visually inspected at
+  native resolution.
 
 - Removed the height-relative lava fissure and its two highlights from the
   Phlegethos fall cutscene's rising foreground plane. The landing surface now
