@@ -3,13 +3,32 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `19ac6c9` (Hell landing fissure removal)
-- Current work: strengthened the bus-stop collision and Doug fir portal read
+- Base commit before this pass: `1b024cc` (collided-world presentation pass)
+- Current work: relocated and rebuilt the City Day 6 planar portal
 - Active scope: `docs/development/PHASE-11.md`
 - Next implementation slice: playtest Fractured Way in sequence; Phase 12
   remains unopened until its scope document exists
 
 ## Completed This Pass
+
+- Moved the City Day 6 portal from the northern spawn room to `(18, 54)` near
+  the far southwest end of the broken route. Its prompt marker remains directly
+  at the threshold, but the player now travels more than fifty tiles from the
+  arrival before reaching it. The established hazard-safe route remains valid.
+- Replaced the 3x3 animated forest terrain with one 80x80 oval standing prop.
+  Twelve transparent frames use broad continuous fields to rotate muted blue,
+  violet, rose, and mineral-green tie-dye through a gray interior. A silver rim
+  and layered translucent ground ellipses/rays project that color onto the wet
+  pavement without resembling thorns, pollen, or Astral tiles.
+- Removed the superseded Douglas-fir terrain row/character from the City Day
+  tileset and regenerated both the map and sheet from their procedural sources.
+  The destination cutscene, progression flag, one-tile close prompt, and
+  YES/NO behavior are unchanged.
+- Focused City Day 1/6, Doug fir exit, and shared tileset suites pass. The
+  twelve-frame sprite is tested for its oval alpha silhouette, gray-biased
+  moving color field, cast light, runtime animation, safe reachability, and
+  long arrival distance; two animation phases were visually inspected at
+  native resolution.
 
 - Expanded the Fractured Way bus-stop collision from five to eleven nearby
   Astral fragments. All additions remain off the broad paved route, and the

@@ -2,9 +2,8 @@
 
 The most damaged map in the city and the phase's culminating tableau.
 Three worlds are visible at once: the daytime street, a patch of Chult
-jungle grown through the road with raptors in it, and -- inside the
-damaged northern building -- a block of Douglas fir forest at night,
-which is the phase's one planar portal.
+jungle grown through the road with raptors in it, and a planar portal
+leading toward a Douglas fir forest.
 
 Everything here is spectacle Chuck routes around rather than fights. The
 dinosaur is scenery with teeth, the raptors and police have their own
@@ -36,7 +35,10 @@ HEIGHT = 60
 ARRIVAL = (38, 3)
 RETURN_EXIT = (38, 0)
 ANCHOR = (10, 13)
-PORTAL = (34, 8)
+# The portal now waits near the far southwest end of the route. Reaching it
+# requires descending through the broken plaza rather than turning around in
+# the arrival room.
+PORTAL = (18, 54)
 
 # The jungle grown through the road, and what came with it.
 CHULT_PATCH = (24, 26, 52, 44)
@@ -60,9 +62,9 @@ JUMPS = ((18, 18), (62, 18), (18, 48), (62, 48))
 HEADER = [
     "; PHASE 11 - CITY DAY 6, THE COLLISION (80x60 tiles).",
     "; Three worlds at once: the daytime street, a patch of Chult grown",
-    "; through the road, and a block of Douglas fir forest at night inside",
-    "; the damaged northern building. The jungle is spectacle to route",
-    "; around; the forest block is the way out of the phase.",
+    "; through the road, and a gray oval planar portal at the far southwest",
+    "; end of the shattered route. The jungle is spectacle to route around;",
+    "; the portal leads to the Douglas fir forest handoff.",
 ]
 
 
@@ -108,9 +110,8 @@ def build_map() -> list[str]:
             if (col * 7 + row * 11) % 9 == 0:
                 grid[row][col] = "ᵺ"
 
-    # The Douglas fir block, standing inside the damaged building.
-    _room(grid, PORTAL[0] - 1, PORTAL[1] - 2, PORTAL[0] + 1, PORTAL[1], "ᶂ")
-    # ...and the street-view Astral damage that opened the wall for it.
+    # Street-view Astral damage has opened the northern wall, but the actual
+    # portal lies much deeper in the shattered city rather than beside spawn.
     for col in range(24, 30):
         for row in range(4, 11):
             grid[row][col] = "V"
@@ -145,6 +146,7 @@ def build_map() -> list[str]:
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "ቲ"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ታ"
     grid[ANCHOR[1]][ANCHOR[0]] = "ቴ"
+    grid[PORTAL[1]][PORTAL[0]] = "Ȣ"
     grid[PORTAL[1] + 1][PORTAL[0]] = "ት"
     grid[DINOSAUR[1]][DINOSAUR[0]] = "ቶ"
     grid[PRONE[1]][PRONE[0]] = "ቷ"
@@ -171,7 +173,7 @@ def build_map() -> list[str]:
     return ["".join(row) for row in grid]
 
 
-SOLID = {"#", "▱", "▤", "▥", "w", "ᵺ", "ᶂ"}
+SOLID = {"#", "▱", "▤", "▥", "w", "ᵺ", "Ȣ"}
 LANES = {"ቝ": (1, 0), "ቜ": (-1, 0), "በ": (0, -1), "ቡ": (0, 1)}
 # config.DINOSAUR_NOTICE_RANGE is 128px; at 16px tiles that is eight.
 DINOSAUR_NOTICE = 8.0
@@ -237,6 +239,7 @@ def validate(rows: list[str]) -> None:
     portal_step = (PORTAL[0], PORTAL[1] + 1)
     reach = _flood(rows, ARRIVAL)
     assert {ANCHOR, RETURN_EXIT, portal_step, *CIGARETTES} <= reach
+    assert math.dist(ARRIVAL, portal_step) > 50, "portal is still near spawn"
 
     # The chaos must never make the Ashtray or the arrival unsafe, and a
     # clear route to the portal must exist: no police lane, and never
@@ -302,7 +305,7 @@ def validate(rows: list[str]) -> None:
     assert text.count("ል") == len(CIGARETTES)
     assert "ም" not in text, "no homeless man in the daytime city"
     for material in ("#", "▱", "▤", "w", ".", ",", "=", "▦", "V",
-                     "ᵹ", "ᵺ", "ᶂ"):
+                     "ᵹ", "ᵺ", "Ȣ"):
         assert material in text, material
 
 

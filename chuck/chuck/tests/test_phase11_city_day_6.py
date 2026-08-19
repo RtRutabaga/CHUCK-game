@@ -1,8 +1,8 @@
 """Phase 11 City Day 6: the collision, and the way out of the phase.
 
 Three worlds at once -- the daytime street, a patch of Chult grown
-through the plaza, and a block of Douglas fir forest at night inside the
-damaged northern building. Everything here is spectacle to route around
+through the plaza, and an oval planar portal at the far end of the route.
+Everything here is spectacle to route around
 rather than fight, and the phase document is explicit that the chaos
 must not create unavoidable damage at the Ashtray or the arrival.
 
@@ -41,7 +41,7 @@ from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 MAP_NAME = "modern_city_day_6"
 DAY_5 = "modern_city_day_5"
-CHULT_GROUND, CHULT_DENSE, FIR = "ᵹ", "ᵺ", "ᶂ"
+CHULT_GROUND, CHULT_DENSE, PORTAL_PROP = "ᵹ", "ᵺ", "Ȣ"
 LANES = {"police:right": (1, 0), "police:left": (-1, 0),
          "police:up": (0, -1), "police:down": (0, 1)}
 
@@ -107,37 +107,20 @@ def test_three_worlds_are_visible_at_once() -> None:
     assert MAP_TILESET[MAP_NAME] == "city_day"
 
     used = Counter(char for row in tilemap._grid for char in row)
-    # The city, the jungle grown through it, and the forest at night.
+    # The city, the jungle grown through it, and an explicit planar portal.
     for material in ("#", "▤", ".", ",", "=", "V"):
         assert used[material] > 0, material
     assert used[CHULT_GROUND] > 200, used[CHULT_GROUND]
     assert used[CHULT_DENSE] > 20, used[CHULT_DENSE]
-    assert used[FIR] == 9, used[FIR]
+    assert used[PORTAL_PROP] == 1, used[PORTAL_PROP]
 
     # The Chult patch is genuinely Chult art, not a recoloured city tile.
     sheet = tileset_for(MAP_NAME)
     assert sheet.char_to_terrain[CHULT_GROUND] == "chult_ground"
     assert sheet.char_to_terrain[CHULT_DENSE] == "chult_dense"
-    assert sheet.char_to_terrain[FIR] == "doug_fir_block"
-    assert sheet.info()["doug_fir_block"] == (3, 4)
     assert not TILE_DEFS[CHULT_GROUND].solid
-    assert TILE_DEFS[CHULT_DENSE].solid and TILE_DEFS[FIR].solid
-
-    # Four genuinely different palettes pulse behind the fir silhouettes;
-    # this is a color oscillation, not just one star changing position.
-    row = next(index for index, item in enumerate(sheet.order)
-               if item[0] == "doug_fir_block")
-    image = pygame.image.load(str(config.TILESETS_DIR / sheet.sheet))
-    averages = []
-    for frame in range(4):
-        tile = image.subsurface((frame * 16, row * 16, 16, 16))
-        pixels = [tile.get_at((x, y))[:3] for y in range(16) for x in range(16)]
-        averages.append(tuple(sum(pixel[channel] for pixel in pixels) // 256
-                              for channel in range(3)))
-    assert len(set(averages)) >= 3  # pulse 0 -> 1 -> 2 -> 1, with motion
-    assert max(color[0] for color in averages) - min(
-        color[0] for color in averages
-    ) >= 8
+    assert TILE_DEFS[CHULT_DENSE].solid and TILE_DEFS[PORTAL_PROP].solid
+    assert TILE_DEFS[PORTAL_PROP].prop == "city_planar_portal"
 
     # The most visibly damaged city map: more void than every street map.
     def density(name):
@@ -151,6 +134,49 @@ def test_three_worlds_are_visible_at_once() -> None:
         assert here > density(name), name
 
 
+def test_the_portal_is_one_smooth_gray_tie_dye_oval_with_cast_light() -> None:
+    paths = [config.SPRITES_DIR / "objects" /
+             f"city_planar_portal_{index}.png" for index in range(1, 13)]
+    assert all(path.is_file() for path in paths)
+    frames = [pygame.image.load(str(path)) for path in paths]
+    assert all(frame.get_size() == (80, 80) for frame in frames)
+
+    first = frames[0]
+    # Transparent corners and an opaque center distinguish an oval from the
+    # square terrain patch it replaced.
+    assert first.get_at((0, 0))[3] == 0
+    assert first.get_at((79, 0))[3] == 0
+    assert first.get_at((40, 34))[3] > 230
+    assert first.get_at((40, 3))[3] > 0
+    # Soft colored light reaches onto the pavement below the oval.
+    assert any(first.get_at((x, 72))[3] > 0 for x in range(8, 73))
+
+    # The broad interior really swirls: each frame changes many pixels, and
+    # its restrained color remains mixed heavily toward neutral gray.
+    changes = []
+    for before, after in zip(frames, frames[1:] + frames[:1]):
+        changes.append(sum(
+            before.get_at((x, y)) != after.get_at((x, y))
+            for y in range(5, 65) for x in range(14, 67)
+        ))
+    assert min(changes) > 1200
+    center = first.get_at((40, 34))[:3]
+    assert max(center) - min(center) < 70, center
+
+    directory, game, world = _game_and_world()
+    try:
+        portal = [prop for prop in world.props
+                  if prop.kind == "city_planar_portal"]
+        assert len(portal) == 1 and len(portal[0]._frames) == 12
+        first_image = portal[0]._image
+        portal[0].update(0.15)
+        assert portal[0]._image is portal[0]._frames[1]
+        assert portal[0]._image is not first_image
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def test_the_chaos_never_traps_the_ashtray_or_the_arrival() -> None:
     """The phase document's hard requirement for this map."""
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
@@ -159,6 +185,7 @@ def test_the_chaos_never_traps_the_ashtray_or_the_arrival() -> None:
     anchor = markers["anchor:modern_city_day_6_anchor"][0]
     portal = markers["choice:doug_fir_portal"][0]
     dinosaur = markers["massive_dinosaur"][0]
+    assert math.dist(start, portal) > 50, "the portal is still beside arrival"
 
     spinner = markers["police:spin"][0]
     hazard = set(_lane_tiles(tilemap, markers))
@@ -319,9 +346,9 @@ def test_the_portal_asks_and_the_beholder_theme_returns() -> None:
     try:
         live_trigger = next(item for item in world.choice_triggers
                             if item.choice_id == "doug_fir_portal")
-        # Two tiles south can see the whole portal without losing control.
-        world.player.x = live_trigger.x + 4
-        world.player.y = live_trigger.y + config.TILE_SIZE * 2
+        # Two tiles west can see the whole portal without losing control.
+        world.player.x = live_trigger.x - config.TILE_SIZE * 2
+        world.player.y = live_trigger.y + 4
         world.update(0.0)
         assert game.scenes.current is world
         # The question appears only at the authored threshold.

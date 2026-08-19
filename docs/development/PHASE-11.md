@@ -455,7 +455,7 @@ It should contain:
 - one police officer who spins while firing, reusing the rotational projectile
   language of the archer in the Beholder fight
 - part of a northern modern building damaged by street-view Astral Sea blocks
-- one clearly readable `Doug Fir Forest at Night` reality fragment
+- one clearly readable oval planar portal deeper along the shattered route
 
 The scene should feel chaotic, but its gameplay lanes must remain readable.
 NPC pursuit tableaux, raptors, dinosaur motion, police projectiles, Astral
@@ -473,13 +473,16 @@ day-city music.
 
 ------------------------------------------------------------------------
 
-# 14. Doug Fir Forest Fragment and Phase Exit
+# 14. Doug Fir Forest Portal and Phase Exit
 
-The northern building contains visible side-view Astral Sea damage and a
-`Doug Fir Forest at Night` block. This is the only Phase 11 boundary presented
-as an explicit planar portal interaction.
+The northern building contains visible side-view Astral Sea damage, but the
+actual phase exit waits much deeper in the map. It is a large gray oval whose
+smooth, muted tie-dye colors swirl continuously and cast soft colored light
+onto the pavement. This is the only Phase 11 boundary presented as an explicit
+planar portal interaction; it must not read like Astral terrain, thorns, slow
+spores, or a square vegetation tile.
 
-Approaching the forest block displays:
+Approaching the portal displays:
 
 > Enter planar portal?
 

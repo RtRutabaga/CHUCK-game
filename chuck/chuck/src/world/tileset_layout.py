@@ -532,7 +532,6 @@ CITY_DAY = Tileset(
         ("city_day_puddle", 3, 3),
         ("chult_ground", 4, 1),
         ("chult_dense", 4, 1),
-        ("doug_fir_block", 3, 4),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -555,7 +554,6 @@ CITY_DAY = Tileset(
         "ꞏ": "city_day_puddle",
         "ᵹ": "chult_ground",
         "ᵺ": "chult_dense",
-        "ᶂ": "doug_fir_block",
         "⮝": "city_day_sidewalk",
         "⮟": "city_day_sidewalk",
         "⮞": "city_day_sidewalk",

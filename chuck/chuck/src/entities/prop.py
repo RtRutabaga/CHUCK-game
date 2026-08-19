@@ -164,6 +164,7 @@ _SPRITES = {
     ),
     "city_sewer_entrance": "objects/city_sewer_entrance.png",
     "city_bus_stop": "objects/city_bus_stop.png",
+    "city_planar_portal": "objects/city_planar_portal_1.png",
     "fey_table_leg": (
         "objects/fey_table_leg_1.png",
         "objects/fey_table_leg_2.png",
@@ -188,6 +189,9 @@ _ANIMATED_SPRITES = {
         "objects/phlegethos_lava_fall_2.png",
         "objects/phlegethos_lava_fall_3.png",
         "objects/phlegethos_lava_fall_4.png",
+    ),
+    "city_planar_portal": tuple(
+        f"objects/city_planar_portal_{index + 1}.png" for index in range(12)
     ),
 }
 _PROP_FRAME_TIME = 0.14

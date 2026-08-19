@@ -10,15 +10,19 @@ updated every session.
   from five to eleven Astral fragments. Every fragment remains off the paved
   approach, so Chuck can still stand beside and interact with the umbrella
   businessman without crossing a fall tile.
-- Reworked City Day 6's Douglas fir fragment into a four-frame blue-to-violet
-  portal pulse. The forest silhouettes remain visible while the sky, aurora
-  ribbons, tree-edge light, and stars oscillate, making the only explicit
-  planar portal visually distinct from ordinary wrong-map blocks.
+- Moved City Day 6's planar portal from the northern arrival room to the far
+  southwest end of the shattered route, more than fifty tiles from spawn. The
+  player now crosses the damaged plaza before discovering the phase exit.
+- Replaced the square, thorn-like Douglas fir terrain with one human-scale
+  80x80 oval portal prop. Twelve procedural frames rotate broad muted tie-dye
+  fields through a predominantly gray interior, with a silver rim and layered
+  blue, violet, rose, and green light projected onto the wet pavement.
 - Reduced the Doug fir automatic choice zone from 3x2 tiles to the single tile
   at its threshold. Chuck can now approach closely enough to inspect the full
   animation before `Enter planar portal?` appears.
-- Focused Fractured Way, all six daytime-city maps, Doug fir handoff, music,
-  and shared tileset tests pass; source, tools, and tests compile cleanly.
+- Focused daytime-city, Doug fir handoff, and shared tileset tests pass; the
+  portal's position, safe reachability, oval alpha silhouette, animated color
+  field, projected light, and close-only prompt all have regression coverage.
 
 - Removed the thin molten fissure from the Phlegethos fall cutscene's landing
   plane. Because that line was positioned relative to the rising ground
@@ -41,7 +45,7 @@ updated every session.
   beyond notice range from the required path so it is easy to avoid.
 - A procedural modern bus shelter and the existing umbrella businessman form
   a reachable collided-world tableau with the exact `Ah! A rat!` dialogue.
-  Five nearby Astral fragments establish the collision without fencing Chuck
+  Eleven nearby Astral fragments establish the collision without fencing Chuck
   away from the NPC.
 - Four one-tile Astral cross-bands form the only mandatory challenge and are
   cliff-backed so they cannot be walked around. The map has its own Ashtray

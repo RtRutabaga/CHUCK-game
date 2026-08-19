@@ -329,11 +329,12 @@ TILE_DEFS: dict[str, TileDef] = {
     # ordinary pavement underfoot, not sludge and not a hazard.
     "ꞏ": TileDef(solid=False, color=(138, 152, 164)),
     # City Day 6: another world showing through the street. Chult ground
-    # is walkable, its dense growth is not, and the Douglas fir block is
-    # the phase's one planar portal.
+    # is walkable, its dense growth is not, and one solid anchor tile carries
+    # the large animated planar-portal prop.
     "ᵹ": TileDef(solid=False, color=(56, 92, 58)),
     "ᵺ": TileDef(solid=True, color=(26, 60, 40)),
-    "ᶂ": TileDef(solid=True, color=(10, 18, 20)),
+    "Ȣ": TileDef(solid=True, color=(98, 96, 108),
+                 prop="city_planar_portal", under="."),
     # The maintenance ladder out of the sewer: one human-scale 16x32
     # structure in two cells, the same shape as the ship's ladder.
     "Ɫ": TileDef(solid=False, color=(88, 96, 104)),
@@ -1010,7 +1011,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ተ": MarkerDef(kind="anchor:modern_city_day_5_anchor", under="."),
     "ቱ": MarkerDef(kind="arrival:from_city_day_5", under="."),
     # City Day 6: the collision. Its cast stands in the Chult patch, and
-    # the portal trigger sits on the street outside the forest block.
+    # the portal trigger sits at the far-southwest oval's threshold.
     "ቲ": MarkerDef(kind="boundary:modern_city_day_5", under="⮝"),
     "ታ": MarkerDef(kind="arrival:from_city_day_5", under="."),
     "ቴ": MarkerDef(kind="anchor:modern_city_day_6_anchor", under="."),

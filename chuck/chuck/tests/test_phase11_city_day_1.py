@@ -73,9 +73,9 @@ def test_the_daytime_sheet_is_the_night_city_in_daylight() -> None:
     """Same geometry, different light: the two sheets must stay in step."""
     # The shared rows must stay in step. The day sheet also carries rows
     # the night city has no use for: puddles, and -- on City Day 6 -- the
-    # Chult patch and the Douglas fir block showing through the street.
+    # Chult patch and the separately drawn planar portal.
     day_only = {"astral_void", "city_day_puddle", "chult_ground",
-                "chult_dense", "doug_fir_block"}
+                "chult_dense"}
     assert [name for name, _v, _f in CITY.order if name != "astral_void"] == [
         name.replace("city_day_", "city_")
         for name, _v, _f in CITY_DAY.order

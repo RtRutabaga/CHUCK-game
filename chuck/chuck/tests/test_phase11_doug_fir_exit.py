@@ -150,11 +150,11 @@ def test_no_playable_forest_exists_yet() -> None:
     forest = [name for name in MAP_TILESET if "fir" in name or "forest" in name]
     assert forest == [], forest
     assert not list(config.MAPS_DIR.glob("*doug_fir*"))
-    # The forest exists only as one terrain inside the city map...
+    # The destination exists only as one animated portal prop inside the city.
     from src.world.tilemap import TileMap
 
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
-    assert sum(row.count("ᶂ") for row in tilemap._grid) == 9
+    assert sum(row.count("Ȣ") for row in tilemap._grid) == 1
     # ...and as a drawn backdrop with nothing playable in it.
     assert not hasattr(DougFirCutsceneScene, "update_player")
 
