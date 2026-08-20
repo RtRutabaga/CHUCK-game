@@ -185,6 +185,32 @@ def elastic_bass(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     )
 
 
+def neon_synth_lead(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Bright, confident retro lead with a tight electronic edge."""
+    body = mix(
+        tone(freq, dur, "square"),
+        gain(tone(freq * 1.006, dur, "square"), 0.38),
+        gain(tone(freq / 2, dur, "triangle"), 0.28),
+    )
+    body = lowpass(body, 3100)
+    return gain(
+        envelope(body, 0.004, min(0.13, dur * 0.34), sustain=0.82),
+        vel * 0.43,
+    )
+
+
+def pulse_arp(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Short filtered pulse for a clean 16-bit techno arpeggio."""
+    body = mix(
+        tone(freq, dur, "square"),
+        gain(tone(freq * 2, dur, "triangle"), 0.18),
+    )
+    return gain(
+        envelope(lowpass(body, 2200), 0.002, min(0.08, dur * 0.7)),
+        vel * 0.32,
+    )
+
+
 def electric_key(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     """A tine electric piano: the modern city's jazz harmony voice.
 

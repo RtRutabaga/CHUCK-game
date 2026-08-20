@@ -65,7 +65,7 @@ def test_exactly_four_entities_occupy_the_authored_seats() -> None:
         if kind.startswith("cabin_light:")
     }
     assert len(spawns) == 4
-    assert set(spawns.values()) == {(5, 4), (16, 4), (17, 10), (17, 15)}
+    assert set(spawns.values()) == {(5, 4), (16, 4), (17, 8), (17, 13)}
 
 
 def test_entities_use_offset_animation_and_durable_idempotent_flags() -> None:

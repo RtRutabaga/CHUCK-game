@@ -25,11 +25,16 @@ def build_map():
         grid[y][0] = "ć"
         grid[y][WIDTH - 1] = "ć"
 
-    # Reversible north/back and south/front thresholds.  Their arrivals sit
-    # two cells in, preventing an immediate transition bounce.
-    grid[0][10] = "Ƣ"
+    # Reversible north/back and south/front thresholds.  The three-wide,
+    # two-deep black recesses read as human-scale doorways while the centered
+    # transition cells preserve exact route alignment.
+    for x in range(9, 12):
+        grid[0][x] = "Ƣ"
+        grid[1][x] = "Ƣ"
     grid[2][10] = "ኅ"
-    grid[32][10] = "Ɯ"
+    for x in range(9, 12):
+        grid[31][x] = "Ɯ"
+        grid[32][x] = "Ɯ"
     grid[30][10] = "ኄ"
 
     # The two couches flank the back doorway exactly as on Sean's plan.
@@ -43,30 +48,28 @@ def build_map():
     # The long map table is tucked against the west wall beside the big couch.
     # Its rectangular D&D map is the surface that later awakens; the southern
     # sink/counter remains an ordinary kitchen fixture.
-    _solid_rect(grid, 1, 8, 9, 11)
-    grid[11][5] = "Ƒ"
-    _solid_rect(grid, 16, 9, 18, 11)
-    grid[11][17] = "ƭ"
-    grid[10][17] = "₃"
-    _solid_rect(grid, 16, 14, 18, 16)
-    grid[16][17] = "ƭ"
-    grid[15][17] = "₄"
+    _solid_rect(grid, 1, 8, 13, 11)
+    grid[11][7] = "Ƒ"
+    _solid_rect(grid, 16, 7, 18, 9)
+    grid[9][17] = "ƭ"
+    grid[8][17] = "₃"
+    _solid_rect(grid, 16, 12, 18, 14)
+    grid[14][17] = "ƭ"
+    grid[13][17] = "₄"
 
-    # Everything south of the table is hardwood.  The ordinary southern
-    # kitchen counter contains the sink only; it is not the portal table.
-    for y in range(12, 32):
+    # The green carpet holds every seated entity and the stove.  Everything
+    # south of that living space is hardwood.  The ordinary southern kitchen
+    # counter contains the sink only; it is not the portal table.
+    for y in range(20, 32):
         for x in range(1, 20):
             grid[y][x] = "Ħ"
-    _solid_rect(grid, 16, 14, 18, 16, "ħ")
-    grid[16][17] = "ƭ"
-    grid[15][17] = "₄"
-    _solid_rect(grid, 2, 27, 8, 29, "ħ")
-    grid[29][5] = "ƕ"
+    _solid_rect(grid, 2, 29, 8, 31, "ħ")
+    grid[31][5] = "ƕ"
 
     # The enlarged wood stove sits above a room-scale, fully enclosed southeast
     # room.  A complete wall perimeter replaces the former furniture-sized box.
-    _solid_rect(grid, 15, 22, 18, 25, "ħ")
-    grid[25][16] = "Ʒ"
+    _solid_rect(grid, 15, 16, 18, 19)
+    grid[19][16] = "Ʒ"
     for x in range(14, 20):
         grid[26][x] = "ć"
         grid[31][x] = "ć"
@@ -77,7 +80,10 @@ def build_map():
         for x in range(15, 19):
             grid[y][x] = "Ħ"
 
-    # Restore the southern arrival marker after laying its hardwood floor.
+    # Restore the enlarged southern doorway and arrival after laying floors.
+    for x in range(9, 12):
+        grid[31][x] = "Ɯ"
+        grid[32][x] = "Ɯ"
     grid[30][10] = "ኄ"
 
     # Exactly one interior Ashtray, reachable along the clear central lane.

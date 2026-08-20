@@ -35,7 +35,11 @@ file is required by the project rules and updated every session.
   olive-tan carpet, southern hardwood, north-wall couches, two east-side
   chairs, the long west-wall table and stools with its ordinary rectangular
   D&D map, an ordinary southern sink/counter, enlarged woodstove, and a full
-  enclosed southeast room. Furniture is
+  enclosed southeast room. Both interior black doorway recesses are now three
+  tiles wide and two deep. The table visually contacts the west wall, the
+  counter is flush with the south wall, and both chair entities plus the
+  fireplace sit entirely on the green carpet above the hardwood boundary.
+  Furniture is
   human-scale and provides solid, readable level geometry while keeping both
   doors and the interior Ashtray connected.
 - Added development checkpoint `Cabin Interior` plus exactly one physical,
@@ -61,12 +65,13 @@ file is required by the project rules and updated every session.
   west-wall table with an eight-frame gray-biased swirling tie-dye treatment
   and restrained local light. It does not become an oval or freestanding
   portal, and it intentionally has no interaction yet.
-- Added the original 92-second Cabin theme in D Dorian at 104 BPM. A recurring
-  syncopated elastic-bass hook anchors warm wooden mallets, sparse breathy-reed
-  answers, colored-light bells, and original tuned high/low hand-drum voices.
-  Its four-bar firelight break keeps the final full return clear rather than
-  cluttered. Exterior and interior request the same `cabin.wav`, so the cue
-  continues uninterrupted through both ordinary doors.
+- Rebuilt the Cabin theme as an original 103-second D-Dorian electronic loop
+  at 112 BPM while preserving its exact syncopated elastic-bass figure. A
+  four-on-the-floor kick, backbeat, clipped pulse arpeggio, and direct neon
+  synth hook replace the Feywild-like mallet, reed, bell, and magical-swell
+  palette. Sparse tuned hand-drum accents remain secondary to the cooler,
+  more driving techno identity. Exterior and interior request the same
+  `cabin.wav`, so the cue continues uninterrupted through both ordinary doors.
 - Focused exterior, interior, checkpoint, transition, and tileset suites pass,
   including full door/Ashtray reachability, reversible arrival alignment,
   checkpoint/save/Continue behavior, and the absence of enemies or hazards.
@@ -81,8 +86,8 @@ file is required by the project rules and updated every session.
   shared-loader restoration. The awakened table was inspected at native
   resolution and the broader Cabin/checkpoint/transition/prop suites pass.
 - Focused Cabin music coverage passes for duration, parseable composition,
-  recurring hook, bass-forward syncopation, restrained peak arrangement,
-  tuned hand-drum palette, rendered mix/headroom, loop seam, file presence,
+  exact preserved bass rhythm, recurring synth hook, four-beat kick, restrained
+  hand-drum palette, rendered mix/headroom, loop seam, file presence,
   and identical exterior/interior routing. All 116 repository test modules
   pass, and the game renders a clean headless launch frame.
 

@@ -647,11 +647,11 @@ TILE_DEFS: dict[str, TileDef] = {
     "ƭ": TileDef(solid=True, color=(91, 88, 56),
                  prop="cabin_chair", under="∎"),
     "Ƒ": TileDef(solid=True, color=(91, 88, 56),
-                 prop="cabin_table", under="ħ"),
+                  prop="cabin_table", under="∎"),
     "ƕ": TileDef(solid=True, color=(157, 145, 107),
                  prop="cabin_kitchen", under="ħ"),
     "Ʒ": TileDef(solid=True, color=(91, 88, 56),
-                 prop="cabin_woodstove", under="ħ"),
+                  prop="cabin_woodstove", under="∎"),
     "Ə": TileDef(solid=True, color=(91, 88, 56),
                  prop="cabin_wood_storage", under="∎"),
 }

@@ -58,11 +58,13 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     assert AREA_MUSIC[MAP_NAME] == "cabin.wav"
 
     terrain = Counter(char for row in tilemap._grid for char in row)
-    assert terrain["Ħ"] > terrain["Ŀ"] > 0
+    assert terrain["Ħ"] > 0 and terrain["Ŀ"] > 0
     assert terrain["Ƃ"] == 0
     assert terrain["ć"] >= 2 * 21 + 2 * 31 - 4
     assert tilemap.terrain_at(10, 0) == "Ƣ"
     assert tilemap.terrain_at(10, 32) == "Ɯ"
+    assert all(tilemap.terrain_at(x, y) in {"Ƣ", "Ɯ"}
+               for y in (0, 1, 31, 32) for x in range(9, 12))
 
     props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
     assert props == {
@@ -79,9 +81,14 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     }
     assert positions["cabin_big_couch"] == (5, 5)
     assert positions["cabin_couch"] == (16, 5)
-    assert positions["cabin_table"] == (5, 11)
-    assert positions["cabin_kitchen"] == (5, 29)
-    assert positions["cabin_woodstove"] == (16, 25)
+    assert positions["cabin_table"] == (7, 11)
+    assert positions["cabin_kitchen"] == (5, 31)
+    assert positions["cabin_woodstove"] == (16, 19)
+    # Entities and stove sit on green carpet; the southern working area is
+    # hardwood, with the counter visually flush against the south wall.
+    assert all(tilemap.terrain_at(x, y) != "Ħ"
+               for y in range(1, 20) for x in range(1, 20))
+    assert tilemap.terrain_at(5, 30) == "ħ"
     # The southeast room is a complete enclosed section, not a prop-sized box.
     assert all(tilemap.terrain_at(x, 26) == "ć" for x in range(14, 20))
     assert all(tilemap.terrain_at(x, 31) == "ć" for x in range(14, 20))

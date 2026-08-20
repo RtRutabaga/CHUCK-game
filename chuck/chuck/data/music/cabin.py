@@ -1,33 +1,25 @@
-"""Cabin theme -- warm wood, colored lights, and a crooked familiar groove.
+"""Cabin theme -- an insistent bassline under cool nocturnal electronics.
 
-An original ~92-second loop in D Dorian at 104 BPM. A two-bar elastic bass
-figure is the track's identity: steady enough to feel welcoming, syncopated
-enough to keep the strange clearing alive. Wooden mallets state a compact
-eight-bar tune while a breathy reed answers only in the middle sections.
-Tuned high and low hand drums add an Indian-inspired organic/electronic color
-without quoting a traditional rhythm or composition.
+An original ~103-second loop in D Dorian at 112 BPM. The established
+two-bar elastic bass figure remains the track's identity, while the former
+Feywild-like mallets, reed, bells, and magical swells have been replaced by a
+four-on-the-floor pulse, clipped arpeggios, and a direct neon synth melody.
+Sparse tabla accents retain the Cabin phase's requested hand-drum color
+without pulling the arrangement away from its driving electronic character.
 
-Structure (40 bars of 4/4):
-    0-3    Porch lights   bass hook, soft mallet fragment, hand drums
-    4-11   A              full memorable cabin theme
-    12-19  A'             theme variation with sparse reed answers
-    20-27  B              subtly uncanny Dorian turn, still consonant
-    28-31  Firelight      arrangement thins to bass, pad, and hand drums
-    32-39  A return       clear full hook, folding back into the opening
-
-The exterior and interior both request this same cue, so ordinary door
-transitions do not restart it.
+The exterior and interior request this same cue, so ordinary door transitions
+do not restart it.
 """
 
 from src.audio import instruments as ins
 from src.audio.sequencer import Note, Track
 
 
-TEMPO_BPM = 104
+TEMPO_BPM = 112
 BEATS_PER_BAR = 4
-TOTAL_BARS = 40
+TOTAL_BARS = 48
 TOTAL_BEATS = TOTAL_BARS * BEATS_PER_BAR
-MASTER_HEADROOM = 0.76
+MASTER_HEADROOM = 0.72
 
 
 def _bars(pattern: dict[int, list[tuple]]) -> list[Note]:
@@ -41,66 +33,64 @@ def _bars(pattern: dict[int, list[tuple]]) -> list[Note]:
     return notes
 
 
-def _merge(*patterns: dict) -> dict:
-    merged: dict = {}
-    for pattern in patterns:
-        for bar, events in pattern.items():
-            merged.setdefault(bar, []).extend(events)
-    return merged
-
-
-_ROOTS = (
+_ROOT_CYCLE = (
     "D2", "D2", "C2", "G2", "D2", "D2", "C2", "A1",
     "D2", "D2", "C2", "G2", "D2", "B1", "C2", "A1",
     "G2", "G2", "C2", "D2", "B1", "C2", "G2", "A1",
-    "D2", "D2", "C2", "G2",
-    "D2", "C2", "G2", "A1",
-    "D2", "D2", "C2", "G2", "D2", "D2", "C2", "A1",
+    "D2", "D2", "C2", "G2", "D2", "C2", "G2", "A1",
 )
-
+_ROOTS = _ROOT_CYCLE + _ROOT_CYCLE[:16]
 _FIFTH = {
     "D2": "A2", "C2": "G2", "G2": "D3", "A1": "E2", "B1": "F#2",
 }
 _OCTAVE = {
     "D2": "D3", "C2": "C3", "G2": "G3", "A1": "A2", "B1": "B2",
 }
-_PAD = {
-    "D2": ("D3", "A3"), "C2": ("C3", "G3"),
-    "G2": ("G3", "D4"), "A1": ("A2", "E3"),
-    "B1": ("B2", "F#3"),
+_ARP = {
+    "D2": ("D4", "A4", "C5", "E5"),
+    "C2": ("C4", "G4", "B4", "D5"),
+    "G2": ("G3", "D4", "A4", "B4"),
+    "A1": ("A3", "E4", "G4", "C5"),
+    "B1": ("B3", "F#4", "A4", "D5"),
 }
 
 
 _HOOK_A = (
-    ((0, .48, "D4"), (.75, .34, "F4"), (1.5, .48, "G4"),
-     (2.25, .72, "A4"), (3.25, .42, "F4")),
-    ((0, .70, "E4"), (1, .42, "D4"), (1.75, .42, "C4"),
-     (2.5, 1.15, "D4")),
-    ((0, .42, "F4"), (.5, .42, "G4"), (1.25, .55, "B4"),
-     (2.25, .50, "A4"), (3, .70, "G4")),
-    ((0, 1.35, "E4"), (1.75, .48, "G4"), (2.5, 1.10, "D4")),
-    ((0, .48, "D4"), (.75, .34, "F4"), (1.5, .48, "G4"),
-     (2.25, .72, "A4"), (3.25, .42, "F4")),
-    ((0, .70, "E4"), (1, .42, "D4"), (1.75, .42, "C4"),
-     (2.5, 1.15, "D4")),
-    ((0, .45, "A4"), (.75, .45, "B4"), (1.5, .55, "G4"),
-     (2.5, .45, "E4"), (3.25, .55, "C4")),
-    ((0, .72, "E4"), (1, .45, "C4"), (1.75, 1.95, "D4")),
+    ((0, .34, "D5"), (.5, .34, "F5"), (1, .70, "A5"),
+     (2, .34, "G5"), (2.5, .34, "F5"), (3, .72, "D5")),
+    ((0, .34, "C5"), (.5, .34, "D5"), (1, .70, "F5"),
+     (2, .34, "E5"), (2.5, .34, "D5"), (3, .72, "C5")),
+    ((0, .34, "G4"), (.5, .34, "B4"), (1, .70, "D5"),
+     (2, .34, "E5"), (2.5, .34, "G5"), (3, .72, "A5")),
+    ((0, .48, "E5"), (.75, .48, "C5"), (1.5, .48, "A4"),
+     (2.25, 1.34, "D5")),
+    ((0, .34, "D5"), (.5, .34, "F5"), (1, .70, "A5"),
+     (2, .34, "C6"), (2.5, .34, "A5"), (3, .72, "G5")),
+    ((0, .34, "E5"), (.5, .34, "G5"), (1, .70, "B5"),
+     (2, .34, "A5"), (2.5, .34, "G5"), (3, .72, "E5")),
+    ((0, .34, "C5"), (.5, .34, "E5"), (1, .70, "G5"),
+     (2, .34, "A5"), (2.5, .34, "C6"), (3, .72, "B5")),
+    ((0, .48, "A5"), (.75, .48, "E5"), (1.5, .48, "C5"),
+     (2.25, 1.34, "D5")),
 )
 
 _HOOK_B = (
-    ((0, .65, "G4"), (1, .40, "B4"), (1.75, .75, "D5"),
-     (3, .55, "B4")),
-    ((0, .70, "A4"), (1, .45, "G4"), (2, 1.35, "E4")),
-    ((0, .45, "C5"), (.75, .45, "B4"), (1.5, .70, "G4"),
-     (2.75, .75, "F4")),
-    ((0, 1.25, "E4"), (1.75, .45, "G4"), (2.5, 1.20, "A4")),
-    ((0, .65, "B4"), (1, .40, "A4"), (1.75, .75, "G4"),
-     (3, .55, "E4")),
-    ((0, .70, "F4"), (1, .45, "E4"), (2, 1.35, "D4")),
-    ((0, .45, "G4"), (.75, .45, "A4"), (1.5, .70, "B4"),
-     (2.75, .75, "C5")),
-    ((0, .75, "A4"), (1, .45, "E4"), (2, 1.75, "D4")),
+    ((0, .34, "G5"), (.5, .34, "A5"), (1, .70, "B5"),
+     (2, .34, "D6"), (2.5, .34, "B5"), (3, .72, "A5")),
+    ((0, .34, "F5"), (.5, .34, "G5"), (1, .70, "A5"),
+     (2, .34, "C6"), (2.5, .34, "A5"), (3, .72, "G5")),
+    ((0, .34, "E5"), (.5, .34, "G5"), (1, .70, "B5"),
+     (2, .34, "A5"), (2.5, .34, "G5"), (3, .72, "E5")),
+    ((0, .48, "F5"), (.75, .48, "E5"), (1.5, .48, "C5"),
+     (2.25, 1.34, "D5")),
+    ((0, .34, "B5"), (.5, .34, "A5"), (1, .70, "G5"),
+     (2, .34, "E5"), (2.5, .34, "G5"), (3, .72, "A5")),
+    ((0, .34, "C6"), (.5, .34, "A5"), (1, .70, "G5"),
+     (2, .34, "E5"), (2.5, .34, "D5"), (3, .72, "C5")),
+    ((0, .34, "G5"), (.5, .34, "A5"), (1, .70, "B5"),
+     (2, .34, "D6"), (2.5, .34, "C6"), (3, .72, "A5")),
+    ((0, .48, "E5"), (.75, .48, "C5"), (1.5, .48, "A4"),
+     (2.25, 1.34, "D5")),
 )
 
 
@@ -115,6 +105,7 @@ def _melody(start_bar: int, phrase, velocity: float) -> dict:
 
 
 def _bass_bar(root: str, quiet: bool = False) -> list[tuple]:
+    """The original Cabin bass figure, intentionally preserved exactly."""
     level = .68 if quiet else 1.0
     return [
         (0, .55, root, .92 * level),
@@ -127,80 +118,54 @@ def _bass_bar(root: str, quiet: bool = False) -> list[tuple]:
 
 
 def build_tracks() -> list[Track]:
-    mallet = _merge(
-        _melody(0, _HOOK_A[:4], .48),
-        _melody(4, _HOOK_A, .92),
-        _melody(12, _HOOK_A, .82),
-        _melody(20, _HOOK_B, .82),
-        _melody(32, _HOOK_A, .96),
-    )
-    # Reed answers occur only between statements. It never competes with the
-    # final peak, preserving the bass and mallet hook as the clear foreground.
-    reed = {
-        13: [(2.5, 1.1, "A4", .42)], 15: [(2.5, 1.1, "E4", .38)],
-        17: [(2.5, 1.1, "B4", .42)], 19: [(2.5, 1.1, "G4", .38)],
-        21: [(2.75, .9, "D5", .40)], 23: [(2.5, 1.1, "A4", .38)],
-        25: [(2.75, .9, "G4", .40)], 27: [(2.5, 1.1, "E4", .38)],
-    }
+    synth_hook = {}
+    for start, phrase, velocity in (
+        (4, _HOOK_A, .88), (12, _HOOK_A, .92), (20, _HOOK_B, .92),
+        (32, _HOOK_A, .98), (40, _HOOK_B, 1.0),
+    ):
+        synth_hook.update(_melody(start, phrase, velocity))
 
     bass = {
         bar: _bass_bar(root, 28 <= bar < 32)
         for bar, root in enumerate(_ROOTS)
     }
-    pad = {
-        bar: [(0, 3.85, _PAD[root][0], .34),
-              (0, 3.85, _PAD[root][1], .22)]
-        for bar, root in enumerate(_ROOTS)
-    }
-    colored_lights = {
-        bar: [(2.5, 1.35, pitch, .25)]
-        for bar, pitch in (
-            (3, "A5"), (7, "D6"), (11, "B5"), (15, "G5"),
-            (19, "E6"), (23, "C6"), (27, "B5"), (31, "A5"),
-            (35, "D6"), (39, "A5"),
-        )
-    }
-    swells = {
-        bar: [(0, 3.75, pitch, .24)]
-        for bar, pitch in (
-            (10, "D5"), (18, "G4"), (22, "B4"), (26, "C5"),
-            (29, "A4"), (30, "G4"), (38, "D5"),
-        )
-    }
-
-    kick, hats, dayan, bayan, wood = {}, {}, {}, {}, {}
-    for bar in range(TOTAL_BARS):
-        hush = 28 <= bar < 32
-        if not hush:
-            kick[bar] = [(0, .10, "C2", .66), (2.5, .10, "C2", .48)]
-            hats[bar] = [
-                (beat, .04, "C6", .22 if beat % 1 else .30)
-                for beat in (0, .5, 1, 1.5, 2, 2.5, 3, 3.5)
-            ]
-        else:
-            hats[bar] = [(.5, .04, "C6", .16), (2.5, .04, "C6", .18)]
-        # Original 3+3+2-derived hand-drum conversation. The voices alternate
-        # rather than stacking every stroke, keeping the groove nimble.
-        dayan[bar] = [
-            (.375, .12, "D4", .62), (1.125, .12, "A3", .50),
-            (2.0, .12, "F4", .58), (3.25, .12, "A3", .54),
+    arp = {}
+    low_pulse = {}
+    kick, snare, hats, dayan, bayan = {}, {}, {}, {}, {}
+    for bar, root in enumerate(_ROOTS):
+        break_bar = 28 <= bar < 32
+        full_drive = 8 <= bar < 28 or bar >= 32
+        chord = _ARP[root]
+        arp[bar] = [
+            (step * .5 + .25, .18, chord[step % 4],
+             .54 if full_drive else .38)
+            for step in range(8)
         ]
-        bayan[bar] = [
-            (0, .20, "D2", .72 if not hush else .52),
-            (1.75, .18, "C2", .48), (3.0, .20, "D2", .62),
+        low_pulse[bar] = [
+            (.5, .20, chord[0], .34), (1.5, .20, chord[1], .30),
+            (2.5, .20, chord[2], .34), (3.5, .20, chord[1], .30),
         ]
-        wood[bar] = [(1.5, .05, "D6", .30), (3.75, .05, "A5", .26)]
+        kick[bar] = [
+            (beat, .10, "C2", .78 if not break_bar else .58)
+            for beat in (0, 1, 2, 3)
+        ]
+        snare[bar] = [(1, .08, "D3", .62), (3, .08, "D3", .66)]
+        hats[bar] = [
+            (beat, .04, "C6", .22 if beat % 1 else .14)
+            for beat in (0, .5, 1, 1.5, 2, 2.5, 3, 3.5)
+        ]
+        # Sparse hand-drum color woven between the mechanical backbeat.
+        dayan[bar] = [(.75, .10, "D4", .38), (2.75, .10, "A3", .34)]
+        bayan[bar] = [(3.5, .16, "D2", .36 if not break_bar else .28)]
 
     return [
-        Track("mallet_hook", ins.enchanted_mallet, .84, _bars(mallet)),
-        Track("reed_answers", ins.breathy_reed, .46, _bars(reed)),
+        Track("synth_hook", ins.neon_synth_lead, .94, _bars(synth_hook)),
         Track("driving_bass", ins.elastic_bass, 1.10, _bars(bass)),
-        Track("warm_room", ins.cloud_pad, .52, _bars(pad)),
-        Track("colored_lights", ins.bell, .34, _bars(colored_lights)),
-        Track("strange_swells", ins.reverse_bell, .30, _bars(swells)),
-        Track("kick", ins.kick, .62, _bars(kick)),
-        Track("dayan", ins.tabla_dayan, .76, _bars(dayan)),
-        Track("bayan", ins.tabla_bayan, .78, _bars(bayan)),
-        Track("wood", ins.woodblock, .48, _bars(wood)),
-        Track("hats", ins.hat, .34, _bars(hats)),
+        Track("pulse_arp", ins.pulse_arp, .70, _bars(arp)),
+        Track("low_pulse", ins.pulse_arp, .46, _bars(low_pulse)),
+        Track("kick", ins.kick, .72, _bars(kick)),
+        Track("snare", ins.snare, .50, _bars(snare)),
+        Track("hats", ins.hat, .36, _bars(hats)),
+        Track("dayan", ins.tabla_dayan, .48, _bars(dayan)),
+        Track("bayan", ins.tabla_bayan, .50, _bars(bayan)),
     ]

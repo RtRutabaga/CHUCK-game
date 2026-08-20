@@ -98,7 +98,7 @@ def test_real_back_threshold_awakens_and_rebuilds_the_rectangular_map() -> None:
         assert len(table._frames) == 8
         assert len({pygame.image.tobytes(frame, "RGBA")
                     for frame in table._frames}) == 8
-        assert all(frame.get_size() == (122, 57)
+        assert all(frame.get_size() == (132, 57)
                    for frame in table._frames)
         assert table.choice_id is None and table.dialogue_id is None
         assert next(prop for prop in world.props

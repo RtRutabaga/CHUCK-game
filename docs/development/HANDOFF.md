@@ -3,15 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `e8d4b40` (Cabin layout/art refinement)
-- Current work: the dedicated Phase 12 Cabin soundtrack pass is complete and
-  verified
+- Base commit before this pass: `6409f0d` (initial Cabin soundtrack)
+- Current work: the Cabin soundtrack redirection and interior geometry
+  refinement are complete and verified
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
   awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Preserved the exact six-hit elastic-bass figure but rebuilt every other
+  musical layer into a cooler 112-BPM electronic arrangement: four-on-the-floor
+  kick, backbeat, clipped pulse arpeggios, and a new neon synth hook. Removed
+  the Feywild-coded mallet, reed, bells, and magical swells; restrained tuned
+  hand drums now function only as secondary Cabin color. The new render is
+  102.9 seconds and remains continuous through both Cabin doors.
+- Enlarged both Cabin Interior black doorway recesses to three tiles wide by
+  two deep while retaining the existing aligned route destinations. Extended
+  the physical/visual table to contact the west wall, moved the kitchen counter
+  flush against the south wall, and moved both west-facing chair entities and
+  the animated fireplace fully onto the green carpet. Hardwood now begins
+  south of that living area.
+- Regenerated the authored map, table/portal frames, and soundtrack from their
+  source generators. Focused music, interior navigation, entity, portal-state,
+  and furniture checks pass; native-resolution north/middle compositions were
+  visually inspected. All 116 repository test modules pass, and the game
+  initializes, updates, renders, and shuts down through a clean headless launch
+  frame.
 
 - Composed and rendered `cabin.wav`, an original 92-second D-Dorian loop at
   104 BPM shared by both playable Cabin maps. Its recurring syncopated elastic
