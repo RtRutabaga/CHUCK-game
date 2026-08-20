@@ -171,16 +171,16 @@ _SPRITES = {
         "objects/tahuya_fir_3.png",
     ),
     "tahuya_mushroom_light": "objects/tahuya_mushroom_light_1.png",
-    "tahuya_firepit": "objects/tahuya_firepit.png",
+    "tahuya_firepit": "objects/tahuya_firepit_1.png",
     "tahuya_ufo": "objects/tahuya_ufo.png",
     "tahuya_firewood_shed": "objects/tahuya_firewood_shed.png",
     "cabin_big_couch": "objects/cabin_big_couch.png",
     "cabin_couch": "objects/cabin_couch.png",
     "cabin_chair": "objects/cabin_chair.png",
     "cabin_table": "objects/cabin_table.png",
+    "cabin_table_awakened": "objects/cabin_table_awakened_1.png",
     "cabin_kitchen": "objects/cabin_kitchen.png",
-    "cabin_kitchen_awakened": "objects/cabin_kitchen_awakened_1.png",
-    "cabin_woodstove": "objects/cabin_woodstove.png",
+    "cabin_woodstove": "objects/cabin_woodstove_1.png",
     "cabin_wood_storage": "objects/cabin_wood_storage.png",
     "fey_table_leg": (
         "objects/fey_table_leg_1.png",
@@ -214,9 +214,15 @@ _ANIMATED_SPRITES = {
         f"objects/tahuya_mushroom_light_{index + 1}.png"
         for index in range(8)
     ),
-    "cabin_kitchen_awakened": tuple(
-        f"objects/cabin_kitchen_awakened_{index + 1}.png"
+    "tahuya_firepit": tuple(
+        f"objects/tahuya_firepit_{index + 1}.png" for index in range(6)
+    ),
+    "cabin_table_awakened": tuple(
+        f"objects/cabin_table_awakened_{index + 1}.png"
         for index in range(8)
+    ),
+    "cabin_woodstove": tuple(
+        f"objects/cabin_woodstove_{index + 1}.png" for index in range(6)
     ),
 }
 _PROP_FRAME_TIME = 0.14

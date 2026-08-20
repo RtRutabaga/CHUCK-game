@@ -40,10 +40,11 @@ def build_map():
     grid[5][16] = "Ƭ"
     grid[4][16] = "₂"
 
-    # Central dining table and five stools; the east wall keeps its paired
-    # mustard chairs, both at human scale relative to Chuck.
-    _solid_rect(grid, 6, 12, 12, 15)
-    grid[15][9] = "Ƒ"
+    # The long map table is tucked against the west wall beside the big couch.
+    # Its rectangular D&D map is the surface that later awakens; the southern
+    # sink/counter remains an ordinary kitchen fixture.
+    _solid_rect(grid, 1, 8, 9, 11)
+    grid[11][5] = "Ƒ"
     _solid_rect(grid, 16, 9, 18, 11)
     grid[11][17] = "ƭ"
     grid[10][17] = "₃"
@@ -51,21 +52,35 @@ def build_map():
     grid[16][17] = "ƭ"
     grid[15][17] = "₄"
 
-    # The southern kitchen switches to the photographed patterned linoleum.
-    # Its long cabinet includes the sink and the ordinary rectangular D&D map.
-    for y in range(22, 31):
-        for x in range(1, 10):
-            grid[y][x] = "Ƃ"
-    _solid_rect(grid, 2, 27, 8, 29, "▰")
+    # Everything south of the table is hardwood.  The ordinary southern
+    # kitchen counter contains the sink only; it is not the portal table.
+    for y in range(12, 32):
+        for x in range(1, 20):
+            grid[y][x] = "Ħ"
+    _solid_rect(grid, 16, 14, 18, 16, "ħ")
+    grid[16][17] = "ƭ"
+    grid[15][17] = "₄"
+    _solid_rect(grid, 2, 27, 8, 29, "ħ")
     grid[29][5] = "ƕ"
 
-    # Wood stove on its brick hearth and the closet/firewood mass beneath it.
-    _solid_rect(grid, 15, 22, 18, 25)
+    # The enlarged wood stove sits above a room-scale, fully enclosed southeast
+    # room.  A complete wall perimeter replaces the former furniture-sized box.
+    _solid_rect(grid, 15, 22, 18, 25, "ħ")
     grid[25][16] = "Ʒ"
-    _solid_rect(grid, 16, 27, 18, 29)
-    grid[29][17] = "Ə"
+    for x in range(14, 20):
+        grid[26][x] = "ć"
+        grid[31][x] = "ć"
+    for y in range(26, 32):
+        grid[y][14] = "ć"
+        grid[y][19] = "ć"
+    for y in range(27, 31):
+        for x in range(15, 19):
+            grid[y][x] = "Ħ"
 
-    # Exactly one interior Ashtray, reachable along the clear east-side lane.
+    # Restore the southern arrival marker after laying its hardwood floor.
+    grid[30][10] = "ኄ"
+
+    # Exactly one interior Ashtray, reachable along the clear central lane.
     grid[20][13] = "ኆ"
     return ["".join(row) for row in grid]
 

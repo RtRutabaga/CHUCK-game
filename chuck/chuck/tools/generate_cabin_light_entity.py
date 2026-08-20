@@ -28,7 +28,7 @@ def _blend(a, b, amount):
     return tuple(round(x + (y - x) * amount) for x, y in zip(a, b))
 
 
-def draw_frame(index):
+def draw_frame(index, facing="south"):
     """A seated humanoid made of gray-biased, smoothly travelling light."""
     surface = pygame.Surface((FRAME_W, FRAME_H), pygame.SRCALPHA)
     main = PALETTE[index]
@@ -42,17 +42,31 @@ def draw_frame(index):
     pygame.draw.ellipse(glow, (*next_colour, 18), (5, 24, 18, 5))
     surface.blit(glow, (0, 0))
 
-    # Clear seated silhouette: head, shoulders, bent torso, forearms and knees.
-    pygame.draw.circle(surface, shadow, (14, 6), 5)
-    pygame.draw.circle(surface, pale, (14, 5), 4)
-    pygame.draw.polygon(surface, shadow, ((7, 11), (21, 11), (23, 22),
-                                          (18, 25), (10, 25), (5, 22)))
-    pygame.draw.polygon(surface, main, ((8, 12), (20, 12), (20, 21),
-                                       (17, 23), (11, 23), (7, 20)))
-    pygame.draw.rect(surface, shadow, (4, 13, 4, 10))
-    pygame.draw.rect(surface, shadow, (20, 13, 4, 10))
-    pygame.draw.rect(surface, pale, (8, 22, 7, 4))
-    pygame.draw.rect(surface, next_colour, (15, 22, 6, 4))
+    if facing == "west":
+        # Side-on seated silhouette: face/nose and both bent knees point left.
+        pygame.draw.circle(surface, shadow, (12, 6), 5)
+        pygame.draw.circle(surface, pale, (11, 5), 4)
+        pygame.draw.rect(surface, pale, (6, 5, 4, 2))
+        pygame.draw.polygon(surface, shadow, ((10, 11), (20, 12), (20, 23),
+                                              (14, 25), (7, 22)))
+        pygame.draw.polygon(surface, main, ((11, 12), (18, 13), (18, 21),
+                                           (13, 23), (8, 21)))
+        pygame.draw.rect(surface, shadow, (6, 15, 8, 4))
+        pygame.draw.rect(surface, pale, (4, 18, 10, 4))
+        pygame.draw.rect(surface, shadow, (5, 22, 10, 4))
+        pygame.draw.rect(surface, next_colour, (3, 25, 11, 3))
+    else:
+        # Clear seated silhouette: head, shoulders, torso, forearms and knees.
+        pygame.draw.circle(surface, shadow, (14, 6), 5)
+        pygame.draw.circle(surface, pale, (14, 5), 4)
+        pygame.draw.polygon(surface, shadow, ((7, 11), (21, 11), (23, 22),
+                                              (18, 25), (10, 25), (5, 22)))
+        pygame.draw.polygon(surface, main, ((8, 12), (20, 12), (20, 21),
+                                           (17, 23), (11, 23), (7, 20)))
+        pygame.draw.rect(surface, shadow, (4, 13, 4, 10))
+        pygame.draw.rect(surface, shadow, (20, 13, 4, 10))
+        pygame.draw.rect(surface, pale, (8, 22, 7, 4))
+        pygame.draw.rect(surface, next_colour, (15, 22, 6, 4))
 
     # Broad travelling bands make the tie-dye movement legible at 320x180.
     band_y = 4 + (index * 3) % 17
@@ -67,9 +81,13 @@ def draw_frame(index):
 
 def main():
     pygame.init()
-    sheet = pygame.Surface((FRAME_W * len(PALETTE), FRAME_H), pygame.SRCALPHA)
-    for index in range(len(PALETTE)):
-        sheet.blit(draw_frame(index), (index * FRAME_W, 0))
+    sheet = pygame.Surface(
+        (FRAME_W * len(PALETTE), FRAME_H * 2), pygame.SRCALPHA
+    )
+    for row, facing in enumerate(("south", "west")):
+        for index in range(len(PALETTE)):
+            sheet.blit(draw_frame(index, facing),
+                       (index * FRAME_W, row * FRAME_H))
     output = ROOT / "assets" / "sprites" / "npcs" / "cabin_light_entity.png"
     pygame.image.save(sheet, output)
     print(f"Wrote {output} ({sheet.get_width()}x{sheet.get_height()})")

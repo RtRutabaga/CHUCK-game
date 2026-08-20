@@ -19,7 +19,7 @@ This phase contains exactly two playable maps:
 
 There are no enemies and no environmental hazards in this phase. Its tension
 comes from faithful place, unusual light, strange occupants, and the gradual
-change in the D&D map on the counter.
+change in the D&D map on the long west-wall table.
 
 ------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ By the end of Phase 12, the player should:
 7. Speak with all four entities.
 8. Cross the back door after all four conversations.
 9. Return to or remain in the interior and discover that the rectangular D&D
-   map on the counter has become a planar surface.
+   map on the long west-wall table has become a planar surface.
 10. Confirm entry through that surface and see Chuck arrive in a desert.
 
 The desert arrival is the stable boundary for the following phase. Do not
@@ -195,16 +195,16 @@ Preserve the authored relative placement of:
 - second couch
 - the doorway between the couches
 - two separate chairs along the right side
-- central table and stools
+- long table and stools against the west wall near the big couch
 - counter and sink/kitchen run
-- rectangular D&D map on the counter
+- rectangular D&D map on the long west-wall table
 - fireplace/wood stove area
-- closet/wood-storage area
+- full closed southeast room
 - front door and back door
 
 Furniture should create believable level geometry without making the small
 room frustrating to navigate. Chuck must be able to reach all four entities,
-both doors, and the counter map.
+both doors, and the table map.
 
 ## Interior Checkpoint
 
@@ -216,7 +216,7 @@ Recommended display name:
 > Cabin Interior
 
 The checkpoint must restore all four conversation flags and the correct normal
-or awakened state of the counter map.
+or awakened state of the table map.
 
 ------------------------------------------------------------------------
 
@@ -261,11 +261,12 @@ may replay that entity's same line; it must not duplicate progression.
 
 ------------------------------------------------------------------------
 
-# 7. Counter Map Awakening
+# 7. Table Map Awakening
 
-The cabin begins with an ordinary rectangular D&D map lying on the counter.
+The cabin begins with an ordinary rectangular D&D map lying on the long table
+against the west wall near the big couch.
 It is readable as a human-scale tabletop object and occupies a fixed rectangle
-on the counter.
+on the table.
 
 The awakening condition is:
 
@@ -273,12 +274,12 @@ The awakening condition is:
 2. Chuck then crosses the back-door transition.
 
 The first back-door crossing after all four conversations sets one durable
-`counter map awakened` state. Do not activate it merely after the fourth
+`table map awakened` state. Do not activate it merely after the fourth
 conversation, and do not require a particular order for the four entities.
 
 When the interior is next visible—including immediately if the qualifying
 back-door crossing enters the interior—the D&D map has transformed. It remains
-the same rectangular size and position on the counter, but its surface now
+the same rectangular size and position on the table, but its surface now
 uses the smooth gray, swirling tie-dye animation and projected-light language
 of the City Day 6 portal. It does not become a freestanding oval.
 
@@ -321,7 +322,7 @@ Persist only the minimum state required to restore the phase reliably:
 - Douglas-fir transition completed / Cabin reached
 - current active cabin checkpoint
 - one conversation flag for each of the four entities
-- counter map awakened
+- table map awakened
 - desert transition completed, once the cutscene finishes
 - current Sanity and existing shared player state as already supported
 
@@ -349,7 +350,7 @@ The target character is:
 - driven by a memorable bass line
 - rhythmically confident
 - warm enough to coexist with a familiar cabin
-- subtly uncanny as the entities and counter map reveal themselves
+- subtly uncanny as the entities and table map reveal themselves
 - enriched by Indian-inspired hand-drum colors, such as tabla-like tuned
   strokes, without directly copying a traditional composition
 - consistent with CHUCK's established procedural/retro soundtrack language
@@ -411,7 +412,7 @@ Do not implement during Phase 12:
 - inventory, equipment, quests, or permanent upgrades
 
 Phase 12 is focused on faithful place, quiet exploration, strange occupants,
-the counter-map transformation, its music, and the desert handoff.
+the table-map transformation, its music, and the desert handoff.
 
 ------------------------------------------------------------------------
 
@@ -443,11 +444,11 @@ the counter-map transformation, its music, and the desert handoff.
 
 - [ ] Paneling, palette, lighting, stove, furniture scale, and kitchen language
       match the photographs.
-- [ ] Both couches, both chairs, central table/stools, counter/sink, fireplace,
-      closet/wood area, doors, and rectangular D&D map are present in their
+- [ ] Both couches, both chairs, west-wall table/stools, counter/sink, fireplace,
+      closed southeast room, doors, and rectangular D&D map are present in their
       authored relationship.
 - [ ] The interior has one physical Ashtray and one shared-loader checkpoint.
-- [ ] Navigation reaches every entity, both doors, and the counter map.
+- [ ] Navigation reaches every entity, both doors, and the table map.
 
 ## Entities and Progression
 
@@ -457,7 +458,7 @@ the counter-map transformation, its music, and the desert handoff.
 - [ ] Each conversation sets one durable flag and repeats safely.
 - [ ] The D&D map remains ordinary until all four entities have been spoken to
       and Chuck subsequently crosses the back door.
-- [ ] The awakened map retains the original rectangular footprint and counter
+- [ ] The awakened map retains the original rectangular footprint and table
       position while gaining gray tie-dye motion and projected light.
 - [ ] Save, CONTINUE, respawn, and development loading restore the correct
       conversation and portal state.
@@ -492,11 +493,11 @@ the counter-map transformation, its music, and the desert handoff.
 4. Enter through the front door and return outside through it.
 5. Enter through the back door and verify the matching arrival.
 6. Speak with all four entities and verify each exact line.
-7. Confirm the counter map has not awakened before the required back-door
+7. Confirm the table map has not awakened before the required back-door
    crossing.
 8. Cross the back door after all four conversations.
 9. Return to or remain in the interior and inspect the awakened rectangular
-   counter portal.
+   table portal.
 10. Choose `NO` and verify the dialogue closes silently.
 11. Choose `YES` and verify the desert-arrival cutscene and stable handoff.
 
@@ -514,10 +515,10 @@ Check:
 5. Are the mushroom lights unsynchronized and casting restrained colored light?
 6. Are all four entity strings legible and unchanged?
 7. Is the back-door crossing, not the fourth conversation alone, what awakens
-   the counter map?
+   the table map?
 8. Does reloading preserve every state without replay or duplication?
 9. Does the music remain catchy and clear at its fullest arrangement?
 
 Phase 12 is complete when the faithful two-map Cabin can be explored,
-all four entities can be met, the back-door condition awakens the counter map,
+all four entities can be met, the back-door condition awakens the table map,
 and Chuck can choose the planar surface to reach the desert handoff.

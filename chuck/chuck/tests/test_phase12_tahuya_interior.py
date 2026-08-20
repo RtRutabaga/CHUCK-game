@@ -58,7 +58,8 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     assert AREA_MUSIC[MAP_NAME] is None
 
     terrain = Counter(char for row in tilemap._grid for char in row)
-    assert terrain["Ŀ"] > terrain["Ƃ"] > 0
+    assert terrain["Ħ"] > terrain["Ŀ"] > 0
+    assert terrain["Ƃ"] == 0
     assert terrain["ć"] >= 2 * 21 + 2 * 31 - 4
     assert tilemap.terrain_at(10, 0) == "Ƣ"
     assert tilemap.terrain_at(10, 32) == "Ɯ"
@@ -71,7 +72,6 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         "cabin_table": 1,
         "cabin_kitchen": 1,
         "cabin_woodstove": 1,
-        "cabin_wood_storage": 1,
     }
     positions = {
         kind: (col, row) for kind, col, row in tilemap.prop_tiles
@@ -79,10 +79,16 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     }
     assert positions["cabin_big_couch"] == (5, 5)
     assert positions["cabin_couch"] == (16, 5)
-    assert positions["cabin_table"] == (9, 15)
+    assert positions["cabin_table"] == (5, 11)
     assert positions["cabin_kitchen"] == (5, 29)
     assert positions["cabin_woodstove"] == (16, 25)
-    assert positions["cabin_wood_storage"] == (17, 29)
+    # The southeast room is a complete enclosed section, not a prop-sized box.
+    assert all(tilemap.terrain_at(x, 26) == "ć" for x in range(14, 20))
+    assert all(tilemap.terrain_at(x, 31) == "ć" for x in range(14, 20))
+    assert all(tilemap.terrain_at(14, y) == "ć" for y in range(26, 32))
+    assert all(tilemap.terrain_at(19, y) == "ć" for y in range(26, 32))
+    assert all(tilemap.terrain_at(x, y) == "Ħ"
+               for y in range(27, 31) for x in range(15, 19))
 
 
 def test_all_interior_routes_and_the_ashtray_are_reachable() -> None:
@@ -134,6 +140,10 @@ def test_shared_loader_and_interior_ashtray_persist() -> None:
         assert world.player.facing == "up"
         assert world.sanity.current == 73
         assert game.checkpoints.saves.load() is None
+        stove = next(prop for prop in world.props
+                     if prop.kind == "cabin_woodstove")
+        assert stove._size == (72, 82)
+        assert len(stove._frames) == 6
 
         assert game.checkpoints.activate_checkpoint(
             "tahuya_interior_anchor", sanity=world.sanity.current

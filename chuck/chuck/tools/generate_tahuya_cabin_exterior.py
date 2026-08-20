@@ -91,18 +91,20 @@ def build_map():
                  (44, 41), (45, 48), (52, 55)):
         grid[y][x] = "✦"
 
-    # A thick Douglas-fir stand fills the ground west of that close-in light
-    # trail.  The central east/west approach remains open through the trees.
-    for x, y in (
-        (8, 7), (14, 6), (20, 7), (26, 6), (32, 7), (38, 6), (42, 7),
-        (8, 16), (28, 16), (34, 15), (40, 16),
-        (8, 23), (14, 24), (24, 22), (30, 24), (36, 22), (41, 24),
-        (8, 40), (14, 39), (31, 41), (36, 39), (41, 41),
-        (8, 49), (14, 48), (22, 50), (29, 48), (35, 50), (41, 48),
-        (14, 57), (21, 58), (28, 57), (35, 58), (41, 57),
-        (73, 12), (75, 45),
-    ):
-        grid[y][x] = "♣"
+    # A genuinely dense Douglas-fir stand fills the west side of the grounds.
+    # Trees are placed only on untouched clearing, so the winding authored
+    # trail remains readable and traversable even though its edges close in.
+    for y in range(6, 59, 5):
+        offset = 2 if (y // 5) % 2 else 0
+        for x in range(7 + offset, 44, 4):
+            if grid[y][x] == "ᶠ":
+                grid[y][x] = "♣"
+    for x, y in ((9, 10), (17, 12), (25, 11), (33, 12), (41, 11),
+                 (11, 19), (21, 18), (31, 19), (39, 18),
+                 (11, 44), (19, 43), (27, 45), (37, 44), (42, 52),
+                 (73, 12), (75, 45)):
+        if grid[y][x] == "ᶠ":
+            grid[y][x] = "♣"
 
     # The cutscene emerges onto the western trail; the one Ashtray is close
     # enough to discover naturally but does not interrupt the reveal.

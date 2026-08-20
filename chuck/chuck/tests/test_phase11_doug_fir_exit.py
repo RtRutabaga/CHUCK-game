@@ -140,10 +140,11 @@ def test_the_phase_hands_into_the_shared_cabin_checkpoint() -> None:
         directory.cleanup()
 
 
-def test_phase_12_adds_only_the_authored_cabin_exterior_so_far() -> None:
+def test_phase_12_keeps_the_doug_fir_handoff_to_the_authored_cabin() -> None:
     assert MAP_TILESET["tahuya_cabin_exterior"] == "tahuya"
     assert (config.MAPS_DIR / "tahuya_cabin_exterior.txt").is_file()
-    assert not (config.MAPS_DIR / "tahuya_cabin_interior.txt").exists()
+    assert MAP_TILESET["tahuya_cabin_interior"] == "tahuya"
+    assert (config.MAPS_DIR / "tahuya_cabin_interior.txt").is_file()
     # The city still contains exactly one animated portal into the transition.
     from src.world.tilemap import TileMap
 

@@ -20,6 +20,9 @@ file is required by the project rules and updated every session.
   enlarged fire circle sits directly south of the south porch on its centerline.
   Each light derives a stable animation phase from its authored tile, so
   neighboring lights visibly cycle out of sync and cast restrained color.
+- The west clearing now contains 107 fir props, forming a much denser forest
+  around the still-open authored paths. The circular UFO is now 132x76 pixels,
+  and the enlarged exterior firepit uses a six-frame flame cycle.
 - The completed Douglas-fir cutscene now hands directly into development
   checkpoint `Cabin Exterior` through the shared checkpoint loader,
   preserving Sanity. The map's single physical Ashtray is the only saveable
@@ -29,9 +32,10 @@ file is required by the project rules and updated every session.
   Chuck to the matching porch. Both directions use the established area-exit
   and shared runtime-checkpoint path; no cabin-only teleport logic exists.
 - Added the authored long interior footprint with warm vertical wood paneling,
-  olive-tan carpet, patterned kitchen linoleum, north-wall couches, two east-side
-  chairs, the central table and stools, southern kitchen counter with its still
-  ordinary rectangular D&D map, woodstove, and wood storage. Furniture is
+  olive-tan carpet, southern hardwood, north-wall couches, two east-side
+  chairs, the long west-wall table and stools with its ordinary rectangular
+  D&D map, an ordinary southern sink/counter, enlarged woodstove, and a full
+  enclosed southeast room. Furniture is
   human-scale and provides solid, readable level geometry while keeping both
   doors and the interior Ashtray connected.
 - Added development checkpoint `Cabin Interior` plus exactly one physical,
@@ -40,7 +44,8 @@ file is required by the project rules and updated every session.
 - Added exactly four stationary light-formed entities in the authored seats:
   one on each couch and one in each east-side chair. Their eight-frame
   gray-biased rose/violet/blue/cyan/green/yellow/amber cycle uses stable,
-  distinct phase offsets and restrained local light.
+  distinct phase offsets and restrained local light. Both east-chair entities
+  now face west; the couch occupants retain their south-facing seated pose.
 - Each entity repeats its one exact authored strange line and idempotently sets
   its own durable progression flag. All four flags flow through the existing
   Ashtray/save/Continue path; no redundant `all spoken` flag was introduced.
@@ -48,12 +53,12 @@ file is required by the project rules and updated every session.
   for the Phase 12 Yi symbols and combining marks. It groups distorted Latin
   marks into their base character cell for typewriter timing and layout, while
   unsupported characters outside this authored set still fail loudly.
-- The counter map now awakens only on the first back-door crossing after all
+- The table map now awakens only on the first back-door crossing after all
   four individual conversation flags are present. The prerequisite remains
   derived rather than stored, and the single durable awakened flag survives
   Ashtray saves, Continue, either doorway, and shared checkpoint loading.
-- Awakening replaces only the fixed rectangular map surface on the existing
-  kitchen counter with an eight-frame gray-biased swirling tie-dye treatment
+- Awakening replaces only the fixed rectangular map surface on the long
+  west-wall table with an eight-frame gray-biased swirling tie-dye treatment
   and restrained local light. It does not become an oval or freestanding
   portal, and it intentionally has no interaction yet.
 - The exterior is intentionally silent pending the dedicated Phase 12 music
@@ -69,12 +74,12 @@ file is required by the project rules and updated every session.
 - Focused counter-awakening coverage passes for incomplete prerequisites,
   fourth-conversation non-activation, front-door non-activation, both back-door
   directions, idempotence, runtime art selection, save/Continue, and direct
-  shared-loader restoration. The awakened counter was inspected at native
+  shared-loader restoration. The awakened table was inspected at native
   resolution and the broader Cabin/checkpoint/transition/prop suites pass.
 
 ## Next logical task
 
-- Add the awakened counter map's close-proximity `Enter planar portal?` YES/NO
+- Add the awakened table map's close-proximity `Enter planar portal?` YES/NO
   interaction. NO should close cleanly; YES should begin the short desert
   arrival cutscene through the established scene/fade architecture. Keep desert
   gameplay out of Phase 12.
@@ -90,7 +95,7 @@ file is required by the project rules and updated every session.
 - Locked the phase around faithful real-place layout, an exterior shell large
   enough to contain the interior, reversible aligned front/back doors, one
   shared-loader checkpoint per map, independently offset path lights, four
-  exact strange entity dialogues, and the back-door-gated counter-map portal.
+  exact strange entity dialogues, and the back-door-gated table-map portal.
 - The phase ends at an input-locked desert-arrival handoff. Desert gameplay is
   reserved for Phase 13. The psychedelic, catchy, bass-driven cabin soundtrack
   is a major Phase 12 deliverable and should receive its own review pass.

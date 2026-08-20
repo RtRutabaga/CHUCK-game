@@ -337,10 +337,10 @@ class WorldScene(Scene):
                 )
             else:
                 if (
-                    kind == "cabin_kitchen"
+                    kind == "cabin_table"
                     and self.game.progress.has(COUNTER_MAP_AWAKENED_FLAG)
                 ):
-                    kind = "cabin_kitchen_awakened"
+                    kind = "cabin_table_awakened"
                 prop = Prop(kind, col, row, self.game.assets)
             self.props.append(prop)
         self.pickups: list[Cigarette] = []
@@ -462,13 +462,16 @@ class WorldScene(Scene):
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
             elif kind.startswith("cabin_light:"):
-                _prefix, dialogue_id, progress_flag, phase = kind.split(":")
+                parts = kind.split(":")
+                _prefix, dialogue_id, progress_flag, phase = parts[:4]
+                facing = parts[4] if len(parts) > 4 else "south"
                 npc = CabinLightEntity(
                     cx, cy,
                     dialogue_id=dialogue_id,
                     progress=self.game.progress,
                     progress_flag=progress_flag,
                     phase_index=int(phase),
+                    facing=facing,
                     seat_sort_y=(int(cy // config.TILE_SIZE) + 2)
                                 * config.TILE_SIZE + 0.5,
                 )

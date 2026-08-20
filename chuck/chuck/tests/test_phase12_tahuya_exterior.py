@@ -67,12 +67,12 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     assert props["tahuya_firepit"] == 1
     assert props["tahuya_firewood_shed"] == 1
     assert props["tahuya_mushroom_light"] == 7
-    assert props["tahuya_fir"] >= 35
+    assert props["tahuya_fir"] >= 100
     fir_positions = [
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "tahuya_fir"
     ]
-    assert sum(8 <= col <= 42 for col, _row in fir_positions) >= 33
+    assert sum(7 <= col <= 43 for col, _row in fir_positions) >= 100
     light_positions = [
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "tahuya_mushroom_light"
@@ -153,10 +153,13 @@ def test_mushroom_lights_have_stable_unsynchronised_phases() -> None:
         second = Prop("tahuya_mushroom_light", 45, 20, game.assets)
         repeated = Prop("tahuya_mushroom_light", 44, 13, game.assets)
         firepit = Prop("tahuya_firepit", 59, 59, game.assets)
+        ufo = Prop("tahuya_ufo", 18, 13, game.assets)
         assert first._animation_t != second._animation_t
         assert first._animation_t == repeated._animation_t
         assert len(first._frames) == 8
-        assert firepit._size == (52, 44)
+        assert firepit._size == (64, 56)
+        assert len(firepit._frames) == 6
+        assert ufo._size == (132, 76)
     finally:
         game._shutdown()
         directory.cleanup()

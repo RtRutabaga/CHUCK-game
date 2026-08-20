@@ -1,4 +1,4 @@
-"""Phase 12 counter-map awakening, persistence, and visual state."""
+"""Phase 12 table-map awakening, persistence, and visual state."""
 
 import os
 from pathlib import Path
@@ -45,9 +45,9 @@ def _stand_on(world, terrain):
     world.update(0.0)
 
 
-def _kitchen(world):
+def _table(world):
     return next(prop for prop in world.props
-                if prop.kind.startswith("cabin_kitchen"))
+                if prop.kind.startswith("cabin_table"))
 
 
 def test_rule_requires_all_four_and_a_later_back_door_crossing() -> None:
@@ -82,7 +82,7 @@ def test_real_back_threshold_awakens_and_rebuilds_the_rectangular_map() -> None:
         world = game.checkpoints.load_checkpoint(
             "tahuya_interior", progress_flags=CABIN_ENTITY_FLAGS
         )
-        assert _kitchen(world).kind == "cabin_kitchen"
+        assert _table(world).kind == "cabin_table"
         assert not game.progress.has(COUNTER_MAP_AWAKENED_FLAG)
 
         # Crossing out through the authored north/back threshold is the event.
@@ -93,14 +93,16 @@ def test_real_back_threshold_awakens_and_rebuilds_the_rectangular_map() -> None:
         # The same physical doorway returns to an already-awakened interior.
         _stand_on(world, "Ɣ")
         assert world.map_name == INTERIOR
-        kitchen = _kitchen(world)
-        assert kitchen.kind == "cabin_kitchen_awakened"
-        assert len(kitchen._frames) == 8
+        table = _table(world)
+        assert table.kind == "cabin_table_awakened"
+        assert len(table._frames) == 8
         assert len({pygame.image.tobytes(frame, "RGBA")
-                    for frame in kitchen._frames}) == 8
-        assert all(frame.get_size() == (108, 48)
-                   for frame in kitchen._frames)
-        assert kitchen.choice_id is None and kitchen.dialogue_id is None
+                    for frame in table._frames}) == 8
+        assert all(frame.get_size() == (122, 57)
+                   for frame in table._frames)
+        assert table.choice_id is None and table.dialogue_id is None
+        assert next(prop for prop in world.props
+                    if prop.kind == "cabin_kitchen")._frames == ()
     finally:
         game._shutdown()
         directory.cleanup()
@@ -113,19 +115,19 @@ def test_awakened_state_survives_save_continue_and_shared_dev_loading() -> None:
         world = game.checkpoints.load_checkpoint(
             "tahuya_interior", progress_flags=flags
         )
-        assert _kitchen(world).kind == "cabin_kitchen_awakened"
+        assert _table(world).kind == "cabin_table_awakened"
         assert game.checkpoints.activate_checkpoint(
             "tahuya_interior_anchor", world.sanity.current
         )
         continued = game.checkpoints.continue_game()
         assert game.progress.has(COUNTER_MAP_AWAKENED_FLAG)
-        assert _kitchen(continued).kind == "cabin_kitchen_awakened"
+        assert _table(continued).kind == "cabin_table_awakened"
 
         # Development and production both use the same checkpoint loader.
         direct = game.checkpoints.load_checkpoint(
             "tahuya_interior", progress_flags=flags
         )
-        assert _kitchen(direct).kind == "cabin_kitchen_awakened"
+        assert _table(direct).kind == "cabin_table_awakened"
     finally:
         game._shutdown()
         directory.cleanup()
@@ -143,7 +145,7 @@ def _run_all() -> None:
                 print(f"  FAIL  {name}: {exc!r}")
     if failures:
         raise SystemExit(f"{failures} test(s) failed")
-    print("All Cabin counter-awakening tests passed.")
+    print("All Cabin table-awakening tests passed.")
 
 
 if __name__ == "__main__":

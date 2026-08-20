@@ -116,6 +116,17 @@ def cabin_linoleum(surface, variant, _frame):
             pygame.draw.rect(surface, (96, 91, 72), (x + 3, y + 3, 2, 2))
 
 
+def cabin_hardwood(surface, variant, _frame):
+    """Warm, narrow boards matching the cabin's aged interior wood."""
+    surface.fill((105, 61, 39))
+    for y in (0, 7, 15):
+        pygame.draw.line(surface, (57, 37, 31), (0, y), (15, y))
+    seam = (variant * 7 + 4) % 16
+    pygame.draw.line(surface, (73, 43, 33), (seam, 0), (seam, 7))
+    pygame.draw.line(surface, (139, 82, 48), (0, 1), (15, 1))
+    surface.set_at(((variant * 11 + 3) % 16, 11), (157, 94, 53))
+
+
 def cabin_panel_wall(surface, variant, _frame):
     """Dark vertical paneling; this is wall mass, not another wood floor."""
     surface.fill((72, 43, 31))
@@ -138,6 +149,7 @@ DRAW = {
     "dark_doorway": dark_doorway,
     "cabin_carpet": cabin_carpet,
     "cabin_linoleum": cabin_linoleum,
+    "cabin_hardwood": cabin_hardwood,
     "cabin_panel_wall": cabin_panel_wall,
 }
 

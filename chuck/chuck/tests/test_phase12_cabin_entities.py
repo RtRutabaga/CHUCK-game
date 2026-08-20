@@ -75,12 +75,16 @@ def test_entities_use_offset_animation_and_durable_idempotent_flags() -> None:
         entities = [npc for npc in world.npcs
                     if isinstance(npc, CabinLightEntity)]
         assert len(entities) == 4
+        assert sorted(entity.facing for entity in entities) == [
+            "south", "south", "west", "west"
+        ]
         assert {entity.progress_flag for entity in entities} == EXPECTED_FLAGS
         phases = {
             int(entity._animation_t / FRAME_TIME) % len(entity._frames)
             for entity in entities
         }
         assert len(phases) == 4
+        assert all(len(entity._frames) == 8 for entity in entities)
 
         for entity in entities:
             expected = entity.dialogue_id

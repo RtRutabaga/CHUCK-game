@@ -68,28 +68,50 @@ def chair():
     return s
 
 
-def table():
-    s = pygame.Surface((90, 59), pygame.SRCALPHA)
+def table(portal_frame=None):
+    s = pygame.Surface((122, 57), pygame.SRCALPHA)
     outline = (48, 31, 23)
     edge = (91, 54, 34)
     top = (124, 74, 44)
-    pygame.draw.polygon(s, outline, ((4, 11), (83, 4), (88, 40), (9, 49)))
-    pygame.draw.polygon(s, top, ((7, 12), (81, 7), (84, 36), (11, 44)))
-    for x in range(15, 80, 13):
+    pygame.draw.polygon(s, outline, ((2, 10), (115, 3), (120, 39), (7, 48)))
+    pygame.draw.polygon(s, top, ((5, 11), (113, 6), (116, 35), (9, 43)))
+    for x in range(13, 112, 13):
         pygame.draw.line(s, edge, (x, 11), (x + 3, 41))
-    pygame.draw.line(s, (164, 104, 59), (10, 13), (79, 8), 2)
+    pygame.draw.line(s, (164, 104, 59), (8, 13), (111, 8), 2)
     # Five mustard stools along the north edge, as on Sean's plan.
-    for x in (12, 27, 42, 57, 72):
+    for x in (14, 35, 56, 77, 98):
         pygame.draw.ellipse(s, outline, (x, 0, 11, 8))
         pygame.draw.ellipse(s, (154, 132, 73), (x + 1, 1, 9, 5))
         pygame.draw.rect(s, edge, (x + 3, 5, 2, 8))
         pygame.draw.rect(s, edge, (x + 7, 5, 2, 8))
-    pygame.draw.rect(s, outline, (14, 44, 5, 13))
-    pygame.draw.rect(s, outline, (76, 39, 5, 13))
+    pygame.draw.rect(s, outline, (12, 43, 5, 13))
+    pygame.draw.rect(s, outline, (105, 38, 5, 13))
+    # The rectangular D&D map belongs to this table, not the sink counter.
+    pygame.draw.rect(s, (48, 34, 34), (29, 17, 47, 17))
+    if portal_frame is None:
+        pygame.draw.polygon(s, (197, 178, 128),
+                            ((31, 18), (72, 16), (74, 31), (33, 33)))
+        pygame.draw.line(s, (77, 103, 82), (35, 29), (47, 18))
+        pygame.draw.line(s, (111, 73, 61), (52, 18), (69, 29))
+        pygame.draw.rect(s, (49, 87, 104), (46, 25, 4, 4))
+    else:
+        colour = PORTAL_COLOURS[portal_frame]
+        glow = pygame.Surface(s.get_size(), pygame.SRCALPHA)
+        pygame.draw.ellipse(glow, (*colour, 30), (21, 8, 65, 35))
+        s.blit(glow, (0, 0))
+        pygame.draw.polygon(s, (81, 76, 85),
+                            ((31, 18), (72, 16), (74, 31), (33, 33)))
+        for x in range(32, 74):
+            wave = (x + portal_frame * 4 + (x // 5) * 2) % 16
+            band = PORTAL_COLOURS[(portal_frame + wave // 3) % 8]
+            top = 18 + ((x + portal_frame) % 3)
+            pygame.draw.line(s, band, (x, top), (x + 1, 31))
+        pygame.draw.polygon(s, (198, 194, 198),
+                            ((31, 18), (72, 16), (74, 31), (33, 33)), 1)
     return s
 
 
-def kitchen(portal_frame=None):
+def kitchen():
     s = pygame.Surface((108, 48), pygame.SRCALPHA)
     outline = (43, 27, 22)
     cabinet = (77, 43, 31)
@@ -107,46 +129,31 @@ def kitchen(portal_frame=None):
     pygame.draw.rect(s, (126, 132, 125), (12, 9, 23, 4))
     pygame.draw.line(s, (150, 153, 143), (23, 7), (23, 2), 2)
     pygame.draw.line(s, (150, 153, 143), (23, 2), (29, 2), 2)
-    # The ordinary rectangular D&D map waits on the right-hand counter.
-    pygame.draw.rect(s, (48, 34, 34), (61, 6, 35, 12))
-    if portal_frame is None:
-        pygame.draw.rect(s, (197, 178, 128), (63, 7, 31, 9))
-        pygame.draw.line(s, (77, 103, 82), (65, 13), (75, 8))
-        pygame.draw.line(s, (111, 73, 61), (78, 8), (91, 14))
-        pygame.draw.rect(s, (49, 87, 104), (72, 11, 3, 3))
-    else:
-        # It stays the same counter-bound rectangle. Soft gray-biased colour
-        # bands cross its surface and tint the wood immediately around it.
-        colour = PORTAL_COLOURS[portal_frame]
-        glow = pygame.Surface(s.get_size(), pygame.SRCALPHA)
-        pygame.draw.ellipse(glow, (*colour, 28), (54, 0, 50, 25))
-        s.blit(glow, (0, 0))
-        pygame.draw.rect(s, (81, 76, 85), (63, 7, 31, 9))
-        for x in range(63, 94):
-            wave = (x + portal_frame * 4 + (x // 5) * 2) % 16
-            band = PORTAL_COLOURS[(portal_frame + wave // 3) % 8]
-            top = 7 + ((x + portal_frame) % 3)
-            pygame.draw.line(s, band, (x, top), (x, 15))
-        pygame.draw.rect(s, (198, 194, 198), (63, 7, 31, 9), 1)
     return s
 
 
-def woodstove():
-    s = pygame.Surface((50, 60), pygame.SRCALPHA)
-    pygame.draw.ellipse(s, (25, 23, 22), (19, 0, 13, 7))
-    pygame.draw.rect(s, (31, 30, 29), (20, 3, 11, 28))
-    pygame.draw.line(s, (68, 65, 59), (22, 4), (22, 28), 2)
+def woodstove(frame=0):
+    s = pygame.Surface((72, 82), pygame.SRCALPHA)
+    pygame.draw.ellipse(s, (25, 23, 22), (28, 0, 17, 8))
+    pygame.draw.rect(s, (31, 30, 29), (29, 4, 15, 37))
+    pygame.draw.line(s, (68, 65, 59), (32, 5), (32, 38), 2)
     # Brick hearth under the stove echoes the reference photo.
-    pygame.draw.polygon(s, (72, 44, 36), ((2, 42), (42, 36), (48, 53),
-                                         (8, 59)))
-    for y in (43, 50):
-        pygame.draw.line(s, (125, 76, 55), (6, y), (45, y - 5))
-    pygame.draw.rect(s, (24, 23, 22), (9, 25, 33, 25))
-    pygame.draw.rect(s, (65, 61, 55), (12, 28, 27, 16))
-    pygame.draw.rect(s, (15, 16, 16), (15, 31, 21, 11))
-    pygame.draw.rect(s, (124, 78, 38), (18, 34, 15, 6))
-    pygame.draw.rect(s, (30, 29, 27), (12, 48, 5, 8))
-    pygame.draw.rect(s, (30, 29, 27), (34, 48, 5, 7))
+    pygame.draw.polygon(s, (72, 44, 36), ((3, 59), (61, 50), (69, 72),
+                                         (11, 81)))
+    for y in (60, 70):
+        pygame.draw.line(s, (125, 76, 55), (8, y), (65, y - 8))
+    pygame.draw.rect(s, (24, 23, 22), (13, 34, 47, 35))
+    pygame.draw.rect(s, (65, 61, 55), (17, 38, 39, 23))
+    pygame.draw.rect(s, (15, 16, 16), (21, 42, 31, 15))
+    sway = (-2, 0, 2, 3, 1, -2)[frame % 6]
+    pygame.draw.polygon(s, (210, 57, 24),
+                        ((24, 56), (29 + sway, 44), (36, 55)))
+    pygame.draw.polygon(s, (247, 126, 35),
+                        ((31, 56), (39 - sway, 42), (49, 56)))
+    pygame.draw.polygon(s, (255, 209, 74),
+                        ((35, 56), (39 + sway // 2, 47), (44, 56)))
+    pygame.draw.rect(s, (30, 29, 27), (18, 67, 6, 10))
+    pygame.draw.rect(s, (30, 29, 27), (49, 67, 6, 9))
     return s
 
 
@@ -168,13 +175,11 @@ def main():
     save(couch(82, olive=True), "cabin_couch.png")
     save(chair(), "cabin_chair.png")
     save(table(), "cabin_table.png")
-    save(kitchen(), "cabin_kitchen.png")
     for index in range(len(PORTAL_COLOURS)):
-        save(
-            kitchen(index),
-            f"cabin_kitchen_awakened_{index + 1}.png",
-        )
-    save(woodstove(), "cabin_woodstove.png")
+        save(table(index), f"cabin_table_awakened_{index + 1}.png")
+    save(kitchen(), "cabin_kitchen.png")
+    for index in range(6):
+        save(woodstove(index), f"cabin_woodstove_{index + 1}.png")
     save(wood_storage(), "cabin_wood_storage.png")
 
 

@@ -625,6 +625,8 @@ TILE_DEFS: dict[str, TileDef] = {
     "∎": TileDef(solid=True, color=(91, 88, 56)),
     "Ƃ": TileDef(solid=False, color=(157, 145, 107)),
     "▰": TileDef(solid=True, color=(157, 145, 107)),
+    "Ħ": TileDef(solid=False, color=(105, 61, 39)),
+    "ħ": TileDef(solid=True, color=(105, 61, 39)),
     "ć": TileDef(solid=True, color=(72, 43, 31)),
     "♣": TileDef(solid=True, color=(10, 25, 22),
                  prop="tahuya_fir", under="♟"),
@@ -645,11 +647,11 @@ TILE_DEFS: dict[str, TileDef] = {
     "ƭ": TileDef(solid=True, color=(91, 88, 56),
                  prop="cabin_chair", under="∎"),
     "Ƒ": TileDef(solid=True, color=(91, 88, 56),
-                 prop="cabin_table", under="∎"),
+                 prop="cabin_table", under="ħ"),
     "ƕ": TileDef(solid=True, color=(157, 145, 107),
-                 prop="cabin_kitchen", under="▰"),
+                 prop="cabin_kitchen", under="ħ"),
     "Ʒ": TileDef(solid=True, color=(91, 88, 56),
-                 prop="cabin_woodstove", under="∎"),
+                 prop="cabin_woodstove", under="ħ"),
     "Ə": TileDef(solid=True, color=(91, 88, 56),
                  prop="cabin_wood_storage", under="∎"),
 }
@@ -1175,12 +1177,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     ),
     "₃": MarkerDef(
         kind="cabin_light:cabin_entity_chair_north:"
-             "cabin_entity_chair_north_spoken:4",
+             "cabin_entity_chair_north_spoken:4:west",
         under="∎", allow_solid=True,
     ),
     "₄": MarkerDef(
         kind="cabin_light:cabin_entity_chair_south:"
-             "cabin_entity_chair_south_spoken:6",
+             "cabin_entity_chair_south_spoken:6:west",
         under="∎", allow_solid=True,
     ),
 }

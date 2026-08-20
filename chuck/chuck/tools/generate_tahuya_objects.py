@@ -58,37 +58,39 @@ def make_light(colour):
     return s
 
 
-def make_firepit():
-    s = pygame.Surface((52, 44), pygame.SRCALPHA)
+def make_firepit(frame=0):
+    s = pygame.Surface((64, 56), pygame.SRCALPHA)
     # Broad stone ring and crossed logs make the landmark read from the cabin
     # porch.  The tall two-tone flame remains chunky at native resolution.
-    stones = ((3, 33), (8, 27), (15, 24), (23, 23), (32, 24),
-              (40, 28), (44, 34), (35, 37), (24, 38), (13, 37))
+    stones = ((5, 43), (10, 35), (18, 31), (28, 29), (39, 31),
+              (49, 36), (53, 44), (43, 49), (31, 51), (17, 49))
     for index, (x, y) in enumerate(stones):
         colour = (92, 91, 82) if index % 2 else (108, 104, 91)
-        pygame.draw.ellipse(s, colour, (x, y, 9, 6))
-        pygame.draw.line(s, (151, 143, 121), (x + 2, y + 1), (x + 6, y + 1))
-    pygame.draw.line(s, (66, 38, 24), (12, 35), (40, 25), 5)
-    pygame.draw.line(s, (91, 48, 25), (11, 25), (41, 36), 5)
+        pygame.draw.ellipse(s, colour, (x, y, 11, 7))
+        pygame.draw.line(s, (151, 143, 121), (x + 2, y + 1), (x + 8, y + 1))
+    pygame.draw.line(s, (66, 38, 24), (15, 46), (49, 32), 6)
+    pygame.draw.line(s, (91, 48, 25), (14, 33), (50, 47), 6)
+    sway = (-3, -1, 2, 3, 1, -2)[frame % 6]
     pygame.draw.polygon(s, (207, 55, 25),
-                        ((18, 30), (22, 12), (27, 3), (30, 29)))
+                        ((21, 41), (25 + sway, 15), (32 + sway, 3),
+                         (37, 40)))
     pygame.draw.polygon(s, (240, 103, 30),
-                        ((24, 31), (31, 10), (37, 29)))
+                        ((28, 42), (35 - sway, 13), (44, 40)))
     pygame.draw.polygon(s, (255, 201, 67),
-                        ((25, 31), (29, 15), (33, 30)))
+                        ((30, 42), (34 + sway // 2, 21), (40, 41)))
     return s
 
 
 def make_ufo():
-    s = pygame.Surface((66, 38), pygame.SRCALPHA)
-    pygame.draw.ellipse(s, (16, 20, 24), (4, 19, 58, 15))
-    pygame.draw.ellipse(s, (81, 91, 96), (1, 12, 64, 17))
-    pygame.draw.ellipse(s, (124, 137, 137), (9, 7, 48, 16))
-    pygame.draw.ellipse(s, (38, 45, 52), (22, 2, 22, 13))
-    pygame.draw.ellipse(s, (84, 105, 116), (25, 3, 16, 8))
-    for x, colour in ((12, (78, 224, 215)), (27, (229, 89, 207)),
-                      (43, (246, 179, 72)), (55, (103, 138, 241))):
-        pygame.draw.rect(s, colour, (x, 22, 3, 2))
+    s = pygame.Surface((132, 76), pygame.SRCALPHA)
+    pygame.draw.ellipse(s, (16, 20, 24), (8, 38, 116, 30))
+    pygame.draw.ellipse(s, (81, 91, 96), (2, 24, 128, 34))
+    pygame.draw.ellipse(s, (124, 137, 137), (18, 14, 96, 32))
+    pygame.draw.ellipse(s, (38, 45, 52), (44, 4, 44, 26))
+    pygame.draw.ellipse(s, (84, 105, 116), (50, 6, 32, 16))
+    for x, colour in ((24, (78, 224, 215)), (54, (229, 89, 207)),
+                      (86, (246, 179, 72)), (110, (103, 138, 241))):
+        pygame.draw.rect(s, colour, (x, 44, 6, 4))
     return s
 
 
@@ -112,7 +114,8 @@ def main():
         save(make_fir(index), f"tahuya_fir_{index + 1}.png")
     for index, colour in enumerate(LIGHT_COLOURS):
         save(make_light(colour), f"tahuya_mushroom_light_{index + 1}.png")
-    save(make_firepit(), "tahuya_firepit.png")
+    for index in range(6):
+        save(make_firepit(index), f"tahuya_firepit_{index + 1}.png")
     save(make_ufo(), "tahuya_ufo.png")
     save(make_shed(), "tahuya_firewood_shed.png")
 

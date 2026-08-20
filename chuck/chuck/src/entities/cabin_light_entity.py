@@ -30,6 +30,7 @@ class CabinLightEntity(NPC):
         progress_flag: str,
         phase_index: int,
         seat_sort_y: float,
+        facing: str = "south",
     ) -> None:
         super().__init__(
             center_x,
@@ -40,15 +41,16 @@ class CabinLightEntity(NPC):
         )
         self.progress = progress
         self.progress_flag = progress_flag
+        self.facing = facing
         self._frames: tuple[object, ...] = ()
         self._animation_t = phase_index * FRAME_TIME
 
     def load_sprites(self, assets: "AssetManager") -> None:
-        self._frames = tuple(
-            assets.sheet(
-                "npcs/cabin_light_entity.png", FRAME_W, FRAME_H
-            )[0]
+        rows = assets.sheet(
+            "npcs/cabin_light_entity.png", FRAME_W, FRAME_H
         )
+        row = 1 if self.facing == "west" else 0
+        self._frames = tuple(rows[row])
 
     def update(self, dt: float) -> None:
         self._animation_t += dt

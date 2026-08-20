@@ -3,27 +3,43 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `c55ffc7` (added Cabin light entities)
-- Current work: the back-door-gated rectangular counter-map awakening and its
-  durable state are complete and verified
+- Base commit before this pass: `a9b8b36` (awakened Cabin map state)
+- Current work: the Cabin layout/art correction pass is complete and verified
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
-  awakened counter and its short desert-arrival cutscene; do not begin desert
+  awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Densified the west forest from 35 to 107 authored fir props while preserving
+  the winding trail, Ashtray, both porches, and all transition routes. Enlarged
+  the UFO to 132x76 so it reads as a major clearing landmark.
+- Added six-frame flames to the enlarged outdoor firepit and indoor woodstove.
+  Both use the existing animated-prop path and retain stable map anchors.
+- Rebuilt the interior's southern material as warm hardwood and replaced the
+  former furniture-sized storage box with a complete enclosed southeast room.
+- Lengthened the table, moved it flush against the west wall beside the big
+  couch, and moved both the ordinary D&D map and its durable awakened animation
+  from the southern sink/counter to this table. The existing progression flag
+  remains unchanged for save compatibility.
+- Added west-facing light-entity animation frames and authored both east-chair
+  occupants to use them; the couch occupants retain their south-facing pose.
+- Updated the active Phase 12 contract and focused tests to match Sean's direct
+  table/layout clarification. All 115 repository test scripts pass after one
+  stale Phase 11 expectation was brought forward to the completed two-map state.
 
 - Added a contained Cabin progression rule that derives `all four spoken` from
   the four existing flags. The fourth conversation itself does not awaken the
   map, nor does either front-door transition. The first later crossing of the
   back door in either direction sets the single durable
   `cabin_counter_map_awakened` flag; repeat crossings are idempotent.
-- Added eight procedural awakened kitchen-counter frames. The counter, sink,
-  cabinet, and map footprint remain fixed; only the map's existing rectangle
+- Added eight procedural awakened table-map frames. The table and map footprint
+  remain fixed; only the map's existing rectangle
   becomes a gray-biased rose/violet/blue/cyan/green/yellow/amber swirling
   surface with restrained projected light.
-- World map rebuilding selects the ordinary or awakened counter from the same
-  authored kitchen marker based on progression. The awakened prop remains mute
+- World map rebuilding selects the ordinary or awakened table from the same
+  authored table marker based on progression. The awakened prop remains mute
   and has no choice interaction in this slice.
 - Added focused tests for the exact prerequisite/order rule, the real aligned
   back thresholds, both visual states, save/Continue restoration, and direct
@@ -55,8 +71,9 @@
   exterior shell exactly and using dedicated procedural carpet, patterned
   linoleum, and vertical wood-panel materials.
 - Followed the authored plan with human-scale north-wall couches, two east-side
-  chairs, a central table and five stools, the southern kitchen/counter/sink and
-  ordinary rectangular D&D map, woodstove, and wood storage. All furniture has
+  chairs, a long west-wall table and five stools with the ordinary rectangular
+  D&D map, the southern kitchen/counter/sink, woodstove, and enclosed southeast
+  room. All furniture has
   deliberate collision and both door-to-door routes remain open.
 - Activated the center thresholds in the exterior's front and back black
   recesses. Each doorway enters the matching end of the interior and each
@@ -118,7 +135,7 @@
 
 ## Next Agent Boundary
 
-- Implement the awakened counter's close-proximity `Enter planar portal?`
+- Implement the awakened table map's close-proximity `Enter planar portal?`
   choice and the short input-locked desert-arrival handoff next. NO closes with
   no additional text; YES uses existing scene/fade conventions and records the
   transition completion. Do not build desert gameplay or combine this with the
@@ -128,7 +145,7 @@
 
 - Added `PHASE-12.md`, making the two-map Cabin the active scope after
   completed Phase 11. The contract explicitly limits the phase to the cabin
-  exterior/porches, cabin interior, four light entities, counter-map awakening,
+  exterior/porches, cabin interior, four light entities, table-map awakening,
   original cabin theme, and a desert-arrival handoff; it contains no enemies,
   hazards, extra forest maps, or desert gameplay.
 - Archived and descriptively named all nine user-provided references in
@@ -138,8 +155,9 @@
   is explicitly only a color-changing mushroom-light reference.
 - Formalized the progression without implementing it: four independent NPC
   conversation flags; a subsequent back-door crossing awakens the rectangular
-  D&D map on the counter; only the awakened surface offers the established
-  `Enter planar portal?` choice; YES reaches the desert cutscene boundary.
+  D&D map on the long west-wall table; only the awakened surface offers the
+  established `Enter planar portal?` choice; YES reaches the desert cutscene
+  boundary.
 - Preserved all four unusual dialogue strings exactly in the phase contract and
   required a contained glyph fallback if the existing pixel font cannot render
   them. The authored strings must not be normalized into ordinary text.
