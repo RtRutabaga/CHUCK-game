@@ -14,8 +14,10 @@ project rules and updated every session.
 - Added a dedicated Pacific Northwest tileset and procedural exterior props:
   Douglas firs, weathered blue-gray cabin siding, mossed dark roof, porch
   boards/stairs, a fire circle, shed, `UFO`, and seven color-changing mushroom
-  lights. Each light derives a stable animation phase from its authored tile,
-  so neighboring lights visibly cycle out of sync and cast restrained color.
+  lights. The porch boards and stairs are painted weathered blue, and the
+  enlarged fire circle sits directly south of the south porch on its centerline.
+  Each light derives a stable animation phase from its authored tile, so
+  neighboring lights visibly cycle out of sync and cast restrained color.
 - The completed Douglas-fir cutscene now hands directly into development
   checkpoint `Tahuya Cabin Exterior` through the shared checkpoint loader,
   preserving Sanity. The map's single physical Ashtray is the only saveable

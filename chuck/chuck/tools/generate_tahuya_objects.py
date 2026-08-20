@@ -59,14 +59,23 @@ def make_light(colour):
 
 
 def make_firepit():
-    s = pygame.Surface((34, 27), pygame.SRCALPHA)
-    for x, y in ((3, 20), (8, 17), (14, 19), (20, 17), (26, 20)):
-        pygame.draw.ellipse(s, (87, 87, 80), (x, y, 7, 5))
-        pygame.draw.line(s, (137, 132, 113), (x + 1, y), (x + 5, y))
-    pygame.draw.line(s, (65, 38, 25), (8, 21), (26, 15), 3)
-    pygame.draw.line(s, (84, 45, 25), (7, 15), (27, 22), 3)
-    pygame.draw.polygon(s, (225, 75, 28), ((14, 18), (17, 6), (21, 18)))
-    pygame.draw.polygon(s, (255, 184, 57), ((17, 18), (19, 10), (22, 18)))
+    s = pygame.Surface((52, 44), pygame.SRCALPHA)
+    # Broad stone ring and crossed logs make the landmark read from the cabin
+    # porch.  The tall two-tone flame remains chunky at native resolution.
+    stones = ((3, 33), (8, 27), (15, 24), (23, 23), (32, 24),
+              (40, 28), (44, 34), (35, 37), (24, 38), (13, 37))
+    for index, (x, y) in enumerate(stones):
+        colour = (92, 91, 82) if index % 2 else (108, 104, 91)
+        pygame.draw.ellipse(s, colour, (x, y, 9, 6))
+        pygame.draw.line(s, (151, 143, 121), (x + 2, y + 1), (x + 6, y + 1))
+    pygame.draw.line(s, (66, 38, 24), (12, 35), (40, 25), 5)
+    pygame.draw.line(s, (91, 48, 25), (11, 25), (41, 36), 5)
+    pygame.draw.polygon(s, (207, 55, 25),
+                        ((18, 30), (22, 12), (27, 3), (30, 29)))
+    pygame.draw.polygon(s, (240, 103, 30),
+                        ((24, 31), (31, 10), (37, 29)))
+    pygame.draw.polygon(s, (255, 201, 67),
+                        ((25, 31), (29, 15), (33, 30)))
     return s
 
 

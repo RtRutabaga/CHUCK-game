@@ -3,15 +3,25 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `957b331` (defined the Tahuya cabin phase)
-- Current work: Phase 12 exterior slice complete; implementation is ready for
-  the cabin-interior slice
+- Base commit before this pass: `442d8b0` (built the Tahuya cabin exterior)
+- Current work: requested exterior porch/fire correction complete;
+  implementation is ready for the cabin-interior slice
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: build the one faithful cabin interior within the
   established exterior footprint, connect the aligned front/back doors
   reversibly, and add the interior's one Ashtray/shared-loader checkpoint
 
 ## Completed This Pass
+
+- Repainted both porch floors and their human-scale stairs from brown timber to
+  weathered cabin blue, retaining dark plank seams, worn highlights, and small
+  moss details at native scale.
+- Enlarged the firepit from 34x27 to 52x44 pixels and moved its authored marker
+  to `(59, 59)`, directly south of and centered beneath the south-porch stairs.
+  The approach path now continues to the larger stone ring. Focused Phase 12
+  tests and native exterior visual inspection pass.
+
+## Exterior Foundation Pass (commit 442d8b0)
 
 - Added `tahuya_cabin_exterior`, an 80x64 quiet nighttime map based on the
   authored real-place layout. The clearing/path system occupies the west, the

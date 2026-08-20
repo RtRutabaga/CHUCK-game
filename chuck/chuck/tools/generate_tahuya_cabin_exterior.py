@@ -41,7 +41,7 @@ def build_map():
     _path(grid, (39, 22), (57, 5), 2)
     _path(grid, (29, 32), (37, 43), 2)
     _path(grid, (37, 43), (59, 54), 2)
-    _path(grid, (36, 44), (33, 50), 2)
+    _path(grid, (59, 54), (59, 59), 2)
 
     # Cabin shell: the future interior must fit inside this 21x33 exterior
     # footprint.  Roof mass above a front wall creates the established
@@ -76,7 +76,7 @@ def build_map():
 
     # Real-place landmarks from the authored drawing.
     grid[13][18] = "◌"       # circular UFO object at upper-left
-    grid[49][34] = "⚉"       # fire circle west of the cabin
+    grid[59][59] = "⚉"       # fire circle due south of the front porch
     grid[55][72] = "⌘"       # firewood shed at the lower-right edge
 
     # Unsynchronised colour-changing mushroom lights follow the drawn route.

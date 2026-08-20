@@ -68,6 +68,11 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     assert props["tahuya_firewood_shed"] == 1
     assert props["tahuya_mushroom_light"] == 7
     assert props["tahuya_fir"] >= 8
+    fire_positions = [
+        (col, row) for kind, col, row in tilemap.prop_tiles
+        if kind == "tahuya_firepit"
+    ]
+    assert fire_positions == [(59, 59)]
 
 
 def test_both_porches_and_the_ashtray_are_reachable() -> None:
@@ -128,9 +133,11 @@ def test_mushroom_lights_have_stable_unsynchronised_phases() -> None:
         first = Prop("tahuya_mushroom_light", 15, 29, game.assets)
         second = Prop("tahuya_mushroom_light", 24, 33, game.assets)
         repeated = Prop("tahuya_mushroom_light", 15, 29, game.assets)
+        firepit = Prop("tahuya_firepit", 59, 59, game.assets)
         assert first._animation_t != second._animation_t
         assert first._animation_t == repeated._animation_t
         assert len(first._frames) == 8
+        assert firepit._size == (52, 44)
     finally:
         game._shutdown()
         directory.cleanup()

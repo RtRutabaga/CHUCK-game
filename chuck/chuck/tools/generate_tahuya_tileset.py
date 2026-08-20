@@ -68,20 +68,22 @@ def cabin_wall(surface, variant, _frame):
 
 
 def porch(surface, variant, _frame):
-    surface.fill((78, 58, 42))
+    # The real porch boards are painted with the same aged blue family as
+    # the cabin, with worn seams and a little damp moss showing through.
+    surface.fill((61, 82, 88))
     for y in (3, 8, 13):
-        pygame.draw.line(surface, (42, 33, 28), (0, y), (15, y))
-    pygame.draw.line(surface, (111, 82, 55), (0, 0), (15, 0))
-    surface.set_at(((variant * 7 + 3) % 16, 11), (40, 67, 44))
+        pygame.draw.line(surface, (33, 51, 58), (0, y), (15, y))
+    pygame.draw.line(surface, (92, 108, 107), (0, 0), (15, 0))
+    surface.set_at(((variant * 7 + 3) % 16, 11), (48, 79, 58))
 
 
 def porch_stair(surface, variant, _frame):
-    surface.fill((43, 42, 34))
+    surface.fill((38, 51, 54))
     for y in (2, 7, 12):
-        pygame.draw.line(surface, (97, 70, 48), (1, y), (14, y))
-        pygame.draw.line(surface, (35, 28, 25), (1, y + 2), (14, y + 2))
+        pygame.draw.line(surface, (76, 99, 103), (1, y), (14, y))
+        pygame.draw.line(surface, (25, 38, 43), (1, y + 2), (14, y + 2))
     if variant == 1:
-        surface.set_at((13, 5), (46, 75, 45))
+        surface.set_at((13, 5), (48, 79, 58))
 
 
 def dark_doorway(surface, variant, _frame):
