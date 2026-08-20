@@ -48,3 +48,11 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Phase 10 is governed by `PHASE-10.md`. It begins at the Cloud Staircase,
   introduces Zephyros, and ends at a contained modern-city arrival. Playable
   modern-city content is reserved for Phase 11.
+- Phase 11 is complete. Phase 12 is governed by `PHASE-12.md` and contains
+  exactly two peaceful Tahuya-cabin maps: the cabin grounds with both playable
+  porches, and the cabin interior. The Sean-authored layout and photographs in
+  `docs/design/references/tahuya-cabin/` are authoritative references for this
+  real-place adaptation; agents must not redesign it as a generic cabin.
+- Phase 12's counter map awakens only after all four light entities have been
+  spoken to and Chuck subsequently crosses the back door. Its desert-arrival
+  cutscene is the end boundary; playable desert content belongs to Phase 13.

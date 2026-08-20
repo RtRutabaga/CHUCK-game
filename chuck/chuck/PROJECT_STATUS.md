@@ -1,8 +1,26 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is feature-complete. Sixteen city maps, three soundtracks,
-and an exit through a tree. This file is required by the project rules and
+Updated: Phase 11 is feature-complete. Phase 12 is now documented and active;
+implementation has not begun. This file is required by the project rules and
 updated every session.
+
+## Active Phase 12 scope
+
+- Added the authoritative Phase 12 contract for the Tahuya cabin. It begins
+  after the recorded Douglas-fir crossing and contains exactly two peaceful
+  playable maps: the nighttime cabin grounds (including both porches) and the
+  cabin interior. There are no enemies or environmental hazards.
+- Archived Sean's authored layout, seven site/interior photographs, and the
+  color-changing mushroom-light reference under
+  `docs/design/references/tahuya-cabin/`, with an index distinguishing direct
+  phase requirements from visual source material.
+- Locked the phase around faithful real-place layout, an exterior shell large
+  enough to contain the interior, reversible aligned front/back doors, one
+  shared-loader checkpoint per map, independently offset path lights, four
+  exact strange entity dialogues, and the back-door-gated counter-map portal.
+- The phase ends at an input-locked desert-arrival handoff. Desert gameplay is
+  reserved for Phase 13. The psychedelic, catchy, bass-driven cabin soundtrack
+  is a major Phase 12 deliverable and should receive its own review pass.
 
 ## Latest implementation
 

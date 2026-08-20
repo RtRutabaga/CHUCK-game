@@ -3,13 +3,39 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `1b024cc` (collided-world presentation pass)
-- Current work: relocated and rebuilt the City Day 6 planar portal
-- Active scope: `docs/development/PHASE-11.md`
-- Next implementation slice: playtest Fractured Way in sequence; Phase 12
-  remains unopened until its scope document exists
+- Base commit before this pass: `2f66356` (relocated City Day 6 portal)
+- Current work: Phase 12 documentation and reference intake only; no gameplay,
+  art, state, or music implementation has begun
+- Active scope: `docs/development/PHASE-12.md`
+- Next implementation slice: build the faithful Tahuya cabin exterior shell
+  and grounds from the authored layout, including both playable porches, both
+  aligned door thresholds, and one shared-loader exterior checkpoint
 
 ## Completed This Pass
+
+- Added `PHASE-12.md`, making the two-map Tahuya cabin the active scope after
+  completed Phase 11. The contract explicitly limits the phase to the cabin
+  exterior/porches, cabin interior, four light entities, counter-map awakening,
+  original cabin theme, and a desert-arrival handoff; it contains no enemies,
+  hazards, extra forest maps, or desert gameplay.
+- Archived and descriptively named all nine user-provided references in
+  `docs/design/references/tahuya-cabin/`. The companion README makes the hand
+  drawing the spatial authority and the photographs the authority for cabin
+  structure, materials, furniture, palette, and scale. The product screenshot
+  is explicitly only a color-changing mushroom-light reference.
+- Formalized the progression without implementing it: four independent NPC
+  conversation flags; a subsequent back-door crossing awakens the rectangular
+  D&D map on the counter; only the awakened surface offers the established
+  `Enter planar portal?` choice; YES reaches the desert cutscene boundary.
+- Preserved all four unusual dialogue strings exactly in the phase contract and
+  required a contained glyph fallback if the existing pixel font cannot render
+  them. The authored strings must not be normalized into ordinary text.
+- Required one physical/shared-loader checkpoint per map, deterministic
+  unsynchronized color offsets for the outdoor mushroom lights and entities,
+  uninterrupted music through both doors, and an interior footprint that fits
+  within the visible exterior roof.
+
+## Previous Pass (commit 2f66356)
 
 - Moved the City Day 6 portal from the northern spawn room to `(18, 54)` near
   the far southwest end of the broken route. Its prompt marker remains directly

@@ -5,11 +5,11 @@ The repository documentation is organized so Claude Code and Codex can work from
 ## Read First
 
 1. `../AGENTS.md`
-2. `development/PHASE-11.md`
+2. `development/PHASE-12.md`
 3. `design/GAME-BIBLE.md`
 
-Phase 11 is active. Phase 10 remains the completed Zephyros/tower and city
-arrival contract.
+Phase 12 is active. Phase 11 remains the completed rainy-city, urban-sewer,
+daytime-collision, and Douglas-fir handoff contract.
 
 Then read the topic-specific supplement relevant to the task.
 
@@ -20,8 +20,14 @@ Then read the topic-specific supplement relevant to the task.
 - `design/CHUCK-Game-Bible-Supplement-Player-Progression.md`: progression philosophy, genre subversion, minimal UI, lack of equipment progression, and Chuck logic.
 - `design/CHUCK-SOUNDTRACK-BIBLE.md`: soundtrack identity, composition, synthesis, arrangement, motifs, and audio implementation direction.
 - `development/PHASE-10.md`: completed Zephyros and city-arrival contract.
-- `development/PHASE-11.md`: active implementation contract for the rainy city,
+- `development/PHASE-11.md`: completed contract for the rainy city,
   urban sewer, daytime collision district, and Douglas fir handoff.
+- `development/PHASE-12.md`: active implementation contract for the faithful
+  two-map Tahuya cabin, four light entities, counter-map portal, soundtrack,
+  and desert handoff.
+- `design/references/tahuya-cabin/`: Sean-authored layout and photographic
+  references for Phase 12. The layout drawing governs spatial relationships;
+  photographs govern structure, materials, palette, furniture, and scale.
 - `development/HANDOFF.md`: short-lived relay notes between Claude Code and Codex.
 - `development/DECISIONS.md`: durable decisions future agents could otherwise reverse.
 - `source/campaigns/`: historical D&D source material.
