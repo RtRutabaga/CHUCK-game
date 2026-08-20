@@ -472,10 +472,10 @@ the table-map transformation, its music, and the desert handoff.
 
 ## Audio and Technical Quality
 
-- [ ] The original cabin theme is catchy, psychedelic, bass-driven, and uses
+- [x] The original cabin theme is catchy, psychedelic, bass-driven, and uses
       restrained Indian-inspired hand percussion.
-- [ ] The peak arrangement remains coherent rather than cluttered.
-- [ ] Music continues uninterrupted between exterior and interior.
+- [x] The peak arrangement remains coherent rather than cluttered.
+- [x] Music continues uninterrupted between exterior and interior.
 - [ ] Both maps render at native 320x180 and preserve Chuck's one-foot scale.
 - [ ] Both maps load through the shared development checkpoint selector.
 - [ ] Sanity-zero respawn uses the active cabin Ashtray.

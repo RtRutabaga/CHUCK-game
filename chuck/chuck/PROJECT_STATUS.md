@@ -61,8 +61,12 @@ file is required by the project rules and updated every session.
   west-wall table with an eight-frame gray-biased swirling tie-dye treatment
   and restrained local light. It does not become an oval or freestanding
   portal, and it intentionally has no interaction yet.
-- The exterior is intentionally silent pending the dedicated Phase 12 music
-  pass, rather than inheriting Waterdeep's default cue.
+- Added the original 92-second Cabin theme in D Dorian at 104 BPM. A recurring
+  syncopated elastic-bass hook anchors warm wooden mallets, sparse breathy-reed
+  answers, colored-light bells, and original tuned high/low hand-drum voices.
+  Its four-bar firelight break keeps the final full return clear rather than
+  cluttered. Exterior and interior request the same `cabin.wav`, so the cue
+  continues uninterrupted through both ordinary doors.
 - Focused exterior, interior, checkpoint, transition, and tileset suites pass,
   including full door/Ashtray reachability, reversible arrival alignment,
   checkpoint/save/Continue behavior, and the absence of enemies or hazards.
@@ -76,6 +80,11 @@ file is required by the project rules and updated every session.
   directions, idempotence, runtime art selection, save/Continue, and direct
   shared-loader restoration. The awakened table was inspected at native
   resolution and the broader Cabin/checkpoint/transition/prop suites pass.
+- Focused Cabin music coverage passes for duration, parseable composition,
+  recurring hook, bass-forward syncopation, restrained peak arrangement,
+  tuned hand-drum palette, rendered mix/headroom, loop seam, file presence,
+  and identical exterior/interior routing. All 116 repository test modules
+  pass, and the game renders a clean headless launch frame.
 
 ## Next logical task
 

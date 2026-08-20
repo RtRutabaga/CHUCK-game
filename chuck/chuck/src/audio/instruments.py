@@ -337,6 +337,41 @@ def jungle_tom(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     return gain(envelope(lowpass(body, 900), 0.001, 0.15), vel * 0.62)
 
 
+def tabla_dayan(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Dry, tuned hand-drum stroke inspired by a tabla's higher drum.
+
+    This is an original synthetic color rather than a sampled or reproduced
+    traditional performance: a short pitched ring, a woody partial, and a
+    fingertip transient keep it readable in the game's compact retro mix.
+    """
+    f = max(150.0, freq)
+    body = mix(
+        tone(f, 0.14),
+        gain(tone(f * 1.48, 0.10, "triangle"), 0.30),
+        gain(noise(0.009, seed=71), 0.16),
+    )
+    return gain(envelope(lowpass(body, 2400), 0.001, 0.12), vel * 0.48)
+
+
+def tabla_bayan(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Rounded low hand-drum stroke with a quick downward pitch bend."""
+    f = max(62.0, freq / 2)
+    length = min(0.24, max(0.10, dur))
+    phase = 0.0
+    body = []
+    for index in range(int(length * SAMPLE_RATE)):
+        seconds = index / SAMPLE_RATE
+        bend = 1.22 - 0.22 * min(1.0, seconds / 0.08)
+        phase += f * bend / SAMPLE_RATE
+        body.append(math.sin(2.0 * math.pi * phase))
+    strike = envelope(noise(0.012, seed=72), 0.001, 0.01)
+    return gain(
+        envelope(lowpass(mix(body, gain(strike, 0.12)), 650), 0.001,
+                 length * 0.88),
+        vel * 0.70,
+    )
+
+
 def woodblock(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     """Short woody click: pitched enough to groove, dry enough to stay retro."""
     body = mix(

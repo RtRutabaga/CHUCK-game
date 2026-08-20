@@ -55,7 +55,7 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (21, 33)
     assert MAP_TILESET[MAP_NAME] == "tahuya"
     assert tileset_for(MAP_NAME) is TAHUYA
-    assert AREA_MUSIC[MAP_NAME] is None
+    assert AREA_MUSIC[MAP_NAME] == "cabin.wav"
 
     terrain = Counter(char for row in tilemap._grid for char in row)
     assert terrain["Ħ"] > terrain["Ŀ"] > 0

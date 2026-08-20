@@ -3,14 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `a9b8b36` (awakened Cabin map state)
-- Current work: the Cabin layout/art correction pass is complete and verified
+- Base commit before this pass: `e8d4b40` (Cabin layout/art refinement)
+- Current work: the dedicated Phase 12 Cabin soundtrack pass is complete and
+  verified
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
   awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Composed and rendered `cabin.wav`, an original 92-second D-Dorian loop at
+  104 BPM shared by both playable Cabin maps. Its recurring syncopated elastic
+  bass figure carries wooden mallets, restrained reed answers, bells, reverse
+  swells, and a warm two-note room bed.
+- Added original procedural high/low tuned hand-drum voices for the requested
+  Indian-inspired organic/electronic color. The pattern is authored for this
+  track and does not quote a traditional rhythm or use samples.
+- Kept the fullest arrangement coherent by withholding the reed from the
+  final hook and preceding it with a four-bar firelight break. The render is
+  92.3 seconds, peaks at 0.760, and has 0.133 RMS with a clean loop seam.
+- Routed both `tahuya_cabin_exterior` and `tahuya_cabin_interior` to the same
+  cue. Existing same-request suppression means front- and back-door travel
+  leaves playback position uninterrupted.
+- Added focused regression coverage for composition, hook return, bass
+  syncopation, hand-drum palette, arrangement space, render quality, cue
+  presence, and cross-door routing.
+- All 116 repository test modules pass, and a headless native launch frame
+  initializes, updates, renders, and shuts down successfully.
 
 - Densified the west forest from 35 to 107 authored fir props while preserving
   the winding trail, Ashtray, both porches, and all transition routes. Enlarged
