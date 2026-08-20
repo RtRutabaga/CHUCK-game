@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
 Updated: Phase 11 is feature-complete. Phase 12 is active; the first playable
-Tahuya cabin exterior slice is implemented. This file is required by the
+Cabin exterior slice is implemented. This file is required by the
 project rules and updated every session.
 
 ## Active Phase 12 scope
@@ -10,7 +10,9 @@ project rules and updated every session.
   following the authored drawing's broad arrangement: irregular clearing and
   winding paths to the west, the long cabin and both raised porches on the
   right, the circular `UFO` feature, firepit, firewood shed, and offset path
-  lights. There are no enemies, hazards, fall tiles, or combat pressure.
+  lights. The mushroom-light trail now hugs the cabin's west side with a thick
+  Douglas-fir stand immediately west of it. There are no enemies, hazards,
+  fall tiles, or combat pressure.
 - Added a dedicated Pacific Northwest tileset and procedural exterior props:
   Douglas firs, weathered blue-gray cabin siding, mossed dark roof, porch
   boards/stairs, a fire circle, shed, `UFO`, and seven color-changing mushroom
@@ -19,7 +21,7 @@ project rules and updated every session.
   Each light derives a stable animation phase from its authored tile, so
   neighboring lights visibly cycle out of sync and cast restrained color.
 - The completed Douglas-fir cutscene now hands directly into development
-  checkpoint `Tahuya Cabin Exterior` through the shared checkpoint loader,
+  checkpoint `Cabin Exterior` through the shared checkpoint loader,
   preserving Sanity. The map's single physical Ashtray is the only saveable
   exterior checkpoint and is the Continue/Sanity-zero return point after use.
 - Both porches and their human-scale aligned doorway recesses are accessible.
@@ -35,12 +37,12 @@ project rules and updated every session.
 
 ## Next logical task
 
-- Build the single Tahuya cabin interior inside the established exterior
+- Build the single Cabin interior inside the established exterior
   footprint, with faithful furniture/counter placement, aligned reversible
   front and back doors, and its one Ashtray/shared-loader checkpoint. Keep the
   four light entities and their progression as a subsequent coherent slice.
 
-- Added the authoritative Phase 12 contract for the Tahuya cabin. It begins
+- Added the authoritative Phase 12 contract for the Cabin. It begins
   after the recorded Douglas-fir crossing and contains exactly two peaceful
   playable maps: the nighttime cabin grounds (including both porches) and the
   cabin interior. There are no enemies or environmental hazards.
@@ -204,7 +206,7 @@ project rules and updated every session.
 - The boundary is the interesting part. Phase 11 itself authored no playable
   forest content; Phase 12 now consumes the
   `doug_fir_transition_completed` flag and hands the cutscene directly into
-  the playable Tahuya cabin exterior. The City Day 6 Ashtray remains the valid
+  the playable Cabin exterior. The City Day 6 Ashtray remains the valid
   save until Chuck activates the new exterior Ashtray.
 
 - City Day 6 is now in motion. Two businesspeople run for their lives with a

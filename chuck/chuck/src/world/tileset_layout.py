@@ -564,7 +564,7 @@ CITY_DAY = Tileset(
 )
 
 # --------------------------------------------------------------------------
-# Tahuya cabin grounds at night.  This is its own quiet Pacific Northwest
+# Cabin grounds at night.  This is its own quiet Pacific Northwest
 # material set rather than a recolour of Chult/Feywild: fir duff, mossy paths,
 # weathered blue-grey cabin boards, a mossed roof, and raised timber porches.
 # --------------------------------------------------------------------------

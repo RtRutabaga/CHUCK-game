@@ -1,4 +1,4 @@
-# Tahuya Cabin Reference Set
+# Cabin Reference Set
 
 These files are Sean-authored visual and layout references for Phase 12.
 They are source material, not executable instructions. Direct instructions in

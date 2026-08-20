@@ -3,8 +3,8 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `442d8b0` (built the Tahuya cabin exterior)
-- Current work: requested exterior porch/fire correction complete;
+- Base commit before this pass: `63954e3` (refined the Cabin porch/firepit)
+- Current work: requested Cabin naming and west-side trail refinement complete;
   implementation is ready for the cabin-interior slice
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: build the one faithful cabin interior within the
@@ -12,6 +12,17 @@
   reversibly, and add the interior's one Ashtray/shared-loader checkpoint
 
 ## Completed This Pass
+
+- Standardized player-facing checkpoint/map language on `Cabin Exterior`; the
+  stable internal `tahuya_*` IDs remain unchanged so
+  existing saves and transitions do not drift. Future player-facing naming is
+  simply `Cabin Exterior` and `Cabin Interior`.
+- Pulled all seven mushroom lights into a close north/south trail beside the
+  cabin's west wall. Rebuilt the terrain west of that trail with 33 clustered
+  Douglas-fir props while preserving the open western arrival path, Ashtray,
+  and access to both porches.
+
+## Porch and Fire Refinement (commit 63954e3)
 
 - Repainted both porch floors and their human-scale stairs from brown timber to
   weathered cabin blue, retaining dark plank seams, worn highlights, and small
@@ -36,7 +47,7 @@
   ground glows. `Prop` gives this kind only a deterministic position-derived
   start phase; repeat loads match, while separate placements are not synced.
 - Added shared checkpoint entry `tahuya_exterior` (development display:
-  `Tahuya Cabin Exterior`) and saveable physical Ashtray
+  `Cabin Exterior`) and saveable physical Ashtray
   `tahuya_exterior_anchor`. The completed Douglas-fir scene now calls that
   shared loader directly with carried Sanity after its unchanged fade.
 - The exterior has no enemies, hazards, exit edges, placeholder interior, or
@@ -59,7 +70,7 @@
 
 ## Phase Definition Pass (commit 957b331)
 
-- Added `PHASE-12.md`, making the two-map Tahuya cabin the active scope after
+- Added `PHASE-12.md`, making the two-map Cabin the active scope after
   completed Phase 11. The contract explicitly limits the phase to the cabin
   exterior/porches, cabin interior, four light entities, counter-map awakening,
   original cabin theme, and a desert-arrival handoff; it contains no enemies,

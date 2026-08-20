@@ -604,7 +604,7 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="jungle_tree", under="#"),
     "\\": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                   prop="jungle_shrub", under="#"),
-    # Phase 12's Tahuya cabin grounds.  Dedicated terrain preserves the
+    # Phase 12's Cabin grounds.  Dedicated terrain preserves the
     # authored real-place layout and Pacific Northwest palette.  The two
     # black doorway recesses are intentionally solid until the paired cabin
     # interior is built; both raised porches are already playable.

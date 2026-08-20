@@ -1,4 +1,4 @@
-"""Generate the authored two-porch Tahuya cabin grounds map."""
+"""Generate the authored two-porch Cabin grounds map."""
 
 from pathlib import Path
 
@@ -36,11 +36,11 @@ def build_map():
 
     # Winding approach and its two real branches: north to the back porch,
     # south to the front porch and fire circle.
-    _path(grid, (9, 31), (28, 31), 2)
-    _path(grid, (28, 31), (39, 22), 2)
-    _path(grid, (39, 22), (57, 5), 2)
-    _path(grid, (29, 32), (37, 43), 2)
-    _path(grid, (37, 43), (59, 54), 2)
+    _path(grid, (9, 31), (44, 31), 2)
+    _path(grid, (44, 31), (45, 7), 2)
+    _path(grid, (45, 7), (58, 5), 2)
+    _path(grid, (44, 31), (45, 47), 2)
+    _path(grid, (45, 47), (59, 54), 2)
     _path(grid, (59, 54), (59, 59), 2)
 
     # Cabin shell: the future interior must fit inside this 21x33 exterior
@@ -79,14 +79,23 @@ def build_map():
     grid[59][59] = "⚉"       # fire circle due south of the front porch
     grid[55][72] = "⌘"       # firewood shed at the lower-right edge
 
-    # Unsynchronised colour-changing mushroom lights follow the drawn route.
-    for x, y in ((15, 29), (24, 33), (34, 27), (43, 18),
-                 (39, 42), (48, 48), (61, 54)):
+    # The mushroom-light trail hugs the cabin's west side, rather than
+    # wandering through the middle of the clearing.
+    for x, y in ((44, 13), (45, 20), (44, 27), (45, 34),
+                 (44, 41), (45, 48), (52, 55)):
         grid[y][x] = "✦"
 
-    # Tall fir silhouettes dress the solid edge without changing the clearing.
-    for x, y in ((8, 8), (15, 5), (28, 5), (39, 6), (73, 12),
-                 (7, 47), (15, 57), (27, 59), (43, 58), (75, 45)):
+    # A thick Douglas-fir stand fills the ground west of that close-in light
+    # trail.  The central east/west approach remains open through the trees.
+    for x, y in (
+        (8, 7), (14, 6), (20, 7), (26, 6), (32, 7), (38, 6), (42, 7),
+        (8, 16), (28, 16), (34, 15), (40, 16),
+        (8, 23), (14, 24), (24, 22), (30, 24), (36, 22), (41, 24),
+        (8, 40), (14, 39), (31, 41), (36, 39), (41, 41),
+        (8, 49), (14, 48), (22, 50), (29, 48), (35, 50), (41, 48),
+        (14, 57), (21, 58), (28, 57), (35, 58), (41, 57),
+        (73, 12), (75, 45),
+    ):
         grid[y][x] = "♣"
 
     # The cutscene emerges onto the western trail; the one Ashtray is close

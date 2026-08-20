@@ -1,4 +1,4 @@
-# PHASE 12 --- THE TAHUYA CABIN
+# PHASE 12 --- THE CABIN
 
 ## Status
 
@@ -7,8 +7,8 @@ rainy-city map and the existing transition records
 `doug_fir_transition_completed` after showing him emerge from a Douglas fir at
 night.
 
-Phase 12 begins with Chuck in the Douglas-fir forest at the mysterious cabin in
-Tahuya, Washington. This phase is based on a real place. The authored map and
+Phase 12 begins with Chuck in the Douglas-fir forest at the mysterious Cabin in
+Washington. This phase is based on a real place. The authored map and
 photographs in `docs/design/references/tahuya-cabin/` are primary visual and
 spatial references and must be followed closely.
 
@@ -27,7 +27,7 @@ change in the D&D map on the counter.
 
 By the end of Phase 12, the player should:
 
-1. Regain control in the Douglas-fir forest outside the Tahuya cabin.
+1. Regain control in the Douglas-fir forest outside the Cabin.
 2. Explore the clearing and both accessible porches.
 3. Enter and leave the cabin through either the front or back door.
 4. Recognize that the playable interior fits within the exterior cabin shell.
@@ -117,7 +117,7 @@ not obscure a reference landmark.
 
 Recommended display name:
 
-> Tahuya Cabin Exterior
+> Cabin Exterior
 
 Use the project's actual checkpoint-ID conventions during implementation.
 
@@ -213,7 +213,7 @@ checkpoint through the shared loader.
 
 Recommended display name:
 
-> Tahuya Cabin Interior
+> Cabin Interior
 
 The checkpoint must restore all four conversation flags and the correct normal
 or awakened state of the counter map.
@@ -318,7 +318,7 @@ phase can resume authoritatively.
 
 Persist only the minimum state required to restore the phase reliably:
 
-- Douglas-fir transition completed / Tahuya reached
+- Douglas-fir transition completed / Cabin reached
 - current active cabin checkpoint
 - one conversation flag for each of the four entities
 - counter map awakened
@@ -339,7 +339,7 @@ save format.
 This phase's music is a major feature and should receive a dedicated,
 separately reviewed implementation pass.
 
-Compose one original Tahuya cabin theme shared by the outdoor and indoor maps.
+Compose one original Cabin theme shared by the outdoor and indoor maps.
 It should continue uninterrupted through both doors.
 
 The target character is:
@@ -518,6 +518,6 @@ Check:
 8. Does reloading preserve every state without replay or duplication?
 9. Does the music remain catchy and clear at its fullest arrangement?
 
-Phase 12 is complete when the faithful two-map Tahuya cabin can be explored,
+Phase 12 is complete when the faithful two-map Cabin can be explored,
 all four entities can be met, the back-door condition awakens the counter map,
 and Chuck can choose the planar surface to reach the desert handoff.

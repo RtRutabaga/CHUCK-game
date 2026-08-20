@@ -67,7 +67,20 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     assert props["tahuya_firepit"] == 1
     assert props["tahuya_firewood_shed"] == 1
     assert props["tahuya_mushroom_light"] == 7
-    assert props["tahuya_fir"] >= 8
+    assert props["tahuya_fir"] >= 35
+    fir_positions = [
+        (col, row) for kind, col, row in tilemap.prop_tiles
+        if kind == "tahuya_fir"
+    ]
+    assert sum(8 <= col <= 42 for col, _row in fir_positions) >= 33
+    light_positions = [
+        (col, row) for kind, col, row in tilemap.prop_tiles
+        if kind == "tahuya_mushroom_light"
+    ]
+    assert light_positions == [
+        (44, 13), (45, 20), (44, 27), (45, 34),
+        (44, 41), (45, 48), (52, 55),
+    ]
     fire_positions = [
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "tahuya_firepit"
@@ -92,7 +105,7 @@ def test_both_porches_and_the_ashtray_are_reachable() -> None:
 def test_shared_checkpoint_loader_and_physical_ashtray_persist() -> None:
     entry = CHECKPOINT_BY_ID["tahuya_exterior"]
     anchor = CHECKPOINT_BY_ID["tahuya_exterior_anchor"]
-    assert entry.display_name == "Tahuya Cabin Exterior"
+    assert entry.display_name == "Cabin Exterior"
     assert entry.runtime_entry and not entry.saveable
     assert anchor.saveable and not anchor.development_visible
 
@@ -130,9 +143,9 @@ def test_shared_checkpoint_loader_and_physical_ashtray_persist() -> None:
 def test_mushroom_lights_have_stable_unsynchronised_phases() -> None:
     directory, game = _game()
     try:
-        first = Prop("tahuya_mushroom_light", 15, 29, game.assets)
-        second = Prop("tahuya_mushroom_light", 24, 33, game.assets)
-        repeated = Prop("tahuya_mushroom_light", 15, 29, game.assets)
+        first = Prop("tahuya_mushroom_light", 44, 13, game.assets)
+        second = Prop("tahuya_mushroom_light", 45, 20, game.assets)
+        repeated = Prop("tahuya_mushroom_light", 44, 13, game.assets)
         firepit = Prop("tahuya_firepit", 59, 59, game.assets)
         assert first._animation_t != second._animation_t
         assert first._animation_t == repeated._animation_t
@@ -155,7 +168,7 @@ def _run_all() -> None:
                 print(f"  FAIL  {name}: {exc}")
     if failures:
         raise SystemExit(f"{failures} test(s) failed")
-    print("All Tahuya exterior tests passed.")
+    print("All Cabin exterior tests passed.")
 
 
 if __name__ == "__main__":

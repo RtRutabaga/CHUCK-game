@@ -23,7 +23,7 @@ Then read the topic-specific supplement relevant to the task.
 - `development/PHASE-11.md`: completed contract for the rainy city,
   urban sewer, daytime collision district, and Douglas fir handoff.
 - `development/PHASE-12.md`: active implementation contract for the faithful
-  two-map Tahuya cabin, four light entities, counter-map portal, soundtrack,
+  two-map Cabin, four light entities, counter-map portal, soundtrack,
   and desert handoff.
 - `design/references/tahuya-cabin/`: Sean-authored layout and photographic
   references for Phase 12. The layout drawing governs spatial relationships;

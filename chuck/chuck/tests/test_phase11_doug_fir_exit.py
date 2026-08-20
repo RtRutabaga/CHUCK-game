@@ -105,7 +105,7 @@ def test_the_forest_arrives_out_of_black_and_then_chuck_does() -> None:
         directory.cleanup()
 
 
-def test_the_phase_hands_into_the_shared_tahuya_checkpoint() -> None:
+def test_the_phase_hands_into_the_shared_cabin_checkpoint() -> None:
     assert DOUG_FIR_FLAG in KNOWN_PROGRESS_FLAGS
 
     directory, game = _game()
