@@ -1,8 +1,8 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is feature-complete. Phase 12 is active; the first playable
-Cabin exterior slice is implemented. This file is required by the
-project rules and updated every session.
+Updated: Phase 11 is feature-complete. Phase 12 is active; both authored Cabin
+maps and their reversible doorway/checkpoint foundation are implemented. This
+file is required by the project rules and updated every session.
 
 ## Active Phase 12 scope
 
@@ -25,22 +25,32 @@ project rules and updated every session.
   preserving Sanity. The map's single physical Ashtray is the only saveable
   exterior checkpoint and is the Continue/Sanity-zero return point after use.
 - Both porches and their human-scale aligned doorway recesses are accessible.
-  The recesses remain safely inert until the one authorized cabin interior is
-  built; no placeholder third map or cabin-only loading path was introduced.
+  Their center thresholds now enter the single 21x33 Cabin Interior and return
+  Chuck to the matching porch. Both directions use the established area-exit
+  and shared runtime-checkpoint path; no cabin-only teleport logic exists.
+- Added the authored long interior footprint with warm vertical wood paneling,
+  olive-tan carpet, patterned kitchen linoleum, north-wall couches, two east-side
+  chairs, the central table and stools, southern kitchen counter with its still
+  ordinary rectangular D&D map, woodstove, and wood storage. Furniture is
+  human-scale and provides solid, readable level geometry while keeping both
+  doors and the interior Ashtray connected.
+- Added development checkpoint `Cabin Interior` plus exactly one physical,
+  saveable interior Ashtray. Continue and Sanity-zero return rebuild it through
+  the same checkpoint loader used everywhere else.
 - The exterior is intentionally silent pending the dedicated Phase 12 music
   pass, rather than inheriting Waterdeep's default cue.
-- Focused exterior and Douglas-fir handoff suites pass, including topology,
-  landmark counts, both-porch reachability, checkpoint/save/Continue behavior,
-  Sanity carry and respawn, and deterministic unsynchronized light phases.
-  All 112 repository test scripts pass, the source compiles, the headless game
-  loop launches, and native arrival/cabin-facing frames were visually inspected.
+- Focused exterior, interior, checkpoint, transition, and tileset suites pass,
+  including full door/Ashtray reachability, reversible arrival alignment,
+  checkpoint/save/Continue behavior, and the absence of enemies or hazards.
+  The game renders its launch frame headlessly, and the interior's north,
+  middle, and south compositions were visually inspected at native resolution.
 
 ## Next logical task
 
-- Build the single Cabin interior inside the established exterior
-  footprint, with faithful furniture/counter placement, aligned reversible
-  front and back doors, and its one Ashtray/shared-loader checkpoint. Keep the
-  four light entities and their progression as a subsequent coherent slice.
+- Add the four independently color-changing light entities in their authored
+  seats with the exact Phase 12 dialogue strings and persistent conversation
+  flags. Keep the back-door-gated counter awakening and desert transition as a
+  subsequent coherent slice.
 
 - Added the authoritative Phase 12 contract for the Cabin. It begins
   after the recorded Douglas-fir crossing and contains exactly two peaceful

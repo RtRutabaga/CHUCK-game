@@ -1203,6 +1203,15 @@ CHECKPOINTS = (
         runtime_entry=True, fade_in=True,
     ),
     CheckpointDefinition(
+        "tahuya_interior", "Cabin Interior",
+        "tahuya_cabin_interior", arrival="from_front_door", facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached", "doug_fir_transition_completed",
+        }),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
         "tahuya_exterior_anchor", "Cabin Exterior Ashtray",
         "tahuya_cabin_exterior", position=(387.0, 580.0), facing="right",
         required_flags=frozenset({
@@ -1210,6 +1219,42 @@ CHECKPOINTS = (
             "modern_city_reached", "doug_fir_transition_completed",
         }),
         saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "tahuya_interior_anchor", "Cabin Interior Ashtray",
+        "tahuya_cabin_interior", position=(211.0, 324.0), facing="left",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached", "doug_fir_transition_completed",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "tahuya_interior_back_entry", "Cabin Interior Back Entry",
+        "tahuya_cabin_interior", arrival="from_back_door", facing="down",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached", "doug_fir_transition_completed",
+        }),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "tahuya_exterior_front_return", "Cabin Front Porch Return",
+        "tahuya_cabin_exterior", arrival="from_cabin_front", facing="down",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached", "doug_fir_transition_completed",
+        }),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "tahuya_exterior_back_return", "Cabin Back Porch Return",
+        "tahuya_cabin_exterior", arrival="from_cabin_back", facing="up",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached", "doug_fir_transition_completed",
+        }),
+        development_visible=False, runtime_entry=True,
     ),
     CheckpointDefinition(
         "modern_city_day_5_return", "City Day 5 Return",

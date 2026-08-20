@@ -3,15 +3,34 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `63954e3` (refined the Cabin porch/firepit)
-- Current work: requested Cabin naming and west-side trail refinement complete;
-  implementation is ready for the cabin-interior slice
+- Base commit before this pass: `96bb159` (tightened the Cabin mushroom trail)
+- Current work: the authored Cabin interior, both reversible doorway pairs,
+  and the interior checkpoint are complete and verified
 - Active scope: `docs/development/PHASE-12.md`
-- Next implementation slice: build the one faithful cabin interior within the
-  established exterior footprint, connect the aligned front/back doors
-  reversibly, and add the interior's one Ashtray/shared-loader checkpoint
+- Next implementation slice: add the four independently color-changing light
+  entities, their exact dialogue, and persistent conversation flags; do not yet
+  awaken the counter map or begin the desert transition
 
 ## Completed This Pass
+
+- Added the single 21x33 `tahuya_cabin_interior`, fitting the established
+  exterior shell exactly and using dedicated procedural carpet, patterned
+  linoleum, and vertical wood-panel materials.
+- Followed the authored plan with human-scale north-wall couches, two east-side
+  chairs, a central table and five stools, the southern kitchen/counter/sink and
+  ordinary rectangular D&D map, woodstove, and wood storage. All furniture has
+  deliberate collision and both door-to-door routes remain open.
+- Activated the center thresholds in the exterior's front and back black
+  recesses. Each doorway enters the matching end of the interior and each
+  interior doorway returns to the same porch through the standard area-exit and
+  runtime-checkpoint systems.
+- Added development checkpoint `Cabin Interior` and exactly one physical,
+  saveable interior Ashtray. Save, Continue, and Sanity-zero restoration use the
+  shared checkpoint loader.
+- Added focused interior, topology, threshold-alignment, loader, save, and
+  Continue regression coverage. Exterior/interior/checkpoint/tileset/transition
+  suites pass; a headless launch frame renders, and three native interior views
+  were visually inspected.
 
 - Standardized player-facing checkpoint/map language on `Cabin Exterior`; the
   stable internal `tahuya_*` IDs remain unchanged so
@@ -61,12 +80,10 @@
 
 ## Next Agent Boundary
 
-- Implement only the cabin interior and its reversible front/back connections
-  next. Fit it within the exterior's 21x33-tile cabin shell, follow the authored
-  furniture plan and photographs, and add exactly one interior Ashtray plus
-  one development checkpoint. Do not add the four entities, counter awakening,
-  desert cutscene, or soundtrack in that same pass unless Sean explicitly
-  expands the boundary.
+- Implement only the four seated light entities next: independent color phases,
+  the exact authored strings, and persistent talked-to flags. Do not combine
+  that pass with the back-door-gated counter awakening, desert cutscene, or
+  soundtrack unless Sean explicitly expands the boundary.
 
 ## Phase Definition Pass (commit 957b331)
 

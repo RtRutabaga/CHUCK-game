@@ -579,6 +579,9 @@ TAHUYA = Tileset(
         ("porch", 4, 1),
         ("porch_stair", 3, 1),
         ("dark_doorway", 2, 1),
+        ("cabin_carpet", 5, 1),
+        ("cabin_linoleum", 4, 1),
+        ("cabin_panel_wall", 4, 1),
     ],
     char_to_terrain={
         "ᶠ": "forest_ground",
@@ -589,6 +592,15 @@ TAHUYA = Tileset(
         "▣": "porch",
         "↟": "porch_stair",
         "◼": "dark_doorway",
+        "Ɛ": "dark_doorway",
+        "Ɣ": "dark_doorway",
+        "Ɯ": "dark_doorway",
+        "Ƣ": "dark_doorway",
+        "Ŀ": "cabin_carpet",
+        "∎": "cabin_carpet",
+        "Ƃ": "cabin_linoleum",
+        "▰": "cabin_linoleum",
+        "ć": "cabin_panel_wall",
     },
     overhead_char_to_terrain={},
 )
@@ -677,6 +689,7 @@ MAP_TILESET: dict[str, str] = {
     "modern_city_day_5": "city_day",
     "modern_city_day_6": "city_day",
     "tahuya_cabin_exterior": "tahuya",
+    "tahuya_cabin_interior": "tahuya",
 }
 
 

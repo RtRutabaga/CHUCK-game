@@ -43,9 +43,8 @@ def build_map():
     _path(grid, (45, 47), (59, 54), 2)
     _path(grid, (59, 54), (59, 59), 2)
 
-    # Cabin shell: the future interior must fit inside this 21x33 exterior
-    # footprint.  Roof mass above a front wall creates the established
-    # three-quarter view; the dark recesses are visible but inert this pass.
+    # Cabin shell: the interior fits inside this 21x33 exterior footprint.
+    # Roof mass above a front wall creates the established three-quarter view.
     for y in range(12, 38):
         for x in range(49, 70):
             grid[y][x] = "▧"
@@ -73,6 +72,13 @@ def build_map():
     for y in range(51, 55):
         for x in range(58, 61):
             grid[y][x] = "↟"
+
+    # Only the centered cell of each human-scale black recess is a walkable
+    # threshold. Return arrivals are on the matching porch, one tile clear.
+    grid[12][59] = "Ɣ"
+    grid[10][59] = "ኃ"
+    grid[44][59] = "Ɛ"
+    grid[47][59] = "ኂ"
 
     # Real-place landmarks from the authored drawing.
     grid[13][18] = "◌"       # circular UFO object at upper-left

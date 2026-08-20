@@ -95,6 +95,38 @@ def dark_doorway(surface, variant, _frame):
         surface.set_at((14, 13), (8, 12, 14))
 
 
+def cabin_carpet(surface, variant, _frame):
+    """The cabin's worn olive-tan carpet, subdued under warm light."""
+    surface.fill((91, 88, 56))
+    _flecks(surface, variant, ((108, 103, 65), (70, 72, 48),
+                               (119, 104, 66)), 9)
+    for i in range(3):
+        x = (variant * 11 + i * 6 + 2) % 16
+        surface.set_at((x, (variant * 5 + i * 4 + 3) % 16), (62, 65, 45))
+
+
+def cabin_linoleum(surface, variant, _frame):
+    """Small cream-and-tan kitchen pattern from the interior photos."""
+    surface.fill((157, 145, 107))
+    for y in range(0, 16, 8):
+        for x in range(0, 16, 8):
+            shift = (variant + x // 8 + y // 8) % 2
+            colour = (127, 121, 91) if shift else (181, 164, 121)
+            pygame.draw.rect(surface, colour, (x + 1, y + 1, 6, 6))
+            pygame.draw.rect(surface, (96, 91, 72), (x + 3, y + 3, 2, 2))
+
+
+def cabin_panel_wall(surface, variant, _frame):
+    """Dark vertical paneling; this is wall mass, not another wood floor."""
+    surface.fill((72, 43, 31))
+    for x in range((variant * 2) % 5, 16, 5):
+        pygame.draw.line(surface, (39, 27, 24), (x, 0), (x, 15))
+        if x + 1 < 16:
+            pygame.draw.line(surface, (103, 62, 40), (x + 1, 0),
+                             (x + 1, 15))
+    pygame.draw.line(surface, (45, 29, 25), (0, 15), (15, 15))
+
+
 DRAW = {
     "forest_ground": forest_ground,
     "dense_forest": dense_forest,
@@ -104,6 +136,9 @@ DRAW = {
     "porch": porch,
     "porch_stair": porch_stair,
     "dark_doorway": dark_doorway,
+    "cabin_carpet": cabin_carpet,
+    "cabin_linoleum": cabin_linoleum,
+    "cabin_panel_wall": cabin_panel_wall,
 }
 
 

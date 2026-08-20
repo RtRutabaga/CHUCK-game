@@ -174,6 +174,13 @@ _SPRITES = {
     "tahuya_firepit": "objects/tahuya_firepit.png",
     "tahuya_ufo": "objects/tahuya_ufo.png",
     "tahuya_firewood_shed": "objects/tahuya_firewood_shed.png",
+    "cabin_big_couch": "objects/cabin_big_couch.png",
+    "cabin_couch": "objects/cabin_couch.png",
+    "cabin_chair": "objects/cabin_chair.png",
+    "cabin_table": "objects/cabin_table.png",
+    "cabin_kitchen": "objects/cabin_kitchen.png",
+    "cabin_woodstove": "objects/cabin_woodstove.png",
+    "cabin_wood_storage": "objects/cabin_wood_storage.png",
     "fey_table_leg": (
         "objects/fey_table_leg_1.png",
         "objects/fey_table_leg_2.png",

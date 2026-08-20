@@ -606,8 +606,9 @@ TILE_DEFS: dict[str, TileDef] = {
                   prop="jungle_shrub", under="#"),
     # Phase 12's Cabin grounds.  Dedicated terrain preserves the
     # authored real-place layout and Pacific Northwest palette.  The two
-    # black doorway recesses are intentionally solid until the paired cabin
-    # interior is built; both raised porches are already playable.
+    # black doorway recesses surround one aligned walkable threshold apiece.
+    # Interior materials share the same sheet so crossing a normal cabin
+    # threshold does not require a second rendering vocabulary.
     "ᶠ": TileDef(solid=False, color=(27, 39, 32)),
     "♟": TileDef(solid=True, color=(10, 25, 22)),
     "⌇": TileDef(solid=False, color=(46, 49, 39)),
@@ -616,6 +617,15 @@ TILE_DEFS: dict[str, TileDef] = {
     "▣": TileDef(solid=False, color=(83, 63, 46)),
     "↟": TileDef(solid=False, color=(91, 68, 48)),
     "◼": TileDef(solid=True, color=(5, 8, 10)),
+    "Ɛ": TileDef(solid=False, color=(5, 8, 10)),  # exterior front door
+    "Ɣ": TileDef(solid=False, color=(5, 8, 10)),  # exterior back door
+    "Ɯ": TileDef(solid=False, color=(5, 8, 10)),  # interior front door
+    "Ƣ": TileDef(solid=False, color=(5, 8, 10)),  # interior back door
+    "Ŀ": TileDef(solid=False, color=(91, 88, 56)),
+    "∎": TileDef(solid=True, color=(91, 88, 56)),
+    "Ƃ": TileDef(solid=False, color=(157, 145, 107)),
+    "▰": TileDef(solid=True, color=(157, 145, 107)),
+    "ć": TileDef(solid=True, color=(72, 43, 31)),
     "♣": TileDef(solid=True, color=(10, 25, 22),
                  prop="tahuya_fir", under="♟"),
     "✦": TileDef(solid=True, color=(27, 39, 32),
@@ -626,6 +636,22 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="tahuya_ufo", under="ᶠ"),
     "⌘": TileDef(solid=True, color=(27, 39, 32),
                  prop="tahuya_firewood_shed", under="ᶠ"),
+    # Human-scale cabin furnishings. Their larger visible sprites are backed
+    # by solid carpet/linoleum footprint tiles authored in the map.
+    "Ƈ": TileDef(solid=True, color=(91, 88, 56),
+                 prop="cabin_big_couch", under="∎"),
+    "Ƭ": TileDef(solid=True, color=(91, 88, 56),
+                 prop="cabin_couch", under="∎"),
+    "ƭ": TileDef(solid=True, color=(91, 88, 56),
+                 prop="cabin_chair", under="∎"),
+    "Ƒ": TileDef(solid=True, color=(91, 88, 56),
+                 prop="cabin_table", under="∎"),
+    "ƕ": TileDef(solid=True, color=(157, 145, 107),
+                 prop="cabin_kitchen", under="▰"),
+    "Ʒ": TileDef(solid=True, color=(91, 88, 56),
+                 prop="cabin_woodstove", under="∎"),
+    "Ə": TileDef(solid=True, color=(91, 88, 56),
+                 prop="cabin_wood_storage", under="∎"),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {
@@ -1127,6 +1153,14 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # Phase 12: cutscene arrival and the exterior's one physical Ashtray.
     "ኀ": MarkerDef(kind="arrival:from_doug_fir", under="⌇"),
     "ኁ": MarkerDef(kind="anchor:tahuya_exterior_anchor", under="ᶠ"),
+    # The paired cabin thresholds stay spatially reversible. Runtime arrivals
+    # sit one tile clear of each door so entering never immediately bounces
+    # Chuck back across the same threshold.
+    "ኂ": MarkerDef(kind="arrival:from_cabin_front", under="▣"),
+    "ኃ": MarkerDef(kind="arrival:from_cabin_back", under="▣"),
+    "ኄ": MarkerDef(kind="arrival:from_front_door", under="Ŀ"),
+    "ኅ": MarkerDef(kind="arrival:from_back_door", under="Ŀ"),
+    "ኆ": MarkerDef(kind="anchor:tahuya_interior_anchor", under="Ŀ"),
 }
 
 _COMMENT_PREFIX = ";"
