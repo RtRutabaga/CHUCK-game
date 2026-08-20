@@ -474,7 +474,7 @@ the table-map transformation, its music, and the desert handoff.
 
 - [x] The original cabin theme is catchy, cool, bass-driven, and uses a driving
       retro-techno beat, an exciting synth melody, and restrained
-      Indian-inspired hand percussion.
+      Indian-inspired hand percussion plus occasional jaw-harp accents.
 - [x] The peak arrangement remains coherent rather than cluttered.
 - [x] Music continues uninterrupted between exterior and interior.
 - [ ] Both maps render at native 320x180 and preserve Chuck's one-foot scale.

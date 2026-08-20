@@ -6,6 +6,7 @@ Feywild-like mallets, reed, bells, and magical swells have been replaced by a
 four-on-the-floor pulse, clipped arpeggios, and a direct neon synth melody.
 Sparse tabla accents retain the Cabin phase's requested hand-drum color
 without pulling the arrangement away from its driving electronic character.
+Occasional jaw-harp twangs answer the bass on open offbeats.
 
 The exterior and interior request this same cue, so ordinary door transitions
 do not restart it.
@@ -131,7 +132,7 @@ def build_tracks() -> list[Track]:
     }
     arp = {}
     low_pulse = {}
-    kick, snare, hats, dayan, bayan = {}, {}, {}, {}, {}
+    kick, snare, hats, dayan, bayan, jaw_harp = {}, {}, {}, {}, {}, {}
     for bar, root in enumerate(_ROOTS):
         break_bar = 28 <= bar < 32
         full_drive = 8 <= bar < 28 or bar >= 32
@@ -157,6 +158,13 @@ def build_tracks() -> list[Track]:
         # Sparse hand-drum color woven between the mechanical backbeat.
         dayan[bar] = [(.75, .10, "D4", .38), (2.75, .10, "A3", .34)]
         bayan[bar] = [(3.5, .16, "D2", .36 if not break_bar else .28)]
+        # One compact twang every other active bar adds rustic character while
+        # leaving the bass and neon hook in control of the groove.
+        if bar >= 4 and not break_bar and bar % 2 == 0:
+            jaw_harp[bar] = [
+                (1.75, .30, _OCTAVE[root], .60),
+                (3.75, .24, _FIFTH[root], .44),
+            ]
 
     return [
         Track("synth_hook", ins.neon_synth_lead, .94, _bars(synth_hook)),
@@ -168,4 +176,5 @@ def build_tracks() -> list[Track]:
         Track("hats", ins.hat, .36, _bars(hats)),
         Track("dayan", ins.tabla_dayan, .48, _bars(dayan)),
         Track("bayan", ins.tabla_bayan, .50, _bars(bayan)),
+        Track("jaw_harp", ins.jaw_harp, .62, _bars(jaw_harp)),
     ]

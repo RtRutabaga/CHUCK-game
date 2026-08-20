@@ -398,6 +398,33 @@ def tabla_bayan(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     )
 
 
+def jaw_harp(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """A short metallic jaw-harp twang with a decaying mouth resonance.
+
+    A bent pulse provides the vibrating tongue while a quick moving formant
+    makes the hit read as a jaw harp rather than another bass pluck. The voice
+    is deliberately compact so occasional offbeat accents stay clear of the
+    Cabin's elastic bass figure.
+    """
+    length = min(0.34, max(0.12, dur))
+    f = max(82.0, freq)
+    count = int(length * SAMPLE_RATE)
+    phase = 0.0
+    body = []
+    for index in range(count):
+        seconds = index / SAMPLE_RATE
+        bend = 1.16 - 0.16 * min(1.0, seconds / 0.055)
+        wobble = 1.0 + 0.012 * math.sin(2 * math.pi * 13.0 * seconds)
+        phase = (phase + f * bend * wobble / SAMPLE_RATE) % 1.0
+        tongue = 1.0 if phase < 0.18 else -0.42
+        mouth = math.sin(2 * math.pi * f * 3.02 * seconds)
+        pulse = 0.72 + 0.28 * math.sin(2 * math.pi * 7.0 * seconds)
+        body.append((tongue * 0.72 + mouth * 0.28) * pulse)
+    click = envelope(_highpassed_noise(0.012, 2100, seed=79), 0.001, 0.010)
+    voiced = envelope(lowpass(body, 2600), 0.001, length * 0.88)
+    return gain(mix(voiced, gain(click, 0.28)), vel * 0.38)
+
+
 def woodblock(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     """Short woody click: pitched enough to groove, dry enough to stay retro."""
     body = mix(

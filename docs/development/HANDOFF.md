@@ -13,6 +13,12 @@
 
 ## Completed This Pass
 
+- Added an original synthetic jaw-harp voice to the Cabin theme. Forty compact
+  offbeat twangs answer the elastic bass across alternating active bars while
+  staying out of the four-bar break; the bass, techno beat, neon hook, duration,
+  and uninterrupted interior/exterior routing are unchanged. The regenerated
+  render passes the Cabin composition/mix/loop gates and shared audio tests.
+
 - Preserved the exact six-hit elastic-bass figure but rebuilt every other
   musical layer into a cooler 112-BPM electronic arrangement: four-on-the-floor
   kick, backbeat, clipped pulse arpeggios, and a new neon synth hook. Removed

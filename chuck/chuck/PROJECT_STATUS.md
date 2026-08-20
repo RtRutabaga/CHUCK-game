@@ -70,7 +70,8 @@ file is required by the project rules and updated every session.
   four-on-the-floor kick, backbeat, clipped pulse arpeggio, and direct neon
   synth hook replace the Feywild-like mallet, reed, bell, and magical-swell
   palette. Sparse tuned hand-drum accents remain secondary to the cooler,
-  more driving techno identity. Exterior and interior request the same
+  more driving techno identity, with compact synthetic jaw-harp twangs
+  answering the bass on alternating active bars. Exterior and interior request the same
   `cabin.wav`, so the cue continues uninterrupted through both ordinary doors.
 - Focused exterior, interior, checkpoint, transition, and tileset suites pass,
   including full door/Ashtray reachability, reversible arrival alignment,

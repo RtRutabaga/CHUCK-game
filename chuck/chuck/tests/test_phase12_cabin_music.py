@@ -33,7 +33,7 @@ def test_cabin_theme_is_cool_driving_and_preserves_its_bass() -> None:
     named = {track.name: track for track in tracks}
     duration = cabin.TOTAL_BEATS * 60.0 / cabin.TEMPO_BPM
     assert duration >= 90.0
-    assert len([track for track in tracks if track.notes]) >= 9
+    assert len([track for track in tracks if track.notes]) >= 10
     for track in tracks:
         for note in track.notes:
             note_to_freq(note.pitch)
@@ -65,8 +65,12 @@ def test_cabin_theme_is_cool_driving_and_preserves_its_bass() -> None:
 
     assert named["dayan"].instrument is ins.tabla_dayan
     assert named["bayan"].instrument is ins.tabla_bayan
+    assert named["jaw_harp"].instrument is ins.jaw_harp
     assert len(named["dayan"].notes) == cabin.TOTAL_BARS * 2
     assert len(named["bayan"].notes) == cabin.TOTAL_BARS
+    assert 20 <= len(named["jaw_harp"].notes) <= 48
+    assert all(note.beat % 4 in {1.75, 3.75}
+               for note in named["jaw_harp"].notes)
 
     # The night break removes the lead but never drops the techno heartbeat.
     break_start, break_end = 28 * 4, 32 * 4
