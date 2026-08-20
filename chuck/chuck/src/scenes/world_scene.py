@@ -63,6 +63,9 @@ from src.entities.undead import UndeadEnemy
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
 from src.systems.astral_anchor import AstralAnchorSystem
+from src.systems.cabin_progress import (
+    COUNTER_MAP_AWAKENED_FLAG, apply_back_door_crossing,
+)
 from src.systems.captain_confrontation import (
     CAPTAIN_ARRIVAL_SPEED,
     CAPTAIN_CONFRONTED_FLAG,
@@ -333,6 +336,11 @@ class WorldScene(Scene):
                     self.game.progress,
                 )
             else:
+                if (
+                    kind == "cabin_kitchen"
+                    and self.game.progress.has(COUNTER_MAP_AWAKENED_FLAG)
+                ):
+                    kind = "cabin_kitchen_awakened"
                 prop = Prop(kind, col, row, self.game.assets)
             self.props.append(prop)
         self.pickups: list[Cigarette] = []
@@ -1050,6 +1058,12 @@ class WorldScene(Scene):
                 # NO leaves Chuck standing on the ladder without immediately
                 # reopening or traversing it. Walking away rearms the prompt.
                 return
+            apply_back_door_crossing(
+                self.game.progress,
+                self.map_name,
+                exit_config.destination,
+                exit_config.arrival,
+            )
             self.load_map(
                 exit_config.destination,
                 arrival=exit_config.arrival,

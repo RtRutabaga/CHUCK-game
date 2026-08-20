@@ -179,6 +179,7 @@ _SPRITES = {
     "cabin_chair": "objects/cabin_chair.png",
     "cabin_table": "objects/cabin_table.png",
     "cabin_kitchen": "objects/cabin_kitchen.png",
+    "cabin_kitchen_awakened": "objects/cabin_kitchen_awakened_1.png",
     "cabin_woodstove": "objects/cabin_woodstove.png",
     "cabin_wood_storage": "objects/cabin_wood_storage.png",
     "fey_table_leg": (
@@ -211,6 +212,10 @@ _ANIMATED_SPRITES = {
     ),
     "tahuya_mushroom_light": tuple(
         f"objects/tahuya_mushroom_light_{index + 1}.png"
+        for index in range(8)
+    ),
+    "cabin_kitchen_awakened": tuple(
+        f"objects/cabin_kitchen_awakened_{index + 1}.png"
         for index in range(8)
     ),
 }

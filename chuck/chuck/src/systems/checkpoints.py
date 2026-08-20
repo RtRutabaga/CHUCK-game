@@ -11,6 +11,9 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 from src.core import config
+from src.systems.cabin_progress import (
+    CABIN_ENTITY_FLAGS, COUNTER_MAP_AWAKENED_FLAG,
+)
 from src.systems.captain_confrontation import CAPTAIN_REQUIRED_FLAGS
 from src.systems.save import SaveRecord, SaveSystem
 
@@ -33,11 +36,7 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "feywild_reached",
     "modern_city_reached",
     "doug_fir_transition_completed",
-    "cabin_entity_big_couch_spoken",
-    "cabin_entity_couch_spoken",
-    "cabin_entity_chair_north_spoken",
-    "cabin_entity_chair_south_spoken",
-})
+}) | CABIN_ENTITY_FLAGS | {COUNTER_MAP_AWAKENED_FLAG}
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
 

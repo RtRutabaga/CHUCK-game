@@ -11,6 +11,16 @@ import pygame
 
 ROOT = Path(__file__).resolve().parents[1]
 OBJECTS = ROOT / "assets" / "sprites" / "objects"
+PORTAL_COLOURS = (
+    (205, 175, 190),
+    (162, 150, 185),
+    (120, 145, 171),
+    (137, 164, 167),
+    (145, 166, 151),
+    (184, 174, 140),
+    (194, 157, 132),
+    (162, 151, 169),
+)
 
 
 def save(surface, name):
@@ -79,7 +89,7 @@ def table():
     return s
 
 
-def kitchen():
+def kitchen(portal_frame=None):
     s = pygame.Surface((108, 48), pygame.SRCALPHA)
     outline = (43, 27, 22)
     cabinet = (77, 43, 31)
@@ -99,10 +109,25 @@ def kitchen():
     pygame.draw.line(s, (150, 153, 143), (23, 2), (29, 2), 2)
     # The ordinary rectangular D&D map waits on the right-hand counter.
     pygame.draw.rect(s, (48, 34, 34), (61, 6, 35, 12))
-    pygame.draw.rect(s, (197, 178, 128), (63, 7, 31, 9))
-    pygame.draw.line(s, (77, 103, 82), (65, 13), (75, 8))
-    pygame.draw.line(s, (111, 73, 61), (78, 8), (91, 14))
-    pygame.draw.rect(s, (49, 87, 104), (72, 11, 3, 3))
+    if portal_frame is None:
+        pygame.draw.rect(s, (197, 178, 128), (63, 7, 31, 9))
+        pygame.draw.line(s, (77, 103, 82), (65, 13), (75, 8))
+        pygame.draw.line(s, (111, 73, 61), (78, 8), (91, 14))
+        pygame.draw.rect(s, (49, 87, 104), (72, 11, 3, 3))
+    else:
+        # It stays the same counter-bound rectangle. Soft gray-biased colour
+        # bands cross its surface and tint the wood immediately around it.
+        colour = PORTAL_COLOURS[portal_frame]
+        glow = pygame.Surface(s.get_size(), pygame.SRCALPHA)
+        pygame.draw.ellipse(glow, (*colour, 28), (54, 0, 50, 25))
+        s.blit(glow, (0, 0))
+        pygame.draw.rect(s, (81, 76, 85), (63, 7, 31, 9))
+        for x in range(63, 94):
+            wave = (x + portal_frame * 4 + (x // 5) * 2) % 16
+            band = PORTAL_COLOURS[(portal_frame + wave // 3) % 8]
+            top = 7 + ((x + portal_frame) % 3)
+            pygame.draw.line(s, band, (x, top), (x, 15))
+        pygame.draw.rect(s, (198, 194, 198), (63, 7, 31, 9), 1)
     return s
 
 
@@ -144,6 +169,11 @@ def main():
     save(chair(), "cabin_chair.png")
     save(table(), "cabin_table.png")
     save(kitchen(), "cabin_kitchen.png")
+    for index in range(len(PORTAL_COLOURS)):
+        save(
+            kitchen(index),
+            f"cabin_kitchen_awakened_{index + 1}.png",
+        )
     save(woodstove(), "cabin_woodstove.png")
     save(wood_storage(), "cabin_wood_storage.png")
 

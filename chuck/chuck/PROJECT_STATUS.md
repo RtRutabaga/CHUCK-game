@@ -48,6 +48,14 @@ file is required by the project rules and updated every session.
   for the Phase 12 Yi symbols and combining marks. It groups distorted Latin
   marks into their base character cell for typewriter timing and layout, while
   unsupported characters outside this authored set still fail loudly.
+- The counter map now awakens only on the first back-door crossing after all
+  four individual conversation flags are present. The prerequisite remains
+  derived rather than stored, and the single durable awakened flag survives
+  Ashtray saves, Continue, either doorway, and shared checkpoint loading.
+- Awakening replaces only the fixed rectangular map surface on the existing
+  kitchen counter with an eight-frame gray-biased swirling tie-dye treatment
+  and restrained local light. It does not become an oval or freestanding
+  portal, and it intentionally has no interaction yet.
 - The exterior is intentionally silent pending the dedicated Phase 12 music
   pass, rather than inheriting Waterdeep's default cue.
 - Focused exterior, interior, checkpoint, transition, and tileset suites pass,
@@ -58,13 +66,18 @@ file is required by the project rules and updated every session.
 - Focused light-entity and dialogue suites also pass, including byte-exact
   UTF-8 source strings, native glyph rendering, authored seat count/positions,
   independent animation phases, repeated interaction, and save/Continue state.
+- Focused counter-awakening coverage passes for incomplete prerequisites,
+  fourth-conversation non-activation, front-door non-activation, both back-door
+  directions, idempotence, runtime art selection, save/Continue, and direct
+  shared-loader restoration. The awakened counter was inspected at native
+  resolution and the broader Cabin/checkpoint/transition/prop suites pass.
 
 ## Next logical task
 
-- Implement the back-door-gated counter-map awakening: derive the prerequisite
-  from the four conversation flags, awaken only on a subsequent back-door
-  crossing, and persist the rectangular counter surface's normal/awakened state.
-  Keep the portal choice and desert cutscene as a later coherent slice.
+- Add the awakened counter map's close-proximity `Enter planar portal?` YES/NO
+  interaction. NO should close cleanly; YES should begin the short desert
+  arrival cutscene through the established scene/fade architecture. Keep desert
+  gameplay out of Phase 12.
 
 - Added the authoritative Phase 12 contract for the Cabin. It begins
   after the recorded Douglas-fir crossing and contains exactly two peaceful

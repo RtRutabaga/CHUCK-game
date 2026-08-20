@@ -3,15 +3,33 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `f454dfb` (built the Cabin interior)
-- Current work: the four authored seated light entities, exact strange
-  dialogue, and durable conversation flags are complete and verified
+- Base commit before this pass: `c55ffc7` (added Cabin light entities)
+- Current work: the back-door-gated rectangular counter-map awakening and its
+  durable state are complete and verified
 - Active scope: `docs/development/PHASE-12.md`
-- Next implementation slice: awaken the rectangular counter map only on a
-  back-door crossing after all four conversation flags are set, and persist
-  that state; do not add its portal choice or desert cutscene in the same pass
+- Next implementation slice: add close-proximity YES/NO interaction to the
+  awakened counter and its short desert-arrival cutscene; do not begin desert
+  gameplay
 
 ## Completed This Pass
+
+- Added a contained Cabin progression rule that derives `all four spoken` from
+  the four existing flags. The fourth conversation itself does not awaken the
+  map, nor does either front-door transition. The first later crossing of the
+  back door in either direction sets the single durable
+  `cabin_counter_map_awakened` flag; repeat crossings are idempotent.
+- Added eight procedural awakened kitchen-counter frames. The counter, sink,
+  cabinet, and map footprint remain fixed; only the map's existing rectangle
+  becomes a gray-biased rose/violet/blue/cyan/green/yellow/amber swirling
+  surface with restrained projected light.
+- World map rebuilding selects the ordinary or awakened counter from the same
+  authored kitchen marker based on progression. The awakened prop remains mute
+  and has no choice interaction in this slice.
+- Added focused tests for the exact prerequisite/order rule, the real aligned
+  back thresholds, both visual states, save/Continue restoration, and direct
+  shared-checkpoint loading. Cabin exterior/interior/entity, checkpoint,
+  transition, prop, dialogue, and compile checks pass; the result was inspected
+  in a native 320x180 interior frame.
 
 - Added exactly four `CabinLightEntity` instances to the authored seats: both
   couches and both east-side chairs. They are stationary, non-hostile,
@@ -100,11 +118,11 @@
 
 ## Next Agent Boundary
 
-- Implement only the back-door-gated counter awakening next. Derive all-spoken
-  from the four existing flags, set one durable awakened flag only when the
-  back threshold is crossed afterward, and change the existing rectangular map
-  surface in place. Do not add portal interaction, desert cutscene, or music in
-  that pass unless Sean explicitly expands the boundary.
+- Implement the awakened counter's close-proximity `Enter planar portal?`
+  choice and the short input-locked desert-arrival handoff next. NO closes with
+  no additional text; YES uses existing scene/fade conventions and records the
+  transition completion. Do not build desert gameplay or combine this with the
+  dedicated Cabin soundtrack pass unless Sean explicitly expands the boundary.
 
 ## Phase Definition Pass (commit 957b331)
 
