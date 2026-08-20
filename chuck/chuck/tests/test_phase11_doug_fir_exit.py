@@ -1,15 +1,11 @@
-"""Phase 11's exit: the planar portal and the Douglas fir cutscene.
+"""Phase 11's exit and its Phase 12 handoff.
 
 The phase document asks for a specific shape here -- begin from black,
 fade in on a side-view forest at night, Chuck walks out of a large
 Douglas fir, hold long enough to read, end at a stable boundary -- and
-is equally specific that no playable forest may exist yet.
-
-Both halves are worth testing. The order and the hold are what make the
-sequence readable, and the boundary is what stops the phase leaking
-into the next one: the crossing is recorded as a progress flag against
-a save that still points at the City Day 6 Ashtray, so Continue comes
-back to the portal rather than to a region that has not been built.
+The completed cutscene remains unchanged; Phase 12 now consumes its stable
+boundary by entering the authored cabin grounds through the shared checkpoint
+loader. Persistence still waits for the physical exterior Ashtray.
 """
 
 import os
@@ -27,7 +23,6 @@ from src.scenes.doug_fir_cutscene_scene import (
     DOUG_FIR_FLAG, FADE_END, FADE_IN_END, HOLD_END, WALK_END, WALK_START,
     DougFirCutsceneScene,
 )
-from src.scenes.title_scene import TitleScene
 from src.scenes.world_scene import WorldScene
 from src.systems.checkpoints import KNOWN_PROGRESS_FLAGS
 from src.systems.choice import ChoiceSystem
@@ -110,7 +105,7 @@ def test_the_forest_arrives_out_of_black_and_then_chuck_does() -> None:
         directory.cleanup()
 
 
-def test_the_phase_ends_at_a_boundary_that_can_be_resumed() -> None:
+def test_the_phase_hands_into_the_shared_tahuya_checkpoint() -> None:
     assert DOUG_FIR_FLAG in KNOWN_PROGRESS_FLAGS
 
     directory, game = _game()
@@ -127,35 +122,34 @@ def test_the_phase_ends_at_a_boundary_that_can_be_resumed() -> None:
 
         scene.update(0.1)
         assert DOUG_FIR_FLAG in game.progress.flags
-        assert isinstance(game.scenes.current, TitleScene)
+        exterior = game.scenes.current
+        assert isinstance(exterior, WorldScene)
+        assert exterior.map_name == "tahuya_cabin_exterior"
+        assert game.active_checkpoint_id == "tahuya_exterior"
+        assert exterior.sanity.current == 57
 
-        # The crossing is durable, and Continue comes back to the
-        # Ashtray beside the portal rather than to unbuilt forest.
+        # The physical Ashtray on the cabin grounds owns persistence.
         record = game.checkpoints.saves.load()
-        assert record is not None
-        assert record.checkpoint_id == ANCHOR
-        assert record.sanity == 57
-        assert DOUG_FIR_FLAG in record.progress_flags
+        assert record is None
 
         # Handing off is a one-time event, however long the scene runs.
         scene.update(30.0)
-        assert isinstance(game.scenes.current, TitleScene)
+        assert game.scenes.current is exterior
     finally:
         game._shutdown()
         directory.cleanup()
 
 
-def test_no_playable_forest_exists_yet() -> None:
-    """Phase 11's out-of-scope list, held to."""
-    forest = [name for name in MAP_TILESET if "fir" in name or "forest" in name]
-    assert forest == [], forest
-    assert not list(config.MAPS_DIR.glob("*doug_fir*"))
-    # The destination exists only as one animated portal prop inside the city.
+def test_phase_12_adds_only_the_authored_cabin_exterior_so_far() -> None:
+    assert MAP_TILESET["tahuya_cabin_exterior"] == "tahuya"
+    assert (config.MAPS_DIR / "tahuya_cabin_exterior.txt").is_file()
+    assert not (config.MAPS_DIR / "tahuya_cabin_interior.txt").exists()
+    # The city still contains exactly one animated portal into the transition.
     from src.world.tilemap import TileMap
 
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     assert sum(row.count("Ȣ") for row in tilemap._grid) == 1
-    # ...and as a drawn backdrop with nothing playable in it.
+    # The cutscene itself remains a drawn backdrop, not a second forest map.
     assert not hasattr(DougFirCutsceneScene, "update_player")
 
 

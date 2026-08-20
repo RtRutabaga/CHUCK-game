@@ -7,11 +7,11 @@ trunk of the largest fir as if the tree were a doorway -- because on
 this map it was one. The tableau holds long enough to read, then goes
 back to black.
 
-The boundary is deliberate. Phase 11 ends with no playable forest, so
-this hands back to the title screen with the transition recorded as a
-progress flag: the save still points at the City Day 6 Ashtray, so
-Continue resumes exactly where the portal was, and the next phase has a
-recorded fact to open from rather than a half-entered region.
+Phase 12 now continues directly from that completed boundary.  Once the
+fade reaches black, the scene selects the authored Tahuya exterior entry
+through the same checkpoint loader used by Continue and the development
+menu.  The first physical Ashtray on the grounds is still the point that
+persists the crossing to disk.
 
 No words. Sanity carries into the save unchanged.
 """
@@ -64,7 +64,7 @@ def _ease(value: float) -> float:
 
 
 class DougFirCutsceneScene(Scene):
-    """Forest at night, one rat, no dialogue. Ends Phase 11."""
+    """Forest at night, one rat, no dialogue; hands into Phase 12."""
 
     def __init__(self, game, sanity: int | None = None) -> None:
         super().__init__(game)
@@ -118,20 +118,14 @@ class DougFirCutsceneScene(Scene):
         if self.elapsed < FADE_END or self._handed_off:
             return
         self._handed_off = True
-        # Phase 11 ends here. Record the crossing and write it into the
-        # save that still points at the City Day 6 Ashtray, so Continue
-        # comes back to the portal rather than to nothing.
+        # Phase 11 ends here.  Record the crossing, then use the shared
+        # checkpoint path to enter the playable cabin grounds with the
+        # running Sanity value intact.  The nearby Ashtray owns persistence.
         self.game.progress.enable(DOUG_FIR_FLAG)
-        active = self.game.active_checkpoint_id
-        if active is not None and self._sanity is not None:
-            definition = self.game.checkpoints.definition(active)
-            if definition.saveable:
-                self.game.checkpoints.activate_checkpoint(
-                    active, sanity=self._sanity
-                )
-        from src.scenes.title_scene import TitleScene
-
-        self.game.scenes.replace(TitleScene(self.game))
+        flags = set(self.game.progress.flags)
+        self.game.checkpoints.load_checkpoint(
+            "tahuya_exterior", progress_flags=flags, sanity=self._sanity
+        )
 
     # ------------------------------------------------------------------
     def draw(self, surface: pygame.Surface) -> None:

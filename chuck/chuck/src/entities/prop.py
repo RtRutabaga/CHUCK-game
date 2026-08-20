@@ -165,6 +165,15 @@ _SPRITES = {
     "city_sewer_entrance": "objects/city_sewer_entrance.png",
     "city_bus_stop": "objects/city_bus_stop.png",
     "city_planar_portal": "objects/city_planar_portal_1.png",
+    "tahuya_fir": (
+        "objects/tahuya_fir_1.png",
+        "objects/tahuya_fir_2.png",
+        "objects/tahuya_fir_3.png",
+    ),
+    "tahuya_mushroom_light": "objects/tahuya_mushroom_light_1.png",
+    "tahuya_firepit": "objects/tahuya_firepit.png",
+    "tahuya_ufo": "objects/tahuya_ufo.png",
+    "tahuya_firewood_shed": "objects/tahuya_firewood_shed.png",
     "fey_table_leg": (
         "objects/fey_table_leg_1.png",
         "objects/fey_table_leg_2.png",
@@ -192,6 +201,10 @@ _ANIMATED_SPRITES = {
     ),
     "city_planar_portal": tuple(
         f"objects/city_planar_portal_{index + 1}.png" for index in range(12)
+    ),
+    "tahuya_mushroom_light": tuple(
+        f"objects/tahuya_mushroom_light_{index + 1}.png"
+        for index in range(8)
     ),
 }
 _PROP_FRAME_TIME = 0.14
@@ -226,8 +239,15 @@ class Prop:
         animated = _ANIMATED_SPRITES.get(kind)
         if animated is not None:
             self._frames = tuple(assets.image(path) for path in animated)
-            self._animation_t = 0.0
-            self._image = self._frames[0]
+            # The real cabin's colour-changing path lights do not pulse in
+            # lockstep.  Their authored map position gives each one a stable
+            # phase, so the offsets survive reloads without save-state noise.
+            phase = (
+                (col * 31 + row * 17) % len(self._frames)
+                if kind == "tahuya_mushroom_light" else 0
+            )
+            self._animation_t = phase * _PROP_FRAME_TIME
+            self._image = self._frames[phase]
         else:
             self._frames = ()
             self._animation_t = 0.0

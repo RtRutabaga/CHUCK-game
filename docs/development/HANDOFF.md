@@ -3,15 +3,51 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `2f66356` (relocated City Day 6 portal)
-- Current work: Phase 12 documentation and reference intake only; no gameplay,
-  art, state, or music implementation has begun
+- Base commit before this pass: `957b331` (defined the Tahuya cabin phase)
+- Current work: Phase 12 exterior slice complete; implementation is ready for
+  the cabin-interior slice
 - Active scope: `docs/development/PHASE-12.md`
-- Next implementation slice: build the faithful Tahuya cabin exterior shell
-  and grounds from the authored layout, including both playable porches, both
-  aligned door thresholds, and one shared-loader exterior checkpoint
+- Next implementation slice: build the one faithful cabin interior within the
+  established exterior footprint, connect the aligned front/back doors
+  reversibly, and add the interior's one Ashtray/shared-loader checkpoint
 
 ## Completed This Pass
+
+- Added `tahuya_cabin_exterior`, an 80x64 quiet nighttime map based on the
+  authored real-place layout. The clearing/path system occupies the west, the
+  long roofed cabin occupies the right, and both north/back and south/front
+  porches and human-scale stairs are reachable. The two doorway recesses align
+  on the same cabin columns but remain inert until the interior exists.
+- Added the dedicated `tahuya` tileset and procedural props for three Douglas
+  fir silhouettes, firepit, firewood shed, circular `UFO`, and seven mushroom
+  path lights. The cabin uses dark mossed roofing, weathered blue-gray siding,
+  raised porch boards, and open black doorway recesses at native scale.
+- The mushroom lights have eight original color frames with small projected
+  ground glows. `Prop` gives this kind only a deterministic position-derived
+  start phase; repeat loads match, while separate placements are not synced.
+- Added shared checkpoint entry `tahuya_exterior` (development display:
+  `Tahuya Cabin Exterior`) and saveable physical Ashtray
+  `tahuya_exterior_anchor`. The completed Douglas-fir scene now calls that
+  shared loader directly with carried Sanity after its unchanged fade.
+- The exterior has no enemies, hazards, exit edges, placeholder interior, or
+  music. Its missing dedicated soundtrack resolves to intentional silence,
+  avoiding an accidental Waterdeep cue.
+- Added focused regression coverage for dedicated materials and landmarks,
+  porch/Ashtray reachability, shared loader/save/Continue, transition handoff,
+  Sanity carry/respawn, and stable asynchronous light phases. All 112 test
+  scripts pass, compileall succeeds, the headless game loop launches, and
+  native arrival/cabin frames were inspected.
+
+## Next Agent Boundary
+
+- Implement only the cabin interior and its reversible front/back connections
+  next. Fit it within the exterior's 21x33-tile cabin shell, follow the authored
+  furniture plan and photographs, and add exactly one interior Ashtray plus
+  one development checkpoint. Do not add the four entities, counter awakening,
+  desert cutscene, or soundtrack in that same pass unless Sean explicitly
+  expands the boundary.
+
+## Phase Definition Pass (commit 957b331)
 
 - Added `PHASE-12.md`, making the two-map Tahuya cabin the active scope after
   completed Phase 11. The contract explicitly limits the phase to the cabin

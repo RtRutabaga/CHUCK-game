@@ -604,6 +604,28 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="jungle_tree", under="#"),
     "\\": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
                   prop="jungle_shrub", under="#"),
+    # Phase 12's Tahuya cabin grounds.  Dedicated terrain preserves the
+    # authored real-place layout and Pacific Northwest palette.  The two
+    # black doorway recesses are intentionally solid until the paired cabin
+    # interior is built; both raised porches are already playable.
+    "ᶠ": TileDef(solid=False, color=(27, 39, 32)),
+    "♟": TileDef(solid=True, color=(10, 25, 22)),
+    "⌇": TileDef(solid=False, color=(46, 49, 39)),
+    "▧": TileDef(solid=True, color=(42, 55, 55)),
+    "▨": TileDef(solid=True, color=(50, 69, 73)),
+    "▣": TileDef(solid=False, color=(83, 63, 46)),
+    "↟": TileDef(solid=False, color=(91, 68, 48)),
+    "◼": TileDef(solid=True, color=(5, 8, 10)),
+    "♣": TileDef(solid=True, color=(10, 25, 22),
+                 prop="tahuya_fir", under="♟"),
+    "✦": TileDef(solid=True, color=(27, 39, 32),
+                 prop="tahuya_mushroom_light", under="ᶠ"),
+    "⚉": TileDef(solid=True, color=(27, 39, 32),
+                 prop="tahuya_firepit", under="ᶠ"),
+    "◌": TileDef(solid=True, color=(27, 39, 32),
+                 prop="tahuya_ufo", under="ᶠ"),
+    "⌘": TileDef(solid=True, color=(27, 39, 32),
+                 prop="tahuya_firewood_shed", under="ᶠ"),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {
@@ -1102,6 +1124,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # the deep channel beneath them untouched.
     "֊": MarkerDef(kind="lantern_moth:h", under="~", allow_solid=True),
     "Ա": MarkerDef(kind="lantern_moth:v", under="~", allow_solid=True),
+    # Phase 12: cutscene arrival and the exterior's one physical Ashtray.
+    "ኀ": MarkerDef(kind="arrival:from_doug_fir", under="⌇"),
+    "ኁ": MarkerDef(kind="anchor:tahuya_exterior_anchor", under="ᶠ"),
 }
 
 _COMMENT_PREFIX = ";"

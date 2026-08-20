@@ -1194,6 +1194,24 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
+        "tahuya_exterior", "Tahuya Cabin Exterior",
+        "tahuya_cabin_exterior", arrival="from_doug_fir", facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached", "doug_fir_transition_completed",
+        }),
+        runtime_entry=True, fade_in=True,
+    ),
+    CheckpointDefinition(
+        "tahuya_exterior_anchor", "Tahuya Cabin Exterior Ashtray",
+        "tahuya_cabin_exterior", position=(387.0, 580.0), facing="right",
+        required_flags=frozenset({
+            "sewer_completed", "chult_reached", "feywild_reached",
+            "modern_city_reached", "doug_fir_transition_completed",
+        }),
+        saveable=True, development_visible=False,
+    ),
+    CheckpointDefinition(
         "modern_city_day_5_return", "City Day 5 Return",
         "modern_city_day_5", arrival="from_city_day_6", facing="up",
         required_flags=frozenset({

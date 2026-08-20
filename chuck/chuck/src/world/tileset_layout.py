@@ -563,6 +563,36 @@ CITY_DAY = Tileset(
     overhead_char_to_terrain={},
 )
 
+# --------------------------------------------------------------------------
+# Tahuya cabin grounds at night.  This is its own quiet Pacific Northwest
+# material set rather than a recolour of Chult/Feywild: fir duff, mossy paths,
+# weathered blue-grey cabin boards, a mossed roof, and raised timber porches.
+# --------------------------------------------------------------------------
+TAHUYA = Tileset(
+    sheet="tahuya.png",
+    order=[
+        ("forest_ground", 5, 1),
+        ("dense_forest", 5, 1),
+        ("forest_path", 4, 1),
+        ("cabin_roof", 4, 1),
+        ("cabin_wall", 4, 1),
+        ("porch", 4, 1),
+        ("porch_stair", 3, 1),
+        ("dark_doorway", 2, 1),
+    ],
+    char_to_terrain={
+        "ᶠ": "forest_ground",
+        "♟": "dense_forest",
+        "⌇": "forest_path",
+        "▧": "cabin_roof",
+        "▨": "cabin_wall",
+        "▣": "porch",
+        "↟": "porch_stair",
+        "◼": "dark_doorway",
+    },
+    overhead_char_to_terrain={},
+)
+
 
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
@@ -578,6 +608,7 @@ TILESETS: dict[str, Tileset] = {
     "city": CITY,
     "city_day": CITY_DAY,
     "city_sewer": CITY_SEWER,
+    "tahuya": TAHUYA,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -645,6 +676,7 @@ MAP_TILESET: dict[str, str] = {
     "modern_city_day_4": "city_day",
     "modern_city_day_5": "city_day",
     "modern_city_day_6": "city_day",
+    "tahuya_cabin_exterior": "tahuya",
 }
 
 

@@ -519,4 +519,8 @@ AREA_MUSIC: dict[str, str | None] = {
     # The phase document's one deliberate switch: the collision map
     # reuses the Beholder fight theme rather than the day-city cue.
     "modern_city_day_6": "boss_battle.wav",
+    # Phase 12's dedicated cabin track is a later authored slice.  The
+    # Douglas-fir transition already fades the city out, so the new grounds
+    # remain intentionally quiet instead of inheriting Waterdeep's default.
+    "tahuya_cabin_exterior": None,
 }

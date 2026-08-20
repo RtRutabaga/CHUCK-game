@@ -419,25 +419,25 @@ the counter-map transformation, its music, and the desert handoff.
 
 ## References and Layout
 
-- [ ] All nine authored reference files remain in
+- [x] All nine authored reference files remain in
       `docs/design/references/tahuya-cabin/`.
 - [ ] The outdoor and indoor maps closely follow the authored map layout.
 - [ ] The cabin is three-quarter view with visible walls and roof.
 - [ ] The complete interior fits within the exterior roofed footprint.
-- [ ] Both porches are accessible.
+- [x] Both porches are accessible.
 - [ ] Both doors align visually and transition reversibly.
-- [ ] No enemies or hazards are present.
+- [x] No enemies or hazards are present.
 
 ## Exterior
 
-- [ ] The clearing reads as a Douglas-fir forest at night.
+- [x] The clearing reads as a Douglas-fir forest at night.
 - [ ] Cabin siding, mossed shallow roof, raised foundation, porch structure,
       lattice, stairs, and dense understory match the references.
 - [ ] Firepit, shed/outbuilding, circular `UFO` feature, large rocks, paths,
       and marked light positions follow the drawing.
-- [ ] Color-changing mushroom lights use multiple colors and cast local light.
-- [ ] The lights use stable offsets and are visibly unsynchronized.
-- [ ] The exterior has one physical Ashtray and one shared-loader checkpoint.
+- [x] Color-changing mushroom lights use multiple colors and cast local light.
+- [x] The lights use stable offsets and are visibly unsynchronized.
+- [x] The exterior has one physical Ashtray and one shared-loader checkpoint.
 
 ## Interior
 
