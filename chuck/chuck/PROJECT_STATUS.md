@@ -37,6 +37,17 @@ file is required by the project rules and updated every session.
 - Added development checkpoint `Cabin Interior` plus exactly one physical,
   saveable interior Ashtray. Continue and Sanity-zero return rebuild it through
   the same checkpoint loader used everywhere else.
+- Added exactly four stationary light-formed entities in the authored seats:
+  one on each couch and one in each east-side chair. Their eight-frame
+  gray-biased rose/violet/blue/cyan/green/yellow/amber cycle uses stable,
+  distinct phase offsets and restrained local light.
+- Each entity repeats its one exact authored strange line and idempotently sets
+  its own durable progression flag. All four flags flow through the existing
+  Ashtray/save/Continue path; no redundant `all spoken` flag was introduced.
+- The bitmap dialogue font now has a tightly whitelisted procedural treatment
+  for the Phase 12 Yi symbols and combining marks. It groups distorted Latin
+  marks into their base character cell for typewriter timing and layout, while
+  unsupported characters outside this authored set still fail loudly.
 - The exterior is intentionally silent pending the dedicated Phase 12 music
   pass, rather than inheriting Waterdeep's default cue.
 - Focused exterior, interior, checkpoint, transition, and tileset suites pass,
@@ -44,13 +55,16 @@ file is required by the project rules and updated every session.
   checkpoint/save/Continue behavior, and the absence of enemies or hazards.
   The game renders its launch frame headlessly, and the interior's north,
   middle, and south compositions were visually inspected at native resolution.
+- Focused light-entity and dialogue suites also pass, including byte-exact
+  UTF-8 source strings, native glyph rendering, authored seat count/positions,
+  independent animation phases, repeated interaction, and save/Continue state.
 
 ## Next logical task
 
-- Add the four independently color-changing light entities in their authored
-  seats with the exact Phase 12 dialogue strings and persistent conversation
-  flags. Keep the back-door-gated counter awakening and desert transition as a
-  subsequent coherent slice.
+- Implement the back-door-gated counter-map awakening: derive the prerequisite
+  from the four conversation flags, awaken only on a subsequent back-door
+  crossing, and persist the rectangular counter surface's normal/awakened state.
+  Keep the portal choice and desert cutscene as a later coherent slice.
 
 - Added the authoritative Phase 12 contract for the Cabin. It begins
   after the recorded Douglas-fir crossing and contains exactly two peaceful

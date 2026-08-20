@@ -3,15 +3,35 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `96bb159` (tightened the Cabin mushroom trail)
-- Current work: the authored Cabin interior, both reversible doorway pairs,
-  and the interior checkpoint are complete and verified
+- Base commit before this pass: `f454dfb` (built the Cabin interior)
+- Current work: the four authored seated light entities, exact strange
+  dialogue, and durable conversation flags are complete and verified
 - Active scope: `docs/development/PHASE-12.md`
-- Next implementation slice: add the four independently color-changing light
-  entities, their exact dialogue, and persistent conversation flags; do not yet
-  awaken the counter map or begin the desert transition
+- Next implementation slice: awaken the rectangular counter map only on a
+  back-door crossing after all four conversation flags are set, and persist
+  that state; do not add its portal choice or desert cutscene in the same pass
 
 ## Completed This Pass
+
+- Added exactly four `CabinLightEntity` instances to the authored seats: both
+  couches and both east-side chairs. They are stationary, non-hostile,
+  non-colliding NPCs drawn after their supporting furniture.
+- Added one eight-frame procedural seated silhouette sheet. Broad gray-biased
+  tie-dye bands cycle through rose, violet, blue, cyan, green, yellow, and amber
+  with restrained seat-level glow; authored phase indices keep all four visibly
+  offset through loads and map transitions.
+- Added the four exact source strings to UTF-8 dialogue data without
+  normalization. A contained bitmap-font fallback handles only the strings'
+  whitelisted Yi symbols and combining marks, grouping marks with their Latin
+  base for wrapping and typewriter reveal. Ordinary unsupported text remains a
+  loud error.
+- Each interaction idempotently enables one named progression flag and always
+  replays the same line. The existing save record, Ashtray activation, Continue,
+  and shared checkpoint loader preserve all four flags without a second
+  `all spoken` truth.
+- Added focused tests for exact source text, native rendering, seat placement,
+  entity count, distinct animation phases, repeat interaction, and save/Continue
+  restoration. Native couch/chair and dialogue frames were visually inspected.
 
 - Added the single 21x33 `tahuya_cabin_interior`, fitting the established
   exterior shell exactly and using dedicated procedural carpet, patterned
@@ -80,10 +100,11 @@
 
 ## Next Agent Boundary
 
-- Implement only the four seated light entities next: independent color phases,
-  the exact authored strings, and persistent talked-to flags. Do not combine
-  that pass with the back-door-gated counter awakening, desert cutscene, or
-  soundtrack unless Sean explicitly expands the boundary.
+- Implement only the back-door-gated counter awakening next. Derive all-spoken
+  from the four existing flags, set one durable awakened flag only when the
+  back threshold is crossed afterward, and change the existing rectangular map
+  surface in place. Do not add portal interaction, desert cutscene, or music in
+  that pass unless Sean explicitly expands the boundary.
 
 ## Phase Definition Pass (commit 957b331)
 

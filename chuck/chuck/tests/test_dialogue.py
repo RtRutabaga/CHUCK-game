@@ -95,13 +95,13 @@ def test_all_dialogue_text_is_renderable_by_the_pixel_font() -> None:
     # so writing bugs surface here instead of mid-conversation.
     import json
     from src.core import config
-    from src.ui.bitmap_font import GLYPH_ORDER
+    from src.ui.bitmap_font import GLYPH_ORDER, STRANGE_GLYPHS
 
     unrenderable = set()
     for path in config.DIALOGUE_DIR.glob("*.json"):
         for lines in json.loads(path.read_text(encoding="utf-8")).values():
             for line in lines:
-                unrenderable |= set(line) - set(GLYPH_ORDER)
+                unrenderable |= set(line) - set(GLYPH_ORDER) - STRANGE_GLYPHS
     assert not unrenderable, f"no glyphs for: {sorted(unrenderable)}"
 
 
@@ -111,6 +111,7 @@ def test_font_metrics_are_consistent() -> None:
     font = BitmapFont(glyphs={})  # metrics don't touch glyphs
     assert font.size("") == (0, GLYPH_H)
     assert font.size("abc") == (3 * ADVANCE - 1, GLYPH_H)
+    assert font.size("i̵̖") == (ADVANCE - 1, GLYPH_H)
     assert font.get_height() == GLYPH_H
 
 

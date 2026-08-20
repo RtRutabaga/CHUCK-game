@@ -35,8 +35,10 @@ def build_map():
     # The two couches flank the back doorway exactly as on Sean's plan.
     _solid_rect(grid, 1, 3, 8, 5)
     grid[5][5] = "Ƈ"
+    grid[4][5] = "₁"
     _solid_rect(grid, 13, 3, 19, 5)
     grid[5][16] = "Ƭ"
+    grid[4][16] = "₂"
 
     # Central dining table and five stools; the east wall keeps its paired
     # mustard chairs, both at human scale relative to Chuck.
@@ -44,8 +46,10 @@ def build_map():
     grid[15][9] = "Ƒ"
     _solid_rect(grid, 16, 9, 18, 11)
     grid[11][17] = "ƭ"
+    grid[10][17] = "₃"
     _solid_rect(grid, 16, 14, 18, 16)
     grid[16][17] = "ƭ"
+    grid[15][17] = "₄"
 
     # The southern kitchen switches to the photographed patterned linoleum.
     # Its long cabinet includes the sink and the ordinary rectangular D&D map.

@@ -13,6 +13,7 @@ show and when to advance is the DialogueScene's job.
 from __future__ import annotations
 
 from src.core import config
+from src.ui.bitmap_font import glyph_clusters
 from src.ui.text import wrap_text
 
 MARGIN = 6           # panel inset from screen edges
@@ -30,26 +31,28 @@ class DialogueBox:
     def __init__(self, assets) -> None:
         self._font = assets.bitmap_font()
         self._text = ""
+        self._clusters: tuple[str, ...] = ()
         self._shown_chars = 0.0
 
     def show(self, text: str) -> None:
         """Begin displaying a line (restarts the typewriter)."""
         self._text = text
+        self._clusters = glyph_clusters(text)
         self._shown_chars = 0.0
 
     def complete(self) -> None:
         """Reveal the whole line instantly."""
-        self._shown_chars = float(len(self._text))
+        self._shown_chars = float(len(self._clusters))
 
     @property
     def is_complete(self) -> bool:
-        return self._shown_chars >= len(self._text)
+        return self._shown_chars >= len(self._clusters)
 
     def update(self, dt: float) -> None:
         """Advance the typewriter."""
         if not self.is_complete:
             self._shown_chars = min(
-                float(len(self._text)),
+                float(len(self._clusters)),
                 self._shown_chars + config.DIALOGUE_CPS * dt,
             )
 
@@ -64,7 +67,7 @@ class DialogueBox:
         pygame.draw.rect(surface, config.COLOR_DIALOGUE_PANEL, panel)
         pygame.draw.rect(surface, config.COLOR_DIALOGUE_BORDER, panel, 1)
 
-        revealed = self._text[: int(self._shown_chars)]
+        revealed = "".join(self._clusters[: int(self._shown_chars)])
         max_w = panel.width - 2 * _PAD
         y = panel.y + _PAD
         for line in wrap_text(revealed, max_w, lambda s: self._font.size(s)[0]):

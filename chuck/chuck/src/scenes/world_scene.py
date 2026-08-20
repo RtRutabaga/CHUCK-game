@@ -36,6 +36,7 @@ from src.entities.deck_pirate import DeckPirateNPC
 from src.entities.hazard import Cat
 from src.entities.massive_dinosaur import MassiveDinosaur
 from src.entities.npc import NPC
+from src.entities.cabin_light_entity import CabinLightEntity
 from src.entities.pedestrian import PedestrianNPC
 from src.entities.pickup import Cigarette
 from src.entities.pirate_chef import PirateChef
@@ -450,6 +451,19 @@ class WorldScene(Scene):
             elif kind.startswith("npc:"):
                 npc_id = kind.split(":", 1)[1]
                 npc = NPC(cx, cy, npc_id=npc_id, dialogue_id=npc_id)
+                npc.load_sprites(self.game.assets)
+                self.npcs.append(npc)
+            elif kind.startswith("cabin_light:"):
+                _prefix, dialogue_id, progress_flag, phase = kind.split(":")
+                npc = CabinLightEntity(
+                    cx, cy,
+                    dialogue_id=dialogue_id,
+                    progress=self.game.progress,
+                    progress_flag=progress_flag,
+                    phase_index=int(phase),
+                    seat_sort_y=(int(cy // config.TILE_SIZE) + 2)
+                                * config.TILE_SIZE + 0.5,
+                )
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
             elif kind.startswith("patrol_npc:"):

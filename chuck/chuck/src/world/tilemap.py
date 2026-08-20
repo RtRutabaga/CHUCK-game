@@ -1161,6 +1161,28 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ኄ": MarkerDef(kind="arrival:from_front_door", under="Ŀ"),
     "ኅ": MarkerDef(kind="arrival:from_back_door", under="Ŀ"),
     "ኆ": MarkerDef(kind="anchor:tahuya_interior_anchor", under="Ŀ"),
+    # Four seated Phase 12 light entities. Their markers sit inside the
+    # furniture footprints; solid under-tiles preserve the authored collision.
+    "₁": MarkerDef(
+        kind="cabin_light:cabin_entity_big_couch:"
+             "cabin_entity_big_couch_spoken:0",
+        under="∎", allow_solid=True,
+    ),
+    "₂": MarkerDef(
+        kind="cabin_light:cabin_entity_couch:"
+             "cabin_entity_couch_spoken:2",
+        under="∎", allow_solid=True,
+    ),
+    "₃": MarkerDef(
+        kind="cabin_light:cabin_entity_chair_north:"
+             "cabin_entity_chair_north_spoken:4",
+        under="∎", allow_solid=True,
+    ),
+    "₄": MarkerDef(
+        kind="cabin_light:cabin_entity_chair_south:"
+             "cabin_entity_chair_south_spoken:6",
+        under="∎", allow_solid=True,
+    ),
 }
 
 _COMMENT_PREFIX = ";"
