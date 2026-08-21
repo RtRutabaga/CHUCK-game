@@ -614,8 +614,8 @@ TILE_DEFS: dict[str, TileDef] = {
     "⌇": TileDef(solid=False, color=(46, 49, 39)),
     "▧": TileDef(solid=True, color=(42, 55, 55)),
     "▨": TileDef(solid=True, color=(50, 69, 73)),
-    "▣": TileDef(solid=False, color=(83, 63, 46)),
-    "↟": TileDef(solid=False, color=(91, 68, 48)),
+    "▣": TileDef(solid=False, color=(104, 74, 48)),
+    "↟": TileDef(solid=False, color=(88, 62, 40)),
     "◼": TileDef(solid=True, color=(5, 8, 10)),
     "Ɛ": TileDef(solid=False, color=(5, 8, 10)),  # exterior front door
     "Ɯ": TileDef(solid=False, color=(5, 8, 10)),  # interior front door

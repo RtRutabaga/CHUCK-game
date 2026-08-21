@@ -109,75 +109,212 @@ def make_shed():
 
 
 def make_cabin():
-    """Compact three-quarter-view cabin, authored as one readable landmark."""
-    s = pygame.Surface((208, 150), pygame.SRCALPHA)
-    outline = (12, 18, 18)
-    siding_dark = (39, 61, 66)
-    siding = (55, 82, 88)
-    siding_light = (77, 101, 103)
-    wood = (94, 61, 39)
-    wood_light = (137, 87, 49)
-    roof_dark = (31, 34, 25)
-    roof = (48, 51, 31)
-    moss = (63, 69, 36)
+    """The Tahuya cabin: a gable-roofed landmark in three-quarter view.
 
-    # Raised posts and the two visible wall planes.
-    for x, y in ((30, 104), (92, 124), (120, 127), (180, 101)):
-        pygame.draw.rect(s, outline, (x, y, 7, 28))
-        pygame.draw.rect(s, (63, 49, 37), (x + 2, y, 3, 24))
-    front = ((24, 55), (105, 76), (105, 125), (24, 105))
-    side = ((105, 76), (184, 45), (184, 101), (105, 132))
-    pygame.draw.polygon(s, outline, front)
-    pygame.draw.polygon(s, outline, side)
-    pygame.draw.polygon(s, siding, ((28, 59), (101, 78),
-                                    (101, 120), (28, 102)))
-    pygame.draw.polygon(s, siding_dark, ((109, 79), (180, 51),
-                                         (180, 98), (109, 126)))
-    for x in range(34, 99, 9):
-        pygame.draw.line(s, siding_light, (x, 61), (x, 114), 1)
-    for x in range(116, 179, 10):
-        pygame.draw.line(s, (49, 72, 76), (x, 75), (x, 121), 1)
+    Built to the reference photograph rather than to the tile grid. The
+    near end is the gable, because that is the face the door and the
+    covered porch are on, and it is what makes the building read as a
+    cabin rather than as a shed: a peak, two roof slopes, and a triangle
+    of siding under them.
 
-    # Moss-darkened shallow roof with a strong diagonal ridge and eaves.
-    pygame.draw.polygon(s, outline, ((11, 53), (73, 6), (197, 39),
-                                     (106, 83)))
-    pygame.draw.polygon(s, roof, ((17, 51), (76, 11), (190, 41),
-                                  (105, 77)))
-    pygame.draw.polygon(s, roof_dark, ((76, 11), (190, 41),
-                                       (181, 48), (74, 20)))
-    for step in range(5):
-        y = 26 + step * 9
-        pygame.draw.line(s, moss, (28 + step * 10, y),
-                         (168 + step * 3, y + 16), 3)
-        pygame.draw.line(s, (73, 65, 35), (31 + step * 10, y + 2),
-                         (165 + step * 3, y + 18), 1)
-    pygame.draw.line(s, (89, 87, 64), (14, 53), (105, 81), 3)
-    pygame.draw.line(s, (89, 87, 64), (105, 81), (194, 40), 3)
+    Everything is laid out from four points -- the near bottom corner,
+    the two wall runs going away from it, and the ridge -- so the roof,
+    the eaves and the porch stay in agreement if any of them moves.
+    """
+    W, H = 264, 188
+    s = pygame.Surface((W, H), pygame.SRCALPHA)
 
-    # South-facing door, warm porch lamp, and one side window.
-    pygame.draw.polygon(s, outline, ((50, 66), (70, 71), (70, 111),
-                                     (50, 106)))
-    pygame.draw.polygon(s, (35, 48, 52), ((54, 70), (67, 73),
-                                         (67, 106), (54, 103)))
-    pygame.draw.circle(s, (232, 175, 65), (48, 76), 3)
-    pygame.draw.circle(s, (255, 211, 95), (48, 76), 1)
-    pygame.draw.polygon(s, outline, ((134, 70), (166, 58), (166, 78),
-                                     (134, 90)))
-    pygame.draw.polygon(s, (20, 31, 34), ((138, 71), (162, 63),
-                                         (162, 76), (138, 85)))
-    pygame.draw.line(s, siding_light, (150, 67), (150, 81), 2)
+    outline = (14, 18, 22)
+    siding = (74, 100, 118)
+    siding_light = (98, 124, 142)
+    siding_dark = (54, 74, 90)
+    side_wall = (56, 78, 94)
+    side_line = (42, 60, 74)
+    gable_face = (66, 90, 108)
+    shingle = (52, 52, 46)
+    shingle_dark = (38, 38, 34)
+    moss = (100, 114, 58)
+    moss_light = (126, 140, 74)
+    ridge_cap = (78, 78, 68)
+    wood = (104, 74, 48)
+    wood_light = (138, 100, 64)
+    wood_dark = (70, 48, 32)
+    door = (88, 60, 40)
+    door_dark = (58, 38, 26)
+    frame = (96, 66, 44)
+    glass = (34, 44, 52)
+    glass_lit = (58, 74, 84)
+    pier = (128, 128, 118)
+    pier_dark = (78, 78, 72)
+    grass = (60, 90, 48)
+    grass_light = (84, 118, 60)
 
-    # Compact raised porch and broad stairs toward the player/south.
-    pygame.draw.polygon(s, outline, ((23, 105), (77, 118), (106, 108),
-                                     (50, 96)))
-    pygame.draw.polygon(s, wood, ((28, 104), (76, 115), (100, 107),
-                                  (51, 99)))
-    for y, left, right in ((116, 48, 84), (125, 43, 87),
-                           (135, 38, 91), (145, 33, 95)):
-        pygame.draw.polygon(s, outline, ((left, y - 5), (right, y + 2),
-                                         (right - 4, y + 7),
-                                         (left - 4, y)))
-        pygame.draw.line(s, wood_light, (left, y - 4), (right - 1, y + 2), 3)
+    def filled(points, colour):
+        pygame.draw.polygon(s, outline, points)
+        pygame.draw.polygon(s, colour, points)
+        pygame.draw.polygon(s, outline, points, 1)
+
+    # ---- the frame the whole building is measured from -----------------
+    near = (150, 172)                          # corner nearest the camera
+    left_b, left_t = (58, 142), (58, 78)       # gable end, away to the left
+    near_t = (150, 108)
+    right_b, right_t = (234, 140), (234, 76)   # long side, away to the right
+    peak = (104, 58)
+
+    # ---- piers: the cabin stands off the ground on posts ---------------
+    for x, y in ((66, 140), (104, 152), (146, 168), (190, 152), (226, 138)):
+        pygame.draw.rect(s, outline, (x - 1, y - 1, 9, 22))
+        pygame.draw.rect(s, pier, (x, y, 7, 20))
+        pygame.draw.rect(s, pier_dark, (x + 4, y, 3, 20))
+
+    # ---- walls ---------------------------------------------------------
+    # The long side, in shade because the light is on the gable end.
+    filled((near_t, right_t, right_b, near), side_wall)
+    for step in range(1, 10):
+        x = near_t[0] + step * 11
+        top = round(near_t[1] - step * 4.2)
+        pygame.draw.line(s, side_line, (x, top), (x, top + 63))
+
+    # The gable end: wall, and the triangle of siding above it.
+    filled((left_t, near_t, near, left_b), siding)
+    filled((left_t, peak, near_t), gable_face)
+    for step in range(1, 9):
+        x = left_t[0] + step * 10
+        top = round(left_t[1] + step * 3.3)
+        pygame.draw.line(s, siding_light, (x, top), (x, top + 63))
+    pygame.draw.line(s, siding_dark, left_t, near_t, 2)
+
+    # ---- roof ----------------------------------------------------------
+    # A sliver of the far slope shows above the ridge.
+    filled(((92, 50), (198, 22), (190, 18), (84, 46)), shingle_dark)
+    # The big slope facing the camera, which is the one carrying the moss.
+    filled(((92, 50), (198, 22), (256, 82), (162, 118)), shingle)
+    for step in range(1, 7):
+        offset = step * 9.8
+        pygame.draw.line(s, shingle_dark,
+                         (round(92 + step * 11.7), round(50 + offset)),
+                         (round(198 + step * 9.7), round(22 + offset)))
+    # Moss is a mat, not a crop of toadstools: short flat runs lying along
+    # the courses, thickest up near the ridge where the rain sits longest.
+    for index in range(560):
+        along = (index * 37 % 101) / 100.0
+        down = (index * 61 % 97) / 96.0
+        down = down * down          # crowd it toward the ridge
+        # Clumped rather than even: the same two-scale trick the roofs in
+        # the city use, so it is a mat with bare patches in it.
+        clump = (round(along * 9) * 13 + round(down * 7) * 29) % 11
+        if clump > 6:
+            continue
+        x = round(92 + along * 106 + down * 64)
+        y = round(50 - along * 28 + down * 62)
+        run = 2 + (index % 5)
+        pygame.draw.line(s, moss if index % 3 else moss_light,
+                         (x, y), (x + run, y))
+    # Ridge cap, eaves fascia, and the barge board down the near gable.
+    pygame.draw.line(s, ridge_cap, (92, 50), (198, 22), 3)
+    pygame.draw.line(s, outline, (92, 50), (198, 22), 1)
+    pygame.draw.line(s, (86, 86, 76), (162, 118), (256, 82), 3)
+    pygame.draw.line(s, outline, (162, 118), (256, 82), 1)
+    pygame.draw.line(s, (92, 92, 82), (92, 50), (40, 92), 4)
+    pygame.draw.line(s, outline, (92, 50), (40, 92), 1)
+    pygame.draw.line(s, (92, 92, 82), (92, 50), (162, 118), 4)
+    pygame.draw.line(s, outline, (92, 50), (162, 118), 1)
+
+    # ---- porch: its own small gable on two posts ------------------------
+    filled(((14, 150), (66, 166), (120, 148), (68, 132)), wood)
+    for step in range(1, 6):
+        pygame.draw.line(s, wood_dark,
+                         (14 + step * 9, 150 - step * 3),
+                         (66 + step * 9, 166 - step * 3))
+    for x, y in ((14, 96), (66, 112)):
+        pygame.draw.rect(s, outline, (x - 1, y - 1, 8, 58))
+        pygame.draw.rect(s, wood, (x, y, 6, 56))
+        pygame.draw.rect(s, wood_light, (x, y, 2, 56))
+    pygame.draw.line(s, wood_light, (17, 122), (69, 138), 3)
+    pygame.draw.line(s, outline, (17, 122), (69, 138), 1)
+    for step in range(7):
+        x = 18 + step * 7
+        y = 124 + step * 2
+        pygame.draw.line(s, wood, (x, y), (x, y + 24), 2)
+        pygame.draw.line(s, wood_dark, (x + 1, y), (x + 1, y + 24), 1)
+    filled(((30, 52), (82, 68), (88, 76), (36, 60)), shingle_dark)
+    filled(((6, 92), (58, 108), (86, 74), (34, 58)), shingle)
+    for step in range(1, 4):
+        offset = step * 8
+        pygame.draw.line(s, shingle_dark,
+                         (round(34 - step * 7), round(58 + offset)),
+                         (round(86 - step * 7), round(74 + offset)))
+    pygame.draw.line(s, ridge_cap, (34, 58), (86, 74), 3)
+    pygame.draw.line(s, (92, 92, 82), (6, 92), (58, 108), 3)
+    pygame.draw.line(s, outline, (6, 92), (58, 108), 1)
+    pygame.draw.line(s, outline, (34, 58), (86, 74), 1)
+
+    # Steps down off the deck toward the viewer, in front of the door
+    # rather than off the far end -- they have to land on the tiles the
+    # map already authored as the way up onto the porch.
+    for tread in range(4):
+        dx, dy = 4 * tread, 5 * tread
+        top = ((66 + dx, 166 + dy), (120 + dx, 148 + dy),
+               (124 + dx, 153 + dy), (70 + dx, 171 + dy))
+        pygame.draw.polygon(s, outline, top)
+        pygame.draw.polygon(s, wood if tread % 2 else wood_light, top)
+        pygame.draw.line(s, wood_dark, (66 + dx, 167 + dy),
+                         (120 + dx, 149 + dy), 2)
+
+    # ---- the door, its lamp, and the windows ---------------------------
+    filled(((78, 92), (100, 99), (100, 148), (78, 141)), door)
+    pygame.draw.polygon(s, door_dark, ((82, 98), (96, 103),
+                                       (96, 141), (82, 136)))
+    pygame.draw.rect(s, glass_lit, (85, 104, 9, 11))
+    pygame.draw.circle(s, (188, 152, 96), (99, 124), 1)
+    # The lamp beside it: the one warm thing on the whole building.
+    for radius, alpha in ((12, 40), (8, 64)):
+        glow = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+        pygame.draw.circle(glow, (255, 214, 130, alpha),
+                           (radius, radius), radius)
+        s.blit(glow, (72 - radius, 96 - radius))
+    pygame.draw.circle(s, (120, 92, 52), (72, 96), 4)
+    pygame.draw.circle(s, (255, 214, 130), (72, 96), 3)
+    pygame.draw.circle(s, (255, 244, 200), (72, 95), 1)
+
+    def window(points, panes_x, panes_y):
+        filled(points, frame)
+        inset = ((3, 2), (-3, 3), (-3, -2), (3, -3))
+        inner = [(x + dx, y + dy)
+                 for (x, y), (dx, dy) in zip(points, inset)]
+        pygame.draw.polygon(s, glass, inner)
+        left, right, bottom, top = inner
+        for step in range(1, panes_x):
+            t = step / panes_x
+            pygame.draw.line(
+                s, frame,
+                (round(left[0] + (right[0] - left[0]) * t),
+                 round(left[1] + (right[1] - left[1]) * t)),
+                (round(top[0] + (bottom[0] - top[0]) * t),
+                 round(top[1] + (bottom[1] - top[1]) * t)), 1)
+        for step in range(1, panes_y):
+            t = step / panes_y
+            pygame.draw.line(
+                s, frame,
+                (round(left[0] + (top[0] - left[0]) * t),
+                 round(left[1] + (top[1] - left[1]) * t)),
+                (round(right[0] + (bottom[0] - right[0]) * t),
+                 round(right[1] + (bottom[1] - right[1]) * t)), 1)
+
+    # One on the gable end, right of the door; one on the long side.
+    window(((110, 103), (136, 111), (136, 138), (110, 130)), 2, 2)
+    window(((176, 108), (222, 90), (222, 120), (176, 138)), 3, 2)
+
+    # ---- grass tufts round the base ------------------------------------
+    for x, y in ((100, 176), (134, 184), (170, 174),
+                 (200, 162), (226, 152), (238, 146), (150, 180)):
+        for blade in range(4):
+            bx = x + blade * 3 - 4
+            height = 5 + (blade % 3) * 3
+            pygame.draw.line(s, grass, (bx, y), (bx + 1, y - height))
+            if blade % 2:
+                pygame.draw.line(s, grass_light, (bx, y - 1),
+                                 (bx + 1, y - height + 1))
     return s
 
 

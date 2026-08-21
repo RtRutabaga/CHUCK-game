@@ -23,6 +23,44 @@ def _path(grid, start, end, radius=1):
                     grid[y + oy][x + ox] = "⌇"
 
 
+CABIN_TILE = (62, 34)          # the tile the cabin prop hangs from
+CABIN_COVERAGE = 0.38          # how much of a tile the building must fill
+
+
+def _cabin_footprint():
+    """Every tile the drawn cabin actually stands on.
+
+    Taken from the sprite's own alpha rather than from a rectangle
+    written out by hand. A gable-roofed building is not a rectangle --
+    the roof reaches further than the walls at the ridge and less at the
+    eaves -- and the two drifted apart every time the art moved. Reading
+    the coverage back off the finished sprite means collision follows
+    the visible mass by construction.
+    """
+    import pygame
+
+    pygame.init()
+    image = pygame.image.load(
+        str(ROOT / "assets" / "sprites" / "objects" / "tahuya_cabin.png")
+    )
+    width, height = image.get_size()
+    left = CABIN_TILE[0] * 16 + 8 - width // 2
+    top = (CABIN_TILE[1] + 1) * 16 - height
+    tiles = []
+    for row in range((top // 16), (top + height) // 16 + 1):
+        for col in range((left // 16), (left + width) // 16 + 1):
+            covered = 0
+            for y in range(row * 16, row * 16 + 16):
+                for x in range(col * 16, col * 16 + 16):
+                    px, py = x - left, y - top
+                    if 0 <= px < width and 0 <= py < height:
+                        if image.get_at((px, py))[3] > 128:
+                            covered += 1
+            if covered / 256.0 >= CABIN_COVERAGE:
+                tiles.append((row, col))
+    return tiles
+
+
 def build_map():
     grid = [["♟" for _ in range(WIDTH)] for _ in range(HEIGHT)]
 
@@ -52,18 +90,20 @@ def build_map():
     _path(grid, (59, 37), (59, 54), 2)
     _path(grid, (59, 54), (59, 59), 2)
 
-    # The exterior cabin is intentionally much smaller than its interior map.
+    # The exterior cabin is still smaller than its interior map, but it is
+# a proper gable-roofed landmark now rather than a compact block, so
+# its footprint follows the drawn mass: roof to the eaves, the deck
+# walkable under the porch, and the steps where they are drawn.
     # One procedural three-quarter-view landmark carries its roof, walls,
     # windows, porch, and stairs. Collision follows the visible building mass,
     # while a narrow porch corridor reaches the sole south-facing door.
-    for y in range(27, 35):
-        for x in range(56, 69):
-            grid[y][x] = "♟"
+    for y, x in _cabin_footprint():
+        grid[y][x] = "♟"
     for y in range(32, 35):
-        for x in range(58, 62):
+        for x in range(55, 62):
             grid[y][x] = "▣"
-    for y in range(35, 38):
-        for x in range(59, 61):
+    for y in range(35, 37):
+        for x in range(57, 63):
             grid[y][x] = "↟"
     grid[31][59] = "Ɛ"
     grid[36][59] = "ኂ"

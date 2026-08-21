@@ -192,10 +192,53 @@ def test_mushroom_lights_have_stable_unsynchronised_phases() -> None:
         assert firepit._size == (64, 56)
         assert len(firepit._frames) == 6
         assert ufo._size == (132, 76)
-        assert cabin._size == (208, 150)
+        # The cabin is a full gable-roofed landmark now, not a compact block.
+        assert cabin._size == (264, 188)
     finally:
         game._shutdown()
         directory.cleanup()
+
+
+def test_the_cabin_is_a_gable_landmark_and_collision_follows_it() -> None:
+    """The cabin has to be a building, and the map has to agree with it.
+
+    The old exterior was a compact block with a shallow roof, and its
+    footprint was a hand-written rectangle. A gable-roofed building is
+    not a rectangle -- the roof reaches further at the ridge than at the
+    eaves -- so the two drifted apart whenever the art moved. The
+    footprint is read back off the sprite's own alpha now, which is what
+    this checks: every tile marked solid is one the cabin actually
+    stands on, and every tile it stands on is solid.
+    """
+    from tools.generate_tahuya_cabin_exterior import (
+        CABIN_COVERAGE, CABIN_TILE, _cabin_footprint,
+    )
+
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    footprint = set(_cabin_footprint())
+    assert len(footprint) >= 100, len(footprint)
+
+    walkable = {"▣", "↟", "Ɛ", "ኂ"}
+    for row, col in footprint:
+        char = tilemap._grid[row][col]
+        assert tilemap.is_solid(col, row) or char in walkable, (col, row, char)
+
+    # The silhouette steps rather than squaring off: a gable seen at an
+    # angle is wider at the eaves than at the ridge.
+    widths = {}
+    for row, col in footprint:
+        widths.setdefault(row, []).append(col)
+    spans = {row: max(cols) - min(cols) + 1 for row, cols in widths.items()}
+    assert len(set(spans.values())) >= 4, spans
+
+    # The porch is walkable, the door is on it, and the steps come down
+    # off it onto ground Chuck can stand on.
+    assert tilemap.terrain_at(59, 31) == "Ɛ"
+    for col in range(56, 61):
+        assert not tilemap.is_solid(col, 33), col
+    for col in range(58, 62):
+        assert not tilemap.is_solid(col, 35), col
+    assert CABIN_TILE == (62, 34) and 0.0 < CABIN_COVERAGE < 1.0
 
 
 def _run_all() -> None:

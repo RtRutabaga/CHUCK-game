@@ -4,6 +4,28 @@ Updated: Phase 11 is feature-complete. Phase 12 is active; both authored Cabin
 maps and their shared doorway/checkpoint foundation are implemented. This
 file is required by the project rules and updated every session.
 
+## Latest implementation
+
+- The cabin on the exterior map is a proper gable-roofed landmark, rebuilt to
+  the reference photograph and grown from 208x150 to 264x188. It has a ridge
+  and two roof slopes with a triangle of siding under them, a covered porch on
+  its own small gable with posts and a railing, wooden steps down in front of
+  the door, a lit lamp beside it, panelled windows on both visible faces, and
+  concrete piers holding it off the ground.
+- Its footprint is no longer a hand-written rectangle. A gable-roofed building
+  is not a rectangle -- the roof reaches further at the ridge than at the eaves
+  -- so the drawn mass and the collision drifted apart every time the art
+  moved. The map generator now reads the coverage back off the finished
+  sprite's own alpha, so collision follows the visible building by
+  construction.
+- The porch and stair terrain were the cabin's aged blue. Beside the warm drawn
+  decking they read as a cold slab bolted to the bottom of the steps, so both
+  tiles are now the same weathered wood the cabin's own porch is built from.
+- The roof moss was drawn as ellipses and came out looking like toadstools
+  growing on the shingles. It is short flat runs lying along the courses now,
+  clumped with a two-scale offset so it is a mat with bare patches rather than
+  an even speckle.
+
 ## Active Phase 12 scope
 
 - Reworked the 80x64 nighttime cabin grounds around a compact 208x150
