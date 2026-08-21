@@ -628,6 +628,14 @@ TILE_DEFS: dict[str, TileDef] = {
     "ć": TileDef(solid=True, color=(72, 43, 31)),
     "♣": TileDef(solid=True, color=(10, 25, 22),
                  prop="tahuya_fir", under="♟"),
+    # Evergreen huckleberry and salal: the understory a Douglas-fir
+    # stand in Washington actually has under it. Both are scenery Chuck
+    # walks through rather than around -- he is a foot tall and these
+    # are shrubs, so blocking on them would fence off the whole wood.
+    "ᶲ": TileDef(solid=False, color=(32, 80, 50),
+                 prop="tahuya_salal", under="ᶠ"),
+    "ᶳ": TileDef(solid=False, color=(28, 70, 44),
+                 prop="tahuya_huckleberry", under="ᶠ"),
     "✦": TileDef(solid=True, color=(27, 39, 32),
                  prop="tahuya_mushroom_light", under="ᶠ"),
     "⚉": TileDef(solid=True, color=(27, 39, 32),

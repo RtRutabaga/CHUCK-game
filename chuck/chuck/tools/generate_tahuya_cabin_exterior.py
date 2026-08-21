@@ -210,6 +210,32 @@ def build_map():
         if grid[y][x] in {"ᶠ", "♣"}:
             grid[y][x] = "ʛ"
 
+    # Evergreen huckleberry and salal fill in under the stand. A
+    # Douglas-fir wood in this part of Washington does not have a bare
+    # floor under it, and the trees on their own read as posts standing
+    # in a lawn. Both are scenery Chuck walks through, so they can be
+    # thick without fencing anything off.
+    #
+    # Placement follows the trees rather than covering the map: a tile
+    # gets brush only if there is a fir within a couple of tiles of it,
+    # which keeps the clearing, the trail and the fire circle open
+    # without any of those having to be named here.
+    firs_by_row = {}
+    for x, y in firs:
+        firs_by_row.setdefault(y, []).append(x)
+    for y in range(4, HEIGHT):
+        for x in range(1, WIDTH - 1):
+            if grid[y][x] != "ᶠ":
+                continue
+            near = any(
+                abs(x - fx) <= 2
+                for row in range(y - 2, y + 3)
+                for fx in firs_by_row.get(row, ())
+            )
+            if not near or rng.random() > 0.34:
+                continue
+            grid[y][x] = "ᶲ" if rng.random() < 0.45 else "ᶳ"
+
     # The cutscene emerges onto the western trail; the one Ashtray is close
     # enough to discover naturally but does not interrupt the reveal.
     grid[31][10] = "ኀ"

@@ -170,6 +170,18 @@ _SPRITES = {
         "objects/tahuya_fir_2.png",
         "objects/tahuya_fir_3.png",
     ),
+    # Understory. Three cuts of each, picked by tile rather than
+    # animated, so a stand of them never repeats in a visible rhythm.
+    "tahuya_salal": (
+        "objects/tahuya_salal_1.png",
+        "objects/tahuya_salal_2.png",
+        "objects/tahuya_salal_3.png",
+    ),
+    "tahuya_huckleberry": (
+        "objects/tahuya_huckleberry_1.png",
+        "objects/tahuya_huckleberry_2.png",
+        "objects/tahuya_huckleberry_3.png",
+    ),
     "tahuya_mushroom_light": "objects/tahuya_mushroom_light_1.png",
     "tahuya_firepit": "objects/tahuya_firepit_1.png",
     "tahuya_ufo": "objects/tahuya_ufo.png",

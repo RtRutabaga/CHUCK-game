@@ -277,6 +277,42 @@ def test_the_cabin_is_a_gable_landmark_and_collision_follows_it() -> None:
     assert CABIN_TILE == (62, 34) and 0.0 < CABIN_COVERAGE < 1.0
 
 
+def test_the_wood_has_an_understory_and_it_is_still_walkable() -> None:
+    """Firs on bare ground read as posts standing in a lawn.
+
+    A Douglas-fir stand in this part of Washington has evergreen
+    huckleberry and salal under it, so both are scattered through the
+    wooded parts. They follow the trees rather than covering the map --
+    a tile only gets brush if there is a fir within a couple of tiles --
+    which is what keeps the clearing, the trail and the fire circle open
+    without any of them having to be named as exclusions.
+    """
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
+    assert props["tahuya_salal"] > 60, props["tahuya_salal"]
+    assert props["tahuya_huckleberry"] > 60, props["tahuya_huckleberry"]
+
+    brush = [(col, row) for kind, col, row in tilemap.prop_tiles
+             if kind in {"tahuya_salal", "tahuya_huckleberry"}]
+    firs = {(col, row) for kind, col, row in tilemap.prop_tiles
+            if kind == "tahuya_fir"}
+    for col, row in brush:
+        # Under the trees, never out in the open.
+        assert any((col + dx, row + dy) in firs
+                   for dx in range(-2, 3) for dy in range(-2, 3)), (col, row)
+        # Chuck is a foot tall and these are shrubs: he goes through
+        # them. Solid brush this thick would fence off the whole wood.
+        assert not tilemap.is_solid(col, row), (col, row)
+
+    # The route in and the things on it are untouched by the planting.
+    markers = _markers(tilemap)
+    reachable = _flood(tilemap, markers["arrival:from_doug_fir"][0])
+    assert markers["anchor:tahuya_exterior_anchor"][0] in reachable
+    assert (59, 33) in reachable
+    assert not any((col, row) in brush
+                   for col, row in ((57, 43), (70, 42)))
+
+
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):

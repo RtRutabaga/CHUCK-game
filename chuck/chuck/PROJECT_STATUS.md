@@ -6,6 +6,21 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The wood on the cabin grounds has an understory: evergreen huckleberry and
+  salal, roughly 460 shrubs through the stand. Firs on bare ground read as
+  posts standing in a lawn, and a Douglas-fir wood in this part of Washington
+  is never bare underneath.
+- The two are drawn to be told apart. Salal is a low mound of big leathery
+  ovals on reddish stems; huckleberry is an upright spray of small glossy
+  leaves with bronze new growth at the tips. Three cuts of each, picked by
+  tile, so a stand never repeats in a visible rhythm. No berries -- at this
+  scale a red dot reads as an insect, not fruit.
+- Both are scenery Chuck walks through rather than around. He is a foot tall
+  and these are shrubs; solid brush this thick would have fenced off the wood.
+- Placement follows the trees rather than covering the map: a tile only gets
+  brush if there is a fir within two tiles of it, which keeps the clearing, the
+  trail and the fire circle open without any of them being named as exclusions.
+
 - The trail and the lit mushrooms end at the fire on the cabin grounds. They
   used to run on south past it and off the bottom of the map, which read as a
   way out that goes nowhere. The last two lights turn in toward the fire circle

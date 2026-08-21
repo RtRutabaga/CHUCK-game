@@ -338,6 +338,101 @@ def make_cabin():
     return s
 
 
+# --------------------------------------------------------------------------
+# Understory. A Douglas-fir stand in this part of Washington never has a
+# bare floor under it: it has evergreen huckleberry and salal, and the
+# two do not look alike. Huckleberry is upright and finely textured,
+# small glossy leaves in sprays with bronze new growth at the tips.
+# Salal is a low leathery mound of big oval leaves on reddish stems.
+# Both are drawn without berries -- the fruit is a few weeks a year and
+# a red dot at this scale reads as a bug, not a berry.
+# --------------------------------------------------------------------------
+
+BRUSH_DARK = (10, 26, 22)
+SALAL_LEAF = ((22, 58, 38), (32, 80, 50), (46, 100, 60))
+SALAL_STEM = (92, 54, 40)
+HUCKLE_LEAF = ((18, 50, 36), (28, 70, 44), (40, 88, 54))
+HUCKLE_NEW = (96, 68, 44)
+
+
+def make_salal(index):
+    """A low mound of thick leathery ovals on reddish stems."""
+    s = pygame.Surface((30, 24), pygame.SRCALPHA)
+    stems = ((8, 23, 11, 12), (15, 23, 15, 9), (22, 23, 20, 13))
+    for x0, y0, x1, y1 in stems:
+        pygame.draw.line(s, SALAL_STEM, (x0, y0), (x1, y1), 2)
+    # Big leaves, alternating up each stem and fanning outward. The
+    # silhouette is what tells salal from huckleberry, so they are drawn
+    # few and large rather than many and small.
+    leaves = (
+        (4, 14, 9, 6, 0), (11, 9, 10, 6, 1), (18, 7, 10, 6, 2),
+        (2, 18, 8, 5, 1), (13, 15, 10, 6, 2), (21, 12, 9, 6, 0),
+        (7, 11, 9, 5, 2), (17, 17, 10, 6, 1),
+    )
+    for offset, (x, y, w, h, tone) in enumerate(leaves):
+        x = (x + index * 2) % 20
+        colour = SALAL_LEAF[(tone + index) % 3]
+        pygame.draw.ellipse(s, BRUSH_DARK, (x, y, w + 1, h + 1))
+        pygame.draw.ellipse(s, colour, (x, y, w, h))
+        # One pale rib down the middle: these leaves are glossy.
+        pygame.draw.line(s, SALAL_LEAF[2], (x + 2, y + h // 2),
+                         (x + w - 2, y + h // 2))
+    return s
+
+
+def make_huckleberry(index):
+    """A bushy spray of small glossy leaves, bronze at the tips.
+
+    Drawn as arching stems fanning from one crown with the leaves
+    alternating along them. Built symmetrically -- a leaf either side of
+    each stem, stems straight up -- it came out as a column of chevrons
+    reading as a row of corn rather than as a shrub.
+    """
+    s = pygame.Surface((28, 26), pygame.SRCALPHA)
+    crown = (14, 25)
+    for branch in range(5):
+        spread = (branch - 2) * 5 + (index % 3) - 1
+        top = 3 + ((branch * 5 + index * 3) % 6)
+        tip = (crown[0] + spread, top)
+        # An arch, not a spike: the stem leans out then straightens.
+        mid = ((crown[0] + tip[0]) // 2 + spread // 3,
+               (crown[1] + tip[1]) // 2)
+        pygame.draw.line(s, (74, 52, 36), crown, mid, 1)
+        # The stem stops short of the tip: run all the way up and it
+        # sticks out of the foliage as a bare brown cross.
+        pygame.draw.line(s, (74, 52, 36), mid,
+                         ((mid[0] + tip[0]) // 2, (mid[1] + tip[1]) // 2), 1)
+        steps = 7
+        for step in range(steps):
+            t = (step + 1) / steps
+            if t < 0.5:
+                cx = crown[0] + (mid[0] - crown[0]) * (t * 2)
+                cy = crown[1] + (mid[1] - crown[1]) * (t * 2)
+            else:
+                cx = mid[0] + (tip[0] - mid[0]) * (t * 2 - 1)
+                cy = mid[1] + (tip[1] - mid[1]) * (t * 2 - 1)
+            # Alternating sides, so the spray reads as foliage rather
+            # than as a stack of arrowheads.
+            side = 1 if (step + branch) % 2 else -1
+            size = 4 - step // 3
+            tone = HUCKLE_LEAF[(step + branch + index) % 3]
+            lx = round(cx) + side * 2
+            ly = round(cy)
+            pygame.draw.ellipse(s, BRUSH_DARK,
+                                (lx - size // 2, ly - 1, size + 1, size))
+            pygame.draw.ellipse(s, tone,
+                                (lx - size // 2, ly - 1, size, size - 1))
+        # New growth, on one stem in three. Bronzing every tip put five
+        # of them in a row across the top of the bush, and a line of
+        # them read as a fallen branch lying on the shrub rather than as
+        # new leaves on it.
+        if (branch + index) % 3 == 0:
+            pygame.draw.ellipse(s, BRUSH_DARK,
+                                (tip[0] - 1, tip[1], 4, 3))
+            pygame.draw.ellipse(s, HUCKLE_NEW, (tip[0] - 1, tip[1], 3, 2))
+    return s
+
+
 def main():
     pygame.init()
     for index in range(3):
@@ -349,6 +444,10 @@ def main():
     save(make_ufo(), "tahuya_ufo.png")
     save(make_shed(), "tahuya_firewood_shed.png")
     save(make_cabin(), "tahuya_cabin.png")
+    for index in range(3):
+        save(make_salal(index), f"tahuya_salal_{index + 1}.png")
+        save(make_huckleberry(index),
+             f"tahuya_huckleberry_{index + 1}.png")
 
 
 if __name__ == "__main__":
