@@ -11,19 +11,22 @@ Traceback (most recent call last):
   File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\core\scene_manager.py", line 72, in update
     self.current.update(dt)
     ~~~~~~~~~~~~~~~~~~~^^^^
-  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\scenes\world_scene.py", line 461, in update
-    self.player.update(dt)
-        ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\scenes\world_scene.py", line 1027, in update
+    self.game, [choice.prompt], choice=choice,
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     ...<3 lines>...
-        self.tilemap, self.player.hitbox, self.player.jumping
+        self._on_ladder_choice(option, exit_config)
+
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\scenes\world_scene.py", line 301, in load_map
+    self.choices = ChoiceSystem()
+                   ~~~~~~~~~~~~^^
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\systems\choice.py", line 66, in __init__
+    raise FileNotFoundError(f"Missing choice directory {directory}")
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\systems\choice.py", line 105, in _load_file
+        )
         ^
-  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\scenes\world_scene.py", line 129, in load_map
-    self._pending_climb_from_water = False
-                   ^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ashsm\OneDrive\Documents\CHUCK-game\chuck\chuck\src\world\tilemap.py", line 530, in __init__
-    if marker.kind == "player":
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
     ...<2 lines>...
-        self.object_spawns.append((marker.kind, center))
+            f"{choice_id}: option {label!r} has unknown action "
     
-ValueError: Unknown tile character 'Ѐ' at row 15, col 17 in temple_sanctum.txt
+ValueError: doug_fir_portal: option 'YES' has unknown action 'doug_fir_portal'
