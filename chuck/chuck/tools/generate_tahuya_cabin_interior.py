@@ -25,20 +25,15 @@ def build_map():
         grid[y][0] = "ć"
         grid[y][WIDTH - 1] = "ć"
 
-    # Reversible north/back and south/front thresholds.  The three-wide,
-    # two-deep black recesses read as human-scale doorways while the centered
-    # transition cells preserve exact route alignment.
-    for x in range(9, 12):
-        grid[0][x] = "Ƣ"
-        grid[1][x] = "Ƣ"
-    grid[2][10] = "ኅ"
+    # The compact exterior now has one south door. The north wall is complete;
+    # the sole reversible threshold remains the human-scale south recess.
     for x in range(9, 12):
         grid[27][x] = "Ɯ"
         grid[28][x] = "Ɯ"
     grid[26][10] = "ኄ"
 
     # The two couches sit flush against the north wall while continuing to
-    # flank the full human-scale back doorway.
+    # frame the north living wall.
     _solid_rect(grid, 1, 1, 8, 3)
     grid[3][5] = "Ƈ"
     grid[2][5] = "₁"

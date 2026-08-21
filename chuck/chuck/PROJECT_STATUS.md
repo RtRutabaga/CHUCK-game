@@ -1,14 +1,21 @@
 # CHUCK — Project Status
 
 Updated: Phase 11 is feature-complete. Phase 12 is active; both authored Cabin
-maps and their reversible doorway/checkpoint foundation are implemented. This
+maps and their shared doorway/checkpoint foundation are implemented. This
 file is required by the project rules and updated every session.
 
 ## Active Phase 12 scope
 
-- Added the 80x64 nighttime cabin grounds as Phase 12's first playable map,
+- Reworked the 80x64 nighttime cabin grounds around a compact 208x150
+  procedural three-quarter-view cabin landmark. Its blue-gray wall planes,
+  mossed shallow roof, raised posts, side window, south porch, stairs, and lit
+  south-facing door read clearly at native scale without attempting to match
+  the deliberately larger playable interior footprint. The obsolete
+  north/back exterior entrance is gone; the sole south doorway is visually
+  aligned with its transition and return point.
+- Added the nighttime cabin grounds as Phase 12's first playable map,
   following the authored drawing's broad arrangement: irregular clearing and
-  winding paths to the west, the long cabin and both raised porches on the
+  winding paths to the west, the compact cabin and south porch on the
   right, the circular `UFO` feature, firepit, firewood shed, and offset path
   lights. The mushroom-light trail now hugs the cabin's west side with a thick
   Douglas-fir stand immediately west of it. There are no enemies, hazards,
@@ -29,10 +36,9 @@ file is required by the project rules and updated every session.
   checkpoint `Cabin Exterior` through the shared checkpoint loader,
   preserving Sanity. The map's single physical Ashtray is the only saveable
   exterior checkpoint and is the Continue/Sanity-zero return point after use.
-- Both porches and their human-scale aligned doorway recesses are accessible.
-  Their complete three-tile thresholds now enter the single 21x29 Cabin
-  Interior even when approached off-center and return Chuck to the matching
-  porch. Both directions use the established area-exit
+- The south porch and its human-scale aligned doorway recess are accessible.
+  Its threshold enters the single 21x29 Cabin Interior and returns Chuck to
+  the matching porch. Both directions use the established area-exit
   and shared runtime-checkpoint path; no cabin-only teleport logic exists.
 - Added the authored long interior footprint with warm vertical wood paneling,
   olive-tan carpet, southern hardwood, couches flush against the north wall,
@@ -57,7 +63,7 @@ file is required by the project rules and updated every session.
   The mini fridge's collision is confined to its visible base, preserving the
   southbound lane immediately east of it.
   Furniture is human-scale and provides solid, readable level geometry while
-  keeping both doors and the interior Ashtray connected.
+  keeping the sole south door and the interior Ashtray connected.
 - Added development checkpoint `Cabin Interior` plus exactly one physical,
   saveable interior Ashtray. Continue and Sanity-zero return rebuild it through
   the same checkpoint loader used everywhere else.
@@ -75,10 +81,10 @@ file is required by the project rules and updated every session.
   for the Phase 12 Yi symbols and combining marks. It groups distorted Latin
   marks into their base character cell for typewriter timing and layout, while
   unsupported characters outside this authored set still fail loudly.
-- The table map now awakens only on the first back-door crossing after all
+- The table map now awakens only on the first later cabin-door crossing after all
   four individual conversation flags are present. The prerequisite remains
   derived rather than stored, and the single durable awakened flag survives
-  Ashtray saves, Continue, either doorway, and shared checkpoint loading.
+  Ashtray saves, Continue, the sole doorway, and shared checkpoint loading.
 - Awakening replaces only the fixed rectangular map surface on the long
   west-wall table with an eight-frame gray-biased swirling tie-dye treatment
   and restrained local light. It does not become an oval or freestanding
@@ -101,8 +107,8 @@ file is required by the project rules and updated every session.
   UTF-8 source strings, native glyph rendering, authored seat count/positions,
   independent animation phases, repeated interaction, and save/Continue state.
 - Focused counter-awakening coverage passes for incomplete prerequisites,
-  fourth-conversation non-activation, front-door non-activation, both back-door
-  directions, idempotence, runtime art selection, save/Continue, and direct
+  fourth-conversation non-activation, unrelated-transition non-activation,
+  sole-door idempotence, runtime art selection, save/Continue, and direct
   shared-loader restoration. The awakened table was inspected at native
   resolution and the broader Cabin/checkpoint/transition/prop suites pass.
 - Focused Cabin music coverage passes for duration, parseable composition,
@@ -120,16 +126,16 @@ file is required by the project rules and updated every session.
 
 - Added the authoritative Phase 12 contract for the Cabin. It begins
   after the recorded Douglas-fir crossing and contains exactly two peaceful
-  playable maps: the nighttime cabin grounds (including both porches) and the
+  playable maps: the nighttime cabin grounds (including the south porch) and the
   cabin interior. There are no enemies or environmental hazards.
 - Archived Sean's authored layout, seven site/interior photographs, and the
   color-changing mushroom-light reference under
   `docs/design/references/tahuya-cabin/`, with an index distinguishing direct
   phase requirements from visual source material.
-- Locked the phase around faithful real-place layout, an exterior shell large
-  enough to contain the interior, reversible aligned front/back doors, one
+- Locked the phase around faithful real-place layout, a compact three-quarter
+  exterior landmark with one reversible aligned south door, one
   shared-loader checkpoint per map, independently offset path lights, four
-  exact strange entity dialogues, and the back-door-gated table-map portal.
+  exact strange entity dialogues, and the later-door-gated table-map portal.
 - The phase ends at an input-locked desert-arrival handoff. Desert gameplay is
   reserved for Phase 13. The psychedelic, catchy, bass-driven cabin soundtrack
   is a major Phase 12 deliverable and should receive its own review pass.

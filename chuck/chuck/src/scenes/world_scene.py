@@ -64,7 +64,7 @@ from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
 from src.systems.astral_anchor import AstralAnchorSystem
 from src.systems.cabin_progress import (
-    COUNTER_MAP_AWAKENED_FLAG, apply_back_door_crossing,
+    COUNTER_MAP_AWAKENED_FLAG, apply_cabin_door_crossing,
 )
 from src.systems.captain_confrontation import (
     CAPTAIN_ARRIVAL_SPEED,
@@ -1061,7 +1061,7 @@ class WorldScene(Scene):
                 # NO leaves Chuck standing on the ladder without immediately
                 # reopening or traversing it. Walking away rearms the prompt.
                 return
-            apply_back_door_crossing(
+            apply_cabin_door_crossing(
                 self.game.progress,
                 self.map_name,
                 exit_config.destination,

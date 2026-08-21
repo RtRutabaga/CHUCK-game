@@ -14,7 +14,7 @@ from src.core.game import Game
 from src.systems.cabin_progress import (
     CABIN_ENTITY_FLAGS,
     COUNTER_MAP_AWAKENED_FLAG,
-    apply_back_door_crossing,
+    apply_cabin_door_crossing,
 )
 from src.systems.checkpoints import ProgressState
 
@@ -50,33 +50,33 @@ def _table(world):
                 if prop.kind.startswith("cabin_table"))
 
 
-def test_rule_requires_all_four_and_a_later_back_door_crossing() -> None:
+def test_rule_requires_all_four_and_a_later_cabin_door_crossing() -> None:
     progress = ProgressState()
     for flag in sorted(CABIN_ENTITY_FLAGS)[:-1]:
         progress.enable(flag)
-    assert not apply_back_door_crossing(
-        progress, INTERIOR, EXTERIOR, "from_cabin_back"
-    )
-    assert not progress.has(COUNTER_MAP_AWAKENED_FLAG)
-
-    progress.enable(sorted(CABIN_ENTITY_FLAGS)[-1])
-    # Finishing the fourth conversation and using the front door do nothing.
-    assert not progress.has(COUNTER_MAP_AWAKENED_FLAG)
-    assert not apply_back_door_crossing(
+    assert not apply_cabin_door_crossing(
         progress, INTERIOR, EXTERIOR, "from_cabin_front"
     )
     assert not progress.has(COUNTER_MAP_AWAKENED_FLAG)
 
-    assert apply_back_door_crossing(
-        progress, INTERIOR, EXTERIOR, "from_cabin_back"
+    progress.enable(sorted(CABIN_ENTITY_FLAGS)[-1])
+    # Finishing the fourth conversation alone does not awaken the table.
+    assert not progress.has(COUNTER_MAP_AWAKENED_FLAG)
+    assert not apply_cabin_door_crossing(
+        progress, INTERIOR, EXTERIOR, "wrong_arrival"
+    )
+    assert not progress.has(COUNTER_MAP_AWAKENED_FLAG)
+
+    assert apply_cabin_door_crossing(
+        progress, INTERIOR, EXTERIOR, "from_cabin_front"
     )
     assert progress.has(COUNTER_MAP_AWAKENED_FLAG)
-    assert not apply_back_door_crossing(
-        progress, EXTERIOR, INTERIOR, "from_back_door"
+    assert not apply_cabin_door_crossing(
+        progress, EXTERIOR, INTERIOR, "from_front_door"
     )
 
 
-def test_real_back_threshold_awakens_and_rebuilds_the_rectangular_map() -> None:
+def test_real_south_threshold_awakens_and_rebuilds_the_rectangular_map() -> None:
     directory, game = _game()
     try:
         world = game.checkpoints.load_checkpoint(
@@ -85,13 +85,13 @@ def test_real_back_threshold_awakens_and_rebuilds_the_rectangular_map() -> None:
         assert _table(world).kind == "cabin_table"
         assert not game.progress.has(COUNTER_MAP_AWAKENED_FLAG)
 
-        # Crossing out through the authored north/back threshold is the event.
-        _stand_on(world, "Ƣ")
+        # Crossing out through the sole authored south threshold is the event.
+        _stand_on(world, "Ɯ")
         assert world.map_name == EXTERIOR
         assert game.progress.has(COUNTER_MAP_AWAKENED_FLAG)
 
         # The same physical doorway returns to an already-awakened interior.
-        _stand_on(world, "Ɣ")
+        _stand_on(world, "Ɛ")
         assert world.map_name == INTERIOR
         table = _table(world)
         assert table.kind == "cabin_table_awakened"

@@ -439,19 +439,13 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("zephyros_aerie", "⇓"): AreaExit(
         "zephyros_tower_exterior", "from_aerie", "down"
     ),
-    # Ordinary aligned cabin thresholds: both porches connect to their
-    # corresponding side of the same authored interior without a prompt.
+    # The compact exterior's sole south door connects to the interior's south
+    # doorway without a prompt.
     ("tahuya_cabin_exterior", "Ɛ"): AreaExit(
         "tahuya_cabin_interior", "from_front_door", "up"
     ),
-    ("tahuya_cabin_exterior", "Ɣ"): AreaExit(
-        "tahuya_cabin_interior", "from_back_door", "down"
-    ),
     ("tahuya_cabin_interior", "Ɯ"): AreaExit(
         "tahuya_cabin_exterior", "from_cabin_front", "down"
-    ),
-    ("tahuya_cabin_interior", "Ƣ"): AreaExit(
-        "tahuya_cabin_exterior", "from_cabin_back", "up"
     ),
 }
 

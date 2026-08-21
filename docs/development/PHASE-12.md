@@ -14,7 +14,7 @@ spatial references and must be followed closely.
 
 This phase contains exactly two playable maps:
 
-1. the cabin grounds, including both accessible covered porches
+1. the cabin grounds, including one accessible south covered porch
 2. the cabin interior
 
 There are no enemies and no environmental hazards in this phase. Its tension
@@ -28,13 +28,13 @@ change in the D&D map on the long west-wall table.
 By the end of Phase 12, the player should:
 
 1. Regain control in the Douglas-fir forest outside the Cabin.
-2. Explore the clearing and both accessible porches.
-3. Enter and leave the cabin through either the front or back door.
-4. Recognize that the playable interior fits within the exterior cabin shell.
+2. Explore the clearing and accessible south porch.
+3. Enter and leave the cabin through its sole south door.
+4. Recognize the deliberately compact three-quarter exterior as the cabin.
 5. Meet four light-formed entities seated in the cabin.
 6. Hear each entity's unique, unaltered strange dialogue.
 7. Speak with all four entities.
-8. Cross the back door after all four conversations.
+8. Cross the cabin's south door after all four conversations.
 9. Return to or remain in the interior and discover that the rectangular D&D
    map on the long west-wall table has become a planar surface.
 10. Confirm entry through that surface and see Chuck arrive in a desert.
@@ -79,26 +79,23 @@ visible roof. It should read as a small, aging blue-gray forest cabin with:
 - broad overhangs
 - a raised foundation
 - weathered siding
-- covered front and back porches
+- one covered south/front porch
 - porch posts and lattice
 - human-scale stairs
 - dense evergreen forest and understory close around the clearing
 
-Both porches are playable parts of the outdoor map. Their stairs, floorboards,
-rails, posts, and door approaches must be readable at native scale. Neither
-porch is a decorative inaccessible facade.
-
-The exterior cabin shell and roof must be large enough to contain the complete
-interior footprint at the same implied scale. The interior may use cleaner
-walls for gameplay readability, but it must not be wider or deeper than the
-roofed cabin visible outdoors.
+The south porch is playable. Its stairs, floorboards, rails, posts, and door
+approach must be readable at native scale. The exterior is intentionally much
+smaller than the playable interior and uses compact three-quarter-view landmark
+art; preserving that exterior silhouette takes precedence over matching the
+interior footprint literally.
 
 ## Grounds Layout
 
 Follow the authored layout, including:
 
-- the cabin and its two porches on the right side of the grounds
-- the front and back stair approaches
+- the compact cabin and its south porch on the right side of the grounds
+- the sole south stair approach
 - the winding forest edge/path language
 - the marked firepit area
 - the marked firewood shed/outbuilding
@@ -155,15 +152,12 @@ state each frame.
 
 # 4. Cabin Doors and Map Relationship
 
-The front and back doors both connect the outdoor and indoor maps through the
+The sole south/front door connects the outdoor and indoor maps through the
 established area-transition system.
 
-- Entering the front door places Chuck at the matching front-door interior
+- Entering the south door places Chuck at the matching interior
   arrival.
-- Leaving through the front door places him on the matching front porch.
-- Entering the back door places him at the matching back-door interior
-  arrival.
-- Leaving through the back door places him on the matching back porch.
+- Leaving through the south door places him on the matching porch.
 
 Every visible threshold must line up with its real collision/transition tile.
 Do not place arrivals several tiles away from the depicted doorway.
@@ -177,7 +171,8 @@ setting.
 # 5. Cabin Interior Map
 
 Create one compact top-down interior matching the authored drawing and photo
-references. It must fit inside the outdoor cabin's roofed footprint.
+references. Its playable footprint may be larger than the deliberately compact
+exterior landmark art.
 
 Use the photographs' warm, aged interior language:
 
@@ -200,11 +195,11 @@ Preserve the authored relative placement of:
 - rectangular D&D map on the long west-wall table
 - fireplace/wood stove area
 - full closed southeast room
-- front door and back door
+- sole south/front door
 
 Furniture should create believable level geometry without making the small
 room frustrating to navigate. Chuck must be able to reach all four entities,
-both doors, and the table map.
+the south door, and the table map.
 
 ## Interior Checkpoint
 
@@ -271,19 +266,19 @@ on the table.
 The awakening condition is:
 
 1. Chuck has spoken with all four entities.
-2. Chuck then crosses the back-door transition.
+2. Chuck then crosses the cabin's sole south-door transition.
 
-The first back-door crossing after all four conversations sets one durable
+The first south-door crossing after all four conversations sets one durable
 `table map awakened` state. Do not activate it merely after the fourth
 conversation, and do not require a particular order for the four entities.
 
 When the interior is next visible—including immediately if the qualifying
-back-door crossing enters the interior—the D&D map has transformed. It remains
+south-door crossing enters the interior—the D&D map has transformed. It remains
 the same rectangular size and position on the table, but its surface now
 uses the smooth gray, swirling tie-dye animation and projected-light language
 of the City Day 6 portal. It does not become a freestanding oval.
 
-The awakened state persists through either door, Sanity/checkpoint loading,
+The awakened state persists through the cabin door, Sanity/checkpoint loading,
 CONTINUE, and development-checkpoint loading with the required flags.
 
 ------------------------------------------------------------------------
@@ -341,7 +336,7 @@ This phase's music is a major feature and should receive a dedicated,
 separately reviewed implementation pass.
 
 Compose one original Cabin theme shared by the outdoor and indoor maps.
-It should continue uninterrupted through both doors.
+It should continue uninterrupted through the cabin door.
 
 The target character is:
 
@@ -426,9 +421,9 @@ the table-map transformation, its music, and the desert handoff.
       `docs/design/references/tahuya-cabin/`.
 - [ ] The outdoor and indoor maps closely follow the authored map layout.
 - [ ] The cabin is three-quarter view with visible walls and roof.
-- [ ] The complete interior fits within the exterior roofed footprint.
-- [x] Both porches are accessible.
-- [ ] Both doors align visually and transition reversibly.
+- [x] The compact exterior intentionally does not match the interior footprint.
+- [x] The south porch is accessible.
+- [x] The sole south door aligns visually and transitions reversibly.
 - [x] No enemies or hazards are present.
 
 ## Exterior
@@ -450,7 +445,7 @@ the table-map transformation, its music, and the desert handoff.
       closed southeast room, doors, and rectangular D&D map are present in their
       authored relationship.
 - [ ] The interior has one physical Ashtray and one shared-loader checkpoint.
-- [ ] Navigation reaches every entity, both doors, and the table map.
+- [ ] Navigation reaches every entity, the south door, and the table map.
 
 ## Entities and Progression
 
@@ -459,7 +454,7 @@ the table-map transformation, its music, and the desert handoff.
 - [ ] Each displays its exact unique strange dialogue legibly.
 - [ ] Each conversation sets one durable flag and repeats safely.
 - [ ] The D&D map remains ordinary until all four entities have been spoken to
-      and Chuck subsequently crosses the back door.
+      and Chuck subsequently crosses the south door.
 - [ ] The awakened map retains the original rectangular footprint and table
       position while gaining gray tie-dye motion and projected light.
 - [ ] Save, CONTINUE, respawn, and development loading restore the correct
@@ -492,17 +487,16 @@ the table-map transformation, its music, and the desert handoff.
 
 1. Continue from the completed City Day 6 portal state.
 2. Verify the Douglas-fir transition hands off cleanly to the cabin exterior.
-3. Explore the grounds, both porches, and reference landmarks.
-4. Enter through the front door and return outside through it.
-5. Enter through the back door and verify the matching arrival.
-6. Speak with all four entities and verify each exact line.
-7. Confirm the table map has not awakened before the required back-door
+3. Explore the grounds, south porch, and reference landmarks.
+4. Enter through the south door and return outside through it.
+5. Speak with all four entities and verify each exact line.
+6. Confirm the table map has not awakened before the required later door
    crossing.
-8. Cross the back door after all four conversations.
-9. Return to or remain in the interior and inspect the awakened rectangular
+7. Cross the south door after all four conversations.
+8. Return to or remain in the interior and inspect the awakened rectangular
    table portal.
-10. Choose `NO` and verify the dialogue closes silently.
-11. Choose `YES` and verify the desert-arrival cutscene and stable handoff.
+9. Choose `NO` and verify the dialogue closes silently.
+10. Choose `YES` and verify the desert-arrival cutscene and stable handoff.
 
 ## Development Checkpoints
 
@@ -512,16 +506,17 @@ Check:
 
 1. Does the exterior preserve the authored layout rather than merely evoke a
    generic cabin?
-2. Are both porches genuinely walkable and both doors aligned?
-3. Does the interior plausibly fit within the visible exterior shell?
+2. Is the south porch genuinely walkable and its sole door aligned?
+3. Does the compact exterior read clearly as the same cabin despite the
+   intentionally larger playable interior?
 4. Do the furniture and architecture make Chuck look one foot tall?
 5. Are the mushroom lights unsynchronized and casting restrained colored light?
 6. Are all four entity strings legible and unchanged?
-7. Is the back-door crossing, not the fourth conversation alone, what awakens
+7. Is the later south-door crossing, not the fourth conversation alone, what awakens
    the table map?
 8. Does reloading preserve every state without replay or duplication?
 9. Does the music remain catchy and clear at its fullest arrangement?
 
 Phase 12 is complete when the faithful two-map Cabin can be explored,
-all four entities can be met, the back-door condition awakens the table map,
+all four entities can be met, the later south-door crossing awakens the table map,
 and Chuck can choose the planar surface to reach the desert handoff.

@@ -3,14 +3,29 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `fe6a1f7` (Cabin maps compacted and naturalized)
-- Current work: the Cabin mini-fridge lane obstruction is fixed and verified
+- Base commit before this pass: `aea8847` (Fix Cabin fridge lane collision)
+- Current work: the Cabin exterior is a compact three-quarter landmark with one south door
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
   awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Replaced the oversized tile-built exterior cabin with one compact 208x150
+  procedural three-quarter-view landmark: blue-gray front and side wall planes,
+  a moss-weathered shallow roof, raised foundation, side window, lit south
+  door, porch, and human-scale stairs. The deliberately larger interior is no
+  longer constrained to the exterior footprint.
+- Removed the exterior north/back entrance and its interior counterpart. The
+  sole south doorway now has one aligned transition tile and one aligned return
+  point, using the existing area-exit/shared-checkpoint path in both directions.
+  After all four entity conversations, a later crossing of this same door now
+  triggers the existing durable table-map awakening condition.
+- Updated the active Phase 12 contract and focused exterior, interior, and
+  table-awakening regressions for the compact art, sole-door topology, and
+  preserved progression behavior. The native 320x180 exterior composition was
+  inspected with the cabin centered in view.
 
 - Removed the mini fridge's stray east-side collision tile. Its collision now
   stays beneath the visible body, so Chuck can walk south through the apparent

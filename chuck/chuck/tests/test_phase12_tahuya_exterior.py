@@ -59,13 +59,14 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     assert tileset_for(MAP_NAME) is TAHUYA
 
     terrain = Counter(char for row in tilemap._grid for char in row)
-    for char in ("ᶠ", "♟", "⌇", "▧", "▨", "▣", "↟", "◼"):
+    for char in ("ᶠ", "♟", "⌇", "▣", "↟"):
         assert terrain[char] > 0, char
 
     props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
     assert props["tahuya_ufo"] == 1
     assert props["tahuya_firepit"] == 1
     assert props["tahuya_firewood_shed"] == 1
+    assert props["tahuya_cabin"] == 1
     assert props["tahuya_mushroom_light"] == 7
     assert props["tahuya_fir"] >= 100
     fir_positions = [
@@ -103,41 +104,36 @@ def test_western_arrival_is_a_narrow_winding_footpath() -> None:
     assert max(path_rows) - min(path_rows) >= 3
 
 
-def test_both_porches_and_the_ashtray_are_reachable() -> None:
+def test_sole_south_door_and_the_ashtray_are_reachable() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
     reachable = _flood(tilemap, markers["arrival:from_doug_fir"][0])
     assert markers["anchor:tahuya_exterior_anchor"][0] in reachable
 
-    for point in ((59, 5), (59, 10), (59, 46), (59, 53)):
+    for point in ((59, 31), (59, 36), (59, 54), (59, 58)):
         assert point in reachable, point
-    assert [tilemap.terrain_at(x, 12) for x in range(58, 61)] == [
-        "Ɣ", "Ɣ", "Ɣ"
-    ]
-    assert [tilemap.terrain_at(x, 44) for x in range(58, 61)] == [
-        "Ɛ", "Ɛ", "Ɛ"
-    ]
-    assert markers["arrival:from_cabin_back"][0] == (59, 10)
-    assert markers["arrival:from_cabin_front"][0] == (59, 47)
+    assert tilemap.terrain_at(59, 31) == "Ɛ"
+    assert sum(char == "Ɛ" for row in tilemap._grid for char in row) == 1
+    assert not any(char == "Ɣ" for row in tilemap._grid for char in row)
+    assert markers["arrival:from_cabin_front"][0] == (59, 36)
+    assert "arrival:from_cabin_back" not in markers
     assert not any(kind.startswith(("rat", "raccoon", "zombie", "skeleton"))
                    for kind, _position in tilemap.object_spawns)
 
 
-def test_every_visible_exterior_door_tile_enters_the_interior() -> None:
+def test_the_visible_south_door_enters_the_interior() -> None:
     directory, game = _game()
     try:
-        for row in (12, 44):
-            for col in range(58, 61):
-                world = game.checkpoints.load_checkpoint("tahuya_exterior")
-                world._arrival_fade_t = None
-                world.player.x = col * config.TILE_SIZE + (
-                    config.TILE_SIZE - config.PLAYER_HITBOX_W
-                ) / 2
-                world.player.y = row * config.TILE_SIZE + (
-                    config.TILE_SIZE - config.PLAYER_HITBOX_H
-                ) / 2
-                world.update(1 / 60)
-                assert world.map_name == "tahuya_cabin_interior", (col, row)
+        world = game.checkpoints.load_checkpoint("tahuya_exterior")
+        world._arrival_fade_t = None
+        world.player.x = 59 * config.TILE_SIZE + (
+            config.TILE_SIZE - config.PLAYER_HITBOX_W
+        ) / 2
+        world.player.y = 31 * config.TILE_SIZE + (
+            config.TILE_SIZE - config.PLAYER_HITBOX_H
+        ) / 2
+        world.update(1 / 60)
+        assert world.map_name == "tahuya_cabin_interior"
     finally:
         game._shutdown()
         directory.cleanup()
@@ -189,12 +185,14 @@ def test_mushroom_lights_have_stable_unsynchronised_phases() -> None:
         repeated = Prop("tahuya_mushroom_light", 44, 13, game.assets)
         firepit = Prop("tahuya_firepit", 59, 59, game.assets)
         ufo = Prop("tahuya_ufo", 18, 13, game.assets)
+        cabin = Prop("tahuya_cabin", 62, 34, game.assets)
         assert first._animation_t != second._animation_t
         assert first._animation_t == repeated._animation_t
         assert len(first._frames) == 8
         assert firepit._size == (64, 56)
         assert len(firepit._frames) == 6
         assert ufo._size == (132, 76)
+        assert cabin._size == (208, 150)
     finally:
         game._shutdown()
         directory.cleanup()

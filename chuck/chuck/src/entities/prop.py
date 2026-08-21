@@ -174,6 +174,7 @@ _SPRITES = {
     "tahuya_firepit": "objects/tahuya_firepit_1.png",
     "tahuya_ufo": "objects/tahuya_ufo.png",
     "tahuya_firewood_shed": "objects/tahuya_firewood_shed.png",
+    "tahuya_cabin": "objects/tahuya_cabin.png",
     "cabin_big_couch": "objects/cabin_big_couch.png",
     "cabin_couch": "objects/cabin_couch.png",
     "cabin_chair": "objects/cabin_chair.png",

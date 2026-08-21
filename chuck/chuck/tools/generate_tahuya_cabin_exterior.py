@@ -1,4 +1,4 @@
-"""Generate the authored two-porch Cabin grounds map."""
+"""Generate the authored Cabin grounds and compact exterior landmark."""
 
 from pathlib import Path
 import random
@@ -36,8 +36,7 @@ def build_map():
             grid[y][x] = "ᶠ"
 
     # The western arrival begins as a narrow, slightly wandering foot trail,
-    # then opens into the two real branches: north to the back porch and south
-    # to the front porch/fire circle.
+    # then opens toward the compact cabin's sole south door and fire circle.
     west_approach = (
         ((5, 33), (10, 31)),
         ((10, 31), (16, 32)),
@@ -48,57 +47,34 @@ def build_map():
     )
     for start, end in west_approach:
         _path(grid, start, end, 0)
-    _path(grid, (44, 31), (45, 7), 2)
-    _path(grid, (45, 7), (58, 5), 2)
-    _path(grid, (44, 31), (45, 47), 2)
-    _path(grid, (45, 47), (59, 54), 2)
+    _path(grid, (44, 31), (52, 34), 2)
+    _path(grid, (52, 34), (59, 37), 2)
+    _path(grid, (59, 37), (59, 54), 2)
     _path(grid, (59, 54), (59, 59), 2)
 
-    # Cabin shell: the interior fits inside this 21x33 exterior footprint.
-    # Roof mass above a front wall creates the established three-quarter view.
-    for y in range(12, 38):
-        for x in range(49, 70):
-            grid[y][x] = "▧"
-    for y in range(38, 45):
-        for x in range(49, 70):
-            grid[y][x] = "▨"
-    for y in range(12, 15):
-        for x in range(58, 61):
-            grid[y][x] = "◼"
-    for y in range(41, 45):
-        for x in range(58, 61):
-            grid[y][x] = "◼"
-
-    # Both raised porches are fully playable now.  Their central stairs line
-    # up with the two doorway recesses exactly, ready for the interior pass.
-    for y in range(7, 12):
-        for x in range(50, 69):
+    # The exterior cabin is intentionally much smaller than its interior map.
+    # One procedural three-quarter-view landmark carries its roof, walls,
+    # windows, porch, and stairs. Collision follows the visible building mass,
+    # while a narrow porch corridor reaches the sole south-facing door.
+    for y in range(27, 35):
+        for x in range(56, 69):
+            grid[y][x] = "♟"
+    for y in range(32, 35):
+        for x in range(58, 62):
             grid[y][x] = "▣"
-    for y in range(4, 7):
-        for x in range(58, 61):
+    for y in range(35, 38):
+        for x in range(59, 61):
             grid[y][x] = "↟"
-    for y in range(45, 51):
-        for x in range(48, 71):
-            grid[y][x] = "▣"
-    for y in range(51, 55):
-        for x in range(58, 61):
-            grid[y][x] = "↟"
-
-    # The full width of each human-scale black recess is a live threshold.
-    # Return arrivals remain centered on the matching porch, one tile clear.
-    for x in range(58, 61):
-        grid[12][x] = "Ɣ"
-    grid[10][59] = "ኃ"
-    for x in range(58, 61):
-        grid[44][x] = "Ɛ"
-    grid[47][59] = "ኂ"
+    grid[31][59] = "Ɛ"
+    grid[36][59] = "ኂ"
+    grid[34][62] = "ℂ"
 
     # Real-place landmarks from the authored drawing.
     grid[13][18] = "◌"       # circular UFO object at upper-left
     grid[59][59] = "⚉"       # fire circle due south of the front porch
     grid[55][72] = "⌘"       # firewood shed at the lower-right edge
 
-    # The mushroom-light trail hugs the cabin's west side, rather than
+    # The mushroom-light trail hugs the cabin clearing's west side, rather than
     # wandering through the middle of the clearing.
     for x, y in ((44, 13), (45, 20), (44, 27), (45, 34),
                  (44, 41), (45, 48), (52, 55)):

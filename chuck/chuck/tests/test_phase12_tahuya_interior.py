@@ -61,10 +61,11 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     assert terrain["Ħ"] > 0 and terrain["Ŀ"] > 0
     assert terrain["Ƃ"] == 0
     assert terrain["ć"] >= 2 * 21 + 2 * 29 - 4
-    assert tilemap.terrain_at(10, 0) == "Ƣ"
+    assert tilemap.terrain_at(10, 0) == "ć"
     assert tilemap.terrain_at(10, 28) == "Ɯ"
-    assert all(tilemap.terrain_at(x, y) in {"Ƣ", "Ɯ"}
-               for y in (0, 1, 27, 28) for x in range(9, 12))
+    assert all(tilemap.terrain_at(x, 0) == "ć" for x in range(9, 12))
+    assert all(tilemap.terrain_at(x, y) == "Ɯ"
+               for y in (27, 28) for x in range(9, 12))
 
     props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
     assert props == {
@@ -114,12 +115,11 @@ def test_all_interior_routes_and_the_ashtray_are_reachable() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
     front = markers["arrival:from_front_door"]
-    back = markers["arrival:from_back_door"]
     anchor = markers["anchor:tahuya_interior_anchor"]
     reachable = _flood(tilemap, front)
-    assert back in reachable
     assert anchor in reachable
-    assert (10, 0) in reachable and (10, 28) in reachable
+    assert (10, 0) not in reachable and (10, 28) in reachable
+    assert "arrival:from_back_door" not in markers
     # The long table's visual and solid footprints agree, leaving a generous
     # route into the complete north living section.
     assert all(not tilemap.is_solid(x, y)
@@ -136,25 +136,19 @@ def test_all_interior_routes_and_the_ashtray_are_reachable() -> None:
                    for kind, _position in tilemap.object_spawns)
 
 
-def test_front_and_back_thresholds_are_reversible_and_aligned() -> None:
-    assert not TILE_DEFS["Ɛ"].solid and not TILE_DEFS["Ɣ"].solid
-    assert not TILE_DEFS["Ɯ"].solid and not TILE_DEFS["Ƣ"].solid
+def test_sole_south_threshold_is_reversible_and_aligned() -> None:
+    assert not TILE_DEFS["Ɛ"].solid
+    assert not TILE_DEFS["Ɯ"].solid
     front_in = AREA_WALK_EXITS[("tahuya_cabin_exterior", "Ɛ")]
     front_out = AREA_WALK_EXITS[(MAP_NAME, "Ɯ")]
-    back_in = AREA_WALK_EXITS[("tahuya_cabin_exterior", "Ɣ")]
-    back_out = AREA_WALK_EXITS[(MAP_NAME, "Ƣ")]
     assert (front_in.destination, front_in.arrival, front_in.facing) == (
         MAP_NAME, "from_front_door", "up"
     )
     assert (front_out.destination, front_out.arrival, front_out.facing) == (
         "tahuya_cabin_exterior", "from_cabin_front", "down"
     )
-    assert (back_in.destination, back_in.arrival, back_in.facing) == (
-        MAP_NAME, "from_back_door", "down"
-    )
-    assert (back_out.destination, back_out.arrival, back_out.facing) == (
-        "tahuya_cabin_exterior", "from_cabin_back", "up"
-    )
+    assert ("tahuya_cabin_exterior", "Ɣ") not in AREA_WALK_EXITS
+    assert (MAP_NAME, "Ƣ") not in AREA_WALK_EXITS
 
 
 def test_shared_loader_and_interior_ashtray_persist() -> None:
@@ -195,9 +189,6 @@ def test_shared_loader_and_interior_ashtray_persist() -> None:
         assert continued.map_name == MAP_NAME
         assert game.active_checkpoint_id == "tahuya_interior_anchor"
 
-        back = game.checkpoints.load_checkpoint("tahuya_interior_back_entry")
-        assert back.player.facing == "down"
-        assert game.active_checkpoint_id == "tahuya_interior_back_entry"
     finally:
         game._shutdown()
         directory.cleanup()

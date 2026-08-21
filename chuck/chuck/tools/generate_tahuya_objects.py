@@ -108,6 +108,79 @@ def make_shed():
     return s
 
 
+def make_cabin():
+    """Compact three-quarter-view cabin, authored as one readable landmark."""
+    s = pygame.Surface((208, 150), pygame.SRCALPHA)
+    outline = (12, 18, 18)
+    siding_dark = (39, 61, 66)
+    siding = (55, 82, 88)
+    siding_light = (77, 101, 103)
+    wood = (94, 61, 39)
+    wood_light = (137, 87, 49)
+    roof_dark = (31, 34, 25)
+    roof = (48, 51, 31)
+    moss = (63, 69, 36)
+
+    # Raised posts and the two visible wall planes.
+    for x, y in ((30, 104), (92, 124), (120, 127), (180, 101)):
+        pygame.draw.rect(s, outline, (x, y, 7, 28))
+        pygame.draw.rect(s, (63, 49, 37), (x + 2, y, 3, 24))
+    front = ((24, 55), (105, 76), (105, 125), (24, 105))
+    side = ((105, 76), (184, 45), (184, 101), (105, 132))
+    pygame.draw.polygon(s, outline, front)
+    pygame.draw.polygon(s, outline, side)
+    pygame.draw.polygon(s, siding, ((28, 59), (101, 78),
+                                    (101, 120), (28, 102)))
+    pygame.draw.polygon(s, siding_dark, ((109, 79), (180, 51),
+                                         (180, 98), (109, 126)))
+    for x in range(34, 99, 9):
+        pygame.draw.line(s, siding_light, (x, 61), (x, 114), 1)
+    for x in range(116, 179, 10):
+        pygame.draw.line(s, (49, 72, 76), (x, 75), (x, 121), 1)
+
+    # Moss-darkened shallow roof with a strong diagonal ridge and eaves.
+    pygame.draw.polygon(s, outline, ((11, 53), (73, 6), (197, 39),
+                                     (106, 83)))
+    pygame.draw.polygon(s, roof, ((17, 51), (76, 11), (190, 41),
+                                  (105, 77)))
+    pygame.draw.polygon(s, roof_dark, ((76, 11), (190, 41),
+                                       (181, 48), (74, 20)))
+    for step in range(5):
+        y = 26 + step * 9
+        pygame.draw.line(s, moss, (28 + step * 10, y),
+                         (168 + step * 3, y + 16), 3)
+        pygame.draw.line(s, (73, 65, 35), (31 + step * 10, y + 2),
+                         (165 + step * 3, y + 18), 1)
+    pygame.draw.line(s, (89, 87, 64), (14, 53), (105, 81), 3)
+    pygame.draw.line(s, (89, 87, 64), (105, 81), (194, 40), 3)
+
+    # South-facing door, warm porch lamp, and one side window.
+    pygame.draw.polygon(s, outline, ((50, 66), (70, 71), (70, 111),
+                                     (50, 106)))
+    pygame.draw.polygon(s, (35, 48, 52), ((54, 70), (67, 73),
+                                         (67, 106), (54, 103)))
+    pygame.draw.circle(s, (232, 175, 65), (48, 76), 3)
+    pygame.draw.circle(s, (255, 211, 95), (48, 76), 1)
+    pygame.draw.polygon(s, outline, ((134, 70), (166, 58), (166, 78),
+                                     (134, 90)))
+    pygame.draw.polygon(s, (20, 31, 34), ((138, 71), (162, 63),
+                                         (162, 76), (138, 85)))
+    pygame.draw.line(s, siding_light, (150, 67), (150, 81), 2)
+
+    # Compact raised porch and broad stairs toward the player/south.
+    pygame.draw.polygon(s, outline, ((23, 105), (77, 118), (106, 108),
+                                     (50, 96)))
+    pygame.draw.polygon(s, wood, ((28, 104), (76, 115), (100, 107),
+                                  (51, 99)))
+    for y, left, right in ((116, 48, 84), (125, 43, 87),
+                           (135, 38, 91), (145, 33, 95)):
+        pygame.draw.polygon(s, outline, ((left, y - 5), (right, y + 2),
+                                         (right - 4, y + 7),
+                                         (left - 4, y)))
+        pygame.draw.line(s, wood_light, (left, y - 4), (right - 1, y + 2), 3)
+    return s
+
+
 def main():
     pygame.init()
     for index in range(3):
@@ -118,6 +191,7 @@ def main():
         save(make_firepit(index), f"tahuya_firepit_{index + 1}.png")
     save(make_ufo(), "tahuya_ufo.png")
     save(make_shed(), "tahuya_firewood_shed.png")
+    save(make_cabin(), "tahuya_cabin.png")
 
 
 if __name__ == "__main__":

@@ -618,9 +618,7 @@ TILE_DEFS: dict[str, TileDef] = {
     "↟": TileDef(solid=False, color=(91, 68, 48)),
     "◼": TileDef(solid=True, color=(5, 8, 10)),
     "Ɛ": TileDef(solid=False, color=(5, 8, 10)),  # exterior front door
-    "Ɣ": TileDef(solid=False, color=(5, 8, 10)),  # exterior back door
     "Ɯ": TileDef(solid=False, color=(5, 8, 10)),  # interior front door
-    "Ƣ": TileDef(solid=False, color=(5, 8, 10)),  # interior back door
     "Ŀ": TileDef(solid=False, color=(91, 88, 56)),
     "∎": TileDef(solid=True, color=(91, 88, 56)),
     "Ƃ": TileDef(solid=False, color=(157, 145, 107)),
@@ -638,6 +636,8 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="tahuya_ufo", under="ᶠ"),
     "⌘": TileDef(solid=True, color=(27, 39, 32),
                  prop="tahuya_firewood_shed", under="ᶠ"),
+    "ℂ": TileDef(solid=True, color=(10, 25, 22),
+                 prop="tahuya_cabin", under="♟"),
     # Human-scale cabin furnishings. Their larger visible sprites are backed
     # by solid carpet/linoleum footprint tiles authored in the map.
     "Ƈ": TileDef(solid=True, color=(91, 88, 56),
@@ -1162,13 +1162,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # Phase 12: cutscene arrival and the exterior's one physical Ashtray.
     "ኀ": MarkerDef(kind="arrival:from_doug_fir", under="⌇"),
     "ኁ": MarkerDef(kind="anchor:tahuya_exterior_anchor", under="ᶠ"),
-    # The paired cabin thresholds stay spatially reversible. Runtime arrivals
+    # The sole cabin threshold stays spatially reversible. Runtime arrivals
     # sit one tile clear of each door so entering never immediately bounces
     # Chuck back across the same threshold.
     "ኂ": MarkerDef(kind="arrival:from_cabin_front", under="▣"),
-    "ኃ": MarkerDef(kind="arrival:from_cabin_back", under="▣"),
     "ኄ": MarkerDef(kind="arrival:from_front_door", under="Ŀ"),
-    "ኅ": MarkerDef(kind="arrival:from_back_door", under="Ŀ"),
     "ኆ": MarkerDef(kind="anchor:tahuya_interior_anchor", under="Ŀ"),
     # Four seated Phase 12 light entities. Their markers sit inside the
     # furniture footprints; solid under-tiles preserve the authored collision.

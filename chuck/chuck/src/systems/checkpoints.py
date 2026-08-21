@@ -1233,26 +1233,8 @@ CHECKPOINTS = (
         saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
-        "tahuya_interior_back_entry", "Cabin Interior Back Entry",
-        "tahuya_cabin_interior", arrival="from_back_door", facing="down",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached", "doug_fir_transition_completed",
-        }),
-        development_visible=False, runtime_entry=True,
-    ),
-    CheckpointDefinition(
         "tahuya_exterior_front_return", "Cabin Front Porch Return",
         "tahuya_cabin_exterior", arrival="from_cabin_front", facing="down",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached", "doug_fir_transition_completed",
-        }),
-        development_visible=False, runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "tahuya_exterior_back_return", "Cabin Back Porch Return",
-        "tahuya_cabin_exterior", arrival="from_cabin_back", facing="up",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
             "modern_city_reached", "doug_fir_transition_completed",
