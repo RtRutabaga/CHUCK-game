@@ -1,11 +1,31 @@
-"""Generate the authored compact 21x29 Cabin interior map."""
+"""Generate the authored compact Cabin interior map.
+
+The hardwood room used to run eleven rows deep. At native scale that is
+most of a screen of empty floor between the north wall's table and fire
+and the south wall's sink and door, so the two halves of the cabin
+never appeared together and the walk between them was dead ground. It
+is six rows now, and the west counter that runs down the side of it
+shrinks to match -- it is the only fixture long enough to have to.
+
+Everything below the carpet is measured from the floor band rather than
+written out, so the room can be lengthened or shortened again by one
+number without the sink, the sealed room, the doorway and the arrival
+drifting apart from each other.
+"""
 
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 21
-HEIGHT = 29
+
+FLOOR_TOP = 14                          # first hardwood row, under the carpet
+FLOOR_ROWS = 6                          # ...and how deep the room runs
+FLOOR_BOTTOM = FLOOR_TOP + FLOOR_ROWS - 1
+COUNTER_TOP = FLOOR_BOTTOM + 1          # the south sink run, three rows deep
+COUNTER_BOTTOM = COUNTER_TOP + 2
+DOOR_ROW = COUNTER_BOTTOM               # the recess cut through the south wall
+HEIGHT = COUNTER_BOTTOM + 2
 
 
 def _solid_rect(grid, left, top, right, bottom, char="∎"):
@@ -28,9 +48,9 @@ def build_map():
     # The compact exterior now has one south door. The north wall is complete;
     # the sole reversible threshold remains the human-scale south recess.
     for x in range(9, 12):
-        grid[27][x] = "Ɯ"
-        grid[28][x] = "Ɯ"
-    grid[26][10] = "ኄ"
+        grid[DOOR_ROW][x] = "Ɯ"
+        grid[DOOR_ROW + 1][x] = "Ɯ"
+    grid[COUNTER_BOTTOM - 1][10] = "ኄ"
 
     # The two couches sit flush against the north wall while continuing to
     # frame the north living wall.
@@ -60,17 +80,17 @@ def build_map():
     # The green carpet holds every seated entity and the stove.  Everything
     # south of that living space is hardwood.  The ordinary southern kitchen
     # counter contains the sink only; it is not the portal table.
-    for y in range(14, 29):
+    for y in range(FLOOR_TOP, HEIGHT):
         for x in range(1, 20):
             grid[y][x] = "Ħ"
     # A narrow west-wall counter/shelf joins the long table to the southern
     # sink run, completing the real cabin's horseshoe without narrowing the
     # central circulation lane.  Author it after the floor change so the
     # hardwood pass cannot erase its lower half or its prop marker.
-    _solid_rect(grid, 1, 14, 2, 24)
-    grid[24][1] = "ƛ"
-    _solid_rect(grid, 2, 25, 8, 27, "ħ")
-    grid[27][5] = "ƕ"
+    _solid_rect(grid, 1, FLOOR_TOP, 2, FLOOR_BOTTOM)
+    grid[FLOOR_BOTTOM][1] = "ƛ"
+    _solid_rect(grid, 2, COUNTER_TOP, 8, COUNTER_BOTTOM, "ħ")
+    grid[COUNTER_BOTTOM][5] = "ƕ"
 
     # Human-scale mini fridge tucked against the table's southeast corner.
     # Its collision stays under the visible body; an extra east tile would
@@ -83,25 +103,26 @@ def build_map():
     # west-facing door that uses the ordinary closed-door interaction.
     _solid_rect(grid, 15, 10, 18, 13)
     grid[13][16] = "Ʒ"
+    sealed_top, sealed_bottom = FLOOR_TOP + 1, COUNTER_BOTTOM
     for x in range(14, 20):
-        grid[15][x] = "ć"
-        grid[27][x] = "ć"
-    for y in range(15, 28):
+        grid[sealed_top][x] = "ć"
+        grid[sealed_bottom][x] = "ć"
+    for y in range(sealed_top, sealed_bottom + 1):
         grid[y][14] = "ć"
         grid[y][19] = "ć"
-    for y in range(16, 27):
+    for y in range(sealed_top + 1, sealed_bottom):
         for x in range(15, 19):
             grid[y][x] = "◼"
-    grid[22][14] = "ƚ"
+    grid[(sealed_top + sealed_bottom) // 2][14] = "ƚ"
 
     # Restore the enlarged southern doorway and arrival after laying floors.
     for x in range(9, 12):
-        grid[27][x] = "Ɯ"
-        grid[28][x] = "Ɯ"
-    grid[26][10] = "ኄ"
+        grid[DOOR_ROW][x] = "Ɯ"
+        grid[DOOR_ROW + 1][x] = "Ɯ"
+    grid[COUNTER_BOTTOM - 1][10] = "ኄ"
 
     # Exactly one interior Ashtray, reachable along the clear central lane.
-    grid[20][13] = "ኆ"
+    grid[FLOOR_TOP + 2][13] = "ኆ"
     return ["".join(row) for row in grid]
 
 

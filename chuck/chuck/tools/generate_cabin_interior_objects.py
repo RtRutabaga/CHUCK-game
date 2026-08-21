@@ -116,24 +116,37 @@ def table(portal_frame=None):
     return s
 
 
+# How many rows of west wall the counter runs down. This has to match
+# the hardwood room's depth in generate_tahuya_cabin_interior, because
+# the counter runs the whole side of it: shortening the room without
+# shortening this left the cabinet standing up through the carpet and
+# across the map table.
+CONNECTOR_SHELF_TILES = 6
+CONNECTOR_SHELF_SIZE = (48, CONNECTOR_SHELF_TILES * 16)
+
+
 def connector_shelf():
-    """Long west-wall counter joining the table and southern sink run."""
-    s = pygame.Surface((48, 176), pygame.SRCALPHA)
+    """West-wall counter joining the table to the southern sink run."""
+    width, height = CONNECTOR_SHELF_SIZE
+    s = pygame.Surface((width, height), pygame.SRCALPHA)
     outline = (48, 31, 23)
     cabinet = (77, 43, 31)
     cabinet_light = (112, 67, 43)
+    bottom = height - 1
     # The dark cabinet face remains visible along the room-facing east edge;
     # the broad eggshell worktop is deliberately clear of assorted clutter.
-    pygame.draw.polygon(s, outline, ((3, 0), (42, 0), (47, 170), (4, 175)))
-    pygame.draw.polygon(s, cabinet, ((6, 4), (40, 4), (43, 168), (7, 172)))
+    pygame.draw.polygon(s, outline,
+                        ((3, 0), (42, 0), (47, bottom - 5), (4, bottom)))
+    pygame.draw.polygon(s, cabinet,
+                        ((6, 4), (40, 4), (43, bottom - 7), (7, bottom - 3)))
     pygame.draw.polygon(s, EGGSHELL,
-                        ((9, 1), (39, 1), (41, 164), (9, 169)))
+                        ((9, 1), (39, 1), (41, bottom - 11), (9, bottom - 6)))
     pygame.draw.line(s, EGGSHELL_LIGHT, (11, 3), (38, 3), 2)
-    pygame.draw.line(s, EGGSHELL_LIGHT, (11, 4), (11, 166), 2)
-    pygame.draw.line(s, EGGSHELL_SHADOW, (40, 5), (42, 167), 2)
-    for y in range(32, 160, 32):
+    pygame.draw.line(s, EGGSHELL_LIGHT, (11, 4), (11, bottom - 9), 2)
+    pygame.draw.line(s, EGGSHELL_SHADOW, (40, 5), (42, bottom - 8), 2)
+    for y in range(24, height - 16, 24):
         pygame.draw.line(s, cabinet_light, (7, y), (42, y + 1))
-        pygame.draw.circle(s, outline, (37, y + 16), 1)
+        pygame.draw.circle(s, outline, (37, y + 12), 1)
     return s
 
 

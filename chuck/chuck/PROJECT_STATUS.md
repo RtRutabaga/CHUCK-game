@@ -6,6 +6,20 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The cabin interior is shorter north to south. The hardwood room ran eleven
+  rows deep, which at native scale put most of a screen of empty floor between
+  the north wall's table and fire and the south wall's sink and door, so the
+  two halves of the cabin never appeared together. It is six rows now and the
+  map is 21x24 rather than 21x29.
+- Everything below the carpet is measured from the floor band rather than
+  written out, so the sink, the sealed room, the doorway and the arrival cannot
+  drift apart if the room is resized again -- and the interior tests derive
+  their rows from the same constants instead of restating them, which is what
+  had let them record positions rather than intent.
+- The west counter shrank with it. Its sprite is exactly as tall as the room is
+  deep, and left at its old height it stood up through the carpet and across
+  the map table.
+
 - The music lifts with the lightshow. Waking the table map switches the
   interior to an awakened arrangement of the cabin cue: the same thirty-two-bar
   root cycle, the same elastic-bass figure and the same two neon hooks,
