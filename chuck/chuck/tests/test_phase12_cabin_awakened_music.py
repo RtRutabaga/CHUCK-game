@@ -3,9 +3,14 @@
 Waking the table map does not change the piece, it changes the gear.
 Every identifying part of the cabin theme is imported rather than
 rewritten -- the same root cycle, the same elastic-bass figure, the
-same two neon hooks -- and the Beholder fight's language is laid over
-the top of it: a choral ostinato grinding the flat second, brass
-answering the hook, timpani and toms under a double-time kit.
+same two hooks -- and the Beholder fight's language is laid over the
+top of it: a choral ostinato grinding the flat second, brass answering
+on the offbeats, timpani and toms under a double-time kit.
+
+The neon synth lead is gone. The tune is carried by a jaw harp and two
+Tuvan throat voices instead, so the hook now has to be checked where it
+actually is: the same notes in the same order, two octaves down, sung
+rather than played.
 
 So the tests here are about identity and lift. It has to still be the
 cabin's tune, it has to be measurably harder than the calm cue, and it
@@ -47,15 +52,46 @@ def _measure(name):
     return len(data) / rate, peak, rms, data
 
 
+_SEMITONE = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
+
+
+def _midi(pitch):
+    step = _SEMITONE[pitch[0]]
+    body = pitch[1:]
+    if body[0] in "#b":
+        step += 1 if body[0] == "#" else -1
+        body = body[1:]
+    return (int(body) + 1) * 12 + step
+
+
 def test_the_awakened_cue_is_the_cabin_tune_not_a_new_one() -> None:
     calm = {track.name: track for track in cabin.build_tracks()}
     loud = {track.name: track for track in cabin_awakened.build_tracks()}
 
-    # The hook is the same notes in the same order at the same beats.
-    assert [(note.beat, note.pitch) for note in loud["synth_hook"].notes] == [
-        (note.beat, note.pitch) for note in calm["synth_hook"].notes
-    ]
-    assert loud["synth_hook"].instrument is ins.neon_synth_lead
+    # The neon lead is gone -- no voice in here plays it, and nothing is
+    # left up in the register it occupied.
+    assert "synth_hook" not in loud
+    assert all(track.instrument is not ins.neon_synth_lead for track in
+               cabin_awakened.build_tracks())
+
+    # The hook survives it: same notes in the same order at the same
+    # beats, dropped two octaves onto the overtone voice.
+    sung = loud["throat_overtone"].notes
+    played = calm["synth_hook"].notes
+    assert [note.beat for note in sung] == [note.beat for note in played]
+    assert all(_midi(a.pitch) == _midi(b.pitch) - 24
+               for a, b in zip(sung, played))
+
+    # The melody is jaw harp and throat singing, and the harp is the
+    # loudest thing that is not the bass or the kit.
+    assert loud["throat_overtone"].instrument is ins.throat_overtone
+    assert loud["throat_drone"].instrument is ins.throat_drone
+    assert loud["jaw_harp"].instrument is ins.jaw_harp
+    # ...and there is a great deal more of it than the calm cue has.
+    assert len(loud["jaw_harp"].notes) > len(calm["jaw_harp"].notes) * 5
+
+    # The drone never rests: it is the floor the other two are drawn on.
+    assert len(loud["throat_drone"].notes) == cabin.TOTAL_BARS
 
     # The bass is the cabin's own figure, on the cabin's own roots.
     assert loud["driving_bass"].instrument is ins.elastic_bass

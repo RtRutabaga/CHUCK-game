@@ -1,5 +1,6 @@
 """Generate the authored Cabin grounds and compact exterior landmark."""
 
+import math
 from pathlib import Path
 import random
 
@@ -33,6 +34,26 @@ def _path(grid, start, end, radius=1):
 FIRE = (57, 43)
 FOREST_EDGE = FIRE[1] + 3      # firs crowd in from here south...
 FOREST_SOLID = FIRE[1] + 8     # ...and close over completely here
+# ...except directly below the fire, where the stand bows away from it.
+# A straight tree line across the bottom of a clearing reads as a fence;
+# the wood should open out around a fire rather than stop at one.
+FIRE_BAY_WIDTH = 15            # how far either side the opening reaches
+FIRE_BAY_DEPTH = 7             # ...and how much further south at the fire
+
+
+def _south_edge(x: int) -> int:
+    """The first fully wooded row in this column.
+
+    A raised cosine rather than a straight line or a wedge: a wedge
+    gives the clearing a pointed bottom, which reads as a path heading
+    off south, and that is exactly what the trail stopping at the fire
+    was meant to stop suggesting.
+    """
+    reach = abs(x - FIRE[0]) / FIRE_BAY_WIDTH
+    if reach >= 1.0:
+        return FOREST_SOLID
+    bow = 0.5 + 0.5 * math.cos(math.pi * reach)
+    return FOREST_SOLID + round(FIRE_BAY_DEPTH * bow)
 
 CABIN_TILE = (62, 34)          # the tile the cabin prop hangs from
 CABIN_COVERAGE = 0.38          # how much of a tile the building must fill
@@ -107,11 +128,12 @@ def build_map():
     # The hand-drawn reference places a broad irregular clearing west of a
     # long north/south cabin.  Keep that silhouette rather than centring the
     # building as a generic game landmark.
-    for y in range(4, FOREST_SOLID):
+    for y in range(4, FOREST_SOLID + FIRE_BAY_DEPTH):
         left = 4 + abs(y - 31) // 13
         right = 75 - abs(y - 31) // 20
         for x in range(left, right + 1):
-            grid[y][x] = "ᶠ"
+            if y < _south_edge(x):
+                grid[y][x] = "ᶠ"
 
     # The western arrival begins as a narrow, slightly wandering foot trail,
     # then opens toward the compact cabin's sole south door and fire circle.
@@ -195,12 +217,23 @@ def build_map():
     # Thicker the further south, and off the same authored seed as the
     # stand above: a modulo pattern here planted the tree farm the west
     # side was carefully built to avoid.
-    for y in range(FOREST_EDGE, FOREST_SOLID):
-        crowding = 0.42 + 0.44 * (y - FOREST_EDGE) / (
-            FOREST_SOLID - FOREST_EDGE - 1
-        )
+    band = FOREST_SOLID - FOREST_EDGE
+    for y in range(FOREST_EDGE, FOREST_SOLID + FIRE_BAY_DEPTH):
         for x in range(5, 76):
-            if grid[y][x] == "ᶠ" and rng.random() < crowding:
+            if grid[y][x] != "ᶠ":
+                continue
+            # The thickening is the same few rows deep everywhere; it is
+            # the tree line it hangs from that moves. Stretching the ramp
+            # to fill the bay instead just planted the opening, which is
+            # the opposite of what a clearing round a fire looks like.
+            start = _south_edge(x) - band
+            if y < start:
+                continue
+            reach = min(1.0, abs(x - FIRE[0]) / FIRE_BAY_WIDTH)
+            crowding = (0.42 + 0.44 * (y - start) / (band - 1)) * (
+                0.74 + 0.26 * reach
+            )
+            if rng.random() < crowding:
                 grid[y][x] = "♣"
 
     # A handful of the established scratchable cigarette-grass tufts soften

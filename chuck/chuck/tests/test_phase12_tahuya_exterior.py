@@ -18,7 +18,9 @@ from src.world.tileset_layout import MAP_TILESET, TAHUYA, tileset_for
 
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from generate_tahuya_cabin_exterior import FIRE, FOREST_EDGE, FOREST_SOLID
+from generate_tahuya_cabin_exterior import (
+    FIRE, FIRE_BAY_WIDTH, FOREST_EDGE, FOREST_SOLID, _south_edge,
+)
 
 
 MAP_NAME = "tahuya_cabin_exterior"
@@ -126,13 +128,28 @@ def test_sole_south_door_and_the_ashtray_are_reachable() -> None:
     for point in ((59, 31), (59, 33), (59, 44)):
         assert point in reachable, point
     # South of the fire is forest, not a corridor running off the map.
-    # The trail ends at the fire circle and the stand closes over it.
-    for row in range(FOREST_SOLID, tilemap.height_tiles):
-        assert all(tilemap.is_solid(col, row)
-                   for col in range(1, tilemap.width_tiles - 1)), row
+    # The trail ends at the fire circle and the stand closes over it --
+    # but the line it closes on bows away from the fire, so the wood
+    # opens out around it in a bay instead of stopping at it in a fence.
+    for col in range(1, tilemap.width_tiles - 1):
+        for row in range(_south_edge(col), tilemap.height_tiles):
+            assert tilemap.is_solid(col, row), (col, row)
     assert not any((col, row) in reachable
-                   for row in range(FOREST_SOLID, tilemap.height_tiles)
-                   for col in range(tilemap.width_tiles))
+                   for col in range(1, tilemap.width_tiles - 1)
+                   for row in range(_south_edge(col), tilemap.height_tiles))
+
+    far = FIRE[0] + FIRE_BAY_WIDTH + 4
+    assert _south_edge(FIRE[0]) > _south_edge(far) + 4
+
+    def open_rows(col):
+        return sum(not tilemap.is_solid(col, row)
+                   for row in range(FOREST_EDGE, tilemap.height_tiles))
+
+    # ...and there is materially more standing room under the fire than
+    # there is off to the side of it.
+    assert open_rows(FIRE[0]) >= open_rows(far) + 4, (
+        open_rows(FIRE[0]), open_rows(far)
+    )
     assert all(tilemap.terrain_at(col, row) != "⌇"
                for row in range(FOREST_EDGE, tilemap.height_tiles)
                for col in range(tilemap.width_tiles))

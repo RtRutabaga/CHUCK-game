@@ -6,6 +6,20 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The lightshow cue lost its neon synth lead. The tune is carried by a jaw harp
+  and two new Tuvan throat voices instead: a kargyraa growl holding the root,
+  built from a sub-octave pulse under a saw because that is literally how the
+  sound is made, and a sygyt overtone whistling the hook's own contour two
+  octaves below where the synth used to play it. Same notes, same order, no
+  longer up in the air.
+- There is roughly six times as much jaw harp: a syncopated figure of its own
+  every bar, plus an answer to each melody note in the gap after it.
+- The tree line below the fire bows away from it, so the wood opens out around
+  the fire in a bay rather than stopping at it in a straight fence. The
+  thickening band stays the same few rows deep everywhere and it is the line it
+  hangs from that moves -- stretching the band to fill the bay instead just
+  planted the opening.
+
 - The wood on the cabin grounds has an understory: evergreen huckleberry and
   salal, roughly 460 shrubs through the stand. Firs on bare ground read as
   posts standing in a lawn, and a Douglas-fir wood in this part of Washington

@@ -7,16 +7,21 @@ thirty-two-bar root cycle, the same syncopated elastic-bass figure, the
 same two neon hooks. Played back it is unmistakably the room Chuck was
 just standing in.
 
-What arrives on top of it is the Beholder fight's language, because
-that is the reference for "more intense" in this game and the two share
-a modal world. D Dorian and D Phrygian differ by one note, so the boss
-theme's flat-second grind can be laid over the cabin's harmony without
-retuning either: a choral ostinato chanting the semitone, brass stabs
-answering the hook, timpani under the downbeats and toms filling the
-turnarounds.
+What is gone is the neon synth lead. The tune is carried instead by a
+jaw harp and a pair of Tuvan throat voices: a kargyraa growl holding
+the root an octave under where it is sung, and a sygyt overtone
+whistling the hook's own contour two octaves below where the synth used
+to play it. Same notes, same order, no longer up in the air.
+
+Under that sits the Beholder fight's language, because that is the
+reference for "more intense" in this game and the two share a modal
+world. D Dorian and D Phrygian differ by one note, so the boss theme's
+flat-second grind can be laid over the cabin's harmony without retuning
+either: a choral ostinato chanting the semitone, brass answering on the
+offbeats, timpani under the downbeats and toms filling the turnarounds.
 
 It also runs faster -- 132 against 112 -- and gives up the cabin's
-headroom for the boss's. Nothing else about the arrangement is new.
+headroom for the boss's.
 """
 
 from data.music import cabin
@@ -58,15 +63,48 @@ def _bars(pattern: dict[int, list[tuple]]) -> list[Note]:
     return notes
 
 
+_SEMITONE = {"C": 0, "D": 2, "E": 4, "F": 5, "G": 7, "A": 9, "B": 11}
+_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+
+
+def _midi(pitch: str) -> int:
+    step = _SEMITONE[pitch[0]]
+    body = pitch[1:]
+    if body[0] in "#b":
+        step += 1 if body[0] == "#" else -1
+        body = body[1:]
+    return (int(body) + 1) * 12 + step
+
+
+def _down(pitch: str, octaves: int) -> str:
+    value = _midi(pitch) - 12 * octaves
+    return f"{_NAMES[value % 12]}{value // 12 - 1}"
+
+
 def build_tracks() -> list[Track]:
-    # The hook, unchanged in pitch and rhythm, played harder.
-    synth_hook = {}
+    # The hook, note for note, dropped two octaves and sung rather than
+    # played. The neon lead it used to be is gone entirely.
+    hook = {}
     for start, phrase, velocity in (
-        (4, cabin._HOOK_A, 1.0), (12, cabin._HOOK_A, 1.0),
-        (20, cabin._HOOK_B, 1.0), (32, cabin._HOOK_A, 1.0),
+        (4, cabin._HOOK_A, .92), (12, cabin._HOOK_A, .96),
+        (20, cabin._HOOK_B, .96), (32, cabin._HOOK_A, 1.0),
         (40, cabin._HOOK_B, 1.0),
     ):
-        synth_hook.update(cabin._melody(start, phrase, velocity))
+        hook.update(cabin._melody(start, phrase, velocity))
+    overtone = {
+        bar: [(beat, duration, _down(pitch, 2), velocity)
+              for beat, duration, pitch, velocity in events]
+        for bar, events in hook.items()
+    }
+    # The jaw harp answers it in the gaps rather than doubling it, an
+    # octave lower again, which is about where a jaw harp actually sits.
+    jaw_hook = {
+        bar: [(beat + duration, min(.30, duration), _down(pitch, 3),
+               .80 if index % 2 else .62)
+              for index, (beat, duration, pitch, _v) in enumerate(events)
+              if beat + duration < BEATS_PER_BAR]
+        for bar, events in hook.items()
+    }
 
     # The bass figure is the cabin's own, with the mid-track break taken
     # out: the awakened room does not drop back.
@@ -74,9 +112,24 @@ def build_tracks() -> list[Track]:
 
     arp, low_pulse = {}, {}
     chant, horn, kick, snare, hats, timp, toms, sub = {}, {}, {}, {}, {}, {}, {}, {}
+    drone, jaw = {}, {}
     for bar, root in enumerate(_ROOTS):
         chord = _ARP[root]
         held, flat = _CHANT[root]
+
+        # Kargyraa holds the root right through the bar. It is the floor
+        # the whistle and the harp are drawn over, so it never rests.
+        drone[bar] = [(0, 4.0, _down(root, 1), .86)]
+        # ...and the jaw harp keeps the pulse under all of it, twanging
+        # the root and its fifth on a syncopated figure of its own.
+        jaw[bar] = [
+            (0, .30, _OCTAVE[root], .90),
+            (.75, .24, root, .62),
+            (1.5, .28, _FIFTH[root], .76),
+            (2.25, .24, _OCTAVE[root], .66),
+            (2.75, .30, root, .84),
+            (3.5, .26, _FIFTH[root], .70),
+        ]
 
         arp[bar] = [
             (step * .25 + .125, .11, chord[step % 4], .50)
@@ -114,9 +167,14 @@ def build_tracks() -> list[Track]:
                          (3, .14, "F2", .80), (3.5, .14, "D2", .86)]
         sub[bar] = [(0, 1.9, root, .52), (2, 1.9, root, .48)]
 
+    for bar, events in jaw_hook.items():
+        jaw[bar] = sorted(jaw[bar] + events)
+
     return [
-        Track("synth_hook", ins.neon_synth_lead, 1.0, _bars(synth_hook)),
-        Track("chant", ins.choir, .82, _bars(chant)),
+        Track("throat_overtone", ins.throat_overtone, .94, _bars(overtone)),
+        Track("throat_drone", ins.throat_drone, .88, _bars(drone)),
+        Track("jaw_harp", ins.jaw_harp, .92, _bars(jaw)),
+        Track("chant", ins.choir, .58, _bars(chant)),
         Track("horn", ins.brass, .86, _bars(horn)),
         Track("driving_bass", ins.elastic_bass, 1.10, _bars(bass)),
         Track("sub", ins.round_bass, .52, _bars(sub)),

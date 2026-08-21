@@ -399,6 +399,57 @@ def tabla_bayan(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     )
 
 
+def throat_drone(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Kargyraa: the low growl of Tuvan throat singing.
+
+    The characteristic sound is a sub-octave -- the ventricular folds
+    vibrate at half the rate of the vocal folds, so the note is heard an
+    octave below the pitch being sung, with a hard buzz on top of it.
+    That is built here literally: a saw at the pitch for the harmonic
+    stack, a pulse at half the pitch for the growl, and a high partial
+    left in for the vowel so it reads as a voice and not a synth bass.
+    """
+    count = int(dur * SAMPLE_RATE)
+    low = max(46.0, freq)
+    phase = sub_phase = 0.0
+    body = []
+    for index in range(count):
+        seconds = index / SAMPLE_RATE
+        drift = 1.0 + 0.005 * math.sin(2 * math.pi * 4.4 * seconds)
+        phase = (phase + low * drift / SAMPLE_RATE) % 1.0
+        sub_phase = (sub_phase + low * 0.5 * drift / SAMPLE_RATE) % 1.0
+        body.append((2.0 * phase - 1.0) * 0.45
+                    + (1.0 if sub_phase < 0.42 else -0.55) * 0.55)
+    voiced = lowpass(body, 1500)
+    vowel = gain(tone(low * 6.0, dur), 0.09)
+    return gain(
+        envelope(mix(voiced, vowel), min(0.12, dur * 0.3),
+                 min(dur * 0.8, dur), sustain=0.92),
+        vel * 0.46,
+    )
+
+
+def throat_overtone(freq: float, dur: float, vel: float = 1.0) -> list[float]:
+    """Sygyt: the whistled partial drawn out over the same drone.
+
+    A narrow, almost pure tone with the drone it is filtered from still
+    audible underneath it, two octaves down. Without that drone the
+    whistle is just a sine and stops sounding like it is coming out of
+    somebody.
+    """
+    whistle = mix(
+        _vibrato_sine(freq, dur, rate=5.8, depth=0.004),
+        gain(tone(freq * 2.0, dur), 0.10),
+    )
+    drone = gain(lowpass(tone(freq / 4.0, dur, "square", duty=0.34), 800), 0.26)
+    body = mix(lowpass(whistle, 4200), drone)
+    return gain(
+        envelope(body, min(0.06, dur * 0.3), min(dur * 0.7, dur),
+                 sustain=0.9),
+        vel * 0.4,
+    )
+
+
 def jaw_harp(freq: float, dur: float, vel: float = 1.0) -> list[float]:
     """A short metallic jaw-harp twang with a decaying mouth resonance.
 
