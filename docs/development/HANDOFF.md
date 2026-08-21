@@ -3,15 +3,21 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `6409f0d` (initial Cabin soundtrack)
-- Current work: the Cabin soundtrack redirection and interior geometry
-  refinement are complete and verified
+- Base commit before this pass: `cf0c657` (jaw harp added to Cabin theme)
+- Current work: the Cabin soundtrack's softer mix and jazz-funk bass revision
+  are complete and verified
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
   awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Softened the Cabin soundtrack's upper edge by rounding the lead and pulse
+  voices, easing the hats and snare, and reducing the jaw-harp transient. The
+  bass is now an eight-hit syncopated jazz-funk figure that walks through
+  chord thirds, fifths, sevenths, and octaves while preserving the track's
+  driving 112-BPM structure and uninterrupted Cabin door routing.
 
 - Added an original synthetic jaw-harp voice to the Cabin theme. Forty compact
   offbeat twangs answer the elastic bass across alternating active bars while

@@ -1,9 +1,9 @@
 """Cabin theme -- an insistent bassline under cool nocturnal electronics.
 
-An original ~103-second loop in D Dorian at 112 BPM. The established
-two-bar elastic bass figure remains the track's identity, while the former
+An original ~103-second loop in D Dorian at 112 BPM. A syncopated, chord-tone
+elastic bass figure remains the track's identity, while the former
 Feywild-like mallets, reed, bells, and magical swells have been replaced by a
-four-on-the-floor pulse, clipped arpeggios, and a direct neon synth melody.
+four-on-the-floor pulse, rounded arpeggios, and a warm neon synth melody.
 Sparse tabla accents retain the Cabin phase's requested hand-drum color
 without pulling the arrangement away from its driving electronic character.
 Occasional jaw-harp twangs answer the bass on open offbeats.
@@ -46,6 +46,12 @@ _FIFTH = {
 }
 _OCTAVE = {
     "D2": "D3", "C2": "C3", "G2": "G3", "A1": "A2", "B1": "B2",
+}
+_THIRD = {
+    "D2": "F2", "C2": "E2", "G2": "B2", "A1": "C2", "B1": "D2",
+}
+_SEVENTH = {
+    "D2": "C3", "C2": "B2", "G2": "F3", "A1": "G2", "B1": "A2",
 }
 _ARP = {
     "D2": ("D4", "A4", "C5", "E5"),
@@ -106,15 +112,17 @@ def _melody(start_bar: int, phrase, velocity: float) -> dict:
 
 
 def _bass_bar(root: str, quiet: bool = False) -> list[tuple]:
-    """The original Cabin bass figure, intentionally preserved exactly."""
+    """A syncopated funk figure that walks through each chord's color tones."""
     level = .68 if quiet else 1.0
     return [
-        (0, .55, root, .92 * level),
-        (.75, .24, _OCTAVE[root], .62 * level),
-        (1.375, .36, _FIFTH[root], .78 * level),
-        (2.125, .24, root, .56 * level),
-        (2.625, .48, _OCTAVE[root], .88 * level),
-        (3.5, .34, _FIFTH[root], .70 * level),
+        (0, .42, root, .90 * level),
+        (.625, .18, _OCTAVE[root], .52 * level),
+        (1, .28, _FIFTH[root], .68 * level),
+        (1.5, .30, _THIRD[root], .76 * level),
+        (2.125, .22, root, .52 * level),
+        (2.5, .36, _SEVENTH[root], .82 * level),
+        (3.125, .22, _FIFTH[root], .60 * level),
+        (3.5, .38, _OCTAVE[root], .86 * level),
     ]
 
 
@@ -150,9 +158,9 @@ def build_tracks() -> list[Track]:
             (beat, .10, "C2", .78 if not break_bar else .58)
             for beat in (0, 1, 2, 3)
         ]
-        snare[bar] = [(1, .08, "D3", .62), (3, .08, "D3", .66)]
+        snare[bar] = [(1, .08, "D3", .56), (3, .08, "D3", .60)]
         hats[bar] = [
-            (beat, .04, "C6", .22 if beat % 1 else .14)
+            (beat, .04, "C6", .18 if beat % 1 else .10)
             for beat in (0, .5, 1, 1.5, 2, 2.5, 3, 3.5)
         ]
         # Sparse hand-drum color woven between the mechanical backbeat.
@@ -167,14 +175,14 @@ def build_tracks() -> list[Track]:
             ]
 
     return [
-        Track("synth_hook", ins.neon_synth_lead, .94, _bars(synth_hook)),
+        Track("synth_hook", ins.neon_synth_lead, .90, _bars(synth_hook)),
         Track("driving_bass", ins.elastic_bass, 1.10, _bars(bass)),
-        Track("pulse_arp", ins.pulse_arp, .70, _bars(arp)),
-        Track("low_pulse", ins.pulse_arp, .46, _bars(low_pulse)),
+        Track("pulse_arp", ins.pulse_arp, .62, _bars(arp)),
+        Track("low_pulse", ins.pulse_arp, .42, _bars(low_pulse)),
         Track("kick", ins.kick, .72, _bars(kick)),
-        Track("snare", ins.snare, .50, _bars(snare)),
-        Track("hats", ins.hat, .36, _bars(hats)),
+        Track("snare", ins.snare, .44, _bars(snare)),
+        Track("hats", ins.hat, .28, _bars(hats)),
         Track("dayan", ins.tabla_dayan, .48, _bars(dayan)),
         Track("bayan", ins.tabla_bayan, .50, _bars(bayan)),
-        Track("jaw_harp", ins.jaw_harp, .62, _bars(jaw_harp)),
+        Track("jaw_harp", ins.jaw_harp, .56, _bars(jaw_harp)),
     ]

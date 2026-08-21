@@ -28,7 +28,7 @@ def _samples():
     return data, rate
 
 
-def test_cabin_theme_is_cool_driving_and_preserves_its_bass() -> None:
+def test_cabin_theme_is_cool_driving_and_jazz_funk_bass_driven() -> None:
     tracks = cabin.build_tracks()
     named = {track.name: track for track in tracks}
     duration = cabin.TOTAL_BEATS * 60.0 / cabin.TEMPO_BPM
@@ -42,10 +42,13 @@ def test_cabin_theme_is_cool_driving_and_preserves_its_bass() -> None:
     bass = named["driving_bass"]
     hook = named["synth_hook"]
     assert bass.level > hook.level
-    assert len(bass.notes) == cabin.TOTAL_BARS * 6
-    assert [note.beat for note in bass.notes[:6]] == [
-        0, .75, 1.375, 2.125, 2.625, 3.5
+    assert len(bass.notes) == cabin.TOTAL_BARS * 8
+    assert [note.beat for note in bass.notes[:8]] == [
+        0, .625, 1, 1.5, 2.125, 2.5, 3.125, 3.5
     ]
+    assert {note.pitch for note in bass.notes[:8]} == {
+        "D2", "F2", "A2", "C3", "D3",
+    }
     assert hook.instrument is ins.neon_synth_lead
     assert named["pulse_arp"].instrument is ins.pulse_arp
     assert named["low_pulse"].instrument is ins.pulse_arp

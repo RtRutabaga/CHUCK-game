@@ -66,11 +66,12 @@ file is required by the project rules and updated every session.
   and restrained local light. It does not become an oval or freestanding
   portal, and it intentionally has no interaction yet.
 - Rebuilt the Cabin theme as an original 103-second D-Dorian electronic loop
-  at 112 BPM while preserving its exact syncopated elastic-bass figure. A
-  four-on-the-floor kick, backbeat, clipped pulse arpeggio, and direct neon
+  at 112 BPM, then reworked its bass into a jazzier eight-hit funk figure that
+  walks through thirds, fifths, sevenths, and octaves. A four-on-the-floor
+  kick, backbeat, rounded pulse arpeggio, and warmer neon
   synth hook replace the Feywild-like mallet, reed, bell, and magical-swell
   palette. Sparse tuned hand-drum accents remain secondary to the cooler,
-  more driving techno identity, with compact synthetic jaw-harp twangs
+  more driving techno identity, with softened synthetic jaw-harp twangs
   answering the bass on alternating active bars. Exterior and interior request the same
   `cabin.wav`, so the cue continues uninterrupted through both ordinary doors.
 - Focused exterior, interior, checkpoint, transition, and tileset suites pass,

@@ -348,6 +348,8 @@ The target character is:
 - strange and psychedelic
 - catchy rather than formless
 - driven by a memorable bass line
+- rounded rather than piercing in its synth palette, with a jazzy-funky
+  chord-tone bass groove
 - rhythmically confident
 - warm enough to coexist with a familiar cabin
 - subtly uncanny as the entities and table map reveal themselves

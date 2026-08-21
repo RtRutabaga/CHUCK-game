@@ -186,28 +186,29 @@ def elastic_bass(freq: float, dur: float, vel: float = 1.0) -> list[float]:
 
 
 def neon_synth_lead(freq: float, dur: float, vel: float = 1.0) -> list[float]:
-    """Bright, confident retro lead with a tight electronic edge."""
+    """Rounded, confident retro lead without a brittle square-wave edge."""
     body = mix(
-        tone(freq, dur, "square"),
-        gain(tone(freq * 1.006, dur, "square"), 0.38),
-        gain(tone(freq / 2, dur, "triangle"), 0.28),
+        tone(freq, dur, "triangle"),
+        gain(tone(freq * 1.006, dur, "triangle"), 0.34),
+        gain(tone(freq / 2, dur), 0.30),
     )
-    body = lowpass(body, 3100)
+    body = lowpass(body, 2100)
     return gain(
-        envelope(body, 0.004, min(0.13, dur * 0.34), sustain=0.82),
-        vel * 0.43,
+        envelope(body, 0.006, min(0.17, dur * 0.42), sustain=0.84),
+        vel * 0.45,
     )
 
 
 def pulse_arp(freq: float, dur: float, vel: float = 1.0) -> list[float]:
-    """Short filtered pulse for a clean 16-bit techno arpeggio."""
+    """Short rounded pulse for a soft-edged 16-bit techno arpeggio."""
     body = mix(
-        tone(freq, dur, "square"),
-        gain(tone(freq * 2, dur, "triangle"), 0.18),
+        tone(freq, dur, "triangle"),
+        gain(tone(freq * 1.004, dur, "triangle"), 0.28),
+        gain(tone(freq / 2, dur), 0.18),
     )
     return gain(
-        envelope(lowpass(body, 2200), 0.002, min(0.08, dur * 0.7)),
-        vel * 0.32,
+        envelope(lowpass(body, 1650), 0.004, min(0.11, dur * 0.72)),
+        vel * 0.34,
     )
 
 
@@ -420,9 +421,9 @@ def jaw_harp(freq: float, dur: float, vel: float = 1.0) -> list[float]:
         mouth = math.sin(2 * math.pi * f * 3.02 * seconds)
         pulse = 0.72 + 0.28 * math.sin(2 * math.pi * 7.0 * seconds)
         body.append((tongue * 0.72 + mouth * 0.28) * pulse)
-    click = envelope(_highpassed_noise(0.012, 2100, seed=79), 0.001, 0.010)
-    voiced = envelope(lowpass(body, 2600), 0.001, length * 0.88)
-    return gain(mix(voiced, gain(click, 0.28)), vel * 0.38)
+    click = envelope(_highpassed_noise(0.012, 1500, seed=79), 0.001, 0.010)
+    voiced = envelope(lowpass(body, 1900), 0.001, length * 0.88)
+    return gain(mix(voiced, gain(click, 0.14)), vel * 0.38)
 
 
 def woodblock(freq: float, dur: float, vel: float = 1.0) -> list[float]:
