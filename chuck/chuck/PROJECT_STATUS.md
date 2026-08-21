@@ -54,6 +54,8 @@ file is required by the project rules and updated every session.
   genuinely sealed black interior and has a west-facing solid door that gives
   the established `it's closed` interaction. The whole interior is four rows
   shorter, removing the oversized gap between the table and sink.
+  The mini fridge's collision is confined to its visible base, preserving the
+  southbound lane immediately east of it.
   Furniture is human-scale and provides solid, readable level geometry while
   keeping both doors and the interior Ashtray connected.
 - Added development checkpoint `Cabin Interior` plus exactly one physical,

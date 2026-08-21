@@ -124,6 +124,9 @@ def test_all_interior_routes_and_the_ashtray_are_reachable() -> None:
     # route into the complete north living section.
     assert all(not tilemap.is_solid(x, y)
                for y in range(10, 14) for x in range(12, 15))
+    # The fridge sprite is wider than one tile, but must not leave an invisible
+    # collision cell on its east side that blocks this southbound approach.
+    assert all(not tilemap.is_solid(11, y) for y in range(12, 15))
     # The horseshoe's west arm hugs the wall from the table to the sink; it
     # cannot consume the open room or the repaired north passage.
     assert all(tilemap.is_solid(x, y)

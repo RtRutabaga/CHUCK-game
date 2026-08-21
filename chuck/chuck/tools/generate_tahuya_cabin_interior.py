@@ -78,7 +78,9 @@ def build_map():
     grid[27][5] = "ƕ"
 
     # Human-scale mini fridge tucked against the table's southeast corner.
-    _solid_rect(grid, 10, 12, 11, 13)
+    # Its collision stays under the visible body; an extra east tile would
+    # invisibly catch Chuck while he walks south through the central lane.
+    _solid_rect(grid, 10, 12, 10, 13)
     grid[13][10] = "Ɩ"
 
     # Table and fire share one east-west band. The enlarged sealed room begins

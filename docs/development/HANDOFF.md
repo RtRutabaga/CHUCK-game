@@ -3,15 +3,19 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `d2f1963` (Cabin north seating group tightened)
-- Current work: the Cabin grounds and interior have been compacted and
-  naturalized, with routes and interactions verified
+- Base commit before this pass: `fe6a1f7` (Cabin maps compacted and naturalized)
+- Current work: the Cabin mini-fridge lane obstruction is fixed and verified
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
   awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Removed the mini fridge's stray east-side collision tile. Its collision now
+  stays beneath the visible body, so Chuck can walk south through the apparent
+  clear lane between the fridge and fireplace. Added a direct topology
+  regression for that route.
 
 - Re-authored the exterior's 118-tree western fir stand with deterministic
   irregular spacing so it no longer reads as a grid. Narrowed the initial
