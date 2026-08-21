@@ -6,6 +6,20 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Waking the table map now turns the cabin lights off. The interior is lit by a
+  Northern Lights projector: broad soft bands sweeping the room in slowly
+  cycling colours, a held scatter of blue stars behind them, and the woodstove
+  throwing a dim orange pool that stays orange while everything else changes.
+- Every layer carries its brightness in its colour channels rather than its
+  alpha. An additive blit adds the source channels and ignores alpha, so drawn
+  the obvious way -- white on low alpha -- each band added 255 to everything
+  beneath it and the room came out as saturated tartan.
+- The bands are drawn once in grey and tinted on the way to the screen, and
+  sweeping them is a blit at a moving offset, so the whole effect costs three
+  tinted blits and a fill per frame however many bands are in it.
+- The palette is walked rather than jumped between, so the room changes colour
+  the way a projector does instead of flicking like a light switch.
+
 - The cabin on the exterior map is a proper gable-roofed landmark, rebuilt to
   the reference photograph and grown from 208x150 to 370x263. Its geometry is
   written at a base size and multiplied on the way to the canvas, so the whole

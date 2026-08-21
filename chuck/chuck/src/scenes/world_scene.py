@@ -48,6 +48,7 @@ from src.entities.raccoon import Raccoon
 from src.entities.raptor import Raptor
 from src.entities.redcap import Redcap
 from src.entities.reality_blocks import RealityBlockField
+from src.entities.aurora_light import AuroraLight
 from src.entities.city_rain import CityRain
 from src.entities.snake import TempleSnake
 from src.entities.flameskull import Flameskull
@@ -189,6 +190,14 @@ class WorldScene(Scene):
         self.city_rain = (
             CityRain()
             if MAP_TILESET.get(map_name) in {"city", "city_day"}
+            else None
+        )
+        # Once the table map has woken, the cabin lights go out and the
+        # room is lit by the aurora projector and the stove alone.
+        self.aurora = (
+            AuroraLight(self._stove_position())
+            if (map_name == "tahuya_cabin_interior"
+                and self.game.progress.has(COUNTER_MAP_AWAKENED_FLAG))
             else None
         )
         self._arrival_fade_t: float | None = 0.0 if fade_in else None
@@ -720,6 +729,8 @@ class WorldScene(Scene):
         self._world_time += dt
         if self.city_rain is not None:
             self.city_rain.update(dt)
+        if self.aurora is not None:
+            self.aurora.update(dt)
         if self.reality_blocks is not None:
             self.reality_blocks.update(dt)
         if self._arrival_fade_t is not None:
@@ -1402,6 +1413,10 @@ class WorldScene(Scene):
         for cone in self.battle_cones:
             cone.draw(surface, offset)
         self.tilemap.draw_overhead(surface, offset, self._world_time)
+        if self.aurora is not None:
+            # After the overhead pass and before the HUD: the projector
+            # lights the room, not the interface.
+            self.aurora.draw(surface, offset)
         if self.city_rain is not None:
             self.city_rain.draw(surface)
         self.hud.draw(surface)
@@ -1497,6 +1512,14 @@ class WorldScene(Scene):
             overlay.fill((255, 244, 224))
             overlay.set_alpha(int(255 * min(1.0, 0.5 + frac)))
             surface.blit(overlay, (0, 0))
+
+    def _stove_position(self) -> tuple[float, float] | None:
+        """Middle of the woodstove in world pixels, if this map has one."""
+        for kind, col, row in self.tilemap.prop_tiles:
+            if kind == "cabin_woodstove":
+                ts = config.TILE_SIZE
+                return (col * ts + ts / 2, row * ts + ts / 2)
+        return None
 
     def _sorted_drawables(self):
         """Everything that stands in the world, painter-ordered by feet.
