@@ -7,7 +7,23 @@ file is required by the project rules and updated every session.
 ## Latest implementation
 
 - The cabin on the exterior map is a proper gable-roofed landmark, rebuilt to
-  the reference photograph and grown from 208x150 to 264x188. It has a ridge
+  the reference photograph and grown from 208x150 to 370x263. Its geometry is
+  written at a base size and multiplied on the way to the canvas, so the whole
+  building resizes from one number without the roof, eaves and porch falling
+  out of agreement.
+- The cabin sorts against the back of its own porch deck rather than against
+  its feet. Sorting a building on the tile it stands on is right for anything
+  Chuck walks around and wrong for anything he walks onto -- the deck is drawn
+  as part of the cabin, so he vanished under the decking the moment he stepped
+  up. It still covers him when he is behind it.
+- The doorway is three tiles wide. One tile on a building this size had to be
+  lined up on before it would open.
+- The deck and steps are read off the sprite the same way the mass is: a tile
+  is board if the cabin fills it with the porch's own timber. The porch used to
+  be a rectangle wider than the deck drawn on it, which left bare planks lying
+  around the building's feet like spilled flooring.
+- The firepit and the woodshed have come up from the far edge of the clearing
+  to just south of the porch steps. It has a ridge
   and two roof slopes with a triangle of siding under them, a covered porch on
   its own small gable with posts and a railing, wooden steps down in front of
   the door, a lit lamp beside it, panelled windows on both visible faces, and

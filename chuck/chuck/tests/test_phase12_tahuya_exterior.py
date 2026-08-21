@@ -89,7 +89,12 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "tahuya_firepit"
     ]
-    assert fire_positions == [(59, 59)]
+    # The fire and the woodshed sit just south of the porch steps now,
+    # not out at the far edge of the clearing.
+    assert fire_positions == [(57, 43)]
+    shed = [(col, row) for kind, col, row in tilemap.prop_tiles
+            if kind == "tahuya_firewood_shed"]
+    assert shed == [(70, 42)]
     assert len(_markers(tilemap)["breakable_grass"]) >= 6
 
 
@@ -110,12 +115,14 @@ def test_sole_south_door_and_the_ashtray_are_reachable() -> None:
     reachable = _flood(tilemap, markers["arrival:from_doug_fir"][0])
     assert markers["anchor:tahuya_exterior_anchor"][0] in reachable
 
-    for point in ((59, 31), (59, 36), (59, 54), (59, 58)):
+    for point in ((59, 31), (59, 33), (59, 54), (59, 58)):
         assert point in reachable, point
     assert tilemap.terrain_at(59, 31) == "Ɛ"
-    assert sum(char == "Ɛ" for row in tilemap._grid for char in row) == 1
+    # Three tiles of doorway, not one: a single-tile door on a building
+    # this size has to be lined up on before it will open.
+    assert sum(char == "Ɛ" for row in tilemap._grid for char in row) == 3
     assert not any(char == "Ɣ" for row in tilemap._grid for char in row)
-    assert markers["arrival:from_cabin_front"][0] == (59, 36)
+    assert markers["arrival:from_cabin_front"][0] == (59, 33)
     assert "arrival:from_cabin_back" not in markers
     assert not any(kind.startswith(("rat", "raccoon", "zombie", "skeleton"))
                    for kind, _position in tilemap.object_spawns)
@@ -193,7 +200,7 @@ def test_mushroom_lights_have_stable_unsynchronised_phases() -> None:
         assert len(firepit._frames) == 6
         assert ufo._size == (132, 76)
         # The cabin is a full gable-roofed landmark now, not a compact block.
-        assert cabin._size == (264, 188)
+        assert cabin._size == (370, 263)
     finally:
         game._shutdown()
         directory.cleanup()
@@ -215,13 +222,23 @@ def test_the_cabin_is_a_gable_landmark_and_collision_follows_it() -> None:
     )
 
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
-    footprint = set(_cabin_footprint())
+    mass, boards = _cabin_footprint()
+    footprint = set(mass) | set(boards)
     assert len(footprint) >= 100, len(footprint)
+    assert len(boards) >= 20, len(boards)
 
     walkable = {"▣", "↟", "Ɛ", "ኂ"}
     for row, col in footprint:
         char = tilemap._grid[row][col]
         assert tilemap.is_solid(col, row) or char in walkable, (col, row, char)
+    # Boards are boards and mass is mass: nothing the cabin draws as
+    # decking is solid, and no plank is left lying outside the drawing.
+    for row, col in boards:
+        assert not tilemap.is_solid(col, row), (col, row)
+    planks = {(row, col)
+              for row, line in enumerate(tilemap._grid)
+              for col, char in enumerate(line) if char in {"▣", "↟"}}
+    assert planks <= set(boards), sorted(planks - set(boards))[:6]
 
     # The silhouette steps rather than squaring off: a gable seen at an
     # angle is wider at the eaves than at the ridge.
@@ -234,10 +251,10 @@ def test_the_cabin_is_a_gable_landmark_and_collision_follows_it() -> None:
     # The porch is walkable, the door is on it, and the steps come down
     # off it onto ground Chuck can stand on.
     assert tilemap.terrain_at(59, 31) == "Ɛ"
-    for col in range(56, 61):
-        assert not tilemap.is_solid(col, 33), col
-    for col in range(58, 62):
-        assert not tilemap.is_solid(col, 35), col
+    for col in range(58, 61):
+        assert tilemap.terrain_at(col, 31) == "Ɛ", col
+    for col in range(57, 60):
+        assert not tilemap.is_solid(col, 34), col
     assert CABIN_TILE == (62, 34) and 0.0 < CABIN_COVERAGE < 1.0
 
 

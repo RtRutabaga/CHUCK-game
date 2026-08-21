@@ -249,6 +249,19 @@ PROP_CHOICE = {
     "sewer_grate": "sewer_grate",
 }
 
+# How far above its own bottom edge a prop sorts, in pixels.
+#
+# A prop normally sorts on the tile it stands on, which is right for
+# anything Chuck walks around. It is wrong for anything he walks *onto*:
+# the cabin's porch deck is drawn as part of the cabin, so sorting the
+# cabin on its own feet buried Chuck under the decking the moment he
+# stepped up. Sorting it against the back of the deck instead means the
+# building still covers him when he is behind it and never when he is
+# standing on it.
+PROP_SORT_LIFT = {
+    "tahuya_cabin": 78,
+}
+
 
 class Prop:
     """One standing object on a tile."""
@@ -284,7 +297,7 @@ class Prop:
         # Horizontally centered on the tile, bottom edges aligned.
         self._draw_x = col * ts + (ts - w) // 2
         self._draw_y = (row + 1) * ts - h
-        self._bottom = (row + 1) * ts
+        self._bottom = (row + 1) * ts - PROP_SORT_LIFT.get(kind, 0)
         self._size = (w, h)
         self.floor_layer = kind == "ship_captain_rug"
         self.dialogue_id = PROP_DIALOGUE.get(kind)

@@ -27,6 +27,17 @@ CABIN_TILE = (62, 34)          # the tile the cabin prop hangs from
 CABIN_COVERAGE = 0.38          # how much of a tile the building must fill
 
 
+# The porch, its steps, and the deck boards, as drawn. Any tile the
+# cabin sprite fills mostly with these is board Chuck stands on rather
+# than building he walks around.
+CABIN_BOARDS = ((104, 74, 48), (138, 100, 64), (70, 48, 32), (88, 62, 40))
+CABIN_BOARD_SHARE = 0.20
+# Where the deck meets the wall, as a fraction of the sprite height. The
+# porch posts and the railing are the same timber as the deck, so
+# without this the posts standing beside the cabin were read as floor.
+CABIN_DECK_TOP = 132 / 188
+
+
 def _cabin_footprint():
     """Every tile the drawn cabin actually stands on.
 
@@ -46,19 +57,37 @@ def _cabin_footprint():
     width, height = image.get_size()
     left = CABIN_TILE[0] * 16 + 8 - width // 2
     top = (CABIN_TILE[1] + 1) * 16 - height
-    tiles = []
+    boards = set(CABIN_BOARDS)
+    solid, deck = [], []
     for row in range((top // 16), (top + height) // 16 + 1):
         for col in range((left // 16), (left + width) // 16 + 1):
-            covered = 0
+            covered = board = 0
             for y in range(row * 16, row * 16 + 16):
                 for x in range(col * 16, col * 16 + 16):
                     px, py = x - left, y - top
-                    if 0 <= px < width and 0 <= py < height:
-                        if image.get_at((px, py))[3] > 128:
-                            covered += 1
-            if covered / 256.0 >= CABIN_COVERAGE:
-                tiles.append((row, col))
-    return tiles
+                    if not (0 <= px < width and 0 <= py < height):
+                        continue
+                    pixel = image.get_at((px, py))
+                    if pixel[3] <= 128:
+                        continue
+                    covered += 1
+                    if tuple(pixel)[:3] in boards:
+                        board += 1
+            floor = (top + height * CABIN_DECK_TOP) // 16
+            if row >= floor and board / 256.0 >= CABIN_BOARD_SHARE:
+                deck.append((row, col))
+            elif covered / 256.0 >= CABIN_COVERAGE:
+                solid.append((row, col))
+    # Close any single tile the treads happen to miss: a hole in the
+    # middle of a staircase is not a design, it is a rounding error.
+    filled = set(deck)
+    for row, col in list(filled):
+        for dr, dc in ((0, 1), (1, 0)):
+            gap = (row + dr, col + dc)
+            beyond = (row + dr * 2, col + dc * 2)
+            if gap not in filled and beyond in filled:
+                deck.append(gap)
+    return solid, deck
 
 
 def build_map():
@@ -97,22 +126,27 @@ def build_map():
     # One procedural three-quarter-view landmark carries its roof, walls,
     # windows, porch, and stairs. Collision follows the visible building mass,
     # while a narrow porch corridor reaches the sole south-facing door.
-    for y, x in _cabin_footprint():
+    mass, boards = _cabin_footprint()
+    for y, x in mass:
         grid[y][x] = "♟"
-    for y in range(32, 35):
-        for x in range(55, 62):
-            grid[y][x] = "▣"
-    for y in range(35, 37):
-        for x in range(57, 63):
-            grid[y][x] = "↟"
-    grid[31][59] = "Ɛ"
-    grid[36][59] = "ኂ"
+    # Only what the cabin actually draws is walkable board. The porch used
+    # to be a rectangle wider than the deck on it, which left bare planks
+    # lying around the building's feet like spilled flooring, so the deck
+    # and the steps are read off the sprite the same way the mass is: a
+    # tile is boards if the cabin fills it with the porch's own timber.
+    for y, x in boards:
+        grid[y][x] = "↟" if y >= 34 else "▣"
+    # Three tiles of doorway rather than one. A single-tile door on a
+    # building this size has to be lined up on before it will open.
+    for x in range(58, 61):
+        grid[31][x] = "Ɛ"
+    grid[33][59] = "ኂ"
     grid[34][62] = "ℂ"
 
     # Real-place landmarks from the authored drawing.
     grid[13][18] = "◌"       # circular UFO object at upper-left
-    grid[59][59] = "⚉"       # fire circle due south of the front porch
-    grid[55][72] = "⌘"       # firewood shed at the lower-right edge
+    grid[43][57] = "⚉"       # fire circle just south of the front steps
+    grid[42][70] = "⌘"       # firewood shed close in on the south-east
 
     # The mushroom-light trail hugs the cabin clearing's west side, rather than
     # wandering through the middle of the clearing.
