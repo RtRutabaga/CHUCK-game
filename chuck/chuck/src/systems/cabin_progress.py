@@ -16,6 +16,22 @@ CABIN_ENTITY_FLAGS = frozenset({
 })
 COUNTER_MAP_AWAKENED_FLAG = "cabin_counter_map_awakened"
 
+# What the interior plays once the table map has woken. The exterior
+# keeps the ordinary cue, so the lift belongs to the room the aurora is
+# actually in, and walking back out of the door drops the intensity
+# again rather than carrying it into the trees.
+AWAKENED_INTERIOR = "tahuya_cabin_interior"
+AWAKENED_MUSIC = "cabin_awakened.wav"
+
+
+def awakened_music_for(map_name: str, progress: "ProgressState"):
+    """The cue this map plays right now, or None to leave it alone."""
+    if map_name != AWAKENED_INTERIOR:
+        return None
+    if not progress.has(COUNTER_MAP_AWAKENED_FLAG):
+        return None
+    return AWAKENED_MUSIC
+
 _CABIN_DOOR_CROSSINGS = frozenset({
     (
         "tahuya_cabin_exterior",

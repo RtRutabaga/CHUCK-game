@@ -66,6 +66,7 @@ from src.scenes.scene import Scene
 from src.systems.astral_anchor import AstralAnchorSystem
 from src.systems.cabin_progress import (
     COUNTER_MAP_AWAKENED_FLAG, apply_cabin_door_crossing,
+    awakened_music_for,
 )
 from src.systems.captain_confrontation import (
     CAPTAIN_ARRIVAL_SPEED,
@@ -301,7 +302,10 @@ class WorldScene(Scene):
         # Area music, looping — or silence where an area has no theme yet
         # (the sewer's track is a later Phase 2 session). Footsteps
         # alternate variants and pick wood/stone from the tile underfoot.
-        music = AREA_MUSIC.get(self.map_name, config.MUSIC_FILE)
+        music = (
+            awakened_music_for(self.map_name, self.game.progress)
+            or AREA_MUSIC.get(self.map_name, config.MUSIC_FILE)
+        )
         if music is not None:
             self.game.audio.play_music(music)
         else:

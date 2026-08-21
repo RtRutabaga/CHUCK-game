@@ -6,6 +6,22 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The music lifts with the lightshow. Waking the table map switches the
+  interior to an awakened arrangement of the cabin cue: the same thirty-two-bar
+  root cycle, the same elastic-bass figure and the same two neon hooks,
+  imported from the calm version rather than rewritten, with the Beholder
+  fight's language laid over the top -- a choral ostinato grinding the flat
+  second, brass answering the hook, timpani and toms under a double-time kit.
+- That works because the two share a modal world: the cabin is D Dorian and the
+  boss theme D Phrygian, one note apart, so the flat-second grind sits over the
+  cabin's own harmony without either being retuned. It runs at 132 against the
+  cabin's 112 and takes the boss theme's headroom, which is most of why it
+  lands as a lift rather than as a remix.
+- The lift belongs to the room the aurora is in. The authored cue for both
+  cabin maps is unchanged, so door crossings before the awakening still restart
+  nothing, and walking back outside afterwards drops the intensity again rather
+  than carrying it into the trees.
+
 - Waking the table map now turns the cabin lights off. The interior is lit by a
   Northern Lights projector: broad soft bands sweeping the room in slowly
   cycling colours, a held scatter of blue stars behind them, and the woodstove
