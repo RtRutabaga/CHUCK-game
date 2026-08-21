@@ -21,6 +21,9 @@ PORTAL_COLOURS = (
     (194, 157, 132),
     (162, 151, 169),
 )
+EGGSHELL = (220, 214, 187)
+EGGSHELL_LIGHT = (242, 237, 211)
+EGGSHELL_SHADOW = (174, 164, 137)
 
 
 def save(surface, name):
@@ -73,13 +76,13 @@ def table(portal_frame=None):
     # meets the west wall while leaving a four-tile circulation lane east.
     s = pygame.Surface((176, 57), pygame.SRCALPHA)
     outline = (48, 31, 23)
-    edge = (91, 54, 34)
-    top = (124, 74, 44)
+    edge = EGGSHELL_SHADOW
+    top = EGGSHELL
     pygame.draw.polygon(s, outline, ((2, 10), (169, 3), (174, 39), (7, 48)))
     pygame.draw.polygon(s, top, ((5, 11), (167, 6), (170, 35), (9, 43)))
     for x in range(13, 166, 13):
         pygame.draw.line(s, edge, (x, 11), (x + 3, 41))
-    pygame.draw.line(s, (164, 104, 59), (8, 13), (165, 8), 2)
+    pygame.draw.line(s, EGGSHELL_LIGHT, (8, 13), (165, 8), 2)
     # Five mustard stools along the north edge, as on Sean's plan.
     for x in (18, 50, 82, 114, 146):
         pygame.draw.ellipse(s, outline, (x, 0, 11, 8))
@@ -113,16 +116,37 @@ def table(portal_frame=None):
     return s
 
 
+def connector_shelf():
+    """Long west-wall counter joining the table and southern sink run."""
+    s = pygame.Surface((48, 272), pygame.SRCALPHA)
+    outline = (48, 31, 23)
+    cabinet = (77, 43, 31)
+    cabinet_light = (112, 67, 43)
+    # The dark cabinet face remains visible along the room-facing east edge;
+    # the broad eggshell worktop is deliberately clear of assorted clutter.
+    pygame.draw.polygon(s, outline, ((3, 0), (42, 0), (47, 266), (4, 271)))
+    pygame.draw.polygon(s, cabinet, ((6, 4), (40, 4), (43, 264), (7, 268)))
+    pygame.draw.polygon(s, EGGSHELL,
+                        ((9, 1), (39, 1), (41, 260), (9, 265)))
+    pygame.draw.line(s, EGGSHELL_LIGHT, (11, 3), (38, 3), 2)
+    pygame.draw.line(s, EGGSHELL_LIGHT, (11, 4), (11, 262), 2)
+    pygame.draw.line(s, EGGSHELL_SHADOW, (40, 5), (42, 263), 2)
+    for y in range(32, 256, 32):
+        pygame.draw.line(s, cabinet_light, (7, y), (42, y + 1))
+        pygame.draw.circle(s, outline, (37, y + 16), 1)
+    return s
+
+
 def kitchen():
     s = pygame.Surface((108, 48), pygame.SRCALPHA)
     outline = (43, 27, 22)
     cabinet = (77, 43, 31)
     light = (112, 67, 43)
-    counter = (173, 162, 127)
+    counter = EGGSHELL
     pygame.draw.rect(s, outline, (2, 10, 104, 36))
     pygame.draw.rect(s, cabinet, (5, 15, 98, 29))
     pygame.draw.rect(s, counter, (1, 7, 106, 10))
-    pygame.draw.line(s, (221, 207, 164), (4, 8), (104, 8), 2)
+    pygame.draw.line(s, EGGSHELL_LIGHT, (4, 8), (104, 8), 2)
     for x in (7, 35, 63, 91):
         pygame.draw.line(s, outline, (x, 17), (x, 43))
         pygame.draw.rect(s, light, (x + 10, 27, 2, 2))
@@ -179,6 +203,7 @@ def main():
     save(table(), "cabin_table.png")
     for index in range(len(PORTAL_COLOURS)):
         save(table(index), f"cabin_table_awakened_{index + 1}.png")
+    save(connector_shelf(), "cabin_connector_shelf.png")
     save(kitchen(), "cabin_kitchen.png")
     for index in range(6):
         save(woodstove(index), f"cabin_woodstove_{index + 1}.png")

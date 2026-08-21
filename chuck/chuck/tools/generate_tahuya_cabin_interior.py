@@ -50,6 +50,7 @@ def build_map():
     # sink/counter remains an ordinary kitchen fixture.
     _solid_rect(grid, 1, 8, 11, 11)
     grid[11][6] = "Ƒ"
+
     _solid_rect(grid, 16, 7, 18, 9)
     grid[9][17] = "ƭ"
     grid[8][17] = "₃"
@@ -63,6 +64,12 @@ def build_map():
     for y in range(20, 32):
         for x in range(1, 20):
             grid[y][x] = "Ħ"
+    # A narrow west-wall counter/shelf joins the long table to the southern
+    # sink run, completing the real cabin's horseshoe without narrowing the
+    # central circulation lane.  Author it after the floor change so the
+    # hardwood pass cannot erase its lower half or its prop marker.
+    _solid_rect(grid, 1, 12, 2, 28)
+    grid[28][1] = "ƛ"
     _solid_rect(grid, 2, 29, 8, 31, "ħ")
     grid[31][5] = "ƕ"
 

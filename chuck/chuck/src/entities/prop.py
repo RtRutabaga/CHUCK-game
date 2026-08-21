@@ -179,6 +179,7 @@ _SPRITES = {
     "cabin_chair": "objects/cabin_chair.png",
     "cabin_table": "objects/cabin_table.png",
     "cabin_table_awakened": "objects/cabin_table_awakened_1.png",
+    "cabin_connector_shelf": "objects/cabin_connector_shelf.png",
     "cabin_kitchen": "objects/cabin_kitchen.png",
     "cabin_woodstove": "objects/cabin_woodstove_1.png",
     "cabin_wood_storage": "objects/cabin_wood_storage.png",

@@ -34,17 +34,19 @@ file is required by the project rules and updated every session.
   and shared runtime-checkpoint path; no cabin-only teleport logic exists.
 - Added the authored long interior footprint with warm vertical wood paneling,
   olive-tan carpet, southern hardwood, north-wall couches, two east-side
-  chairs, the long west-wall table and stools with its ordinary rectangular
-  D&D map, an ordinary southern sink/counter, enlarged woodstove, and a full
-  enclosed southeast room. Both interior black doorway recesses are now three
+  chairs, the long eggshell-white west-wall table and stools with its ordinary
+  rectangular D&D map, an ordinary southern sink/counter, enlarged woodstove,
+  and a full enclosed southeast room. Both interior black doorway recesses are
+  now three
   tiles wide and two deep. The table's eleven-tile visual and collision
   footprints now agree, contact the west wall, and leave a clear four-tile
-  lane into the north living section. The
-  counter is flush with the south wall, and both chair entities plus the
+  lane into the north living section. A matching eggshell counter/shelf now
+  hugs the west wall between the table and sink, completing their horseshoe
+  layout while keeping the open room clear. The counter is flush with the
+  south wall, and both chair entities plus the
   fireplace sit entirely on the green carpet above the hardwood boundary.
-  Furniture is
-  human-scale and provides solid, readable level geometry while keeping both
-  doors and the interior Ashtray connected.
+  Furniture is human-scale and provides solid, readable level geometry while
+  keeping both doors and the interior Ashtray connected.
 - Added development checkpoint `Cabin Interior` plus exactly one physical,
   saveable interior Ashtray. Continue and Sanity-zero return rebuild it through
   the same checkpoint loader used everywhere else.

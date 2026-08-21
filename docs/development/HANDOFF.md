@@ -3,15 +3,21 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `1872354` (Cabin theme softened and bass revised)
-- Current work: the Cabin exterior thresholds and north-room navigation are
-  repaired and verified
+- Base commit before this pass: `e75eee9` (Cabin door and north-room navigation restored)
+- Current work: the Cabin's eggshell horseshoe table/counter layout is complete
+  and verified
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
   awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Reworked the Cabin work surfaces around Sean's photo reference: the long map
+  table and sink counter now use an eggshell-white laminate palette, and a new
+  matching two-tile-deep west-wall shelf connects them into a horseshoe. Its
+  visual and collision footprint stops short of the open room and preserves
+  the repaired north circulation route.
 
 - Restored Cabin navigation: both exterior doors now transition across their
   full three-tile visible width, and the long west-wall table's art and solid

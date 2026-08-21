@@ -72,6 +72,7 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         "cabin_couch": 1,
         "cabin_chair": 2,
         "cabin_table": 1,
+        "cabin_connector_shelf": 1,
         "cabin_kitchen": 1,
         "cabin_woodstove": 1,
     }
@@ -82,6 +83,7 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     assert positions["cabin_big_couch"] == (5, 5)
     assert positions["cabin_couch"] == (16, 5)
     assert positions["cabin_table"] == (6, 11)
+    assert positions["cabin_connector_shelf"] == (1, 28)
     assert positions["cabin_kitchen"] == (5, 31)
     assert positions["cabin_woodstove"] == (16, 19)
     # Entities and stove sit on green carpet; the southern working area is
@@ -112,6 +114,11 @@ def test_all_interior_routes_and_the_ashtray_are_reachable() -> None:
     # route into the complete north living section.
     assert all(not tilemap.is_solid(x, y)
                for y in range(8, 12) for x in range(12, 16))
+    # The horseshoe's west arm hugs the wall from the table to the sink; it
+    # cannot consume the open room or the repaired north passage.
+    assert all(tilemap.is_solid(x, y)
+               for y in range(12, 29) for x in range(1, 3))
+    assert all(not tilemap.is_solid(3, y) for y in range(12, 29))
     assert not any(kind.startswith(("rat", "raccoon", "zombie", "skeleton"))
                    for kind, _position in tilemap.object_spawns)
 
@@ -155,6 +162,9 @@ def test_shared_loader_and_interior_ashtray_persist() -> None:
                      if prop.kind == "cabin_woodstove")
         assert stove._size == (72, 82)
         assert len(stove._frames) == 6
+        shelf = next(prop for prop in world.props
+                     if prop.kind == "cabin_connector_shelf")
+        assert shelf._size == (48, 272)
 
         assert game.checkpoints.activate_checkpoint(
             "tahuya_interior_anchor", sanity=world.sanity.current
