@@ -6,6 +6,15 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The trail and the lit mushrooms end at the fire on the cabin grounds. They
+  used to run on south past it and off the bottom of the map, which read as a
+  way out that goes nowhere. The last two lights turn in toward the fire circle
+  and stop there with it, so the lit path leads somewhere.
+- Everything south of the fire is the forest the cabin stands in: five rows of
+  stand thickening toward the dark, then trees closed over entirely. The
+  thickening is drawn off the same authored seed as the western stand, because
+  a modulo pattern planted exactly the tree farm that stand was built to avoid.
+
 - The cabin interior is shorter north to south. The hardwood room ran eleven
   rows deep, which at native scale put most of a screen of empty floor between
   the north wall's table and fire and the south wall's sink and door, so the

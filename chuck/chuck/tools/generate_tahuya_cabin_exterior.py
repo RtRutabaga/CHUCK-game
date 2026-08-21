@@ -23,6 +23,17 @@ def _path(grid, start, end, radius=1):
                     grid[y + oy][x + ox] = "⌇"
 
 
+# The fire circle, and where the world stops being a clearing.
+#
+# The trail and the lit mushrooms used to run on south past the fire and
+# off the bottom of the map, which read as a way out that goes nowhere.
+# They end at the fire now, and everything south of it is the forest the
+# cabin stands in: a few rows of thickening stand, then trees closed
+# over entirely.
+FIRE = (57, 43)
+FOREST_EDGE = FIRE[1] + 3      # firs crowd in from here south...
+FOREST_SOLID = FIRE[1] + 8     # ...and close over completely here
+
 CABIN_TILE = (62, 34)          # the tile the cabin prop hangs from
 CABIN_COVERAGE = 0.38          # how much of a tile the building must fill
 
@@ -96,7 +107,7 @@ def build_map():
     # The hand-drawn reference places a broad irregular clearing west of a
     # long north/south cabin.  Keep that silhouette rather than centring the
     # building as a generic game landmark.
-    for y in range(4, 60):
+    for y in range(4, FOREST_SOLID):
         left = 4 + abs(y - 31) // 13
         right = 75 - abs(y - 31) // 20
         for x in range(left, right + 1):
@@ -116,8 +127,8 @@ def build_map():
         _path(grid, start, end, 0)
     _path(grid, (44, 31), (52, 34), 2)
     _path(grid, (52, 34), (59, 37), 2)
-    _path(grid, (59, 37), (59, 54), 2)
-    _path(grid, (59, 54), (59, 59), 2)
+    # ...and stops at the fire. There is nothing south of it to walk to.
+    _path(grid, (59, 37), (58, FIRE[1]), 2)
 
     # The exterior cabin is still smaller than its interior map, but it is
 # a proper gable-roofed landmark now rather than a compact block, so
@@ -150,8 +161,10 @@ def build_map():
 
     # The mushroom-light trail hugs the cabin clearing's west side, rather than
     # wandering through the middle of the clearing.
+    # ...and the last two turn in toward the fire and stop there with it,
+    # so the lit path leads somewhere instead of trailing off into trees.
     for x, y in ((44, 13), (45, 20), (44, 27), (45, 34),
-                 (44, 41), (45, 48), (52, 55)):
+                 (48, 39), (53, 42)):
         grid[y][x] = "✦"
 
     # A dense but irregular Douglas-fir stand fills the west side. A fixed
@@ -176,11 +189,24 @@ def build_map():
     for x, y in ((73, 12), (75, 45)):
         if grid[y][x] == "ᶠ":
             grid[y][x] = "♣"
+    # South of the fire the spacing rule is dropped: the last rows before
+    # the solid stand are planted thick, so the tree line closes in
+    # rather than ending at a straight edge.
+    # Thicker the further south, and off the same authored seed as the
+    # stand above: a modulo pattern here planted the tree farm the west
+    # side was carefully built to avoid.
+    for y in range(FOREST_EDGE, FOREST_SOLID):
+        crowding = 0.42 + 0.44 * (y - FOREST_EDGE) / (
+            FOREST_SOLID - FOREST_EDGE - 1
+        )
+        for x in range(5, 76):
+            if grid[y][x] == "ᶠ" and rng.random() < crowding:
+                grid[y][x] = "♣"
 
     # A handful of the established scratchable cigarette-grass tufts soften
     # the clearing and reward inspecting the tighter west approach.
     for x, y in ((12, 29), (18, 34), (26, 28), (33, 34),
-                 (40, 28), (47, 18), (47, 43), (54, 56)):
+                 (40, 28), (47, 18), (47, 43), (52, 45)):
         if grid[y][x] in {"ᶠ", "♣"}:
             grid[y][x] = "ʛ"
 

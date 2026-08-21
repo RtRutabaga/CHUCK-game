@@ -16,6 +16,11 @@ from src.world.tilemap import TileMap
 from src.world.tileset_layout import MAP_TILESET, TAHUYA, tileset_for
 
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+from generate_tahuya_cabin_exterior import FIRE, FOREST_EDGE, FOREST_SOLID
+
+
 MAP_NAME = "tahuya_cabin_exterior"
 
 
@@ -67,7 +72,7 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     assert props["tahuya_firepit"] == 1
     assert props["tahuya_firewood_shed"] == 1
     assert props["tahuya_cabin"] == 1
-    assert props["tahuya_mushroom_light"] == 7
+    assert props["tahuya_mushroom_light"] == 6
     assert props["tahuya_fir"] >= 100
     fir_positions = [
         (col, row) for kind, col, row in tilemap.prop_tiles
@@ -81,9 +86,11 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "tahuya_mushroom_light"
     ]
+    # The lit path turns in at the fire and stops there with it. It used
+    # to run on south past the fire and off the bottom of the map, which
+    # read as a way out that goes nowhere.
     assert light_positions == [
-        (44, 13), (45, 20), (44, 27), (45, 34),
-        (44, 41), (45, 48), (52, 55),
+        (44, 13), (45, 20), (44, 27), (45, 34), (48, 39), (53, 42),
     ]
     fire_positions = [
         (col, row) for kind, col, row in tilemap.prop_tiles
@@ -92,6 +99,7 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     # The fire and the woodshed sit just south of the porch steps now,
     # not out at the far edge of the clearing.
     assert fire_positions == [(57, 43)]
+    assert max(row for _col, row in light_positions) <= 43
     shed = [(col, row) for kind, col, row in tilemap.prop_tiles
             if kind == "tahuya_firewood_shed"]
     assert shed == [(70, 42)]
@@ -115,8 +123,19 @@ def test_sole_south_door_and_the_ashtray_are_reachable() -> None:
     reachable = _flood(tilemap, markers["arrival:from_doug_fir"][0])
     assert markers["anchor:tahuya_exterior_anchor"][0] in reachable
 
-    for point in ((59, 31), (59, 33), (59, 54), (59, 58)):
+    for point in ((59, 31), (59, 33), (59, 44)):
         assert point in reachable, point
+    # South of the fire is forest, not a corridor running off the map.
+    # The trail ends at the fire circle and the stand closes over it.
+    for row in range(FOREST_SOLID, tilemap.height_tiles):
+        assert all(tilemap.is_solid(col, row)
+                   for col in range(1, tilemap.width_tiles - 1)), row
+    assert not any((col, row) in reachable
+                   for row in range(FOREST_SOLID, tilemap.height_tiles)
+                   for col in range(tilemap.width_tiles))
+    assert all(tilemap.terrain_at(col, row) != "⌇"
+               for row in range(FOREST_EDGE, tilemap.height_tiles)
+               for col in range(tilemap.width_tiles))
     assert tilemap.terrain_at(59, 31) == "Ɛ"
     # Three tiles of doorway, not one: a single-tile door on a building
     # this size has to be lined up on before it will open.
