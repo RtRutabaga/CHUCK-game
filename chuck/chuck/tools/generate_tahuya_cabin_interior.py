@@ -48,8 +48,8 @@ def build_map():
     # The long map table is tucked against the west wall beside the big couch.
     # Its rectangular D&D map is the surface that later awakens; the southern
     # sink/counter remains an ordinary kitchen fixture.
-    _solid_rect(grid, 1, 8, 13, 11)
-    grid[11][7] = "Ƒ"
+    _solid_rect(grid, 1, 8, 11, 11)
+    grid[11][6] = "Ƒ"
     _solid_rect(grid, 16, 7, 18, 9)
     grid[9][17] = "ƭ"
     grid[8][17] = "₃"

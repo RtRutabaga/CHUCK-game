@@ -69,23 +69,25 @@ def chair():
 
 
 def table(portal_frame=None):
-    s = pygame.Surface((132, 57), pygame.SRCALPHA)
+    # Eleven tiles wide at its authored col-6 anchor: the visible tabletop
+    # meets the west wall while leaving a four-tile circulation lane east.
+    s = pygame.Surface((176, 57), pygame.SRCALPHA)
     outline = (48, 31, 23)
     edge = (91, 54, 34)
     top = (124, 74, 44)
-    pygame.draw.polygon(s, outline, ((2, 10), (125, 3), (130, 39), (7, 48)))
-    pygame.draw.polygon(s, top, ((5, 11), (123, 6), (126, 35), (9, 43)))
-    for x in range(13, 122, 13):
+    pygame.draw.polygon(s, outline, ((2, 10), (169, 3), (174, 39), (7, 48)))
+    pygame.draw.polygon(s, top, ((5, 11), (167, 6), (170, 35), (9, 43)))
+    for x in range(13, 166, 13):
         pygame.draw.line(s, edge, (x, 11), (x + 3, 41))
-    pygame.draw.line(s, (164, 104, 59), (8, 13), (121, 8), 2)
+    pygame.draw.line(s, (164, 104, 59), (8, 13), (165, 8), 2)
     # Five mustard stools along the north edge, as on Sean's plan.
-    for x in (14, 37, 60, 83, 106):
+    for x in (18, 50, 82, 114, 146):
         pygame.draw.ellipse(s, outline, (x, 0, 11, 8))
         pygame.draw.ellipse(s, (154, 132, 73), (x + 1, 1, 9, 5))
         pygame.draw.rect(s, edge, (x + 3, 5, 2, 8))
         pygame.draw.rect(s, edge, (x + 7, 5, 2, 8))
     pygame.draw.rect(s, outline, (12, 43, 5, 13))
-    pygame.draw.rect(s, outline, (115, 38, 5, 13))
+    pygame.draw.rect(s, outline, (159, 38, 5, 13))
     # The rectangular D&D map belongs to this table, not the sink counter.
     pygame.draw.rect(s, (48, 34, 34), (29, 17, 47, 17))
     if portal_frame is None:

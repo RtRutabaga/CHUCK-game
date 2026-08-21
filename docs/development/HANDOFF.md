@@ -3,15 +3,21 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `cf0c657` (jaw harp added to Cabin theme)
-- Current work: the Cabin soundtrack's softer mix and jazz-funk bass revision
-  are complete and verified
+- Base commit before this pass: `1872354` (Cabin theme softened and bass revised)
+- Current work: the Cabin exterior thresholds and north-room navigation are
+  repaired and verified
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
   awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Restored Cabin navigation: both exterior doors now transition across their
+  full three-tile visible width, and the long west-wall table's art and solid
+  footprint now agree at eleven tiles while leaving a four-tile route into the
+  north living section. Added regression coverage for doorway edges and the
+  full-width interior lane.
 
 - Softened the Cabin soundtrack's upper edge by rounding the lead and pulse
   voices, easing the hats and snare, and reducing the jaw-harp transient. The

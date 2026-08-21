@@ -28,15 +28,18 @@ file is required by the project rules and updated every session.
   preserving Sanity. The map's single physical Ashtray is the only saveable
   exterior checkpoint and is the Continue/Sanity-zero return point after use.
 - Both porches and their human-scale aligned doorway recesses are accessible.
-  Their center thresholds now enter the single 21x33 Cabin Interior and return
-  Chuck to the matching porch. Both directions use the established area-exit
+  Their complete three-tile thresholds now enter the single 21x33 Cabin
+  Interior even when approached off-center and return Chuck to the matching
+  porch. Both directions use the established area-exit
   and shared runtime-checkpoint path; no cabin-only teleport logic exists.
 - Added the authored long interior footprint with warm vertical wood paneling,
   olive-tan carpet, southern hardwood, north-wall couches, two east-side
   chairs, the long west-wall table and stools with its ordinary rectangular
   D&D map, an ordinary southern sink/counter, enlarged woodstove, and a full
   enclosed southeast room. Both interior black doorway recesses are now three
-  tiles wide and two deep. The table visually contacts the west wall, the
+  tiles wide and two deep. The table's eleven-tile visual and collision
+  footprints now agree, contact the west wall, and leave a clear four-tile
+  lane into the north living section. The
   counter is flush with the south wall, and both chair entities plus the
   fireplace sit entirely on the green carpet above the hardwood boundary.
   Furniture is

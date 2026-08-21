@@ -73,11 +73,13 @@ def build_map():
         for x in range(58, 61):
             grid[y][x] = "↟"
 
-    # Only the centered cell of each human-scale black recess is a walkable
-    # threshold. Return arrivals are on the matching porch, one tile clear.
-    grid[12][59] = "Ɣ"
+    # The full width of each human-scale black recess is a live threshold.
+    # Return arrivals remain centered on the matching porch, one tile clear.
+    for x in range(58, 61):
+        grid[12][x] = "Ɣ"
     grid[10][59] = "ኃ"
-    grid[44][59] = "Ɛ"
+    for x in range(58, 61):
+        grid[44][x] = "Ɛ"
     grid[47][59] = "ኂ"
 
     # Real-place landmarks from the authored drawing.

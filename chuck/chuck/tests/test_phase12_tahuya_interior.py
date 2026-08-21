@@ -81,7 +81,7 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     }
     assert positions["cabin_big_couch"] == (5, 5)
     assert positions["cabin_couch"] == (16, 5)
-    assert positions["cabin_table"] == (7, 11)
+    assert positions["cabin_table"] == (6, 11)
     assert positions["cabin_kitchen"] == (5, 31)
     assert positions["cabin_woodstove"] == (16, 19)
     # Entities and stove sit on green carpet; the southern working area is
@@ -108,6 +108,10 @@ def test_all_interior_routes_and_the_ashtray_are_reachable() -> None:
     assert back in reachable
     assert anchor in reachable
     assert (10, 0) in reachable and (10, 32) in reachable
+    # The long table's visual and solid footprints agree, leaving a generous
+    # route into the complete north living section.
+    assert all(not tilemap.is_solid(x, y)
+               for y in range(8, 12) for x in range(12, 16))
     assert not any(kind.startswith(("rat", "raccoon", "zombie", "skeleton"))
                    for kind, _position in tilemap.object_spawns)
 

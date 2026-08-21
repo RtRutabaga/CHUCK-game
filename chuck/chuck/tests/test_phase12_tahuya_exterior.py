@@ -97,15 +97,35 @@ def test_both_porches_and_the_ashtray_are_reachable() -> None:
     for point in ((59, 5), (59, 10), (59, 46), (59, 53)):
         assert point in reachable, point
     assert [tilemap.terrain_at(x, 12) for x in range(58, 61)] == [
-        "◼", "Ɣ", "◼"
+        "Ɣ", "Ɣ", "Ɣ"
     ]
     assert [tilemap.terrain_at(x, 44) for x in range(58, 61)] == [
-        "◼", "Ɛ", "◼"
+        "Ɛ", "Ɛ", "Ɛ"
     ]
     assert markers["arrival:from_cabin_back"][0] == (59, 10)
     assert markers["arrival:from_cabin_front"][0] == (59, 47)
     assert not any(kind.startswith(("rat", "raccoon", "zombie", "skeleton"))
                    for kind, _position in tilemap.object_spawns)
+
+
+def test_every_visible_exterior_door_tile_enters_the_interior() -> None:
+    directory, game = _game()
+    try:
+        for row in (12, 44):
+            for col in range(58, 61):
+                world = game.checkpoints.load_checkpoint("tahuya_exterior")
+                world._arrival_fade_t = None
+                world.player.x = col * config.TILE_SIZE + (
+                    config.TILE_SIZE - config.PLAYER_HITBOX_W
+                ) / 2
+                world.player.y = row * config.TILE_SIZE + (
+                    config.TILE_SIZE - config.PLAYER_HITBOX_H
+                ) / 2
+                world.update(1 / 60)
+                assert world.map_name == "tahuya_cabin_interior", (col, row)
+    finally:
+        game._shutdown()
+        directory.cleanup()
 
 
 def test_shared_checkpoint_loader_and_physical_ashtray_persist() -> None:
