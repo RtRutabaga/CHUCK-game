@@ -37,13 +37,14 @@ def build_map():
         grid[32][x] = "Ɯ"
     grid[30][10] = "ኄ"
 
-    # The two couches flank the back doorway exactly as on Sean's plan.
-    _solid_rect(grid, 1, 3, 8, 5)
-    grid[5][5] = "Ƈ"
-    grid[4][5] = "₁"
-    _solid_rect(grid, 13, 3, 19, 5)
-    grid[5][16] = "Ƭ"
-    grid[4][16] = "₂"
+    # The two couches sit flush against the north wall while continuing to
+    # flank the full human-scale back doorway.
+    _solid_rect(grid, 1, 1, 8, 3)
+    grid[3][5] = "Ƈ"
+    grid[2][5] = "₁"
+    _solid_rect(grid, 13, 1, 19, 3)
+    grid[3][16] = "Ƭ"
+    grid[2][16] = "₂"
 
     # The long map table is tucked against the west wall beside the big couch.
     # Its rectangular D&D map is the surface that later awakens; the southern
@@ -51,12 +52,14 @@ def build_map():
     _solid_rect(grid, 1, 8, 11, 11)
     grid[11][6] = "Ƒ"
 
-    _solid_rect(grid, 16, 7, 18, 9)
-    grid[9][17] = "ƭ"
-    grid[8][17] = "₃"
-    _solid_rect(grid, 16, 12, 18, 14)
-    grid[14][17] = "ƭ"
-    grid[13][17] = "₄"
+    # Pull the two west-facing chairs north into the same living-room group
+    # instead of spreading them down the east wall.
+    _solid_rect(grid, 16, 5, 18, 7)
+    grid[7][17] = "ƭ"
+    grid[6][17] = "₃"
+    _solid_rect(grid, 16, 9, 18, 11)
+    grid[11][17] = "ƭ"
+    grid[10][17] = "₄"
 
     # The green carpet holds every seated entity and the stove.  Everything
     # south of that living space is hardwood.  The ordinary southern kitchen

@@ -3,15 +3,20 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `e75eee9` (Cabin door and north-room navigation restored)
-- Current work: the Cabin's eggshell horseshoe table/counter layout is complete
-  and verified
+- Base commit before this pass: `ead7c58` (Cabin eggshell horseshoe counter added)
+- Current work: the Cabin's north seating group is tightened and verified
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
   awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Tightened the Cabin living area without changing its routes: both couches
+  now sit flush against the north wall around the back doorway, and the two
+  west-facing chairs have moved north into a closer four-seat grouping. Their
+  seated light entities moved with the furniture and retain their authored
+  dialogue, facing, animation phases, and progression flags.
 
 - Reworked the Cabin work surfaces around Sean's photo reference: the long map
   table and sink counter now use an eggshell-white laminate palette, and a new

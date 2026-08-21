@@ -33,8 +33,9 @@ file is required by the project rules and updated every session.
   porch. Both directions use the established area-exit
   and shared runtime-checkpoint path; no cabin-only teleport logic exists.
 - Added the authored long interior footprint with warm vertical wood paneling,
-  olive-tan carpet, southern hardwood, north-wall couches, two east-side
-  chairs, the long eggshell-white west-wall table and stools with its ordinary
+  olive-tan carpet, southern hardwood, couches flush against the north wall,
+  two closely grouped east-side chairs, the long eggshell-white west-wall
+  table and stools with its ordinary
   rectangular D&D map, an ordinary southern sink/counter, enlarged woodstove,
   and a full enclosed southeast room. Both interior black doorway recesses are
   now three
@@ -51,7 +52,9 @@ file is required by the project rules and updated every session.
   saveable interior Ashtray. Continue and Sanity-zero return rebuild it through
   the same checkpoint loader used everywhere else.
 - Added exactly four stationary light-formed entities in the authored seats:
-  one on each couch and one in each east-side chair. Their eight-frame
+  one on each couch and one in each east-side chair. The couches now sit flush
+  against the north wall and both west-facing chair entities are grouped
+  farther north around the living area. Their eight-frame
   gray-biased rose/violet/blue/cyan/green/yellow/amber cycle uses stable,
   distinct phase offsets and restrained local light. Both east-chair entities
   now face west; the couch occupants retain their south-facing seated pose.

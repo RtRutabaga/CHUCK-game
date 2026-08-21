@@ -80,12 +80,17 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         kind: (col, row) for kind, col, row in tilemap.prop_tiles
         if kind != "cabin_chair"
     }
-    assert positions["cabin_big_couch"] == (5, 5)
-    assert positions["cabin_couch"] == (16, 5)
+    assert positions["cabin_big_couch"] == (5, 3)
+    assert positions["cabin_couch"] == (16, 3)
     assert positions["cabin_table"] == (6, 11)
     assert positions["cabin_connector_shelf"] == (1, 28)
     assert positions["cabin_kitchen"] == (5, 31)
     assert positions["cabin_woodstove"] == (16, 19)
+    chair_positions = sorted(
+        (col, row) for kind, col, row in tilemap.prop_tiles
+        if kind == "cabin_chair"
+    )
+    assert chair_positions == [(17, 7), (17, 11)]
     # Entities and stove sit on green carpet; the southern working area is
     # hardwood, with the counter visually flush against the south wall.
     assert all(tilemap.terrain_at(x, y) != "Ħ"
