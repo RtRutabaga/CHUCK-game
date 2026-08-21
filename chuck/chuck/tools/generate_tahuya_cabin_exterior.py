@@ -1,6 +1,7 @@
 """Generate the authored two-porch Cabin grounds map."""
 
 from pathlib import Path
+import random
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,9 +35,19 @@ def build_map():
         for x in range(left, right + 1):
             grid[y][x] = "ᶠ"
 
-    # Winding approach and its two real branches: north to the back porch,
-    # south to the front porch and fire circle.
-    _path(grid, (9, 31), (44, 31), 2)
+    # The western arrival begins as a narrow, slightly wandering foot trail,
+    # then opens into the two real branches: north to the back porch and south
+    # to the front porch/fire circle.
+    west_approach = (
+        ((5, 33), (10, 31)),
+        ((10, 31), (16, 32)),
+        ((16, 32), (23, 30)),
+        ((23, 30), (30, 32)),
+        ((30, 32), (37, 30)),
+        ((37, 30), (44, 31)),
+    )
+    for start, end in west_approach:
+        _path(grid, start, end, 0)
     _path(grid, (44, 31), (45, 7), 2)
     _path(grid, (45, 7), (58, 5), 2)
     _path(grid, (44, 31), (45, 47), 2)
@@ -93,20 +104,35 @@ def build_map():
                  (44, 41), (45, 48), (52, 55)):
         grid[y][x] = "✦"
 
-    # A genuinely dense Douglas-fir stand fills the west side of the grounds.
-    # Trees are placed only on untouched clearing, so the winding authored
-    # trail remains readable and traversable even though its edges close in.
-    for y in range(6, 59, 5):
-        offset = 2 if (y // 5) % 2 else 0
-        for x in range(7 + offset, 44, 4):
-            if grid[y][x] == "ᶠ":
-                grid[y][x] = "♣"
-    for x, y in ((9, 10), (17, 12), (25, 11), (33, 12), (41, 11),
-                 (11, 19), (21, 18), (31, 19), (39, 18),
-                 (11, 44), (19, 43), (27, 45), (37, 44), (42, 52),
-                 (73, 12), (75, 45)):
+    # A dense but irregular Douglas-fir stand fills the west side. A fixed
+    # authored seed gives natural spacing without a tree-farm grid and keeps
+    # the same forest on every load.
+    rng = random.Random(1204)
+    candidates = [
+        (x, y)
+        for y in range(5, 60)
+        for x in range(6, 44)
+        if grid[y][x] == "ᶠ"
+    ]
+    rng.shuffle(candidates)
+    firs = []
+    for x, y in candidates:
+        if any(abs(x - px) <= 1 and abs(y - py) <= 1 for px, py in firs):
+            continue
+        grid[y][x] = "♣"
+        firs.append((x, y))
+        if len(firs) == 118:
+            break
+    for x, y in ((73, 12), (75, 45)):
         if grid[y][x] == "ᶠ":
             grid[y][x] = "♣"
+
+    # A handful of the established scratchable cigarette-grass tufts soften
+    # the clearing and reward inspecting the tighter west approach.
+    for x, y in ((12, 29), (18, 34), (26, 28), (33, 34),
+                 (40, 28), (47, 18), (47, 43), (54, 56)):
+        if grid[y][x] in {"ᶠ", "♣"}:
+            grid[y][x] = "ʛ"
 
     # The cutscene emerges onto the western trail; the one Ashtray is close
     # enough to discover naturally but does not interrupt the reveal.

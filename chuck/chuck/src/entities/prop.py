@@ -180,6 +180,8 @@ _SPRITES = {
     "cabin_table": "objects/cabin_table.png",
     "cabin_table_awakened": "objects/cabin_table_awakened_1.png",
     "cabin_connector_shelf": "objects/cabin_connector_shelf.png",
+    "cabin_mini_fridge": "objects/cabin_mini_fridge.png",
+    "cabin_closed_door_west": "objects/cabin_closed_door_west.png",
     "cabin_kitchen": "objects/cabin_kitchen.png",
     "cabin_woodstove": "objects/cabin_woodstove_1.png",
     "cabin_wood_storage": "objects/cabin_wood_storage.png",
@@ -234,6 +236,7 @@ PROP_DIALOGUE = {
     "bobert_barrel": "bobert_sleeping",  # he does not wake up
     "herod_sign": "herod_sign",
     "house_door": "closed_door",
+    "cabin_closed_door_west": "closed_door",
     "cheese": "cheese",
     "fey_teacup": "fey_tea_warm",
     "fey_plate": "fey_set_for_one",

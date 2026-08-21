@@ -52,7 +52,7 @@ def _game():
 
 def test_interior_matches_the_authored_long_cabin_layout() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
-    assert (tilemap.width_tiles, tilemap.height_tiles) == (21, 33)
+    assert (tilemap.width_tiles, tilemap.height_tiles) == (21, 29)
     assert MAP_TILESET[MAP_NAME] == "tahuya"
     assert tileset_for(MAP_NAME) is TAHUYA
     assert AREA_MUSIC[MAP_NAME] == "cabin.wav"
@@ -60,11 +60,11 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     terrain = Counter(char for row in tilemap._grid for char in row)
     assert terrain["Ħ"] > 0 and terrain["Ŀ"] > 0
     assert terrain["Ƃ"] == 0
-    assert terrain["ć"] >= 2 * 21 + 2 * 31 - 4
+    assert terrain["ć"] >= 2 * 21 + 2 * 29 - 4
     assert tilemap.terrain_at(10, 0) == "Ƣ"
-    assert tilemap.terrain_at(10, 32) == "Ɯ"
+    assert tilemap.terrain_at(10, 28) == "Ɯ"
     assert all(tilemap.terrain_at(x, y) in {"Ƣ", "Ɯ"}
-               for y in (0, 1, 31, 32) for x in range(9, 12))
+               for y in (0, 1, 27, 28) for x in range(9, 12))
 
     props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
     assert props == {
@@ -73,6 +73,8 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         "cabin_chair": 2,
         "cabin_table": 1,
         "cabin_connector_shelf": 1,
+        "cabin_mini_fridge": 1,
+        "cabin_closed_door_west": 1,
         "cabin_kitchen": 1,
         "cabin_woodstove": 1,
     }
@@ -82,27 +84,30 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     }
     assert positions["cabin_big_couch"] == (5, 3)
     assert positions["cabin_couch"] == (16, 3)
-    assert positions["cabin_table"] == (6, 11)
-    assert positions["cabin_connector_shelf"] == (1, 28)
-    assert positions["cabin_kitchen"] == (5, 31)
-    assert positions["cabin_woodstove"] == (16, 19)
+    assert positions["cabin_table"] == (5, 13)
+    assert positions["cabin_connector_shelf"] == (1, 24)
+    assert positions["cabin_mini_fridge"] == (10, 13)
+    assert positions["cabin_closed_door_west"] == (14, 22)
+    assert positions["cabin_kitchen"] == (5, 27)
+    assert positions["cabin_woodstove"] == (16, 13)
     chair_positions = sorted(
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "cabin_chair"
     )
-    assert chair_positions == [(17, 7), (17, 11)]
+    assert chair_positions == [(17, 6), (17, 9)]
     # Entities and stove sit on green carpet; the southern working area is
     # hardwood, with the counter visually flush against the south wall.
     assert all(tilemap.terrain_at(x, y) != "Ħ"
-               for y in range(1, 20) for x in range(1, 20))
-    assert tilemap.terrain_at(5, 30) == "ħ"
+               for y in range(1, 14) for x in range(1, 20))
+    assert tilemap.terrain_at(5, 26) == "ħ"
     # The southeast room is a complete enclosed section, not a prop-sized box.
-    assert all(tilemap.terrain_at(x, 26) == "ć" for x in range(14, 20))
-    assert all(tilemap.terrain_at(x, 31) == "ć" for x in range(14, 20))
-    assert all(tilemap.terrain_at(14, y) == "ć" for y in range(26, 32))
-    assert all(tilemap.terrain_at(19, y) == "ć" for y in range(26, 32))
-    assert all(tilemap.terrain_at(x, y) == "Ħ"
-               for y in range(27, 31) for x in range(15, 19))
+    assert all(tilemap.terrain_at(x, 15) == "ć" for x in range(14, 20))
+    assert all(tilemap.terrain_at(x, 27) == "ć" for x in range(14, 20))
+    assert all(tilemap.terrain_at(14, y) in {"ć", "ƚ"}
+               for y in range(15, 28))
+    assert all(tilemap.terrain_at(19, y) == "ć" for y in range(15, 28))
+    assert all(tilemap.terrain_at(x, y) == "◼"
+               for y in range(16, 27) for x in range(15, 19))
 
 
 def test_all_interior_routes_and_the_ashtray_are_reachable() -> None:
@@ -114,16 +119,16 @@ def test_all_interior_routes_and_the_ashtray_are_reachable() -> None:
     reachable = _flood(tilemap, front)
     assert back in reachable
     assert anchor in reachable
-    assert (10, 0) in reachable and (10, 32) in reachable
+    assert (10, 0) in reachable and (10, 28) in reachable
     # The long table's visual and solid footprints agree, leaving a generous
     # route into the complete north living section.
     assert all(not tilemap.is_solid(x, y)
-               for y in range(8, 12) for x in range(12, 16))
+               for y in range(10, 14) for x in range(12, 15))
     # The horseshoe's west arm hugs the wall from the table to the sink; it
     # cannot consume the open room or the repaired north passage.
     assert all(tilemap.is_solid(x, y)
-               for y in range(12, 29) for x in range(1, 3))
-    assert all(not tilemap.is_solid(3, y) for y in range(12, 29))
+               for y in range(14, 25) for x in range(1, 3))
+    assert all(not tilemap.is_solid(3, y) for y in range(14, 25))
     assert not any(kind.startswith(("rat", "raccoon", "zombie", "skeleton"))
                    for kind, _position in tilemap.object_spawns)
 
@@ -169,7 +174,13 @@ def test_shared_loader_and_interior_ashtray_persist() -> None:
         assert len(stove._frames) == 6
         shelf = next(prop for prop in world.props
                      if prop.kind == "cabin_connector_shelf")
-        assert shelf._size == (48, 272)
+        assert shelf._size == (48, 176)
+        fridge = next(prop for prop in world.props
+                      if prop.kind == "cabin_mini_fridge")
+        assert fridge._size == (32, 42)
+        closed_door = next(prop for prop in world.props
+                           if prop.kind == "cabin_closed_door_west")
+        assert closed_door.dialogue_id == "closed_door"
 
         assert game.checkpoints.activate_checkpoint(
             "tahuya_interior_anchor", sanity=world.sanity.current

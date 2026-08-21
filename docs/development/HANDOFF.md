@@ -3,14 +3,38 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `ead7c58` (Cabin eggshell horseshoe counter added)
-- Current work: the Cabin's north seating group is tightened and verified
+- Base commit before this pass: `d2f1963` (Cabin north seating group tightened)
+- Current work: the Cabin grounds and interior have been compacted and
+  naturalized, with routes and interactions verified
 - Active scope: `docs/development/PHASE-12.md`
 - Next implementation slice: add close-proximity YES/NO interaction to the
   awakened table map and its short desert-arrival cutscene; do not begin desert
   gameplay
 
 ## Completed This Pass
+
+- Re-authored the exterior's 118-tree western fir stand with deterministic
+  irregular spacing so it no longer reads as a grid. Narrowed the initial
+  western approach to a one-tile, gently winding trail and added six reusable
+  scratchable cigarette-grass tufts without blocking the trail, Ashtray, or
+  either porch route.
+
+- Compacted the Cabin interior from 21x33 to 21x29. The west-wall table is now
+  nine tiles long, the enlarged fireplace shares its east/west band, and the
+  hardwood begins immediately south of both. Added a human-scale mini fridge
+  at the table's southeast corner and shortened the horseshoe's west shelf so
+  the sink is closer without compromising the central route.
+
+- Extended the southeast room almost to the fireplace, filled its inaccessible
+  interior with black void, and added a west-facing solid door using the
+  established `it's closed` dialogue. Pulled both west-facing chairs together
+  and north while retaining all four entity dialogues, flags, and facing.
+
+- Added focused regression checks for tree irregularity, the narrow winding
+  approach, cigarette-grass count, compact furniture footprints, hardwood
+  boundary, black sealed room, mini-fridge dimensions, and closed-door
+  interaction. Cabin, table-awakening, grass, prop, dialogue, and transition
+  suites pass; native 320x180 exterior and interior frames were inspected.
 
 - Tightened the Cabin living area without changing its routes: both couches
   now sit flush against the north wall around the back doorway, and the two

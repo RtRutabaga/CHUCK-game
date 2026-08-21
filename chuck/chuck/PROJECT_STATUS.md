@@ -20,15 +20,17 @@ file is required by the project rules and updated every session.
   enlarged fire circle sits directly south of the south porch on its centerline.
   Each light derives a stable animation phase from its authored tile, so
   neighboring lights visibly cycle out of sync and cast restrained color.
-- The west clearing now contains 107 fir props, forming a much denser forest
-  around the still-open authored paths. The circular UFO is now 132x76 pixels,
+- The west clearing now contains 118 deliberately irregularly spaced fir props
+  rather than a visible tree-farm grid. Its western arrival is a narrow,
+  slightly winding footpath, and six scratchable cigarette-grass tufts add
+  small rewards along the grounds. The circular UFO is now 132x76 pixels,
   and the enlarged exterior firepit uses a six-frame flame cycle.
 - The completed Douglas-fir cutscene now hands directly into development
   checkpoint `Cabin Exterior` through the shared checkpoint loader,
   preserving Sanity. The map's single physical Ashtray is the only saveable
   exterior checkpoint and is the Continue/Sanity-zero return point after use.
 - Both porches and their human-scale aligned doorway recesses are accessible.
-  Their complete three-tile thresholds now enter the single 21x33 Cabin
+  Their complete three-tile thresholds now enter the single 21x29 Cabin
   Interior even when approached off-center and return Chuck to the matching
   porch. Both directions use the established area-exit
   and shared runtime-checkpoint path; no cabin-only teleport logic exists.
@@ -39,13 +41,19 @@ file is required by the project rules and updated every session.
   rectangular D&D map, an ordinary southern sink/counter, enlarged woodstove,
   and a full enclosed southeast room. Both interior black doorway recesses are
   now three
-  tiles wide and two deep. The table's eleven-tile visual and collision
-  footprints now agree, contact the west wall, and leave a clear four-tile
+  tiles wide and two deep. The table's nine-tile visual and collision
+  footprints now agree, contact the west wall, and leave a clear three-tile
   lane into the north living section. A matching eggshell counter/shelf now
   hugs the west wall between the table and sink, completing their horseshoe
   layout while keeping the open room clear. The counter is flush with the
   south wall, and both chair entities plus the
   fireplace sit entirely on the green carpet above the hardwood boundary.
+  The table and fireplace now share one compact east/west band, with a small
+  mini fridge at the table's southeast corner. Hardwood begins immediately
+  beyond that band. The southeast room has been enlarged northward into a
+  genuinely sealed black interior and has a west-facing solid door that gives
+  the established `it's closed` interaction. The whole interior is four rows
+  shorter, removing the oversized gap between the table and sink.
   Furniture is human-scale and provides solid, readable level geometry while
   keeping both doors and the interior Ashtray connected.
 - Added development checkpoint `Cabin Interior` plus exactly one physical,

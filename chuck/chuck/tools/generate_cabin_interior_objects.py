@@ -72,25 +72,25 @@ def chair():
 
 
 def table(portal_frame=None):
-    # Eleven tiles wide at its authored col-6 anchor: the visible tabletop
-    # meets the west wall while leaving a four-tile circulation lane east.
-    s = pygame.Surface((176, 57), pygame.SRCALPHA)
+    # Nine tiles wide at its authored col-5 anchor: the visible tabletop still
+    # meets the west wall while stopping short of the room's eastern fixtures.
+    s = pygame.Surface((144, 57), pygame.SRCALPHA)
     outline = (48, 31, 23)
     edge = EGGSHELL_SHADOW
     top = EGGSHELL
-    pygame.draw.polygon(s, outline, ((2, 10), (169, 3), (174, 39), (7, 48)))
-    pygame.draw.polygon(s, top, ((5, 11), (167, 6), (170, 35), (9, 43)))
-    for x in range(13, 166, 13):
+    pygame.draw.polygon(s, outline, ((2, 10), (137, 3), (142, 39), (7, 48)))
+    pygame.draw.polygon(s, top, ((5, 11), (135, 6), (138, 35), (9, 43)))
+    for x in range(13, 134, 13):
         pygame.draw.line(s, edge, (x, 11), (x + 3, 41))
-    pygame.draw.line(s, EGGSHELL_LIGHT, (8, 13), (165, 8), 2)
+    pygame.draw.line(s, EGGSHELL_LIGHT, (8, 13), (133, 8), 2)
     # Five mustard stools along the north edge, as on Sean's plan.
-    for x in (18, 50, 82, 114, 146):
+    for x in (14, 42, 70, 98, 126):
         pygame.draw.ellipse(s, outline, (x, 0, 11, 8))
         pygame.draw.ellipse(s, (154, 132, 73), (x + 1, 1, 9, 5))
         pygame.draw.rect(s, edge, (x + 3, 5, 2, 8))
         pygame.draw.rect(s, edge, (x + 7, 5, 2, 8))
     pygame.draw.rect(s, outline, (12, 43, 5, 13))
-    pygame.draw.rect(s, outline, (159, 38, 5, 13))
+    pygame.draw.rect(s, outline, (127, 38, 5, 13))
     # The rectangular D&D map belongs to this table, not the sink counter.
     pygame.draw.rect(s, (48, 34, 34), (29, 17, 47, 17))
     if portal_frame is None:
@@ -118,22 +118,50 @@ def table(portal_frame=None):
 
 def connector_shelf():
     """Long west-wall counter joining the table and southern sink run."""
-    s = pygame.Surface((48, 272), pygame.SRCALPHA)
+    s = pygame.Surface((48, 176), pygame.SRCALPHA)
     outline = (48, 31, 23)
     cabinet = (77, 43, 31)
     cabinet_light = (112, 67, 43)
     # The dark cabinet face remains visible along the room-facing east edge;
     # the broad eggshell worktop is deliberately clear of assorted clutter.
-    pygame.draw.polygon(s, outline, ((3, 0), (42, 0), (47, 266), (4, 271)))
-    pygame.draw.polygon(s, cabinet, ((6, 4), (40, 4), (43, 264), (7, 268)))
+    pygame.draw.polygon(s, outline, ((3, 0), (42, 0), (47, 170), (4, 175)))
+    pygame.draw.polygon(s, cabinet, ((6, 4), (40, 4), (43, 168), (7, 172)))
     pygame.draw.polygon(s, EGGSHELL,
-                        ((9, 1), (39, 1), (41, 260), (9, 265)))
+                        ((9, 1), (39, 1), (41, 164), (9, 169)))
     pygame.draw.line(s, EGGSHELL_LIGHT, (11, 3), (38, 3), 2)
-    pygame.draw.line(s, EGGSHELL_LIGHT, (11, 4), (11, 262), 2)
-    pygame.draw.line(s, EGGSHELL_SHADOW, (40, 5), (42, 263), 2)
-    for y in range(32, 256, 32):
+    pygame.draw.line(s, EGGSHELL_LIGHT, (11, 4), (11, 166), 2)
+    pygame.draw.line(s, EGGSHELL_SHADOW, (40, 5), (42, 167), 2)
+    for y in range(32, 160, 32):
         pygame.draw.line(s, cabinet_light, (7, y), (42, y + 1))
         pygame.draw.circle(s, outline, (37, y + 16), 1)
+    return s
+
+
+def mini_fridge():
+    s = pygame.Surface((32, 42), pygame.SRCALPHA)
+    outline = (45, 43, 40)
+    body = (205, 205, 196)
+    shadow = (143, 145, 140)
+    pygame.draw.rect(s, outline, (2, 2, 28, 38))
+    pygame.draw.rect(s, body, (5, 4, 22, 33))
+    pygame.draw.line(s, shadow, (5, 14), (27, 14), 2)
+    pygame.draw.rect(s, outline, (23, 6, 2, 6))
+    pygame.draw.rect(s, outline, (23, 18, 2, 11))
+    pygame.draw.rect(s, shadow, (6, 36, 20, 2))
+    return s
+
+
+def closed_door_west():
+    s = pygame.Surface((24, 48), pygame.SRCALPHA)
+    outline = (38, 24, 20)
+    wood = (91, 53, 37)
+    panel = (119, 70, 45)
+    pygame.draw.rect(s, outline, (2, 1, 20, 46))
+    pygame.draw.rect(s, wood, (5, 3, 14, 42))
+    pygame.draw.rect(s, panel, (7, 6, 10, 15))
+    pygame.draw.rect(s, panel, (7, 25, 10, 16))
+    pygame.draw.circle(s, (185, 151, 72), (7, 23), 2)
+    pygame.draw.line(s, (151, 91, 56), (18, 4), (18, 44), 1)
     return s
 
 
@@ -204,6 +232,8 @@ def main():
     for index in range(len(PORTAL_COLOURS)):
         save(table(index), f"cabin_table_awakened_{index + 1}.png")
     save(connector_shelf(), "cabin_connector_shelf.png")
+    save(mini_fridge(), "cabin_mini_fridge.png")
+    save(closed_door_west(), "cabin_closed_door_west.png")
     save(kitchen(), "cabin_kitchen.png")
     for index in range(6):
         save(woodstove(index), f"cabin_woodstove_{index + 1}.png")

@@ -1,11 +1,11 @@
-"""Generate the authored 21x33 Cabin interior map."""
+"""Generate the authored compact 21x29 Cabin interior map."""
 
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 21
-HEIGHT = 33
+HEIGHT = 29
 
 
 def _solid_rect(grid, left, top, right, bottom, char="∎"):
@@ -15,7 +15,7 @@ def _solid_rect(grid, left, top, right, bottom, char="∎"):
 
 
 def build_map():
-    # The 21x33 interior exactly matches the exterior shell's authored
+    # The 21x29 interior fits inside the exterior shell's authored
     # footprint.  Warm olive carpet fills the living/dining space.
     grid = [["Ŀ" for _ in range(WIDTH)] for _ in range(HEIGHT)]
     for x in range(WIDTH):
@@ -33,9 +33,9 @@ def build_map():
         grid[1][x] = "Ƣ"
     grid[2][10] = "ኅ"
     for x in range(9, 12):
-        grid[31][x] = "Ɯ"
-        grid[32][x] = "Ɯ"
-    grid[30][10] = "ኄ"
+        grid[27][x] = "Ɯ"
+        grid[28][x] = "Ɯ"
+    grid[26][10] = "ኄ"
 
     # The two couches sit flush against the north wall while continuing to
     # flank the full human-scale back doorway.
@@ -46,55 +46,62 @@ def build_map():
     grid[3][16] = "Ƭ"
     grid[2][16] = "₂"
 
-    # The long map table is tucked against the west wall beside the big couch.
+    # The map table stays flush against the west wall but stops two tiles
+    # earlier, leaving more breathing room at its east end.
     # Its rectangular D&D map is the surface that later awakens; the southern
     # sink/counter remains an ordinary kitchen fixture.
-    _solid_rect(grid, 1, 8, 11, 11)
-    grid[11][6] = "Ƒ"
+    _solid_rect(grid, 1, 10, 9, 13)
+    grid[13][5] = "Ƒ"
 
     # Pull the two west-facing chairs north into the same living-room group
     # instead of spreading them down the east wall.
-    _solid_rect(grid, 16, 5, 18, 7)
-    grid[7][17] = "ƭ"
-    grid[6][17] = "₃"
-    _solid_rect(grid, 16, 9, 18, 11)
-    grid[11][17] = "ƭ"
-    grid[10][17] = "₄"
+    _solid_rect(grid, 16, 4, 18, 6)
+    grid[6][17] = "ƭ"
+    grid[5][17] = "₃"
+    _solid_rect(grid, 16, 7, 18, 9)
+    grid[9][17] = "ƭ"
+    grid[8][17] = "₄"
 
     # The green carpet holds every seated entity and the stove.  Everything
     # south of that living space is hardwood.  The ordinary southern kitchen
     # counter contains the sink only; it is not the portal table.
-    for y in range(20, 32):
+    for y in range(14, 29):
         for x in range(1, 20):
             grid[y][x] = "Ħ"
     # A narrow west-wall counter/shelf joins the long table to the southern
     # sink run, completing the real cabin's horseshoe without narrowing the
     # central circulation lane.  Author it after the floor change so the
     # hardwood pass cannot erase its lower half or its prop marker.
-    _solid_rect(grid, 1, 12, 2, 28)
-    grid[28][1] = "ƛ"
-    _solid_rect(grid, 2, 29, 8, 31, "ħ")
-    grid[31][5] = "ƕ"
+    _solid_rect(grid, 1, 14, 2, 24)
+    grid[24][1] = "ƛ"
+    _solid_rect(grid, 2, 25, 8, 27, "ħ")
+    grid[27][5] = "ƕ"
 
-    # The enlarged wood stove sits above a room-scale, fully enclosed southeast
-    # room.  A complete wall perimeter replaces the former furniture-sized box.
-    _solid_rect(grid, 15, 16, 18, 19)
-    grid[19][16] = "Ʒ"
+    # Human-scale mini fridge tucked against the table's southeast corner.
+    _solid_rect(grid, 10, 12, 11, 13)
+    grid[13][10] = "Ɩ"
+
+    # Table and fire share one east-west band. The enlarged sealed room begins
+    # one tile below the fire, with an unreadable black interior and a solid
+    # west-facing door that uses the ordinary closed-door interaction.
+    _solid_rect(grid, 15, 10, 18, 13)
+    grid[13][16] = "Ʒ"
     for x in range(14, 20):
-        grid[26][x] = "ć"
-        grid[31][x] = "ć"
-    for y in range(26, 32):
+        grid[15][x] = "ć"
+        grid[27][x] = "ć"
+    for y in range(15, 28):
         grid[y][14] = "ć"
         grid[y][19] = "ć"
-    for y in range(27, 31):
+    for y in range(16, 27):
         for x in range(15, 19):
-            grid[y][x] = "Ħ"
+            grid[y][x] = "◼"
+    grid[22][14] = "ƚ"
 
     # Restore the enlarged southern doorway and arrival after laying floors.
     for x in range(9, 12):
-        grid[31][x] = "Ɯ"
-        grid[32][x] = "Ɯ"
-    grid[30][10] = "ኄ"
+        grid[27][x] = "Ɯ"
+        grid[28][x] = "Ɯ"
+    grid[26][10] = "ኄ"
 
     # Exactly one interior Ashtray, reachable along the clear central lane.
     grid[20][13] = "ኆ"

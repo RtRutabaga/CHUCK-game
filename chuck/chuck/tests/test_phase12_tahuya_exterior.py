@@ -73,6 +73,9 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
         if kind == "tahuya_fir"
     ]
     assert sum(7 <= col <= 43 for col, _row in fir_positions) >= 100
+    # The authored stand is deterministic but not planted on a visible grid.
+    assert len({col % 5 for col, _row in fir_positions}) == 5
+    assert len({row % 5 for _col, row in fir_positions}) == 5
     light_positions = [
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "tahuya_mushroom_light"
@@ -86,6 +89,18 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
         if kind == "tahuya_firepit"
     ]
     assert fire_positions == [(59, 59)]
+    assert len(_markers(tilemap)["breakable_grass"]) >= 6
+
+
+def test_western_arrival_is_a_narrow_winding_footpath() -> None:
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    path_rows = []
+    for col in range(6, 41):
+        rows = [row for row in range(26, 37)
+                if tilemap.terrain_at(col, row) == "⌇"]
+        assert 1 <= len(rows) <= 2, (col, rows)
+        path_rows.append(round(sum(rows) / len(rows)))
+    assert max(path_rows) - min(path_rows) >= 3
 
 
 def test_both_porches_and_the_ashtray_are_reachable() -> None:
