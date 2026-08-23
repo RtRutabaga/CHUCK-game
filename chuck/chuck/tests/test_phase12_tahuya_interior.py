@@ -12,6 +12,9 @@ import pygame
 
 from src.core import config
 from src.core.game import Game
+from src.entities.prop import (
+    _PROP_FRAME_TIME, _PROP_FRAME_TIMES,
+)
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.world.tilemap import TILE_DEFS, TileMap
 from src.world.tileset_layout import MAP_TILESET, TAHUYA, tileset_for
@@ -24,8 +27,8 @@ from generate_cabin_interior_objects import (
     CONNECTOR_SHELF_SIZE, CONNECTOR_SHELF_TILES,
 )
 from generate_tahuya_cabin_interior import (
-    COUNTER_BOTTOM, COUNTER_TOP, DOOR_ROW, FLOOR_BOTTOM, FLOOR_ROWS,
-    FLOOR_TOP, HEIGHT,
+    COUCH_ROW, COUNTER_BOTTOM, COUNTER_TOP, DOOR_ROW, FLOOR_BOTTOM,
+    FLOOR_ROWS, FLOOR_TOP, HEIGHT, WALL_BOTTOM, WALL_ROWS,
 )
 
 
@@ -102,40 +105,49 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         "cabin_woodstove": 1,
         "cabin_closed_door_north": 1,
         "cabin_lava_lamp": 1,
-        "cabin_curtain_window": 4,
+        "cabin_curtain_window": 2,
     }
     positions = {
         kind: (col, row) for kind, col, row in tilemap.prop_tiles
         if kind not in {"cabin_chair", "cabin_curtain_window"}
     }
-    assert positions["cabin_big_couch"] == (5, 3)
-    assert positions["cabin_couch"] == (16, 3)
-    assert positions["cabin_table"] == (5, 13)
+    assert positions["cabin_big_couch"] == (5, COUCH_ROW)
+    assert positions["cabin_couch"] == (16, COUCH_ROW)
+    assert positions["cabin_table"] == (5, FLOOR_TOP - 1)
     assert positions["cabin_connector_shelf"] == (1, FLOOR_BOTTOM)
-    assert positions["cabin_mini_fridge"] == (10, 13)
+    assert positions["cabin_mini_fridge"] == (10, FLOOR_TOP - 1)
     assert positions["cabin_closed_door_west"] == (14, SEALED_DOOR_ROW)
     assert positions["cabin_kitchen"] == (5, COUNTER_BOTTOM)
-    assert positions["cabin_woodstove"] == (16, 13)
+    assert positions["cabin_woodstove"] == (16, FLOOR_TOP - 1)
     chair_positions = sorted(
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "cabin_chair"
     )
     # Both chairs are pushed flush against the east wall, so the seated
     # pair face west across the room rather than sitting in it.
-    assert chair_positions == [(18, 6), (18, 9)]
-    assert all(tilemap.is_solid(19, row) for row in (4, 6, 9))
+    assert chair_positions == [(18, COUCH_ROW + 3), (18, COUCH_ROW + 6)]
+    assert all(tilemap.is_solid(19, COUCH_ROW + step)
+               for step in (1, 3, 6))
 
     # A door in the north wall between the couches that does not open,
     # curtains drawn on the wall behind each couch, and a lava lamp on
     # the one strip of floor between the stove and the east wall.
-    assert positions["cabin_closed_door_north"] == (10, 2)
-    assert positions["cabin_lava_lamp"] == (19, 12)
+    assert positions["cabin_closed_door_north"] == (10, WALL_BOTTOM)
+    assert positions["cabin_lava_lamp"] == (19, FLOOR_TOP - 2)
     windows = sorted((col, row) for kind, col, row in tilemap.prop_tiles
                      if kind == "cabin_curtain_window")
-    assert windows == [(3, 1), (7, 1), (14, 1), (18, 1)]
-    # Two behind each couch, and above it: the tops have to show over
-    # the couch back or there is no point drawing them.
-    assert all(row < 3 for _col, row in windows)
+    # One centred behind each couch, hanging from the wall itself.
+    assert windows == [(5, WALL_BOTTOM), (16, WALL_BOTTOM)]
+
+    # The north wall is deep enough for what hangs on it. A one-row wall
+    # clipped the tops of these off against the edge of the map and left
+    # their bottoms sitting out on the carpet.
+    assert WALL_ROWS >= 3
+    for row in range(WALL_ROWS):
+        assert all(tilemap.is_solid(col, row)
+                   for col in range(tilemap.width_tiles)), row
+    assert all(tilemap.terrain_at(col, WALL_ROWS) != "ć"
+               for col in range(1, 13)), "the carpet starts below the wall"
     # Entities and stove sit on green carpet; the southern working area is
     # hardwood, with the counter visually flush against the south wall.
     assert all(tilemap.terrain_at(x, y) != "Ħ"
@@ -274,15 +286,20 @@ def test_the_north_door_is_shut_and_the_lamp_is_the_only_thing_moving() -> None:
         assert lamp.dialogue_id is None
         # Every frame is different: blobs on one shared cycle would give
         # duplicate frames and a visible beat.
+        # ...and it runs at its own pace, far slower than the fire it
+        # stands beside: at the stove's frame rate the blobs shot up and
+        # down like a boiling kettle.
+        pace = _PROP_FRAME_TIMES["cabin_lava_lamp"]
+        assert pace > _PROP_FRAME_TIME * 6, pace
         shots = []
         for _ in range(6):
             shots.append(pygame.image.tostring(lamp._image, "RGBA"))
-            lamp.update(0.15)
+            lamp.update(pace)
         assert len(set(shots)) == 6, len(set(shots))
 
         curtains = [prop for prop in world.props
                     if prop.kind == "cabin_curtain_window"]
-        assert len(curtains) == 4
+        assert len(curtains) == 2
         # Curtains are scenery, not something to talk to or open.
         assert all(prop.dialogue_id is None and prop.choice_id is None
                    for prop in curtains)

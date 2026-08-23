@@ -19,7 +19,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 21
 
-FLOOR_TOP = 14                          # first hardwood row, under the carpet
+# The north wall is three rows of panel rather than one. Anything hung on
+# it -- the curtained windows, the door that does not open -- is taller
+# than a single tile, and on a one-row wall the tops were clipped off by
+# the edge of the map and the bottoms hung out over the carpet.
+WALL_ROWS = 3
+WALL_BOTTOM = WALL_ROWS - 1             # last row of panel, where things sit
+COUCH_TOP = WALL_ROWS                   # the couches stand clear of it
+COUCH_ROW = COUCH_TOP + 2
+
+FLOOR_TOP = 16                          # first hardwood row, under the carpet
 FLOOR_ROWS = 6                          # ...and how deep the room runs
 FLOOR_BOTTOM = FLOOR_TOP + FLOOR_ROWS - 1
 COUNTER_TOP = FLOOR_BOTTOM + 1          # the south sink run, three rows deep
@@ -38,8 +47,10 @@ def build_map():
     # The 21x29 interior fits inside the exterior shell's authored
     # footprint.  Warm olive carpet fills the living/dining space.
     grid = [["Ŀ" for _ in range(WIDTH)] for _ in range(HEIGHT)]
+    for y in range(WALL_ROWS):
+        for x in range(WIDTH):
+            grid[y][x] = "ć"
     for x in range(WIDTH):
-        grid[0][x] = "ć"
         grid[HEIGHT - 1][x] = "ć"
     for y in range(HEIGHT):
         grid[y][0] = "ć"
@@ -54,34 +65,34 @@ def build_map():
 
     # The two couches sit flush against the north wall while continuing to
     # frame the north living wall.
-    _solid_rect(grid, 1, 1, 8, 3)
-    grid[3][5] = "Ƈ"
-    grid[2][5] = "₁"
-    _solid_rect(grid, 13, 1, 19, 3)
-    grid[3][16] = "Ƭ"
-    grid[2][16] = "₂"
-    # Curtains, drawn, on the wall behind each couch. They sit a row
-    # above the couch so the tops show over its back.
-    for x in (3, 7, 14, 18):
-        grid[1][x] = "Ɏ"
-    # ...and a door between the two couches that does not open.
-    grid[2][10] = "Ɖ"
+    _solid_rect(grid, 1, COUCH_TOP, 8, COUCH_ROW)
+    grid[COUCH_ROW][5] = "Ƈ"
+    grid[COUCH_ROW - 1][5] = "₁"
+    _solid_rect(grid, 13, COUCH_TOP, 19, COUCH_ROW)
+    grid[COUCH_ROW][16] = "Ƭ"
+    grid[COUCH_ROW - 1][16] = "₂"
+    # One curtained window centred on the wall behind each couch, and a
+    # door between them that does not open. All three hang from the last
+    # row of panel, so they stand on the wall rather than on the carpet.
+    grid[WALL_BOTTOM][5] = "Ɏ"
+    grid[WALL_BOTTOM][16] = "Ɏ"
+    grid[WALL_BOTTOM][10] = "Ɖ"
 
     # The map table stays flush against the west wall but stops two tiles
     # earlier, leaving more breathing room at its east end.
     # Its rectangular D&D map is the surface that later awakens; the southern
     # sink/counter remains an ordinary kitchen fixture.
-    _solid_rect(grid, 1, 10, 9, 13)
-    grid[13][5] = "Ƒ"
+    _solid_rect(grid, 1, 12, 9, 15)
+    grid[15][5] = "Ƒ"
 
     # Pull the two west-facing chairs north into the same living-room group
     # instead of spreading them down the east wall.
-    _solid_rect(grid, 17, 4, 19, 6)
-    grid[6][18] = "ƭ"
-    grid[5][18] = "₃"
-    _solid_rect(grid, 17, 7, 19, 9)
-    grid[9][18] = "ƭ"
-    grid[8][18] = "₄"
+    _solid_rect(grid, 17, 6, 19, 8)
+    grid[8][18] = "ƭ"
+    grid[7][18] = "₃"
+    _solid_rect(grid, 17, 9, 19, 11)
+    grid[11][18] = "ƭ"
+    grid[10][18] = "₄"
 
     # The green carpet holds every seated entity and the stove.  Everything
     # south of that living space is hardwood.  The ordinary southern kitchen
@@ -101,18 +112,18 @@ def build_map():
     # Human-scale mini fridge tucked against the table's southeast corner.
     # Its collision stays under the visible body; an extra east tile would
     # invisibly catch Chuck while he walks south through the central lane.
-    _solid_rect(grid, 10, 12, 10, 13)
-    grid[13][10] = "Ɩ"
+    _solid_rect(grid, 10, 14, 10, 15)
+    grid[15][10] = "Ɩ"
 
     # Table and fire share one east-west band. The enlarged sealed room begins
     # one tile below the fire, with an unreadable black interior and a solid
     # west-facing door that uses the ordinary closed-door interaction.
-    _solid_rect(grid, 15, 10, 18, 13)
-    grid[13][16] = "Ʒ"
+    _solid_rect(grid, 15, 12, 18, 15)
+    grid[15][16] = "Ʒ"
     # The lava lamp stands on the strip between the stove and the east
     # wall, which is the only piece of floor in the room with nothing
     # else on it and a wall to put a lamp against.
-    grid[12][19] = "Ɔ"
+    grid[14][19] = "Ɔ"
     sealed_top, sealed_bottom = FLOOR_TOP + 1, COUNTER_BOTTOM
     for x in range(14, 20):
         grid[sealed_top][x] = "ć"

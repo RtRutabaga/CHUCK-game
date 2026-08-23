@@ -196,7 +196,8 @@ class WorldScene(Scene):
         # Once the table map has woken, the cabin lights go out and the
         # room is lit by the aurora projector and the stove alone.
         self.aurora = (
-            AuroraLight(self._stove_position())
+            AuroraLight(self._prop_centre("cabin_woodstove"),
+                        self._prop_centre("cabin_lava_lamp"))
             if (map_name == "tahuya_cabin_interior"
                 and self.game.progress.has(COUNTER_MAP_AWAKENED_FLAG))
             else None
@@ -1517,10 +1518,10 @@ class WorldScene(Scene):
             overlay.set_alpha(int(255 * min(1.0, 0.5 + frac)))
             surface.blit(overlay, (0, 0))
 
-    def _stove_position(self) -> tuple[float, float] | None:
-        """Middle of the woodstove in world pixels, if this map has one."""
+    def _prop_centre(self, wanted: str) -> tuple[float, float] | None:
+        """Middle of one authored prop in world pixels, if the map has it."""
         for kind, col, row in self.tilemap.prop_tiles:
-            if kind == "cabin_woodstove":
+            if kind == wanted:
                 ts = config.TILE_SIZE
                 return (col * ts + ts / 2, row * ts + ts / 2)
         return None

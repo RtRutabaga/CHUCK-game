@@ -3,8 +3,8 @@
 Once the table map has woken, the cabin lights go out and the room is
 lit by a Northern Lights projector: broad soft bands sweeping across
 everything in slowly cycling colours, a scatter of small blue stars
-holding still behind them, and the woodstove throwing a dim orange pool
-that never changes colour with the rest.
+holding still behind them, and two warm pools that never change colour
+with the rest -- the woodstove, and the lava lamp beside it.
 
 The bands are drawn once, in grey, and tinted on the way to the screen
 rather than being redrawn every frame. Sweeping them is a blit at a
@@ -45,6 +45,9 @@ PALETTE = (
 CYCLE_SECONDS = 7.0        # how long one colour holds before the next
 STAR_COUNT = 90
 STOVE_GLOW_RADIUS = 46
+# The lamp is a lamp, not a fire: a smaller, steadier, redder pool that
+# only exists at all because the room is otherwise dark.
+LAMP_GLOW_RADIUS = 26
 
 
 def _band_layer(width: int, height: int, spacing: int, half: int,
@@ -73,9 +76,11 @@ def _band_layer(width: int, height: int, spacing: int, half: int,
 class AuroraLight:
     """The awakened cabin's light: projector bands, stars, and the stove."""
 
-    def __init__(self, stove_position: tuple[float, float] | None = None):
+    def __init__(self, stove_position: tuple[float, float] | None = None,
+                 lamp_position: tuple[float, float] | None = None):
         self.elapsed = 0.0
         self.stove_position = stove_position
+        self.lamp_position = lamp_position
         width, height = config.NATIVE_WIDTH * 2, config.NATIVE_HEIGHT
         self._layers = (
             _band_layer(width, height, 104, 30, 0.9, 78, 1),
@@ -92,20 +97,34 @@ class AuroraLight:
             for index in range(STAR_COUNT)
         )
         self._glow = self._build_glow()
+        self._lamp_glow = self._build_glow(LAMP_GLOW_RADIUS, 74)
 
     @staticmethod
-    def _build_glow() -> pygame.Surface:
-        """A soft round pool, built once, tinted and scaled on use."""
-        size = STOVE_GLOW_RADIUS * 2
+    def _build_glow(radius: int = STOVE_GLOW_RADIUS,
+                    peak: int = 96) -> pygame.Surface:
+        """A soft round pool, built once, tinted on use."""
+        size = radius * 2
         glow = pygame.Surface((size, size), pygame.SRCALPHA)
-        for step in range(STOVE_GLOW_RADIUS, 0, -1):
-            fade = step / STOVE_GLOW_RADIUS
-            value = int(96 * (1.0 - fade) ** 2)
+        for step in range(radius, 0, -1):
+            fade = step / radius
+            value = int(peak * (1.0 - fade) ** 2)
             if value <= 0:
                 continue
             pygame.draw.circle(glow, (value, value, value, 255),
-                               (STOVE_GLOW_RADIUS, STOVE_GLOW_RADIUS), step)
+                               (radius, radius), step)
         return glow
+
+    def _pool(self, surface, camera_offset, glow, radius, position,
+              colour, level: float) -> None:
+        ox, oy = camera_offset
+        pool = glow.copy()
+        pool.fill((*(round(channel * level) for channel in colour), 255),
+                  special_flags=pygame.BLEND_RGBA_MULT)
+        surface.blit(
+            pool,
+            (round(position[0] - ox - radius), round(position[1] - oy - radius)),
+            special_flags=pygame.BLEND_ADD,
+        )
 
     def update(self, dt: float) -> None:
         self.elapsed += dt
@@ -150,21 +169,18 @@ class AuroraLight:
             offset = int(self.elapsed * speed) % config.NATIVE_WIDTH
             surface.blit(tinted, (-offset, 0), special_flags=pygame.BLEND_ADD)
 
-        if self.stove_position is None:
-            return
-        # The fire is the one thing in the room that is still its own
-        # colour, so it is added after the bands rather than tinted by
-        # them, and it breathes instead of sweeping.
-        ox, oy = camera_offset
-        flicker = 0.82 + 0.18 * math.sin(self.elapsed * 5.3)
-        flicker *= 0.94 + 0.06 * math.sin(self.elapsed * 11.7)
-        pool = self._glow.copy()
-        pool.fill((round(255 * flicker), round(126 * flicker),
-                   round(38 * flicker), 255),
-                  special_flags=pygame.BLEND_RGBA_MULT)
-        surface.blit(
-            pool,
-            (round(self.stove_position[0] - ox - STOVE_GLOW_RADIUS),
-             round(self.stove_position[1] - oy - STOVE_GLOW_RADIUS)),
-            special_flags=pygame.BLEND_ADD,
-        )
+        # The fire and the lamp are the two things in the room still
+        # their own colour, so they are added after the bands rather
+        # than tinted by them. The fire flickers; the lamp does not --
+        # it swells, on the same slow beat its blobs move on.
+        if self.stove_position is not None:
+            flicker = 0.82 + 0.18 * math.sin(self.elapsed * 5.3)
+            flicker *= 0.94 + 0.06 * math.sin(self.elapsed * 11.7)
+            self._pool(surface, camera_offset, self._glow,
+                       STOVE_GLOW_RADIUS, self.stove_position,
+                       (255, 126, 38), flicker)
+        if self.lamp_position is not None:
+            swell = 0.86 + 0.14 * math.sin(self.elapsed * 0.55)
+            self._pool(surface, camera_offset, self._lamp_glow,
+                       LAMP_GLOW_RADIUS, self.lamp_position,
+                       (250, 96, 62), swell)

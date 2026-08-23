@@ -6,6 +6,18 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The cabin's north wall is three rows of panel rather than one. Everything
+  hung on it -- one curtained window centred behind each couch, and the door
+  between them that does not open -- is taller than a single tile, and on a
+  one-row wall the tops were clipped by the edge of the map and the bottoms sat
+  out on the carpet. The room reflows below it; the map is 21x26.
+- The lava lamp runs at its own frame rate, eleven times slower than the
+  stove's. Animated props shared one pace, and at the fire's rate the blobs
+  shot up and down like a boiling kettle.
+- During the lightshow the lamp casts its own pool: smaller, redder and
+  steadier than the stove's, swelling on the same slow beat its blobs move on.
+  The painted spill on the table top is gone -- with the room lit normally it
+  read as a stain, and in the dark the projector scene gives it a real one.
 - The cabin's two west-facing chairs and the entities in them are pushed flush
   against the east wall, so the seated pair face across the room rather than
   sitting out in it.

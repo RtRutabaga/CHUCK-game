@@ -254,6 +254,12 @@ _ANIMATED_SPRITES = {
     ),
 }
 _PROP_FRAME_TIME = 0.14
+# Props whose animation runs at its own pace. A lava lamp shares nothing
+# with a fire but the fact that both move: at the stove's frame rate its
+# blobs shot up and down like a boiling kettle.
+_PROP_FRAME_TIMES = {
+    "cabin_lava_lamp": 1.6,
+}
 
 # Props that respond to the interact key with a line of dialogue
 # (ids live in data/dialogue/). Everything else stays mute scenery.
@@ -352,5 +358,6 @@ class Prop:
         if not self._frames:
             return
         self._animation_t += dt
-        frame = int(self._animation_t / _PROP_FRAME_TIME) % len(self._frames)
+        pace = _PROP_FRAME_TIMES.get(self.kind, _PROP_FRAME_TIME)
+        frame = int(self._animation_t / pace) % len(self._frames)
         self._image = self._frames[frame]

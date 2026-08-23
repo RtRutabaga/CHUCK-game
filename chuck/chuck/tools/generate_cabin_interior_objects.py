@@ -271,10 +271,13 @@ def lava_lamp(frame=0):
 
     # ---- the lamp -----------------------------------------------------
     # Chrome cone below, chrome cap above, glass between them.
-    pygame.draw.polygon(s, outline, ((11, 40), (23, 40), (19, 32), (15, 32)))
-    pygame.draw.polygon(s, CHROME, ((12, 39), (22, 39), (18, 33), (16, 33)))
-    pygame.draw.line(s, CHROME_LIGHT, (15, 38), (17, 33))
-    pygame.draw.line(s, CHROME_DARK, (20, 38), (18, 34))
+    pygame.draw.polygon(s, outline, ((11, 40), (23, 40), (19, 31), (15, 31)))
+    pygame.draw.polygon(s, CHROME_DARK,
+                        ((12, 39), (22, 39), (18, 32), (16, 32)))
+    pygame.draw.polygon(s, CHROME,
+                        ((13, 39), (20, 39), (18, 32), (16, 32)))
+    pygame.draw.line(s, CHROME_LIGHT, (15, 38), (16, 32), 1)
+    pygame.draw.line(s, CHROME_LIGHT, (12, 39), (22, 39))
 
     glass = ((14, 32), (20, 32), (21, 20), (19, 9), (15, 9), (13, 20))
     pygame.draw.polygon(s, outline, glass)
@@ -302,10 +305,9 @@ def lava_lamp(frame=0):
     pygame.draw.rect(s, CHROME, (15, 7, 4, 3))
     pygame.draw.line(s, CHROME_LIGHT, (15, 7), (18, 7))
 
-    # A little of the lamp's own light on the table top around it.
-    spill = pygame.Surface((34, 58), pygame.SRCALPHA)
-    pygame.draw.ellipse(spill, (250, 168, 96, 46), (6, 36, 22, 8))
-    s.blit(spill, (0, 0))
+    # No painted spill on the table top: with the room lit normally it
+    # read as a stain, and when the room goes dark the projector scene
+    # gives the lamp a real pool of its own.
     return s
 
 
@@ -324,19 +326,21 @@ def curtain_window(index=0):
     frame_wood = (96, 64, 42)
     frame_light = (130, 92, 58)
     night = (18, 26, 34)
-    cloth = ((132, 108, 84), (154, 128, 100), (108, 88, 68))
+    cloth = ((168, 142, 110), (194, 170, 138), (138, 114, 88))
 
     pygame.draw.rect(s, outline, (1, 2, 30, 29))
     pygame.draw.rect(s, frame_wood, (2, 3, 28, 27))
     pygame.draw.rect(s, night, (5, 7, 22, 21))
-    # Curtains meeting in the middle, hem to hem.
+    # Curtains meeting in the middle, hem to hem. They have to overlap:
+    # drawn to meet exactly, the seam between them plus each hem line
+    # left a dark band up the middle that read as curtains parted.
     for side in (0, 1):
-        left = 5 + side * 12
-        for fold in range(5):
+        left = 5 + side * 11
+        for fold in range(6):
             x = left + fold * 2
             shade = cloth[(fold + side + index) % 3]
             pygame.draw.rect(s, shade, (x, 7, 2, 21))
-        pygame.draw.line(s, outline, (left + 9, 7), (left + 9, 27))
+    pygame.draw.line(s, outline, (16, 7), (16, 27))
     # The pelmet, and the sill under it.
     pygame.draw.rect(s, outline, (0, 0, 32, 6))
     pygame.draw.rect(s, cloth[1], (1, 1, 30, 4))
