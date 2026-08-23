@@ -6,6 +6,10 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- A mounted Canada goose head hangs on the west wall between the map table and
+  the couch above it. Interacting says `It's a mounted goose head... did it
+  just wink?` -- three dots rather than an ellipsis character, matching every
+  other line in the game.
 - The mini fridge is black. White, it was the brightest thing in a dark olive
   room and pulled the eye off the table beside it; the handles carry the shape
   now.

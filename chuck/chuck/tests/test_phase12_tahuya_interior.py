@@ -107,6 +107,7 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         "cabin_lava_lamp": 1,
         "cabin_curtain_window": 2,
         "cabin_macrame": 1,
+        "cabin_goose_mount": 1,
     }
     positions = {
         kind: (col, row) for kind, col, row in tilemap.prop_tiles
@@ -138,6 +139,11 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     # The knotted hanging goes on the panel to the right of the big
     # couch's window, between it and the door.
     assert positions["cabin_macrame"] == (8, WALL_BOTTOM)
+    # The goose hangs on the west wall, on the stretch between the map
+    # table below it and the couch above.
+    goose = positions["cabin_goose_mount"]
+    assert goose[0] == 1
+    assert COUCH_ROW < goose[1] < FLOOR_TOP - 4
     windows = sorted((col, row) for kind, col, row in tilemap.prop_tiles
                      if kind == "cabin_curtain_window")
     # One centred behind each couch, hanging from the wall itself.
@@ -300,6 +306,17 @@ def test_the_north_door_is_shut_and_the_lamp_is_the_only_thing_moving() -> None:
             shots.append(pygame.image.tostring(lamp._image, "RGBA"))
             lamp.update(pace)
         assert len(set(shots)) == 6, len(set(shots))
+
+        goose = next(prop for prop in world.props
+                     if prop.kind == "cabin_goose_mount")
+        assert goose.dialogue_id == "cabin_goose_mount"
+        assert goose.choice_id is None
+        # The joke is the whole point of it being there, so the line is
+        # pinned. Written with three dots rather than an ellipsis
+        # character, which is what every other line in the game uses.
+        assert world.dialogue.get("cabin_goose_mount") == [
+            "It's a mounted goose head... did it just wink?"
+        ]
 
         curtains = [prop for prop in world.props
                     if prop.kind == "cabin_curtain_window"]

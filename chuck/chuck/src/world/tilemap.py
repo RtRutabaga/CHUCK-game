@@ -678,6 +678,8 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="cabin_curtain_window", under="∎"),
     "Ɱ": TileDef(solid=True, color=(176, 138, 92),
                  prop="cabin_macrame", under="ć"),
+    "Ɵ": TileDef(solid=True, color=(152, 114, 64),
+                 prop="cabin_goose_mount", under="Ŀ"),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {

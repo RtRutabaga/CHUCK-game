@@ -197,6 +197,7 @@ _SPRITES = {
     "cabin_closed_door_west": "objects/cabin_closed_door_west.png",
     "cabin_closed_door_north": "objects/cabin_closed_door_north.png",
     "cabin_macrame": "objects/cabin_macrame.png",
+    "cabin_goose_mount": "objects/cabin_goose_mount.png",
     "cabin_lava_lamp": "objects/cabin_lava_lamp_1.png",
     "cabin_curtain_window": (
         "objects/cabin_curtain_window_1.png",
@@ -270,6 +271,7 @@ PROP_DIALOGUE = {
     "house_door": "closed_door",
     "cabin_closed_door_west": "closed_door",
     "cabin_closed_door_north": "closed_door",
+    "cabin_goose_mount": "cabin_goose_mount",
     "cheese": "cheese",
     "fey_teacup": "fey_tea_warm",
     "fey_plate": "fey_set_for_one",

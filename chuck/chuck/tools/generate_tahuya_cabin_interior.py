@@ -80,6 +80,9 @@ def build_map():
     # The knotted hanging from the real cabin, on the panel to the right
     # of the big couch's window.
     grid[WALL_BOTTOM][8] = "Ɱ"
+    # ...and the goose on the west wall, on the stretch between the map
+    # table and the couch above it.
+    grid[9][1] = "Ɵ"
 
     # The map table stays flush against the west wall but stops two tiles
     # earlier, leaving more breathing room at its east end.

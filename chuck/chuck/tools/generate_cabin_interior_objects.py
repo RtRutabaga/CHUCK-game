@@ -448,6 +448,58 @@ def macrame():
     return s
 
 
+def goose_mount():
+    """A Canada goose head on a turned wooden plaque.
+
+    Drawn face-on like everything else hung on a wall in here: the
+    plaque flat to the camera with its bevel rings showing, the neck
+    rising out of it and the head turned so the bill crosses the
+    silhouette. A goose head pointed straight at the camera is a black
+    blob -- the turn is what makes it a goose.
+    """
+    s = pygame.Surface((26, 38), pygame.SRCALPHA)
+    outline = (40, 28, 18)
+    plaque = (152, 114, 64)
+    plaque_light = (192, 152, 92)
+    plaque_dark = (104, 74, 42)
+    black = (26, 26, 28)
+    sheen = (58, 58, 64)
+    cheek = (234, 234, 228)
+    cheek_shade = (186, 186, 180)
+    bill = (40, 40, 44)
+
+    # The plaque: a rounded shield with two turned steps round its edge.
+    pygame.draw.ellipse(s, outline, (2, 22, 22, 16))
+    pygame.draw.ellipse(s, plaque_dark, (3, 23, 20, 14))
+    pygame.draw.ellipse(s, plaque, (4, 24, 18, 12))
+    pygame.draw.ellipse(s, plaque_light, (6, 25, 14, 5))
+    pygame.draw.ellipse(s, plaque_dark, (8, 27, 10, 7))
+    pygame.draw.ellipse(s, plaque, (9, 28, 8, 5))
+
+    # The neck, rising out of the mount and leaning back to the left.
+    pygame.draw.polygon(s, outline, ((9, 30), (17, 30), (14, 12), (9, 12)))
+    pygame.draw.polygon(s, black, ((10, 29), (16, 29), (13, 13), (10, 13)))
+    pygame.draw.line(s, sheen, (11, 27), (11, 15))
+
+    # The white chinstrap, which is the one marking that names the bird.
+    pygame.draw.polygon(s, cheek_shade, ((9, 20), (14, 18), (14, 14), (9, 16)))
+    pygame.draw.polygon(s, cheek, ((10, 19), (13, 17), (13, 15), (10, 17)))
+
+    # The head, and the bill crossing out to the right.
+    pygame.draw.ellipse(s, outline, (7, 5, 11, 11))
+    pygame.draw.ellipse(s, black, (8, 6, 9, 9))
+    pygame.draw.line(s, sheen, (10, 7), (13, 6))
+    pygame.draw.polygon(s, outline, ((15, 6), (24, 3), (24, 6), (16, 11)))
+    pygame.draw.polygon(s, bill, ((16, 7), (23, 4), (23, 6), (16, 10)))
+    pygame.draw.line(s, (72, 72, 78), (17, 7), (22, 5))
+
+    # One glass eye. It is not winking.
+    s.set_at((12, 9), (16, 10, 8))
+    s.set_at((13, 9), (12, 8, 6))
+    s.set_at((12, 8), (150, 140, 120))
+    return s
+
+
 def main():
     pygame.init()
     save(couch(106), "cabin_big_couch.png")
@@ -470,6 +522,7 @@ def main():
              f"cabin_curtain_window_{index + 1}.png")
     save(closed_door_north(), "cabin_closed_door_north.png")
     save(macrame(), "cabin_macrame.png")
+    save(goose_mount(), "cabin_goose_mount.png")
 
 
 if __name__ == "__main__":

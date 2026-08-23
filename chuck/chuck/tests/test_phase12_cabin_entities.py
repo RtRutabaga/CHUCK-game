@@ -43,7 +43,15 @@ def test_exact_dialogue_is_preserved_and_renderable() -> None:
     path = config.DIALOGUE_DIR / "cabin.json"
     raw = path.read_bytes()
     data = json.loads(raw.decode("utf-8"))
-    assert {key: lines[0] for key, lines in data.items()} == EXPECTED_DIALOGUE
+    # The four entity lines are pinned exactly, glyph for glyph. The
+    # file is allowed to hold other cabin dialogue besides them, which
+    # is why this compares the four keys rather than the whole file.
+    assert EXPECTED_DIALOGUE.keys() <= data.keys()
+    assert {key: data[key][0] for key in EXPECTED_DIALOGUE} == (
+        EXPECTED_DIALOGUE
+    )
+    assert all(len(lines) == 1 for key, lines in data.items()
+               if key in EXPECTED_DIALOGUE)
 
     directory, game = _game()
     try:
