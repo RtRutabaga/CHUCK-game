@@ -60,6 +60,12 @@ def build_map():
     _solid_rect(grid, 13, 1, 19, 3)
     grid[3][16] = "Ƭ"
     grid[2][16] = "₂"
+    # Curtains, drawn, on the wall behind each couch. They sit a row
+    # above the couch so the tops show over its back.
+    for x in (3, 7, 14, 18):
+        grid[1][x] = "Ɏ"
+    # ...and a door between the two couches that does not open.
+    grid[2][10] = "Ɖ"
 
     # The map table stays flush against the west wall but stops two tiles
     # earlier, leaving more breathing room at its east end.
@@ -70,12 +76,12 @@ def build_map():
 
     # Pull the two west-facing chairs north into the same living-room group
     # instead of spreading them down the east wall.
-    _solid_rect(grid, 16, 4, 18, 6)
-    grid[6][17] = "ƭ"
-    grid[5][17] = "₃"
-    _solid_rect(grid, 16, 7, 18, 9)
-    grid[9][17] = "ƭ"
-    grid[8][17] = "₄"
+    _solid_rect(grid, 17, 4, 19, 6)
+    grid[6][18] = "ƭ"
+    grid[5][18] = "₃"
+    _solid_rect(grid, 17, 7, 19, 9)
+    grid[9][18] = "ƭ"
+    grid[8][18] = "₄"
 
     # The green carpet holds every seated entity and the stove.  Everything
     # south of that living space is hardwood.  The ordinary southern kitchen
@@ -103,6 +109,10 @@ def build_map():
     # west-facing door that uses the ordinary closed-door interaction.
     _solid_rect(grid, 15, 10, 18, 13)
     grid[13][16] = "Ʒ"
+    # The lava lamp stands on the strip between the stove and the east
+    # wall, which is the only piece of floor in the room with nothing
+    # else on it and a wall to put a lamp against.
+    grid[12][19] = "Ɔ"
     sealed_top, sealed_bottom = FLOOR_TOP + 1, COUNTER_BOTTOM
     for x in range(14, 20):
         grid[sealed_top][x] = "ć"

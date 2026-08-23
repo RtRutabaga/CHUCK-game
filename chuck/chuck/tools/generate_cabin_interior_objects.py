@@ -236,6 +236,142 @@ def wood_storage():
     return s
 
 
+LAVA_GLASS = (250, 196, 118)
+LAVA_GLASS_DEEP = (232, 152, 78)
+LAVA_BLOB = (226, 62, 74)
+LAVA_BLOB_LIGHT = (247, 116, 96)
+CHROME = (188, 192, 198)
+CHROME_LIGHT = (232, 236, 240)
+CHROME_DARK = (108, 114, 124)
+TABLE_BLUE = (156, 186, 206)
+TABLE_BLUE_LIGHT = (196, 218, 232)
+TABLE_BLUE_DARK = (104, 132, 152)
+
+
+def lava_lamp(frame=0):
+    """A lava lamp on a small pale blue side table.
+
+    The lamp is drawn as one prop with the table it stands on, because
+    at this scale they are a single silhouette: a chrome cone, a taper
+    of lit amber glass with blobs drifting through it, and a chrome cap.
+    The blobs rise and fall on their own cycles, so the six frames never
+    line up into a pulse.
+    """
+    s = pygame.Surface((34, 58), pygame.SRCALPHA)
+    outline = (28, 34, 40)
+
+    # ---- the table ----------------------------------------------------
+    pygame.draw.rect(s, outline, (2, 40, 30, 8))
+    pygame.draw.rect(s, TABLE_BLUE, (3, 41, 28, 6))
+    pygame.draw.line(s, TABLE_BLUE_LIGHT, (4, 41), (30, 41))
+    pygame.draw.line(s, TABLE_BLUE_DARK, (4, 46), (30, 46))
+    for x in (5, 26):
+        pygame.draw.rect(s, outline, (x, 47, 4, 10))
+        pygame.draw.rect(s, TABLE_BLUE_DARK, (x + 1, 47, 2, 9))
+
+    # ---- the lamp -----------------------------------------------------
+    # Chrome cone below, chrome cap above, glass between them.
+    pygame.draw.polygon(s, outline, ((11, 40), (23, 40), (19, 32), (15, 32)))
+    pygame.draw.polygon(s, CHROME, ((12, 39), (22, 39), (18, 33), (16, 33)))
+    pygame.draw.line(s, CHROME_LIGHT, (15, 38), (17, 33))
+    pygame.draw.line(s, CHROME_DARK, (20, 38), (18, 34))
+
+    glass = ((14, 32), (20, 32), (21, 20), (19, 9), (15, 9), (13, 20))
+    pygame.draw.polygon(s, outline, glass)
+    pygame.draw.polygon(s, LAVA_GLASS_DEEP,
+                        ((15, 31), (19, 31), (20, 20), (18, 10),
+                         (16, 10), (14, 20)))
+    # The lit column: brighter up the middle, like a bulb below it.
+    pygame.draw.polygon(s, LAVA_GLASS,
+                        ((16, 30), (18, 30), (19, 20), (18, 11),
+                         (16, 11), (15, 20)))
+
+    # Blobs, each on its own slow cycle so the lamp never seems to beat.
+    for index, (span, size, phase) in enumerate(
+        ((16, 4, 0), (13, 3, 2), (10, 3, 4), (18, 5, 3))
+    ):
+        step = (frame + phase) % 6 / 6.0
+        y = 29 - round(span * abs(2.0 * step - 1.0))
+        x = 17 + ((index % 2) * 2 - 1) * (1 if index < 2 else 0)
+        pygame.draw.ellipse(s, LAVA_BLOB,
+                            (x - size // 2, y - size // 2, size, size))
+        pygame.draw.ellipse(s, LAVA_BLOB_LIGHT,
+                            (x - size // 2, y - size // 2, size - 1, size - 2))
+
+    pygame.draw.rect(s, outline, (14, 6, 6, 4))
+    pygame.draw.rect(s, CHROME, (15, 7, 4, 3))
+    pygame.draw.line(s, CHROME_LIGHT, (15, 7), (18, 7))
+
+    # A little of the lamp's own light on the table top around it.
+    spill = pygame.Surface((34, 58), pygame.SRCALPHA)
+    pygame.draw.ellipse(spill, (250, 168, 96, 46), (6, 36, 22, 8))
+    s.blit(spill, (0, 0))
+    return s
+
+
+def curtain_window(index=0):
+    """A window with the curtains drawn across it.
+
+    Mostly curtain: the whole point is that it is closed, so the glass
+    is a sliver at each edge and everything else is cloth hanging in
+    folds, with a pelmet across the top.
+    """
+    # Exactly two tiles tall: hung a row above the couch it sits behind,
+    # a taller sprite than this has its pelmet clipped off by the top of
+    # the map, which is the one part of it that always shows.
+    s = pygame.Surface((32, 32), pygame.SRCALPHA)
+    outline = (34, 24, 20)
+    frame_wood = (96, 64, 42)
+    frame_light = (130, 92, 58)
+    night = (18, 26, 34)
+    cloth = ((132, 108, 84), (154, 128, 100), (108, 88, 68))
+
+    pygame.draw.rect(s, outline, (1, 2, 30, 29))
+    pygame.draw.rect(s, frame_wood, (2, 3, 28, 27))
+    pygame.draw.rect(s, night, (5, 7, 22, 21))
+    # Curtains meeting in the middle, hem to hem.
+    for side in (0, 1):
+        left = 5 + side * 12
+        for fold in range(5):
+            x = left + fold * 2
+            shade = cloth[(fold + side + index) % 3]
+            pygame.draw.rect(s, shade, (x, 7, 2, 21))
+        pygame.draw.line(s, outline, (left + 9, 7), (left + 9, 27))
+    # The pelmet, and the sill under it.
+    pygame.draw.rect(s, outline, (0, 0, 32, 6))
+    pygame.draw.rect(s, cloth[1], (1, 1, 30, 4))
+    pygame.draw.line(s, cloth[0], (1, 4), (30, 4))
+    pygame.draw.line(s, frame_light, (2, 29), (29, 29))
+    return s
+
+
+def closed_door_north():
+    """A panelled door in the north wall, shut.
+
+    Drawn face-on rather than in three-quarter, because it is set in the
+    wall the camera looks straight at. It matches the west door's timber
+    so the two read as the same house.
+    """
+    s = pygame.Surface((28, 46), pygame.SRCALPHA)
+    outline = (30, 20, 16)
+    jamb = (86, 58, 38)
+    door_wood = (112, 74, 46)
+    door_dark = (78, 50, 32)
+    door_light = (140, 96, 60)
+
+    pygame.draw.rect(s, outline, (0, 0, 28, 46))
+    pygame.draw.rect(s, jamb, (1, 1, 26, 45))
+    pygame.draw.rect(s, outline, (4, 3, 20, 43))
+    pygame.draw.rect(s, door_wood, (5, 4, 18, 42))
+    for top in (7, 26):
+        pygame.draw.rect(s, door_dark, (8, top, 12, 16))
+        pygame.draw.rect(s, door_wood, (9, top + 1, 10, 14))
+        pygame.draw.line(s, door_light, (9, top + 1), (18, top + 1))
+    pygame.draw.line(s, door_light, (5, 4), (5, 45))
+    pygame.draw.circle(s, (198, 168, 96), (20, 25), 1)
+    return s
+
+
 def main():
     pygame.init()
     save(couch(106), "cabin_big_couch.png")
@@ -251,6 +387,12 @@ def main():
     for index in range(6):
         save(woodstove(index), f"cabin_woodstove_{index + 1}.png")
     save(wood_storage(), "cabin_wood_storage.png")
+    for index in range(6):
+        save(lava_lamp(index), f"cabin_lava_lamp_{index + 1}.png")
+    for index in range(3):
+        save(curtain_window(index),
+             f"cabin_curtain_window_{index + 1}.png")
+    save(closed_door_north(), "cabin_closed_door_north.png")
 
 
 if __name__ == "__main__":

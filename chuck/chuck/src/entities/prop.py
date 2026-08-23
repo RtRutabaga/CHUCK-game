@@ -195,6 +195,13 @@ _SPRITES = {
     "cabin_connector_shelf": "objects/cabin_connector_shelf.png",
     "cabin_mini_fridge": "objects/cabin_mini_fridge.png",
     "cabin_closed_door_west": "objects/cabin_closed_door_west.png",
+    "cabin_closed_door_north": "objects/cabin_closed_door_north.png",
+    "cabin_lava_lamp": "objects/cabin_lava_lamp_1.png",
+    "cabin_curtain_window": (
+        "objects/cabin_curtain_window_1.png",
+        "objects/cabin_curtain_window_2.png",
+        "objects/cabin_curtain_window_3.png",
+    ),
     "cabin_kitchen": "objects/cabin_kitchen.png",
     "cabin_woodstove": "objects/cabin_woodstove_1.png",
     "cabin_wood_storage": "objects/cabin_wood_storage.png",
@@ -240,6 +247,11 @@ _ANIMATED_SPRITES = {
     "cabin_woodstove": tuple(
         f"objects/cabin_woodstove_{index + 1}.png" for index in range(6)
     ),
+    # The blobs drift on their own cycles rather than pulsing together,
+    # so six frames is enough for the lamp never to look like it loops.
+    "cabin_lava_lamp": tuple(
+        f"objects/cabin_lava_lamp_{index + 1}.png" for index in range(6)
+    ),
 }
 _PROP_FRAME_TIME = 0.14
 
@@ -250,6 +262,7 @@ PROP_DIALOGUE = {
     "herod_sign": "herod_sign",
     "house_door": "closed_door",
     "cabin_closed_door_west": "closed_door",
+    "cabin_closed_door_north": "closed_door",
     "cheese": "cheese",
     "fey_teacup": "fey_tea_warm",
     "fey_plate": "fey_set_for_one",

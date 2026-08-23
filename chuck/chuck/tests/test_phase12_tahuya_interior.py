@@ -8,6 +8,8 @@ import tempfile
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+import pygame
+
 from src.core import config
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
@@ -98,10 +100,13 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         "cabin_closed_door_west": 1,
         "cabin_kitchen": 1,
         "cabin_woodstove": 1,
+        "cabin_closed_door_north": 1,
+        "cabin_lava_lamp": 1,
+        "cabin_curtain_window": 4,
     }
     positions = {
         kind: (col, row) for kind, col, row in tilemap.prop_tiles
-        if kind != "cabin_chair"
+        if kind not in {"cabin_chair", "cabin_curtain_window"}
     }
     assert positions["cabin_big_couch"] == (5, 3)
     assert positions["cabin_couch"] == (16, 3)
@@ -115,7 +120,22 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "cabin_chair"
     )
-    assert chair_positions == [(17, 6), (17, 9)]
+    # Both chairs are pushed flush against the east wall, so the seated
+    # pair face west across the room rather than sitting in it.
+    assert chair_positions == [(18, 6), (18, 9)]
+    assert all(tilemap.is_solid(19, row) for row in (4, 6, 9))
+
+    # A door in the north wall between the couches that does not open,
+    # curtains drawn on the wall behind each couch, and a lava lamp on
+    # the one strip of floor between the stove and the east wall.
+    assert positions["cabin_closed_door_north"] == (10, 2)
+    assert positions["cabin_lava_lamp"] == (19, 12)
+    windows = sorted((col, row) for kind, col, row in tilemap.prop_tiles
+                     if kind == "cabin_curtain_window")
+    assert windows == [(3, 1), (7, 1), (14, 1), (18, 1)]
+    # Two behind each couch, and above it: the tops have to show over
+    # the couch back or there is no point drawing them.
+    assert all(row < 3 for _col, row in windows)
     # Entities and stove sit on green carpet; the southern working area is
     # hardwood, with the counter visually flush against the south wall.
     assert all(tilemap.terrain_at(x, y) != "Ħ"
@@ -221,6 +241,51 @@ def test_shared_loader_and_interior_ashtray_persist() -> None:
         assert continued.map_name == MAP_NAME
         assert game.active_checkpoint_id == "tahuya_interior_anchor"
 
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_the_north_door_is_shut_and_the_lamp_is_the_only_thing_moving() -> None:
+    """Two pieces of furnishing that carry a rule between them.
+
+    The north door exists to be closed: it uses the same interaction the
+    cabin's other closed door does, so both say the same thing rather
+    than one of them growing its own line. The lava lamp is the only
+    animated thing in the room now that the stove has company, and its
+    blobs run on separate cycles so it never reads as a pulse.
+    """
+    directory, game = _game()
+    try:
+        world = game.checkpoints.load_checkpoint("tahuya_interior")
+        world._arrival_fade_t = None
+
+        door = next(prop for prop in world.props
+                    if prop.kind == "cabin_closed_door_north")
+        west = next(prop for prop in world.props
+                    if prop.kind == "cabin_closed_door_west")
+        assert door.dialogue_id == west.dialogue_id == "closed_door"
+        assert door.choice_id is None
+        assert world.dialogue.get("closed_door") == ["it's closed"]
+
+        lamp = next(prop for prop in world.props
+                    if prop.kind == "cabin_lava_lamp")
+        assert len(lamp._frames) == 6
+        assert lamp.dialogue_id is None
+        # Every frame is different: blobs on one shared cycle would give
+        # duplicate frames and a visible beat.
+        shots = []
+        for _ in range(6):
+            shots.append(pygame.image.tostring(lamp._image, "RGBA"))
+            lamp.update(0.15)
+        assert len(set(shots)) == 6, len(set(shots))
+
+        curtains = [prop for prop in world.props
+                    if prop.kind == "cabin_curtain_window"]
+        assert len(curtains) == 4
+        # Curtains are scenery, not something to talk to or open.
+        assert all(prop.dialogue_id is None and prop.choice_id is None
+                   for prop in curtains)
     finally:
         game._shutdown()
         directory.cleanup()

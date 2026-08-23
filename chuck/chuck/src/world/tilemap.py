@@ -668,6 +668,14 @@ TILE_DEFS: dict[str, TileDef] = {
                   prop="cabin_woodstove", under="∎"),
     "Ə": TileDef(solid=True, color=(91, 88, 56),
                  prop="cabin_wood_storage", under="∎"),
+    # A lava lamp on a pale blue side table, the closed door in the north
+    # wall, and the drawn curtains behind the two couches.
+    "Ɔ": TileDef(solid=True, color=(156, 186, 206),
+                 prop="cabin_lava_lamp", under="Ŀ"),
+    "Ɖ": TileDef(solid=True, color=(112, 74, 46),
+                 prop="cabin_closed_door_north", under="Ŀ"),
+    "Ɏ": TileDef(solid=True, color=(132, 108, 84),
+                 prop="cabin_curtain_window", under="∎"),
 }
 
 MARKER_DEFS: dict[str, MarkerDef] = {

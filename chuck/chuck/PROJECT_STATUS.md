@@ -6,6 +6,20 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The cabin's two west-facing chairs and the entities in them are pushed flush
+  against the east wall, so the seated pair face across the room rather than
+  sitting out in it.
+- A lava lamp on a small pale blue side table stands on the strip between the
+  woodstove and the east wall -- the one piece of floor in the room with
+  nothing on it and a wall to put a lamp against. Six frames, with the blobs on
+  separate cycles so it never reads as a pulse.
+- A door in the north wall between the two couches that does not open. It uses
+  the same interaction the cabin's west door already has, so both say the same
+  thing rather than one of them growing its own line.
+- Curtains, drawn, on the wall behind each couch. They hang a row above the
+  couch and are exactly two tiles tall: taller and the pelmet -- the part that
+  always shows over the couch back -- is clipped by the top of the map.
+
 - The lightshow cue lost its neon synth lead. The tune is carried by a jaw harp
   and two new Tuvan throat voices instead: a kargyraa growl holding the root,
   built from a sub-octave pulse under a saw because that is literally how the

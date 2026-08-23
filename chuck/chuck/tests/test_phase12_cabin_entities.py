@@ -65,7 +65,8 @@ def test_exactly_four_entities_occupy_the_authored_seats() -> None:
         if kind.startswith("cabin_light:")
     }
     assert len(spawns) == 4
-    assert set(spawns.values()) == {(5, 2), (16, 2), (17, 5), (17, 8)}
+    # The two west-facing pair sit flush against the east wall.
+    assert set(spawns.values()) == {(5, 2), (16, 2), (18, 5), (18, 8)}
 
 
 def test_entities_use_offset_animation_and_durable_idempotent_flags() -> None:
