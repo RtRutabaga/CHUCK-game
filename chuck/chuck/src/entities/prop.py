@@ -196,6 +196,7 @@ _SPRITES = {
     "cabin_mini_fridge": "objects/cabin_mini_fridge.png",
     "cabin_closed_door_west": "objects/cabin_closed_door_west.png",
     "cabin_closed_door_north": "objects/cabin_closed_door_north.png",
+    "cabin_macrame": "objects/cabin_macrame.png",
     "cabin_lava_lamp": "objects/cabin_lava_lamp_1.png",
     "cabin_curtain_window": (
         "objects/cabin_curtain_window_1.png",

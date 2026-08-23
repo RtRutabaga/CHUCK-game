@@ -151,15 +151,25 @@ def connector_shelf():
 
 
 def mini_fridge():
+    """A black mini fridge. The handles are the light thing on it now.
+
+    White, it was the brightest object in a dark olive room and pulled
+    the eye off the table it stands beside.
+    """
     s = pygame.Surface((32, 42), pygame.SRCALPHA)
-    outline = (45, 43, 40)
-    body = (205, 205, 196)
-    shadow = (143, 145, 140)
+    outline = (12, 13, 16)
+    body = (44, 46, 52)
+    shadow = (28, 30, 35)
+    sheen = (70, 74, 82)
+    handle = (150, 154, 160)
     pygame.draw.rect(s, outline, (2, 2, 28, 38))
     pygame.draw.rect(s, body, (5, 4, 22, 33))
+    # One soft highlight down the left edge, which is all the shape a
+    # black box gets before it stops reading as black.
+    pygame.draw.line(s, sheen, (6, 5), (6, 35))
     pygame.draw.line(s, shadow, (5, 14), (27, 14), 2)
-    pygame.draw.rect(s, outline, (23, 6, 2, 6))
-    pygame.draw.rect(s, outline, (23, 18, 2, 11))
+    pygame.draw.rect(s, handle, (23, 6, 2, 6))
+    pygame.draw.rect(s, handle, (23, 18, 2, 11))
     pygame.draw.rect(s, shadow, (6, 36, 20, 2))
     return s
 
@@ -376,6 +386,68 @@ def closed_door_north():
     return s
 
 
+def macrame():
+    """The knotted wall hanging from the real cabin.
+
+    Two weathered sticks with jute worked between them: a block of
+    square knots hanging off the top one, twisted spirals sweeping down
+    from its ends and *inward* to meet at a point, then a lower stick
+    with a cut tassel under it.
+
+    The spirals have to close inward. Fanned outward -- which is the
+    obvious way to draw a V -- the silhouette came out as a round body
+    with two antennae and a fringe of legs, and read as a beetle on the
+    wall rather than as anything hanging on it.
+    """
+    s = pygame.Surface((30, 42), pygame.SRCALPHA)
+    bark = (92, 66, 44)
+    bark_light = (128, 96, 62)
+    bark_dark = (58, 40, 26)
+    jute = (176, 138, 92)
+    jute_light = (206, 172, 122)
+    jute_dark = (132, 100, 62)
+
+    def stick(y, left, right):
+        pygame.draw.line(s, bark_dark, (left, y + 1), (right, y + 1), 3)
+        pygame.draw.line(s, bark, (left, y), (right, y), 2)
+        pygame.draw.line(s, bark_light, (left + 2, y - 1), (right - 3, y - 1))
+        # Stubs where a twig was broken off: these are branches, not dowel.
+        s.set_at((left, y - 1), bark_dark)
+        s.set_at((right, y + 2), bark_dark)
+
+    stick(3, 1, 28)
+
+    # Twisted cords from the ends of the top stick, sweeping down and in
+    # to meet at a point. Alternating light and dark reads as the twist.
+    for side in (-1, 1):
+        for step in range(16):
+            t = step / 15.0
+            x = round(15 + side * 13 * (1.0 - t * t))
+            y = 5 + round(t * 22)
+            shade = jute_light if (step + (side > 0)) % 2 else jute_dark
+            pygame.draw.line(s, shade, (x, y), (x - side, y + 1), 2)
+
+    # The square-knot panel, hanging straight off the top stick.
+    for row in range(6):
+        y = 6 + row * 3
+        width = 13 - abs(row - 2)
+        left = 15 - width // 2
+        pygame.draw.rect(s, jute, (left, y, width, 2))
+        pygame.draw.line(s, jute_light, (left, y), (left + width - 1, y))
+        for notch in range(left + 2, left + width - 1, 4):
+            s.set_at((notch, y + 1), jute_dark)
+
+    stick(30, 6, 24)
+
+    # The tassel: cut ends hanging below the lower stick.
+    for index in range(9):
+        x = 8 + index * 2
+        drop = 5 + (index * 5 % 5)
+        shade = jute if index % 2 else jute_dark
+        pygame.draw.line(s, shade, (x, 32), (x, 32 + drop))
+    return s
+
+
 def main():
     pygame.init()
     save(couch(106), "cabin_big_couch.png")
@@ -397,6 +469,7 @@ def main():
         save(curtain_window(index),
              f"cabin_curtain_window_{index + 1}.png")
     save(closed_door_north(), "cabin_closed_door_north.png")
+    save(macrame(), "cabin_macrame.png")
 
 
 if __name__ == "__main__":

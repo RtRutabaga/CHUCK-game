@@ -6,6 +6,13 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The mini fridge is black. White, it was the brightest thing in a dark olive
+  room and pulled the eye off the table beside it; the handles carry the shape
+  now.
+- The real cabin's knotted wall hanging is on the panel to the right of the big
+  couch's window: two weathered sticks with a square-knot panel between them,
+  twisted cords sweeping down and inward to a point, and a cut tassel below.
+
 - The cabin's north wall is three rows of panel rather than one. Everything
   hung on it -- one curtained window centred behind each couch, and the door
   between them that does not open -- is taller than a single tile, and on a

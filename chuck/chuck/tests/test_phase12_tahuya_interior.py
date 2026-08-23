@@ -106,6 +106,7 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         "cabin_closed_door_north": 1,
         "cabin_lava_lamp": 1,
         "cabin_curtain_window": 2,
+        "cabin_macrame": 1,
     }
     positions = {
         kind: (col, row) for kind, col, row in tilemap.prop_tiles
@@ -134,6 +135,9 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     # the one strip of floor between the stove and the east wall.
     assert positions["cabin_closed_door_north"] == (10, WALL_BOTTOM)
     assert positions["cabin_lava_lamp"] == (19, FLOOR_TOP - 2)
+    # The knotted hanging goes on the panel to the right of the big
+    # couch's window, between it and the door.
+    assert positions["cabin_macrame"] == (8, WALL_BOTTOM)
     windows = sorted((col, row) for kind, col, row in tilemap.prop_tiles
                      if kind == "cabin_curtain_window")
     # One centred behind each couch, hanging from the wall itself.

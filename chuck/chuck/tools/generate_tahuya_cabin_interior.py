@@ -77,6 +77,9 @@ def build_map():
     grid[WALL_BOTTOM][5] = "Ɏ"
     grid[WALL_BOTTOM][16] = "Ɏ"
     grid[WALL_BOTTOM][10] = "Ɖ"
+    # The knotted hanging from the real cabin, on the panel to the right
+    # of the big couch's window.
+    grid[WALL_BOTTOM][8] = "Ɱ"
 
     # The map table stays flush against the west wall but stops two tiles
     # earlier, leaving more breathing room at its east end.
