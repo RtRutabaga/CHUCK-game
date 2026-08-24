@@ -66,8 +66,23 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     assert tileset_for(MAP_NAME) is TAHUYA
 
     terrain = Counter(char for row in tilemap._grid for char in row)
-    for char in ("ᶠ", "♟", "⌇", "▣", "↟"):
+    for char in ("ᶠ", "♟", "⌇", "▣", "↟", "ᵿ"):
         assert terrain[char] > 0, char
+
+    # The strip of astroturf from the reference photographs: laid on the
+    # dirt at the foot of the cabin steps, straight-edged, and walked on
+    # rather than walked around.
+    turf = {(col, row)
+            for row, line in enumerate(tilemap._grid)
+            for col, char in enumerate(line) if char == "ᵿ"}
+    assert len(turf) == 21, len(turf)
+    columns = {col for col, _row in turf}
+    rows = {row for _col, row in turf}
+    assert columns == {57, 58, 59}
+    assert rows == set(range(35, 42))
+    assert all(not tilemap.is_solid(col, row) for col, row in turf)
+    # It starts under the steps and stops short of the fire.
+    assert min(rows) == 35 and max(rows) < FIRE[1]
 
     props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
     assert props["tahuya_ufo"] == 1

@@ -6,6 +6,14 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The strip of astroturf from the reference photographs is laid on the dirt at
+  the foot of the cabin steps, running seven rows south and stopping short of
+  the fire. It is walked on, not around. The tile has to look wrong to be
+  right: flat, too even and too bright against a forest floor that is none of
+  those, with every fibre leaning the same way and fir needles fallen on it.
+- Note: the photographs show the strip at the cabin's back door, and the
+  exterior has only the one south doorway -- so it runs from those steps.
+
 - A mounted Canada goose head hangs on the west wall between the map table and
   the couch above it. The plaque is at the top and the bird below it, because
   up the screen is away from the camera in this projection: that puts the board

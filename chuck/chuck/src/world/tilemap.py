@@ -611,6 +611,8 @@ TILE_DEFS: dict[str, TileDef] = {
     # threshold does not require a second rendering vocabulary.
     "ᶠ": TileDef(solid=False, color=(27, 39, 32)),
     "♟": TileDef(solid=True, color=(10, 25, 22)),
+    # The strip of fake grass laid over the dirt outside the cabin.
+    "ᵿ": TileDef(solid=False, color=(62, 148, 56)),
     "⌇": TileDef(solid=False, color=(46, 49, 39)),
     "▧": TileDef(solid=True, color=(42, 55, 55)),
     "▨": TileDef(solid=True, color=(50, 69, 73)),

@@ -176,6 +176,15 @@ def build_map():
     grid[33][59] = "ኂ"
     grid[34][62] = "ℂ"
 
+    # The strip of astroturf, laid over the dirt from the foot of the
+    # cabin steps. It is the walkway in the reference photographs: a
+    # rectangle of fake grass on bare ground, straight-edged, going
+    # nowhere in particular. Authored after the trail so it lies on top
+    # of it rather than being cut by it.
+    for y in range(35, 42):
+        for x in range(57, 60):
+            grid[y][x] = "ᵿ"
+
     # Real-place landmarks from the authored drawing.
     grid[13][18] = "◌"       # circular UFO object at upper-left
     grid[43][57] = "⚉"       # fire circle just south of the front steps

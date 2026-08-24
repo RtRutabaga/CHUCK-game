@@ -30,6 +30,28 @@ def forest_ground(surface, variant, _frame):
                      ((variant * 5 + 4) % 13 + 2, 13))
 
 
+def astroturf(surface, variant, _frame):
+    """The strip of fake grass laid over the dirt outside the cabin.
+
+    It has to look wrong to be right: a flat, too-even, too-bright green
+    against forest floor that is neither. What sells it as turf rather
+    than as lawn is the direction -- every fibre leans the same way,
+    which real grass in a wood never does -- plus the fir needles that
+    have dropped onto it and stayed there.
+    """
+    surface.fill((62, 148, 56))
+    for step in range(0, 16, 2):
+        pygame.draw.line(surface, (78, 172, 66), (step, 0), (step, 15))
+        pygame.draw.line(surface, (44, 118, 44), (step + 1, 0), (step + 1, 15))
+    _flecks(surface, variant, ((92, 190, 78), (38, 104, 40)), 6)
+    # Needles and duff blown onto it: the one part that is not uniform.
+    for index in range((variant % 3) + 1):
+        x = (variant * 7 + index * 5) % 13
+        y = (variant * 5 + index * 9) % 14
+        pygame.draw.line(surface, (104, 74, 44), (x, y), (x + 2, y + 1))
+    return None
+
+
 def dense_forest(surface, variant, _frame):
     surface.fill((8, 22, 20))
     for i in range(7):
@@ -145,6 +167,7 @@ DRAW = {
     "forest_ground": forest_ground,
     "dense_forest": dense_forest,
     "forest_path": forest_path,
+    "astroturf": astroturf,
     "cabin_roof": cabin_roof,
     "cabin_wall": cabin_wall,
     "porch": porch,
