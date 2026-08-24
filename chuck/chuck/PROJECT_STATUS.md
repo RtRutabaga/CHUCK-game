@@ -6,6 +6,23 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The wood opens north of the cabin as well as south. The stand bows away from
+  a second bay above the building on the same curve the fire bay uses, thinning
+  toward the middle, with the same firs and the same salal and huckleberry
+  under them.
+- A driveway's width of dirt runs out of the top of that opening and away
+  through the trees -- which is how anyone got a cabin onto this ground at all.
+  It stops two rows short of the border so the track goes out of sight behind
+  the trees rather than ending against the edge of the map, and the columns
+  either side of it are kept clear of trunks: a fir is three tiles of canopy
+  wide and one standing against the track hides the whole of it.
+- The circular object has moved from the far north-west into that opening, just
+  west of the track.
+- The understory now follows every fir on the map rather than only the west
+  stand's. It was reading the trees off the list that stand was built from, so
+  the thickened tree lines north and south stood on bare ground while the west
+  side had brush under it.
+
 - The strip of astroturf from the reference photographs is laid on the dirt at
   the foot of the cabin steps, running seven rows south and stopping short of
   the fire. It is walked on, not around. The tile has to look wrong to be

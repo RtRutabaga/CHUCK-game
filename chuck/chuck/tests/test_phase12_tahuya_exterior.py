@@ -19,7 +19,8 @@ from src.world.tileset_layout import MAP_TILESET, TAHUYA, tileset_for
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 from generate_tahuya_cabin_exterior import (
-    FIRE, FIRE_BAY_WIDTH, FOREST_EDGE, FOREST_SOLID, _south_edge,
+    DRIVEWAY_HALF, FIRE, FIRE_BAY_WIDTH, FOREST_EDGE, FOREST_SOLID,
+    NORTH_BAY, NORTH_BAY_WIDTH, NORTH_TREE, _north_edge, _south_edge,
 )
 
 
@@ -121,6 +122,45 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
             if kind == "tahuya_firewood_shed"]
     assert shed == [(70, 42)]
     assert len(_markers(tilemap)["breakable_grass"]) >= 6
+
+
+def test_the_wood_opens_north_of_the_cabin_and_a_driveway_leaves_it() -> None:
+    """The north side answers the south.
+
+    A second bay above the cabin, the stand bowing round it on the same
+    curve the fire bay uses, and a road's width of dirt out of the top
+    of it -- which is how anyone got a cabin onto this ground at all.
+    """
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+
+    # Everything above the tree line in a column is closed forest...
+    for col in range(1, tilemap.width_tiles - 1):
+        for row in range(0, _north_edge(col)):
+            assert tilemap.is_solid(col, row) or tilemap.terrain_at(
+                col, row) == "⌇", (col, row)
+    # ...and the line bows away from the opening rather than running
+    # straight across the top of the map.
+    far = NORTH_BAY + NORTH_BAY_WIDTH + 4
+    assert _north_edge(NORTH_BAY) + 4 < _north_edge(far) == NORTH_TREE
+
+    drive = {(col, row)
+             for row, line in enumerate(tilemap._grid)
+             for col, char in enumerate(line)
+             if char == "⌇" and row < NORTH_TREE}
+    columns = {col for col, _row in drive}
+    assert columns == set(range(NORTH_BAY - DRIVEWAY_HALF,
+                                NORTH_BAY + DRIVEWAY_HALF + 1))
+    assert len(columns) == 3, "a driveway is a road's width of dirt"
+    # It runs up into the trees and stops short of the border, so it
+    # goes out of sight rather than ending against the edge of the map.
+    assert min(row for _col, row in drive) >= 2
+    assert all(tilemap.is_solid(col, 0) for col in columns)
+
+    # The circular object stands in the opening, west of the track.
+    ufo = next((col, row) for kind, col, row in tilemap.prop_tiles
+               if kind == "tahuya_ufo")
+    assert ufo[0] < NORTH_BAY - DRIVEWAY_HALF
+    assert _north_edge(ufo[0]) <= ufo[1] < NORTH_TREE + 6
 
 
 def test_western_arrival_is_a_narrow_winding_footpath() -> None:

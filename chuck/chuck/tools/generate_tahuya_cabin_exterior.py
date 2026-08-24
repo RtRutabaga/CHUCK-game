@@ -41,6 +41,30 @@ FIRE_BAY_WIDTH = 15            # how far either side the opening reaches
 FIRE_BAY_DEPTH = 7             # ...and how much further south at the fire
 
 
+# The north side answers the south. The stand bows away from a second
+# opening above the cabin, and a driveway's width of dirt runs out of
+# the top of it through the trees -- which is how anyone ever got a
+# cabin onto this ground in the first place.
+NORTH_TREE = 10                # the tree line away from the opening
+NORTH_BAY = 60                 # ...which bows north around this column
+NORTH_BAY_WIDTH = 17
+NORTH_BAY_DEPTH = 7
+DRIVEWAY_HALF = 1              # a driveway is three tiles of dirt wide
+
+
+def _north_edge(x: int) -> int:
+    """The first clearing row in this column, coming down from the top.
+
+    The same raised cosine the fire bay uses, mirrored. Both openings
+    are bays in one wood rather than two differently-shaped holes.
+    """
+    reach = abs(x - NORTH_BAY) / NORTH_BAY_WIDTH
+    if reach >= 1.0:
+        return NORTH_TREE
+    bow = 0.5 + 0.5 * math.cos(math.pi * reach)
+    return NORTH_TREE - round(NORTH_BAY_DEPTH * bow)
+
+
 def _south_edge(x: int) -> int:
     """The first fully wooded row in this column.
 
@@ -128,11 +152,12 @@ def build_map():
     # The hand-drawn reference places a broad irregular clearing west of a
     # long north/south cabin.  Keep that silhouette rather than centring the
     # building as a generic game landmark.
-    for y in range(4, FOREST_SOLID + FIRE_BAY_DEPTH):
+    for y in range(NORTH_TREE - NORTH_BAY_DEPTH,
+                   FOREST_SOLID + FIRE_BAY_DEPTH):
         left = 4 + abs(y - 31) // 13
         right = 75 - abs(y - 31) // 20
         for x in range(left, right + 1):
-            if y < _south_edge(x):
+            if _north_edge(x) <= y < _south_edge(x):
                 grid[y][x] = "ᶠ"
 
     # The western arrival begins as a narrow, slightly wandering foot trail,
@@ -186,7 +211,7 @@ def build_map():
             grid[y][x] = "ᵿ"
 
     # Real-place landmarks from the authored drawing.
-    grid[13][18] = "◌"       # circular UFO object at upper-left
+    grid[10][53] = "◌"       # the circular object, west of the driveway
     grid[43][57] = "⚉"       # fire circle just south of the front steps
     grid[42][70] = "⌘"       # firewood shed close in on the south-east
 
@@ -226,6 +251,24 @@ def build_map():
     # Thicker the further south, and off the same authored seed as the
     # stand above: a modulo pattern here planted the tree farm the west
     # side was carefully built to avoid.
+    # The same treatment along the northern line, thinning toward the
+    # opening above the cabin so the bay stays a bay.
+    north_band = FOREST_SOLID - FOREST_EDGE
+    for y in range(NORTH_TREE - NORTH_BAY_DEPTH, NORTH_TREE + north_band):
+        for x in range(5, 76):
+            if grid[y][x] != "ᶠ":
+                continue
+            start = _north_edge(x)
+            if not start <= y < start + north_band:
+                continue
+            reach = min(1.0, abs(x - NORTH_BAY) / NORTH_BAY_WIDTH)
+            crowding = (0.42 + 0.44
+                        * (start + north_band - 1 - y) / (north_band - 1)) * (
+                0.74 + 0.26 * reach
+            )
+            if rng.random() < crowding:
+                grid[y][x] = "♣"
+
     band = FOREST_SOLID - FOREST_EDGE
     for y in range(FOREST_EDGE, FOREST_SOLID + FIRE_BAY_DEPTH):
         for x in range(5, 76):
@@ -245,6 +288,23 @@ def build_map():
             if rng.random() < crowding:
                 grid[y][x] = "♣"
 
+    # The driveway: a road's width of dirt out of the top of the north
+    # opening and away through the trees. Cut after the planting so no
+    # fir can grow in the middle of it.
+    # It stops two rows short of the top edge, so the track goes out of
+    # sight behind the trees rather than running to the border and
+    # ending against nothing.
+    for y in range(2, _north_edge(NORTH_BAY) + 4):
+        for x in range(NORTH_BAY - DRIVEWAY_HALF - 1,
+                       NORTH_BAY + DRIVEWAY_HALF + 2):
+            if abs(x - NORTH_BAY) <= DRIVEWAY_HALF:
+                grid[y][x] = "⌇"
+            elif grid[y][x] == "♣":
+                # A fir is three tiles of canopy wide. One standing
+                # right against the track hangs over the whole of it,
+                # so the columns either side are kept clear of trunks.
+                grid[y][x] = "ᶠ"
+
     # A handful of the established scratchable cigarette-grass tufts soften
     # the clearing and reward inspecting the tighter west approach.
     for x, y in ((12, 29), (18, 34), (26, 28), (33, 34),
@@ -262,9 +322,16 @@ def build_map():
     # gets brush only if there is a fir within a couple of tiles of it,
     # which keeps the clearing, the trail and the fire circle open
     # without any of those having to be named here.
+    # Read the trees back off the grid rather than off the list the west
+    # stand was built from: the thickened tree lines north and south are
+    # planted straight into the grid, and taking the list left both of
+    # them standing on bare ground while the west side had an
+    # understory.
     firs_by_row = {}
-    for x, y in firs:
-        firs_by_row.setdefault(y, []).append(x)
+    for y in range(HEIGHT):
+        for x in range(WIDTH):
+            if grid[y][x] == "♣":
+                firs_by_row.setdefault(y, []).append(x)
     for y in range(4, HEIGHT):
         for x in range(1, WIDTH - 1):
             if grid[y][x] != "ᶠ":
