@@ -1,10 +1,27 @@
 # CHUCK — Project Status
 
-Updated: Phase 11 is feature-complete. Phase 12 is active; both authored Cabin
-maps and their shared doorway/checkpoint foundation are implemented. This
-file is required by the project rules and updated every session.
+Updated: Phase 12 is feature-complete. Both Cabin maps, the four entities, the
+awakening, its lightshow and music, and the way out through the table are all
+in. This file is required by the project rules and updated every session.
 
 ## Latest implementation
+
+- Phase 12 has an ending. Standing at the awakened table asks `Enter planar
+  portal?`; NO closes with nothing said, and YES plays the desert arrival.
+- The question belongs to the awakened map alone. The trigger is authored in
+  the map always and simply not built while the table is ordinary, so the
+  unawakened table has no planar interaction rather than having one that stays
+  quiet.
+- The crossing opens out of the table's own surface -- the same portal shared
+  with the city oval and the Douglas fir -- swelling until it is the whole
+  screen and then draining to light rather than cutting to black. The desert
+  fades up out of that same light, because he is going from a cabin at night
+  into the middle of a day.
+- It ends the way the Douglas fir crossing does: recorded as
+  `desert_transition_completed` against the save that still points at the
+  cabin, then back to the title. Continue returns to the cabin rather than to a
+  desert that does not exist. A test holds the out-of-scope line -- no desert
+  map, no desert tileset, nothing playable on the far side.
 
 - The opening in the Douglas fir at the end of Phase 11 is a planar portal now
   rather than a black hole: grey with light suspended in it, turning slowly,
