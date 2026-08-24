@@ -449,59 +449,58 @@ def macrame():
 
 
 def goose_mount():
-    """A Canada goose head on a turned wooden plaque, coming off a wall.
+    """A Canada goose head mounted on the cabin's west wall.
 
-    The plaque is at the top and the bird hangs below it, because up the
-    screen is away from the camera in this projection: that puts the
-    board against the wall and the head out over the room. Drawn the
-    other way up -- board down, neck rising -- it read as a decoy
-    standing on the carpet rather than as anything mounted.
-
-    Small, too. A wall mount that fills a whole tile stops being a
-    trophy and starts being furniture.
+    Laid on its side: the plaque flat against the wall on the left, the
+    neck running out horizontally, the head and bill over the room on
+    the right. That is what a mount on a side wall looks like from this
+    camera. Stood upright -- plaque under the bird, neck rising -- it
+    read as a decoy on the floor in front of the wall, however small it
+    was drawn.
     """
-    s = pygame.Surface((20, 28), pygame.SRCALPHA)
+    # Eight columns of empty canvas on the right. Props are centred on
+    # their tile, so the padding is what pushes the plaque left onto the
+    # wall itself rather than leaving it hanging half over the carpet.
+    s = pygame.Surface((38, 22), pygame.SRCALPHA)
     outline = (40, 28, 18)
-    plaque = (152, 114, 64)
-    plaque_light = (192, 152, 92)
-    plaque_dark = (104, 74, 42)
+    plaque = (168, 128, 74)
+    plaque_light = (204, 166, 104)
+    plaque_dark = (112, 80, 46)
     black = (26, 26, 28)
-    sheen = (58, 58, 64)
-    cheek = (234, 234, 228)
-    cheek_shade = (186, 186, 180)
-    bill = (40, 40, 44)
+    sheen = (62, 62, 68)
+    cheek = (238, 238, 232)
+    cheek_shade = (188, 188, 182)
+    bill = (44, 44, 48)
 
-    # The board, flat against the wall, with its turned edge showing. It
-    # stays small: drawn to the full width of the sprite it read as a
-    # table the bird was standing on rather than as a plaque behind it.
-    pygame.draw.ellipse(s, outline, (3, 0, 14, 10))
-    pygame.draw.ellipse(s, plaque_dark, (4, 1, 12, 8))
-    pygame.draw.ellipse(s, plaque, (5, 2, 10, 6))
-    pygame.draw.ellipse(s, plaque_light, (6, 3, 8, 2))
+    # The board against the wall, seen almost edge-on: an upright oval,
+    # taller than it is wide, with its turned rim catching the light.
+    pygame.draw.ellipse(s, outline, (0, 1, 12, 20))
+    pygame.draw.ellipse(s, plaque_dark, (1, 2, 10, 18))
+    pygame.draw.ellipse(s, plaque, (2, 3, 8, 16))
+    pygame.draw.ellipse(s, plaque_light, (3, 5, 4, 11))
 
-    # The neck, dropping out of the board and leaning into the room.
-    pygame.draw.polygon(s, outline, ((7, 6), (11, 6), (12, 18), (8, 18)))
-    pygame.draw.polygon(s, black, ((8, 7), (10, 7), (11, 17), (9, 17)))
-    pygame.draw.line(s, sheen, (9, 9), (10, 16))
+    # The neck, running out of the board and over the room.
+    pygame.draw.polygon(s, outline, ((7, 6), (19, 4), (19, 15), (7, 15)))
+    pygame.draw.polygon(s, black, ((8, 7), (18, 5), (18, 14), (8, 14)))
+    pygame.draw.line(s, sheen, (10, 8), (17, 7))
 
-    # The head, nearest the camera, with the bill out over the room.
-    pygame.draw.ellipse(s, outline, (4, 15, 12, 12))
-    pygame.draw.ellipse(s, black, (5, 16, 10, 10))
-    pygame.draw.line(s, sheen, (7, 18), (10, 17))
-    # The chinstrap runs under the chin, on the near side of the head.
-    pygame.draw.polygon(s, outline, ((5, 21), (10, 24), (9, 26), (5, 24)))
-    pygame.draw.polygon(s, cheek_shade, ((6, 21), (9, 24), (8, 25), (6, 23)))
-    pygame.draw.polygon(s, cheek, ((6, 22), (8, 24), (8, 25), (6, 24)))
+    # The head at the far end, with the bill angled down over the floor.
+    pygame.draw.ellipse(s, outline, (16, 1, 13, 14))
+    pygame.draw.ellipse(s, black, (17, 2, 11, 12))
+    # The chinstrap: the one marking that names the bird.
+    pygame.draw.polygon(s, outline, ((21, 2), (28, 3), (28, 7), (22, 6)))
+    pygame.draw.polygon(s, cheek_shade, ((22, 3), (27, 4), (27, 6), (22, 5)))
+    pygame.draw.polygon(s, cheek, ((22, 3), (26, 4), (26, 5), (22, 4)))
     # The bill, kept clear of the head by its own outline so the two do
     # not merge into one dark blob.
-    pygame.draw.polygon(s, outline, ((12, 18), (19, 21), (19, 25), (12, 24)))
-    pygame.draw.polygon(s, bill, ((13, 19), (18, 22), (18, 24), (13, 23)))
-    pygame.draw.line(s, (78, 78, 84), (14, 20), (17, 22))
+    pygame.draw.polygon(s, outline, ((21, 11), (28, 13), (25, 21), (20, 16)))
+    pygame.draw.polygon(s, bill, ((22, 12), (26, 14), (24, 19), (21, 15)))
+    pygame.draw.line(s, (80, 80, 86), (23, 13), (25, 16))
 
     # One glass eye. It is not winking.
-    s.set_at((10, 20), (18, 12, 10))
-    s.set_at((11, 20), (12, 8, 6))
-    s.set_at((10, 19), (168, 156, 132))
+    s.set_at((21, 8), (18, 12, 10))
+    s.set_at((22, 8), (12, 8, 6))
+    s.set_at((21, 7), (176, 164, 138))
     return s
 
 

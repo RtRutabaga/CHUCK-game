@@ -15,10 +15,11 @@ file is required by the project rules and updated every session.
   exterior has only the one south doorway -- so it runs from those steps.
 
 - A mounted Canada goose head hangs on the west wall between the map table and
-  the couch above it. The plaque is at the top and the bird below it, because
-  up the screen is away from the camera in this projection: that puts the board
-  against the wall and the head out over the room. Board down and neck rising,
-  it read as a decoy standing on the carpet. Interacting says `It's a mounted
+  the couch above it. It lies on its side: the plaque flat against the wall on
+  the left, the neck running out horizontally, the head and bill over the room
+  on the right, which is what a mount on a side wall looks like from this
+  camera. Stood upright, however small it was drawn, it read as a decoy on the
+  floor in front of the wall. Interacting says `It's a mounted
   goose head... did it just wink?` -- three dots rather than an ellipsis
   character, matching every other line in the game.
 - The mini fridge is black. White, it was the brightest thing in a dark olive

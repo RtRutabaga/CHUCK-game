@@ -144,6 +144,22 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     goose = positions["cabin_goose_mount"]
     assert goose[0] == 1
     assert COUCH_ROW < goose[1] < FLOOR_TOP - 4
+    # ...and it lies on its side, wider than it is tall, with its plaque
+    # left of centre so the board lands on the wall rather than hanging
+    # half over the carpet in front of it.
+    image = pygame.image.load(str(
+        config.SPRITES_DIR / "objects" / "cabin_goose_mount.png"
+    ))
+    width, height = image.get_size()
+    assert width > height, image.get_size()
+    opaque = [
+        x for x in range(width)
+        if any(image.get_at((x, y))[3] > 0 for y in range(height))
+    ]
+    assert min(opaque) == 0, min(opaque)
+    # Props centre on their tile, so the empty columns on the right are
+    # what carry the plaque left onto the wall.
+    assert max(opaque) < width - 4, (max(opaque), width)
     windows = sorted((col, row) for kind, col, row in tilemap.prop_tiles
                      if kind == "cabin_curtain_window")
     # One centred behind each couch, hanging from the wall itself.
