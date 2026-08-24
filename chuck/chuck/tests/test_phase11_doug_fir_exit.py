@@ -154,6 +154,53 @@ def test_phase_12_keeps_the_doug_fir_handoff_to_the_authored_cabin() -> None:
     assert not hasattr(DougFirCutsceneScene, "update_player")
 
 
+def test_the_tree_opening_is_the_same_portal_as_the_city_one() -> None:
+    """Both ends of the crossing have to look like one thing.
+
+    The oval standing in the wrecked city block and the opening in the
+    Douglas fir are the same portal seen from either side of it, so
+    they share their surface outright rather than being drawn twice and
+    kept in step by hand.
+    """
+    from src.entities import planar_portal
+
+    # The city portal's own frames are built from this same function.
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "city_portal_tool",
+        Path(__file__).resolve().parents[1] / "tools"
+        / "generate_city_planar_portal.py",
+    )
+    tool = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tool)
+    assert tool.portal_colour is planar_portal.portal_colour
+
+    # The surface turns: the same point is a different colour a moment
+    # later, which is the whole difference from the black hole it was.
+    still = planar_portal.portal_colour(0.2, -0.3, 0.0)
+    later = planar_portal.portal_colour(0.2, -0.3, 1.4)
+    assert still != later
+
+    directory, game = _game()
+    try:
+        scene = _scene(game)
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+        scene.elapsed = HOLD_END - 1.0
+        scene.draw(surface)
+        # Across the opening: lit rather than the near-black it used to
+        # be, and carrying more than one colour rather than one flat
+        # tone. Any single pixel can happen to be neutral, so this
+        # looks at the whole width.
+        inside = [surface.get_at((108 + step, 138 - 13))[:3]
+                  for step in range(-5, 6)]
+        assert all(sum(pixel) > 240 for pixel in inside), inside
+        assert len(set(inside)) > 4, inside
+        assert max(max(p) - min(p) for p in inside) > 8, inside
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):

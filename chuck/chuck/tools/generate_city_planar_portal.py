@@ -14,26 +14,20 @@ from pathlib import Path
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+import sys
+
 import pygame
 
-
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from src.entities.planar_portal import GRAY, PALETTE, blend, portal_colour
+
 OUT = ROOT / "assets" / "sprites" / "objects"
 WIDTH = HEIGHT = 80
 FRAMES = 12
 
-GRAY = (142, 140, 150)
-PALETTE = (
-    (126, 170, 188),   # rain blue
-    (168, 132, 184),   # muted violet
-    (188, 146, 158),   # dusty rose
-    (144, 184, 164),   # mineral green
-)
-
-
-def _blend(first, second, amount):
-    return tuple(round(a + (b - a) * amount)
-                 for a, b in zip(first, second))
+_blend = blend
 
 
 def _frame(index: int) -> pygame.Surface:
@@ -67,23 +61,9 @@ def _frame(index: int) -> pygame.Surface:
             distance = math.hypot(nx, ny)
             if distance >= 0.94:
                 continue
-            angle = math.atan2(ny, nx)
-            # Two slowly counter-moving fields create broad, smooth tie-dye
-            # lobes instead of thin thorn/spore streaks.
-            field = (
-                math.sin(angle * 3.0 + distance * 6.0 - phase)
-                + math.sin(nx * 4.0 - ny * 3.0 + phase * 0.65)
-            ) * 0.5
-            palette_pos = (field + 1.0) * 1.5
-            first = int(math.floor(palette_pos)) % len(PALETTE)
-            second = (first + 1) % len(PALETTE)
-            color = _blend(PALETTE[first], PALETTE[second],
-                           palette_pos - math.floor(palette_pos))
-            # Gray dominates; the color reads as light suspended in smoke.
-            color = _blend(GRAY, color, 0.52)
-            center_light = max(0.0, 1.0 - distance) * 0.18
-            color = _blend(color, (220, 218, 224), center_light)
-            image.set_at((x, y), (*color, 244))
+            # The surface itself is shared with the Douglas fir at the
+            # end of the phase, so the two portals cannot drift apart.
+            image.set_at((x, y), (*portal_colour(nx, ny, phase), 244))
 
     # Traveling highlights help the eye see rotation without hard lines.
     for mote in range(7):

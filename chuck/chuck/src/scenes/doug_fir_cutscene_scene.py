@@ -23,6 +23,7 @@ import math
 import pygame
 
 from src.core import config
+from src.entities.planar_portal import portal_colour
 from src.scenes.scene import Scene
 
 
@@ -235,13 +236,45 @@ class DougFirCutsceneScene(Scene):
         self._draw_doorway(surface)
 
     def _draw_doorway(self, surface) -> None:
-        """The dark inside the hero fir, drawn on its own so it can be
-        laid over Chuck while he is still standing in it."""
+        """The way through the hero fir, drawn on its own so it can be
+        laid over Chuck while he is still standing in it.
+
+        It is the same surface as the oval in the wrecked city block --
+        grey with light suspended in it, turning slowly -- rather than
+        the flat black it used to be. A hole cut in a tree is a hole; a
+        planar portal is the thing Chuck just walked out of, and the two
+        openings are the same crossing seen from either side of it.
+        """
         breath = round(0.5 + 0.5 * math.sin(self.elapsed * 1.6))
-        half_w = 6 + breath
+        half_w = 8 + breath
+        half_h = 13
+        centre_y = _GROUND_Y - half_h
+        phase = self.elapsed * 2.2
+
         pygame.draw.ellipse(
             surface, _DOORWAY,
-            (_HERO_X - half_w, _GROUND_Y - 24, half_w * 2, 24))
+            (_HERO_X - half_w - 1, centre_y - half_h - 1,
+             (half_w + 1) * 2, (half_h + 1) * 2))
+        for y in range(-half_h, half_h):
+            for x in range(-half_w, half_w):
+                nx, ny = (x + 0.5) / half_w, (y + 0.5) / half_h
+                if math.hypot(nx, ny) >= 0.94:
+                    continue
+                # Pushed further from grey than the city oval is. That
+                # one is sixty pixels across and can afford to be
+                # subtle; this one is twenty and goes flat if it tries.
+                surface.set_at((_HERO_X + x, centre_y + y),
+                               portal_colour(nx, ny, phase, 0.85))
+        # The rim, and one highlight travelling round it, which is what
+        # lets the eye see the surface turn at this size.
+        pygame.draw.ellipse(
+            surface, (104, 102, 114),
+            (_HERO_X - half_w, centre_y - half_h, half_w * 2, half_h * 2), 1)
+        mote = phase * 0.8
+        pygame.draw.circle(
+            surface, (224, 222, 230),
+            (round(_HERO_X + math.cos(mote) * half_w * 0.7),
+             round(centre_y + math.sin(mote) * half_h * 0.7)), 1)
 
     # ------------------------------------------------------------------
     def _draw_chuck(self, surface: pygame.Surface) -> None:

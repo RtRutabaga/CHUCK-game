@@ -6,6 +6,17 @@ file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The opening in the Douglas fir at the end of Phase 11 is a planar portal now
+  rather than a black hole: grey with light suspended in it, turning slowly,
+  the same surface as the oval standing in the wrecked city block. The two are
+  the same crossing seen from either side, so they share the surface outright
+  instead of being drawn twice and kept in step by hand -- the city portal's
+  own frames come out byte-identical to before.
+- The small opening pushes its colour further from grey than the city oval
+  does. The lobes are the same shape in both, but across twenty pixels rather
+  than sixty they cover too few to be told apart and the whole thing flattens
+  into one tone.
+
 - The wood opens north of the cabin as well as south. The stand bows away from
   a second bay above the building on the same curve the fire bay uses, thinning
   toward the middle, with the same firs and the same salal and huckleberry
