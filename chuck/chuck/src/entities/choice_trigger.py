@@ -20,12 +20,16 @@ _TRIGGER_TILES = {
     # The marker is directly at the forest block's threshold. Keep this to
     # one tile so the prompt waits until Chuck is nearly touching the portal.
     "doug_fir_portal": (1, 1),
+    # The map on the west-wall table. One tile again: the question only
+    # belongs to somebody standing at the table looking down at it.
+    "cabin_table_portal": (1, 1),
 }
 
 # Choices that pop by simply walking into the zone — no interact press.
 _WALK_TRIGGERS = {
     "crevice", "cloud_staircase", "zephyros_rope",
     "city_sewer_entrance", "city_sewer_ladder", "doug_fir_portal",
+    "cabin_table_portal",
 }
 
 

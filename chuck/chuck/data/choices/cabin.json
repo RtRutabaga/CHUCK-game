@@ -1,0 +1,9 @@
+{
+  "cabin_table_portal": {
+    "prompt": "Enter planar portal?",
+    "options": [
+      { "label": "YES", "action": "desert_arrival" },
+      { "label": "NO" }
+    ]
+  }
+}

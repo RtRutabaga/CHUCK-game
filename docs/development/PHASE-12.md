@@ -462,10 +462,10 @@ the table-map transformation, its music, and the desert handoff.
 
 ## Portal and Boundary
 
-- [ ] Only the awakened map displays `Enter planar portal?` at close range.
-- [ ] `NO` closes silently.
-- [ ] `YES` starts the desert-arrival cutscene.
-- [ ] The cutscene ends at a stable Phase 13 handoff without desert gameplay.
+- [x] Only the awakened map displays `Enter planar portal?` at close range.
+- [x] `NO` closes silently.
+- [x] `YES` starts the desert-arrival cutscene.
+- [x] The cutscene ends at a stable Phase 13 handoff without desert gameplay.
 
 ## Audio and Technical Quality
 

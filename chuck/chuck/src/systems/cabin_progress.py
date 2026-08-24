@@ -15,6 +15,7 @@ CABIN_ENTITY_FLAGS = frozenset({
     "cabin_entity_chair_south_spoken",
 })
 COUNTER_MAP_AWAKENED_FLAG = "cabin_counter_map_awakened"
+DESERT_TRANSITION_FLAG = "desert_transition_completed"
 
 # What the interior plays once the table map has woken. The exterior
 # keeps the ordinary cue, so the lift belongs to the room the aurora is

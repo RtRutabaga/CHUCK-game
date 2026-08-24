@@ -90,6 +90,10 @@ def build_map():
     # sink/counter remains an ordinary kitchen fixture.
     _solid_rect(grid, 1, 12, 9, 15)
     grid[15][5] = "Ƒ"
+    # Standing at the table looking down at the map. The prompt is
+    # authored here always and only built once the map has woken, so
+    # the ordinary table has no planar interaction at all.
+    grid[11][5] = "ኅ"
 
     # Pull the two west-facing chairs north into the same living-room group
     # instead of spreading them down the east wall.

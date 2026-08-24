@@ -3,12 +3,14 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `aea8847` (Fix Cabin fridge lane collision)
-- Current work: the Cabin exterior is a compact three-quarter landmark with one south door
+- Base commit before this pass: `c2c0d46` (Make the tree a planar portal)
+- Current work: the table portal and the desert arrival that ends Phase 12
 - Active scope: `docs/development/PHASE-12.md`
-- Next implementation slice: add close-proximity YES/NO interaction to the
-  awakened table map and its short desert-arrival cutscene; do not begin desert
-  gameplay
+- Next implementation slice: Phase 12 is feature-complete. Remaining before
+  sign-off is a read of the acceptance criteria against the built phase --
+  several boxes are still unticked from slices that did land, and the
+  reference-fidelity items for the exterior and interior are the real
+  outstanding work
 
 ## Completed This Pass
 

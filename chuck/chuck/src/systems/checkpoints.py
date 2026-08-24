@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 
 from src.core import config
 from src.systems.cabin_progress import (
-    CABIN_ENTITY_FLAGS, COUNTER_MAP_AWAKENED_FLAG,
+    CABIN_ENTITY_FLAGS, COUNTER_MAP_AWAKENED_FLAG, DESERT_TRANSITION_FLAG,
 )
 from src.systems.captain_confrontation import CAPTAIN_REQUIRED_FLAGS
 from src.systems.save import SaveRecord, SaveSystem
@@ -36,7 +36,8 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "feywild_reached",
     "modern_city_reached",
     "doug_fir_transition_completed",
-}) | CABIN_ENTITY_FLAGS | {COUNTER_MAP_AWAKENED_FLAG}
+}) | CABIN_ENTITY_FLAGS | {COUNTER_MAP_AWAKENED_FLAG,
+                          DESERT_TRANSITION_FLAG}
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
 

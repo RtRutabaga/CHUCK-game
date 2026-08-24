@@ -37,7 +37,7 @@ from src.core import config
 
 
 KNOWN_CHOICE_ACTIONS = frozenset({
-    "tower_arrival", "zephyros_intro", "doug_fir_portal",
+    "tower_arrival", "zephyros_intro", "doug_fir_portal", "desert_arrival",
 })
 
 

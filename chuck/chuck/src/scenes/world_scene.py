@@ -562,6 +562,15 @@ class WorldScene(Scene):
                 self.battle_actors.append(actor)
             elif kind.startswith("choice:"):
                 choice_id = kind.split(":", 1)[1]
+                # The table only asks once its map has woken. The
+                # ordinary D&D map has no planar interaction, so the
+                # trigger is not built rather than being built and
+                # silenced.
+                if (
+                    choice_id == "cabin_table_portal"
+                    and not self.game.progress.has(COUNTER_MAP_AWAKENED_FLAG)
+                ):
+                    continue
                 self.choice_triggers.append(ChoiceTrigger(cx, cy, choice_id))
             elif kind.startswith("arrival:"):
                 continue  # named map metadata, not a runtime entity
@@ -677,6 +686,16 @@ class WorldScene(Scene):
                 )
                 self.game.scenes.replace(
                     TowerArrivalCutsceneScene(
+                        self.game, sanity=self.sanity.current
+                    )
+                )
+                return
+            if action == "desert_arrival":
+                from src.scenes.desert_arrival_cutscene_scene import (
+                    DesertArrivalCutsceneScene,
+                )
+                self.game.scenes.replace(
+                    DesertArrivalCutsceneScene(
                         self.game, sanity=self.sanity.current
                     )
                 )
