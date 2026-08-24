@@ -33,22 +33,26 @@ def forest_ground(surface, variant, _frame):
 def astroturf(surface, variant, _frame):
     """The strip of fake grass laid over the dirt outside the cabin.
 
-    It has to look wrong to be right: a flat, too-even, too-bright green
-    against forest floor that is neither. What sells it as turf rather
-    than as lawn is the direction -- every fibre leans the same way,
-    which real grass in a wood never does -- plus the fir needles that
-    have dropped onto it and stayed there.
+    It has to look wrong to be right: flat, too even and too green
+    against a forest floor that is none of those. What sells it as turf
+    rather than as lawn is the direction -- every fibre leans the same
+    way, which real grass in a wood never does -- plus the fir needles
+    that have dropped onto it and stayed there.
+
+    It is night out here, though, and the whole map is lit for it, so
+    the green is taken well down. At daylight saturation it glowed like
+    a lit panel lying in a dark wood.
     """
-    surface.fill((62, 148, 56))
+    surface.fill((36, 84, 36))
     for step in range(0, 16, 2):
-        pygame.draw.line(surface, (78, 172, 66), (step, 0), (step, 15))
-        pygame.draw.line(surface, (44, 118, 44), (step + 1, 0), (step + 1, 15))
-    _flecks(surface, variant, ((92, 190, 78), (38, 104, 40)), 6)
+        pygame.draw.line(surface, (46, 102, 42), (step, 0), (step, 15))
+        pygame.draw.line(surface, (26, 62, 27), (step + 1, 0), (step + 1, 15))
+    _flecks(surface, variant, ((54, 116, 46), (22, 52, 24)), 6)
     # Needles and duff blown onto it: the one part that is not uniform.
     for index in range((variant % 3) + 1):
         x = (variant * 7 + index * 5) % 13
         y = (variant * 5 + index * 9) % 14
-        pygame.draw.line(surface, (104, 74, 44), (x, y), (x + 2, y + 1))
+        pygame.draw.line(surface, (62, 46, 30), (x, y), (x + 2, y + 1))
     return None
 
 

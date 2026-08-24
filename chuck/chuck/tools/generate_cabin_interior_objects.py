@@ -474,33 +474,35 @@ def goose_mount():
 
     # The board against the wall, seen almost edge-on: an upright oval,
     # taller than it is wide, with its turned rim catching the light.
-    pygame.draw.ellipse(s, outline, (0, 1, 12, 20))
-    pygame.draw.ellipse(s, plaque_dark, (1, 2, 10, 18))
-    pygame.draw.ellipse(s, plaque, (2, 3, 8, 16))
-    pygame.draw.ellipse(s, plaque_light, (3, 5, 4, 11))
+    pygame.draw.ellipse(s, outline, (0, 2, 10, 18))
+    pygame.draw.ellipse(s, plaque_dark, (1, 3, 8, 16))
+    pygame.draw.ellipse(s, plaque, (2, 4, 6, 14))
+    pygame.draw.ellipse(s, plaque_light, (3, 6, 3, 9))
 
-    # The neck, running out of the board and over the room.
-    pygame.draw.polygon(s, outline, ((7, 6), (19, 4), (19, 15), (7, 15)))
-    pygame.draw.polygon(s, black, ((8, 7), (18, 5), (18, 14), (8, 14)))
-    pygame.draw.line(s, sheen, (10, 8), (17, 7))
+    # The neck. A goose's neck is long and thin, so this one is drawn
+    # thin: at the thickness the head wants, the bird came out as a
+    # sea lion with a plaque behind it.
+    pygame.draw.polygon(s, outline, ((6, 8), (19, 5), (19, 13), (6, 14)))
+    pygame.draw.polygon(s, black, ((7, 9), (18, 6), (18, 12), (7, 13)))
+    pygame.draw.line(s, sheen, (9, 10), (17, 8))
 
     # The head at the far end, with the bill angled down over the floor.
-    pygame.draw.ellipse(s, outline, (16, 1, 13, 14))
-    pygame.draw.ellipse(s, black, (17, 2, 11, 12))
+    pygame.draw.ellipse(s, outline, (16, 2, 11, 12))
+    pygame.draw.ellipse(s, black, (17, 3, 9, 10))
     # The chinstrap: the one marking that names the bird.
-    pygame.draw.polygon(s, outline, ((21, 2), (28, 3), (28, 7), (22, 6)))
-    pygame.draw.polygon(s, cheek_shade, ((22, 3), (27, 4), (27, 6), (22, 5)))
-    pygame.draw.polygon(s, cheek, ((22, 3), (26, 4), (26, 5), (22, 4)))
+    pygame.draw.polygon(s, outline, ((20, 3), (26, 4), (26, 7), (21, 6)))
+    pygame.draw.polygon(s, cheek_shade, ((21, 4), (25, 5), (25, 6), (21, 5)))
+    pygame.draw.line(s, cheek, (21, 4), (24, 5))
     # The bill, kept clear of the head by its own outline so the two do
     # not merge into one dark blob.
-    pygame.draw.polygon(s, outline, ((21, 11), (28, 13), (25, 21), (20, 16)))
-    pygame.draw.polygon(s, bill, ((22, 12), (26, 14), (24, 19), (21, 15)))
-    pygame.draw.line(s, (80, 80, 86), (23, 13), (25, 16))
+    pygame.draw.polygon(s, outline, ((20, 11), (26, 13), (23, 20), (19, 15)))
+    pygame.draw.polygon(s, bill, ((21, 12), (24, 14), (22, 18), (20, 14)))
+    pygame.draw.line(s, (80, 80, 86), (21, 13), (23, 16))
 
     # One glass eye. It is not winking.
-    s.set_at((21, 8), (18, 12, 10))
-    s.set_at((22, 8), (12, 8, 6))
-    s.set_at((21, 7), (176, 164, 138))
+    s.set_at((20, 8), (18, 12, 10))
+    s.set_at((21, 8), (12, 8, 6))
+    s.set_at((20, 7), (176, 164, 138))
     return s
 
 

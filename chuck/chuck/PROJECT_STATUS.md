@@ -9,8 +9,11 @@ file is required by the project rules and updated every session.
 - The strip of astroturf from the reference photographs is laid on the dirt at
   the foot of the cabin steps, running seven rows south and stopping short of
   the fire. It is walked on, not around. The tile has to look wrong to be
-  right: flat, too even and too bright against a forest floor that is none of
+  right: flat, too even and too green against a forest floor that is none of
   those, with every fibre leaning the same way and fir needles fallen on it.
+  The green is taken well down, though -- it is night out there and the whole
+  map is lit for it, and at daylight saturation the strip glowed like a lit
+  panel lying in a dark wood.
 - Note: the photographs show the strip at the cabin's back door, and the
   exterior has only the one south doorway -- so it runs from those steps.
 
@@ -19,7 +22,9 @@ file is required by the project rules and updated every session.
   the left, the neck running out horizontally, the head and bill over the room
   on the right, which is what a mount on a side wall looks like from this
   camera. Stood upright, however small it was drawn, it read as a decoy on the
-  floor in front of the wall. Interacting says `It's a mounted
+  floor in front of the wall. The neck is drawn thin, because a goose's is:
+  thick enough to match the head, the bird came out as a sea lion. Interacting
+  says `It's a mounted
   goose head... did it just wink?` -- three dots rather than an ellipsis
   character, matching every other line in the game.
 - The mini fridge is black. White, it was the brightest thing in a dark olive
