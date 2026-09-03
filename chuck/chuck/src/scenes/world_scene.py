@@ -48,7 +48,7 @@ from src.entities.raccoon import Raccoon
 from src.entities.raptor import Raptor
 from src.entities.redcap import Redcap
 from src.entities.reality_blocks import RealityBlockField
-from src.entities.aurora_light import AuroraLight
+from src.entities.aurora_light import AuroraLight, MAP_SPRITE_REGION
 from src.entities.city_rain import CityRain
 from src.entities.snake import TempleSnake
 from src.entities.flameskull import Flameskull
@@ -1442,6 +1442,12 @@ class WorldScene(Scene):
             # After the overhead pass and before the HUD: the projector
             # lights the room, not the interface.
             self.aurora.draw(surface, offset)
+            # ...and the map goes back on top of it, undimmed. It is
+            # the reason the lights are off; it cannot be one of the
+            # things the dark falls on.
+            for prop in self.props:
+                if prop.kind == "cabin_table_awakened":
+                    prop.draw_region(surface, offset, MAP_SPRITE_REGION)
         if self.city_rain is not None:
             self.city_rain.draw(surface)
         self.hud.draw(surface)

@@ -368,6 +368,27 @@ class Prop:
         ox, oy = camera_offset
         surface.blit(self._image, (self._draw_x - ox, self._draw_y - oy))
 
+    def draw_region(self, surface, camera_offset: tuple[int, int],
+                    region: tuple[int, int, int, int]) -> None:
+        """Redraw one rectangle of the current frame, in place.
+
+        For the parts of a prop that are a light source rather than a
+        lit object: the woken table map is a hole in the room, so the
+        cabin's darkness passes over it and it goes back on top at its
+        own full brightness rather than being dimmed with the furniture.
+        """
+        ox, oy = camera_offset
+        rx, ry, rw, rh = region
+        width, height = self._image.get_size()
+        left, top = max(0, rx), max(0, ry)
+        right, bottom = min(width, rx + rw), min(height, ry + rh)
+        if right <= left or bottom <= top:
+            return
+        surface.blit(
+            self._image, (self._draw_x - ox + left, self._draw_y - oy + top),
+            (left, top, right - left, bottom - top),
+        )
+
     def update(self, dt: float) -> None:
         """Advance the small set of authored animated scenery props."""
         if not self._frames:

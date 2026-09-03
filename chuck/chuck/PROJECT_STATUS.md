@@ -370,6 +370,13 @@ in. This file is required by the project rules and updated every session.
   brightened well clear of the dimmed room. The `Enter planar portal?` question
   is authored on both sides of the table, so walking down the room to the map
   and walking up to it are the same arrival.
+- The woken map is a wormhole rather than a lit rectangle: a two-armed
+  spiral whose bands crowd toward a hot throat, on its own fully saturated
+  colour wheel, turning two whole bands per frame so the eight-frame loop has
+  no seam. It is drawn back over the projector's darkness at full brightness,
+  because the portal is the reason the lights are off and so cannot be one of
+  the things the dark falls on. The map's paper is repainted near-black behind
+  it so the lifted rectangle has no pale table showing at its corners.
 - Cabin dressing and dialogue pass: the exterior door stands ajar with the
   unlit inside showing down its east jamb, the corner side table fills its
   bay, the UFO and the outdoor firepit answer when examined (the firepit

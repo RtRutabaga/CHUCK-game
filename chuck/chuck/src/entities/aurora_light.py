@@ -54,6 +54,11 @@ LAMP_GLOW_RADIUS = 26
 # nine tiles wide and centred well east of the painted rectangle.
 MAP_GLOW_RADIUS = 40
 MAP_GLOW_OFFSET = (-20, -24)
+# Where the map sits inside the table sprite. The room's darkness passes
+# over this rectangle and it goes back down at full brightness on top:
+# the portal is a light source, so the cabin being dark cannot dim it.
+# Kept in step with the quad drawn by tools/generate_cabin_interior_objects.
+MAP_SPRITE_REGION = (29, 14, 47, 22)
 
 
 def _band_layer(width: int, height: int, spacing: int, half: int,

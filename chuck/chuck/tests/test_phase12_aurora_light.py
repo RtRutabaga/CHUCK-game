@@ -122,6 +122,53 @@ def test_the_room_goes_dark_and_the_light_is_added_back() -> None:
         directory.cleanup()
 
 
+def test_the_woken_map_is_a_wormhole_the_dark_cannot_dim() -> None:
+    """The portal is the reason the lights are off.
+
+    So it cannot be one of the things the darkness falls on: the room
+    tint passes over it and the map goes back down at its own full
+    brightness, in saturated colour, turning as the frames advance.
+    """
+    from src.entities.aurora_light import MAP_SPRITE_REGION
+    from src.entities.prop import Prop
+    from tools.generate_cabin_interior_objects import VORTEX_COLOURS
+
+    directory, game, world = _world(AWAKE)
+    try:
+        table = next(p for p in world.props
+                     if p.kind == "cabin_table_awakened")
+        assert isinstance(table, Prop)
+        # Eight frames, one per colour of its own saturated wheel --
+        # not the muted PORTAL_COLOURS the surrounding glow uses.
+        assert len(table._frames) == len(VORTEX_COLOURS)
+        assert min(max(colour) for colour in VORTEX_COLOURS) >= 236
+
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+        world._arrival_fade_t = None
+        world.draw(surface)
+
+        # Somewhere on the screen is a pixel far brighter and far more
+        # saturated than a room dimmed to ROOM_TINT could produce.
+        brightest = 0
+        for x in range(config.NATIVE_WIDTH):
+            for y in range(config.NATIVE_HEIGHT):
+                r, g, b = surface.get_at((x, y))[:3]
+                brightest = max(brightest, max(r, g, b) - min(r, g, b))
+        assert brightest > 150, brightest
+
+        # ...and it turns: two frames of the same sprite differ.
+        first, second = table._frames[0], table._frames[3]
+        region = MAP_SPRITE_REGION
+        assert any(
+            first.get_at((x, y)) != second.get_at((x, y))
+            for x in range(region[0], region[0] + region[2])
+            for y in range(region[1], region[1] + region[3])
+        )
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def test_the_stove_stays_orange_while_the_room_changes_colour() -> None:
     directory, game, world = _world(AWAKE)
     try:

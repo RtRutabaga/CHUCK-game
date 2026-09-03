@@ -6,6 +6,8 @@ from pathlib import Path
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+import math
+
 import pygame
 
 
@@ -21,6 +23,24 @@ PORTAL_COLOURS = (
     (194, 157, 132),
     (162, 151, 169),
 )
+# The woken map is not a pastel any more. Once the projector is on it is
+# the brightest thing in the room and it has to read as a hole rather
+# than a picture, so its own wheel is fully saturated -- the muted
+# PORTAL_COLOURS above still tint the soft glow spilling onto the table.
+VORTEX_COLOURS = (
+    (255, 72, 148),
+    (255, 132, 46),
+    (250, 222, 72),
+    (98, 236, 120),
+    (58, 220, 236),
+    (92, 132, 255),
+    (172, 92, 255),
+    (255, 84, 212),
+)
+# Where the map sits inside the table sprite. Shared with the renderer
+# through aurora_light, which lifts exactly this rectangle back to full
+# brightness once the projector is on.
+MAP_SPRITE_REGION = (29, 14, 47, 22)
 EGGSHELL = (220, 214, 187)
 EGGSHELL_LIGHT = (242, 237, 211)
 EGGSHELL_SHADOW = (174, 164, 137)
@@ -71,6 +91,56 @@ def chair():
     return s
 
 
+def _vortex(s, frame):
+    """A wormhole turning inside the map's rectangle.
+
+    Bands crowd together toward the middle rather than spacing evenly,
+    which is the whole difference between a tunnel receding and a
+    pinwheel lying flat on the table. Two arms, because more than two
+    at this size stop resolving into anything and just shimmer.
+
+    The rectangle is drawn on a squashed circle because the table is
+    seen at three quarters: the map is nearly three times wider than it
+    is deep, so the swirl has to be flattened by the same amount or it
+    reads as a ball sitting on the surface.
+    """
+    top_a, top_b = (31, 18), (72, 16)
+    bottom_a, bottom_b = (33, 33), (74, 31)
+    centre_x, centre_y = 52.5, 24.5
+    half_w, half_h = 21.5, 8.5
+    arms = len(VORTEX_COLOURS)
+    # One frame advances the swirl two whole bands, so frame 8 lands
+    # exactly back on frame 0 and the loop has no seam in it.
+    turn = frame / arms * 2.0
+    for x in range(31, 75):
+        top = top_a[1] + _clamp01(
+            (x - top_a[0]) / (top_b[0] - top_a[0])) * (top_b[1] - top_a[1])
+        bottom = bottom_a[1] + _clamp01(
+            (x - bottom_a[0]) / (bottom_b[0] - bottom_a[0])
+        ) * (bottom_b[1] - bottom_a[1])
+        for y in range(round(top), round(bottom) + 1):
+            nx = (x - centre_x) / half_w
+            ny = (y - centre_y) / half_h
+            radius = math.hypot(nx, ny)
+            if radius > 1.0:
+                continue  # the corners stay dark map paper
+            angle = math.atan2(ny, nx) / (2.0 * math.pi)
+            depth = 0.42 / (radius + 0.16)
+            band = (angle * 2.0 + depth - turn) % 1.0
+            colour = VORTEX_COLOURS[int(band * arms) % arms]
+            # Bright at the throat, falling away to the rim, so the eye
+            # is pulled into the middle of it.
+            fade = 1.0 - 0.42 * radius
+            core = max(0.0, 0.30 - radius) * 3.0
+            s.set_at((x, y), tuple(
+                min(255, round(channel * fade + 255 * core))
+                for channel in colour))
+
+
+def _clamp01(value):
+    return max(0.0, min(1.0, value))
+
+
 def table(portal_frame=None):
     # Nine tiles wide at its authored col-5 anchor: the visible tabletop still
     # meets the west wall while stopping short of the room's eastern fixtures.
@@ -92,7 +162,14 @@ def table(portal_frame=None):
     pygame.draw.rect(s, outline, (12, 43, 5, 13))
     pygame.draw.rect(s, outline, (127, 38, 5, 13))
     # The rectangular D&D map belongs to this table, not the sink counter.
-    pygame.draw.rect(s, (48, 34, 34), (29, 17, 47, 17))
+    # Awake, the sheet under it is repainted near-black and stretched to
+    # cover MAP_SPRITE_REGION exactly, because the renderer lifts that
+    # whole rectangle back out of the room's darkness: anything table
+    # coloured left inside it would come back as a bright pale border.
+    if portal_frame is None:
+        pygame.draw.rect(s, (48, 34, 34), (29, 17, 47, 17))
+    else:
+        pygame.draw.rect(s, (22, 19, 28), MAP_SPRITE_REGION)
     if portal_frame is None:
         pygame.draw.polygon(s, (197, 178, 128),
                             ((31, 18), (72, 16), (74, 31), (33, 33)))
@@ -109,16 +186,11 @@ def table(portal_frame=None):
         s.blit(glow, (0, 0))
         pygame.draw.polygon(s, (81, 76, 85),
                             ((31, 18), (72, 16), (74, 31), (33, 33)))
-        for x in range(32, 74):
-            wave = (x + portal_frame * 4 + (x // 5) * 2) % 16
-            band = PORTAL_COLOURS[(portal_frame + wave // 3) % 8]
-            # Lifted well clear of the dimmed room: these are the
-            # brightest pixels on the map by a distance.
-            band = tuple(min(255, round(channel * 1.7) + 66)
-                         for channel in band)
-            top = 18 + ((x + portal_frame) % 3)
-            pygame.draw.line(s, band, (x, top), (x + 1, 31), 2)
-        pygame.draw.polygon(s, (250, 248, 252),
+        _vortex(s, portal_frame)
+        # A dim rim, not a bright one: the swirl is the light in the
+        # room and a white frame around it turns the whole thing into a
+        # poster hanging on the table.
+        pygame.draw.polygon(s, (108, 100, 120),
                             ((31, 18), (72, 16), (74, 31), (33, 33)), 1)
     return s
 
