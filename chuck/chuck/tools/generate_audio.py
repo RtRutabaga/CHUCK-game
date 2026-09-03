@@ -19,6 +19,9 @@ Sound design intent (Bible: understated, dry, never cartoonish):
     vanish      three soft falling tones ending unresolved
     respawn     two quiet rising bells — a restrained return
     chime       a single soft bell — the anchor attunes. Singular.
+    portal_hum      a tuned airy beating — a planar mouth standing open
+    portal_collapse an inward rising rush closing on a soft knock
+    lighter         two dry scrapes and a small flame catching
     footsteps   tiny filtered taps; wood is deeper, stone is drier;
                 two variants each so steps don't machine-gun
 """
@@ -162,6 +165,66 @@ def sfx_fireball() -> list[float]:
     return normalize(mix(body, thump, gain(crackle, 0.4)), headroom=0.5)
 
 
+def sfx_portal_hum() -> list[float]:
+    """A planar mouth standing open: airy, tuned, and barely there.
+
+    Two close tones beating slowly against each other under a band of
+    filtered breath. Nothing percussive -- it is a hole in the air, and
+    a hole does not have an attack.
+    """
+    dur = 2.2
+    pair = mix(
+        tone(196.0, dur, "triangle"),
+        gain(tone(197.6, dur, "triangle"), 0.85),
+        gain(tone(392.0, dur, "triangle"), 0.28),
+        gain(tone(587.3, dur, "triangle"), 0.12),
+    )
+    breath = gain(lowpass(noise(dur, seed=91), 1400), 0.22)
+    body = envelope(lowpass(mix(pair, breath), 2400), attack=0.5, release=1.5)
+    return normalize(tremolo(body, 1.6, 0.35), headroom=0.30)
+
+
+def sfx_portal_collapse() -> list[float]:
+    """The mouth folding into itself: everything runs inward, then stops.
+
+    A rising tone rather than a falling one, because the thing is being
+    drawn to a point and not dropped. It ends on a soft closed knock
+    with no tail -- nothing is destroyed here, something is shut.
+    """
+    dur = 1.1
+    n = int(dur * SAMPLE_RATE)
+    inward = []
+    for i in range(n):
+        t = i / SAMPLE_RATE
+        # 180 Hz climbing away as the opening narrows, then gone.
+        freq = 180.0 + 900.0 * (t / dur) ** 2.2
+        inward.append(math.sin(2.0 * math.pi * freq * t))
+    inward = envelope(gain(inward, 0.55), 0.02, 0.35)
+    rush = envelope(lowpass(noise(dur, seed=92), 3000), 0.6, 0.3)
+    shut = _pad(
+        envelope(lowpass(tone(88.0, 0.16, "triangle"), 700), 0.001, 0.14),
+        0.94,
+    )
+    return normalize(mix(inward, gain(rush, 0.4), gain(shut, 0.8)),
+                     headroom=0.42)
+
+
+def sfx_lighter() -> list[float]:
+    """A thumb on a wheel, then a small flame catching.
+
+    Two dry scrapes and a soft breath of flame. It has to be quiet: it
+    is the smallest event in a scene where a portal has just closed.
+    """
+    scrapes = [
+        _pad(envelope(gain(lowpass(noise(0.05, seed=93 + i), 5200), 0.7),
+                      0.001, 0.04), i * 0.16)
+        for i in range(2)
+    ]
+    catch = _pad(
+        envelope(lowpass(noise(0.5, seed=95), 1800), 0.02, 0.42), 0.3)
+    return normalize(mix(*scrapes, gain(catch, 0.55)), headroom=0.28)
+
+
 def sfx_respawn() -> list[float]:
     return normalize(
         mix(_pad(_bell(392.0, 0.5), 0.0), _pad(_bell(587.3, 0.6), 0.18)),
@@ -194,6 +257,9 @@ def main() -> None:
         "chime.wav": sfx_chime,
         "beholder_blast.wav": sfx_beholder_blast,
         "fireball.wav": sfx_fireball,
+        "portal_hum.wav": sfx_portal_hum,
+        "portal_collapse.wav": sfx_portal_collapse,
+        "lighter.wav": sfx_lighter,
     }
     for i, (hz, cut, dur) in enumerate(((150, 800, 0.07), (135, 750, 0.075))):
         sounds[f"footstep_wood_{i + 1}.wav"] = (
