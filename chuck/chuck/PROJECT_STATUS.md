@@ -382,6 +382,21 @@ in. This file is required by the project rules and updated every session.
   bay, the UFO and the outdoor firepit answer when examined (the firepit
   sharing the woodstove's line, because it is the same fire), and the two
   east-facing entities have traded lines.
+- The desert arrival is now a crossing rather than a cut. It runs 21.6 seconds
+  instead of 14: the far mouth of the same portal stands upright in the sand
+  before anything moves, Chuck walks out of it and fades to opaque as he
+  clears it, and it then folds into its own middle -- width first, then
+  height, flaring as the last of it goes -- so that by the time the tableau
+  holds there is nothing in frame to explain how he got there. Only then does
+  he light a cigarette, using the Chult landing's exact gesture and its clean
+  profile frame.
+- Phase 12 gained its own eighteen-second one-shot cue, `desert_arrival`: a
+  throat drone under a breathy reed phrase in D Phrygian dominant, struck
+  every two beats because the drone voice decays whatever length it is given.
+  It starts under the whiteout and ends on the scene's fade. Three new subtle
+  effects go with it -- `portal_hum` (a tuned airy beating), `portal_collapse`
+  (an inward *rising* rush closing on a soft knock, because the thing is being
+  drawn to a point and not dropped), and `lighter`.
 
 ## Next logical task
 
