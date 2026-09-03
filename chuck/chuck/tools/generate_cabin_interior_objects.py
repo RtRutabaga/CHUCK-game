@@ -201,11 +201,35 @@ def kitchen():
     for x in (7, 35, 63, 91):
         pygame.draw.line(s, outline, (x, 17), (x, 43))
         pygame.draw.rect(s, light, (x + 10, 27, 2, 2))
-    # Sink basin and simple faucet at the left.
-    pygame.draw.rect(s, (77, 82, 79), (10, 8, 27, 7))
-    pygame.draw.rect(s, (126, 132, 125), (12, 9, 23, 4))
-    pygame.draw.line(s, (150, 153, 143), (23, 7), (23, 2), 2)
-    pygame.draw.line(s, (150, 153, 143), (23, 2), (29, 2), 2)
+    # Sink basin and simple faucet, at the east end of the run.
+    pygame.draw.rect(s, (77, 82, 79), (71, 8, 27, 7))
+    pygame.draw.rect(s, (126, 132, 125), (73, 9, 23, 4))
+    pygame.draw.line(s, (150, 153, 143), (84, 7), (84, 2), 2)
+    pygame.draw.line(s, (150, 153, 143), (84, 2), (90, 2), 2)
+    return s
+
+
+def side_table():
+    """A small square table, the kind a lamp or a mug lives on.
+
+    Deliberately plain: it sits beside a couch that already has a light
+    entity on it, and anything with legs turned or a cloth on it would
+    start competing with the room's real furniture.
+    """
+    s = pygame.Surface((26, 24), pygame.SRCALPHA)
+    outline = (38, 24, 18)
+    wood = (104, 66, 42)
+    wood_light = (138, 94, 58)
+    wood_dark = (72, 45, 28)
+    for x in (4, 19):
+        pygame.draw.rect(s, outline, (x, 12, 4, 12))
+        pygame.draw.rect(s, wood_dark, (x + 1, 12, 2, 11))
+    pygame.draw.rect(s, outline, (1, 4, 24, 10))
+    pygame.draw.rect(s, wood, (2, 5, 22, 8))
+    pygame.draw.line(s, wood_light, (3, 6), (23, 6))
+    pygame.draw.line(s, wood_dark, (3, 12), (23, 12))
+    # One seam across the top, so it reads as boards rather than a slab.
+    pygame.draw.line(s, wood_dark, (3, 9), (23, 9))
     return s
 
 
@@ -528,6 +552,7 @@ def main():
              f"cabin_curtain_window_{index + 1}.png")
     save(closed_door_north(), "cabin_closed_door_north.png")
     save(macrame(), "cabin_macrame.png")
+    save(side_table(), "cabin_side_table.png")
     save(goose_mount(), "cabin_goose_mount.png")
 
 

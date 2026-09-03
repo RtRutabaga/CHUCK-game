@@ -6,6 +6,18 @@ in. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- Five things in the cabin now answer when you look at them: the table map, the
+  fridge, the lava lamp, the woodstove and the wall hanging. The table keeps
+  its line in both states, because the planar question belongs to the walk
+  trigger rather than to the prop, so describing the map never competes with
+  being asked whether to step into it.
+- The small couch moved a column west and a small square table stands in the
+  gap east of it. The sink graphic moved to the east end of its counter.
+- Outside: a few firs down the narrow walk on the cabin's east side, alternating
+  sides so the way through stays open; the circular object moved south-east off
+  the edge of its clearing and into it; the astroturf strip is two rows shorter;
+  and the southernmost mushroom light is gone.
+
 - The two firs flanking the cabin's driveway are gone, and the corridor they
   stood in is cleared through the whole planted band rather than only its top
   few rows. The track had been stopping short of the opening, so trees were

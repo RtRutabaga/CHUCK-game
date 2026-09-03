@@ -76,11 +76,11 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     turf = {(col, row)
             for row, line in enumerate(tilemap._grid)
             for col, char in enumerate(line) if char == "ᵿ"}
-    assert len(turf) == 21, len(turf)
+    assert len(turf) == 15, len(turf)
     columns = {col for col, _row in turf}
     rows = {row for _col, row in turf}
     assert columns == {57, 58, 59}
-    assert rows == set(range(35, 42))
+    assert rows == set(range(35, 40))
     assert all(not tilemap.is_solid(col, row) for col, row in turf)
     # It starts under the steps and stops short of the fire.
     assert min(rows) == 35 and max(rows) < FIRE[1]
@@ -90,7 +90,7 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     assert props["tahuya_firepit"] == 1
     assert props["tahuya_firewood_shed"] == 1
     assert props["tahuya_cabin"] == 1
-    assert props["tahuya_mushroom_light"] == 6
+    assert props["tahuya_mushroom_light"] == 5
     assert props["tahuya_fir"] >= 100
     fir_positions = [
         (col, row) for kind, col, row in tilemap.prop_tiles
@@ -108,7 +108,7 @@ def test_dedicated_materials_and_real_place_landmarks_exist() -> None:
     # to run on south past the fire and off the bottom of the map, which
     # read as a way out that goes nowhere.
     assert light_positions == [
-        (44, 13), (45, 20), (44, 27), (45, 34), (48, 39), (53, 42),
+        (44, 13), (45, 20), (44, 27), (45, 34), (48, 39),
     ]
     fire_positions = [
         (col, row) for kind, col, row in tilemap.prop_tiles

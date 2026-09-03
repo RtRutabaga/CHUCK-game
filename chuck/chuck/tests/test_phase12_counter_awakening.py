@@ -100,7 +100,11 @@ def test_real_south_threshold_awakens_and_rebuilds_the_rectangular_map() -> None
                     for frame in table._frames}) == 8
         assert all(frame.get_size() == (144, 57)
                    for frame in table._frames)
-        assert table.choice_id is None and table.dialogue_id is None
+        # The table describes itself either way. What it must not
+        # have is a choice on the prop: the planar question belongs
+        # to the walk trigger, built only once the map has woken.
+        assert table.choice_id is None
+        assert table.dialogue_id == "cabin_table_map"
         assert next(prop for prop in world.props
                     if prop.kind == "cabin_kitchen")._frames == ()
     finally:

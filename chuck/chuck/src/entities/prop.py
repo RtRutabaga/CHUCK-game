@@ -197,6 +197,7 @@ _SPRITES = {
     "cabin_closed_door_west": "objects/cabin_closed_door_west.png",
     "cabin_closed_door_north": "objects/cabin_closed_door_north.png",
     "cabin_macrame": "objects/cabin_macrame.png",
+    "cabin_side_table": "objects/cabin_side_table.png",
     "cabin_goose_mount": "objects/cabin_goose_mount.png",
     "cabin_lava_lamp": "objects/cabin_lava_lamp_1.png",
     "cabin_curtain_window": (
@@ -272,6 +273,14 @@ PROP_DIALOGUE = {
     "cabin_closed_door_west": "closed_door",
     "cabin_closed_door_north": "closed_door",
     "cabin_goose_mount": "cabin_goose_mount",
+    # The cabin is a room worth looking at rather than walking through,
+    # so the things in it that reward a look have something to say.
+    "cabin_table": "cabin_table_map",
+    "cabin_table_awakened": "cabin_table_map",
+    "cabin_mini_fridge": "cabin_fridge",
+    "cabin_lava_lamp": "cabin_lava_lamp",
+    "cabin_woodstove": "cabin_woodstove",
+    "cabin_macrame": "cabin_macrame",
     "cheese": "cheese",
     "fey_teacup": "fey_tea_warm",
     "fey_plate": "fey_set_for_one",

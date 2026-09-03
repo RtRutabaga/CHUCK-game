@@ -68,14 +68,16 @@ def build_map():
     _solid_rect(grid, 1, COUCH_TOP, 8, COUCH_ROW)
     grid[COUCH_ROW][5] = "Ƈ"
     grid[COUCH_ROW - 1][5] = "₁"
-    _solid_rect(grid, 13, COUCH_TOP, 19, COUCH_ROW)
-    grid[COUCH_ROW][16] = "Ƭ"
-    grid[COUCH_ROW - 1][16] = "₂"
+    _solid_rect(grid, 12, COUCH_TOP, 18, COUCH_ROW)
+    grid[COUCH_ROW][15] = "Ƭ"
+    grid[COUCH_ROW - 1][15] = "₂"
+    # A small side table in the gap the couch left when it moved west.
+    grid[COUCH_ROW][19] = "Ʇ"
     # One curtained window centred on the wall behind each couch, and a
     # door between them that does not open. All three hang from the last
     # row of panel, so they stand on the wall rather than on the carpet.
     grid[WALL_BOTTOM][5] = "Ɏ"
-    grid[WALL_BOTTOM][16] = "Ɏ"
+    grid[WALL_BOTTOM][15] = "Ɏ"
     grid[WALL_BOTTOM][10] = "Ɖ"
     # The knotted hanging from the real cabin, on the panel to the right
     # of the big couch's window.

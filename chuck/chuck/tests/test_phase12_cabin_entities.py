@@ -75,7 +75,7 @@ def test_exactly_four_entities_occupy_the_authored_seats() -> None:
     assert len(spawns) == 4
     # Two on the couches under the north wall, and the west-facing pair
     # flush against the east wall.
-    assert set(spawns.values()) == {(5, 4), (16, 4), (18, 7), (18, 10)}
+    assert set(spawns.values()) == {(5, 4), (15, 4), (18, 7), (18, 10)}
 
 
 def test_entities_use_offset_animation_and_durable_idempotent_flags() -> None:

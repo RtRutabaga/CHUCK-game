@@ -13,5 +13,20 @@
   ],
   "cabin_goose_mount": [
     "It's a mounted goose head... did it just wink?"
+  ],
+  "cabin_table_map": [
+    "It looks like a map of the desert, there's some strange dice next to it"
+  ],
+  "cabin_fridge": [
+    "it's softly humming"
+  ],
+  "cabin_lava_lamp": [
+    "Blobs move up and down the tube, it's hot to the touch"
+  ],
+  "cabin_woodstove": [
+    "someone built this fire perfectly, each log is in the optimal spot"
+  ],
+  "cabin_macrame": [
+    "it looks like it's supposed to be decorative, it depicts.... something? It's hairy and it has eyes"
   ]
 }

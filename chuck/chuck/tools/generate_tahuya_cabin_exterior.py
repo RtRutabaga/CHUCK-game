@@ -206,12 +206,12 @@ def build_map():
     # rectangle of fake grass on bare ground, straight-edged, going
     # nowhere in particular. Authored after the trail so it lies on top
     # of it rather than being cut by it.
-    for y in range(35, 42):
+    for y in range(35, 40):
         for x in range(57, 60):
             grid[y][x] = "ᵿ"
 
     # Real-place landmarks from the authored drawing.
-    grid[10][53] = "◌"       # the circular object, west of the driveway
+    grid[13][55] = "◌"       # the circular object, west of the driveway
     grid[43][57] = "⚉"       # fire circle just south of the front steps
     grid[42][70] = "⌘"       # firewood shed close in on the south-east
 
@@ -219,8 +219,7 @@ def build_map():
     # wandering through the middle of the clearing.
     # ...and the last two turn in toward the fire and stop there with it,
     # so the lit path leads somewhere instead of trailing off into trees.
-    for x, y in ((44, 13), (45, 20), (44, 27), (45, 34),
-                 (48, 39), (53, 42)):
+    for x, y in ((44, 13), (45, 20), (44, 27), (45, 34), (48, 39)):
         grid[y][x] = "✦"
 
     # A dense but irregular Douglas-fir stand fills the west side. A fixed
@@ -243,6 +242,12 @@ def build_map():
         if len(firs) == 118:
             break
     for x, y in ((73, 12), (75, 45)):
+        if grid[y][x] == "ᶠ":
+            grid[y][x] = "♣"
+    # A few firs down the narrow walk along the cabin's east side. They
+    # alternate sides of it rather than lining it, so the way through
+    # stays open: this is trees growing close to a wall, not a hedge.
+    for x, y in ((75, 25), (72, 29), (75, 33), (72, 37)):
         if grid[y][x] == "ᶠ":
             grid[y][x] = "♣"
     # South of the fire the spacing rule is dropped: the last rows before

@@ -108,13 +108,14 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
         "cabin_curtain_window": 2,
         "cabin_macrame": 1,
         "cabin_goose_mount": 1,
+        "cabin_side_table": 1,
     }
     positions = {
         kind: (col, row) for kind, col, row in tilemap.prop_tiles
         if kind not in {"cabin_chair", "cabin_curtain_window"}
     }
     assert positions["cabin_big_couch"] == (5, COUCH_ROW)
-    assert positions["cabin_couch"] == (16, COUCH_ROW)
+    assert positions["cabin_couch"] == (15, COUCH_ROW)
     assert positions["cabin_table"] == (5, FLOOR_TOP - 1)
     assert positions["cabin_connector_shelf"] == (1, FLOOR_BOTTOM)
     assert positions["cabin_mini_fridge"] == (10, FLOOR_TOP - 1)
@@ -163,7 +164,9 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
     windows = sorted((col, row) for kind, col, row in tilemap.prop_tiles
                      if kind == "cabin_curtain_window")
     # One centred behind each couch, hanging from the wall itself.
-    assert windows == [(5, WALL_BOTTOM), (16, WALL_BOTTOM)]
+    assert windows == [(5, WALL_BOTTOM), (15, WALL_BOTTOM)]
+    # ...and a side table east of the couch that moved west for it.
+    assert positions["cabin_side_table"] == (19, COUCH_ROW)
 
     # The north wall is deep enough for what hangs on it. A one-row wall
     # clipped the tops of these off against the edge of the map and left
@@ -309,7 +312,7 @@ def test_the_north_door_is_shut_and_the_lamp_is_the_only_thing_moving() -> None:
         lamp = next(prop for prop in world.props
                     if prop.kind == "cabin_lava_lamp")
         assert len(lamp._frames) == 6
-        assert lamp.dialogue_id is None
+        assert lamp.dialogue_id == "cabin_lava_lamp"
         # Every frame is different: blobs on one shared cycle would give
         # duplicate frames and a visible beat.
         # ...and it runs at its own pace, far slower than the fire it
@@ -340,6 +343,50 @@ def test_the_north_door_is_shut_and_the_lamp_is_the_only_thing_moving() -> None:
         # Curtains are scenery, not something to talk to or open.
         assert all(prop.dialogue_id is None and prop.choice_id is None
                    for prop in curtains)
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_the_room_answers_when_you_look_at_it() -> None:
+    """Five things in the cabin have something to say about themselves.
+
+    The cabin is a room to look at rather than walk through, so the
+    fixtures that reward a look carry a line. The table keeps its line
+    in both states -- the planar question belongs to the walk trigger,
+    not to the prop -- so describing the map never competes with being
+    asked whether to step into it.
+    """
+    expected = {
+        "cabin_table": (
+            "It looks like a map of the desert, there's some strange "
+            "dice next to it"
+        ),
+        "cabin_mini_fridge": "it's softly humming",
+        "cabin_lava_lamp":
+            "Blobs move up and down the tube, it's hot to the touch",
+        "cabin_woodstove": (
+            "someone built this fire perfectly, each log is in the "
+            "optimal spot"
+        ),
+        "cabin_macrame": (
+            "it looks like it's supposed to be decorative, it "
+            "depicts.... something? It's hairy and it has eyes"
+        ),
+    }
+    directory, game = _game()
+    try:
+        world = game.checkpoints.load_checkpoint("tahuya_interior")
+        world._arrival_fade_t = None
+        font = game.assets.bitmap_font()
+        for kind, line in expected.items():
+            prop = next(p for p in world.props if p.kind == kind)
+            assert prop.dialogue_id is not None, kind
+            assert prop.choice_id is None, kind
+            assert world.dialogue.get(prop.dialogue_id) == [line], kind
+            # Every line has to render: the box wraps, but a missing
+            # glyph would come through as a hole rather than an error.
+            assert font.render(line).get_bounding_rect().width > 0, kind
     finally:
         game._shutdown()
         directory.cleanup()
