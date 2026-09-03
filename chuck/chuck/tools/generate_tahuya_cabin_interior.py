@@ -120,6 +120,10 @@ def build_map():
     grid[FLOOR_BOTTOM][1] = "ƛ"
     _solid_rect(grid, 2, COUNTER_TOP, 8, COUNTER_BOTTOM, "ħ")
     grid[COUNTER_BOTTOM][5] = "ƕ"
+    # The southern approach to the map. Authored after the hardwood pass
+    # so the floor cannot erase it -- the question belongs to anyone
+    # standing at the table, whichever side they walked up on.
+    grid[FLOOR_TOP][5] = "ኇ"
 
     # Human-scale mini fridge tucked against the table's southeast corner.
     # Its collision stays under the visible body; an extra east tile would

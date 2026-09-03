@@ -359,6 +359,22 @@ in. This file is required by the project rules and updated every session.
   hand-drum palette, rendered mix/headroom, loop seam, file presence,
   and identical exterior/interior routing. All 116 repository test modules
   pass, and the game renders a clean headless launch frame.
+- Overlapping interaction targets now resolve by proximity rather than by list
+  order. The map table is nine tiles wide and its zone swallows the mini fridge
+  parked at its east end, so walking up to the fridge answered with the map's
+  line; the nearer of two targets in reach is now the one that speaks. Compared
+  by centre rather than by edge, because Chuck stands inside both zones at once
+  and edge distance is zero for each.
+- The awakened map is now a light source rather than a lit object: it carries
+  its own glow pool in the projector's current colour, and its bands are
+  brightened well clear of the dimmed room. The `Enter planar portal?` question
+  is authored on both sides of the table, so walking down the room to the map
+  and walking up to it are the same arrival.
+- Cabin dressing and dialogue pass: the exterior door stands ajar with the
+  unlit inside showing down its east jamb, the corner side table fills its
+  bay, the UFO and the outdoor firepit answer when examined (the firepit
+  sharing the woodstove's line, because it is the same fire), and the two
+  east-facing entities have traded lines.
 
 ## Next logical task
 

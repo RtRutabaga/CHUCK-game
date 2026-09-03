@@ -1192,6 +1192,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ኂ": MarkerDef(kind="arrival:from_cabin_front", under="▣"),
     "ኄ": MarkerDef(kind="arrival:from_front_door", under="Ŀ"),
     "ኅ": MarkerDef(kind="choice:cabin_table_portal", under="Ŀ"),
+    # The same question asked from the hardwood on the table's south
+    # side. A separate glyph only because the floor differs there.
+    "ኇ": MarkerDef(kind="choice:cabin_table_portal", under="Ħ"),
     "ኆ": MarkerDef(kind="anchor:tahuya_interior_anchor", under="Ŀ"),
     # Four seated Phase 12 light entities. Their markers sit inside the
     # furniture footprints; solid under-tiles preserve the authored collision.

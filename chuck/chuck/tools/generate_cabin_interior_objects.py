@@ -101,17 +101,24 @@ def table(portal_frame=None):
         pygame.draw.rect(s, (49, 87, 104), (46, 25, 4, 4))
     else:
         colour = PORTAL_COLOURS[portal_frame]
+        # The room around it is dark by now, so the map has to carry its
+        # own light or it reads as a grey rectangle on a grey table.
         glow = pygame.Surface(s.get_size(), pygame.SRCALPHA)
-        pygame.draw.ellipse(glow, (*colour, 30), (21, 8, 65, 35))
+        for radius, alpha in (((15, 4, 77, 43), 34), ((21, 8, 65, 35), 62)):
+            pygame.draw.ellipse(glow, (*colour, alpha), radius)
         s.blit(glow, (0, 0))
         pygame.draw.polygon(s, (81, 76, 85),
                             ((31, 18), (72, 16), (74, 31), (33, 33)))
         for x in range(32, 74):
             wave = (x + portal_frame * 4 + (x // 5) * 2) % 16
             band = PORTAL_COLOURS[(portal_frame + wave // 3) % 8]
+            # Lifted well clear of the dimmed room: these are the
+            # brightest pixels on the map by a distance.
+            band = tuple(min(255, round(channel * 1.7) + 66)
+                         for channel in band)
             top = 18 + ((x + portal_frame) % 3)
-            pygame.draw.line(s, band, (x, top), (x + 1, 31))
-        pygame.draw.polygon(s, (198, 194, 198),
+            pygame.draw.line(s, band, (x, top), (x + 1, 31), 2)
+        pygame.draw.polygon(s, (250, 248, 252),
                             ((31, 18), (72, 16), (74, 31), (33, 33)), 1)
     return s
 
@@ -216,20 +223,21 @@ def side_table():
     entity on it, and anything with legs turned or a cloth on it would
     start competing with the room's real furniture.
     """
-    s = pygame.Surface((26, 24), pygame.SRCALPHA)
+    s = pygame.Surface((32, 32), pygame.SRCALPHA)
     outline = (38, 24, 18)
     wood = (104, 66, 42)
     wood_light = (138, 94, 58)
     wood_dark = (72, 45, 28)
-    for x in (4, 19):
-        pygame.draw.rect(s, outline, (x, 12, 4, 12))
-        pygame.draw.rect(s, wood_dark, (x + 1, 12, 2, 11))
-    pygame.draw.rect(s, outline, (1, 4, 24, 10))
-    pygame.draw.rect(s, wood, (2, 5, 22, 8))
-    pygame.draw.line(s, wood_light, (3, 6), (23, 6))
-    pygame.draw.line(s, wood_dark, (3, 12), (23, 12))
-    # One seam across the top, so it reads as boards rather than a slab.
-    pygame.draw.line(s, wood_dark, (3, 9), (23, 9))
+    for x in (5, 24):
+        pygame.draw.rect(s, outline, (x, 17, 4, 15))
+        pygame.draw.rect(s, wood_dark, (x + 1, 17, 2, 14))
+    pygame.draw.rect(s, outline, (1, 5, 30, 14))
+    pygame.draw.rect(s, wood, (2, 6, 28, 12))
+    pygame.draw.line(s, wood_light, (3, 7), (29, 7))
+    pygame.draw.line(s, wood_dark, (3, 17), (29, 17))
+    # Two seams across the top, so it reads as boards rather than a slab.
+    for y in (10, 14):
+        pygame.draw.line(s, wood_dark, (3, y), (29, y))
     return s
 
 

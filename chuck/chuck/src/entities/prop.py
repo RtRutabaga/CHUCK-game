@@ -281,6 +281,9 @@ PROP_DIALOGUE = {
     "cabin_lava_lamp": "cabin_lava_lamp",
     "cabin_woodstove": "cabin_woodstove",
     "cabin_macrame": "cabin_macrame",
+    # The fire outside is the same fire, laid by the same hands.
+    "tahuya_firepit": "cabin_woodstove",
+    "tahuya_ufo": "tahuya_ufo",
     "cheese": "cheese",
     "fey_teacup": "fey_tea_warm",
     "fey_plate": "fey_set_for_one",

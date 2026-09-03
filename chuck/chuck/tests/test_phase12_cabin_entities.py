@@ -20,10 +20,10 @@ EXPECTED_DIALOGUE = {
     "cabin_entity_couch":
         "i̵̖s̵̻̆͗i͙͢t̞ꁲꃔꏳh̵̨i̲͖̣͋c̘̆ͬḩ̜̣͙t̝ͬͣi̽?",
     "cabin_entity_chair_north":
+        "į̷̴̕͜n͘҉ í̸s̵̡͜͏͟͢ꋖꊿl̶̷̨͘y͢͠҉̧w̢̕͜͜t̝ͬͣ",
+    "cabin_entity_chair_south":
         "l̛͠ơ̶̧͟g̸̶̀͘c҉a͢b͏̸̵̴̵į̷̴̕͜n͘҉ í̸s̵̡͜͏͟͢ "
         "t̶̡́͡͡͡h͏̡̕o̸͜͞ņ̶̸̸̴͟l̶̷̨͘y͢͠҉̧w̢̕͜͜à̵́͡͝y҉",
-    "cabin_entity_chair_south":
-        "į̷̴̕͜n͘҉ í̸s̵̡͜͏͟͢ꋖꊿl̶̷̨͘y͢͠҉̧w̢̕͜͜t̝ͬͣ",
 }
 EXPECTED_FLAGS = {
     "cabin_entity_big_couch_spoken",

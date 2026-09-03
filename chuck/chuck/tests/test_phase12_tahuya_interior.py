@@ -392,6 +392,39 @@ def test_the_room_answers_when_you_look_at_it() -> None:
         directory.cleanup()
 
 
+def test_the_fridge_answers_for_itself_and_not_for_the_table() -> None:
+    """Standing at the fridge asks the fridge.
+
+    The map table is nine tiles wide and its interaction zone swallows
+    the fridge parked at the end of it, so first-in-the-list gave the
+    map's line to anyone walking up to the fridge's south side. The
+    nearer of two overlapping targets is the one that answers.
+    """
+    from src.systems.interaction import find_target
+
+    directory, game = _game()
+    try:
+        world = game.checkpoints.load_checkpoint("tahuya_interior")
+        world._arrival_fade_t = None
+        fridge = next(p for p in world.props if p.kind == "cabin_mini_fridge")
+        table = next(p for p in world.props if p.kind == "cabin_table")
+        from src.systems.interaction import rects_overlap
+
+        fx, fy, fw, fh = fridge.interaction_bounds()
+        # Chuck standing against the fridge's south face, looking north.
+        box = (fx + fw / 2 - 6, fy + fh - 10, 12, 14)
+        probe = (fx + fw / 2 - 4, fy + fh - 16, 8, 8)
+        # The premise: he really is in reach of the table as well, so
+        # this is a genuine tie for the old rule to have got wrong.
+        assert rects_overlap(box, table.interaction_bounds())
+        assert rects_overlap(box, fridge.interaction_bounds())
+
+        assert find_target(probe, box, [], world.props) is fridge
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):

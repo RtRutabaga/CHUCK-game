@@ -48,6 +48,12 @@ STOVE_GLOW_RADIUS = 46
 # The lamp is a lamp, not a fire: a smaller, steadier, redder pool that
 # only exists at all because the room is otherwise dark.
 LAMP_GLOW_RADIUS = 26
+# The woken map is the third thing in the room making its own light, and
+# the brightest -- it is the reason the lights went out. Its glow sits
+# on the map itself rather than on the table's anchor tile, which is
+# nine tiles wide and centred well east of the painted rectangle.
+MAP_GLOW_RADIUS = 40
+MAP_GLOW_OFFSET = (-20, -24)
 
 
 def _band_layer(width: int, height: int, spacing: int, half: int,
@@ -77,10 +83,12 @@ class AuroraLight:
     """The awakened cabin's light: projector bands, stars, and the stove."""
 
     def __init__(self, stove_position: tuple[float, float] | None = None,
-                 lamp_position: tuple[float, float] | None = None):
+                 lamp_position: tuple[float, float] | None = None,
+                 map_position: tuple[float, float] | None = None):
         self.elapsed = 0.0
         self.stove_position = stove_position
         self.lamp_position = lamp_position
+        self.map_position = map_position
         width, height = config.NATIVE_WIDTH * 2, config.NATIVE_HEIGHT
         self._layers = (
             _band_layer(width, height, 104, 30, 0.9, 78, 1),
@@ -98,6 +106,7 @@ class AuroraLight:
         )
         self._glow = self._build_glow()
         self._lamp_glow = self._build_glow(LAMP_GLOW_RADIUS, 74)
+        self._map_glow = self._build_glow(MAP_GLOW_RADIUS, 150)
 
     @staticmethod
     def _build_glow(radius: int = STOVE_GLOW_RADIUS,
@@ -184,3 +193,12 @@ class AuroraLight:
             self._pool(surface, camera_offset, self._lamp_glow,
                        LAMP_GLOW_RADIUS, self.lamp_position,
                        (250, 96, 62), swell)
+        # The map, last and brightest, in whatever colour the projector
+        # is holding: the two of them are the same event.
+        if self.map_position is not None:
+            pulse = 0.88 + 0.12 * math.sin(self.elapsed * 1.9)
+            self._pool(surface, camera_offset, self._map_glow,
+                       MAP_GLOW_RADIUS,
+                       (self.map_position[0] + MAP_GLOW_OFFSET[0],
+                        self.map_position[1] + MAP_GLOW_OFFSET[1]),
+                       self.colour_for(0), pulse)

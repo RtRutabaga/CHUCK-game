@@ -285,11 +285,15 @@ def make_cabin():
     # ---- the door, its lamp, and the windows ---------------------------
     # Wide enough to walk into without lining up on it: this is a door in
     # a cabin, not a gap in a wall Chuck has to thread.
-    filled(((72, 90), (106, 101), (106, 150), (72, 139)), door)
-    pygame.draw.polygon(s, door_dark, poly(((77, 97), (101, 105),
-                                            (101, 143), (77, 135))))
-    box(glass_lit, 82, 104, 14, 12)
-    pygame.draw.circle(s, (188, 152, 96), pt(103, 126), wide(1))
+    # ...and standing ajar: the leaf stops short of its own jamb and
+    # what shows in the gap is the unlit inside of the cabin. Drawn
+    # first, so the leaf closes over its western edge.
+    filled(((99, 99), (106, 101), (106, 150), (99, 148)), (10, 11, 14))
+    filled(((72, 90), (99, 99), (99, 148), (72, 139)), door)
+    pygame.draw.polygon(s, door_dark, poly(((77, 97), (95, 103),
+                                            (95, 141), (77, 135))))
+    box(glass_lit, 82, 104, 12, 12)
+    pygame.draw.circle(s, (188, 152, 96), pt(96, 125), wide(1))
     # The lamp beside it: the one warm thing on the whole building.
     for radius, alpha in ((12, 40), (8, 64)):
         span = wide(radius)

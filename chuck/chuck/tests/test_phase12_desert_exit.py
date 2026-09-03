@@ -64,6 +64,8 @@ def test_only_the_awakened_table_asks_the_question() -> None:
     # It asks on approach, at the table itself rather than across the room.
     assert "cabin_table_portal" in _WALK_TRIGGERS
     assert _TRIGGER_TILES["cabin_table_portal"] == (1, 1)
+    # Two of them, one either side of the table: walking down the room
+    # to it and walking up the room to it are the same arrival.
 
     # The ordinary map has no planar interaction: the trigger is not
     # built at all rather than being built and kept quiet.
@@ -77,9 +79,14 @@ def test_only_the_awakened_table_asks_the_question() -> None:
 
     directory, game, world = _world(AWAKE)
     try:
-        assert [trigger.choice_id for trigger in world.choice_triggers] == [
-            "cabin_table_portal"
+        triggers = world.choice_triggers
+        assert [trigger.choice_id for trigger in triggers] == [
+            "cabin_table_portal", "cabin_table_portal"
         ]
+        # One north of the table, one south of it, on the same column.
+        north, south = sorted(triggers, key=lambda t: t.y)
+        assert north.x == south.x
+        assert south.y > north.y
     finally:
         game._shutdown()
         directory.cleanup()

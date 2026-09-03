@@ -197,7 +197,8 @@ class WorldScene(Scene):
         # room is lit by the aurora projector and the stove alone.
         self.aurora = (
             AuroraLight(self._prop_centre("cabin_woodstove"),
-                        self._prop_centre("cabin_lava_lamp"))
+                        self._prop_centre("cabin_lava_lamp"),
+                        self._prop_centre("cabin_table"))
             if (map_name == "tahuya_cabin_interior"
                 and self.game.progress.has(COUNTER_MAP_AWAKENED_FLAG))
             else None
