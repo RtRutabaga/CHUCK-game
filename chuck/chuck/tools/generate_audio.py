@@ -19,7 +19,7 @@ Sound design intent (Bible: understated, dry, never cartoonish):
     vanish      three soft falling tones ending unresolved
     respawn     two quiet rising bells — a restrained return
     chime       a single soft bell — the anchor attunes. Singular.
-    portal_hum      a tuned airy beating — a planar mouth standing open
+    portal_hum      a held airy chord shimmering — a mouth standing open
     portal_collapse an inward rising rush closing on a soft knock
     lighter         two dry scrapes and a small flame catching
     footsteps   tiny filtered taps; wood is deeper, stone is drier;
@@ -168,20 +168,23 @@ def sfx_fireball() -> list[float]:
 def sfx_portal_hum() -> list[float]:
     """A planar mouth standing open: airy, tuned, and barely there.
 
-    Two close tones beating slowly against each other under a band of
-    filtered breath. Nothing percussive -- it is a hole in the air, and
+    A held fifth with an octave over it, shimmering rather than beating.
+    Written first as two tones a hair apart it throbbed slowly against
+    itself, which sounded haunted -- wrong for a scene whose music is a
+    cheerful little tune in D Dorian. Fast and shallow it reads as light
+    instead. Nothing percussive either way: it is a hole in the air, and
     a hole does not have an attack.
     """
     dur = 2.2
-    pair = mix(
-        tone(196.0, dur, "triangle"),
-        gain(tone(197.6, dur, "triangle"), 0.85),
-        gain(tone(392.0, dur, "triangle"), 0.28),
-        gain(tone(587.3, dur, "triangle"), 0.12),
+    chord = mix(
+        tone(293.7, dur, "triangle"),
+        gain(tone(440.0, dur, "triangle"), 0.55),
+        gain(tone(587.3, dur, "triangle"), 0.34),
+        gain(tone(880.0, dur, "triangle"), 0.16),
     )
-    breath = gain(lowpass(noise(dur, seed=91), 1400), 0.22)
-    body = envelope(lowpass(mix(pair, breath), 2400), attack=0.5, release=1.5)
-    return normalize(tremolo(body, 1.6, 0.35), headroom=0.30)
+    breath = gain(lowpass(noise(dur, seed=91), 2000), 0.16)
+    body = envelope(lowpass(mix(chord, breath), 3200), attack=0.4, release=1.5)
+    return normalize(tremolo(body, 7.5, 0.18), headroom=0.28)
 
 
 def sfx_portal_collapse() -> list[float]:

@@ -390,13 +390,18 @@ in. This file is required by the project rules and updated every session.
   holds there is nothing in frame to explain how he got there. Only then does
   he light a cigarette, using the Chult landing's exact gesture and its clean
   profile frame.
-- Phase 12 gained its own eighteen-second one-shot cue, `desert_arrival`: a
-  throat drone under a breathy reed phrase in D Phrygian dominant, struck
-  every two beats because the drone voice decays whatever length it is given.
-  It starts under the whiteout and ends on the scene's fade. Three new subtle
-  effects go with it -- `portal_hum` (a tuned airy beating), `portal_collapse`
-  (an inward *rising* rush closing on a soft knock, because the thing is being
-  drawn to a point and not dropped), and `lighter`.
+- Phase 12 gained its own eighteen-second one-shot cue, `desert_arrival`,
+  written as a four-channel NES imitation: a narrow-duty pulse tune, a rounder
+  pulse a third under it on the long notes only, an eighth-note broken-triad
+  arpeggio, a bass walking root and fifth, and a noise channel on an offbeat
+  hat with a snare on two. D Dorian rather than Phrygian dominant -- the
+  augmented second is what makes a desert sound haunted, and this is an
+  arrival at the start of something. It starts under the whiteout and ends on
+  a held tonic under the scene's fade. Three subtle effects go with it:
+  `portal_hum` (a held airy chord shimmering, fast and shallow, since written
+  as a slow beat it throbbed and sounded haunted under a cheerful tune),
+  `portal_collapse` (an inward *rising* rush closing on a soft knock, because
+  the thing is being drawn to a point and not dropped), and `lighter`.
 
 ## Next logical task
 

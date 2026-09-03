@@ -1,37 +1,57 @@
-"""Desert arrival cue -- eighteen seconds of dry air and one small event.
+"""Desert arrival cue -- eighteen seconds, written like an NES opening.
 
 This is not an area theme and does not loop. It starts under the
 whiteout, so the desert fades up onto music already playing, and it
-ends exactly as the scene fades out: at 80 BPM the six bars run 18.0
+ends exactly as the scene fades out: at 120 BPM the nine bars run 18.0
 seconds, against the cutscene's 3.6-second music start and 21.6-second
 end.
 
-D Phrygian dominant -- D, Eb, F#, G, A, Bb, C. The raised third against
-the flat second is the interval that says heat and distance without any
-of the instrumentation having to imitate anything in particular.
+The arrangement is a deliberate four-channel imitation: a narrow-duty
+pulse carries the tune, a rounder pulse answers it a third below, a
+third pulse runs broken triads underneath at eighth notes -- the
+arpeggio being the trick that made two square waves sound like a whole
+chord -- and a soft bass walks root and fifth under all of it, with the
+noise channel keeping time on an offbeat hat and a snare on two.
 
-The shape follows the scene rather than a song form. A throat drone
-holds the whole way through, because the horizon does. Over it: a reed
-phrase while Chuck walks out of the portal, a struck low bell where the
-portal folds up, then almost nothing at all while he stands there and
-lights a cigarette, which is the quietest thing that happens in it.
+D Dorian, not Phrygian dominant. The augmented second in that mode is
+what makes a desert sound haunted, and this is the wrong kind of
+desert: Chuck has just arrived somewhere, at the start of a thing
+rather than the end of one, and the music should be pleased about it.
+
+The shape still follows the scene. The tune enters as he walks out of
+the portal, turns over as the portal folds up, and thins to a quiet
+restatement while he stands there lighting a cigarette, ending on a
+held tonic under the white fade.
 """
 
 from src.audio import instruments as ins
 from src.audio.sequencer import Note, Track
 
 
-TEMPO_BPM = 80
+TEMPO_BPM = 120
 BEATS_PER_BAR = 4
-TOTAL_BARS = 6
+TOTAL_BARS = 9
 TOTAL_BEATS = TOTAL_BARS * BEATS_PER_BAR
-MASTER_HEADROOM = 0.66
+MASTER_HEADROOM = 0.70
 
 # The scene's clock, in beats of this cue. Music starts 3.6 seconds in
-# and a beat is 0.75 seconds, so beat = (scene_time - 3.6) / 0.75.
-DESERT_IN_BEAT = 1.87       # scene 5.0  -- the desert has arrived
-COLLAPSE_BEAT = 7.47        # scene 9.2  -- the portal folds up
-CIGARETTE_BEAT = 15.2       # scene 15.0 -- it catches
+# and a beat is half a second, so beat = (scene_time - 3.6) * 2.
+DESERT_IN_BEAT = 2.8        # scene 5.0  -- the desert has arrived
+WALK_BEAT = 4.4             # scene 5.8  -- he steps out of the mouth
+COLLAPSE_BEAT = 11.2        # scene 9.2  -- the portal folds up
+CIGARETTE_BEAT = 22.8       # scene 15.0 -- it catches
+
+# The tune's harmony, one chord to the bar. G major rather than G minor:
+# Dorian's natural sixth is the whole reason this sounds like an open
+# road instead of a haunted one.
+_ROOTS = ("D2", "D2", "C2", "F2", "G2", "D2", "F2", "G2", "D2")
+_FIFTHS = {"D2": "A2", "C2": "G2", "F2": "C3", "G2": "D3"}
+_TRIADS = {
+    "D2": ("D4", "F4", "A4"),
+    "C2": ("C4", "E4", "G4"),
+    "F2": ("F4", "A4", "C5"),
+    "G2": ("G4", "B4", "D5"),
+}
 
 
 def _bars(pattern: dict[int, list[tuple]]) -> list[Note]:
@@ -46,69 +66,79 @@ def _bars(pattern: dict[int, list[tuple]]) -> list[Note]:
 
 
 def build_tracks() -> list[Track]:
-    drone: dict[int, list[tuple]] = {}
-    overtone: dict[int, list[tuple]] = {}
-    reed: dict[int, list[tuple]] = {}
-    pipe: dict[int, list[tuple]] = {}
+    lead: dict[int, list[tuple]] = {}
+    harmony: dict[int, list[tuple]] = {}
+    arp: dict[int, list[tuple]] = {}
     bass: dict[int, list[tuple]] = {}
-    bells: dict[int, list[tuple]] = {}
-    block: dict[int, list[tuple]] = {}
+    hat: dict[int, list[tuple]] = {}
+    snare: dict[int, list[tuple]] = {}
 
-    # The horizon: a held D under everything, swelling once in the
-    # middle and thinning out at the end rather than stopping. Struck
-    # every two beats and overlapping, because the drone voice decays
-    # over about a second whatever duration it is given -- written one
-    # note to the bar it left a hole in the middle of every bar, and the
-    # hole in bar one landed exactly where Chuck steps out.
-    for bar, velocity in enumerate((.46, .60, .68, .64, .54, .42)):
-        drone[bar] = [(beat, 2.6, "D2", velocity) for beat in (0, 2)]
-    # An overtone above it from the moment the desert is visible, so the
-    # arrival has something opening out rather than only something held.
-    # Bar zero's second half needs something in it: the drone voice is
-    # a struck sound and it has died away by then, and that gap sits
-    # right where the whiteout clears.
-    overtone[0] = [(2.0, 2.2, "D3", .34)]
-    overtone[1] = [(0, 3.2, "A3", .30)]
-    overtone[2] = [(0, 3.6, "D4", .38)]
-    overtone[3] = [(1.0, 2.4, "A3", .30)]
-    overtone[5] = [(0.0, 3.0, "D3", .26)]
+    # Bar zero is under the whiteout: bass and arpeggio only, so the
+    # desert fades up onto something already running rather than onto
+    # the downbeat of a tune.
+    #
+    # The tune itself climbs to the fifth and comes back down twice --
+    # deliberately plain, because it has eighteen seconds and one job.
+    lead[1] = [(0, 1, "A4", .92), (1, 1, "G4", .84), (2, 2, "F4", .88)]
+    lead[2] = [(0, 1, "G4", .86), (1, 1, "A4", .90), (2, 2, "D5", .96)]
+    lead[3] = [(0, 1, "C5", .90), (1, 1, "D5", .94),
+               (2, 1, "C5", .86), (3, 1, "A4", .82)]
+    lead[4] = [(0, 2, "G4", .88), (2, 2, "F4", .84)]
+    lead[5] = [(0, 1, "G4", .84), (1, 1, "A4", .88), (2, 2, "G4", .80)]
+    # He has stopped walking; so does the tune, into a quieter version
+    # of its own opening.
+    lead[6] = [(0, 2, "F4", .62), (2, 2, "E4", .58)]
+    lead[7] = [(0, 1, "D4", .60), (1, 1, "F4", .58), (2, 2, "A4", .64)]
+    # Softer than the phrase before it: the fade to white should
+    # feel like the tune letting go, not like a button.
+    lead[8] = [(0, 4, "D4", .42)]
 
-    # The reed carries the walk out of the portal: a phrase that climbs
-    # to the raised third and sits there, which is where the mode's heat
-    # actually lives.
-    reed[1] = [(0.5, 1.0, "D4", .62), (2.0, 0.75, "Eb4", .54),
-               (3.0, 1.0, "F#4", .66)]
-    reed[2] = [(0.5, 1.5, "G4", .60), (2.5, 1.25, "F#4", .52)]
-    # ...then stops, because he has stopped.
-    reed[4] = [(1.0, 2.0, "D4", .40)]
-    reed[5] = [(0.5, 2.6, "A3", .42)]
+    # The second pulse, a third or a sixth under the tune, and only on
+    # its long notes: two channels playing every note together is what
+    # makes a chiptune sound like an organ instead of a band.
+    harmony[1] = [(2, 2, "D4", .50)]
+    harmony[2] = [(2, 2, "A4", .54)]
+    harmony[3] = [(0, 2, "A4", .48)]
+    harmony[4] = [(0, 2, "D4", .46), (2, 2, "C4", .44)]
+    harmony[5] = [(2, 2, "D4", .44)]
+    harmony[7] = [(2, 2, "D4", .34)]
+    harmony[8] = [(0, 4, "A3", .24)]
 
-    # A hollow answer from a long way off, never in the same bar as the
-    # reed: two things calling across an empty place, not a duet.
-    pipe[3] = [(0.0, 1.5, "Bb3", .40), (2.0, 1.75, "A3", .36)]
-    pipe[5] = [(0.5, 2.0, "D4", .26)]
+    for bar, root in enumerate(_ROOTS):
+        fifth = _FIFTHS[root]
+        # Root and fifth on the quarters: the NES bass part, which is
+        # almost always exactly this and almost always enough.
+        if bar < 8:
+            bass[bar] = [(beat, .5, root if beat % 2 == 0 else fifth,
+                          .90 if bar < 6 else .70)
+                         for beat in (0, 1, 2, 3)]
+        else:
+            bass[bar] = [(0, 2.0, root, .52), (2, 2.0, fifth, .42)]
 
-    # Sparse low movement. Four notes in the whole cue.
-    bass[0] = [(0.0, 2.0, "D1", .70)]
-    bass[2] = [(0.0, 2.0, "Bb1", .58)]
-    bass[3] = [(2.0, 2.0, "C2", .52)]
-    bass[4] = [(0.0, 3.0, "D1", .60)]
+        # The arpeggio: eighth-note broken triads, running from the
+        # first bar to the last of the walking section and then out.
+        if bar <= 5:
+            triad = _TRIADS[root]
+            level = .70 if bar else .52
+            arp[bar] = [(index * .5, .45, triad[index % 3], level)
+                        for index in range(8)]
+        elif bar < 8:
+            triad = _TRIADS[root]
+            arp[bar] = [(index * 1.0, .9, triad[index % 3], .34)
+                        for index in range(4)]
 
-    # One struck bell on the collapse, and one high one where the
-    # lighter catches. Two events, two sounds; nothing else is marked.
-    bells[1] = [(3.47, 2.0, "D5", .58)]
-    bells[3] = [(3.2, 2.4, "A5", .30)]
-
-    # A dry tap under the walk only, like something ticking in the heat.
-    block[1] = [(0.0, .08, "D5", .22), (2.0, .08, "D5", .18)]
-    block[2] = [(0.0, .08, "D5", .20), (2.5, .08, "D5", .15)]
+        # Noise channel: offbeat hat through the walk, a snare on two.
+        if 1 <= bar <= 5:
+            hat[bar] = [(beat + .5, .12, "D6", .30) for beat in range(4)]
+            snare[bar] = [(2, .16, "D3", .52)]
+        elif bar == 6:
+            hat[bar] = [(beat + .5, .12, "D6", .18) for beat in (0, 2)]
 
     return [
-        Track("drone", ins.throat_drone, .78, _bars(drone)),
-        Track("overtone", ins.throat_overtone, .50, _bars(overtone)),
-        Track("reed", ins.breathy_reed, .86, _bars(reed)),
-        Track("pipe", ins.hollow_pipe, .62, _bars(pipe)),
-        Track("bass", ins.round_bass, .92, _bars(bass)),
-        Track("bells", ins.bell, .56, _bars(bells)),
-        Track("block", ins.woodblock, .34, _bars(block)),
+        Track("lead", ins.pluck_lead, .92, _bars(lead)),
+        Track("harmony", ins.neon_synth_lead, .60, _bars(harmony)),
+        Track("arp", ins.pulse_arp, .74, _bars(arp)),
+        Track("bass", ins.round_bass, 1.00, _bars(bass)),
+        Track("hat", ins.hat, .30, _bars(hat)),
+        Track("snare", ins.snare, .40, _bars(snare)),
     ]
