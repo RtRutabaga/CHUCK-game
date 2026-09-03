@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 import pygame
 
 from src.world.tileset_layout import TAHUYA, TILE_PX
+from generate_sewer_tileset import draw_astral_void
 
 
 def _flecks(surface, variant, colours, count=5):
@@ -168,6 +169,7 @@ def cabin_panel_wall(surface, variant, _frame):
 
 
 DRAW = {
+    "astral_void": draw_astral_void,
     "forest_ground": forest_ground,
     "dense_forest": dense_forest,
     "forest_path": forest_path,

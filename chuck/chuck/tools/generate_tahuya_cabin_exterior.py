@@ -294,15 +294,18 @@ def build_map():
     # It stops two rows short of the top edge, so the track goes out of
     # sight behind the trees rather than running to the border and
     # ending against nothing.
-    for y in range(2, _north_edge(NORTH_BAY) + 4):
-        for x in range(NORTH_BAY - DRIVEWAY_HALF - 1,
-                       NORTH_BAY + DRIVEWAY_HALF + 2):
+    drive_bottom = _north_edge(NORTH_BAY) + (FOREST_SOLID - FOREST_EDGE) + 2
+    for y in range(2, drive_bottom):
+        for x in range(NORTH_BAY - DRIVEWAY_HALF - 2,
+                       NORTH_BAY + DRIVEWAY_HALF + 3):
             if abs(x - NORTH_BAY) <= DRIVEWAY_HALF:
                 grid[y][x] = "⌇"
             elif grid[y][x] == "♣":
-                # A fir is three tiles of canopy wide. One standing
-                # right against the track hangs over the whole of it,
-                # so the columns either side are kept clear of trunks.
+                # A fir is three tiles of canopy wide, so one standing
+                # anywhere within two tiles of the track leans over it.
+                # The pair immediately flanking the mouth read as gate
+                # posts rather than as forest, which is not what a
+                # driveway through a wood looks like.
                 grid[y][x] = "ᶠ"
 
     # A handful of the established scratchable cigarette-grass tufts soften
@@ -344,6 +347,28 @@ def build_map():
             if not near or rng.random() > 0.34:
                 continue
             grid[y][x] = "ᶲ" if rng.random() < 0.45 else "ᶳ"
+
+    # ...and the understory is kept off the track as well. It plants
+    # itself wherever there is a fir within a couple of tiles, so
+    # clearing the flanking trunks only invited salal into the gap they
+    # left and the mouth of the driveway grew shut again.
+    for y in range(2, drive_bottom):
+        for x in range(NORTH_BAY - DRIVEWAY_HALF - 2,
+                       NORTH_BAY + DRIVEWAY_HALF + 3):
+            if grid[y][x] in {"ᶲ", "ᶳ"}:
+                grid[y][x] = "ᶠ"
+
+    # The Astral Sea closes the map on every side. One block is enough:
+    # the wood is already impassable well inside it, so this is never
+    # somewhere Chuck stands and looks at -- it is there so the ground
+    # ends in the same thing everywhere else in the game ends in,
+    # rather than at an invisible wall.
+    for x in range(WIDTH):
+        grid[0][x] = "V"
+        grid[HEIGHT - 1][x] = "V"
+    for y in range(HEIGHT):
+        grid[y][0] = "V"
+        grid[y][WIDTH - 1] = "V"
 
     # The cutscene emerges onto the western trail; the one Ashtray is close
     # enough to discover naturally but does not interrupt the reveal.

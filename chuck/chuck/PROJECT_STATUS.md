@@ -6,6 +6,18 @@ in. This file is required by the project rules and updated every session.
 
 ## Latest implementation
 
+- The two firs flanking the cabin's driveway are gone, and the corridor they
+  stood in is cleared through the whole planted band rather than only its top
+  few rows. The track had been stopping short of the opening, so trees were
+  standing where the dirt should have carried on.
+- The understory is kept off the track too. It plants itself wherever there is
+  a fir within a couple of tiles, so clearing the trunks only invited salal
+  into the gap they left and the mouth grew shut again.
+- The Astral Sea closes the cabin grounds on every side, one block wide. The
+  wood is impassable well inside it so it is never somewhere Chuck stands and
+  looks at -- it is there so the ground ends in the same thing it ends in
+  everywhere else in the game rather than at an invisible wall.
+
 - Phase 12 has an ending. Standing at the awakened table asks `Enter planar
   portal?`; NO closes with nothing said, and YES plays the desert arrival.
 - The question belongs to the awakened map alone. The trigger is authored in

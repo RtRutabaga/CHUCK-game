@@ -133,9 +133,10 @@ def test_the_wood_opens_north_of_the_cabin_and_a_driveway_leaves_it() -> None:
     """
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
 
-    # Everything above the tree line in a column is closed forest...
+    # Everything above the tree line in a column is closed forest, or
+    # the track, or the ring of Sea the map ends in.
     for col in range(1, tilemap.width_tiles - 1):
-        for row in range(0, _north_edge(col)):
+        for row in range(1, _north_edge(col)):
             assert tilemap.is_solid(col, row) or tilemap.terrain_at(
                 col, row) == "⌇", (col, row)
     # ...and the line bows away from the opening rather than running
@@ -154,13 +155,40 @@ def test_the_wood_opens_north_of_the_cabin_and_a_driveway_leaves_it() -> None:
     # It runs up into the trees and stops short of the border, so it
     # goes out of sight rather than ending against the edge of the map.
     assert min(row for _col, row in drive) >= 2
-    assert all(tilemap.is_solid(col, 0) for col in columns)
+    assert all(tilemap.is_solid(col, 1) for col in columns)
 
     # The circular object stands in the opening, west of the track.
     ufo = next((col, row) for kind, col, row in tilemap.prop_tiles
                if kind == "tahuya_ufo")
     assert ufo[0] < NORTH_BAY - DRIVEWAY_HALF
     assert _north_edge(ufo[0]) <= ufo[1] < NORTH_TREE + 6
+
+
+def test_the_astral_sea_closes_the_map_on_every_side() -> None:
+    """The ground ends in the Sea, the way it does everywhere else.
+
+    One block is enough. The wood is already impassable well inside it,
+    so this is never somewhere Chuck stands and looks at -- it is there
+    so the map stops at something rather than at an invisible wall.
+    """
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    width, height = tilemap.width_tiles, tilemap.height_tiles
+
+    edge = [(col, 0) for col in range(width)]
+    edge += [(col, height - 1) for col in range(width)]
+    edge += [(0, row) for row in range(height)]
+    edge += [(width - 1, row) for row in range(height)]
+    for col, row in edge:
+        assert tilemap.terrain_at(col, row) == "V", (col, row)
+
+    # One block, and no deeper: the second ring in is still forest.
+    assert tilemap.terrain_at(width // 2, 1) != "V"
+    assert tilemap.terrain_at(1, height // 2) != "V"
+
+    # ...and it is never reachable, which is why it can be this thin.
+    markers = _markers(tilemap)
+    reachable = _flood(tilemap, markers["arrival:from_doug_fir"][0])
+    assert not any(point in reachable for point in edge)
 
 
 def test_western_arrival_is_a_narrow_winding_footpath() -> None:
@@ -187,11 +215,12 @@ def test_sole_south_door_and_the_ashtray_are_reachable() -> None:
     # but the line it closes on bows away from the fire, so the wood
     # opens out around it in a bay instead of stopping at it in a fence.
     for col in range(1, tilemap.width_tiles - 1):
-        for row in range(_south_edge(col), tilemap.height_tiles):
+        for row in range(_south_edge(col), tilemap.height_tiles - 1):
             assert tilemap.is_solid(col, row), (col, row)
     assert not any((col, row) in reachable
                    for col in range(1, tilemap.width_tiles - 1)
-                   for row in range(_south_edge(col), tilemap.height_tiles))
+                   for row in range(_south_edge(col),
+                                    tilemap.height_tiles - 1))
 
     far = FIRE[0] + FIRE_BAY_WIDTH + 4
     assert _south_edge(FIRE[0]) > _south_edge(far) + 4

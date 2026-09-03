@@ -584,6 +584,7 @@ TAHUYA = Tileset(
         ("cabin_linoleum", 4, 1),
         ("cabin_hardwood", 5, 1),
         ("cabin_panel_wall", 4, 1),
+        ("astral_void", 2, 3),
     ],
     char_to_terrain={
         "ᶠ": "forest_ground",
@@ -604,6 +605,7 @@ TAHUYA = Tileset(
         "Ħ": "cabin_hardwood",
         "ħ": "cabin_hardwood",
         "ć": "cabin_panel_wall",
+        "V": "astral_void",
     },
     overhead_char_to_terrain={},
 )
