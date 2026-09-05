@@ -743,6 +743,7 @@ MAP_TILESET: dict[str, str] = {
     "desert_central": "desert",
     "desert_orc_camp": "desert",
     "desert_oasis": "desert",
+    "desert_undead_ruins": "desert",
     "tahuya_cabin_interior": "tahuya",
 }
 

@@ -1,4 +1,13 @@
-"""The captain's scratchable, one-time golden-carton chest."""
+"""A scratchable, one-time golden-carton chest.
+
+Built for the sea captain's quarters, and reused unchanged for the
+desert ruins in Phase 13 -- the phase document asks for the same chest
+language, and the honest way to give it the same language is to give it
+the same chest. The only thing the two cannot share is which flags they
+set: two chests keyed to one pair would open together and pay out once
+between them, so the flags are per instance and the captain's remain
+the defaults.
+"""
 
 from __future__ import annotations
 
@@ -25,8 +34,15 @@ class CaptainChest(Entity):
         row: int,
         assets: "AssetManager",
         progress: "ProgressState",
+        kind: str = "ship_captain_chest",
+        progress_flag: str | None = None,
+        collected_flag: str | None = None,
     ) -> None:
-        self.kind = "ship_captain_chest"
+        self.kind = kind
+        if progress_flag is not None:
+            self.progress_flag = progress_flag
+        if collected_flag is not None:
+            self.collected_flag = collected_flag
         self._progress = progress
         self._frames = assets.sheet(
             "objects/ship_captain_chest.png", 32, 24
@@ -98,7 +114,9 @@ class CaptainChest(Entity):
     def create_pickup(self, drop: tuple[float, float], assets):
         from src.entities.pickup import GoldenCigaretteCarton
 
-        pickup = GoldenCigaretteCarton(*drop, self._progress)
+        pickup = GoldenCigaretteCarton(
+            *drop, self._progress, progress_flag=self.collected_flag
+        )
         pickup.load_sprite(assets)
         return pickup
 

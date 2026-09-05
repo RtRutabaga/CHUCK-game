@@ -314,6 +314,10 @@ TILE_DEFS: dict[str, TileDef] = {
     # A burnt-out fire ring. Solid, because a ring of stones is ankle
     # height to the people who built it and a wall to a one-foot rat.
     "⚱": TileDef(solid=True, color=(74, 66, 60)),
+    # The ruins' chest: the sea captain's own, standing on buried
+    # flagstones instead of on ship planking.
+    "⎈": TileDef(solid=True, color=(0, 0, 0), prop="desert_ruin_chest",
+                 under="⌖"),
     "⩊": TileDef(solid=False, color=(96, 130, 70)),
     # Palm shade: drawn over Chuck, so it is walkable oasis turf
     # underneath. `under` is the ground the tile paints, `overhead` the
@@ -730,6 +734,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # standing on the only green ground in the region.
     "⩏": MarkerDef(kind="breakable_grass", under="⩊"),
     "♆": MarkerDef(kind="arrival:from_oasis", under="."),
+    "♁": MarkerDef(kind="arrival:from_undead_ruins", under="."),
+    "☽": MarkerDef(kind="anchor:desert_ruins_anchor", under="⌖"),
+    # Skeletons patrolling the ruins: the Chult implementation exactly,
+    # standing on sand outside the walls and on flagstones within.
+    "ᛊ": MarkerDef(kind="skeleton", under="."),
+    "ᛏ": MarkerDef(kind="skeleton", under="⌖"),
     # Desert orcs, on the sand and inside the camp's beaten ground.
     "❂": MarkerDef(kind="orc", under="."),
     "⟠": MarkerDef(kind="orc", under=","),

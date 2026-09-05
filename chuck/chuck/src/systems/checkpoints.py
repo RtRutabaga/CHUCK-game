@@ -28,6 +28,10 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "pirate_chef_met",
     "captain_chest_opened",
     "captain_chest_carton_collected",
+    # Phase 13: the same chest in the desert ruins, with its own pair --
+    # sharing the captain's would open both at once.
+    "desert_ruin_chest_opened",
+    "desert_ruin_chest_carton_collected",
     "deck_concertina_met",
     "deck_cheering_met",
     "deck_dancer_met",
@@ -1468,6 +1472,25 @@ CHECKPOINTS = (
         arrival="from_desert_central", facing="left",
         required_flags=DESERT_ENTRY_FLAGS,
         runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_central_from_ruins", "Desert Central South Return",
+        "desert_central", arrival="from_undead_ruins", facing="up",
+        required_flags=DESERT_ENTRY_FLAGS,
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_undead_ruins", "Undead Ruins", "desert_undead_ruins",
+        arrival="from_desert_central", facing="down",
+        required_flags=DESERT_ENTRY_FLAGS,
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_ruins_anchor", "Undead Ruins Ashtray",
+        "desert_undead_ruins",
+        position=(520.0, 712.0), facing="up",
+        required_flags=DESERT_ENTRY_FLAGS,
+        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "desert_oasis_anchor", "Oasis Ashtray", "desert_oasis",

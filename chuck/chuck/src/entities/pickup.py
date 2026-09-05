@@ -130,8 +130,13 @@ class GoldenCigaretteCarton(CigaretteCarton):
 
     progress_flag = "captain_chest_carton_collected"
 
-    def __init__(self, center_x: float, center_y: float, progress) -> None:
+    def __init__(self, center_x: float, center_y: float, progress,
+                 progress_flag: str | None = None) -> None:
         super().__init__(center_x, center_y)
+        # Whichever chest dropped it banks its own collection flag: two
+        # cartons sharing one would let the second chest pay out nothing.
+        if progress_flag is not None:
+            self.progress_flag = progress_flag
         self.cigarette_count = config.HALFLING_LEAF_CIGARETTES
         self.restore_amount = (
             self.cigarette_count * config.CIGARETTE_SANITY_RESTORE

@@ -1,8 +1,9 @@
 # CHUCK — Project Status
 
 Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
-Desert's hub, orc camp and oasis are in, along with the desert tileset and
-theme; the undead ruins and the eastern route are not yet. This file is
+Desert's five-map opening region is complete -- hub, orc camp, oasis and
+undead ruins -- along with the desert tileset and theme. The eastern route
+and everything past it are not yet. This file is
 required by the project rules and updated every session.
 
 ## Latest implementation
@@ -507,11 +508,31 @@ required by the project rules and updated every session.
   stands Chuck under one and checks the pixels above him rather than trusting
   the tile table.
 
+- Added `desert_undead_ruins`, 60x52, south of the hub: one building with an
+  outer wall, cross-wall rooms, and a courtyard with the chest in the middle
+  of it, rather than more scattered rubble. The hub already has six broken
+  rectangles a player walks past, so this map only earns its place by being
+  legibly somebody's building -- four intact corners, five doorways, an inside
+  you can get into. Ten skeletons patrol it, unchanged from the Chult
+  implementation. The Astral Sea closes the west and south as the document
+  specifies.
+- The chest is the sea captain's, and that took a small generalisation to be
+  safe. `CaptainChest` carried its two progress flags as class attributes, so
+  a second chest keyed to the same pair would have opened itself the instant
+  the captain's was opened and paid out one carton between them. The flags are
+  per instance now, the captain's remain the defaults, and the carton it drops
+  banks whichever collection flag its own chest names. A test opens the desert
+  chest and asserts the captain's is still shut.
+- The hub's south gap became its third door. East keeps its shape and stays
+  unwired, because it is the way forward and the map must not say so.
+
 ## Next logical task
 
-- Build the undead ruins south of the hub: patrolling skeletons on the
-  existing implementation, a captain's-quarters-style treasure chest near the
-  middle, and Astral Sea barriers closing the west and south.
+- Begin the eastern route. The phase document is explicit that the first
+  eastern transition should not look dramatically different from the rest of
+  the desert, and that the world mash-up escalates as Chuck continues rather
+  than arriving all at once -- so the first map east is still desert, with the
+  smallest possible intrusion in it.
 
 ## Superseded Phase 12 task
 
