@@ -306,6 +306,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             # the phase document asks for by name.
             "Desert Central", "Orc Camp", "Oasis", "Undead Ruins",
             "Collided Desert 1", "Collided Desert 2",
+            "Collided Desert 3", "Collided Desert 4",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)

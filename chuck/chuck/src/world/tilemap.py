@@ -331,6 +331,11 @@ TILE_DEFS: dict[str, TileDef] = {
     "ᛗ": TileDef(solid=False, color=(37, 44, 28)),
     "ᚷ": TileDef(solid=True, color=(17, 54, 34)),
     "ᚺ": TileDef(solid=True, color=(23, 68, 67)),
+    # Fragments of the Feywild. Its ground and growth need characters
+    # here for the same reason Chult's did; the rest of what it brought
+    # already had its own and keeps them.
+    "ᛟ": TileDef(solid=False, color=(46, 74, 60)),
+    "ᛇ": TileDef(solid=True, color=(28, 54, 46)),
     # The orc camp's stores. Deliberately the pantry's own grain-sack
     # prop rather than a desert-styled one: the phase document asks for
     # the same asset and the same behaviour, and a player who scratched
@@ -754,6 +759,14 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "⌳": MarkerDef(kind="anchor:desert_east_2_anchor", under="."),
     # Snakes, in the jungle that fell in with them.
     "⌴": MarkerDef(kind="snake", under="ᛗ"),
+    "⌵": MarkerDef(kind="arrival:from_east_3", under="."),
+    "⌶": MarkerDef(kind="anchor:desert_east_3_anchor", under="."),
+    "⌷": MarkerDef(kind="arrival:from_east_4", under="."),
+    "⌹": MarkerDef(kind="anchor:desert_east_4_anchor", under="."),
+    # Redcaps came through with the Feywild. Hell's devils needed no
+    # marker of their own: Phlegethos already authored one per facing,
+    # each standing on basalt, which is exactly what its fragment is.
+    "⌺": MarkerDef(kind="redcap", under="ᛟ"),
     # Desert orcs, on the sand and inside the camp's beaten ground.
     "❂": MarkerDef(kind="orc", under="."),
     "⟠": MarkerDef(kind="orc", under=","),

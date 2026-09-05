@@ -27,8 +27,9 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.world import collision
 from src.world.tileset_layout import (
-    CHULT, CITY, COLLIDED, DESERT, SEWER, TILE_PX,
+    CHULT, CITY, COLLIDED, DESERT, FEYWILD, PHLEGETHOS, SEWER, TILE_PX,
 )
 
 
@@ -46,6 +47,13 @@ PROVENANCE = {
     "jungle_ground": CHULT,
     "dense_jungle": CHULT,
     "jungle_stream": CHULT,
+    "fey_ground": FEYWILD,
+    "fey_dense": FEYWILD,
+    "fey_pollen": FEYWILD,
+    "fey_glow_pool": FEYWILD,
+    "basalt": PHLEGETHOS,
+    "cliff": PHLEGETHOS,
+    "lava": PHLEGETHOS,
     # The Sea is on every sheet in the game and identical on all of
     # them; the sewer's is as good a reference as any.
     "astral_void": SEWER,
@@ -112,6 +120,17 @@ def test_a_character_means_the_same_thing_it_meant_at_home() -> None:
     assert COLLIDED.char_to_terrain["ᛗ"] == CHULT.char_to_terrain["."]
     assert COLLIDED.char_to_terrain["ᚷ"] == CHULT.char_to_terrain["#"]
     assert COLLIDED.char_to_terrain["ᚺ"] == CHULT.char_to_terrain["≈"]
+    assert COLLIDED.char_to_terrain["ᛟ"] == FEYWILD.char_to_terrain["."]
+    assert COLLIDED.char_to_terrain["ᛇ"] == FEYWILD.char_to_terrain["#"]
+    # The Feywild's own oddities kept their letters; nothing had them.
+    for char in ("☼", "ᛞ"):
+        assert COLLIDED.char_to_terrain[char] == FEYWILD.char_to_terrain[char]
+    # Hell kept all of its, including the one that matters: lava has
+    # been lethal since Phlegethos and is lethal here for free.
+    for char in ("·", "█", "≋"):
+        assert (COLLIDED.char_to_terrain[char]
+                == PHLEGETHOS.char_to_terrain[char])
+    assert "≋" in collision.FALL_HAZARD_TERRAIN
     # ...and the desert kept its own, so the ground under everything
     # still reads the way the opening region taught it.
     for char in (".", ",", "⟁", "#", "⌗", "⌖", "⍟", "V"):

@@ -38,6 +38,11 @@ from generate_city_tileset import road_line_h as draw_city_road_line
 from generate_chult_tileset import (
     draw_dense_jungle, draw_ground as draw_jungle_ground, draw_jungle_stream,
 )
+from generate_feywild_tileset import (
+    dense as draw_fey_dense, glow_pool as draw_fey_glow_pool,
+    ground as draw_fey_ground, pollen as draw_fey_pollen,
+)
+from generate_phlegethos_tileset import draw_basalt, draw_cliff, draw_lava
 
 
 DRAW = {
@@ -55,6 +60,17 @@ DRAW = {
     "jungle_ground": draw_jungle_ground,
     "dense_jungle": draw_dense_jungle,
     "jungle_stream": draw_jungle_stream,
+    # ...the Feywild, which is the only thing in the desert with a
+    # colour of its own rather than a shade of one.
+    "fey_ground": draw_fey_ground,
+    "fey_dense": draw_fey_dense,
+    "fey_pollen": draw_fey_pollen,
+    "fey_glow_pool": draw_fey_glow_pool,
+    # ...and the Nine Hells, which bring the first fragment that is
+    # dangerous to stand on rather than merely strange to look at.
+    "basalt": draw_basalt,
+    "cliff": draw_cliff,
+    "lava": draw_lava,
     "astral_void": draw_astral_void,
 }
 

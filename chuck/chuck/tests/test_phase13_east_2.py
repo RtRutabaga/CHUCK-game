@@ -2,10 +2,9 @@
 
 The phase document asks for escalation rather than arrival -- small
 intrusions early, heavily fragmented later -- which is a property of a
-*sequence* and therefore cannot be checked one map at a time. So this
-suite measures east 2 against east 1 rather than against a number: more
-of the map given over to other worlds, and more worlds giving it. Every
-map added east of here should extend the same comparison.
+*sequence* and cannot be checked one map at a time. That comparison
+runs over the whole run of eastern maps in test_phase13_east_3_4; what
+is left here is what this map is on its own.
 
 The other two things worth pinning are that the jungle does not block
 the way through, and that it can be walked into anyway. Those sound
@@ -102,22 +101,20 @@ def _survey(name: str) -> tuple[float, set[str]]:
     return foreign / (width * height), worlds
 
 
-def test_the_collision_is_worse_here_than_it_was_behind() -> None:
-    """Escalation, measured against the map before it.
+def test_this_map_is_two_worlds_and_still_mostly_desert() -> None:
+    """What this map is, on its own.
 
-    Held as a comparison rather than a threshold: a number chosen today
-    is a number a later map has to be tuned around, whereas "more than
-    the one before" is the property the phase document actually asks
-    for, and it keeps holding as the sequence grows.
+    The comparison against the map behind it -- and against every map
+    ahead of it -- moved to test_phase13_east_3_4 once there was a run
+    of maps to compare. Escalation is a property of the sequence, and
+    checking it pairwise in each map's own file means every new map
+    east edits the file before it.
     """
-    behind_share, behind_worlds = _survey(BEHIND)
     here_share, here_worlds = _survey(MAP_NAME)
-
-    assert here_share > behind_share * 2, (behind_share, here_share)
-    assert behind_worlds < here_worlds, (behind_worlds, here_worlds)
     assert here_worlds == {"modern_city", "chult"}
+    assert here_share > 0.10, here_share
 
-    # ...and still mostly desert, because this is early.
+    # Still mostly desert, because this is early.
     tilemap = _tilemap()
     desert = sum(1 for y in range(HEIGHT) for x in range(WIDTH)
                  if tilemap.terrain_at(x, y) in DESERT_GROUND)
@@ -127,7 +124,7 @@ def test_the_collision_is_worse_here_than_it_was_behind() -> None:
     # a named fragment, the Sea, or a door.
     seen = {tilemap.terrain_at(x, y)
             for y in range(HEIGHT) for x in range(WIDTH)}
-    assert seen <= set(DESERT_GROUND) | set(FRAGMENTS) | {"V", "⮜"}, seen
+    assert seen <= set(DESERT_GROUND) | set(FRAGMENTS) | {"V", "⮜", "⮞"},         seen
 
 
 def test_the_jungle_is_the_jungle_chuck_crossed() -> None:

@@ -2,8 +2,9 @@
 
 Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
 Desert's five-map opening region is complete -- hub, orc camp, oasis and
-undead ruins -- and the eastward traversal has begun: the collided tileset
-and the first two maps east. Everything past that is not built yet. This file is
+undead ruins -- and the eastward traversal runs four maps deep, through the
+modern city, Chult, the Feywild and the Nine Hells. Everything past that is
+not built yet. This file is
 required by the project rules and updated every session.
 
 ## Latest implementation
@@ -580,12 +581,37 @@ required by the project rules and updated every session.
   every foreign tile made solid the far door is still reachable, and the open
   ground inside the growth is still one piece.
 
+- Added `desert_east_3`: a mass of Feywild filling the middle of the map,
+  with its own ragged coast, glow pools, pollen and redcaps in it. A third of
+  the ground is somebody else's. The desert still runs round it, so the player
+  may decline -- but the fragment is a place now rather than a patch, and the
+  Feywild is the right world for that step because it is the only one Chuck
+  has visited that is not a shade of brown.
+- Added `desert_east_4`: a slab of Phlegethos from rim to rim, with three
+  wandering lava channels and fords across them. This is the first map east
+  that cannot be walked past. The phase document's "lava hazards where Hell
+  fragments appear" needed no new system at all -- `≋` has been a fall hazard
+  since Phlegethos and stays one here -- and Hell's devils needed no new
+  marker, because Phlegethos already authored one per facing standing on
+  basalt, which is exactly what its fragment is made of.
+- Escalation is now measured across the whole run rather than pairwise. East 2
+  used to compare itself with east 1; with four maps that means every new map
+  edits the file before it, so the comparison moved into one place that walks
+  the sequence. It also had to change shape: the maps' worlds are not nested,
+  because each has one big fragment that gives it its character plus scraps of
+  the ones met before. What escalates is how many different places are
+  arriving at once -- one, two, three, four.
+- Those scraps were added because the test caught the maps reading as clean
+  single-world overlays. A map with one fragment on it is an overlay; the
+  collision is supposed to be getting messier.
+
 ## Next logical task
 
-- East 3 and 4. Keep escalating: bigger fragments again, a third and fourth
-  world -- Feywild and Phlegethos are the obvious next two, and Hell brings
-  lava, which is the point at which a fragment should start being something
-  Chuck has to deal with rather than something he may visit.
+- East 5 onward, and the unvisited worlds. The phase document still wants a
+  medieval courtyard with armoured knights and a snowy region with an
+  unbeatable blue dragon, plus ship decking and Waterdeep stone among the
+  returning ones. The maps should also start combining hazards rather than
+  presenting one apiece.
 
 ## Superseded Phase 12 task
 

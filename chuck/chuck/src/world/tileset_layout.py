@@ -677,6 +677,13 @@ COLLIDED = Tileset(
         ("jungle_ground", 4, 1),
         ("dense_jungle", 4, 1),
         ("jungle_stream", 3, 3),
+        ("fey_ground", 4, 1),
+        ("fey_dense", 4, 1),
+        ("fey_pollen", 3, 3),
+        ("fey_glow_pool", 3, 3),
+        ("basalt", 4, 1),
+        ("cliff", 3, 1),
+        ("lava", 2, 3),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -698,6 +705,18 @@ COLLIDED = Tileset(
         "ᛗ": "jungle_ground",
         "ᚷ": "dense_jungle",
         "ᚺ": "jungle_stream",
+        # The Feywild loses its ground and its growth to the desert for
+        # the same reason Chult did, and keeps everything else it has.
+        "ᛟ": "fey_ground",
+        "ᛇ": "fey_dense",
+        "☼": "fey_pollen",
+        "ᛞ": "fey_glow_pool",
+        # Hell keeps all of its own. Nothing here had claimed basalt,
+        # cliff or lava -- and lava is already a fall hazard everywhere
+        # in the game, so the Nine Hells bring their danger with them.
+        "·": "basalt",
+        "█": "cliff",
+        "≋": "lava",
         "V": "astral_void",
         "⮝": "sand",
         "⮟": "sand",
@@ -801,6 +820,8 @@ MAP_TILESET: dict[str, str] = {
     # East of the hub: the collided traversal.
     "desert_east_1": "collided",
     "desert_east_2": "collided",
+    "desert_east_3": "collided",
+    "desert_east_4": "collided",
     "tahuya_cabin_interior": "tahuya",
 }
 
