@@ -740,6 +740,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # standing on sand outside the walls and on flagstones within.
     "ᛊ": MarkerDef(kind="skeleton", under="."),
     "ᛏ": MarkerDef(kind="skeleton", under="⌖"),
+    # Phase 13's eastward traversal.
+    "⌦": MarkerDef(kind="arrival:from_desert_central", under="."),
+    "⌸": MarkerDef(kind="anchor:desert_east_1_anchor", under="."),
+    "⌱": MarkerDef(kind="arrival:from_east_1", under="."),
     # Desert orcs, on the sand and inside the camp's beaten ground.
     "❂": MarkerDef(kind="orc", under="."),
     "⟠": MarkerDef(kind="orc", under=","),

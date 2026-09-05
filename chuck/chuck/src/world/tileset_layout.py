@@ -654,6 +654,49 @@ DESERT = Tileset(
     },
 )
 
+# Everything east of the hub. The desert with whatever has fallen into
+# it -- the same materials as DESERT above, plus one row per intruding
+# world, added as the traversal needs them. Kept separate from DESERT so
+# the opening region's sheet stays fixed while this one grows.
+COLLIDED = Tileset(
+    sheet="collided.png",
+    order=[
+        ("sand", 4, 1),
+        ("sand_ripple", 4, 1),
+        ("dune", 3, 1),
+        ("desert_rock", 4, 1),
+        ("ruin_stone", 4, 1),
+        ("ruin_floor", 4, 1),
+        ("desert_scrub", 3, 1),
+        # Four variants and three frames, matching the city sheet's own
+        # counts exactly -- a fragment drawn with fewer would be the
+        # same art rendered differently, which is the drift this whole
+        # arrangement exists to prevent.
+        ("city_road", 4, 3),
+        ("city_road_line_h", 4, 3),
+        ("astral_void", 2, 3),
+    ],
+    char_to_terrain={
+        ".": "sand",
+        ",": "sand_ripple",
+        "⟁": "dune",
+        "#": "desert_rock",
+        "⌗": "ruin_stone",
+        "⌖": "ruin_floor",
+        "⍟": "desert_scrub",
+        # The same characters that draw a road in the modern city draw
+        # one here, because it is the same road.
+        "=": "city_road",
+        "≡": "city_road_line_h",
+        "V": "astral_void",
+        "⮝": "sand",
+        "⮟": "sand",
+        "⮜": "sand",
+        "⮞": "sand",
+    },
+    overhead_char_to_terrain={},
+)
+
 
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
@@ -671,6 +714,7 @@ TILESETS: dict[str, Tileset] = {
     "city_sewer": CITY_SEWER,
     "tahuya": TAHUYA,
     "desert": DESERT,
+    "collided": COLLIDED,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -744,6 +788,8 @@ MAP_TILESET: dict[str, str] = {
     "desert_orc_camp": "desert",
     "desert_oasis": "desert",
     "desert_undead_ruins": "desert",
+    # East of the hub: the collided traversal.
+    "desert_east_1": "collided",
     "tahuya_cabin_interior": "tahuya",
 }
 

@@ -305,6 +305,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             # Phase 13's development entry to the initial desert, which
             # the phase document asks for by name.
             "Desert Central", "Orc Camp", "Oasis", "Undead Ruins",
+            "Collided Desert 1",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)

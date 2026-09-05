@@ -13,6 +13,12 @@ The rest is the shape of a place worth walking into: one building with
 rooms rather than scattered rubble, a chest far enough inside that
 reaching it means going past the skeletons, and the Astral Sea closing
 the two sides the document names.
+
+This file used to also assert that the hub had three doors and four
+identical gaps. The eastern route gave it its fourth door, and the
+stronger version of that property -- four doors, four identical gaps,
+four identical approaches -- lives in the east-1 suite now, where the
+temptation to start hinting at the way forward actually arises.
 """
 
 import os
@@ -266,27 +272,6 @@ def test_the_road_south_is_walked_in_both_directions() -> None:
     finally:
         game._shutdown()
         directory.cleanup()
-
-
-def test_all_four_of_the_hubs_gaps_now_have_a_shape_and_three_have_a_door():
-    """The region is a hub with three neighbours and one route out.
-
-    East is deliberately still unwired: it is the way forward, and the
-    map must not say so.
-    """
-    doors = {char for (name, char) in AREA_WALK_EXITS if name == HUB}
-    assert doors == {"⮝", "⮜", "⮟"}, doors
-
-    hub = TileMap(config.MAPS_DIR / f"{HUB}.txt")
-    width, height = hub.width_tiles, hub.height_tiles
-    edges = {
-        "north": [hub.is_solid(x, 0) for x in range(width)],
-        "south": [hub.is_solid(x, height - 1) for x in range(width)],
-        "west": [hub.is_solid(0, y) for y in range(height)],
-        "east": [hub.is_solid(width - 1, y) for y in range(height)],
-    }
-    for side, cells in edges.items():
-        assert cells.count(False) == GAP, (side, cells.count(False))
 
 
 def test_the_ruins_have_their_own_entries() -> None:

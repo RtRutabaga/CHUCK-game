@@ -191,10 +191,10 @@ def build() -> list[list[str]]:
         for x in range(WIDTH - RIM - APPROACH, WIDTH - RIM):
             _clear(grid, x, y)
 
-    # North to the orc camp, west to the oasis, south to the undead
-    # ruins. East keeps its shape and stays unwired until the route
-    # forward is built -- and because the shape was cut first, wiring
-    # it later adds markers rather than moving anything.
+    # All four gaps lead somewhere now: north to the orc camp, west to
+    # the oasis, south to the undead ruins, east to the route forward.
+    # They were cut identically before any of them had a map behind it,
+    # which is what stops the one that matters from looking different.
     _rect(grid, mid_x - half, 0, mid_x + half, RIM - 1, "⮝")
     grid[RIM + 1][mid_x] = "⛲"
     # West leads to the oasis, south to the undead ruins.
@@ -202,6 +202,11 @@ def build() -> list[list[str]]:
     grid[mid_y][RIM + 1] = "♆"
     _rect(grid, mid_x - half, HEIGHT - RIM, mid_x + half, HEIGHT - 1, "⮟")
     grid[HEIGHT - RIM - 2][mid_x] = "♁"
+    # ...and east, which is the way forward. It is wired like the other
+    # three and looks like the other three: the map still does not say
+    # which of the four is the one that matters.
+    _rect(grid, WIDTH - RIM, mid_y - half, WIDTH - 1, mid_y + half, "⮞")
+    grid[mid_y][WIDTH - RIM - 2] = "⌱"
 
     grid[ANCHOR[1]][ANCHOR[0]] = "⨀"
     return grid

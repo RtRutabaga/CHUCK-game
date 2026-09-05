@@ -2,8 +2,8 @@
 
 Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
 Desert's five-map opening region is complete -- hub, orc camp, oasis and
-undead ruins -- along with the desert tileset and theme. The eastern route
-and everything past it are not yet. This file is
+undead ruins -- and the eastward traversal has begun with its own collided
+tileset and its first map. Everything past that is not built yet. This file is
 required by the project rules and updated every session.
 
 ## Latest implementation
@@ -526,13 +526,38 @@ required by the project rules and updated every session.
 - The hub's south gap became its third door. East keeps its shape and stays
   unwired, because it is the way forward and the map must not say so.
 
+- Added the `collided` tileset, which everything east of the hub draws with.
+  It is the desert plus whatever has fallen into it, and it grows a row per
+  intruding world as the traversal needs them; DESERT itself stays fixed so
+  the opening region's five maps cannot be disturbed by later work. Every row
+  is rendered by the generator function that owns it -- the desert rows by the
+  desert generator, the city rows by the city generator -- and a test compares
+  the finished sheets pixel for pixel. A fragment of the modern city has to
+  *be* the modern city, and the failure mode of redrawing one from memory is
+  not a crash, it is a lookalike drifting a shade at a time until the player
+  no longer recognises what they are standing on.
+- Added `desert_east_1`, 68x48. Over 80% of it is desert ground and about 3%
+  is intrusion, held as proportions so every later map in the sequence has a
+  number to exceed. The one wrong thing in it is a slab of rain-dark city road
+  with its lane line, lying in a tear of Astral Sea -- drawn with the same
+  characters that draw a road in the city, so a map author cannot accidentally
+  author a different one.
+- The tear runs rim to rim and the road is the only way over it, which is
+  proved by taking the road away: with the asphalt walkable the far half of
+  the map is reachable and with it solid nothing over there is. The first pass
+  tapered the tear short of both ends, leaving walkable sand round it, and the
+  map claimed a crossing it did not have.
+- The hub's fourth gap became its fourth door. All four now lead somewhere,
+  and a test holds them to the same width, the same offset and the same
+  terrain in front of each -- this is the point at which east could quietly
+  start looking special, and it must not.
+
 ## Next logical task
 
-- Begin the eastern route. The phase document is explicit that the first
-  eastern transition should not look dramatically different from the rest of
-  the desert, and that the world mash-up escalates as Chuck continues rather
-  than arriving all at once -- so the first map east is still desert, with the
-  smallest possible intrusion in it.
+- Continue east. The next maps escalate the collision: bigger fragments, more
+  than one world per map, and the returning environments the phase document
+  lists -- Feywild, Phlegethos, ship decking, jungle Chult -- each added to
+  the collided sheet by importing its own generator, as the city road was.
 
 ## Superseded Phase 12 task
 

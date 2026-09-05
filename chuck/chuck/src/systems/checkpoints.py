@@ -1498,6 +1498,27 @@ CHECKPOINTS = (
         required_flags=DESERT_ENTRY_FLAGS,
         saveable=True, development_visible=False,
     ),
+    # ----------------------------------------------------------------
+    # ...and east out of the region, into the collided traversal.
+    # ----------------------------------------------------------------
+    CheckpointDefinition(
+        "desert_central_from_east_1", "Desert Central East Return",
+        "desert_central", arrival="from_east_1", facing="left",
+        required_flags=DESERT_ENTRY_FLAGS,
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_east_1", "Collided Desert 1", "desert_east_1",
+        arrival="from_desert_central", facing="right",
+        required_flags=DESERT_ENTRY_FLAGS,
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_east_1_anchor", "Collided Desert 1 Ashtray", "desert_east_1",
+        position=(200.0, 392.0), facing="right",
+        required_flags=DESERT_ENTRY_FLAGS,
+        saveable=True, development_visible=False,
+    ),
 )
 
 CHECKPOINT_BY_ID = {checkpoint.checkpoint_id: checkpoint for checkpoint in CHECKPOINTS}
