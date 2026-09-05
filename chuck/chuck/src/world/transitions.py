@@ -29,6 +29,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("desert_orc_camp", "⮟"): AreaExit(
         "desert_central", "from_orc_camp", "down"
     ),
+    ("desert_central", "⮜"): AreaExit(
+        "desert_oasis", "from_desert_central", "left"
+    ),
+    ("desert_oasis", "⮞"): AreaExit(
+        "desert_central", "from_oasis", "right"
+    ),
     ("modern_city_arrival", "⮝"): AreaExit(
         "modern_city_night_2", "from_city_night_1", "up"
     ),
@@ -544,4 +550,5 @@ AREA_MUSIC: dict[str, str | None] = {
     # walking between its five maps never restarts the music.
     "desert_central": "desert.wav",
     "desert_orc_camp": "desert.wav",
+    "desert_oasis": "desert.wav",
 }

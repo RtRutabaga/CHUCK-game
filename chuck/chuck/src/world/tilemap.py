@@ -315,8 +315,12 @@ TILE_DEFS: dict[str, TileDef] = {
     # height to the people who built it and a wall to a one-foot rat.
     "⚱": TileDef(solid=True, color=(74, 66, 60)),
     "⩊": TileDef(solid=False, color=(96, 130, 70)),
-    # Palm shade: drawn over Chuck, so it is walkable ground underneath.
-    "⏦": TileDef(solid=False, color=(214, 178, 122)),
+    # Palm shade: drawn over Chuck, so it is walkable oasis turf
+    # underneath. `under` is the ground the tile paints, `overhead` the
+    # art that goes on top of him -- authored with neither, the tile was
+    # walkable and blank and no palm ever appeared.
+    "⏦": TileDef(solid=False, color=(96, 130, 70), under="⩊",
+                 overhead="palm_canopy"),
     # The orc camp's stores. Deliberately the pantry's own grain-sack
     # prop rather than a desert-styled one: the phase document asks for
     # the same asset and the same behaviour, and a player who scratched
@@ -721,6 +725,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # buried floor: the one place a player can see from a distance.
     "⨀": MarkerDef(kind="anchor:desert_central_anchor", under="⌖"),
     "⨁": MarkerDef(kind="anchor:desert_orc_camp_anchor", under="."),
+    "☉": MarkerDef(kind="anchor:desert_oasis_anchor", under="⩊"),
+    # Cigarette grass on the oasis turf: the established scratchable,
+    # standing on the only green ground in the region.
+    "⩏": MarkerDef(kind="breakable_grass", under="⩊"),
+    "♆": MarkerDef(kind="arrival:from_oasis", under="."),
     # Desert orcs, on the sand and inside the camp's beaten ground.
     "❂": MarkerDef(kind="orc", under="."),
     "⟠": MarkerDef(kind="orc", under=","),

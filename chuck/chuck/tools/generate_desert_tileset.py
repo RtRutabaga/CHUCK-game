@@ -53,8 +53,10 @@ GRASS_LIT = (128, 164, 88)
 ASH = (128, 118, 108)
 ASH_DARK = (88, 80, 74)
 CHAR = (48, 42, 40)
-PALM = (54, 92, 54)
-PALM_LIT = (78, 124, 66)
+# Darker than the turf it hangs over, or the shade disappears into the
+# grass it is supposed to be shading.
+PALM = (36, 68, 40)
+PALM_LIT = (62, 104, 56)
 
 
 def draw_sand(surface, variant: int, _frame: int) -> None:

@@ -742,6 +742,7 @@ MAP_TILESET: dict[str, str] = {
     # Phase 13 opens here.
     "desert_central": "desert",
     "desert_orc_camp": "desert",
+    "desert_oasis": "desert",
     "tahuya_cabin_interior": "tahuya",
 }
 

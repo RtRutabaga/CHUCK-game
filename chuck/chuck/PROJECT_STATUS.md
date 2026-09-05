@@ -1,8 +1,8 @@
 # CHUCK — Project Status
 
 Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
-Desert's hub and its orc camp are in, along with the desert tileset and theme;
-the oasis, the undead ruins and the eastern route are not yet. This file is
+Desert's hub, orc camp and oasis are in, along with the desert tileset and
+theme; the undead ruins and the eastern route are not yet. This file is
 required by the project rules and updated every session.
 
 ## Latest implementation
@@ -488,11 +488,30 @@ required by the project rules and updated every session.
   in the previous session, wiring this one added markers and a return
   checkpoint rather than moving anything, which is what that decision was for.
 
+- Added `desert_oasis`, 56x44, west of the hub, using the water, turf and palm
+  rows the sheet already carried. No enemies at all, ten tufts of the
+  established cigarette grass, and a pool small enough to put your back to --
+  drawn at twice the size it filled two screens and read as a lake, where the
+  phase document is asking for something you find at the end of a walk.
+- It is a dead end closed three ways, and only two of them are walls: rock
+  north and west, the Astral Sea along the south. That makes "sealed" a
+  different measurement here -- a plain solidity flood calls the map wide open
+  southward, because the Sea does not stop Chuck, it kills him. The test
+  floods over walkable-and-survivable ground instead, and the only edge it
+  reaches is the five-tile way back east.
+- The palm canopy needed two fixes to work at all. Its tile was authored with
+  neither `under` nor `overhead`, so it was walkable, blank, and drew no palm;
+  and placed as single tiles the fronds read as bushes drawn on top of Chuck,
+  because an overhead layer has no trunk beneath it. They are 2x2 clumps now,
+  darkened so they do not disappear into the turf they shade, and a test
+  stands Chuck under one and checks the pixels above him rather than trusting
+  the tile table.
+
 ## Next logical task
 
-- Build the oasis west of the hub: water, vegetation, scratchable cigarette
-  grass, no enemies, with cliffs north and west and an Astral Sea barrier
-  south. The oasis rows are already on the desert sheet.
+- Build the undead ruins south of the hub: patrolling skeletons on the
+  existing implementation, a captain's-quarters-style treasure chest near the
+  middle, and Astral Sea barriers closing the west and south.
 
 ## Superseded Phase 12 task
 
