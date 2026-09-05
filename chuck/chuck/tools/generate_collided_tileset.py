@@ -35,6 +35,9 @@ from generate_desert_tileset import (
 )
 from generate_city_tileset import road as draw_city_road
 from generate_city_tileset import road_line_h as draw_city_road_line
+from generate_chult_tileset import (
+    draw_dense_jungle, draw_ground as draw_jungle_ground, draw_jungle_stream,
+)
 
 
 DRAW = {
@@ -48,6 +51,10 @@ DRAW = {
     # The first intrusion: a piece of the rained-on city, unchanged.
     "city_road": draw_city_road,
     "city_road_line_h": draw_city_road_line,
+    # ...and the second: the jungle Chuck crossed to get to any of this.
+    "jungle_ground": draw_jungle_ground,
+    "dense_jungle": draw_dense_jungle,
+    "jungle_stream": draw_jungle_stream,
     "astral_void": draw_astral_void,
 }
 

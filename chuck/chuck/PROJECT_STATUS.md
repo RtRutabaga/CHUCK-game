@@ -2,8 +2,8 @@
 
 Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
 Desert's five-map opening region is complete -- hub, orc camp, oasis and
-undead ruins -- and the eastward traversal has begun with its own collided
-tileset and its first map. Everything past that is not built yet. This file is
+undead ruins -- and the eastward traversal has begun: the collided tileset
+and the first two maps east. Everything past that is not built yet. This file is
 required by the project rules and updated every session.
 
 ## Latest implementation
@@ -552,12 +552,40 @@ required by the project rules and updated every session.
   terrain in front of each -- this is the point at which east could quietly
   start looking special, and it must not.
 
+- Added `desert_east_2`, 72x52: the collision's second step. A wedge of Chult
+  jungle -- the real jungle, with its stream still running -- pushed into the
+  northern half, with the temple's snakes in the cover, and the city road
+  returning as debris rather than as a bridge. Two worlds instead of one, and
+  eight times as much of the map given over to them.
+- The escalation is now measured as a comparison rather than a threshold. A
+  number chosen today is a number a later map has to be tuned around; "more
+  than the map before it, from more worlds than the map before it" is the
+  property the phase document actually asks for and it keeps holding as the
+  sequence grows. Every map added east should extend the same comparison.
+- The sheet's provenance check moved into `test_phase13_collided_tileset`,
+  which now owns it for every row and fails if a new row is added without
+  naming the world it came from. It was in east 1's suite; it is a property
+  of the sheet, and by the second world it was already being duplicated.
+- The jungle's density pattern took three attempts, and the second failure was
+  much worse than it looked. `(ax + by) % n` is constant along parallel lines,
+  so the growth came out striped -- horizontally the first time, diagonally the
+  second. The diagonal version left its open tiles touching only at their
+  corners, and Chuck walks on edges, so the jungle had no way through it at
+  all while looking perfectly plausible in a screenshot. It is summed sines
+  now, and a test floods the open ground to prove it is one connected mass.
+- The map does not block: the wedge stops halfway down, so the southern sand
+  runs clear from door to door. I claimed that, then talked myself out of it
+  and rewrote the map's docstring to say the opposite, then measured it -- the
+  original claim was right. The test now proves both halves separately: with
+  every foreign tile made solid the far door is still reachable, and the open
+  ground inside the growth is still one piece.
+
 ## Next logical task
 
-- Continue east. The next maps escalate the collision: bigger fragments, more
-  than one world per map, and the returning environments the phase document
-  lists -- Feywild, Phlegethos, ship decking, jungle Chult -- each added to
-  the collided sheet by importing its own generator, as the city road was.
+- East 3 and 4. Keep escalating: bigger fragments again, a third and fourth
+  world -- Feywild and Phlegethos are the obvious next two, and Hell brings
+  lava, which is the point at which a fragment should start being something
+  Chuck has to deal with rather than something he may visit.
 
 ## Superseded Phase 12 task
 

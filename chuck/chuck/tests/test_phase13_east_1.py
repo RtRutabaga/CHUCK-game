@@ -1,17 +1,12 @@
-"""Phase 13's eastern route: the first map, and the collided sheet.
+"""Phase 13's eastern route: the first map of the traversal.
 
-Two things are being established here that the rest of the traversal
-will be built on, and both are worth pinning now while there is one
-fragment rather than ten.
+This file used to also hold the collided sheet's provenance check --
+that a fragment of another world is drawn as *that world*, pixel for
+pixel. It moved to test_phase13_collided_tileset when the second world
+arrived, because it is a property of the sheet rather than of any one
+map and every map east of here depends on it.
 
-The first is that a fragment of another world is *that world*. The
-collided sheet's rows are rendered by the same functions that render
-the sheets they came from, and the test compares the finished pixels --
-because the failure mode is not a crash, it is a lookalike drifting a
-shade at a time until a piece of the modern city is just a grey road
-and the player no longer recognises what they are standing on.
-
-The second is escalation. This map has to be almost entirely desert,
+What is left is escalation. This map has to be almost entirely desert,
 because the phase document says the first eastern transition must not
 be dramatically different and the mash-up must build as Chuck goes. So
 the intrusion is measured as a fraction of the map, which gives every
@@ -32,9 +27,7 @@ from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID, DESERT_ENTRY_FLAGS
 from src.world import collision
 from src.world.tilemap import TileMap
-from src.world.tileset_layout import (
-    CITY, COLLIDED, DESERT, TILE_PX, tileset_for,
-)
+from src.world.tileset_layout import COLLIDED, tileset_for
 from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 import sys
@@ -84,52 +77,6 @@ def _flood(tilemap: TileMap, origin, extra_solid=()) -> set[tuple[int, int]]:
     return seen
 
 
-def _row_pixels(sheet, tileset, name) -> list:
-    index = [n for n, _, _ in tileset.order].index(name)
-    variants, frames = tileset.info()[name]
-    return [
-        sheet.get_at((x, index * TILE_PX + y))[:3]
-        for y in range(TILE_PX)
-        for x in range(variants * frames * TILE_PX)
-    ]
-
-
-def test_a_fragment_of_a_world_is_drawn_as_that_world() -> None:
-    """Pixel for pixel, not merely in spirit.
-
-    Both the count of variants and the art itself: a row rendered with
-    fewer variants would be the same drawing shown differently, which
-    fools the eye in exactly the way this is meant to prevent.
-    """
-    pygame.init()
-    sheets = {
-        "city": pygame.image.load(
-            str(config.ASSETS_DIR / "tilesets" / CITY.sheet)),
-        "desert": pygame.image.load(
-            str(config.ASSETS_DIR / "tilesets" / DESERT.sheet)),
-        "collided": pygame.image.load(
-            str(config.ASSETS_DIR / "tilesets" / COLLIDED.sheet)),
-    }
-    sources = {
-        "sand": DESERT, "sand_ripple": DESERT, "dune": DESERT,
-        "desert_rock": DESERT, "ruin_stone": DESERT, "ruin_floor": DESERT,
-        "desert_scrub": DESERT, "astral_void": DESERT,
-        "city_road": CITY, "city_road_line_h": CITY,
-    }
-    assert {name for name, _, _ in COLLIDED.order} == set(sources)
-
-    for name, source in sources.items():
-        assert COLLIDED.info()[name] == source.info()[name], name
-        sheet = sheets["city"] if source is CITY else sheets["desert"]
-        assert _row_pixels(sheets["collided"], COLLIDED, name) == \
-            _row_pixels(sheet, source, name), name
-
-    # The road is reached by the same characters that draw a road in the
-    # city, so a map author cannot accidentally author a different one.
-    assert COLLIDED.char_to_terrain["="] == CITY.char_to_terrain["="]
-    assert COLLIDED.char_to_terrain["≡"] == CITY.char_to_terrain["≡"]
-
-
 def test_the_first_map_east_is_still_a_desert() -> None:
     """Escalation starts from almost nothing.
 
@@ -153,7 +100,7 @@ def test_the_first_map_east_is_still_a_desert() -> None:
     assert desert / total > 0.80, desert / total
     assert 0.01 < intrusion / total < 0.05, intrusion / total
     # Exactly one intruding world so far, and it is the modern city.
-    foreign = set(counts) - set(DESERT_GROUND) - {"V", "⮜"}
+    foreign = set(counts) - set(DESERT_GROUND) - {"V", "⮜", "⮞"}
     assert foreign == set(ROAD), foreign
 
 

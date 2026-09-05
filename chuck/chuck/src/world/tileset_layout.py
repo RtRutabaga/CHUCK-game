@@ -674,6 +674,9 @@ COLLIDED = Tileset(
         # arrangement exists to prevent.
         ("city_road", 4, 3),
         ("city_road_line_h", 4, 3),
+        ("jungle_ground", 4, 1),
+        ("dense_jungle", 4, 1),
+        ("jungle_stream", 3, 3),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -688,6 +691,13 @@ COLLIDED = Tileset(
         # one here, because it is the same road.
         "=": "city_road",
         "≡": "city_road_line_h",
+        # Chult's jungle needs characters of its own, though. In its own
+        # tileset it is spelled "." and "#", but the desert claimed both
+        # first and a tileset can give a character only one meaning --
+        # so the fragment keeps the art and takes new letters.
+        "ᛗ": "jungle_ground",
+        "ᚷ": "dense_jungle",
+        "ᚺ": "jungle_stream",
         "V": "astral_void",
         "⮝": "sand",
         "⮟": "sand",
@@ -790,6 +800,7 @@ MAP_TILESET: dict[str, str] = {
     "desert_undead_ruins": "desert",
     # East of the hub: the collided traversal.
     "desert_east_1": "collided",
+    "desert_east_2": "collided",
     "tahuya_cabin_interior": "tahuya",
 }
 

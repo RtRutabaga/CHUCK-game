@@ -325,6 +325,12 @@ TILE_DEFS: dict[str, TileDef] = {
     # walkable and blank and no palm ever appeared.
     "⏦": TileDef(solid=False, color=(96, 130, 70), under="⩊",
                  overhead="palm_canopy"),
+    # Fragments of Chult, east of the hub. Its own tileset spells these
+    # "." and "#"; the desert already owns both, so the collided maps
+    # give the same art new characters.
+    "ᛗ": TileDef(solid=False, color=(37, 44, 28)),
+    "ᚷ": TileDef(solid=True, color=(17, 54, 34)),
+    "ᚺ": TileDef(solid=True, color=(23, 68, 67)),
     # The orc camp's stores. Deliberately the pantry's own grain-sack
     # prop rather than a desert-styled one: the phase document asks for
     # the same asset and the same behaviour, and a player who scratched
@@ -744,6 +750,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "⌦": MarkerDef(kind="arrival:from_desert_central", under="."),
     "⌸": MarkerDef(kind="anchor:desert_east_1_anchor", under="."),
     "⌱": MarkerDef(kind="arrival:from_east_1", under="."),
+    "⌲": MarkerDef(kind="arrival:from_east_2", under="."),
+    "⌳": MarkerDef(kind="anchor:desert_east_2_anchor", under="."),
+    # Snakes, in the jungle that fell in with them.
+    "⌴": MarkerDef(kind="snake", under="ᛗ"),
     # Desert orcs, on the sand and inside the camp's beaten ground.
     "❂": MarkerDef(kind="orc", under="."),
     "⟠": MarkerDef(kind="orc", under=","),
