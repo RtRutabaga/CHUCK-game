@@ -119,6 +119,7 @@ class WorldScene(Scene):
         initial_sanity: int | None = None,
         initial_checkpoint_id: str | None = None,
         initial_fade_in: bool = False,
+        initial_fade_from: tuple[int, int, int] = (0, 0, 0),
     ) -> None:
         super().__init__(game)
         self._initial_map = map_name
@@ -129,6 +130,7 @@ class WorldScene(Scene):
         self._initial_sanity = initial_sanity
         self._initial_checkpoint_id = initial_checkpoint_id
         self._initial_fade_in = initial_fade_in
+        self._initial_fade_from = initial_fade_from
         # Set by a transition choice; applied once the conversation that
         # triggered it has closed (see update()).
         self._pending_map: str | None = None
@@ -149,6 +151,7 @@ class WorldScene(Scene):
             sanity=self._initial_sanity,
             checkpoint_id=self._initial_checkpoint_id,
             fade_in=self._initial_fade_in,
+            fade_from=self._initial_fade_from,
         )
 
     def load_map(
@@ -161,6 +164,7 @@ class WorldScene(Scene):
         sanity: int | None = None,
         checkpoint_id: str | None = None,
         fade_in: bool = False,
+        fade_from: tuple[int, int, int] = (0, 0, 0),
     ) -> None:
         """(Re)build the map and all entities for an area. Used both on
         first entry and when a transition carries Chuck somewhere new."""
@@ -204,6 +208,7 @@ class WorldScene(Scene):
             else None
         )
         self._arrival_fade_t: float | None = 0.0 if fade_in else None
+        self._arrival_fade_from = fade_from
 
         arrivals = {
             kind.split(":", 1)[1]: position
@@ -2504,10 +2509,17 @@ class WorldScene(Scene):
                 )
 
     def _draw_arrival_fade(self, surface) -> None:
-        """Fade from black only for checkpoints that author an arrival fade."""
+        """Fade up, for checkpoints that author an arrival fade.
+
+        Out of black for everything that arrived through a blackout,
+        which is all of them bar one: the desert crossing whites out
+        instead, and fading that back in from black puts a flash
+        between the cutscene and the map it hands to.
+        """
         if self._arrival_fade_t is None:
             return
         progress = min(1.0, self._arrival_fade_t / config.AREA_FADE_DURATION)
         overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, round(255 * (1.0 - progress))))
+        overlay.fill((*self._arrival_fade_from,
+                      round(255 * (1.0 - progress))))
         surface.blit(overlay, (0, 0))

@@ -222,6 +222,44 @@ def test_the_ashtray_stands_where_the_checkpoint_says_it_does() -> None:
     assert CHECKPOINT_BY_ID["desert_central_start"].runtime_entry
 
 
+def test_the_crossing_lands_here_out_of_its_own_whiteout() -> None:
+    """The cutscene's far end, checked from this side.
+
+    The arrival fades to white, so the map it hands to has to fade up
+    out of white as well. Left on the shared default it would fade up
+    out of black, and the join between the two would be a flash.
+    """
+    from src.scenes.desert_arrival_cutscene_scene import (
+        DESERT_ENTRY_CHECKPOINT,
+    )
+
+    checkpoint = CHECKPOINT_BY_ID[DESERT_ENTRY_CHECKPOINT]
+    assert checkpoint.map_name == MAP_NAME
+    assert checkpoint.fade_in
+    assert min(checkpoint.fade_from) > 200, checkpoint.fade_from
+
+    directory, game, world = _world()
+    try:
+        # The fade really is authored on the world, and really is white:
+        # the first frame after arriving is the colour the cutscene left
+        # the screen, not black.
+        world = game.checkpoints.load_checkpoint(
+            DESERT_ENTRY_CHECKPOINT, progress_flags=set(DESERT_ENTRY_FLAGS)
+        )
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+        world.draw(surface)
+        corner = surface.get_at((2, 2))[:3]
+        assert min(corner) > 200, corner
+        # ...and it does clear, rather than staying washed out.
+        for _ in range(int(config.AREA_FADE_DURATION / 0.05) + 2):
+            world.update(0.05)
+        world.draw(surface)
+        assert world._arrival_fade_t is None
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def test_the_region_has_a_theme_and_it_loops() -> None:
     assert AREA_MUSIC[MAP_NAME] == "desert.wav"
     song = __import__("data.music.desert", fromlist=["desert"])

@@ -441,6 +441,19 @@ and updated every session.
   theme played across five maps of unmarked exploration cannot lead with its
   melody, so the arpeggio and bass carry it and the reed states a phrase every
   eight bars or so and then leaves a long gap.
+- The table crossing now hands off into the desert instead of ending at the
+  title. That ending was correct while Phase 12 was the last thing built --
+  with no playable region on the far side, recording the crossing and letting
+  Continue come back to the cabin was the only honest thing the scene could
+  do -- and it became a bug the moment the far side existed. It uses the same
+  shared checkpoint path the Douglas fir crossing uses, carrying Sanity
+  through; the desert's own Ashtray owns persistence from there, so the
+  handoff writes nothing.
+- The arrival fade gained a colour. Every crossing until this one went to
+  black and every map faded up out of black, so the colour was hard-coded;
+  this one whites out, and fading the desert back in from black put a flash
+  between the cutscene and the map it hands to. `CheckpointDefinition` now
+  carries `fade_from`, defaulting to black for all the existing arrivals.
 - Phase 12's `test_no_playable_desert_exists_yet` has been replaced rather
   than deleted. It asserted that no desert map or tileset existed at all,
   which was the cleanest statement of that out-of-scope list and could only be

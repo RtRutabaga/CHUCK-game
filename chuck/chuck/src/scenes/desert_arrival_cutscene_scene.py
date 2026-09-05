@@ -17,12 +17,15 @@ Then it holds, and goes to white rather than to black, because the last
 one went to black and the difference is the point: he has come out of a
 cabin at night into the middle of a day.
 
-The boundary is the same too. Phase 12 ends with no playable desert, so
-this records the crossing as a progress flag against the save that
-still points at the cabin, and hands back to the title. Continue
-returns to the cabin rather than to a region that has not been built.
+Then it hands off into the desert. It used to end at the title instead:
+Phase 12 closed with no playable region on the far side, so the only
+honest thing it could do was record the crossing and let Continue come
+back to the cabin. Phase 13 built the far side, so the crossing goes
+where it always meant to go -- through the same shared checkpoint path
+the Douglas fir crossing uses, with Sanity carried through intact and
+the desert's own Ashtray owning persistence from there.
 
-No words. Sanity carries into the save unchanged.
+No words.
 """
 
 from __future__ import annotations
@@ -52,6 +55,10 @@ HOLD_END = 20.0         # the tableau holds, wordless
 FADE_END = 21.6         # to white, and out of the phase
 
 MUSIC_START = 3.6       # under the whiteout, so the desert arrives on it
+
+# Where the crossing comes out. The hub's own runtime entry rather than
+# a position authored twice: the map decides where its start is.
+DESERT_ENTRY_CHECKPOINT = "desert_central_start"
 
 _SAND = (214, 178, 122)
 _SAND_LIT = (236, 206, 156)
@@ -171,20 +178,17 @@ class DesertArrivalCutsceneScene(Scene):
         if self.elapsed < FADE_END or self._handed_off:
             return
         self._handed_off = True
-        # Phase 12 ends here. Record the crossing and write it into the
-        # save that still points at the cabin, so Continue comes back to
-        # the table rather than to a desert that does not exist yet.
+        # Phase 12 ends and Phase 13 begins here. Record the crossing,
+        # then walk out into the desert through the same shared
+        # checkpoint path the Douglas fir crossing uses, with the
+        # running Sanity value intact. The desert's Ashtray owns
+        # persistence from this point; nothing is written here.
         self.game.progress.enable(DESERT_TRANSITION_FLAG)
-        active = self.game.active_checkpoint_id
-        if active is not None and self._sanity is not None:
-            definition = self.game.checkpoints.definition(active)
-            if definition.saveable:
-                self.game.checkpoints.activate_checkpoint(
-                    active, sanity=self._sanity
-                )
-        from src.scenes.title_scene import TitleScene
-
-        self.game.scenes.replace(TitleScene(self.game))
+        self.game.checkpoints.load_checkpoint(
+            DESERT_ENTRY_CHECKPOINT,
+            progress_flags=set(self.game.progress.flags),
+            sanity=self._sanity,
+        )
 
     def _play_cues(self, previous: float, current: float) -> None:
         """One short cue and a handful of quiet noises.

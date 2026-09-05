@@ -2,13 +2,14 @@
 
 The phase document is precise about when the question may be asked --
 the ordinary D&D map has no planar interaction, only its awakened state
-can prompt -- and equally precise that no desert may exist yet. Both
-halves are worth pinning.
+can prompt -- and that is still worth pinning, because it is the one
+gate the whole ending hangs off.
 
 The rest is shape. The crossing opens out of the table's own surface
 rather than cutting to black, the desert fades up out of the light the
-portal drained into, and the phase ends on a recorded flag against a
-save that still points at the cabin.
+portal drained into, he walks out of a second mouth that then closes
+behind him, and the whole thing hands off into Phase 13's playable
+desert rather than back to the title.
 """
 
 import importlib
@@ -30,10 +31,10 @@ from src.entities.choice_trigger import _TRIGGER_TILES, _WALK_TRIGGERS
 from src.scenes.desert_arrival_cutscene_scene import (
     CIGARETTE_SEATED, CIGARETTE_START, COLLAPSE_END, COLLAPSE_START,
     DESERT_IN, DRAG_START, DRAIN_END, FADE_END, HOLD_END, LOOK_START,
-    SWELL_END, WALK_END, WALK_START, DesertArrivalCutsceneScene,
+    DESERT_ENTRY_CHECKPOINT, SWELL_END, WALK_END, WALK_START,
+    DesertArrivalCutsceneScene,
     _GROUND_Y, _PORTAL_HALF_W, _PORTAL_X, _SAND,
 )
-from src.scenes.title_scene import TitleScene
 from src.scenes.world_scene import WorldScene
 from src.systems.cabin_progress import (
     CABIN_ENTITY_FLAGS, COUNTER_MAP_AWAKENED_FLAG, DESERT_TRANSITION_FLAG,
@@ -299,7 +300,16 @@ def test_the_desert_has_a_cue_of_its_own_and_quiet_noises_under_it() -> None:
         directory.cleanup()
 
 
-def test_the_phase_ends_on_a_flag_and_a_save_that_points_at_the_cabin() -> None:
+def test_the_crossing_comes_out_in_the_playable_desert() -> None:
+    """Both halves of the journey, joined.
+
+    This used to end at the title. Phase 12 closed with no playable
+    region on the far side of the table, so recording the crossing and
+    letting Continue come back to the cabin was the only honest thing
+    the scene could do. Phase 13 built the far side, so the crossing now
+    goes where it always meant to: out into the desert, through the same
+    shared checkpoint path the Douglas fir crossing uses.
+    """
     assert DESERT_TRANSITION_FLAG in KNOWN_PROGRESS_FLAGS
 
     directory, game, world = _world(AWAKE)
@@ -311,47 +321,55 @@ def test_the_phase_ends_on_a_flag_and_a_save_that_points_at_the_cabin() -> None:
         scene.on_enter()
         game.scenes.replace(scene)
 
+        # Nothing happens until the fade is over.
         scene.update(FADE_END - 0.05)
         assert DESERT_TRANSITION_FLAG not in game.progress.flags
         assert isinstance(game.scenes.current, DesertArrivalCutsceneScene)
 
         scene.update(0.1)
         assert DESERT_TRANSITION_FLAG in game.progress.flags
-        assert isinstance(game.scenes.current, TitleScene)
+        arrived = game.scenes.current
+        assert isinstance(arrived, WorldScene)
+        assert arrived.map_name == "desert_central"
+        assert game.active_checkpoint_id == DESERT_ENTRY_CHECKPOINT
 
+        # Sanity is carried through the crossing rather than restored,
+        # and so is everything the cabin recorded on the way to it.
+        assert arrived.sanity.current == 52
+        assert COUNTER_MAP_AWAKENED_FLAG in game.progress.flags
+        assert set(CABIN_ENTITY_FLAGS) <= game.progress.flags
+
+        # The desert's own Ashtray owns persistence from here: the
+        # handoff itself writes nothing, so the save still points at the
+        # cabin until the player reaches the new one.
         record = game.checkpoints.saves.load()
         assert record is not None
         assert record.checkpoint_id == "tahuya_interior_anchor"
-        assert record.sanity == 52
-        assert DESERT_TRANSITION_FLAG in record.progress_flags
-        assert COUNTER_MAP_AWAKENED_FLAG in record.progress_flags
+        assert arrived.anchors
+        assert arrived.anchors[0].checkpoint_id == "desert_central_anchor"
 
         # Handing off is a one-time event, however long the scene runs.
         scene.update(30.0)
-        assert isinstance(game.scenes.current, TitleScene)
+        assert game.scenes.current is arrived
     finally:
         game._shutdown()
         directory.cleanup()
 
 
-def test_the_phase_boundary_holds_now_that_the_desert_exists() -> None:
-    """Phase 13 opened this, and it had to be opened carefully.
+def test_the_desert_is_still_gated_behind_the_crossing() -> None:
+    """The phase boundary moved; it did not disappear.
 
-    Phase 12's version of this test asserted that no desert map and no
-    desert tileset existed at all -- the cleanest possible statement of
-    an out-of-scope list, and one that could only ever be true once.
-    The invariant that outlives it is the one that was underneath it:
-    Phase 12 ends by handing back to the title rather than by dropping
-    Chuck into the next region, and the region it does not drop him into
-    is reachable only once the crossing has actually been recorded.
+    Phase 12's version of this asserted that no desert map and no desert
+    tileset existed at all -- the cleanest possible statement of an
+    out-of-scope list, and one that could only ever be true once. What
+    outlives it is the gate underneath: the desert is reachable only
+    once the crossing this scene performs has actually been recorded.
     """
     from src.systems.checkpoints import CHECKPOINT_BY_ID, DESERT_ENTRY_FLAGS
 
     # The arrival is still a drawn backdrop with nothing playable in it.
     assert not hasattr(DesertArrivalCutsceneScene, "update_player")
 
-    # The desert exists now, and every way into it is behind the flag
-    # this cutscene sets on its way out.
     desert_maps = [name for name in MAP_TILESET if name.startswith("desert")]
     assert desert_maps, "Phase 13 should have built at least one"
     assert DESERT_TRANSITION_FLAG in DESERT_ENTRY_FLAGS
@@ -359,27 +377,12 @@ def test_the_phase_boundary_holds_now_that_the_desert_exists() -> None:
                if c.map_name in desert_maps]
     assert entries
     for entry in entries:
-        assert DESERT_TRANSITION_FLAG in entry.required_flags, entry.checkpoint_id
+        assert DESERT_TRANSITION_FLAG in entry.required_flags,             entry.checkpoint_id
 
-    # ...and finishing the cutscene still goes to the title, not east.
-    directory, game, world = _world(AWAKE)
-    try:
-        assert game.checkpoints.activate_checkpoint(
-            "tahuya_interior_anchor", sanity=52
-        )
-        scene = DesertArrivalCutsceneScene(game, sanity=52)
-        scene.on_enter()
-        game.scenes.replace(scene)
-        scene.update(FADE_END + 0.1)
-        assert isinstance(game.scenes.current, TitleScene)
-        # The save still points at the cabin: Continue comes back to the
-        # table, not into the desert on the other side of it.
-        record = game.checkpoints.saves.load()
-        assert record is not None
-        assert record.checkpoint_id == "tahuya_interior_anchor"
-    finally:
-        game._shutdown()
-        directory.cleanup()
+    # ...and the scene hands off to one of them rather than naming a
+    # position of its own, so the map decides where its start is.
+    assert DESERT_ENTRY_CHECKPOINT in CHECKPOINT_BY_ID
+    assert CHECKPOINT_BY_ID[DESERT_ENTRY_CHECKPOINT].map_name in desert_maps
 
 
 def _run_all() -> None:

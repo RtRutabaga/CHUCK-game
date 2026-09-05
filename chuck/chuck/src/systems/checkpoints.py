@@ -62,6 +62,11 @@ class CheckpointDefinition:
     development_visible: bool = True
     runtime_entry: bool = False
     fade_in: bool = False
+    # What the arrival fades up out of. Black for every crossing that
+    # went to black, which is all of them until the desert: that one
+    # whites out, and fading it back in from black would put a flash
+    # between the cutscene and the map it hands to.
+    fade_from: tuple[int, int, int] = (0, 0, 0)
 
 
 CHECKPOINTS = (
@@ -1424,7 +1429,7 @@ CHECKPOINTS = (
         "desert_central_start", "Desert Central", "desert_central",
         position=(448.0, 496.0), facing="right",
         required_flags=DESERT_ENTRY_FLAGS,
-        runtime_entry=True,
+        runtime_entry=True, fade_in=True, fade_from=(252, 248, 238),
     ),
     CheckpointDefinition(
         "desert_central_anchor", "Desert Central Ashtray", "desert_central",
@@ -1531,6 +1536,7 @@ class CheckpointLoader:
             initial_sanity=(config.SANITY_START if sanity is None else sanity),
             initial_checkpoint_id=checkpoint_id,
             initial_fade_in=checkpoint.fade_in,
+            initial_fade_from=checkpoint.fade_from,
         )
         self.game.scenes.replace(scene)
         return scene
