@@ -38,6 +38,13 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "doug_fir_transition_completed",
 }) | CABIN_ENTITY_FLAGS | {COUNTER_MAP_AWAKENED_FLAG,
                           DESERT_TRANSITION_FLAG}
+# Everything Phase 13 needs behind it. The desert is only reachable
+# once the table portal has actually been stepped through.
+DESERT_ENTRY_FLAGS = frozenset({
+    "sewer_completed", "chult_reached", "feywild_reached",
+    "modern_city_reached", "doug_fir_transition_completed",
+    DESERT_TRANSITION_FLAG,
+})
 OPENING_CHECKPOINT_ID = "waterdeep_start"
 
 
@@ -1405,6 +1412,25 @@ CHECKPOINTS = (
         "pantry_default", "Pantry Default Spawn", "waterdeep_pantry",
         required_flags=frozenset({"sewer_completed"}),
         development_visible=False, runtime_entry=True,
+    ),
+    # ----------------------------------------------------------------
+    # Phase 13. The desert opens where Phase 12's crossing left him, so
+    # both entries are gated on that crossing having happened. The
+    # phase document asks for convenient development access to each
+    # major section rather than testing every map from the beginning,
+    # so the hub's entry is deliberately development-visible.
+    # ----------------------------------------------------------------
+    CheckpointDefinition(
+        "desert_central_start", "Desert Central", "desert_central",
+        position=(448.0, 496.0), facing="right",
+        required_flags=DESERT_ENTRY_FLAGS,
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_central_anchor", "Desert Central Ashtray", "desert_central",
+        position=(504.0, 424.0), facing="down",
+        required_flags=DESERT_ENTRY_FLAGS,
+        saveable=True, development_visible=False,
     ),
 )
 

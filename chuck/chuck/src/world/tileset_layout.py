@@ -610,6 +610,42 @@ TAHUYA = Tileset(
     overhead_char_to_terrain={},
 )
 
+# Phase 13's Chult desert. One sheet for the whole opening five-map
+# region: the same sand under all of it, brown rock for the canyon
+# walls that fence the region in, cut stone for the ruins scattered
+# through it, and the oasis's water and shade off to the west.
+DESERT = Tileset(
+    sheet="desert.png",
+    order=[
+        ("sand", 4, 1),
+        ("sand_ripple", 4, 1),
+        ("dune", 3, 1),
+        ("desert_rock", 4, 1),
+        ("ruin_stone", 4, 1),
+        ("ruin_floor", 4, 1),
+        ("desert_scrub", 3, 1),
+        ("oasis_water", 3, 3),
+        ("oasis_grass", 4, 1),
+        ("palm_canopy", 3, 1),
+        ("astral_void", 2, 3),
+    ],
+    char_to_terrain={
+        ".": "sand",
+        ",": "sand_ripple",
+        "⟁": "dune",
+        "#": "desert_rock",
+        "⌗": "ruin_stone",
+        "⌖": "ruin_floor",
+        "⍟": "desert_scrub",
+        "~": "oasis_water",
+        "⩊": "oasis_grass",
+        "V": "astral_void",
+    },
+    overhead_char_to_terrain={
+        "⏦": "palm_canopy",
+    },
+)
+
 
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
@@ -626,6 +662,7 @@ TILESETS: dict[str, Tileset] = {
     "city_day": CITY_DAY,
     "city_sewer": CITY_SEWER,
     "tahuya": TAHUYA,
+    "desert": DESERT,
 }
 
 # Which map draws with which tileset (default: the docks sheet).
@@ -694,6 +731,8 @@ MAP_TILESET: dict[str, str] = {
     "modern_city_day_5": "city_day",
     "modern_city_day_6": "city_day",
     "tahuya_cabin_exterior": "tahuya",
+    # Phase 13 opens here.
+    "desert_central": "desert",
     "tahuya_cabin_interior": "tahuya",
 }
 

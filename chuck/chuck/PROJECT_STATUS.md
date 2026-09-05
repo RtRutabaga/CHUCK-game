@@ -1,8 +1,9 @@
 # CHUCK — Project Status
 
-Updated: Phase 12 is feature-complete. Both Cabin maps, the four entities, the
-awakening, its lightshow and music, and the way out through the table are all
-in. This file is required by the project rules and updated every session.
+Updated: Phase 12 is feature-complete and Phase 13 has begun. The Collided
+Desert's hub map, its tileset and its theme are in; the four neighbouring maps
+of the opening region are not yet. This file is required by the project rules
+and updated every session.
 
 ## Latest implementation
 
@@ -403,7 +404,58 @@ in. This file is required by the project rules and updated every session.
   `portal_collapse` (an inward *rising* rush closing on a soft knock, because
   the thing is being drawn to a point and not dropped), and `lighter`.
 
+## Active Phase 13 scope
+
+- Authored the Chult desert tileset. Its palette is imported from the arrival
+  cutscene rather than picked again by eye, so the playable desert cannot
+  silently drift away from the desert Chuck was just standing in; a test reads
+  the sheet's pixels back against those constants. One sheet covers the whole
+  opening five-map region -- sand, wind ripple, shadowed dune, brown canyon
+  rock, ruin stone and its buried floor, dry scrub, and the oasis's water,
+  grass and palm shade -- so later maps in the region do not each churn it.
+- Three of its rows had to be redrawn after rendering them in place. The dune
+  was drawn as an actual dune, with a lit crest and a shaded face; one tile of
+  that looked right and a patch of them put every shadow at the same height,
+  which read as planks laid across the sand. A tiling texture cannot carry a
+  feature that large, so it carries the value instead and the dune's shape
+  comes from where the patch is drawn on the map. The ruins were a pale grey
+  that read as modern brick, and their floor was drawn as stone with sand
+  drifted onto it, which made the inside of every ruin a tiled room dropped
+  into a desert; it is now sand with stone showing through, with the joints
+  running to the tile edges so they meet across boundaries and a field of them
+  is one continuous pavement.
+- Added `desert_central`, the 72x56 hub. Four ways out, one per side, cut to
+  the same width at the same offset, with the ground in front of each kept
+  clear of ruins, rock and scrub by the generator rather than by hand -- the
+  phase document forbids announcing that east is the way forward, and that is
+  exactly the kind of rule a later edit breaks by accident. Six broken ruins
+  and six rock outcrops give the open sand landmarks to navigate by. The
+  region is walled in brown rock, so it reads as a canyon floor rather than as
+  a cropped rectangle of sand. Only the shape is authored so far: the maps the
+  four gaps lead to are the next slices, and adding them will add markers
+  rather than change the map.
+- Added `desert.wav`, a 75-second loop in D Dorian at 96 BPM. It is the
+  arrival cue's tune grown up -- same mode, same tonic, the same broken-triad
+  arpeggio underneath -- so stepping out of the cutscene into the playable
+  desert sounds like staying in one place. The roles are swapped, though: a
+  theme played across five maps of unmarked exploration cannot lead with its
+  melody, so the arpeggio and bass carry it and the reed states a phrase every
+  eight bars or so and then leaves a long gap.
+- Phase 12's `test_no_playable_desert_exists_yet` has been replaced rather
+  than deleted. It asserted that no desert map or tileset existed at all,
+  which was the cleanest statement of that out-of-scope list and could only be
+  true once. What outlives it is the invariant underneath: the cutscene still
+  hands back to the title with the save pointing at the cabin, and every
+  checkpoint on a desert map is gated behind the crossing flag it sets.
+
 ## Next logical task
+
+- Build the orc camp north of the hub: desert orcs on the existing undead
+  architecture (faster and tougher than zombies), Waterdeep-style scratchable
+  sacks, brown cliffs closing the north and west edges, and the north walk
+  exit wired in both directions.
+
+## Superseded Phase 12 task
 
 - Add the awakened table map's close-proximity `Enter planar portal?` YES/NO
   interaction. NO should close cleanly; YES should begin the short desert

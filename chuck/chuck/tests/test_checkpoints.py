@@ -302,6 +302,9 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             "City Sewer 4", "City Day 1", "City Day 2", "City Day 3",
             "City Day 4", "City Day 5", "City Day 6",
             "Cabin Exterior", "Cabin Interior",
+            # Phase 13's development entry to the initial desert, which
+            # the phase document asks for by name.
+            "Desert Central",
         )
         assert tuple(cp.display_name for cp in selector.checkpoints) == expected_names
         assert set("".join(expected_names)) <= set(GLYPH_ORDER)

@@ -531,4 +531,7 @@ AREA_MUSIC: dict[str, str | None] = {
     # system ignores same-cue requests, so neither ordinary door restarts it.
     "tahuya_cabin_exterior": "cabin.wav",
     "tahuya_cabin_interior": "cabin.wav",
+    # Phase 13. One theme for the whole opening desert region, so that
+    # walking between its five maps never restarts the music.
+    "desert_central": "desert.wav",
 }

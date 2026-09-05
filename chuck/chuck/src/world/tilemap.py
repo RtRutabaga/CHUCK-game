@@ -299,6 +299,21 @@ TILE_DEFS: dict[str, TileDef] = {
     "M": TileDef(solid=False, color=config.COLOR_SEWER_MUD),
     "%": TileDef(solid=True, color=config.COLOR_SEWER_CHANNEL),
     "V": TileDef(solid=False, color=config.COLOR_ASTRAL),
+    # ------------------------------------------------------------------
+    # Phase 13's Chult desert. Sand and ripple reuse "." and ",", and the
+    # canyon walls reuse "#", because those already mean walkable ground
+    # and solid wall everywhere else; only the terrain the desert alone
+    # has needs a character of its own.
+    # ------------------------------------------------------------------
+    "⟁": TileDef(solid=False, color=(176, 138, 90)),
+    # Cut stone: standing ruin is solid, the floor around it is not.
+    "⌗": TileDef(solid=True, color=(162, 146, 124)),
+    "⌖": TileDef(solid=False, color=(162, 146, 124)),
+    # Chest-high on a one-foot rat, so a bush is a wall.
+    "⍟": TileDef(solid=True, color=(128, 128, 84)),
+    "⩊": TileDef(solid=False, color=(96, 130, 70)),
+    # Palm shade: drawn over Chuck, so it is walkable ground underneath.
+    "⏦": TileDef(solid=False, color=(214, 178, 122)),
     # Modern-city office masses. These are all solid building footprint,
     # separated into roof/cornice/facade materials only for three-quarter-view
     # rendering; none are short freestanding walls or playable platforms.
@@ -693,6 +708,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "j": MarkerDef(kind="cigarette", under="="),
     "K": MarkerDef(kind="cat", under=","),
     "A": MarkerDef(kind="anchor:waterdeep_anchor", under=","),
+    # Phase 13. The desert hub's ashtray stands on the middle ruin's
+    # buried floor: the one place a player can see from a distance.
+    "⨀": MarkerDef(kind="anchor:desert_central_anchor", under="⌖"),
     "Y": MarkerDef(kind="anchor:sewer_anchor", under="d"),
     "N": MarkerDef(kind="npc:dock_worker", under=","),
     "G": MarkerDef(kind="npc:guard", under=","),

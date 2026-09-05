@@ -334,13 +334,52 @@ def test_the_phase_ends_on_a_flag_and_a_save_that_points_at_the_cabin() -> None:
         directory.cleanup()
 
 
-def test_no_playable_desert_exists_yet() -> None:
-    """Phase 12's out-of-scope list, held to."""
-    desert = [name for name in MAP_TILESET if "desert" in name]
-    assert desert == [], desert
-    assert not list(config.MAPS_DIR.glob("*desert*"))
-    # The arrival is a drawn backdrop with nothing playable in it.
+def test_the_phase_boundary_holds_now_that_the_desert_exists() -> None:
+    """Phase 13 opened this, and it had to be opened carefully.
+
+    Phase 12's version of this test asserted that no desert map and no
+    desert tileset existed at all -- the cleanest possible statement of
+    an out-of-scope list, and one that could only ever be true once.
+    The invariant that outlives it is the one that was underneath it:
+    Phase 12 ends by handing back to the title rather than by dropping
+    Chuck into the next region, and the region it does not drop him into
+    is reachable only once the crossing has actually been recorded.
+    """
+    from src.systems.checkpoints import CHECKPOINT_BY_ID, DESERT_ENTRY_FLAGS
+
+    # The arrival is still a drawn backdrop with nothing playable in it.
     assert not hasattr(DesertArrivalCutsceneScene, "update_player")
+
+    # The desert exists now, and every way into it is behind the flag
+    # this cutscene sets on its way out.
+    desert_maps = [name for name in MAP_TILESET if name.startswith("desert")]
+    assert desert_maps, "Phase 13 should have built at least one"
+    assert DESERT_TRANSITION_FLAG in DESERT_ENTRY_FLAGS
+    entries = [c for c in CHECKPOINT_BY_ID.values()
+               if c.map_name in desert_maps]
+    assert entries
+    for entry in entries:
+        assert DESERT_TRANSITION_FLAG in entry.required_flags, entry.checkpoint_id
+
+    # ...and finishing the cutscene still goes to the title, not east.
+    directory, game, world = _world(AWAKE)
+    try:
+        assert game.checkpoints.activate_checkpoint(
+            "tahuya_interior_anchor", sanity=52
+        )
+        scene = DesertArrivalCutsceneScene(game, sanity=52)
+        scene.on_enter()
+        game.scenes.replace(scene)
+        scene.update(FADE_END + 0.1)
+        assert isinstance(game.scenes.current, TitleScene)
+        # The save still points at the cabin: Continue comes back to the
+        # table, not into the desert on the other side of it.
+        record = game.checkpoints.saves.load()
+        assert record is not None
+        assert record.checkpoint_id == "tahuya_interior_anchor"
+    finally:
+        game._shutdown()
+        directory.cleanup()
 
 
 def _run_all() -> None:
