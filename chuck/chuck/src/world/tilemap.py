@@ -311,9 +311,18 @@ TILE_DEFS: dict[str, TileDef] = {
     "⌖": TileDef(solid=False, color=(162, 146, 124)),
     # Chest-high on a one-foot rat, so a bush is a wall.
     "⍟": TileDef(solid=True, color=(128, 128, 84)),
+    # A burnt-out fire ring. Solid, because a ring of stones is ankle
+    # height to the people who built it and a wall to a one-foot rat.
+    "⚱": TileDef(solid=True, color=(74, 66, 60)),
     "⩊": TileDef(solid=False, color=(96, 130, 70)),
     # Palm shade: drawn over Chuck, so it is walkable ground underneath.
     "⏦": TileDef(solid=False, color=(214, 178, 122)),
+    # The orc camp's stores. Deliberately the pantry's own grain-sack
+    # prop rather than a desert-styled one: the phase document asks for
+    # the same asset and the same behaviour, and a player who scratched
+    # one open in Waterdeep should recognise these on sight. Only the
+    # ground it stands on differs, which is all `under` is for.
+    "⛰": TileDef(solid=True, color=(0, 0, 0), prop="grain_sack", under="."),
     # Modern-city office masses. These are all solid building footprint,
     # separated into roof/cornice/facade materials only for three-quarter-view
     # rendering; none are short freestanding walls or playable platforms.
@@ -711,6 +720,13 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # Phase 13. The desert hub's ashtray stands on the middle ruin's
     # buried floor: the one place a player can see from a distance.
     "⨀": MarkerDef(kind="anchor:desert_central_anchor", under="⌖"),
+    "⨁": MarkerDef(kind="anchor:desert_orc_camp_anchor", under="."),
+    # Desert orcs, on the sand and inside the camp's beaten ground.
+    "❂": MarkerDef(kind="orc", under="."),
+    "⟠": MarkerDef(kind="orc", under=","),
+    # The one road between the hub and the camp, walked both ways.
+    "⛲": MarkerDef(kind="arrival:from_orc_camp", under="."),
+    "⌬": MarkerDef(kind="arrival:from_desert_central", under="."),
     "Y": MarkerDef(kind="anchor:sewer_anchor", under="d"),
     "N": MarkerDef(kind="npc:dock_worker", under=","),
     "G": MarkerDef(kind="npc:guard", under=","),

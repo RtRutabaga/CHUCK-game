@@ -624,6 +624,7 @@ DESERT = Tileset(
         ("ruin_stone", 4, 1),
         ("ruin_floor", 4, 1),
         ("desert_scrub", 3, 1),
+        ("camp_ash", 3, 1),
         ("oasis_water", 3, 3),
         ("oasis_grass", 4, 1),
         ("palm_canopy", 3, 1),
@@ -637,9 +638,16 @@ DESERT = Tileset(
         "⌗": "ruin_stone",
         "⌖": "ruin_floor",
         "⍟": "desert_scrub",
+        "⚱": "camp_ash",
         "~": "oasis_water",
         "⩊": "oasis_grass",
         "V": "astral_void",
+        # The walk-over exits are open sand: a marked threshold would be
+        # the route sign the phase document forbids.
+        "⮝": "sand",
+        "⮟": "sand",
+        "⮜": "sand",
+        "⮞": "sand",
     },
     overhead_char_to_terrain={
         "⏦": "palm_canopy",
@@ -733,6 +741,7 @@ MAP_TILESET: dict[str, str] = {
     "tahuya_cabin_exterior": "tahuya",
     # Phase 13 opens here.
     "desert_central": "desert",
+    "desert_orc_camp": "desert",
     "tahuya_cabin_interior": "tahuya",
 }
 

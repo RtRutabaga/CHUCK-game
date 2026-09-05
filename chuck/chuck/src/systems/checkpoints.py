@@ -1437,6 +1437,26 @@ CHECKPOINTS = (
         required_flags=DESERT_ENTRY_FLAGS,
         saveable=True, development_visible=False,
     ),
+    # Coming back down out of the camp. Every walk exit needs a runtime
+    # checkpoint on the far side naming its arrival; this is the hub's.
+    CheckpointDefinition(
+        "desert_central_from_orc_camp", "Desert Central North Return",
+        "desert_central", arrival="from_orc_camp", facing="down",
+        required_flags=DESERT_ENTRY_FLAGS,
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_orc_camp", "Orc Camp", "desert_orc_camp",
+        arrival="from_desert_central", facing="up",
+        required_flags=DESERT_ENTRY_FLAGS,
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_orc_camp_anchor", "Orc Camp Ashtray", "desert_orc_camp",
+        position=(520.0, 632.0), facing="up",
+        required_flags=DESERT_ENTRY_FLAGS,
+        saveable=True, development_visible=False,
+    ),
 )
 
 CHECKPOINT_BY_ID = {checkpoint.checkpoint_id: checkpoint for checkpoint in CHECKPOINTS}

@@ -191,6 +191,13 @@ def build() -> list[list[str]]:
         for x in range(WIDTH - RIM - APPROACH, WIDTH - RIM):
             _clear(grid, x, y)
 
+    # North leads to the orc camp. The other three gaps keep their
+    # shape and stay unwired until their maps land -- and because the
+    # shape was cut first, wiring them later adds markers rather than
+    # moving anything.
+    _rect(grid, mid_x - half, 0, mid_x + half, RIM - 1, "⮝")
+    grid[RIM + 1][mid_x] = "⛲"
+
     grid[ANCHOR[1]][ANCHOR[0]] = "⨀"
     return grid
 

@@ -247,6 +247,13 @@ ZOMBIE_SCRATCHES = 8
 CROCODILE_SPEED = 27.0
 CROCODILE_SANITY_DAMAGE = 22
 CROCODILE_SCRATCHES = 9
+# Phase 13's desert orc. The phase document asks for slightly faster
+# than a zombie and somewhat tougher, and nothing else -- so it is the
+# zombie's numbers moved, not a third stat line invented. Still slower
+# than a skeleton: the orc is heavy, it is not quick.
+ORC_SPEED = 22.0
+ORC_SANITY_DAMAGE = 20
+ORC_SCRATCHES = 11
 SKELETON_SPEED = 25.0
 SKELETON_SANITY_DAMAGE = 15
 SKELETON_SCRATCHES = 6

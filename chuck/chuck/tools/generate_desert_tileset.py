@@ -50,6 +50,9 @@ WATER_LIT = (96, 172, 174)
 WATER_DARK = (34, 88, 104)
 GRASS = (96, 130, 70)
 GRASS_LIT = (128, 164, 88)
+ASH = (128, 118, 108)
+ASH_DARK = (88, 80, 74)
+CHAR = (48, 42, 40)
 PALM = (54, 92, 54)
 PALM_LIT = (78, 124, 66)
 
@@ -261,6 +264,34 @@ def draw_palm_canopy(surface, variant: int, _frame: int) -> None:
     pygame.draw.circle(surface, PALM, centre, 2)
 
 
+def draw_camp_ash(surface, variant: int, _frame: int) -> None:
+    """A burnt-out fire ring: stones round a bed of ash.
+
+    Authored as one tile rather than as a 3x3 arrangement of rock. Built
+    from four separate solid tiles with an empty middle it came out as
+    four crates standing in a diamond -- at sixteen pixels a fire is a
+    thing, not a formation.
+    """
+    draw_sand(surface, variant, 0)
+    # The ash bed first, spilling slightly outside the stones.
+    pygame.draw.ellipse(surface, (96, 84, 74), (2, 3, 12, 11))
+    pygame.draw.ellipse(surface, ASH, (3, 4, 10, 9))
+    pygame.draw.ellipse(surface, ASH_DARK, (5, 6, 6, 5))
+    # ...then the stones round the rim, unevenly spaced.
+    stones = (
+        ((1, 6), (5, 2), (11, 2), (14, 7), (11, 12), (4, 12)),
+        ((2, 4), (7, 1), (13, 5), (13, 10), (7, 13), (1, 9)),
+        ((1, 5), (6, 2), (12, 3), (14, 9), (9, 13), (3, 11)),
+    )[variant]
+    for index, (x, y) in enumerate(stones):
+        pygame.draw.rect(surface, ROCK_DARK, (x, y, 3, 3))
+        pygame.draw.rect(surface, ROCK if index % 2 else ROCK_LIT, (x, y, 2, 2))
+    # Two log ends still in it, burnt through.
+    pygame.draw.line(surface, CHAR, (5, 9), (9, 7), 2)
+    pygame.draw.line(surface, CHAR, (6, 6), (10, 10), 1)
+    surface.set_at((7 + variant, 8), (196, 96, 48))
+
+
 DRAW = {
     "sand": draw_sand,
     "sand_ripple": draw_sand_ripple,
@@ -269,6 +300,7 @@ DRAW = {
     "ruin_stone": draw_ruin_stone,
     "ruin_floor": draw_ruin_floor,
     "desert_scrub": draw_desert_scrub,
+    "camp_ash": draw_camp_ash,
     "oasis_water": draw_oasis_water,
     "oasis_grass": draw_oasis_grass,
     "palm_canopy": draw_palm_canopy,

@@ -26,6 +26,14 @@ _STATS = {
         config.SKELETON_SANITY_DAMAGE,
         config.SKELETON_SCRATCHES,
     ),
+    # Phase 13's desert orc. Not undead either, and the same role again:
+    # the phase document is explicit that it should be built on this
+    # architecture rather than given a combat system of its own.
+    "orc": (
+        config.ORC_SPEED,
+        config.ORC_SANITY_DAMAGE,
+        config.ORC_SCRATCHES,
+    ),
     # Phlegethos (Phase 8): the lemure is a third undead kind, identical in
     # behaviour to the Chultan pair but slower and far more durable.
     "lemure": (

@@ -1,9 +1,9 @@
 # CHUCK — Project Status
 
-Updated: Phase 12 is feature-complete and Phase 13 has begun. The Collided
-Desert's hub map, its tileset and its theme are in; the four neighbouring maps
-of the opening region are not yet. This file is required by the project rules
-and updated every session.
+Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
+Desert's hub and its orc camp are in, along with the desert tileset and theme;
+the oasis, the undead ruins and the eastern route are not yet. This file is
+required by the project rules and updated every session.
 
 ## Latest implementation
 
@@ -461,12 +461,38 @@ and updated every session.
   hands back to the title with the save pointing at the cabin, and every
   checkpoint on a desert map is gated behind the crossing flag it sets.
 
+- Added the desert orc, which is the `UndeadEnemy` architecture with its dial
+  moved rather than a new class: speed 22 against the zombie's 18 and the
+  skeleton's 25, because the phase document says *slightly* faster, and 11
+  scratches against the zombie's 8. Its sprite is built to the zombie's
+  silhouette so the two read as the same kind of threat, and coloured against
+  it -- leather and sun-bleached wrap over grey-green, a heavy jaw, tusks --
+  so they never read as the same creature. The tests compare it to the zombie
+  rather than to the numbers, so moving one end moves the other.
+- Added `desert_orc_camp`, 64x48, north of the hub. Brown rock closes the
+  north and west in an uneven front several tiles deep, and the only reachable
+  map edge is the five-tile way back south; the fronts wander, because a rock
+  edge ruled straight reads as a border drawn round the map rather than as the
+  back of a canyon. Ten scratchable sacks and four burnt-out fire rings stand
+  among seven orcs, and the ground inside the threshold is kept clear of both
+  -- an orc in the doorway is a toll, not an encounter.
+- The sacks are the Waterdeep pantry's own, by prop rather than by
+  resemblance: a new tile character with `prop="grain_sack"` and sand
+  underneath it, which is all `under` is for. The whole break-spill-clear
+  lifecycle came with it for free.
+- The fire rings started as four solid tiles round an empty middle and read as
+  four crates standing in a diamond. They are one `camp_ash` tile now --
+  stones round an ash bed with two burnt log ends -- because at sixteen pixels
+  a fire is a thing, not a formation.
+- The hub's north gap became a door. Because the four gaps were cut to shape
+  in the previous session, wiring this one added markers and a return
+  checkpoint rather than moving anything, which is what that decision was for.
+
 ## Next logical task
 
-- Build the orc camp north of the hub: desert orcs on the existing undead
-  architecture (faster and tougher than zombies), Waterdeep-style scratchable
-  sacks, brown cliffs closing the north and west edges, and the north walk
-  exit wired in both directions.
+- Build the oasis west of the hub: water, vegetation, scratchable cigarette
+  grass, no enemies, with cliffs north and west and an Astral Sea barrier
+  south. The oasis rows are already on the desert sheet.
 
 ## Superseded Phase 12 task
 

@@ -20,6 +20,15 @@ class AreaExit(NamedTuple):
 
 
 AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
+    # Phase 13. The hub's four gaps are cut identically and only the
+    # ones with a map behind them are wired, so an unbuilt direction is
+    # a dead end rather than a crash.
+    ("desert_central", "⮝"): AreaExit(
+        "desert_orc_camp", "from_desert_central", "up"
+    ),
+    ("desert_orc_camp", "⮟"): AreaExit(
+        "desert_central", "from_orc_camp", "down"
+    ),
     ("modern_city_arrival", "⮝"): AreaExit(
         "modern_city_night_2", "from_city_night_1", "up"
     ),
@@ -534,4 +543,5 @@ AREA_MUSIC: dict[str, str | None] = {
     # Phase 13. One theme for the whole opening desert region, so that
     # walking between its five maps never restarts the music.
     "desert_central": "desert.wav",
+    "desert_orc_camp": "desert.wav",
 }
