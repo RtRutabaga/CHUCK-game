@@ -1,11 +1,13 @@
 # CHUCK — Project Status
 
 Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
-Desert's five-map opening region is complete -- hub, orc camp, oasis and
-undead ruins -- and the eastward traversal runs six maps deep, through the
-modern city, Chult, the Feywild, the Nine Hells, a ship's deck, a castle and
-a frozen world with blue dragons in it. Everything past that is not built. This file is
-required by the project rules and updated every session.
+Desert's five-map opening region is complete and has had a second art pass --
+hub, orc camp, oasis and undead ruins, now with fissured cliffs, fallen
+columns, palm trees and axe-carrying orcs -- and the eastward traversal runs
+six maps deep, through the modern city, Chult, the Feywild, the Nine Hells, a
+ship's deck, a castle and a frozen world with blue dragons in it. Everything
+past that is not built. This file is required by the project rules and updated
+every session.
 
 ## Latest implementation
 
@@ -660,6 +662,61 @@ required by the project rules and updated every session.
   will take -- a telegraph that does not match its strike is worse than none.
   The tests pin what it must *not* have, because that is what a later edit
   adds back.
+
+- A second art pass over the opening region, from a rock-cliff and a
+  desert-ruin reference. The canyon rock was drawn as horizontal beds and had
+  large flat areas in it; it is now broken into chunks taller than they are
+  wide, grained in both directions from its own value everywhere, with one
+  deep fissure that enters the top edge and leaves the bottom edge at the same
+  x in every variant, so it chains unbroken down a whole cliff. That single
+  constant is the whole trick: a tile's variant comes from its position and
+  changes row to row, so anything drawn at a different x per variant stops
+  dead at every tile boundary.
+- It took three goes and both failures are worth keeping. A fissure every five
+  pixels -- which is what the reference looks like at its own scale -- came
+  back as wickerwork: at sixteen pixels a fin has to be most of a tile wide or
+  the eye reads the repetition before it reads the rock. Then chunk faces
+  drawn from the full palette read as crazy paving, because a strong value
+  step between two touching shapes is a boundary, and a boundary round every
+  chunk is a mosaic. The faces are three near-neighbour values now, and no
+  highlight or shadow is ever drawn on the tile's own border -- an edge there
+  is an edge along every seam in the sheet.
+- Added the region's standing props, which is the layer the tileset cannot
+  carry: a ruin reads as ruined because of what fell off it, and a column is
+  three tiles tall, a fallen one two tiles long, and neither repeats. Broken
+  columns at three heights, fallen ones in two or three drums, and heaps of
+  cut blocks, each with a lit top face -- flat, they were glyphs. The hub and
+  the undead ruins are dressed by one shared helper, because the hub's
+  scattered rectangles are supposed to be fragments of the building south of
+  them and two dressing rules would make them two kinds of place.
+- The rule is about where, not what: columns at the corners where the load
+  was, blocks outside the wall they came off, one column down full length per
+  building. That is tested against the helper on a blank sheet of sand rather
+  than by counting blocks on the finished maps -- the undead ruins' courtyard
+  shares a centre with the building around it, so everything the courtyard
+  throws off lands inside the outer wall and no count taken there can tell
+  thrown-clear from tidied-away.
+- The oasis has palm trees. It only ever had canopy tiles -- overhead shade
+  drawn above Chuck -- authored as four clumps, three of which landed on sand
+  instead of turf and were silently dropped, so what the map actually had was
+  two lonely tiles of shade with nothing casting them. Nine palms now stand on
+  a ring round the pool with their crowns written into the overhead layer
+  immediately above them. Placed two tiles higher, as they were first, the
+  shade came out as a green blob floating over each tree: an overhead tile is
+  only shade if it lands where the thing casting it is.
+- The camp's fires are pits rather than tiles. One sixteen-pixel square made
+  the ring of stones three pixels of rock, which is why they read as pots; the
+  ring is a prop wider than the rat looking at it now, standing on its own
+  patch of scorched ground several tiles across. The scorch is walkable -- the
+  fire used to be the wall, and it is the pit that is solid now.
+- The orcs carry battle axes. Colour and a heavy jaw are four pixels of
+  information; a shape held out past the silhouette is read across a room. The
+  axe is drawn last, over the arm holding it, and its head is at chest height:
+  carried any higher it lands level with the orc's own head and the two merge
+  into a hat. Which way the blade faces is decided from the butt of the haft,
+  because the head is on the left in two facings and the right in the third --
+  drawn one way round for all three, two of them showed the blunt back of the
+  axe at the only part of the frame the player can see.
 
 ## Next logical task
 

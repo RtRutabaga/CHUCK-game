@@ -624,7 +624,7 @@ DESERT = Tileset(
         ("ruin_stone", 4, 1),
         ("ruin_floor", 4, 1),
         ("desert_scrub", 3, 1),
-        ("camp_ash", 3, 1),
+        ("camp_scorch", 4, 1),
         ("oasis_water", 3, 3),
         ("oasis_grass", 4, 1),
         ("palm_canopy", 3, 1),
@@ -638,7 +638,7 @@ DESERT = Tileset(
         "⌗": "ruin_stone",
         "⌖": "ruin_floor",
         "⍟": "desert_scrub",
-        "⚱": "camp_ash",
+        "⚱": "camp_scorch",
         "~": "oasis_water",
         "⩊": "oasis_grass",
         "V": "astral_void",
@@ -651,6 +651,7 @@ DESERT = Tileset(
     },
     overhead_char_to_terrain={
         "⏦": "palm_canopy",
+        "⍚": "palm_canopy",
     },
 )
 

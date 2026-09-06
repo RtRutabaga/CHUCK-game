@@ -67,6 +67,10 @@ def orc_frame(facing: str) -> Image.Image:
     It stands upright, too. The zombie's giveaway is that one arm hangs
     forward and its tunic is torn open; nothing on the orc is falling
     apart, because nothing about it is dead.
+
+    ...and it carries a battle axe, which is the loudest of those tells
+    by a distance. Colour and jaw are read at four pixels; a shape held
+    out past the silhouette is read across a room.
     """
     image = Image.new("RGBA", (FRAME_W, FRAME_H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
@@ -115,7 +119,71 @@ def orc_frame(facing: str) -> Image.Image:
     draw.rectangle((9, 22, 12, 29), fill=shade)
     draw.rectangle((4, 26, 7, 29), fill=leather)
     draw.rectangle((9, 26, 12, 29), fill=leather)
+
+    _battle_axe(draw, facing)
     return image
+
+
+def _battle_axe(draw, facing: str) -> None:
+    """The orc's axe, carried across the body.
+
+    It is drawn last, over everything, because a weapon behind the arm
+    holding it is a weapon nobody can see -- and being seen is the
+    whole job. The orc was previously distinguished from the zombie by
+    its colour and its jaw, which are both four pixels of information;
+    a shape held out past the silhouette is legible from across a room.
+
+    Sixteen pixels of width is not much to hang an axe on, so the haft
+    runs corner to corner rather than upright. Held vertically the head
+    lands on top of the orc's own head and the two shapes merge into a
+    hat, which is the failure the knight's crest line already found
+    once.
+    """
+    haft = (86, 58, 34, 255)
+    haft_lit = (124, 90, 52, 255)
+    steel = (176, 182, 190, 255)
+    steel_lit = (222, 228, 236, 255)
+    steel_dark = (92, 98, 108, 255)
+
+    if facing == "up":
+        # Over the far shoulder, so the back view is not the front view
+        # with the face rubbed out.
+        butt, head_x, blade = (11, 28), 3, (0, 4)
+    elif facing == "left":
+        # In profile it is carried ahead of him, edge first: an orc
+        # walking toward you behind its own axe.
+        butt, head_x, blade = (10, 27), 2, (0, 3)
+    else:
+        butt, head_x, blade = (4, 28), 12, (11, 15)
+
+    # The haft: two pixels thick, with the light down one side of it.
+    draw.line((butt[0], butt[1], head_x, 13), fill=haft, width=2)
+    draw.line((butt[0], butt[1] - 1, head_x, 12), fill=haft_lit, width=1)
+
+    # The head, at chest height rather than up beside the face. Carried
+    # any higher it lands level with the orc's own head and the two
+    # merge into one lumpy silhouette -- which is the same failure the
+    # knight's crest found, one sprite over.
+    #
+    # Which way it faces is decided here rather than baked into the
+    # shape, because the head is on the left in two facings and the
+    # right in the third. Drawn one way round for all three, the two
+    # left-handed ones had the bright cutting edge against the orc's
+    # chest and the blunt back of the axe out at the frame edge -- the
+    # only part of it the player can see, showing the wrong side.
+    left, right = blade
+    # Away from the butt of the haft, which is the only thing that
+    # says which side of the orc the head is on.
+    outward, inward = (left, right) if butt[0] > head_x else (right, left)
+    draw.polygon(((inward, 7), (outward, 5), (outward, 16), (inward, 14)),
+                 fill=steel)
+    draw.line((outward, 5, outward, 16), fill=steel_lit)
+    draw.line((inward, 7, inward, 14), fill=steel_dark)
+    # The socket the haft passes through, so the head is mounted on it
+    # rather than floating beside it. Between the haft and the *inner*
+    # edge: laid across the whole head it painted out the blade.
+    draw.rectangle((min(head_x, inward) - 1, 10, max(head_x, inward) + 1, 13),
+                   fill=steel_dark)
 
 
 def knight_frame(facing: str) -> Image.Image:

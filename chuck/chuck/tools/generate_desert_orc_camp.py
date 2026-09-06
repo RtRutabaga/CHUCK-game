@@ -44,8 +44,12 @@ WEST_ROCK = 8       # ...and how far in the western one reaches
 CAMP = (22, 14, 26, 18)     # left, top, width, height
 SACKS = ((25, 18), (26, 21), (25, 24), (28, 16), (29, 27),
          (33, 15), (41, 17), (43, 22), (39, 28), (44, 27))
-# Fires: burnt-out rings of rock, the only built thing in the camp.
+# Fires: burnt-out pits, the only built thing in the camp. Each is a
+# patch of scorched ground with the ring of stones standing in the
+# middle of it, rather than the single tile they used to be -- at one
+# tile the whole fire was smaller than the rat looking at it.
 FIRES = ((31, 21), (40, 24), (36, 27), (27, 17))
+BURN = 2.4          # how far the scorch reaches from the middle, in tiles
 ORCS = ((30, 26), (37, 19), (44, 19), (35, 30), (27, 15),
         (46, 25), (33, 24))
 ANCHOR = (32, 39)   # south of the camp, in the open, before the fight
@@ -126,17 +130,34 @@ def _camp(grid) -> None:
             if grid[y][x] in (".", ",", "⟁"):
                 grid[y][x] = "."
     for cx, cy in FIRES:
-        # One tile each. Built as a ring of four solid tiles round an
-        # empty middle they read as four crates standing in a diamond.
+        # The burn first, as a soft patch of scorched ground several
+        # tiles across, and then the pit standing in the middle of it.
+        # This was one tile once, and one tile is not a fire a camp
+        # gets built around -- it is an object somebody dropped.
+        reach = int(BURN) + 1
+        for y in range(cy - reach, cy + reach + 1):
+            for x in range(cx - reach, cx + reach + 1):
+                if not (0 <= y < HEIGHT and 0 <= x < WIDTH):
+                    continue
+                # Squashed, because the ground is seen at an angle,
+                # and ragged at the rim: a true circle of burn reads
+                # as a stain rather than as somewhere a fire was.
+                distance = math.hypot(x - cx, (y - cy) * 1.35)
+                if distance > BURN - ((x * 5 + y * 7) % 3) * 0.35:
+                    continue
+                if grid[y][x] in (".", ",", "⟁"):
+                    grid[y][x] = "⚱"
         if 0 <= cy < HEIGHT and 0 <= cx < WIDTH:
-            grid[cy][cx] = "⚱"
+            grid[cy][cx] = "⍘"
     for x, y in SACKS:
         if 0 <= y < HEIGHT and 0 <= x < WIDTH and not _is_solid(grid[y][x]):
             grid[y][x] = "⛰"
 
 
 def _is_solid(char: str) -> bool:
-    return char in ("#", "⌗", "⍟", "⛰", "⚱")
+    # The scorch is not in this list. It is ground now, not a fire:
+    # the fire is the pit prop standing in the middle of it.
+    return char in ("#", "⌗", "⍟", "⛰", "⍘")
 
 
 def _scrub(grid) -> None:
@@ -173,7 +194,8 @@ HEADER = (
     "; Brown rock closes the north and west in an uneven canyon front;\n"
     "; the only way out is the way in, south to the central desert.\n"
     "; '⛰' scratchable sacks (the Waterdeep pantry's own), '❂'/'⟠' orcs,\n"
-    "; '⚱' burnt-out fire rings, '⨁' the ashtray south of the fight.\n"
+    "; '⚱' scorched ground with '⍘' a burnt-out fire pit in\n"
+    "; the middle of it, '⨁' the ashtray south of the fight.\n"
 )
 
 

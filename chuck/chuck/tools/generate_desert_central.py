@@ -18,6 +18,8 @@ line up into an accidental path.
 import math
 from pathlib import Path
 
+from generate_desert_ruin_dressing import dress_ruin
+
 
 ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 72
@@ -158,6 +160,12 @@ def build() -> list[list[str]]:
     _outcrops(grid)
     for left, top, width, height in RUINS:
         _ruin(grid, left, top, width, height)
+    # ...and then what fell off it. The walls alone were flat: at this
+    # scale a ruin is a rectangle of paler ground until something
+    # taller than a tile is standing in it, and the pieces are what
+    # tell the player the rectangle used to have a roof.
+    for left, top, width, height in RUINS:
+        dress_ruin(grid, left, top, width, height, seed=left + top)
     _scrub(grid)
 
     # The rim goes on last so nothing can be authored through it.
@@ -217,6 +225,8 @@ HEADER = (
     "; '.' open sand, ',' wind ripple, '⟁' dune, '#' canyon rock.\n"
     "; '⌗' standing ruin (solid), '⌖' its buried floor,"
     " '⍟' dry scrub.\n"
+    "; '⍏'/'⍐' standing columns, '⍖'/'⍗' fallen ones,"
+    " '⍓'/'⍔' spilled blocks.\n"
     "; Four identical gaps in the rim, one per side. Nothing on the\n"
     "; ground points at any of them -- that is the whole design.\n"
 )

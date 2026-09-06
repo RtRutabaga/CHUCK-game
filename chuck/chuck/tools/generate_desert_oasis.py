@@ -39,11 +39,27 @@ ASTRAL = 4          # the depth of the southern Astral Sea band
 # the end of a walk -- something you can put your back to.
 POOL = (30, 21, 6.0, 3.6)       # centre x, centre y, x radius, y radius
 TURF = 2.6                      # how far the green reaches past the water
-# Palm shade in clumps rather than single tiles. This is an overhead
-# layer, the same kind of thing as the market awning: one tile of it on
-# its own has no trunk under it and reads as a bush drawn on top of
-# Chuck, where three or four together read as a tree he walks beneath.
-PALM_CLUMPS = ((23, 17), (36, 17), (22, 25), (37, 24))
+# Palms, standing in a ring round the pool.
+#
+# There were only ever canopy tiles here: an overhead layer, shade
+# drawn above Chuck so he walks under it. It was authored as four
+# clumps of four, and three of the four clumps fell on sand rather than
+# turf and were quietly dropped -- so what the oasis actually had was
+# two lonely tiles of shade with nothing casting them.
+#
+# Now each palm is a tree: a solid trunk standing on the ground, and
+# its own crown drawn overhead in the tiles the crown reaches. They are
+# placed on a ring rather than by hand so that they stand *round* the
+# water at an even distance from it, which is the thing that makes an
+# oasis read as an oasis rather than as a pond with bushes near it.
+PALM_COUNT = 9
+PALM_RING = 1.62        # in pool radii: just outside the turf's edge
+# How far the crown of a palm reaches above the tile its trunk stands
+# on: one narrow row and one wide one, immediately above it. Written
+# two tiles higher than this the shade came out as a separate green
+# blob floating above each tree -- an overhead tile is only shade if
+# it lands where the thing casting it actually is.
+CROWN_ROWS = (2, 1)
 # Cigarette grass: most of it on the turf, a few tufts out on the sand
 # so the walk in has something in it too.
 TURF_GRASS = ((26, 16), (34, 16), (25, 26), (35, 26), (30, 15),
@@ -55,6 +71,9 @@ SAND_GRASS = ((13, 31), (47, 33), (15, 13), (46, 14), (11, 25), (44, 9),
 # in the middle of a desert with nothing else green near it.
 ANCHOR = (28, 25)
 ARRIVAL = (51, 21)  # just inside the way in from the hub
+
+
+TURF_CHAR = "⩊"
 
 
 def _blank():
@@ -132,6 +151,53 @@ def _cliffs(grid) -> None:
     _rect(grid, WIDTH - RIM, 0, WIDTH - 1, HEIGHT - 1, "#")
 
 
+def _palms(grid) -> None:
+    """A ring of palms round the pool, each with the shade it casts.
+
+    Trees rather than tiles. The trunk is a solid prop standing on the
+    ground -- Chuck walks around it, and it is taller than he is by
+    three times -- and the crown is written into the overhead layer
+    above it, so he can still walk into the shade and be under it.
+
+    Anything already spoken for is left alone. A palm is the least
+    important thing on this map and it must never be the reason the
+    ashtray moved, or a tuft of cigarette grass went missing, or the
+    way in stopped being clear.
+    """
+    cx, cy, rx, ry = POOL
+    ground = (".", ",", "⟁")
+    for index in range(PALM_COUNT):
+        angle = index * (2.0 * math.pi / PALM_COUNT) + 0.4
+        # The ring is squashed the same way the pool is, so the palms
+        # keep the same distance from the water all the way round
+        # rather than bunching at the ends of it.
+        x = round(cx + math.cos(angle) * rx * PALM_RING)
+        y = round(cy + math.sin(angle) * ry * PALM_RING)
+        if not (0 <= y < HEIGHT and 0 <= x < WIDTH):
+            continue
+        if grid[y][x] == TURF_CHAR:
+            grid[y][x] = "⍑"
+        elif grid[y][x] in ground:
+            grid[y][x] = "⍒"
+        else:
+            continue
+        # The crown, in the tiles it actually reaches. Drawn as a
+        # square block above the trunk it covered ground the tree does
+        # not, and a canopy that does not line up with the tree under
+        # it reads as two separate things.
+        for depth in CROWN_ROWS:
+            for offset in (-1, 0, 1):
+                sx, sy = x + offset, y - depth
+                if not (0 <= sy < HEIGHT and 0 <= sx < WIDTH):
+                    continue
+                if abs(offset) and depth == CROWN_ROWS[0]:
+                    continue        # the crown is narrower at the top
+                if grid[sy][sx] == TURF_CHAR:
+                    grid[sy][sx] = "⏦"
+                elif grid[sy][sx] in ground:
+                    grid[sy][sx] = "⍚"
+
+
 def build():
     grid = _blank()
     _weather(grid)
@@ -146,17 +212,18 @@ def build():
             if grid[y][x] not in (",", "⟁"):
                 grid[y][x] = "."
 
-    for left, top in PALM_CLUMPS:
-        for y in range(top, top + 2):
-            for x in range(left, left + 2):
-                if 0 <= y < HEIGHT and 0 <= x < WIDTH and grid[y][x] == "⩊":
-                    grid[y][x] = "⏦"
     for x, y in TURF_GRASS:
         if grid[y][x] == "⩊":
             grid[y][x] = "⩏"
     for x, y in SAND_GRASS:
         if grid[y][x] in (".", ",", "⟁"):
             grid[y][x] = "<"
+    # Last, so that a palm can only ever take a tile nothing else
+    # wanted. Planted before the cigarette grass, a trunk landing on a
+    # tuft's square silently deleted the tuft -- the tufts are placed
+    # by hand and only go down on ground of the right kind, so they
+    # lose the argument without saying anything.
+    _palms(grid)
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌬"
     grid[ANCHOR[1]][ANCHOR[0]] = "☉"
@@ -165,7 +232,8 @@ def build():
 
 HEADER = (
     "; DESERT OASIS - Phase 13, west of the hub (56x44). No enemies.\n"
-    "; '~' water, '⩊' turf, '⏦' palm shade (drawn over Chuck),\n"
+    "; '~' water, '⩊' turf, '⏦'/'⍚' palm shade (drawn over Chuck),\n"
+    "; '⍑'/'⍒' the palms casting it, standing on turf and on sand,\n"
     "; '⩏'/'<' scratchable cigarette grass, '☉' the ashtray.\n"
     "; Rock closes the north and west; the south is the Astral Sea.\n"
 )

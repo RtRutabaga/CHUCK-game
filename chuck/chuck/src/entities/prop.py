@@ -63,6 +63,32 @@ _SPRITES = {
         "objects/jungle_shrub_2.png",
         "objects/jungle_shrub_3.png",
     ),
+    # Phase 13's desert dressing. Tuples, so the variant is chosen from
+    # the tile's own position -- three column heights, three heaps, three
+    # palms -- and a run of them never repeats in a straight line.
+    "desert_column": (
+        "objects/desert_column_1.png",
+        "objects/desert_column_2.png",
+        "objects/desert_column_3.png",
+    ),
+    "desert_column_fallen": (
+        "objects/desert_column_fallen_1.png",
+        "objects/desert_column_fallen_2.png",
+        "objects/desert_column_fallen_3.png",
+    ),
+    "desert_rubble": (
+        "objects/desert_rubble_1.png",
+        "objects/desert_rubble_2.png",
+        "objects/desert_rubble_3.png",
+    ),
+    "desert_palm": (
+        "objects/desert_palm_1.png",
+        "objects/desert_palm_2.png",
+        "objects/desert_palm_3.png",
+    ),
+    # Animated; the entry here is the first frame, which is what the
+    # constructor validates the kind against.
+    "desert_fire_pit": "objects/desert_fire_pit_1.png",
     "sailing_cog": "objects/sailing_cog.png",
     "skull_stake": "objects/skull_stake.png",
     "temple_arch_ns": "objects/temple_arch_ns.png",
@@ -254,6 +280,12 @@ _ANIMATED_SPRITES = {
     # so six frames is enough for the lamp never to look like it loops.
     "cabin_lava_lamp": tuple(
         f"objects/cabin_lava_lamp_{index + 1}.png" for index in range(6)
+    ),
+    # The orc camp's fires. Animated only so the embers breathe: the
+    # fires are out, and a pit whose flames leap is a camp somebody is
+    # still sitting at.
+    "desert_fire_pit": tuple(
+        f"objects/desert_fire_pit_{index + 1}.png" for index in range(6)
     ),
 }
 _PROP_FRAME_TIME = 0.14

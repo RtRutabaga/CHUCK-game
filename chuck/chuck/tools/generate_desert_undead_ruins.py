@@ -20,6 +20,8 @@ also means the walls do not have to do the work of sealing the map.
 import math
 from pathlib import Path
 
+from generate_desert_ruin_dressing import dress_ruin
+
 
 ROOT = Path(__file__).resolve().parents[1]
 WIDTH = 60
@@ -146,6 +148,12 @@ def build():
     _partitions(grid)
     _wall(grid, *COURT)
     _doors(grid)
+    # What came off it. The hub's ruins are fragments of this building,
+    # so they are dressed by the same rule and out of the same pieces --
+    # a player who has walked past six broken rectangles up north
+    # should recognise this as the thing they were broken off.
+    dress_ruin(grid, *OUTER, seed=OUTER[0] + OUTER[1])
+    dress_ruin(grid, *COURT, seed=COURT[0] + COURT[1])
     _astral(grid)
 
     mid_x = WIDTH // 2
@@ -176,6 +184,8 @@ HEADER = (
     "; '⌗' standing wall, '⌖' its buried floor, '⎈' the chest in the\n"
     "; courtyard, 'ᛊ'/'ᛏ' patrolling skeletons, '☽' the ashtray.\n"
     "; The Astral Sea closes the west and the south.\n"
+    "; '⍏'/'⍐' standing columns, '⍖'/'⍗' fallen ones,"
+    " '⍓'/'⍔' spilled blocks.\n"
 )
 
 

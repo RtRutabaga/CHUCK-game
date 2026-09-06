@@ -311,9 +311,12 @@ TILE_DEFS: dict[str, TileDef] = {
     "⌖": TileDef(solid=False, color=(162, 146, 124)),
     # Chest-high on a one-foot rat, so a bush is a wall.
     "⍟": TileDef(solid=True, color=(128, 128, 84)),
-    # A burnt-out fire ring. Solid, because a ring of stones is ankle
-    # height to the people who built it and a wall to a one-foot rat.
-    "⚱": TileDef(solid=True, color=(74, 66, 60)),
+    # Burnt ground. This was the whole fire: one solid tile with a ring
+    # of stones drawn inside it, which at sixteen pixels made the stones
+    # three pixels each. The ring is a prop now and this is what is left
+    # underneath it -- scorched sand, walkable, spread over a patch, so
+    # the fire has a footprint instead of a footprint's worth of tile.
+    "⚱": TileDef(solid=False, color=(120, 100, 78)),
     # The ruins' chest: the sea captain's own, standing on buried
     # flagstones instead of on ship planking.
     "⎈": TileDef(solid=True, color=(0, 0, 0), prop="desert_ruin_chest",
@@ -324,6 +327,13 @@ TILE_DEFS: dict[str, TileDef] = {
     # art that goes on top of him -- authored with neither, the tile was
     # walkable and blank and no palm ever appeared.
     "⏦": TileDef(solid=False, color=(96, 130, 70), under="⩊",
+                 overhead="palm_canopy"),
+    # ...and the same shade lying on sand rather than on turf. The
+    # oasis's green is a narrow ring around the water and the palms
+    # stand outside it, so without this the canopy could only ever be
+    # drawn over the pool itself -- which is the one place a tree
+    # cannot grow.
+    "⍚": TileDef(solid=False, color=(214, 178, 122), under=".",
                  overhead="palm_canopy"),
     # Fragments of Chult, east of the hub. Its own tileset spells these
     # "." and "#"; the desert already owns both, so the collided maps
@@ -353,6 +363,40 @@ TILE_DEFS: dict[str, TileDef] = {
     # one open in Waterdeep should recognise these on sight. Only the
     # ground it stands on differs, which is all `under` is for.
     "⛰": TileDef(solid=True, color=(0, 0, 0), prop="grain_sack", under="."),
+    # ------------------------------------------------------------------
+    # The region's standing props: the layer the tileset cannot carry.
+    #
+    # A ruin reads as a ruin because of what has fallen off it, and none
+    # of that fits in sixteen pixels -- a column is three tiles tall, a
+    # fallen one is two tiles long, and neither repeats. So they are
+    # props: drawn taller than their tile, y-sorted with Chuck, solid
+    # underfoot. Each has a version standing on buried flagstones and a
+    # version standing on open sand, because half of what makes a ruin
+    # look ruined is the pieces that ended up outside it.
+    # ------------------------------------------------------------------
+    "⍏": TileDef(solid=True, color=(0, 0, 0), prop="desert_column",
+                 under="⌖"),
+    "⍐": TileDef(solid=True, color=(0, 0, 0), prop="desert_column",
+                 under="."),
+    "⍖": TileDef(solid=True, color=(0, 0, 0), prop="desert_column_fallen",
+                 under="⌖"),
+    "⍗": TileDef(solid=True, color=(0, 0, 0), prop="desert_column_fallen",
+                 under="."),
+    "⍓": TileDef(solid=True, color=(0, 0, 0), prop="desert_rubble",
+                 under="⌖"),
+    "⍔": TileDef(solid=True, color=(0, 0, 0), prop="desert_rubble",
+                 under="."),
+    # The oasis's palms, at last with trunks. The canopy tile above is
+    # still the shade Chuck walks under; this is the tree holding it up.
+    "⍑": TileDef(solid=True, color=(0, 0, 0), prop="desert_palm",
+                 under="⩊"),
+    "⍒": TileDef(solid=True, color=(0, 0, 0), prop="desert_palm",
+                 under="."),
+    # The camp's fires, at the size a camp is built around: a pit prop
+    # standing in the middle of its own patch of scorched ground. The
+    # one-tile ring it replaces was smaller than the rat looking at it.
+    "⍘": TileDef(solid=True, color=(0, 0, 0), prop="desert_fire_pit",
+                 under="⚱"),
     # Modern-city office masses. These are all solid building footprint,
     # separated into roof/cornice/facade materials only for three-quarter-view
     # rendering; none are short freestanding walls or playable platforms.

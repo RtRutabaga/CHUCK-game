@@ -37,6 +37,15 @@ SAND_SHADE = _SAND_SHADE
 ROCK = _ROCK
 ROCK_DARK = _ROCK_DARK
 ROCK_LIT = (186, 148, 108)
+# Deeper than ROCK_DARK, for the bottom of a fissure. The face has
+# to have somewhere genuinely dark in it or the fins have no depth.
+ROCK_SHADE = (78, 58, 42)
+# ...and a sun-bleached top edge, for the same reason at the other
+# end: the reference's range is wide, and a narrow one reads as mud.
+ROCK_PALE = (206, 172, 128)
+# Two steps either side of ROCK, for the chunk faces themselves.
+ROCK_MID_HI = (168, 132, 95)
+ROCK_MID_LO = (130, 99, 70)
 # The ruins are a greyer, older stone than the live rock of the cliffs:
 # the desert made the canyon, somebody made these.
 RUIN = (166, 142, 110)
@@ -51,6 +60,10 @@ WATER_DARK = (34, 88, 104)
 GRASS = (96, 130, 70)
 GRASS_LIT = (128, 164, 88)
 ASH = (128, 118, 108)
+# Sand with a fire burnt onto it: still sand, still warm, much
+# darker. Grey here and the camp's fires became puddles.
+SCORCH = (170, 134, 88)
+SCORCH_DARK = (126, 96, 62)
 ASH_DARK = (88, 80, 74)
 CHAR = (48, 42, 40)
 # Darker than the turf it hangs over, or the shade disappears into the
@@ -113,34 +126,106 @@ def draw_dune(surface, variant: int, _frame: int) -> None:
 
 
 def draw_desert_rock(surface, variant: int, _frame: int) -> None:
-    """Brown canyon rock: the thing the region is walled in by.
+    """Brown canyon rock, redrawn from a photograph of a sandstone face.
 
-    Blocky and bedded, with the strata running horizontally, so a run of
-    them reads as one cliff face rather than as a row of boulders.
+    Two things came out of the reference. The rock is broken into
+    chunks that are taller than they are wide, and every surface of it
+    is grained -- there is no flat area anywhere, which is exactly what
+    the first version of this tile had too much of.
+
+    The hard constraint is that a tile's variant is chosen from its
+    position, so it changes from row to row: any feature drawn at a
+    different x in different variants stops dead at every tile boundary.
+    So there is exactly one thing here that is identical in all four --
+    the deep fissure that enters the top edge at x=4 and leaves the
+    bottom edge at the same place -- and that one runs unbroken down a
+    whole cliff. Everything else is free to differ, and does.
+
+    Drawn with a fissure every five pixels instead, which is what the
+    reference looks like at its own scale, a wall of these came out as
+    wickerwork: at sixteen pixels a fin has to be most of a tile wide
+    or the eye reads the repetition before it reads the rock.
     """
     surface.fill(ROCK_DARK)
-    # Irregular blocks rather than even courses. Ruled as four equal
-    # bands with a line across each it came out as stacked planks --
-    # a cliff is broken rock, and the giveaway is that no two chunks of
-    # it are the same height.
-    beds = (
-        ((0, 0, 9, 6), (9, 0, 7, 4), (0, 6, 5, 5), (5, 6, 11, 6),
-         (9, 4, 7, 2), (0, 11, 8, 5), (8, 12, 8, 4)),
-        ((0, 0, 6, 5), (6, 0, 10, 7), (0, 5, 10, 6), (10, 7, 6, 5),
-         (0, 11, 6, 5), (6, 12, 10, 4)),
-        ((0, 0, 11, 4), (11, 0, 5, 7), (0, 4, 6, 7), (6, 4, 5, 6),
-         (0, 11, 9, 5), (9, 10, 7, 6), (11, 7, 5, 3)),
-        ((0, 0, 7, 7), (7, 0, 9, 5), (7, 5, 9, 6), (0, 7, 5, 4),
-         (5, 11, 6, 5), (0, 11, 5, 5), (11, 11, 5, 5)),
+    # Chunks, taller than wide, tiled over the whole face with no gaps.
+    # Deliberately uneven: no two the same height, and the joins between
+    # them do not line up into courses.
+    chunks = (
+        ((0, 0, 5, 9), (5, 0, 6, 6), (11, 0, 5, 11),
+         (0, 9, 4, 7), (4, 6, 7, 6), (4, 12, 7, 4), (11, 11, 5, 5)),
+        ((0, 0, 6, 7), (6, 0, 4, 10), (10, 0, 6, 5),
+         (0, 7, 6, 9), (6, 10, 4, 6), (10, 5, 6, 8), (10, 13, 6, 3)),
+        ((0, 0, 4, 12), (4, 0, 7, 5), (11, 0, 5, 7),
+         (4, 5, 7, 8), (11, 7, 5, 9), (0, 12, 4, 4), (4, 13, 7, 3)),
+        ((0, 0, 7, 6), (7, 0, 4, 9), (11, 0, 5, 6),
+         (0, 6, 7, 10), (7, 9, 4, 7), (11, 6, 5, 5), (11, 11, 5, 5)),
     )[variant]
-    for index, (x, y, w, h) in enumerate(beds):
-        pygame.draw.rect(surface, ROCK, (x, y, w - 1, h - 1))
-        # Sun on the top edge of each block, shadow under it: this is
-        # what makes a face of them read as bedded stone.
-        pygame.draw.line(surface, ROCK_LIT, (x, y), (x + w - 2, y))
-        if index % 3 == 0:
+    # Three near-neighbour values, not the whole palette. Drawn with the
+    # full range the chunks read as crazy paving: at this size a strong
+    # value step between two touching shapes is a *boundary*, and a face
+    # with a boundary round every chunk is a mosaic, not a rock.
+    faces = (ROCK, ROCK_MID_HI, ROCK, ROCK_MID_LO, ROCK_MID_HI, ROCK,
+             ROCK_MID_LO)
+    for index, (x, y, w, h) in enumerate(chunks):
+        face = faces[(index + variant) % len(faces)]
+        pygame.draw.rect(surface, face, (x, y, w, h))
+        # Sun above and to the left, shadow below and to the right --
+        # the same light the sand is lit by, so the two agree. Only some
+        # chunks get either, or the edges themselves become the grid.
+        # ...and never on the tile's own border. An edge drawn there is
+        # an edge drawn along every seam in the sheet, and a cliff built
+        # out of it comes back as a grid however good one tile looks.
+        if (index + variant) % 3 != 2 and y > 0:
+            pygame.draw.line(surface, ROCK_LIT, (x, y), (x + w - 2, y))
+        if (index + variant * 2) % 3 != 1 and y + h < TILE_PX:
             pygame.draw.line(surface, ROCK_DARK,
-                             (x + 1, y + h - 2), (x + w - 3, y + h - 2))
+                             (x, y + h - 1), (x + w - 1, y + h - 1))
+        if (index + variant) % 4 == 0 and x + w < TILE_PX:
+            pygame.draw.line(surface, ROCK_DARK,
+                             (x + w - 1, y), (x + w - 1, y + h - 1))
+
+    # Grain. A sandstone face has no flat area on it at any distance,
+    # and this is most of what the reference has that the old tile did
+    # not: every chunk speckled in both directions from its own value.
+    # Always one step from whatever is already there, never a jump: a
+    # speckle that ignores the surface it lands on reads as dirt on the
+    # screen rather than as grain in the stone.
+    lighter = {ROCK_SHADE: ROCK_DARK, ROCK_DARK: ROCK_MID_LO,
+               ROCK_MID_LO: ROCK, ROCK: ROCK_MID_HI,
+               ROCK_MID_HI: ROCK_LIT, ROCK_LIT: ROCK_PALE}
+    darker = {value: key for key, value in lighter.items()}
+    for step in range(26):
+        gx = (step * 7 + variant * 5) % TILE_PX
+        gy = (step * 11 + variant * 3) % TILE_PX
+        pixel = surface.get_at((gx, gy))[:3]
+        table = lighter if step % 2 else darker
+        surface.set_at((gx, gy), table.get(pixel, pixel))
+
+    # The one continuous feature: a fissure entering the top edge and
+    # leaving the bottom edge at the same x in every variant, so it
+    # chains from tile to tile down the whole height of a cliff. It
+    # wanders in the middle, where it is free to.
+    jog = (0, 1, 1, 0)[variant]
+    # Its depth varies with the variant as well, so the line breathes
+    # down the height of a cliff instead of being ruled.
+    floor_colour = (ROCK_SHADE, ROCK_DARK, ROCK_SHADE, ROCK_DARK)[variant]
+    for y in range(TILE_PX):
+        x = 4 + (jog if 4 <= y <= 11 else 0)
+        surface.set_at((x, y), floor_colour)
+        if x + 1 < TILE_PX and y % 4 != variant % 4:
+            surface.set_at((x + 1, y), ROCK_DARK)
+        if x - 1 >= 0 and y % 5 == 0:
+            surface.set_at((x - 1, y), ROCK_LIT)
+
+    # ...and one short crack that does not, so the face is not a row of
+    # identically fissured slabs. Kept as a plain stroke: given a shape
+    # of its own it became a motif, and a motif is the one thing a
+    # four-variant row cannot afford -- it repeats every fourth tile and
+    # the eye finds it immediately.
+    cx = (10, 13, 9, 12)[variant]
+    top = (3, 8, 6, 1)[variant]
+    for y in range(top, min(TILE_PX - 1, top + 6)):
+        surface.set_at((cx, y), ROCK_DARK)
 
 
 def draw_ruin_stone(surface, variant: int, _frame: int) -> None:
@@ -266,32 +351,42 @@ def draw_palm_canopy(surface, variant: int, _frame: int) -> None:
     pygame.draw.circle(surface, PALM, centre, 2)
 
 
-def draw_camp_ash(surface, variant: int, _frame: int) -> None:
-    """A burnt-out fire ring: stones round a bed of ash.
+def draw_camp_scorch(surface, variant: int, _frame: int) -> None:
+    """Ground a fire has been burning on. Walkable.
 
-    Authored as one tile rather than as a 3x3 arrangement of rock. Built
-    from four separate solid tiles with an empty middle it came out as
-    four crates standing in a diamond -- at sixteen pixels a fire is a
-    thing, not a formation.
+    This row used to be the fire itself: stones, ash and embers, all
+    inside one sixteen-pixel square, which meant the stones were three
+    pixels across and the whole thing read as a pot. The ring is a prop
+    now, and what is left here is the mark it made on the sand -- so a
+    camp fire covers a patch of ground rather than a tile of it.
+
+    Sand first and burn over it, the same way round as the ruin floor
+    and for the same reason: drawn as ash with sand scattered on it,
+    every fire in the camp came out as a grey disc laid on a desert.
     """
     draw_sand(surface, variant, 0)
-    # The ash bed first, spilling slightly outside the stones.
-    pygame.draw.ellipse(surface, (96, 84, 74), (2, 3, 12, 11))
-    pygame.draw.ellipse(surface, ASH, (3, 4, 10, 9))
-    pygame.draw.ellipse(surface, ASH_DARK, (5, 6, 6, 5))
-    # ...then the stones round the rim, unevenly spaced.
-    stones = (
-        ((1, 6), (5, 2), (11, 2), (14, 7), (11, 12), (4, 12)),
-        ((2, 4), (7, 1), (13, 5), (13, 10), (7, 13), (1, 9)),
-        ((1, 5), (6, 2), (12, 3), (14, 9), (9, 13), (3, 11)),
-    )[variant]
-    for index, (x, y) in enumerate(stones):
-        pygame.draw.rect(surface, ROCK_DARK, (x, y, 3, 3))
-        pygame.draw.rect(surface, ROCK if index % 2 else ROCK_LIT, (x, y, 2, 2))
-    # Two log ends still in it, burnt through.
-    pygame.draw.line(surface, CHAR, (5, 9), (9, 7), 2)
-    pygame.draw.line(surface, CHAR, (6, 6), (10, 10), 1)
-    surface.set_at((7 + variant, 8), (196, 96, 48))
+    # Mostly burnt, with the burn running off every edge of the tile.
+    # Drawn as a handful of small blobs sitting inside the tile it came
+    # back as scattered charcoal -- gravel rather than ground -- because
+    # every tile was making its own little island instead of joining the
+    # ones beside it. The patch is several tiles across and no single
+    # tile may have an edge of its own.
+    for index in range(4):
+        x = (index * 7 + variant * 5) % TILE_PX - 4
+        y = (index * 11 + variant * 3) % TILE_PX - 4
+        pygame.draw.ellipse(surface, SCORCH, (x, y, 11, 9))
+    for index in range(2):
+        x = (index * 9 + variant * 6) % TILE_PX - 2
+        y = (index * 5 + variant * 7) % TILE_PX - 2
+        pygame.draw.ellipse(surface, SCORCH_DARK, (x, y, 7, 5))
+    # Ash and cinders lying on it. Two tones, because a burn with one
+    # value on it is a shadow.
+    for index in range(6):
+        x = (index * 6 + variant * 7) % TILE_PX
+        y = (index * 9 + variant * 4) % TILE_PX
+        surface.set_at((x, y), ASH if index % 2 else CHAR)
+        if index % 3 == 0:
+            surface.set_at(((x + 1) % TILE_PX, y), ASH_DARK)
 
 
 DRAW = {
@@ -302,7 +397,7 @@ DRAW = {
     "ruin_stone": draw_ruin_stone,
     "ruin_floor": draw_ruin_floor,
     "desert_scrub": draw_desert_scrub,
-    "camp_ash": draw_camp_ash,
+    "camp_scorch": draw_camp_scorch,
     "oasis_water": draw_oasis_water,
     "oasis_grass": draw_oasis_grass,
     "palm_canopy": draw_palm_canopy,
