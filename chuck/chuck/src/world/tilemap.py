@@ -336,6 +336,11 @@ TILE_DEFS: dict[str, TileDef] = {
     # already had its own and keeps them.
     "ᛟ": TileDef(solid=False, color=(46, 74, 60)),
     "ᛇ": TileDef(solid=True, color=(28, 54, 46)),
+    # A piece of the ship's deck, and a piece of a castle nobody has
+    # been to. The courtyard walks like flagstone; the wall is a wall.
+    "⌼": TileDef(solid=False, color=(96, 72, 46)),
+    "⌽": TileDef(solid=False, color=(128, 126, 122)),
+    "⌾": TileDef(solid=True, color=(92, 92, 96)),
     # The orc camp's stores. Deliberately the pantry's own grain-sack
     # prop rather than a desert-styled one: the phase document asks for
     # the same asset and the same behaviour, and a player who scratched
@@ -767,6 +772,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # marker of their own: Phlegethos already authored one per facing,
     # each standing on basalt, which is exactly what its fragment is.
     "⌺": MarkerDef(kind="redcap", under="ᛟ"),
+    "⍀": MarkerDef(kind="arrival:from_east_5", under="."),
+    "⍁": MarkerDef(kind="anchor:desert_east_5_anchor", under="."),
+    # Armoured knights, on the courtyard they came in on.
+    "⍂": MarkerDef(kind="knight", under="⌽"),
     # Desert orcs, on the sand and inside the camp's beaten ground.
     "❂": MarkerDef(kind="orc", under="."),
     "⟠": MarkerDef(kind="orc", under=","),

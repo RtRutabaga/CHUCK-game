@@ -2,9 +2,9 @@
 
 Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
 Desert's five-map opening region is complete -- hub, orc camp, oasis and
-undead ruins -- and the eastward traversal runs four maps deep, through the
-modern city, Chult, the Feywild and the Nine Hells. Everything past that is
-not built yet. This file is
+undead ruins -- and the eastward traversal runs five maps deep, through the
+modern city, Chult, the Feywild, the Nine Hells, a ship's deck and a castle
+Chuck has never been to. Everything past that is not built yet. This file is
 required by the project rules and updated every session.
 
 ## Latest implementation
@@ -605,13 +605,39 @@ required by the project rules and updated every session.
   single-world overlays. A map with one fragment on it is an overlay; the
   collision is supposed to be getting messier.
 
+- Added `desert_east_5`: the first fragment of somewhere Chuck has never
+  been. A castle courtyard -- swept flagstone, ashlar walls, gated on four
+  sides -- with armoured knights in it, plus a length of the ship's deck out
+  on the sand. It is deliberately *kept* rather than ruined: the region has
+  three kinds of fallen-down stone in it already and a broken castle would
+  read as a fourth, so the wall is unbroken except at its gates and a test
+  holds it to that.
+- It is also not Waterdeep's castle. The docks sheet has had a `castle_wall`
+  row since Phase 1 -- the backdrop behind the port -- and the phase document
+  asks for somewhere clearly distinct from the docks, so the new rows are
+  named `courtyard_*` and drawn cold and grey against the docks' warm keep
+  stone. A test asserts the two rows stay separate.
+- The provenance rule gained its one legitimate exception. Every row on the
+  collided sheet is rendered by the generator that owns it and checked pixel
+  for pixel; the courtyard has no owner, because there is no medieval map to
+  import from. Those rows name COLLIDED as their source and skip the
+  comparison, which is honest rather than a loophole: the reason the others
+  are checked is that two copies of a picture drift apart, and these have one.
+- The knight is `UndeadEnemy` again, with the dial pushed the other way from
+  the orc's: the slowest and by some distance the toughest of the four, which
+  is what armour is for. Its sprite is the only pursuer in the game with no
+  face -- the others are read by theirs, and this one by not having one.
+- East 5 is also the first map to hold two hazards in the same place, which is
+  the document's "familiar systems in new combinations": an Astral tear with
+  Hell's lava running into it. The test checks they are *adjacent*, because
+  two hazards at opposite corners of a map is a list rather than a combination.
+
 ## Next logical task
 
-- East 5 onward, and the unvisited worlds. The phase document still wants a
-  medieval courtyard with armoured knights and a snowy region with an
-  unbeatable blue dragon, plus ship decking and Waterdeep stone among the
-  returning ones. The maps should also start combining hazards rather than
-  presenting one apiece.
+- The snowy region and the blue dragon. This is the phase's one genuinely new
+  system -- lightning breath as an unbeatable dodge hazard, explicitly not a
+  boss fight -- so it wants a slice to itself rather than being bolted onto
+  another map.
 
 ## Superseded Phase 12 task
 

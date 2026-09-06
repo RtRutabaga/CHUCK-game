@@ -251,6 +251,12 @@ CROCODILE_SCRATCHES = 9
 # than a zombie and somewhat tougher, and nothing else -- so it is the
 # zombie's numbers moved, not a third stat line invented. Still slower
 # than a skeleton: the orc is heavy, it is not quick.
+# Phase 13's armoured knight, from the castle fragment. The heaviest
+# thing in the game's pursuer role: slower than a zombie because of what
+# it is wearing, and far harder to see off.
+KNIGHT_SPEED = 15.0
+KNIGHT_SANITY_DAMAGE = 24
+KNIGHT_SCRATCHES = 16
 ORC_SPEED = 22.0
 ORC_SANITY_DAMAGE = 20
 ORC_SCRATCHES = 11

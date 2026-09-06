@@ -43,6 +43,73 @@ from generate_feywild_tileset import (
     ground as draw_fey_ground, pollen as draw_fey_pollen,
 )
 from generate_phlegethos_tileset import draw_basalt, draw_cliff, draw_lava
+from generate_ship_tileset import draw_ship_floor
+
+
+# ---------------------------------------------------------------------
+# The one world with no home.
+#
+# Everything else on this sheet is imported from the generator that owns
+# it. Chuck has never been to a castle, so there is nothing to import --
+# these two are drawn here, and the provenance suite records them as
+# belonging to this sheet. There is no second copy for them to drift
+# away from, which is the only reason that is safe.
+#
+# Deliberately not the docks sheet's castle. That one is Waterdeep's own
+# backdrop and the phase document asks for somewhere distinct: this is
+# cold grey ashlar with moss in the joints, not warm keep stone.
+# ---------------------------------------------------------------------
+COURTYARD = (128, 126, 122)
+COURTYARD_LIT = (156, 154, 148)
+COURTYARD_DARK = (86, 86, 88)
+WALL = (92, 92, 96)
+WALL_LIT = (122, 122, 126)
+WALL_DARK = (58, 58, 62)
+MOSS = (74, 96, 68)
+
+
+def draw_courtyard_stone(surface, variant: int, _frame: int) -> None:
+    """Cut flagstones, laid square and swept.
+
+    The desert's ruin floor is sand with stone showing through it. This
+    is the opposite and has to read that way at a glance: a floor that
+    somebody is still keeping.
+    """
+    surface.fill(COURTYARD)
+    # Joints on the top and left edges, so a field of them is one
+    # continuous pavement -- the same trick the ruin floor uses.
+    pygame.draw.line(surface, COURTYARD_DARK, (0, 0), (TILE_PX - 1, 0))
+    pygame.draw.line(surface, COURTYARD_DARK, (0, 0), (0, TILE_PX - 1))
+    pygame.draw.line(surface, COURTYARD_LIT, (1, 1), (TILE_PX - 1, 1))
+    # One flag split in half, alternating direction, so the paving is
+    # not laid in a single size.
+    if variant % 2:
+        pygame.draw.line(surface, COURTYARD_DARK, (8, 1), (8, TILE_PX - 1))
+    else:
+        pygame.draw.line(surface, COURTYARD_DARK, (1, 8), (TILE_PX - 1, 8))
+    # A little moss in the joints, and a chip or two.
+    surface.set_at((1 + variant * 3, 1), MOSS)
+    surface.set_at((TILE_PX - 2, 9 + (variant % 4)), MOSS)
+    surface.set_at((4 + (variant * 5) % 9, 11 - (variant % 3)), COURTYARD_DARK)
+
+
+def draw_courtyard_wall(surface, variant: int, _frame: int) -> None:
+    """Ashlar: big squared blocks in even courses, mossed at the joints.
+
+    Coursed rather than broken, because that is the whole difference
+    between a castle and a ruin -- the desert already has three kinds of
+    fallen-down stone in it and this must not read as a fourth.
+    """
+    surface.fill(WALL_DARK)
+    for index, top in enumerate((0, 6, 11)):
+        height = 5 if index < 2 else 5
+        # Courses offset by half a block, the way real ashlar is laid.
+        offset = 0 if index % 2 == 0 else 5
+        for x in range(-offset, TILE_PX, 9):
+            pygame.draw.rect(surface, WALL, (x, top, 8, height - 1))
+            pygame.draw.line(surface, WALL_LIT, (x, top), (x + 7, top))
+    for spot in ((1, 5), (10, 10), (6, 15)):
+        surface.set_at(((spot[0] + variant * 3) % TILE_PX, spot[1]), MOSS)
 
 
 DRAW = {
@@ -71,6 +138,12 @@ DRAW = {
     "basalt": draw_basalt,
     "cliff": draw_cliff,
     "lava": draw_lava,
+    # ...the ship, which is a deck and nothing else out here.
+    "ship_floor": draw_ship_floor,
+    # ...and the castle, drawn here because there is nowhere to take it
+    # from: Chuck has never been to one.
+    "courtyard_stone": draw_courtyard_stone,
+    "courtyard_wall": draw_courtyard_wall,
     "astral_void": draw_astral_void,
 }
 

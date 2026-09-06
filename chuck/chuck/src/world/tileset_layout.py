@@ -684,6 +684,16 @@ COLLIDED = Tileset(
         ("basalt", 4, 1),
         ("cliff", 3, 1),
         ("lava", 2, 3),
+        ("ship_floor", 3, 1),
+        # The first world with no home to be imported from: Chuck has
+        # never been to a castle, so there is no medieval tileset to
+        # take these from and the collided generator draws them itself.
+        ("courtyard_stone", 4, 1),
+        # Named "courtyard_" rather than "castle_": the docks sheet
+        # already has a castle_wall row, which is Waterdeep's own
+        # backdrop, and the phase document wants this to read as
+        # somewhere else entirely.
+        ("courtyard_wall", 4, 1),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -717,6 +727,11 @@ COLLIDED = Tileset(
         "·": "basalt",
         "█": "cliff",
         "≋": "lava",
+        # The ship's deck loses "=" to the city's road, which had it
+        # first; everything else about it is the deck Chuck sailed on.
+        "⌼": "ship_floor",
+        "⌽": "courtyard_stone",
+        "⌾": "courtyard_wall",
         "V": "astral_void",
         "⮝": "sand",
         "⮟": "sand",
@@ -822,6 +837,7 @@ MAP_TILESET: dict[str, str] = {
     "desert_east_2": "collided",
     "desert_east_3": "collided",
     "desert_east_4": "collided",
+    "desert_east_5": "collided",
     "tahuya_cabin_interior": "tahuya",
 }
 

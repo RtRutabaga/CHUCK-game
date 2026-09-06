@@ -34,6 +34,14 @@ _STATS = {
         config.ORC_SANITY_DAMAGE,
         config.ORC_SCRATCHES,
     ),
+    # Phase 13's armoured knight, out of the medieval fragment. The
+    # same role again, at the far end of its range: slow and very hard
+    # to shift, which is what armour is for.
+    "knight": (
+        config.KNIGHT_SPEED,
+        config.KNIGHT_SANITY_DAMAGE,
+        config.KNIGHT_SCRATCHES,
+    ),
     # Phlegethos (Phase 8): the lemure is a third undead kind, identical in
     # behaviour to the Chultan pair but slower and far more durable.
     "lemure": (

@@ -1,4 +1,4 @@
-"""Generate the human-scale pursuers: zombie, skeleton, and desert orc."""
+"""Generate the human-scale pursuers: zombie, skeleton, orc, knight."""
 
 from pathlib import Path
 
@@ -118,12 +118,68 @@ def orc_frame(facing: str) -> Image.Image:
     return image
 
 
+def knight_frame(facing: str) -> Image.Image:
+    """Phase 13's armoured knight, out of the medieval fragment.
+
+    The only one of these four with no skin showing. Every other
+    pursuer in the game is read by its face -- the zombie's sick green,
+    the skeleton's skull, the orc's jaw -- and this one is read by not
+    having one: a helm with a slit in it, and plate everywhere else.
+
+    Broader at the shoulders than the orc and narrower at the waist,
+    which is the silhouette of a breastplate rather than a body.
+    """
+    image = Image.new("RGBA", (FRAME_W, FRAME_H), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    steel = (146, 150, 158, 255)
+    steel_lit = (196, 200, 208, 255)
+    steel_dark = (78, 82, 92, 255)
+    dark = (34, 36, 42, 255)
+    surcoat = (122, 46, 52, 255)
+
+    # Helm: a plain barrel with a slit, and a crest ridge over it.
+    draw.rectangle((4, 1, 11, 9), fill=steel_dark)
+    draw.rectangle((5, 2, 10, 8), fill=steel)
+    draw.line((7, 0, 8, 0), fill=steel_lit)
+    draw.line((5, 2, 10, 2), fill=steel_lit)
+    if facing == "down":
+        draw.rectangle((6, 5, 9, 6), fill=dark)
+        draw.point((7, 8), fill=dark)
+        draw.point((8, 8), fill=dark)
+    elif facing == "left":
+        draw.rectangle((4, 5, 6, 6), fill=dark)
+
+    # Pauldrons wider than the chest under them.
+    draw.rectangle((1, 10, 14, 13), fill=steel_dark)
+    draw.rectangle((2, 10, 13, 12), fill=steel)
+    draw.line((2, 10, 13, 10), fill=steel_lit)
+    # Breastplate, tapering to the waist, with a surcoat down it.
+    draw.rectangle((3, 13, 12, 18), fill=steel)
+    draw.rectangle((4, 19, 11, 22), fill=steel_dark)
+    draw.rectangle((7, 13, 8, 21), fill=surcoat)
+    draw.line((3, 14, 12, 14), fill=steel_lit)
+
+    arm_shift = 0 if facing != "left" else -1
+    draw.rectangle((1 + arm_shift, 13, 3 + arm_shift, 21), fill=steel_dark)
+    draw.rectangle((12, 13, 14, 21), fill=steel_dark)
+    draw.line((1 + arm_shift, 13, 1 + arm_shift, 21), fill=dark)
+    draw.line((14, 13, 14, 21), fill=dark)
+
+    # Greaves and sabatons: plate all the way down.
+    draw.rectangle((4, 22, 7, 29), fill=steel)
+    draw.rectangle((9, 22, 12, 29), fill=steel)
+    draw.rectangle((4, 27, 7, 29), fill=steel_dark)
+    draw.rectangle((9, 27, 12, 29), fill=steel_dark)
+    return image
+
+
 def main() -> None:
     out_dir = Path(__file__).resolve().parents[1] / "assets" / "sprites" / "hazards"
     out_dir.mkdir(parents=True, exist_ok=True)
     for kind, make_frame in (("zombie", zombie_frame),
                              ("skeleton", skeleton_frame),
-                             ("orc", orc_frame)):
+                             ("orc", orc_frame),
+                             ("knight", knight_frame)):
         sheet = Image.new("RGBA", (FRAME_W * 3, FRAME_H), (0, 0, 0, 0))
         for index, facing in enumerate(("down", "up", "left")):
             sheet.alpha_composite(make_frame(facing), (index * FRAME_W, 0))

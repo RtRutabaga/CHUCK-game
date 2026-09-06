@@ -212,7 +212,7 @@ def build():
     mid_y = HEIGHT // 2
     half = GAP // 2
     _rect(grid, 0, mid_y - half, RIM - 1, mid_y + half, "⮜")
-    _rect(grid, WIDTH - RIM, mid_y - half, WIDTH - 1, mid_y + half, ".")
+    _rect(grid, WIDTH - RIM, mid_y - half, WIDTH - 1, mid_y + half, "⮞")
     for y in range(mid_y - half, mid_y + half + 1):
         for x in range(RIM, RIM + APPROACH):
             if grid[y][x] not in (",", "⟁"):
@@ -232,6 +232,7 @@ def build():
                     grid[cy][cx] = "·"
         grid[y][x] = marker
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌵"
+    grid[mid_y][WIDTH - RIM - 2] = "⍀"
     grid[ANCHOR[1]][ANCHOR[0]] = "⌹"
     return grid
 

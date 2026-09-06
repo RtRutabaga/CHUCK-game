@@ -12,6 +12,11 @@ it. Adding a world means adding one line to PROVENANCE below; if the
 line is forgotten the suite fails, which is the point -- an unattributed
 row is one somebody has drawn from memory.
 
+A row may name COLLIDED itself as its source. That means a world Chuck
+never visited, which has no sheet of its own and is drawn here. It is
+not a loophole: the reason the others are compared is that two copies
+of a picture drift apart, and these have only one copy.
+
 Why it matters more than it looks: the failure mode is not a crash and
 not even an obviously wrong picture. It is a fragment of the modern
 city that is a *slightly* different grey from the modern city, which
@@ -29,7 +34,8 @@ import pygame
 from src.core import config
 from src.world import collision
 from src.world.tileset_layout import (
-    CHULT, CITY, COLLIDED, DESERT, FEYWILD, PHLEGETHOS, SEWER, TILE_PX,
+    CHULT, CITY, COLLIDED, DESERT, FEYWILD, PHLEGETHOS, SEWER, SHIP,
+    TILE_PX,
 )
 
 
@@ -54,6 +60,14 @@ PROVENANCE = {
     "basalt": PHLEGETHOS,
     "cliff": PHLEGETHOS,
     "lava": PHLEGETHOS,
+    "ship_floor": SHIP,
+    # No source. Chuck has never been to a castle, so there is no
+    # medieval sheet to compare these against -- the collided generator
+    # draws them itself. Naming COLLIDED here is not a loophole: the
+    # whole reason the rest are checked is that two copies of a picture
+    # drift apart, and these have no second copy to drift from.
+    "courtyard_stone": COLLIDED,
+    "courtyard_wall": COLLIDED,
     # The Sea is on every sheet in the game and identical on all of
     # them; the sewer's is as good a reference as any.
     "astral_void": SEWER,
@@ -91,6 +105,8 @@ def test_every_row_is_its_own_worlds_row() -> None:
 
     collided = sheet_for(COLLIDED)
     for name, source in PROVENANCE.items():
+        if source is COLLIDED:
+            continue    # drawn here; there is nothing to compare it to
         # The same number of variants and frames, first: a row rendered
         # with fewer would be the same art shown differently, which is
         # the drift this whole arrangement exists to prevent.
