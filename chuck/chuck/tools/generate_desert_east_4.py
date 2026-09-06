@@ -22,6 +22,10 @@ reason it is there: this is the first map east where dying is likely.
 
 import math
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_collided_common import astral_fringe
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -75,6 +79,13 @@ SCRAPS = (
     (8, 12, 6, 3, "="), (62, 6, 5, 4, "ᛗ"), (10, 48, 6, 3, "ᛟ"),
     (64, 40, 5, 3, "ᛗ"),
 )
+
+
+# Everything on this map that came from somewhere else. The seam
+# between it and the desert gets frayed with Astral Sea, so the
+# fragment reads as having torn its way in rather than as having
+# been laid down on the sand.
+FRAGMENT_CHARS = {"·", "█", "≋", "=", "ᛗ", "ᛟ"}
 
 
 def _blank():
@@ -196,6 +207,7 @@ def build():
     for ruin in RUINS:
         _ruin(grid, *ruin)
     _slab(grid)
+    astral_fringe(grid, FRAGMENT_CHARS, seed=3.9)
     for scrap in SCRAPS:
         _scrap(grid, *scrap)
     for scar in SCARS:

@@ -694,6 +694,11 @@ COLLIDED = Tileset(
         # backdrop, and the phase document wants this to read as
         # somewhere else entirely.
         ("courtyard_wall", 4, 1),
+        # The second world with no home: a frozen one. Its weather is
+        # drawn by SnowFall, which masks itself to exactly these tiles.
+        ("snow", 4, 1),
+        ("snow_drift", 4, 1),
+        ("ice", 3, 1),
         ("astral_void", 2, 3),
     ],
     char_to_terrain={
@@ -732,6 +737,9 @@ COLLIDED = Tileset(
         "⌼": "ship_floor",
         "⌽": "courtyard_stone",
         "⌾": "courtyard_wall",
+        "❄": "snow",
+        "❅": "snow_drift",
+        "❆": "ice",
         "V": "astral_void",
         "⮝": "sand",
         "⮟": "sand",
@@ -838,6 +846,7 @@ MAP_TILESET: dict[str, str] = {
     "desert_east_3": "collided",
     "desert_east_4": "collided",
     "desert_east_5": "collided",
+    "desert_east_6": "collided",
     "tahuya_cabin_interior": "tahuya",
 }
 

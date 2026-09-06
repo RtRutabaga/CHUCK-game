@@ -49,7 +49,9 @@ from src.entities.raptor import Raptor
 from src.entities.redcap import Redcap
 from src.entities.reality_blocks import RealityBlockField
 from src.entities.aurora_light import AuroraLight, MAP_SPRITE_REGION
+from src.entities.blue_dragon import BlueDragon
 from src.entities.city_rain import CityRain
+from src.entities.snow_fall import SNOW_TERRAIN, SnowFall
 from src.entities.snake import TempleSnake
 from src.entities.flameskull import Flameskull
 from src.entities.spitting_orchid import OrchidSeed, SpittingOrchid
@@ -197,6 +199,11 @@ class WorldScene(Scene):
             if MAP_TILESET.get(map_name) in {"city", "city_day"}
             else None
         )
+        # Snow falls on any map with snow on it, rather than on a list
+        # of named maps: the fragment's own tiles are the mask, so a
+        # frozen piece of any shape gets the right weather for free.
+        self.snow = SnowFall() if self.tilemap.has_terrain(
+            SNOW_TERRAIN) else None
         # Once the table map has woken, the cabin lights go out and the
         # room is lit by the aurora projector and the stove alone.
         self.aurora = (
@@ -455,6 +462,7 @@ class WorldScene(Scene):
             } or kind.startswith((
                 "sword_fighter:", "spined_devil:", "police:", "flameskull:",
                 "spitting_orchid:", "lantern_moth:", "raptor:",
+                "blue_dragon:",
             ))
         ]
         self._staged_undead_spawns = [
@@ -566,7 +574,7 @@ class WorldScene(Scene):
                 continue  # rebuilt with all enemies below
             elif kind.startswith((
                 "sword_fighter:", "spined_devil:", "police:", "flameskull:",
-                "spitting_orchid:", "lantern_moth:",
+                "spitting_orchid:", "lantern_moth:", "blue_dragon:",
             )):
                 continue  # rebuilt with all hazards below
             elif kind.startswith("battle:"):
@@ -907,6 +915,10 @@ class WorldScene(Scene):
             spine = devil.update(dt)
             if spine is not None:
                 self.spines.append(spine)
+        for dragon in self.blue_dragons:
+            dragon.update(dt)
+        if self.snow is not None:
+            self.snow.update(dt)
         for spine in self.spines:
             spine.update(dt, self.tilemap)
         self.spines = [spine for spine in self.spines if spine.alive]
@@ -1299,6 +1311,14 @@ class WorldScene(Scene):
                     self.game.audio.play_sfx("hurt")
         self.darts = [dart for dart in self.darts if dart.alive]
 
+        # The dragon's lane, while it is lit. Nothing is consumed and
+        # nothing dies: the bolt simply hurts whoever is standing in it,
+        # and the cooldown is what stops it emptying Sanity at once.
+        for dragon in self.blue_dragons:
+            if dragon.lethal and overlaps(player_box, dragon.strike):
+                if self.sanity.damage(dragon.damage):
+                    self.player.hurt_blink = config.HURT_COOLDOWN
+                    self.game.audio.play_sfx("hurt")
         for spine in self.spines:
             if spine.alive and overlaps(player_box, spine.hitbox):
                 spine.alive = False
@@ -1462,6 +1482,11 @@ class WorldScene(Scene):
                     prop.draw_region(surface, offset, MAP_SPRITE_REGION)
         if self.city_rain is not None:
             self.city_rain.draw(surface)
+        if self.snow is not None:
+            # Over the world and under the HUD, and masked to the snow
+            # it belongs to -- which is why it needs the map and the
+            # camera rather than just the screen.
+            self.snow.draw(surface, offset, self.tilemap)
         self.hud.draw(surface)
         # Tutorial hint (temporary; Waterdeep + sewer only). Hidden
         # while a dialogue is open — it has already been taken up on.
@@ -1585,6 +1610,7 @@ class WorldScene(Scene):
                      *self.spitting_orchids,
                      *self.traffic_vehicles,
                      *self.darts, *self.spines, *self.bullets,
+                     *self.blue_dragons,
                      *self.orchid_seeds,
                      *self.battle_projectiles,
                      *self.npcs, self.player]
@@ -2147,6 +2173,7 @@ class WorldScene(Scene):
         # Phlegethos hazards: perched spine-throwers and weaving skulls.
         self.spined_devils: list[SpinedDevil] = []
         self.spines: list[FlamingSpine] = []
+        self.blue_dragons: list[BlueDragon] = []
         # The daytime city's stationary shooters and their rounds.
         self.police: list[PoliceOfficer] = []
         self.bullets: list[Bullet] = []
@@ -2247,6 +2274,16 @@ class WorldScene(Scene):
                 raptor.tilemap = self.tilemap
                 raptor.load_sprites(self.game.assets)
                 self.raptors.append(raptor)
+            elif kind.startswith("blue_dragon:"):
+                dragon = BlueDragon(
+                    cx, cy, facing=kind.split(":", 1)[1],
+                    # Two on one map must not breathe together, so each
+                    # is offset by where it stands. In world pixels
+                    # rather than tiles: this spawner is handed a
+                    # centre, not a grid position.
+                    phase=(cx * 0.043 + cy * 0.069),
+                )
+                self.blue_dragons.append(dragon)
             elif kind == "redcap":
                 redcap = Redcap(cx, cy)
                 redcap.tilemap = self.tilemap

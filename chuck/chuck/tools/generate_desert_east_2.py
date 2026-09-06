@@ -31,6 +31,10 @@ rather than solved.
 
 import math
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_collided_common import astral_fringe
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,6 +71,13 @@ SNAKES = ((24, 12), (33, 8), (42, 15), (50, 10), (30, 20), (46, 6),
           (20, 7), (54, 18))
 ANCHOR = (6, 26)        # by the west gap, before any of it
 ARRIVAL = (4, 26)
+
+
+# Everything on this map that came from somewhere else. The seam
+# between it and the desert gets frayed with Astral Sea, so the
+# fragment reads as having torn its way in rather than as having
+# been laid down on the sand.
+FRAGMENT_CHARS = {"=", "≡", "ᛗ", "ᚷ", "ᚺ"}
 
 
 def _blank():
@@ -217,6 +228,7 @@ def build():
         _ruin(grid, *ruin)
     _jungle(grid)
     _road(grid)
+    astral_fringe(grid, FRAGMENT_CHARS, seed=1.3)
     for scar in SCARS:
         _scar(grid, *scar)
     for spot in SCRUB:

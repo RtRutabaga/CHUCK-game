@@ -20,6 +20,10 @@ first fragment of another world Chuck meets is one he has to stand on.
 
 import math
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_collided_common import astral_fringe
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -55,6 +59,13 @@ SCRUB = ((12, 18), (26, 12), (44, 11), (62, 17), (18, 27), (29, 39),
          (49, 30), (57, 43), (7, 38), (41, 43), (24, 44), (64, 9))
 ANCHOR = (12, 24)       # west of the tear, before the crossing
 ARRIVAL = (4, 24)       # just inside the way in from the hub
+
+
+# Everything on this map that came from somewhere else. The seam
+# between it and the desert gets frayed with Astral Sea, so the
+# fragment reads as having torn its way in rather than as having
+# been laid down on the sand.
+FRAGMENT_CHARS = {"=", "≡"}
 
 
 def _blank():
@@ -145,6 +156,7 @@ def build():
 
     _tear(grid)
     _road(grid)
+    astral_fringe(grid, FRAGMENT_CHARS, seed=0.0)
 
     _rect(grid, 0, 0, WIDTH - 1, RIM - 1, "#")
     _rect(grid, 0, HEIGHT - RIM, WIDTH - 1, HEIGHT - 1, "#")

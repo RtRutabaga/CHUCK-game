@@ -112,6 +112,65 @@ def draw_courtyard_wall(surface, variant: int, _frame: int) -> None:
         surface.set_at(((spot[0] + variant * 3) % TILE_PX, spot[1]), MOSS)
 
 
+# Lying snow is deliberately not white. The falling snow is drawn over
+# it, and white flakes on a white field are invisible -- the first pass
+# had the ground at 226,234,244 and the weather simply did not read.
+# Overcast snow is a pale blue-grey anyway; white is the exception.
+SNOW = (202, 214, 232)
+SNOW_LIT = (226, 236, 248)
+SNOW_SHADE = (174, 190, 212)
+DRIFT = (186, 202, 224)
+DRIFT_DARK = (146, 166, 192)
+ICE = (168, 202, 222)
+ICE_LIT = (214, 236, 246)
+ICE_DARK = (120, 158, 186)
+
+
+def draw_snow(surface, variant: int, _frame: int) -> None:
+    """Lying snow. Almost blank, like the sand it landed on.
+
+    Deliberately as empty as the desert's own ground: the busy part of
+    a snow field is the weather over it, and SnowFall supplies that.
+    Textured here as well, the two fight and the ground reads as static.
+    """
+    surface.fill(SNOW)
+    dents = (
+        ((3, 5), (11, 10)), ((7, 3), (13, 12)),
+        ((2, 12), (9, 6), (14, 4)), ((5, 14), (10, 8)),
+    )[variant]
+    for index, (x, y) in enumerate(dents):
+        surface.set_at((x, y), SNOW_SHADE if index % 2 else SNOW_LIT)
+
+
+def draw_snow_drift(surface, variant: int, _frame: int) -> None:
+    """Snow piled chest-high on a one-foot rat. Solid.
+
+    Piled rather than banked: the desert's dune had to give up its
+    crest because a field of them stacked their shadows into stripes,
+    and this one has the same problem, so it is drawn as a rounded heap
+    that reads the same from any side.
+    """
+    surface.fill(SNOW)
+    heap = ((2, 4, 12, 11), (1, 5, 14, 10),
+            (3, 3, 11, 12), (2, 6, 13, 9))[variant]
+    pygame.draw.ellipse(surface, DRIFT_DARK, heap)
+    pygame.draw.ellipse(surface, DRIFT,
+                        (heap[0] + 1, heap[1] + 1, heap[2] - 2, heap[3] - 2))
+    pygame.draw.ellipse(surface, SNOW_LIT,
+                        (heap[0] + 3, heap[1] + 2, heap[2] // 2, heap[3] // 3))
+
+
+def draw_ice(surface, variant: int, _frame: int) -> None:
+    """Frozen water: bluer than the snow, and cracked."""
+    surface.fill(ICE)
+    for index in range(3):
+        x = (index * 5 + variant * 3) % 13
+        y = (index * 6 + variant * 4) % 13
+        pygame.draw.line(surface, ICE_DARK, (x, y), (x + 4, y + 3))
+        pygame.draw.line(surface, ICE_LIT, (x + 1, y), (x + 4, y + 2))
+    pygame.draw.line(surface, ICE_LIT, (0, 1 + variant), (15, 3 + variant))
+
+
 DRAW = {
     "sand": draw_sand,
     "sand_ripple": draw_sand_ripple,
@@ -144,6 +203,10 @@ DRAW = {
     # from: Chuck has never been to one.
     "courtyard_stone": draw_courtyard_stone,
     "courtyard_wall": draw_courtyard_wall,
+    # ...and a frozen world, drawn here for the same reason.
+    "snow": draw_snow,
+    "snow_drift": draw_snow_drift,
+    "ice": draw_ice,
     "astral_void": draw_astral_void,
 }
 

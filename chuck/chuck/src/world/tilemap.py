@@ -341,6 +341,12 @@ TILE_DEFS: dict[str, TileDef] = {
     "⌼": TileDef(solid=False, color=(96, 72, 46)),
     "⌽": TileDef(solid=False, color=(128, 126, 122)),
     "⌾": TileDef(solid=True, color=(92, 92, 96)),
+    # A frozen world, also unvisited. Snow and drift are both snowy
+    # ground as far as the weather is concerned -- SnowFall masks to
+    # both -- but a drift is piled high enough to stop a one-foot rat.
+    "❄": TileDef(solid=False, color=(202, 214, 232)),
+    "❅": TileDef(solid=True, color=(186, 202, 224)),
+    "❆": TileDef(solid=False, color=(168, 202, 222)),
     # The orc camp's stores. Deliberately the pantry's own grain-sack
     # prop rather than a desert-styled one: the phase document asks for
     # the same asset and the same behaviour, and a player who scratched
@@ -776,6 +782,13 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "⍁": MarkerDef(kind="anchor:desert_east_5_anchor", under="."),
     # Armoured knights, on the courtyard they came in on.
     "⍂": MarkerDef(kind="knight", under="⌽"),
+    "⍃": MarkerDef(kind="arrival:from_east_6", under="."),
+    "⍄": MarkerDef(kind="anchor:desert_east_6_anchor", under="."),
+    # The blue dragon, facing the way its breath goes. It cannot be
+    # fought, so it has no facing variants for pursuit -- only the two
+    # a lane of lightning can point along.
+    "⍅": MarkerDef(kind="blue_dragon:left", under="❄"),
+    "⍆": MarkerDef(kind="blue_dragon:right", under="❄"),
     # Desert orcs, on the sand and inside the camp's beaten ground.
     "❂": MarkerDef(kind="orc", under="."),
     "⟠": MarkerDef(kind="orc", under=","),
@@ -1413,6 +1426,15 @@ class TileMap:
         if col < 0 or row < 0 or col >= self.width_tiles or row >= self.height_tiles:
             return True
         return TILE_DEFS[self._grid[row][col]].solid
+
+    def has_terrain(self, wanted) -> bool:
+        """True if any tile on the map uses one of these characters.
+
+        Lets a scene ask what a map is made of rather than being told:
+        the snow weather turns itself on for any map with snow in it,
+        so a new frozen fragment needs no entry in any list.
+        """
+        return any(char in wanted for row in self._grid for char in row)
 
     def terrain_at(self, col: int, row: int) -> str:
         """The terrain character at (col, row); '#' out of bounds.

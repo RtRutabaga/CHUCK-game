@@ -247,7 +247,8 @@ def test_the_worlds_keep_arriving() -> None:
                       "medieval"}, worlds
     seen = {tilemap.terrain_at(x, y)
             for y in range(HEIGHT) for x in range(WIDTH)}
-    assert seen <= set(DESERT_GROUND) | set(fragments) | {"V", "⮜"}, seen
+    allowed = set(DESERT_GROUND) | set(fragments) | {"V", "⮜", "⮞"}
+    assert seen <= allowed, seen
 
 
 def test_the_road_east_continues_in_both_directions() -> None:

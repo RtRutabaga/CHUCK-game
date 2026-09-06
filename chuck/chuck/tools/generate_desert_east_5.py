@@ -23,6 +23,10 @@ run of lava off the Hell fragment behind, in the same place.
 
 import math
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_collided_common import astral_fringe
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,6 +56,13 @@ SCRAPS = ((10, 10, 6, 3, "ᛗ"), (66, 44, 5, 3, "ᛟ"), (16, 24, 5, 3, "="))
 SCRUB = ((20, 8), (68, 20), (14, 34), (70, 50), (22, 50))
 ANCHOR = (8, 28)
 ARRIVAL = (4, 28)
+
+
+# Everything on this map that came from somewhere else. The seam
+# between it and the desert gets frayed with Astral Sea, so the
+# fragment reads as having torn its way in rather than as having
+# been laid down on the sand.
+FRAGMENT_CHARS = {"⌽", "⌾", "⌼", "=", "ᛗ", "ᛟ", "·", "≋"}
 
 
 def _blank():
@@ -189,6 +200,7 @@ def build():
         _scrap(grid, *scrap)
     _tear(grid)
     _lava(grid)
+    astral_fringe(grid, FRAGMENT_CHARS, seed=5.2)
     for x, y in SCRUB:
         if grid[y][x] in (".", ",", "⟁"):
             grid[y][x] = "⍟"
@@ -201,7 +213,7 @@ def build():
     mid_y = HEIGHT // 2
     half = GAP // 2
     _rect(grid, 0, mid_y - half, RIM - 1, mid_y + half, "⮜")
-    _rect(grid, WIDTH - RIM, mid_y - half, WIDTH - 1, mid_y + half, ".")
+    _rect(grid, WIDTH - RIM, mid_y - half, WIDTH - 1, mid_y + half, "⮞")
     for y in range(mid_y - half, mid_y + half + 1):
         for x in range(RIM, RIM + APPROACH):
             if grid[y][x] not in (",", "⟁"):
@@ -214,6 +226,7 @@ def build():
         if grid[y][x] == "⌽":
             grid[y][x] = "⍂"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌷"
+    grid[mid_y][WIDTH - RIM - 2] = "⍃"
     grid[ANCHOR[1]][ANCHOR[0]] = "⍁"
     return grid
 

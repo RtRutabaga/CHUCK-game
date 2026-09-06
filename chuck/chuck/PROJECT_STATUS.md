@@ -2,9 +2,9 @@
 
 Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
 Desert's five-map opening region is complete -- hub, orc camp, oasis and
-undead ruins -- and the eastward traversal runs five maps deep, through the
-modern city, Chult, the Feywild, the Nine Hells, a ship's deck and a castle
-Chuck has never been to. Everything past that is not built yet. This file is
+undead ruins -- and the eastward traversal runs six maps deep, through the
+modern city, Chult, the Feywild, the Nine Hells, a ship's deck, a castle and
+a frozen world with blue dragons in it. Everything past that is not built. This file is
 required by the project rules and updated every session.
 
 ## Latest implementation
@@ -632,12 +632,41 @@ required by the project rules and updated every session.
   Hell's lava running into it. The test checks they are *adjacent*, because
   two hazards at opposite corners of a map is a list rather than a combination.
 
+- Every fragment east now has a torn seam. A piece of another world with a
+  clean boundary reads as having been *laid on* the sand, which is the wrong
+  impression entirely -- these collided, and the game already has a language
+  for reality coming apart. A shared helper frays the seam between each
+  fragment and the desert with Astral Sea, and all six eastern maps use it.
+- It took two goes. Taking roughly one seam tile in three, evenly, gives a
+  dashed line: every fragment came out neatly outlined in Astral Sea, which
+  reads as somebody having drawn round it. The tearing is a low-frequency
+  function of position now, so whole stretches of a boundary are ripped
+  through and others simply touch. The test measures run length rather than
+  counting tiles, because an outline and a fray have the same tile count.
+- Added `desert_east_6`: a frozen shelf with a cracked pool in it, and it
+  actually snows -- but only over the snow. `SnowFall` masks each flake
+  against the ground it is currently over, so the weather stops exactly where
+  the fragment does, which turns out to be the clearest possible way of
+  showing a player what they are looking at. It needs no list of snowy maps
+  either: any map with snow tiles gets the weather.
+- Two things had to change for the snow to read. Most flakes are culled by the
+  mask, so the count that looks like weather in the abstract came out as a
+  dusting; and lying snow at near-white made white flakes invisible, so the
+  ground is a pale blue-grey now, which is what overcast snow is anyway.
+- Added the blue dragon, the phase's one permitted new system. It is weather
+  with a temper rather than an enemy: no health, no pursuit, no scratches, no
+  ending. It breathes down a fixed lane for three quarters of a second in
+  every four and a bit, with a warning that lights exactly the ground the bolt
+  will take -- a telegraph that does not match its strike is worse than none.
+  The tests pin what it must *not* have, because that is what a later edit
+  adds back.
+
 ## Next logical task
 
-- The snowy region and the blue dragon. This is the phase's one genuinely new
-  system -- lightning breath as an unbeatable dodge hazard, explicitly not a
-  boss fight -- so it wants a slice to itself rather than being bolted onto
-  another map.
+- East 7 onward, toward the trio. The document wants the later maps heavily
+  fragmented and geographically impossible -- several worlds per map rather
+  than one big one -- and then the final encounter itself, which is the
+  largest remaining piece by a distance.
 
 ## Superseded Phase 12 task
 

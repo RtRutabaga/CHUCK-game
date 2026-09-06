@@ -68,6 +68,10 @@ PROVENANCE = {
     # drift apart, and these have no second copy to drift from.
     "courtyard_stone": COLLIDED,
     "courtyard_wall": COLLIDED,
+    # ...and a frozen one, for the same reason.
+    "snow": COLLIDED,
+    "snow_drift": COLLIDED,
+    "ice": COLLIDED,
     # The Sea is on every sheet in the game and identical on all of
     # them; the sewer's is as good a reference as any.
     "astral_void": SEWER,

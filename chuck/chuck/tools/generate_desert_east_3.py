@@ -20,6 +20,10 @@ reason to want nothing to do with it.
 
 import math
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_collided_common import astral_fringe
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +52,13 @@ ARRIVAL = (4, 30)
 SCRAPS = (
     (14, 8, 7, 3, "="), (60, 6, 5, 4, "ᛗ"), (18, 40, 6, 3, "ᛗ"),
 )
+
+
+# Everything on this map that came from somewhere else. The seam
+# between it and the desert gets frayed with Astral Sea, so the
+# fragment reads as having torn its way in rather than as having
+# been laid down on the sand.
+FRAGMENT_CHARS = {"ᛟ", "ᛇ", "ᛞ", "☼", "=", "ᛗ"}
 
 
 def _blank():
@@ -193,6 +204,7 @@ def build():
     for ruin in RUINS:
         _ruin(grid, *ruin)
     _fey(grid)
+    astral_fringe(grid, FRAGMENT_CHARS, seed=2.6)
     for scrap in SCRAPS:
         _scrap(grid, *scrap)
     for scar in SCARS:
