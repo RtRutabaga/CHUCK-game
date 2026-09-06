@@ -2,20 +2,26 @@
 
 The second place Chuck has never been, and the first hazard in the
 phase that is neither terrain nor a pursuer. A shelf of snow lies
-across the north-east with a frozen pool in it, and two blue dragons
-stand on it breathing lightning down lanes that cross the way through.
+across the north-east with a frozen pool in it, and one blue dragon
+stands at the far side of the pool breathing lightning across it.
 
-The phase document is firm that this is not a boss fight. The dragons
-cannot be hurt, they do not chase, and nothing about them ends -- they
-are weather with a temper. What the map asks is timing: the lanes are
-lethal for three quarters of a second in every four and a bit, and the
-snow between them is wide enough to wait on.
+One, and enormous. There were two smaller ones here first, facing each
+other with their lanes crossing, and the arithmetic of that was fine --
+but two of a thing is a species and one of a thing is *the* dragon.
+Eight tiles by six, nine times Chuck's height, and the only creature in
+the game that cannot be fought: it earns its place by being the biggest
+thing a player has seen, not by there being a pair of them.
 
-The two lanes deliberately overlap in the middle of the shelf and the
-dragons are out of phase, so the middle is the dangerous part and the
-edges are where you stand. Going round the shelf entirely is possible
-and slow, which is the right shape for an optional hazard: a player who
-does not want to time anything walks the long way south.
+The phase document is firm that this is not a boss fight. It cannot be
+hurt, it does not chase, and nothing about it ends -- it is weather
+with a temper. What the map asks is timing: the lane is lethal for
+three quarters of a second in every four and a bit, and the snow either
+side of it is wide enough to wait on.
+
+The lane runs the length of the pool, which is the part of the shelf
+worth crossing. Going round the whole shelf is possible and slow, which
+is the right shape for an optional hazard: a player who does not want
+to time anything walks the long way south.
 
 The snow really snows, and only over the snow. SnowFall masks itself to
 the fragment's own tiles, so the weather stops exactly where the world
@@ -45,14 +51,16 @@ SHELF_RIGHT = 70
 SHELF_DEEP = 30
 POOL = (46, 16, 8.0, 5.0)       # the frozen pool, centre and radii
 
-# Two dragons, facing each other across the middle of the shelf. Their
-# lanes overlap there; the map's own phase offsets keep them from
-# breathing together.
-# Both well inside the shelf. Placed below it the first time, each one
-# stood on a three-tile island of snow the spawner had forced under it
-# -- a dragon on a coaster, in a desert, with weather falling on nothing
-# but its own feet.
-DRAGONS = ((28, 12, "⍆"), (62, 22, "⍅"))
+# The dragon: east of the frozen pool, facing west along it, so the
+# lane it breathes covers the one stretch of the shelf worth crossing.
+#
+# Well inside the snow. Placed below it the first time, it stood on a
+# three-tile island of snow the spawner had forced under it -- a dragon
+# on a coaster, in a desert, with weather falling on nothing but its own
+# feet. It is eight tiles wide now, so the clearing it needs is the size
+# of its own body rather than a courtesy square.
+DRAGONS = ((58, 18, "⍅"),)
+DRAGON_FOOT = (4, 3)        # half-width and half-height, in tiles
 DRIFTS = ((34, 10), (40, 26), (54, 12), (58, 34), (26, 14), (66, 20))
 
 SCRAPS = ((10, 12, 6, 3, "ᛗ"), (12, 44, 6, 3, "⌽"), (66, 46, 5, 3, "·"))
@@ -191,8 +199,11 @@ def build():
     for x, y, marker in DRAGONS:
         # A dragon has to stand on its own snow, and the ground in front
         # of it has to be clear enough for the lane to be worth timing.
-        for oy in range(-1, 2):
-            for ox in range(-1, 2):
+        # The footprint is the sprite's, so nothing pokes out from under
+        # a body eight tiles across.
+        reach_x, reach_y = DRAGON_FOOT
+        for oy in range(-reach_y, reach_y + 1):
+            for ox in range(-reach_x, reach_x + 1):
                 cx, cy = x + ox, y + oy
                 if 0 <= cy < HEIGHT and 0 <= cx < WIDTH \
                         and grid[cy][cx] in (".", ",", "⟁", "❅"):
@@ -207,9 +218,10 @@ HEADER = (
     "; DESERT EAST 6 - Phase 13, a frozen world (76x56).\n"
     "; '❄' snow, '❅' drift (solid), '❆' ice. It actually snows, and\n"
     "; only over these tiles: SnowFall masks itself to the fragment.\n"
-    "; Two blue dragons ('⍅'/'⍆') breathe lightning down crossing lanes.\n"
-    "; They cannot be hurt and do not chase -- the map asks for timing,\n"
-    "; and the long way round the south asks for nothing.\n"
+    "; One blue dragon ('⍅'), eight tiles across, breathes lightning\n"
+    "; west along the pool. It cannot be hurt and does not chase: the\n"
+    "; map asks for timing, and the long way round the south asks for\n"
+    "; nothing.\n"
 )
 
 

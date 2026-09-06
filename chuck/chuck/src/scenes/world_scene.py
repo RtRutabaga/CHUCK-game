@@ -2277,12 +2277,14 @@ class WorldScene(Scene):
             elif kind.startswith("blue_dragon:"):
                 dragon = BlueDragon(
                     cx, cy, facing=kind.split(":", 1)[1],
-                    # Two on one map must not breathe together, so each
-                    # is offset by where it stands. In world pixels
+                    # Where it stands decides where in its cycle it
+                    # starts, so a map with more than one of them never
+                    # has them breathing in unison. In world pixels
                     # rather than tiles: this spawner is handed a
                     # centre, not a grid position.
                     phase=(cx * 0.043 + cy * 0.069),
                 )
+                dragon.load_sprites(self.game.assets)
                 self.blue_dragons.append(dragon)
             elif kind == "redcap":
                 redcap = Redcap(cx, cy)

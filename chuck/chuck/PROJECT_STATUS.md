@@ -5,7 +5,7 @@ Desert's five-map opening region is complete and has had a second art pass --
 hub, orc camp, oasis and undead ruins, now with fissured cliffs, fallen
 columns, palm trees and axe-carrying orcs -- and the eastward traversal runs
 six maps deep, through the modern city, Chult, the Feywild, the Nine Hells, a
-ship's deck, a castle and a frozen world with blue dragons in it. Everything
+ship's deck, a castle and a frozen world with a blue dragon in it. Everything
 past that is not built. This file is required by the project rules and updated
 every session.
 
@@ -717,6 +717,33 @@ every session.
   because the head is on the left in two facings and the right in the third --
   drawn one way round for all three, two of them showed the blunt back of the
   axe at the only part of the frame the player can see.
+
+- The frozen world has one dragon now, and it is the biggest thing in the
+  game. There were two of them at 48x34, drawn in code out of about a dozen
+  polygons -- the right size for a hazard marker and the wrong size for a
+  dragon, where the wing was a triangle and the head an eight-pixel
+  rectangle. Two of a thing is a species; one of a thing is *the* dragon, and
+  the map only has room for one creature that cannot be fought.
+- It is a sprite now at 128x96: eight tiles by six, nearly twice the massive
+  Chult dinosaur and about nine times Chuck's height, which is roughly the
+  real ratio between a one-foot rat and a dragon. The size is tested as a
+  comparison against the dinosaur's own frame rather than against a number,
+  so "biggest" stays a claim about the game rather than a constant.
+- Six frames: four of wing beat and two of the breath, which is a separate
+  pose rather than the idle with a mouth pasted on -- head down, neck
+  forward, jaw open, throat lit. The jaw opens part way through the wind-up,
+  because the lane lighting up is on the ground and a player with a dragon on
+  screen is not looking at the ground.
+- Two drawing notes worth keeping. The open mouth first came back as a zip
+  fastener: teeth drawn to the same line from both jaws close the gap between
+  them, and what says "open" is the dark between the rows rather than the
+  teeth. And the tail read as a shadow cast by the haunch until it was given
+  a lit edge along its top and run out past the hind leg to a fin.
+- The lane grew with the animal -- fourteen tiles of reach and four of width
+  -- and is aimed at the breathing pose's mouth rather than the idle one's.
+  The strike is one fixed rectangle in every stage, so where the two poses
+  disagree it should be the idle head that is slightly off, never the one the
+  bolt actually leaves.
 
 ## Next logical task
 

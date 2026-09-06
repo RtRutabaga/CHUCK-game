@@ -23,6 +23,12 @@ The strike is a rectangle out of the dragon's mouth. A cone would be
 prettier and much harder to read at sixteen pixels a tile; the player
 has to know exactly where the edge is, because the edge is the whole
 mechanic.
+
+The animal itself is a sprite rather than the dozen polygons it used to
+be drawn from. There is exactly one of these in the game and it is the
+one thing on its map that cannot be fought, so it is worth walking up
+to look at -- see tools/generate_blue_dragon_sprite.py. All this class
+draws is the lane.
 """
 
 from __future__ import annotations
@@ -42,14 +48,19 @@ BREATH = 0.75           # the lethal part
 SPENT = 2.30            # the pause afterwards
 CYCLE = WIND_UP + BREATH + SPENT
 
-BODY = (58, 104, 168)
-BODY_DARK = (34, 66, 116)
-BODY_LIT = (96, 152, 208)
-HORN = (206, 214, 226)
-EYE = (238, 244, 120)
 ARC = (206, 232, 255)
 ARC_CORE = (255, 255, 255)
 GLOW = (120, 186, 246)
+
+# The sheet: four frames of wing beat, then two of the breath.
+SPRITE = "hazards/blue_dragon.png"
+FRAME_W, FRAME_H = 128, 96
+IDLE_FRAMES = 4
+BREATH_FRAMES = 2
+# How far into the wind-up it opens its jaw. The lane is already
+# glowing by then; this is the half of the telegraph you can read
+# without looking at the ground.
+GAPE_AT = 0.55
 
 
 class BlueDragon(Entity):
@@ -60,10 +71,21 @@ class BlueDragon(Entity):
     try to empty it. It has neither.
     """
 
-    # Wide enough to read as an animal rather than a prop, and it never
-    # moves, so the hitbox is only ever used for drawing order.
-    WIDTH = 48
-    HEIGHT = 34
+    # The size of its own sprite. It never moves, so the box is only
+    # ever used for drawing order and for finding its mouth -- eight
+    # tiles by six, which is nearly twice the massive Chult dinosaur
+    # and about nine times Chuck. A dragon that is not obviously the
+    # biggest thing in the game is not obviously a dragon.
+    WIDTH = FRAME_W
+    HEIGHT = FRAME_H
+    # Where the mouth sits in the frame, as a fraction of the height.
+    # Taken from the sprite rather than guessed: the lane has to leave
+    # the head, and a bolt out of the chest is a bolt from nowhere.
+    # Measured on the *breathing* pose, which drops its head -- the lane
+    # is one fixed rectangle in every stage, so if the two disagree it
+    # should be the idle one that is slightly off, not the one the bolt
+    # actually comes out of.
+    MOUTH_Y = 0.39
     damage = config.KNIGHT_SANITY_DAMAGE
 
     def __init__(self, center_x: float, center_y: float,
@@ -77,8 +99,17 @@ class BlueDragon(Entity):
         # Two dragons on one map should not breathe in unison, so each
         # starts somewhere different in the cycle.
         self.elapsed = phase % CYCLE
-        self.reach = config.TILE_SIZE * 9
-        self.lane = config.TILE_SIZE * 3
+        # Both grew with the animal. A nine-tile bolt out of a dragon
+        # eight tiles long is a spark; the reach has to be the length of
+        # something worth running from.
+        self.reach = config.TILE_SIZE * 14
+        self.lane = config.TILE_SIZE * 4
+        self._frames: tuple = ()
+
+    def load_sprites(self, assets) -> None:
+        self._frames = tuple(
+            assets.sheet(SPRITE, FRAME_W, FRAME_H)[0]
+        )
 
     # ------------------------------------------------------------------
     @property
@@ -104,7 +135,7 @@ class BlueDragon(Entity):
         shows exactly the ground the bolt will take. A telegraph that
         does not match its strike is worse than no telegraph.
         """
-        mouth_y = self.y + self.HEIGHT * 0.42
+        mouth_y = self.y + self.HEIGHT * self.MOUTH_Y
         top = mouth_y - self.lane / 2
         if self.facing == "left":
             return (self.x - self.reach, top, self.reach, self.lane)
@@ -122,17 +153,27 @@ class BlueDragon(Entity):
         self.elapsed = (self.elapsed + max(0.0, dt)) % CYCLE
 
     # ------------------------------------------------------------------
+    @property
+    def frame_index(self) -> int:
+        """Which frame of the sheet this instant wants.
+
+        The jaw opens part way through the wind-up rather than at the
+        bolt. The lane is already glowing by then, but a player looking
+        at the dragon instead of at the ground gets the same warning --
+        and a telegraph only one of those two ever sees is half a
+        telegraph.
+        """
+        if self.stage == "breathing":
+            return IDLE_FRAMES + int(self.elapsed * 16) % BREATH_FRAMES
+        if self.stage == "winding" and self.warning >= GAPE_AT:
+            return IDLE_FRAMES
+        return int(self.elapsed * 4.0) % IDLE_FRAMES
+
     def draw(self, surface: pygame.Surface,
              camera_offset: tuple[int, int]) -> None:
         ox, oy = camera_offset
-        x, y = self.x - ox, self.y - oy
-        flip = self.facing == "right"
 
-        def px(value: float) -> float:
-            """Mirror a body-space x for a right-facing dragon."""
-            return (self.WIDTH - value) if flip else value
-
-        # The lane first, under everything: a faint charge while it
+        # The lane first, under the animal: a faint charge while it
         # winds up, the bolt itself while it breathes.
         sx, sy, sw, sh = self.strike
         lane = pygame.Rect(round(sx - ox), round(sy - oy),
@@ -144,48 +185,18 @@ class BlueDragon(Entity):
             surface.blit(layer, (0, 0))
         elif self.stage == "breathing":
             pygame.draw.rect(surface, GLOW, lane)
-            # Three forked arcs down the lane rather than a filled bar,
-            # so it reads as lightning and not as a coloured wall.
-            for index in range(3):
-                offset = (index - 1) * (sh / 3.2)
+            # Forked arcs down the lane rather than a filled bar, so it
+            # reads as lightning and not as a coloured wall.
+            for index in range(4):
+                offset = (index - 1.5) * (sh / 4.4)
                 self._arc(surface, lane, offset, index)
 
-        # Haunches, body, tail.
-        pygame.draw.ellipse(surface, BODY_DARK,
-                            (x + px(10) - (18 if flip else 0), y + 14, 18, 16))
-        pygame.draw.ellipse(surface, BODY,
-                            (x + px(12) - (16 if flip else 0), y + 12, 16, 14))
-        tail = [(px(40), 22), (px(48), 16), (px(46), 26), (px(38), 26)]
-        pygame.draw.polygon(surface, BODY_DARK,
-                            [(x + tx, y + ty) for tx, ty in tail])
-
-        # Wing: one big folded triangle, shifting slowly so the thing
-        # is alive even when it is doing nothing.
-        lift = math.sin(self.elapsed * 1.6) * 2.0
-        wing = [(px(16), 12), (px(30), 2 + lift), (px(34), 16)]
-        pygame.draw.polygon(surface, BODY_LIT,
-                            [(x + wx, y + wy) for wx, wy in wing])
-        pygame.draw.polygon(surface, BODY_DARK,
-                            [(x + wx, y + wy) for wx, wy in wing], 1)
-
-        # Neck and head, dipped while it breathes.
-        dip = 3 if self.lethal else 0
-        neck = [(px(14), 16), (px(8), 6 + dip), (px(2), 12 + dip),
-                (px(12), 22)]
-        pygame.draw.polygon(surface, BODY,
-                            [(x + nx, y + ny) for nx, ny in neck])
-        head = pygame.Rect(x + px(9 if not flip else 1), y + 6 + dip, 8, 7)
-        pygame.draw.rect(surface, BODY_DARK, head)
-        pygame.draw.rect(surface, BODY, head.inflate(-2, -2))
-        pygame.draw.polygon(surface, HORN, [
-            (x + px(8), y + 6 + dip), (x + px(12), y + 1 + dip),
-            (x + px(11), y + 7 + dip)])
-        surface.set_at((round(x + px(5)), round(y + 9 + dip)), EYE)
-
-        # Legs, so it is standing on the snow rather than hovering.
-        for leg in (px(16), px(26)):
-            pygame.draw.rect(surface, BODY_DARK,
-                             (x + leg - 1, y + 26, 3, 7))
+        if not self._frames:
+            return
+        image = self._frames[self.frame_index]
+        if self.facing == "right":
+            image = pygame.transform.flip(image, True, False)
+        surface.blit(image, (round(self.x - ox), round(self.y - oy)))
 
     def _arc(self, surface, lane: pygame.Rect, offset: float,
              seed: int) -> None:
@@ -202,5 +213,5 @@ class BlueDragon(Entity):
             ))
         if self.facing == "left":
             points.reverse()
-        pygame.draw.lines(surface, ARC, False, points, 3)
-        pygame.draw.lines(surface, ARC_CORE, False, points, 1)
+        pygame.draw.lines(surface, ARC, False, points, 4)
+        pygame.draw.lines(surface, ARC_CORE, False, points, 2)

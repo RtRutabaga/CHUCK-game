@@ -15,6 +15,12 @@ document is firmer about what it must not be than what it is: not a
 boss, not defeatable, not a fight. Those are absences again, and the
 way they get lost is somebody later giving it a health bar because it
 looked like it wanted one. Pinned here as things it does not have.
+
+There is one of it, and it is the biggest thing in the game. Both of
+those are load-bearing rather than decorative -- a second one makes it
+a species, and a small one makes it a hazard marker -- so both are
+measured: against the number of spawns on the map, and against the
+largest creature sprite the game had before it.
 """
 
 import os
@@ -28,7 +34,10 @@ import pygame
 
 from src.core import config
 from src.core.game import Game
-from src.entities.blue_dragon import BREATH, CYCLE, SPENT, WIND_UP, BlueDragon
+from src.entities.blue_dragon import (
+    BREATH, CYCLE, FRAME_H, FRAME_W, GAPE_AT, IDLE_FRAMES, SPENT, SPRITE,
+    WIND_UP, BlueDragon,
+)
 from src.entities.snow_fall import SNOW_TERRAIN, SnowFall
 from src.entities.undead import UndeadEnemy, _STATS
 from src.systems.checkpoints import CHECKPOINT_BY_ID, DESERT_ENTRY_FLAGS
@@ -38,7 +47,9 @@ from src.world.transitions import AREA_WALK_EXITS
 
 import sys
 sys.path.insert(0, "tools")
-from generate_desert_east_6 import GAP, HEIGHT, RIM, WIDTH  # noqa: E402
+from generate_desert_east_6 import (  # noqa: E402
+    DRAGONS, GAP, HEIGHT, RIM, WIDTH,
+)
 
 
 MAP_NAME = "desert_east_6"
@@ -202,12 +213,123 @@ def test_the_dragon_cannot_be_fought() -> None:
     assert left[2] == right[2] and left[3] == right[3]
 
 
+def test_there_is_one_dragon_and_it_is_the_biggest_thing_in_the_game() -> None:
+    """Size and singularity, both measured rather than asserted.
+
+    There were two smaller ones here first and the arithmetic of that
+    was fine -- but two of a thing is a species and one of a thing is
+    *the* dragon, and the map only has room for one thing that cannot
+    be fought. So the count is pinned to the generator's own list.
+
+    The size is checked against the largest creature the game had
+    before it rather than against a number, so that "biggest" stays a
+    comparison. A dragon that is merely large is a hazard marker; what
+    makes this one land is standing next to a rat one foot tall.
+    """
+    pygame.init()
+    from generate_massive_dinosaur_sprites import (  # noqa: E402
+        FRAME_H as DINO_H, FRAME_W as DINO_W,
+    )
+
+    assert len(DRAGONS) == 1, DRAGONS
+    assert BlueDragon.WIDTH == FRAME_W and BlueDragon.HEIGHT == FRAME_H
+    assert FRAME_W > DINO_W * 1.5 and FRAME_H > DINO_H * 1.5
+    # ...and against Chuck, which is the comparison the player actually
+    # makes: it has to be several times his height, not a bit taller.
+    assert FRAME_H > config.CHUCK_FRAME_H * 6
+
+    sheet = pygame.image.load(str(config.SPRITES_DIR / SPRITE))
+    assert sheet.get_height() == FRAME_H
+    assert sheet.get_width() % FRAME_W == 0
+    frames = sheet.get_width() // FRAME_W
+    assert frames > IDLE_FRAMES, "no separate pose for the breath"
+
+
+def test_the_jaw_opens_before_the_bolt_does() -> None:
+    """The half of the telegraph you can read without looking down.
+
+    The lane lighting up is the precise warning and the one the timing
+    is built on. It is also on the ground, which is not where a player
+    looks when there is a dragon on the screen -- so the animal itself
+    has to say it too, early enough to matter and from the same clock.
+    """
+    dragon = BlueDragon(200.0, 200.0, "left")
+    dragon.elapsed = 0.0
+    assert dragon.frame_index < IDLE_FRAMES, "gaping before it winds up"
+    dragon.elapsed = WIND_UP * (GAPE_AT - 0.05)
+    assert dragon.frame_index < IDLE_FRAMES
+    dragon.elapsed = WIND_UP * (GAPE_AT + 0.05)
+    assert dragon.frame_index >= IDLE_FRAMES, "no warning on the animal"
+    assert GAPE_AT < 1.0, "the jaw opens with the bolt, not before it"
+    dragon.elapsed = WIND_UP + BREATH * 0.5
+    assert dragon.frame_index >= IDLE_FRAMES
+    dragon.elapsed = WIND_UP + BREATH + SPENT * 0.5
+    assert dragon.frame_index < IDLE_FRAMES, "still gaping after the bolt"
+
+    # The idle frames really do cycle, or the wing never moves.
+    seen = set()
+    for step in range(40):
+        dragon.elapsed = WIND_UP + BREATH + SPENT * 0.2 + step * 0.05
+        if dragon.stage == "spent":
+            seen.add(dragon.frame_index)
+    assert len(seen) >= 3, seen
+
+    # The bolt leaves the head rather than the middle of the animal.
+    _, sy, _, sh = dragon.strike
+    mouth = dragon.y + dragon.HEIGHT * dragon.MOUTH_Y
+    assert sy < mouth < sy + sh
+    assert mouth < dragon.y + dragon.HEIGHT * 0.5, "a bolt out of the chest"
+
+
+def test_the_dragon_is_drawn_at_the_size_it_claims() -> None:
+    """Blitted, not asserted.
+
+    A sprite that is loaded and never drawn looks exactly like a sprite
+    that works, right up until you stand next to it -- and this class
+    drew itself out of polygons until recently, so the failure mode is
+    a live one. Rendered here, and measured across the frame: the
+    bounding box of the animal's own dark blue has to fill most of the
+    box it says it occupies.
+    """
+    directory, game, world = _world()
+    try:
+        dragon = world.blue_dragons[0]
+        assert len(dragon._frames) > IDLE_FRAMES
+        # Spent, so the lane is dark and only the animal is on screen.
+        dragon.elapsed = WIND_UP + BREATH + SPENT * 0.5
+        world.camera.x = dragon.x + dragon.WIDTH / 2 - config.NATIVE_WIDTH // 2
+        world.camera.y = dragon.y + dragon.HEIGHT / 2 - config.NATIVE_HEIGHT // 2
+        surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+        world.draw(surface)
+
+        left = round(dragon.x - world.camera.x)
+        top = round(dragon.y - world.camera.y)
+        # Its own blue: darker and more saturated than any snow, ice or
+        # sand on this map, so nothing behind it can be mistaken for it.
+        found = [
+            (x, y)
+            for x in range(left, left + FRAME_W)
+            for y in range(top, top + FRAME_H)
+            if 0 <= x < config.NATIVE_WIDTH and 0 <= y < config.NATIVE_HEIGHT
+            and (lambda p: p[2] > 110 and p[0] < 110 and p[2] > p[0] + 40)(
+                surface.get_at((x, y))[:3])
+        ]
+        assert found, "nothing of the dragon was drawn"
+        span_x = max(x for x, _ in found) - min(x for x, _ in found)
+        span_y = max(y for _, y in found) - min(y for _, y in found)
+        assert span_x > FRAME_W * 0.6, span_x
+        assert span_y > FRAME_H * 0.6, span_y
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def test_the_dragons_stand_on_the_snow_and_can_be_left_alone() -> None:
     tilemap = _tilemap()
     ts = config.TILE_SIZE
     spots = [(int(p[0]) // ts, int(p[1]) // ts)
              for k, p in tilemap.object_spawns if k.startswith("blue_dragon:")]
-    assert len(spots) == 2
+    assert len(spots) == len(DRAGONS) == 1, spots
     for cell in spots:
         assert tilemap.terrain_at(*cell) in SNOW_TERRAIN, cell
 
@@ -228,11 +350,16 @@ def test_the_dragons_stand_on_the_snow_and_can_be_left_alone() -> None:
 
     directory, game, world = _world()
     try:
-        assert len(world.blue_dragons) == 2
-        # Out of phase, so the two lanes are never lit together at the
-        # start -- one dragon's safe window is the other's warning.
-        first, second = world.blue_dragons
-        assert abs(first.elapsed - second.elapsed) > 0.05
+        assert len(world.blue_dragons) == 1
+        dragon = world.blue_dragons[0]
+        # It stands on its own snow all the way under itself, not on a
+        # square of it: the body is eight tiles across and anything
+        # poking out from under it reads as the dragon sitting on a rug.
+        left = int(dragon.x) // ts
+        right = int(dragon.x + dragon.WIDTH - 1) // ts
+        bottom = int(dragon.y + dragon.HEIGHT - 1) // ts
+        for x in range(left, right + 1):
+            assert world.tilemap.terrain_at(x, bottom) in SNOW_TERRAIN, x
     finally:
         game._shutdown()
         directory.cleanup()
