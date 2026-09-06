@@ -37,6 +37,8 @@ from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 import sys
 sys.path.insert(0, "tools")
+from generate_desert_ruin_dressing import PIECES  # noqa: E402
+from generate_collided_common import PROP_GROUND  # noqa: E402
 from generate_desert_east_2 import (  # noqa: E402
     GAP, HEIGHT, RIM, WIDTH,
 )
@@ -45,12 +47,24 @@ from generate_desert_east_2 import (  # noqa: E402
 MAP_NAME = "desert_east_2"
 BEHIND = "desert_east_1"
 
-DESERT_GROUND = (".", ",", "⟁", "#", "⌗", "⌖", "⍟")
+# The desert's own vocabulary, masonry included: a fallen column is
+# the desert's, not an intruding world's, so it is counted here
+# rather than being read as a fragment of somewhere else.
+DESERT_GROUND = (".", ",", "⟁", "#", "⌗", "⌖", "⍟") + PIECES
 # Which intruding world each foreign character belongs to.
 FRAGMENTS = {
     "=": "modern_city", "≡": "modern_city",
     "ᛗ": "chult", "ᚷ": "chult", "ᚺ": "chult",
 }
+# ...and what grows or falls on each of them. A tree on Chult's
+# jungle is as much a piece of Chult as the jungle is, so the
+# dressing is attributed through the ground it stands on rather
+# than listed again by hand -- one table, and it cannot drift.
+FRAGMENTS.update({
+    prop: FRAGMENTS[ground]
+    for prop, ground in PROP_GROUND.items()
+    if ground in FRAGMENTS
+})
 
 
 def _tilemap(name: str = MAP_NAME) -> TileMap:

@@ -25,7 +25,8 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_collided_common import astral_fringe
+from generate_collided_common import astral_fringe, dress_fragments
+from generate_desert_ruin_dressing import dress_ruin
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -60,6 +61,20 @@ FORDS = ((30, 14), (30, 38), (41, 22), (41, 46), (48, 12), (48, 34))
 FORD_HALF = 2
 
 CLIFFS = ((24, 6, 3, 5), (48, 44, 4, 6), (34, 2, 4, 3), (26, 48, 3, 4))
+
+# The lava fall: Phlegethos's own, off the shoulder of the first cliff.
+#
+# It ends in the Astral Sea rather than in a river. That distinction is
+# the whole reason it is here: a fall feeding a channel would just be a
+# fourth channel with a nicer top, where a fall pouring into a hole in
+# reality says what this whole region is about -- the lava is running
+# out of the world rather than through it.
+#
+# Well north of the crossing corridor, because everything in it is
+# lethal and the slab is the only way across the map.
+LAVA_FALL = (25, 12)        # the tile the fall's sprite stands on
+FALL_RUN = 4                # tiles of lava below it before the drop
+FALL_VOID = (23, 17, 5, 3)  # left, top, width, height of the hole
 # Phlegethos's own markers, one per facing. Hell needed no new marker
 # for its devils: the Nine Hells already authored one per direction,
 # each standing on basalt, which is exactly what this fragment is.
@@ -151,6 +166,40 @@ def _slab(grid) -> None:
                     grid[y][x] = "█"
 
 
+def _lava_fall(grid) -> None:
+    """Lava off the cliff, a short run, and then nothing at all.
+
+    Three pieces and they have to be in this order: the fall's own
+    anchor tile, the run it pours into, and the hole the run ends in.
+    Built the other way round the hole eats the run before the run
+    exists, and the fall comes out pouring onto solid basalt.
+    """
+    x, y = LAVA_FALL
+    grid[y][x] = "ƒ"
+    # The run. Three tiles wide, matching the sprite's own width, so
+    # the lava leaving the fall is the same lava that was in it.
+    for step in range(1, FALL_RUN + 1):
+        for offset in (-1, 0, 1):
+            cx, cy = x + offset, y + step
+            if not (0 <= cy < HEIGHT and 0 <= cx < WIDTH):
+                continue
+            if grid[cy][cx] in ("·", "█"):
+                grid[cy][cx] = "≋"
+    # ...and the hole. Ragged, because a rectangle of Astral Sea reads
+    # as a trapdoor rather than as somewhere the ground has gone.
+    left, top, width, height = FALL_VOID
+    cx, cy = left + width / 2, top + height / 2
+    rx, ry = width / 2, height / 2
+    for cy_i in range(top - 1, top + height + 1):
+        for cx_i in range(left - 1, left + width + 1):
+            if not (0 <= cy_i < HEIGHT and 0 <= cx_i < WIDTH):
+                continue
+            nx, ny = (cx_i - cx) / rx, (cy_i - cy) / ry
+            wobble = 0.25 * math.sin(math.atan2(ny, nx) * 3.0 + 0.7)
+            if math.hypot(nx, ny) <= 1.0 + wobble:
+                grid[cy_i][cx_i] = "V"
+
+
 def _scar(grid, left, top, width, height) -> None:
     cx, cy = left + width / 2, top + height / 2
     rx, ry = max(1.0, width / 2), max(1.0, height / 2)
@@ -206,7 +255,14 @@ def build():
     _weather(grid)
     for ruin in RUINS:
         _ruin(grid, *ruin)
+    # ...and what fell off them, out of the same box the
+    # hub's ruins are dressed from. These are the same
+    # building, still coming apart, further east.
+    for left, top, width, height in RUINS:
+        dress_ruin(grid, left, top, width, height,
+                   seed=left + top)
     _slab(grid)
+    _lava_fall(grid)
     astral_fringe(grid, FRAGMENT_CHARS, seed=3.9)
     for scrap in SCRAPS:
         _scrap(grid, *scrap)
@@ -243,6 +299,15 @@ def build():
                         and grid[cy][cx] in (".", ",", "⟁"):
                     grid[cy][cx] = "·"
         grid[y][x] = marker
+    # Each world's own growth and debris, standing on its own
+    # ground: a fragment is recognised by what is on it, and a
+    # rectangle of somebody else's ground colour is not.
+    #
+    # Last, once every piece of ground on the map is final. Run
+    # earlier it planted trees against a rim that had not been
+    # drawn yet, and skipped the scraps of other worlds entirely
+    # because they had not landed yet either.
+    dress_fragments(grid, seed=4.4)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌵"
     grid[mid_y][WIDTH - RIM - 2] = "⍀"
     grid[ANCHOR[1]][ANCHOR[0]] = "⌹"
@@ -255,6 +320,12 @@ HEADER = (
     "; lava in three wandering channels with fords across them. Lava is\n"
     "; already a fall hazard everywhere in the game and stays one here.\n"
     "; Spined devils wait on the far side. There is no way round.\n"
+    "; A lava fall ('ƒ') pours off the northern cliff into a short\n"
+    "; run that ends in the Astral Sea rather than in a river, and\n"
+    "; 'þ' basalt rubble lies over the slab.\n"
+    "; '⍯'/'⍲' the scraps' own growth, where there is room for it.\n"
+    "; The ruins carry the hub's own fallen pieces: '⍏'/'⍐'\n"
+    "; columns, '⍖'/'⍗' fallen ones, '⍓'/'⍔' blocks.\n"
 )
 
 

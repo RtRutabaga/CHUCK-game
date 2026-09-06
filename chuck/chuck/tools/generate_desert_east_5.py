@@ -26,7 +26,7 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_collided_common import astral_fringe
+from generate_collided_common import astral_fringe, dress_fragments
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -146,8 +146,12 @@ def _lava(grid) -> None:
     burn you can walk into, side by side.
     """
     for x, y in LAVA_RUN:
+        # Banks two tiles wide rather than one. At one, every basalt
+        # tile on this map touched lava, which is a stripe rather than a
+        # place -- there was nowhere on it to put anything down, and the
+        # rubble that came through with it had nowhere to lie.
         for oy in range(-1, 2):
-            for ox in range(-1, 2):
+            for ox in range(-2, 3):
                 cx, cy = x + ox, y + oy
                 if not (0 <= cy < HEIGHT and 0 <= cx < WIDTH):
                     continue
@@ -225,6 +229,15 @@ def build():
     for x, y in KNIGHTS:
         if grid[y][x] == "⌽":
             grid[y][x] = "⍂"
+    # Each world's own growth and debris, standing on its own
+    # ground: a fragment is recognised by what is on it, and a
+    # rectangle of somebody else's ground colour is not.
+    #
+    # Last, once every piece of ground on the map is final. Run
+    # earlier it planted trees against a rim that had not been
+    # drawn yet, and skipped the scraps of other worlds entirely
+    # because they had not landed yet either.
+    dress_fragments(grid, seed=5.7)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌷"
     grid[mid_y][WIDTH - RIM - 2] = "⍃"
     grid[ANCHOR[1]][ANCHOR[0]] = "⍁"
@@ -238,6 +251,8 @@ HEADER = (
     "; walls can be walked round rather than through.\n"
     "; North-east, two hazards in one place: an Astral tear with Hell's\n"
     "; lava running into it. '⌼' is a length of the ship's deck.\n"
+    "; 'þ' Phlegethos's basalt rubble lies on the lava's banks, and\n"
+    "; the scraps carry their own worlds' growth.\n"
 )
 
 

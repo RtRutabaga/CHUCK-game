@@ -23,7 +23,8 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_collided_common import astral_fringe
+from generate_collided_common import astral_fringe, dress_fragments
+from generate_desert_ruin_dressing import dress_ruin
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -203,6 +204,12 @@ def build():
     _weather(grid)
     for ruin in RUINS:
         _ruin(grid, *ruin)
+    # ...and what fell off them, out of the same box the
+    # hub's ruins are dressed from. These are the same
+    # building, still coming apart, further east.
+    for left, top, width, height in RUINS:
+        dress_ruin(grid, left, top, width, height,
+                   seed=left + top)
     _fey(grid)
     astral_fringe(grid, FRAGMENT_CHARS, seed=2.6)
     for scrap in SCRAPS:
@@ -233,6 +240,15 @@ def build():
     for x, y in REDCAPS:
         cx, cy = _nearest(grid, x, y, "ᛟ")
         grid[cy][cx] = "⌺"
+    # Each world's own growth and debris, standing on its own
+    # ground: a fragment is recognised by what is on it, and a
+    # rectangle of somebody else's ground colour is not.
+    #
+    # Last, once every piece of ground on the map is final. Run
+    # earlier it planted trees against a rim that had not been
+    # drawn yet, and skipped the scraps of other worlds entirely
+    # because they had not landed yet either.
+    dress_fragments(grid, seed=3.1)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌲"
     grid[mid_y][WIDTH - RIM - 2] = "⌷"
     grid[ANCHOR[1]][ANCHOR[0]] = "⌶"
@@ -244,6 +260,10 @@ HEADER = (
     "; A mass of Feywild ('ᛟ' ground, 'ᛇ' growth, 'ᛞ' glow pools,\n"
     "; '☼' pollen) filling the middle, with redcaps ('⌺') in it. The\n"
     "; desert survives as a thin strip north and a wider way south.\n"
+    "; '⍰' the Feywild's own grove trees stand on its growth, with\n"
+    "; '⍱' shrubs and '⍲' mushrooms on the floor.\n"
+    "; The ruins carry the hub's own fallen pieces: '⍏'/'⍐'\n"
+    "; columns, '⍖'/'⍗' fallen ones, '⍓'/'⍔' blocks.\n"
 )
 
 

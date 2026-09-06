@@ -745,6 +745,53 @@ every session.
   disagree it should be the idle head that is slightly off, never the one the
   bolt actually leaves.
 
+- Everything east of the hub is dressed now. Each map had a piece of another
+  world in it and that piece was a rectangle of somebody else's ground
+  colour, which is enough to say "this is not the desert" and nowhere near
+  enough to say "this is Chult". A world is recognised by what is on it, so
+  Chult's fragments carry Chult's own trees and bushes, the Feywild's carry
+  its grove trees, shrubs and mushrooms, Phlegethos's carry its basalt
+  rubble, and the ruins east carry the same fallen columns and spilled blocks
+  the hub's do.
+- Every prop is the one its own region uses at home rather than a
+  desert-styled lookalike, and the test compares them against the character
+  that region spells them with. They needed characters of their own only
+  because the collided maps had to rename the *ground*: Chult spells its
+  jungle "." and "#" and the desert had already claimed both, so the fragment
+  kept its art and took new letters.
+- One shared placement rule across all six maps, with one property that has
+  to hold: no prop may ever close a route. Every one of them is solid and the
+  fourth map's basalt slab is the only crossing there is, so a prop is only
+  planted on walkable ground where all four sides of the tile are standable.
+  That is not a chokepoint by construction, and it is measured on the
+  finished maps rather than trusted to the rule.
+- Three things went wrong and each was invisible in the source. The rule was
+  first written as "the whole three-by-three is the same ground", which is
+  safe and far too strict -- the small scraps are three or four tiles across
+  and never have a uniform middle, so three maps came back with an undressed
+  piece of Chult on them. The pass also ran before the rim was drawn and
+  before the scraps had landed, so it planted trees against a border that did
+  not exist yet and skipped fragments that did not either. And where the
+  clumping ran high across a whole stand, the spacing rule was the only thing
+  left deciding, and minimum-spacing packing is a lattice: a bank of bushes
+  came back as a pegboard, fixed with a fine-grained term on top of the
+  clumping.
+- A fragment is dressed at the density it can afford. A map's main fragment
+  is hundreds of tiles and wants thinning; the scraps of the worlds it met
+  further back are a dozen or two, and at the density the big one wants a
+  scrap that size draws nothing at all.
+- Phlegethos's lava fall is on the fourth map, off the northern cliff, and it
+  ends in the Astral Sea rather than in a river. That distinction is the
+  whole reason it is there: a fall feeding a channel is a fourth channel with
+  a nicer top, where a fall pouring into a hole in reality says what the
+  region is about -- the lava is running out of the world rather than through
+  it. Tested as all three of small, touching the Sea, and reaching neither
+  rim, since the channels beside it do reach both.
+- The fifth map's lava banks went from one tile wide to two. Every basalt
+  tile on that map touched lava, which is a stripe rather than a place: there
+  was nowhere on it to put anything down, and the rubble that came through
+  with it had nowhere to lie.
+
 ## Next logical task
 
 - East 7 onward, toward the trio. The document wants the later maps heavily

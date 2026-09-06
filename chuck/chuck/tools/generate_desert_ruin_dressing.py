@@ -26,6 +26,12 @@ FALLEN_SAND = "⍗"
 RUBBLE = "⍓"
 RUBBLE_SAND = "⍔"
 
+# Everything this module can put on a map. Exported so the maps'
+# own vocabulary tests can count a fallen column as desert rather
+# than as an intruding world -- it is the desert's own masonry.
+PIECES = (COLUMN, COLUMN_SAND, FALLEN, FALLEN_SAND,
+          RUBBLE, RUBBLE_SAND)
+
 FLOOR = "⌖"
 GROUND = (".", ",", "⟁")
 

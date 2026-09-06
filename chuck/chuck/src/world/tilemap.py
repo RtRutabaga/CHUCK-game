@@ -397,6 +397,31 @@ TILE_DEFS: dict[str, TileDef] = {
     # one-tile ring it replaces was smaller than the rat looking at it.
     "⍘": TileDef(solid=True, color=(0, 0, 0), prop="desert_fire_pit",
                  under="⚱"),
+    # ------------------------------------------------------------------
+    # Dressing for the fragments east of the hub.
+    #
+    # Every one of these is a prop the world it came from already owns,
+    # given a character here because the collided maps had to rename the
+    # *ground* it stands on: Chult spells its jungle "." and "#" at home
+    # and the desert had already claimed both, so the fragment kept its
+    # art and took new letters. `under` is the whole difference -- the
+    # tree is the same tree, standing on the same jungle, spelled
+    # differently.
+    #
+    # Without them a fragment is a rectangle of somebody else's ground
+    # colour. What makes a piece of Chult read as Chult is the trees on
+    # it, and none of that can live in a tile.
+    # ------------------------------------------------------------------
+    "⍮": TileDef(solid=True, color=(17, 54, 34), prop="jungle_tree",
+                 under="ᚷ"),
+    "⍯": TileDef(solid=True, color=(37, 44, 28), prop="jungle_shrub",
+                 under="ᛗ"),
+    "⍰": TileDef(solid=True, color=(28, 54, 46),
+                 prop="feywild_grove_tree", under="ᛇ"),
+    "⍱": TileDef(solid=True, color=(46, 74, 60), prop="feywild_shrub",
+                 under="ᛟ"),
+    "⍲": TileDef(solid=True, color=(46, 74, 60), prop="feywild_mushroom",
+                 under="ᛟ"),
     # Modern-city office masses. These are all solid building footprint,
     # separated into roof/cornice/facade materials only for three-quarter-view
     # rendering; none are short freestanding walls or playable platforms.

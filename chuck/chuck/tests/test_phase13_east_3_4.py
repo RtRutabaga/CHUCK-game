@@ -38,12 +38,17 @@ from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 import sys
 sys.path.insert(0, "tools")
+from generate_desert_ruin_dressing import PIECES  # noqa: E402
+from generate_collided_common import PROP_GROUND  # noqa: E402
 from generate_desert_east_4 import (  # noqa: E402
     CHANNELS, FORDS, GAP, HEIGHT as H4, RIM, WIDTH as W4,
 )
 
 
-DESERT_GROUND = (".", ",", "⟁", "#", "⌗", "⌖", "⍟")
+# The desert's own vocabulary, masonry included: a fallen column is
+# the desert's, not an intruding world's, so it is counted here
+# rather than being read as a fragment of somewhere else.
+DESERT_GROUND = (".", ",", "⟁", "#", "⌗", "⌖", "⍟") + PIECES
 # Every foreign character in the sequence so far, and its world.
 FRAGMENTS = {
     "=": "modern_city", "≡": "modern_city",
@@ -51,6 +56,15 @@ FRAGMENTS = {
     "ᛟ": "feywild", "ᛇ": "feywild", "☼": "feywild", "ᛞ": "feywild",
     "·": "hell", "█": "hell", "≋": "hell",
 }
+# ...and what grows or falls on each of them. A tree on Chult's
+# jungle is as much a piece of Chult as the jungle is, so the
+# dressing is attributed through the ground it stands on rather
+# than listed again by hand -- one table, and it cannot drift.
+FRAGMENTS.update({
+    prop: FRAGMENTS[ground]
+    for prop, ground in PROP_GROUND.items()
+    if ground in FRAGMENTS
+})
 SEQUENCE = ("desert_east_1", "desert_east_2", "desert_east_3",
             "desert_east_4")
 

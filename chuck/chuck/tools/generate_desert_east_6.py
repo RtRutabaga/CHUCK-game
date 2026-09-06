@@ -34,7 +34,8 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_collided_common import astral_fringe
+from generate_collided_common import astral_fringe, dress_fragments
+from generate_desert_ruin_dressing import dress_ruin
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -171,6 +172,12 @@ def build():
     _weather(grid)
     for ruin in RUINS:
         _ruin(grid, *ruin)
+    # ...and what fell off them, out of the same box the
+    # hub's ruins are dressed from. These are the same
+    # building, still coming apart, further east.
+    for left, top, width, height in RUINS:
+        dress_ruin(grid, left, top, width, height,
+                   seed=left + top)
     _shelf(grid)
     for scrap in SCRAPS:
         _scrap(grid, *scrap)
@@ -209,6 +216,15 @@ def build():
                         and grid[cy][cx] in (".", ",", "⟁", "❅"):
                     grid[cy][cx] = "❄"
         grid[y][x] = marker
+    # Each world's own growth and debris, standing on its own
+    # ground: a fragment is recognised by what is on it, and a
+    # rectangle of somebody else's ground colour is not.
+    #
+    # Last, once every piece of ground on the map is final. Run
+    # earlier it planted trees against a rim that had not been
+    # drawn yet, and skipped the scraps of other worlds entirely
+    # because they had not landed yet either.
+    dress_fragments(grid, seed=7.0)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⍀"
     grid[ANCHOR[1]][ANCHOR[0]] = "⍄"
     return grid
@@ -222,6 +238,9 @@ HEADER = (
     "; west along the pool. It cannot be hurt and does not chase: the\n"
     "; map asks for timing, and the long way round the south asks for\n"
     "; nothing.\n"
+    "; 'þ' basalt rubble and '⍯' jungle bush on the scraps.\n"
+    "; The ruins carry the hub's own fallen pieces: '⍏'/'⍐'\n"
+    "; columns, '⍖'/'⍗' fallen ones, '⍓'/'⍔' blocks.\n"
 )
 
 

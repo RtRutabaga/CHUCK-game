@@ -32,6 +32,7 @@ from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 import sys
 sys.path.insert(0, "tools")
+from generate_desert_ruin_dressing import PIECES  # noqa: E402
 from generate_desert_east_1 import (  # noqa: E402
     GAP, HEIGHT, RIM, ROAD_Y, TEAR_X, WIDTH,
 )
@@ -40,7 +41,10 @@ from generate_desert_east_1 import (  # noqa: E402
 MAP_NAME = "desert_east_1"
 HUB = "desert_central"
 ROAD = ("=", "≡")
-DESERT_GROUND = (".", ",", "⟁", "#", "⌗", "⌖", "⍟")
+# The desert's own vocabulary, masonry included: a fallen column is
+# the desert's, not an intruding world's, so it is counted here
+# rather than being read as a fragment of somewhere else.
+DESERT_GROUND = (".", ",", "⟁", "#", "⌗", "⌖", "⍟") + PIECES
 
 
 def _tilemap(name: str = MAP_NAME) -> TileMap:

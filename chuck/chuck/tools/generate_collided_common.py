@@ -1,7 +1,8 @@
 """Shared shaping for the Phase 13 collided maps.
 
-One thing every map east of the hub needs and none of them should each
-invent: the seam between a fragment and the desert it landed in.
+Two things every map east of the hub needs and none of them should each
+invent: the seam between a fragment and the desert it landed in, and
+the dressing that stands on the fragment once it has arrived.
 
 Left as a plain boundary, a piece of another world reads as having been
 *placed* -- laid down on the sand like a decal, with the two grounds
@@ -95,3 +96,165 @@ def astral_fringe(
 def protected_cells(*cells: tuple[int, int]) -> set[tuple[int, int]]:
     """Convenience for callers naming a handful of tiles to leave alone."""
     return set(cells)
+
+
+# ------------------------------------------------------------------
+# Dressing
+
+
+# What stands on each world's ground, and whether that ground was
+# already solid before anything stood on it.
+#
+# Every prop here belongs to the world it dresses -- Chult's own trees,
+# the Feywild's own mushrooms, Phlegethos's own basalt debris. That is
+# the point rather than a convenience: a fragment is recognised by what
+# grows on it, and a desert-styled lookalike would cost the fragment
+# the only thing it is for.
+#
+# The second field decides where a prop may stand. On ground that is
+# already a wall, anywhere -- a tree on dense jungle changes no route
+# and breaks up a blocky mass that badly needs it. On ground a player
+# can walk, only well inside it, because every one of these props is
+# solid and the basalt slab on the fourth map is the only crossing
+# there is.
+FRAGMENT_DRESSING: dict[str, tuple[tuple[str, ...], bool, float, int]] = {
+    # ground: (props, the ground is already solid, extra density, spacing)
+    #
+    # Growth on ground that is already a wall gets the extra density,
+    # because it is free: a tree standing on dense jungle changes no
+    # route at all, and a thicket that reads as a thicket needs to be
+    # thick. Props on ground a player walks are kept thinner, and are
+    # spaced further apart, because each one of them is an obstacle.
+    "ᚷ": (("⍮",), True, 0.35, 2),      # Chult's dense jungle: trees
+    "ᛗ": (("⍯",), False, 0.0, 3),      # ...and bushes on its open ground
+    "ᛇ": (("⍰",), True, 0.35, 2),      # the Feywild's dense growth: trees
+    "ᛟ": (("⍱", "⍲"), False, 0.0, 3),  # ...shrubs and mushrooms on its floor
+    "·": (("þ",), False, 0.1, 3),      # Phlegethos's own basalt rubble
+}
+
+
+# Ground a player can stand on, across every world the traversal
+# passes through. Written positively rather than as "not solid":
+# a negative list has to be kept in step with every tile the region
+# ever gains, and the failure when it drifts is silent -- a prop
+# planted in a doorway, on a map nobody re-walked.
+_STANDABLE = {
+    ".", ",", "⟁", "⌖",             # the desert and its buried floors
+    "=", "≡",                        # the modern city's road
+    "ᛗ",                             # Chult's jungle floor
+    "ᛟ", "☼",                        # the Feywild's floor and its pollen
+    "·",                             # Phlegethos's basalt
+    "⌽", "⌼",                        # the courtyard, and the ship's deck
+    "❄", "❆",                        # snow, and ice
+}
+
+
+# Every dressing character, and the ground it belongs to. Exported so
+# that the maps' own vocabulary tests can attribute a prop to a world
+# the same way they attribute a tile: a piece of Chult is a piece of
+# Chult whether it is the jungle floor or a tree standing on it.
+PROP_GROUND: dict[str, str] = {
+    prop: ground
+    for ground, (props, _, _, _) in FRAGMENT_DRESSING.items()
+    for prop in props
+}
+# ...and the one that is placed by hand rather than scattered, because
+# there is a single lava fall in the region and it belongs where the
+# cliff is rather than wherever the noise says.
+PROP_GROUND["ƒ"] = "≋"
+
+# Below this many tiles a fragment is a scrap rather than a mass,
+# and is dressed at whatever density it can afford instead of at
+# the one its map's main fragment wants.
+SCRAP_TILES = 60
+SCRAP_THRESHOLD = -0.6
+
+
+def _well_inside(grid, x: int, y: int) -> bool:
+    """Is there a way past this tile on all four sides of it?
+
+    The test that keeps a solid prop from ever closing a route, and the
+    reason it can be applied blindly across six maps. A tile with
+    standable ground north, south, east and west of it is by definition
+    not a chokepoint: whatever else the map does, a prop standing there
+    can be walked around.
+
+    It was written as "the whole three-by-three is the same ground" at
+    first, which is safe and much too strict -- the small scraps are
+    three or four tiles across and never have a uniform middle, so the
+    maps whose fragments are only scraps came back with nothing on them
+    at all. What matters is the four ways past, not the sameness.
+    """
+    height, width = len(grid), len(grid[0])
+    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        nx, ny = x + dx, y + dy
+        if not (0 <= ny < height and 0 <= nx < width):
+            return False
+        if grid[ny][nx] not in _STANDABLE:
+            return False
+    return True
+
+
+def dress_fragments(
+    grid: list[list[str]],
+    *,
+    seed: float = 0.0,
+    threshold: float = 0.45,
+    protect: set[tuple[int, int]] | None = None,
+) -> int:
+    """Stand each world's own growth and debris on its own ground.
+
+    Clumped rather than sprinkled, using the same low-frequency
+    function the seam frayer uses and for the same reason: an evenly
+    sampled scatter reads as wallpaper. Trees come in stands and
+    rubble comes in falls, so what decides placement has to vary over
+    whole stretches of a fragment rather than tile by tile.
+
+    How dense and how spread out is per ground rather than per map,
+    because the answer depends on what the ground already is: growth on
+    a wall is decoration and growth on a floor is an obstacle.
+
+    Returns how many pieces were placed, which is what the callers
+    assert on -- a dressing pass that silently does nothing looks
+    exactly like one that was never called.
+    """
+    height, width = len(grid), len(grid[0])
+    protect = protect or set()
+
+    # How much of each world is actually here. A map's main fragment is
+    # hundreds of tiles and wants thinning; the scraps of the worlds it
+    # met further back are a dozen or two, and at the density the big
+    # one wants, a scrap that size draws nothing at all -- which is how
+    # three of these maps ended up with an undressed piece of Chult on
+    # them. So a scrap is dressed at whatever density it can afford.
+    present: dict[str, int] = {}
+    for row in grid:
+        for char in row:
+            if char in FRAGMENT_DRESSING:
+                present[char] = present.get(char, 0) + 1
+
+    placed: list[tuple[int, int, int]] = []
+    for y in range(height):
+        for x in range(width):
+            char = grid[y][x]
+            entry = FRAGMENT_DRESSING.get(char)
+            if entry is None or (x, y) in protect:
+                continue
+            props, ground_is_solid, bias, apart = entry
+            bar = SCRAP_THRESHOLD if present[char] < SCRAP_TILES else threshold
+            # Clumping decides *where* stands of growth are; this decides
+            # which tiles inside a stand actually get one. Without it,
+            # everywhere the clumping runs high the spacing rule is the
+            # only thing left deciding, and minimum-spacing packing is a
+            # lattice -- a bank of bushes came back as a pegboard.
+            grain = 0.4 * math.sin(x * 1.7 + y * 2.3 + seed * 3.1)
+            if _tearing(x, y, seed) + grain < bar - bias:
+                continue
+            if not ground_is_solid and not _well_inside(grid, x, y):
+                continue
+            if any(abs(px - x) + abs(py - y) < max(apart, gap)
+                   for px, py, gap in placed):
+                continue
+            grid[y][x] = props[(x * 7 + y * 13) % len(props)]
+            placed.append((x, y, apart))
+    return len(placed)

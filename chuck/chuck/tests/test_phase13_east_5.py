@@ -39,6 +39,8 @@ from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 import sys
 sys.path.insert(0, "tools")
+from generate_collided_common import PROP_GROUND  # noqa: E402
+from generate_desert_ruin_dressing import PIECES  # noqa: E402
 from generate_desert_east_5 import (  # noqa: E402
     COURT, GAP, GATES, HEIGHT, RIM, WIDTH,
 )
@@ -46,7 +48,8 @@ from generate_desert_east_5 import (  # noqa: E402
 
 MAP_NAME = "desert_east_5"
 BEHIND = "desert_east_4"
-DESERT_GROUND = (".", ",", "⟁", "#", "⌗", "⌖", "⍟")
+# The desert's own vocabulary, masonry included.
+DESERT_GROUND = (".", ",", "⟁", "#", "⌗", "⌖", "⍟") + PIECES
 
 
 def _tilemap(name: str = MAP_NAME) -> TileMap:
@@ -240,6 +243,14 @@ def test_the_worlds_keep_arriving() -> None:
         "⌼": "ship",
         "⌽": "medieval", "⌾": "medieval",
     }
+    # ...and everything standing on them. A bush on the Feywild's floor
+    # is a piece of the Feywild, so it is attributed through the ground
+    # it grows out of rather than listed again here.
+    fragments.update({
+        prop: fragments[ground]
+        for prop, ground in PROP_GROUND.items()
+        if ground in fragments
+    })
     worlds = {fragments[tilemap.terrain_at(x, y)]
               for y in range(HEIGHT) for x in range(WIDTH)
               if tilemap.terrain_at(x, y) in fragments}
