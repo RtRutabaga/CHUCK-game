@@ -170,6 +170,109 @@ def _building(grid: list[list[str]], left: int, right: int,
     grid[roof_row + 7][door_col] = "h"
 
 
+# ----------------------------------------------------------------------
+# Dressing
+# ----------------------------------------------------------------------
+# The square came out of its first pass correct and empty: two shops, a
+# gate, a fountain and a stall, all of them pressed to an edge, and
+# forty-two tiles by seven of unbroken paving between them. That is more
+# than two screens wide and most of a screen tall, and the docks -- the
+# map this is supposed to feel like -- never gives you more than three
+# rows of nothing in a row.
+#
+# So this is a furnishing pass rather than a layout change. Everything
+# in it is existing Waterdeep vocabulary: the barrels and crates that
+# stand outside every building in the port, the weeds that come up
+# between paving stones, and one more stall in the market's own awning
+# grammar. Nothing here moves a wall or a route.
+#
+# The rule the clusters are laid to: no stack wider than three tiles,
+# and at least four tiles of open paving between one stack and the next.
+# A plaza has to stay a plaza -- what it must not be is a room you can
+# cross without noticing anything.
+
+# Barrels: singly or in twos, the way a working square accumulates them.
+PLAZA_BARRELS = (
+    (17, 3), (31, 3),                       # either side of the gate
+    (4, 14), (34, 15),                      # the two shop yards
+    (18, 15), (30, 14),
+    (14, 18), (34, 18),                     # out beyond the fountain ring
+    (17, 21), (31, 21),
+    (20, 32), (21, 32), (27, 31),           # along the south
+    (44, 24),
+)
+
+# Crates: stacked in twos and threes against walls and shop fronts.
+PLAZA_CRATES = (
+    (6, 2), (6, 3), (7, 3),                 # west of the gate
+    (40, 2), (41, 2), (41, 3),              # east of it
+    (5, 14), (5, 15),                       # the smithy's yard
+    (42, 14), (43, 14), (43, 15),           # the alchemist's
+    (36, 22), (37, 22), (37, 23),           # the east flank
+    (8, 31), (9, 31), (9, 32),              # the south wall
+    (38, 31), (39, 31), (39, 32),
+    (13, 19), (14, 19),
+)
+
+# Weeds between the paving stones. Non-solid, so they dress without ever
+# narrowing a route -- and each one has a cigarette under it, which is
+# the other thing this square was missing: every other map in the city
+# has something in it worth scratching at.
+PLAZA_WEEDS = (
+    (12, 4), (35, 4),
+    (14, 15), (36, 15),
+    (19, 16), (29, 19),
+    (21, 24), (27, 24),
+    (33, 25), (15, 25),
+    (14, 31), (26, 32), (33, 30), (44, 30),
+)
+
+# ...and three lying loose, the way they do everywhere else.
+PLAZA_CIGARETTES = ((3, 25), (45, 20), (24, 32))
+
+# One more stall on the west flank. The market's own grammar -- checkered
+# canopy, scalloped front, posts, goods in the open -- because the plaza
+# is part of the same district and should furnish itself out of the same
+# cupboard.
+WEST_STALL_ROWS = (22, 23)
+WEST_STALL_COLS = (4, 11)
+WEST_STALL_GOODS = ((5, "3"), (7, "1"), (9, "5"), (10, "2"))
+
+
+def _dress(grid: list[list[str]]) -> None:
+    """Furnish the square, and never over anything already authored.
+
+    Every target is asserted to be plain paving first. Dressing that can
+    silently land on a shop front, a stall post or a transition tile is
+    dressing that will one day delete a route, and the failure would be
+    a plaza that looks fine and cannot be walked across.
+    """
+    def place(col: int, row: int, char: str) -> None:
+        assert grid[row][col] == ",", (col, row, grid[row][col])
+        grid[row][col] = char
+
+    for col, row in PLAZA_BARRELS:
+        place(col, row, "O")
+    for col, row in PLAZA_CRATES:
+        place(col, row, "X")
+    for col, row in PLAZA_WEEDS:
+        place(col, row, "{")
+    for col, row in PLAZA_CIGARETTES:
+        place(col, row, "c")
+
+    left, right = WEST_STALL_COLS
+    for row in WEST_STALL_ROWS:
+        for col in range(left, right + 1):
+            place(col, row, "a")
+    post_row = WEST_STALL_ROWS[-1] + 1
+    place(left, post_row, "P")
+    place(right, post_row, "P")
+    for col in range(left + 1, right):
+        place(col, post_row, "u")
+    for col, char in WEST_STALL_GOODS:
+        place(col, post_row + 1, char)
+
+
 def build_map() -> list[str]:
     grid = [["," for _ in range(WIDTH)] for _ in range(HEIGHT)]
     grid[0] = ["w"] * WIDTH
@@ -215,6 +318,8 @@ def build_map() -> list[str]:
     for col, char in zip((19, 21, 24, 27, 29), "12534"):
         grid[29][col] = char
 
+    _dress(grid)
+
     rows = ["".join(row) for row in grid]
     assert len(rows) == HEIGHT and {len(row) for row in rows} == {WIDTH}
     return rows
@@ -222,7 +327,9 @@ def build_map() -> list[str]:
 
 def _assert_connected(rows: list[str]) -> None:
     # Marker under-terrain and every ordinary non-solid docks tile.
-    walkable = {",", "a", "u", "⮜", "ɸ", "Ʀ"}
+    # Weeds and loose cigarettes are walkable; barrels, crates and stall
+    # posts are not, which is the whole reason this check exists.
+    walkable = {",", "a", "u", "⮜", "ɸ", "Ʀ", "{", "c"}
     start = (2, 20)
     queue = deque([start])
     seen = {start}
@@ -237,8 +344,55 @@ def _assert_connected(rows: list[str]) -> None:
             seen.add(nxt)
             queue.append(nxt)
     required = {(22, 4), (26, 4), (9, 13), (38, 13), (16, 30),
-                (21, 20), (28, 20), (24, 31)}
+                (21, 20), (28, 20), (24, 31),
+                # ...and the corners, because a furnishing pass is
+                # exactly the kind of change that walls one off.
+                (2, 3), (45, 3), (2, 32), (45, 32),
+                (3, 20), (45, 20), (24, 13), (24, 21)}
     assert required <= seen, sorted(required - seen)
+    _assert_nowhere_is_empty(rows)
+
+
+def largest_bare_patch(rows: list[str]) -> tuple[int, int, int, int]:
+    """The biggest all-paving rectangle: (area, col, row, w, h) minus area.
+
+    Returned rather than asserted so a test can report where the hole is
+    rather than only that there is one.
+    """
+    height, width = len(rows), len(rows[0])
+    best = (0, 0, 0, 0, 0)
+    for top in range(height):
+        for left in range(width):
+            if rows[top][left] != ",":
+                continue
+            widest = width
+            for bottom in range(top, height):
+                run = 0
+                while left + run < widest and rows[bottom][left + run] == ",":
+                    run += 1
+                widest = min(widest, run)
+                if widest == 0:
+                    break
+                area = widest * (bottom - top + 1)
+                if area > best[0]:
+                    best = (area, left, top, widest, bottom - top + 1)
+    return best
+
+
+def _assert_nowhere_is_empty(rows: list[str]) -> None:
+    """No stretch of bare paving as big as half a screen.
+
+    The complaint this pass answers, stated as a number rather than as a
+    feeling. Before it, the largest all-paving rectangle here was 42x7 --
+    over two screens wide and most of one tall. The docks, the map this
+    square is meant to feel like, never manages worse than 49 tiles and
+    its worst case is one row deep.
+
+    A plaza is allowed to be open; that is what a plaza is. What it is
+    not allowed to be is a room you can cross without noticing anything.
+    """
+    area, col, row, wide, tall = largest_bare_patch(rows)
+    assert area < 110, (area, col, row, wide, tall)
 
 
 def main() -> None:

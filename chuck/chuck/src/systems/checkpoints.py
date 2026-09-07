@@ -104,8 +104,21 @@ CHECKPOINTS = (
         required_flags=frozenset({"sewer_completed"}), runtime_entry=True,
     ),
     CheckpointDefinition(
+        # No position of its own: it lands on the map's own player
+        # marker, which is the plank beside Bobert's barrel that the
+        # game opened on. Two reasons. The authored one is that the
+        # whole phase is about recognising the place, and there is no
+        # stronger way to say "you are back" than putting him on the
+        # exact board he started from, with Bobert still asleep beside
+        # him and everything else louder and brighter.
+        #
+        # The other is that the explicit position it used to carry --
+        # (32, 208) -- is tile (2, 13), which is open harbour. Water is
+        # solid here, so the finale was dropping him inside a solid tile
+        # seven tiles off the end of the pier. Sharing the opening's
+        # marker means the two spawns cannot drift apart again.
         "waterdeep_finale", "Waterdeep Finale", "waterdeep_docks",
-        position=(32.0, 208.0), facing="down",
+        facing="down",
         required_flags=DESERT_ENTRY_FLAGS | {WATERDEEP_RETURN_FLAG},
         fade_in=True, fade_from=(250, 250, 252),
     ),

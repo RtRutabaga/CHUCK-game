@@ -20,6 +20,13 @@ from src.world.tilemap import TileMap
 from src.world.tileset_layout import DOCKS, DOCKS_MIDDAY, tileset_for
 from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
+import sys
+sys.path.insert(0, "tools")
+from generate_waterdeep_plaza import (  # noqa: E402
+    PLAZA_BARRELS, PLAZA_CIGARETTES, PLAZA_CRATES, PLAZA_WEEDS,
+    largest_bare_patch,
+)
+
 
 def _game() -> tuple[tempfile.TemporaryDirectory, Game]:
     directory = tempfile.TemporaryDirectory()
@@ -185,6 +192,76 @@ def test_shopkeepers_only_speak_and_every_person_stands_off_the_route() -> None:
         directory.cleanup()
 
 
+def _rows(name: str) -> list[str]:
+    text = (config.MAPS_DIR / f"{name}.txt").read_text(encoding="utf-8")
+    return [line for line in text.splitlines() if not line.startswith(";")]
+
+
+def test_nowhere_in_the_square_is_a_screenful_of_nothing() -> None:
+    """The complaint the dressing pass answers, as a number.
+
+    The plaza's first version had 42x7 tiles of unbroken paving in it --
+    over two screens wide and most of one tall. The docks, which is the
+    map this square is meant to feel like, never manages worse than 49
+    tiles and its worst case is a single row deep.
+
+    A plaza is allowed to be open; that is what a plaza is for. What it
+    is not allowed to be is a room a player can cross without noticing
+    anything, and that is a measurable difference rather than a taste.
+    """
+    plaza = largest_bare_patch(_rows("waterdeep_plaza"))
+    docks = largest_bare_patch(_rows("waterdeep_docks"))
+    assert plaza[0] < 110, plaza
+    # In the same country as the docks rather than an order out.
+    assert plaza[0] < docks[0] * 3, (plaza, docks)
+
+
+def test_the_dressing_only_ever_lands_on_paving() -> None:
+    """Nothing furnishes over a shop front, a stall post or a doorway.
+
+    Dressing that can silently land on authored geometry is dressing
+    that will one day delete a route, and the failure mode is a plaza
+    that looks finished and cannot be walked across. The generator
+    asserts this as it writes; this asserts it about what was written.
+    """
+    rows = _rows("waterdeep_plaza")
+    for group, char in ((PLAZA_BARRELS, "O"), (PLAZA_CRATES, "X"),
+                        (PLAZA_WEEDS, "{"), (PLAZA_CIGARETTES, "c")):
+        assert group, char
+        for col, row in group:
+            assert rows[row][col] == char, (col, row, rows[row][col])
+
+    # Stacks stay small: nothing here is a wall by accident.
+    solid = set(PLAZA_BARRELS) | set(PLAZA_CRATES)
+    for col, row in solid:
+        run = 1
+        while (col + run, row) in solid:
+            run += 1
+        assert run <= 3, (col, row, run)
+
+
+def test_the_square_has_something_to_scratch_at() -> None:
+    """Every other map in the city does, and this one did not.
+
+    The weeds between the paving stones are the cheap half of the
+    dressing and the useful half: non-solid, so they can never narrow a
+    route, and each one has a cigarette under it.
+    """
+    directory, game = _game()
+    try:
+        world = game.checkpoints.load_checkpoint("waterdeep_plaza_from_docks")
+        assert len(world.breakables) == len(PLAZA_WEEDS)
+        assert len(world.pickups) == len(PLAZA_CIGARETTES)
+        # ...and none of it is in anybody's way.
+        for weed in world.breakables:
+            ts = config.TILE_SIZE
+            tile = (int(weed.x) // ts, int(weed.y) // ts)
+            assert not world.tilemap.is_solid(*tile), tile
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def test_plaza_remains_navigable_around_the_fountain_and_shops() -> None:
     tilemap = TileMap(config.MAPS_DIR / "waterdeep_plaza.txt")
     start = (2, 20)
@@ -199,7 +276,11 @@ def test_plaza_remains_navigable_around_the_fountain_and_shops() -> None:
             seen.add(nxt)
             queue.append(nxt)
     assert {(21, 4), (27, 4), (9, 13), (37, 13),
-            (21, 20), (28, 20), (15, 30)} <= seen
+            (21, 20), (28, 20), (15, 30),
+            # The corners and the flanks, because a furnishing pass is
+            # exactly the kind of change that walls one off.
+            (2, 3), (45, 3), (2, 32), (45, 32),
+            (3, 20), (45, 20), (6, 25), (24, 13)} <= seen
 
 
 def _run_all() -> None:

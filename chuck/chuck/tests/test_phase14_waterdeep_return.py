@@ -20,6 +20,11 @@ from src.world.tilemap import TileMap
 from src.world.tileset_layout import DOCKS, DOCKS_MIDDAY, tileset_for
 
 
+def _game() -> tuple[tempfile.TemporaryDirectory, Game]:
+    directory = tempfile.TemporaryDirectory()
+    return directory, Game(save_path=Path(directory.name) / "save.json")
+
+
 def _cell(sheet: pygame.Surface, row: int, col: int) -> pygame.Surface:
     return sheet.subsurface(pygame.Rect(col * 16, row * 16, 16, 16))
 
@@ -31,6 +36,52 @@ def _rgb(cell: pygame.Surface) -> list[tuple[int, int, int]]:
         for y in range(height)
         for x in range(width)
     ]
+
+
+def test_he_comes_back_to_the_board_he_left_from() -> None:
+    """Beside Bobert, on the tile the game opened on.
+
+    The phase is about recognising the place, and there is no stronger
+    way to say "you are back" than standing him on the exact plank he
+    started from with Bobert still asleep beside him and everything
+    else louder and brighter. So the finale carries no position of its
+    own: it lands on the map's own player marker, which is the one the
+    opening uses, and the two cannot drift apart.
+
+    It also fixes something worse than a preference. The explicit
+    position it used to carry was tile (2, 13) -- open harbour. Water is
+    solid on this map, so the return was putting Chuck inside a solid
+    tile seven tiles off the end of the pier, which is why this test
+    checks the ground under him rather than only the distance.
+    """
+    ts = config.TILE_SIZE
+    landed = {}
+    for checkpoint, flags in (("waterdeep_start", set()),
+                              ("waterdeep_finale", {WATERDEEP_RETURN_FLAG})):
+        directory, game = _game()
+        try:
+            for flag in flags:
+                game.progress.enable(flag)
+            world = game.checkpoints.load_checkpoint(
+                checkpoint, progress_flags=set(flags))
+            tile = (int(world.player.x) // ts, int(world.player.y) // ts)
+            landed[checkpoint] = tile
+            # On the dock, not in the harbour.
+            assert not world.tilemap.is_solid(*tile), (checkpoint, tile)
+            assert world.tilemap.terrain_at(*tile) == "=", (checkpoint, tile)
+
+            barrel = next(
+                (col, row) for kind, col, row in world.tilemap.prop_tiles
+                if kind == "bobert_barrel"
+            )
+            reach = max(abs(tile[0] - barrel[0]), abs(tile[1] - barrel[1]))
+            assert reach <= 1, (checkpoint, tile, barrel)
+        finally:
+            game._shutdown()
+            directory.cleanup()
+
+    # The same board, which is the point rather than a coincidence.
+    assert landed["waterdeep_finale"] == landed["waterdeep_start"], landed
 
 
 def test_return_state_selects_midday_art_without_duplicating_the_map() -> None:

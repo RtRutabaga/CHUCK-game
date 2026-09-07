@@ -26,6 +26,41 @@ and updated every session.
 
 ## Latest implementation
 
+- Furnished the fountain plaza. It came out of its first pass correct and
+  empty: two shops, a gate, a fountain and a stall, all of them pressed to an
+  edge, and forty-two tiles by seven of unbroken paving between them. That is
+  more than two screens wide and most of one tall; the docks, which this
+  square is meant to feel like, never manages worse than forty-nine tiles and
+  its worst case is a single row deep. The largest bare stretch here is now
+  twelve by five.
+- Everything in the pass is existing Waterdeep vocabulary -- the barrels and
+  crates that stand outside every building in the port, the weeds that come
+  up between paving stones, and one more stall in the market's own awning
+  grammar. No wall moved and no route changed. The rule the clusters are laid
+  to is: nothing wider than three tiles, and four tiles of open paving
+  between one stack and the next.
+- The weeds are the useful half of it. They are non-solid, so they can never
+  narrow a route, and each one has a cigarette under it -- which was the
+  other thing the square was missing. Every other map in the city has
+  something in it worth scratching at; this one had nothing, and now has
+  fourteen tufts and three lying loose.
+- Two tests state the pass rather than the taste: the largest all-paving
+  rectangle is under half a screen and within a factor of three of the
+  docks', and every dressed tile is checked against what was actually
+  written, so a cluster can never silently land on a shop front or a stall
+  post. The navigability flood now proves all four corners as well, because
+  a furnishing pass is exactly the kind of change that walls one off.
+- Fixed where the return puts Chuck. The finale checkpoint carried an
+  explicit position of (32, 208) -- tile (2, 13), which is open harbour, and
+  water is solid on this map, so coming home from the desert dropped him
+  inside a solid tile seven tiles off the end of the pier. It now carries no
+  position at all and lands on the map's own player marker: the plank beside
+  Bobert's barrel that the game opened on. Sharing the opening's marker means
+  the two spawns cannot drift apart again, and it says the thing the phase is
+  about better than any placement of my own would -- he is standing exactly
+  where he started, with Bobert still asleep beside him and the water gone
+  teal.
+
 - Added a shared 48x34 fountain plaza through the docks' open eastern street.
   Its Waterdeep-scale square includes an animated stone fountain, guarded
   closed northern gate, blacksmith forge and anvil, alchemist bottle display,
