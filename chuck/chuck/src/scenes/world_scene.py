@@ -58,6 +58,7 @@ from src.entities.city_rain import CityRain
 from src.entities.snow_fall import SNOW_TERRAIN, SnowFall
 from src.entities.snake import TempleSnake
 from src.entities.flameskull import Flameskull
+from src.entities.fisherman import FishermanNPC
 from src.entities.spitting_orchid import OrchidSeed, SpittingOrchid
 from src.entities.police import (
     Bullet, PoliceOfficer, SpinningPoliceOfficer,
@@ -97,6 +98,9 @@ from src.systems.terrain_effect import ground_speed_multiplier
 from src.systems.terrain_hazard import touching_terrain_hazard
 from src.systems.undead_release import (
     UndeadReleaseController, is_staged_undead,
+)
+from src.systems.waterdeep_finale import (
+    DOCKED_SHIP_TILE, FISHERMAN_TILE, RETURN_TOWNSFOLK,
 )
 from src.ui.tutorial_hint import TutorialHint
 from src.systems.net_capture import NetCapture
@@ -633,6 +637,7 @@ class WorldScene(Scene):
                 continue  # released in finite groups as Chuck advances
             else:
                 raise ValueError(f"No spawner for object kind {kind!r}")
+        self._add_waterdeep_finale_dressing()
         if self.game.progress.has(CAPTAIN_CONFRONTED_FLAG):
             self._spawn_deck_captain()
             self._stage_deck_plank()
@@ -647,6 +652,37 @@ class WorldScene(Scene):
         # carton when this room is loaded.
         self._collect_pending_drops()
         self._reset_enemies()
+
+    def _add_waterdeep_finale_dressing(self) -> None:
+        """Add returned-Waterdeep scenery without changing the opening map."""
+        if (
+            self.map_name != "waterdeep_docks"
+            or not self.game.progress.has(WATERDEEP_RETURN_FLAG)
+        ):
+            return
+
+        self.props.append(Prop(
+            "waterdeep_docked_ship", *DOCKED_SHIP_TILE, self.game.assets
+        ))
+        ts = config.TILE_SIZE
+        fish_col, fish_row = FISHERMAN_TILE
+        fisherman = FishermanNPC(
+            fish_col * ts + ts / 2,
+            fish_row * ts + ts / 2,
+        )
+        fisherman.load_sprites(self.game.assets)
+        self.npcs.append(fisherman)
+        for spawn in RETURN_TOWNSFOLK:
+            col, row = spawn.tile
+            npc = NPC(
+                col * ts + ts / 2,
+                row * ts + ts / 2,
+                npc_id=spawn.sprite_id,
+                dialogue_id=spawn.dialogue_id,
+            )
+            npc.facing = spawn.facing
+            npc.load_sprites(self.game.assets)
+            self.npcs.append(npc)
 
 
     def handle_event(self, event: pygame.event.Event) -> None:

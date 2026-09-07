@@ -3,11 +3,11 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `a3513bb` (Bring the dragon down)
-- Current work: Phase 14's playable midday return to Waterdeep
+- Base commit before this pass: `07d42ec` (Begin the Waterdeep finale at midday)
+- Current work: Phase 14's populated midday return to Waterdeep
 - Active scope: `docs/development/PHASE-14.md`
-- Next implementation slice: add the docked ship and ending-state harbor
-  population on the shared docks map; leave the opening population unchanged
+- Next implementation slice: build the shared eastern fountain plaza and its
+  two population states without changing the established docks architecture
 
 ## Phase 14 Opening Slice
 
@@ -22,6 +22,27 @@
 - Added focused regression coverage for direct handoff, shared geometry,
   opening/finale sheet selection, teal water, overall daylight lift, and
   extinguished fixtures.
+
+## Phase 14 Harbor Population Slice
+
+- Added a large docked cog to the southwest harbor using the established ship
+  art language. It is ending-state scenery, remains over water, and meets the
+  existing south fishing pier without adding collision or an explorable ship.
+- Added a fisherman at the end of that pier. He uses the established dock
+  worker scale, faces back toward the water after interactions, and has a
+  restrained animated rod, line, and bobber idle.
+- Added two ending-state dock workers and three market browsers on non-solid
+  paving. Their short ambient lines and non-colliding NPC behavior keep Chuck's
+  routes open while making the returned harbor noticeably busier.
+- Kept all six new people and the ship behind the durable
+  `waterdeep_returned` flag. The opening checkpoint retains the original
+  absence of a ship, NPC count, map geometry, and collision.
+- Added focused regression coverage for state gating, population counts,
+  existing-art reuse, authored terrain, walkability, and the fishing idle.
+- Phase 14 return, Phase 13 handoff, checkpoint/save, tileset, tilemap,
+  dialogue, prop, and compile checks pass. Native 320x180 harbor and market
+  frames were inspected for ship/pier contact, fishing readability, crowd
+  spacing, and unobstructed routes.
 
 ## Completed This Pass
 

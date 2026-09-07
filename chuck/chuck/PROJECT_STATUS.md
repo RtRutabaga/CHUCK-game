@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
 Updated: Phase 12 is feature-complete, Phase 13 is playable end to end, and
-Phase 14 has begun with the playable midday return to Waterdeep.
+Phase 14 now has a playable, populated midday return to Waterdeep.
 The Collided Desert's five-map opening region is complete and has had a second art pass --
 hub, orc camp, oasis and undead ruins, now with fissured cliffs, fallen
 columns, palm trees and axe-carrying orcs -- and the eastward traversal runs
@@ -26,6 +26,17 @@ and updated every session.
 
 ## Latest implementation
 
+- The returned Waterdeep harbor now gains one large docked cog, a fisherman
+  with a small animated rod/line/bobber idle, two extra dock workers, and three
+  market browsers. All six people use the established human scale and remain
+  non-colliding on safe authored ground; the ship sits over water and only
+  meets the existing south pier.
+- This population and scenery are driven solely by the durable
+  `waterdeep_returned` flag. A new game still sees the original quiet docks,
+  unchanged geometry, and unchanged routes. Focused tests lock the state split,
+  placement safety, count increase, ship-art reuse, and fishing idle.
+- The shared eastern fountain plaza is now the next Phase 14 slice.
+
 - Phase 13's return cutscene now hands directly into playable Waterdeep rather
   than ending at the title. It records `waterdeep_returned` first, carries
   Sanity and the existing progression set through the shared checkpoint
@@ -38,8 +49,7 @@ and updated every session.
   fixtures remain in place but their flame frames are extinguished.
 - Added `Waterdeep Finale` as the explicit return checkpoint and focused Phase
   14 coverage for the handoff, shared geometry, state-selected sheets, palette
-  shift, and unlit fixtures. The ship, increased harbor population, and shared
-  fountain plaza remain the next slices.
+  shift, and unlit fixtures.
 
 - Five things in the cabin now answer when you look at them: the table map, the
   fridge, the lava lamp, the woodstove and the wall hanging. The table keeps

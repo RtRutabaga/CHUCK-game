@@ -278,7 +278,7 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
         selector = CheckpointSelectScene(game)
         expected_names = (
             "Waterdeep 1", "Waterdeep Ashtray", "Sewer 1", "Sewer 2",
-            "Waterdeep 2", "Tavern 1", "Pantry 1",
+            "Waterdeep 2", "Waterdeep Finale", "Tavern 1", "Pantry 1",
             "Chult 1", "Chult 2", "Chult 3", "Chult 4", "Chult 5",
             "Temple 1", "Temple 2", "Temple 3", "Temple 4", "Temple 5",
             "Temple 6", "Temple 7", "Temple 8", "Temple 9",

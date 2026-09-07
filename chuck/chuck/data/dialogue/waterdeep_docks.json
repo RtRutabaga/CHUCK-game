@@ -19,5 +19,14 @@
   ],
   "market_woman": [
     "No handouts here. If you're hungry, you should check the sewer for scraps"
+  ],
+  "return_dock_worker": [
+    "Busy today."
+  ],
+  "market_browser": [
+    "They don't sell anything in your size."
+  ],
+  "fisherman": [
+    "They're not biting."
   ]
 }

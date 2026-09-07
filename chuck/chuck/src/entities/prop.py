@@ -90,6 +90,8 @@ _SPRITES = {
     # constructor validates the kind against.
     "desert_fire_pit": "objects/desert_fire_pit_1.png",
     "sailing_cog": "objects/sailing_cog.png",
+    # Phase 14 reuses the established cog silhouette as dockside scenery.
+    "waterdeep_docked_ship": "objects/sailing_cog.png",
     "skull_stake": "objects/skull_stake.png",
     "temple_arch_ns": "objects/temple_arch_ns.png",
     "temple_arch_ew": "objects/temple_arch_ew.png",
@@ -338,6 +340,10 @@ PROP_CHOICE = {
 # standing on it.
 PROP_SORT_LIFT = {
     "tahuya_cabin": 78,
+    # Its anchor is at the map's south edge, but the ship meets the pier much
+    # farther north. Sort at that contact so people on the near pier edge can
+    # still pass in front of the hull.
+    "waterdeep_docked_ship": 80,
 }
 
 

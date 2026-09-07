@@ -11,7 +11,12 @@ import pygame
 
 from src.core import config
 from src.core.game import Game
+from src.entities.fisherman import FishermanNPC
 from src.systems.checkpoints import WATERDEEP_RETURN_FLAG
+from src.systems.waterdeep_finale import (
+    DOCKED_SHIP_TILE, FISHERMAN_TILE, RETURN_TOWNSFOLK,
+)
+from src.world.tilemap import TileMap
 from src.world.tileset_layout import DOCKS, DOCKS_MIDDAY, tileset_for
 
 
@@ -47,7 +52,12 @@ def test_return_state_selects_midday_art_without_duplicating_the_map() -> None:
             "waterdeep_finale", progress_flags={WATERDEEP_RETURN_FLAG}
         )
         assert finale.tilemap.map_path == opening.tilemap.map_path
-        assert finale.tilemap._grid == opening.tilemap._grid
+        # The long-established sewer completion opens the tavern door at
+        # runtime. Apart from that legitimate progression swap, both states
+        # still parse the same authored environment.
+        opening_after_sewer = [row.replace("D", "v")
+                               for row in opening.tilemap._grid]
+        assert finale.tilemap._grid == opening_after_sewer
         assert finale.tilemap._tileset.sheet == "docks_midday.png"
     finally:
         game._shutdown()
@@ -97,6 +107,77 @@ def test_midday_wall_keeps_torch_fixtures_but_extinguishes_flames() -> None:
     assert midday_a == midday_b, "an extinguished fixture must not flicker"
     assert len(set(midday_a)) >= 4, "the dark metal fixture disappeared"
     assert not any(r > 220 and r > b * 1.5 for r, _g, b in midday_a)
+
+
+def test_return_population_is_state_gated_and_noticeably_busier() -> None:
+    directory = tempfile.TemporaryDirectory()
+    game = Game(save_path=Path(directory.name) / "save.json")
+    try:
+        opening = game.checkpoints.load_checkpoint("waterdeep_start")
+        opening_count = len(opening.npcs)
+        assert not any(
+            prop.kind == "waterdeep_docked_ship" for prop in opening.props
+        )
+        assert not any(isinstance(npc, FishermanNPC) for npc in opening.npcs)
+        assert not any(
+            npc.dialogue_id in {"return_dock_worker", "market_browser"}
+            for npc in opening.npcs
+        )
+
+        finale = game.checkpoints.load_checkpoint("waterdeep_finale")
+        ships = [
+            prop for prop in finale.props
+            if prop.kind == "waterdeep_docked_ship"
+        ]
+        fishermen = [npc for npc in finale.npcs
+                     if isinstance(npc, FishermanNPC)]
+        assert len(ships) == 1
+        assert ships[0]._size == (224, 152)
+        assert len(fishermen) == 1
+        assert len(finale.npcs) == opening_count + 1 + len(RETURN_TOWNSFOLK)
+        assert sum(n.dialogue_id == "return_dock_worker"
+                   for n in finale.npcs) == 2
+        assert sum(n.dialogue_id == "market_browser"
+                   for n in finale.npcs) == 3
+        assert finale.dialogue.get("return_dock_worker") == ["Busy today."]
+        assert finale.dialogue.get("market_browser") == [
+            "They don't sell anything in your size."
+        ]
+        assert finale.dialogue.get("fisherman") == ["They're not biting."]
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_finale_dressing_uses_safe_authored_ground() -> None:
+    tilemap = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
+    ship_col, ship_row = DOCKED_SHIP_TILE
+    assert tilemap.terrain_at(ship_col, ship_row) == "~"
+
+    assert tilemap.terrain_at(*FISHERMAN_TILE) == "="
+    assert not tilemap.is_solid(*FISHERMAN_TILE)
+    for spawn in RETURN_TOWNSFOLK:
+        assert tilemap.terrain_at(*spawn.tile) == ","
+        assert not tilemap.is_solid(*spawn.tile)
+
+
+def test_fisherman_returns_to_his_fishing_idle_after_interaction() -> None:
+    directory = tempfile.TemporaryDirectory()
+    game = Game(save_path=Path(directory.name) / "save.json")
+    try:
+        scene = game.checkpoints.load_checkpoint("waterdeep_finale")
+        fisherman = next(
+            npc for npc in scene.npcs if isinstance(npc, FishermanNPC)
+        )
+        idle_before = fisherman._idle_t
+        fisherman.interact(scene.player)
+        assert fisherman.facing != "right"
+        fisherman.update(0.81)
+        assert fisherman.facing == "right"
+        assert fisherman._idle_t > idle_before
+    finally:
+        game._shutdown()
+        directory.cleanup()
 
 
 def _run_all() -> None:

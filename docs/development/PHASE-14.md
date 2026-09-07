@@ -2,8 +2,9 @@
 
 ## Status
 
-Active. The first implementation slice establishes the direct playable return
-and state-driven midday presentation on the shared docks map.
+Active. The direct playable return, state-driven midday presentation, docked
+ship, fisherman, and increased harbor population are implemented on the shared
+docks map. The fountain plaza remains.
 
 The previous phase returns Chuck to Waterdeep. Phase 14 begins on the
 original Waterdeep exterior map.
@@ -327,11 +328,11 @@ Do not add:
 -   [x] Ending state clearly reads as midday.
 -   [x] Sea is noticeably more teal.
 -   [x] Northern wall torches are extinguished.
--   [ ] Ship is docked at the pier.
--   [ ] NPC population is noticeably higher.
--   [ ] Fisherman is present.
--   [ ] Market has additional townsfolk.
--   [ ] Chuck remains easy to see and navigate.
+-   [x] Ship is docked at the pier.
+-   [x] NPC population is noticeably higher.
+-   [x] Fisherman is present.
+-   [x] Market has additional townsfolk.
+-   [x] Chuck remains easy to see and navigate.
 
 ## Fountain Plaza
 
@@ -349,8 +350,8 @@ Do not add:
 -   [ ] Fountain plaza is also accessible from a new game.
 -   [ ] Starting and ending states use the same underlying plaza layout.
 -   [ ] Starting version retains earlier lighting.
--   [ ] Starting version has fewer NPCs.
--   [ ] Ending version feels significantly busier without changing the
+-   [x] Starting version has fewer NPCs.
+-   [x] Ending version feels significantly busier without changing the
     city's basic architecture.
 
 ## Technical
