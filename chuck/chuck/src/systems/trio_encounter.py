@@ -61,11 +61,22 @@ BEATS: tuple[tuple[float, str], ...] = (
     (17.0, "trio_midpoint"),
     (17.0, "trio_climax"),
     (13.0, "trio_found_it"),
+    # ...and then it works. These two are the resolution: the heroes
+    # realising it is taking, and then realising what else is caught in
+    # it. The last line of the second one is the trigger for everything
+    # after this map.
+    (18.0, "trio_resolution"),
+    (14.0, "trio_caught"),
 )
 
 # The first beat that costs ground. The early exchange is talk; from
 # the midpoint on, the document wants the room getting worse.
 FIRST_ADVANCE = 1
+# ...and the beat it stops costing ground at, which is the one where
+# the collision arrives. From there the rift is being *closed*: taking
+# more of the arena after "It's working" would be the room saying the
+# opposite of what the heroes are saying over the top of it.
+CHURN_FROM = 4
 # How many columns of shore the rift takes each time.
 ADVANCE_COLUMNS = 1
 # Per-tile delay as the break spreads away from Chuck's row, so it
@@ -224,8 +235,17 @@ class TrioEncounter:
 
     @property
     def finished(self) -> bool:
-        """Every scripted beat has been spoken."""
+        """Every scripted beat has been spoken, resolution included.
+
+        The last of them is the trigger: when this goes true the phase
+        is over and Chuck is on his way back to Waterdeep.
+        """
         return self._next >= len(BEATS)
+
+    @property
+    def collided(self) -> bool:
+        """The wizard has found it: the worlds start arriving."""
+        return self._next >= CHURN_FROM
 
     def update(self, dt: float, player_tile: tuple[int, int] | None = None,
                player_hitbox=None) -> str | None:
@@ -243,7 +263,8 @@ class TrioEncounter:
             return None
         self._elapsed = 0.0
         self._next += 1
-        if self._next > FIRST_ADVANCE and player_tile is not None:
+        if (FIRST_ADVANCE < self._next <= CHURN_FROM
+                and player_tile is not None):
             self.advance(player_tile)
         return dialogue_id
 

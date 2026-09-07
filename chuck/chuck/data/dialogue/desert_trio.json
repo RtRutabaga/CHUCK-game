@@ -28,5 +28,19 @@
     "You're certain?",
     "No.",
     "Good enough."
+  ],
+  "trio_resolution": [
+    "It's working!",
+    "Don't move!",
+    "Wasn't planning on it!"
+  ],
+  "trio_caught": [
+    "Something's caught in it.",
+    "What?",
+    "...the rat.",
+    "Can you get him out?",
+    "No!",
+    "Then where's he going?",
+    "Where he belongs!"
   ]
 }

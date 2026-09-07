@@ -21,6 +21,8 @@ if TYPE_CHECKING:
     from src.core.game import Game
 
 
+WATERDEEP_RETURN_FLAG = "waterdeep_returned"
+
 KNOWN_PROGRESS_FLAGS = frozenset({
     "sewer_completed",
     "chult_reached",
@@ -40,6 +42,12 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     "feywild_reached",
     "modern_city_reached",
     "doug_fir_transition_completed",
+    # Phase 13's own end: the heroes closed the collision and the
+    # blast put Chuck back on the Waterdeep docks. Nothing reads it
+    # yet -- the finale is the phase that will -- but the crossing
+    # is recorded when it happens rather than when something wants
+    # it, the same way every crossing before it was.
+    WATERDEEP_RETURN_FLAG,
 }) | CABIN_ENTITY_FLAGS | {COUNTER_MAP_AWAKENED_FLAG,
                           DESERT_TRANSITION_FLAG}
 # Everything Phase 13 needs behind it. The desert is only reachable

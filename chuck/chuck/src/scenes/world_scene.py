@@ -274,6 +274,7 @@ class WorldScene(Scene):
             else None
         )
         self._restore_camera_to_player = False
+        self._trio_after_dialogue = False
         self._climb_t: float | None = 0.0 if climb_from_water else None
         self._climb_from_y = self.player.y
         self._climb_target_y = target_player_y
@@ -697,6 +698,20 @@ class WorldScene(Scene):
                 )
             return
 
+        # "Where he belongs!" has closed: the worlds come apart and the
+        # blast puts him back on the docks. The end of Phase 13.
+        if self._trio_after_dialogue:
+            self._trio_after_dialogue = False
+            from src.scenes.return_to_waterdeep_cutscene_scene import (
+                ReturnToWaterdeepCutsceneScene,
+            )
+            self.game.scenes.replace(
+                ReturnToWaterdeepCutsceneScene(
+                    self.game, sanity=self.sanity.current
+                )
+            )
+            return
+
         # The argument has closed on "FIREBALL!!": now it lands.
         if self._fireball_after_dialogue and self._fireball_t is None:
             self._fireball_after_dialogue = False
@@ -980,10 +995,15 @@ class WorldScene(Scene):
                 self._restore_camera_to_player = True
                 if self.trio.advances:
                     self.game.audio.play_sfx("vanish")
+                # The last of them is the trigger. Fired here it would
+                # cut the line off mid-sentence, so it waits for the
+                # conversation to close -- the same way the sanctum's
+                # Fireball waits for the argument that decides on it.
+                self._trio_after_dialogue = self.trio.finished
                 self.game.scenes.push(
                     DialogueScene(self.game, self.dialogue.get(beat)))
                 return
-            if self.trio.finished and self.churn is not None:
+            if self.trio.collided and self.churn is not None:
                 # The heroes are closing it. The desert is overwhelmed
                 # by fragments of everywhere, in large sections that
                 # arrive faster and faster -- and none of which can

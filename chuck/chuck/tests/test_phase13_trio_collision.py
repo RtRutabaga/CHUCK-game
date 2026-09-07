@@ -15,8 +15,11 @@ consequences, and all three are worth measuring rather than trusting,
 because the failure mode is not a crash: it is a section of lava
 arriving under a player who had nowhere to be.
 
-The rest is timing. It must not start before the heroes have finished
-talking, it must accelerate, and dying must put the arena back.
+The rest is timing. It must not start before the wizard has found what
+he was looking for, it must accelerate, and dying must put the arena
+back. The two exchanges after that -- the resolution -- play over the
+top of it, which is the point: the collision is what the heroes'
+success looks like from the outside, and they talk through it.
 """
 
 import os
@@ -33,7 +36,8 @@ from src.core.game import Game
 from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import DESERT_ENTRY_FLAGS
 from src.systems.trio_encounter import (
-    BEATS, CHURN_FASTEST, CHURN_FIRST, CHURN_FLOORS, CHURN_MIN, WorldChurn,
+    BEATS, CHURN_FASTEST, CHURN_FIRST, CHURN_FLOORS, CHURN_FROM,
+    CHURN_MIN, WorldChurn,
 )
 from src.world import collision
 from src.world.tilemap import TILE_DEFS, TileMap
@@ -194,12 +198,14 @@ def test_the_sections_are_large_and_they_speed_up() -> None:
     assert len(floors) >= 5, floors
 
 
-def test_it_waits_for_the_heroes_to_finish_talking() -> None:
-    """Nothing before the last line, everything after it.
+def test_it_waits_until_the_wizard_has_found_it() -> None:
+    """Nothing before "Good enough", everything after it.
 
     The sequence is what the heroes' success looks like from the
     outside. Started earlier it would be a room falling apart for no
-    stated reason, which is the opposite of what the script is doing.
+    stated reason, which is the opposite of what the script is doing --
+    and the two exchanges that follow play over the top of it, because
+    that is when there is something for them to be reacting to.
     """
     directory, game, world = _world()
     try:
@@ -221,7 +227,7 @@ def test_it_waits_for_the_heroes_to_finish_talking() -> None:
                 continue
             world.sanity.current = world.sanity.maximum
             world.update(1 / 30)
-        assert world.trio.finished
+        assert world.trio.collided
         assert world.churn.sections > 10, world.churn.sections
     finally:
         game._shutdown()
@@ -306,7 +312,7 @@ def test_the_beats_and_the_collision_are_the_same_encounter() -> None:
     player dying in the middle should get the whole room back rather
     than a healed floor with the conversation already spent.
     """
-    assert [name for _, name in BEATS][-1] == "trio_found_it"
+    assert [name for _, name in BEATS][CHURN_FROM - 1] == "trio_found_it"
     directory, game, world = _world()
     try:
         assert world.trio is not None and world.churn is not None

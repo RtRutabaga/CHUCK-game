@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 12 is feature-complete and Phase 13 is under way. The Collided
-Desert's five-map opening region is complete and has had a second art pass --
+Updated: Phase 12 is feature-complete and Phase 13 is playable end to end.
+The Collided Desert's five-map opening region is complete and has had a second art pass --
 hub, orc camp, oasis and undead ruins, now with fissured cliffs, fallen
 columns, palm trees and axe-carrying orcs -- and the eastward traversal runs
 six maps deep, through the modern city, Chult, the Feywild, the Nine Hells, a
@@ -10,9 +10,9 @@ seventh map where nine worlds meet and none of them owns the ground, and an
 eighth where the ground has mostly gone and what is left is islands in the
 Astral Sea. The walk ends at the trio: they are on their map, working on the
 rift, the whole scripted conversation plays across the fight while the rift
-takes the arena a column at a time, and when the last line lands the desert
-is overwhelmed by fragments of everywhere. The resolution dialogue and the
-return to Waterdeep are not built. This file is required by the project rules
+takes the arena a column at a time, the desert is overwhelmed by fragments of
+everywhere as they close it, and the last thing the wizard says sends Chuck
+home. The phase runs from the cabin table to the Waterdeep docks. This file is required by the project rules
 and updated every session.
 
 ## Latest implementation
@@ -968,13 +968,43 @@ and updated every session.
   player most needs to keep track of in that room is where their own feet
   are.
 
+- Phase 13 has an ending. The resolution plays over the collision -- the
+  heroes realising it is taking, and then realising what else is caught in
+  it -- and "Where he belongs!" is the trigger. The worlds come apart, the
+  blast carries Chuck out, and he lands on the Waterdeep docks.
+- The trigger waits for the conversation to close rather than firing on the
+  line, which is the sanctum Fireball's own shape: fired on the line, the
+  sentence gets cut off by its own consequence.
+- The rift stops taking ground once the collision starts. From "It's working"
+  onward the heroes are *closing* it, and a room that kept eating the floor
+  while they said so would be the ground arguing with the dialogue.
+- The return cutscene is the last of the game's repeated world-transition
+  sequences and quotes all of them: the table portal's whiteout, the fall to
+  Chult seen sideways, the same Astral Sea that has been the seam of every
+  crossing since the pantry. What is new is the direction -- every other one
+  took him somewhere, and this one takes him back.
+- The fragments separating had to *leave* rather than be busy. Each world is
+  a band, and they stop coming one at a time until nothing is rushing at all;
+  what is left when the noise stops is stone, water and gulls. All of them
+  ending together would be an effect being switched off rather than a thing
+  ending.
+- It ends at the title with the crossing recorded and nothing written. The
+  finale is a phase that does not exist yet, so there is nowhere to hand to:
+  this is the same honest ending the desert arrival had before Phase 13 was
+  built, and its test says so in a way that fails when the finale arrives.
+- One bug worth keeping, because it cost nothing to write and showed nothing
+  at all: the two-second fade into the quay was written as "before the docks
+  arrive", which is true from the first frame -- so the whole twelve-second
+  rush played under full white. There is a test pinned on it now.
+
 ## Next logical task
 
-- The last two pieces, and they belong together: the resolution dialogue in
-  which the wizard notices the rat and cannot get him out, whose final line
-  *is* the trigger, and the return-to-Waterdeep cutscene it triggers. The
-  collision sequence currently builds to its fastest and holds there, which
-  is where the heroes succeeding has to land.
+- Phase 14: the finale at Waterdeep. The document describes it as the same
+  docks at midday -- adjusted lighting, more NPCs, final environmental
+  changes, the last Bobert conversation and the story's conclusion. Phase 13
+  has delivered Chuck back in a clean state and recorded the crossing;
+  nothing reads that flag yet, and the first thing the finale does is give it
+  something to gate.
 
 ## Superseded Phase 12 task
 

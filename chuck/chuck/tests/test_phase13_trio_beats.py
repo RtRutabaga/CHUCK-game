@@ -33,7 +33,9 @@ from src.core import config
 from src.core.game import Game
 from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import DESERT_ENTRY_FLAGS
-from src.systems.trio_encounter import BEATS, FIRST_ADVANCE, TrioEncounter
+from src.systems.trio_encounter import (
+    BEATS, CHURN_FROM, FIRST_ADVANCE, TrioEncounter,
+)
 from src.world import collision
 
 import sys
@@ -109,35 +111,40 @@ def test_the_script_is_the_documents_script() -> None:
     data = json.loads(
         (config.DIALOGUE_DIR / "desert_trio.json").read_text(encoding="utf-8")
     )
-    assert set(data) == {"trio_opening"} | set(SCRIPT), sorted(data)
     for beat, lines in SCRIPT.items():
         assert data[beat] == lines, beat
+    # Every conversation in the file is one the clock plays, and every
+    # beat the clock plays is in the file.
+    assert set(data) == {"trio_opening"} | {name for _, name in BEATS},         sorted(data)
 
-    # ...and the clock plays them in the order they are written down.
-    assert [name for _, name in BEATS] == list(SCRIPT), BEATS
+    # ...and the four during the fight come first, in the order they
+    # are written down. The two after them are the resolution, which
+    # belongs to the ending rather than to the fight.
+    assert [name for _, name in BEATS][:CHURN_FROM] == list(SCRIPT), BEATS
 
 
-def test_all_five_conversations_land_with_a_fight_between_them() -> None:
+def test_every_conversation_lands_with_a_fight_between_them() -> None:
     """Automatic, in order, and not back to back.
 
     The instruction is to keep gameplay moving between dialogue
-    moments. Four beats in quick succession would make the room a
-    cutscene with fighting in the gaps rather than the other way round,
-    so the gaps are asserted as well as the order.
+    moments. Beats in quick succession would make the room a cutscene
+    with fighting in the gaps rather than the other way round, so the
+    gaps are asserted as well as the order.
     """
     for delay, _ in BEATS:
         assert delay >= 10.0, BEATS
-    assert sum(delay for delay, _ in BEATS) > 55.0, BEATS
+    assert sum(delay for delay, _ in BEATS) > 85.0, BEATS
 
+    lines = json.loads(
+        (config.DIALOGUE_DIR / "desert_trio.json").read_text(encoding="utf-8")
+    )
     directory, game, world = _world()
     try:
-        played = _play(game, world, sum(d for d, _ in BEATS) + 20.0)
+        played = _play(game, world, sum(d for d, _ in BEATS) + 40.0)
         assert len(played) == len(BEATS) + 1, len(played)
-        # The entrance first, then the four scripted beats in order.
-        expected = [json.loads(
-            (config.DIALOGUE_DIR / "desert_trio.json").read_text(
-                encoding="utf-8"))["trio_opening"]]
-        expected += [SCRIPT[name] for _, name in BEATS]
+        # The entrance first, then every scripted beat in order.
+        expected = [lines["trio_opening"]]
+        expected += [lines[name] for _, name in BEATS]
         assert played == expected
         assert world.trio.finished
     finally:
@@ -155,7 +162,7 @@ def test_the_camera_goes_to_them_and_comes_back_to_him() -> None:
     directory, game, world = _world()
     try:
         _play(game, world, 1.0)          # close the entrance lines
-        for _ in range(len(BEATS)):
+        for _ in range(CHURN_FROM):
             for _ in range(int(60 / (1 / 30))):
                 if isinstance(game.scenes.current, DialogueScene):
                     break
@@ -194,7 +201,7 @@ def test_the_rift_takes_the_room_from_the_midpoint_onward() -> None:
         _play(game, world, 1.0)
         opening = sea()
         sizes = [opening]
-        for index in range(len(BEATS)):
+        for index in range(CHURN_FROM):
             for _ in range(int(60 / (1 / 30))):
                 if isinstance(game.scenes.current, DialogueScene):
                     break
