@@ -65,6 +65,33 @@ PALETTE = {
     "A": (50, 45, 47, 255),    # dark patches
 }
 
+# The finale is the same city under a higher, clearer sun.  Teal water is the
+# strongest read; stone, timber, canvas, and masonry lift together so this is
+# a time-of-day change rather than one conspicuously recoloured material.
+MIDDAY_PALETTE = {
+    **PALETTE,
+    "P": (174, 132, 82, 255), "p": (154, 112, 68, 255),
+    "s": (126, 88, 50, 255), "n": (66, 62, 56, 255),
+    "S": (120, 118, 124, 255), "j": (94, 92, 100, 255),
+    "h": (136, 134, 140, 255),
+    "W": (22, 94, 106, 255), "w": (38, 124, 132, 255),
+    "f": (116, 190, 184, 255),
+    "B": (138, 112, 78, 255), "m": (108, 86, 60, 255),
+    "l": (154, 128, 92, 255),
+    "R": (190, 68, 58, 255), "r": (160, 54, 48, 255),
+    "y": (214, 92, 74, 255),
+    "T": (194, 158, 104, 255), "t": (158, 124, 78, 255),
+    "u": (214, 180, 124, 255),
+    # Daylight windows reflect the sky instead of glowing from within.
+    "d": (82, 78, 72, 255), "q": (122, 158, 164, 255),
+    "Q": (170, 202, 202, 255),
+    "V": (78, 78, 88, 255), "v": (56, 56, 64, 255),
+    "U": (98, 98, 108, 255),
+    "e": (128, 94, 56, 255), "E": (102, 74, 44, 255),
+    "G": (166, 130, 72, 255), "z": (132, 98, 52, 255),
+    "H": (188, 150, 88, 255), "I": (200, 164, 100, 255),
+}
+
 PLANKS_1 = """
 PPPPpPPPPPPPpPPP
 PPPPPPPPpPPPPPPP
@@ -544,6 +571,25 @@ GGGGGGGGzGGGGGGG
 GGHGGGGGzGGGGGGG
 """
 
+CASTLE_TORCH_OUT = """
+GGGzGGGGGGGGzGGG
+GGGzGGGGGGGGzGGG
+zzzzzzzzzzzzzzzz
+GGGGGGGNNGGGGGGG
+GGGGGGGNNGGGGGGG
+GGGGGGGMNGGGGGGG
+GGGGGGGMNGGGGGGG
+zzzzzzznnzzzzzzz
+GGGGGGGnnGGGGGGG
+GGGGGGGnnGGGGGGG
+zzzzzzzzzzzzzzzz
+GGGGzGGGGGGGzGGG
+GGGGzGGHGGGGzGGG
+zzzzzzzzzzzzzzzz
+GGGGGGGGzGGGGGGG
+GGHGGGGGzGGGGGGG
+"""
+
 RUIN_WALL_1 = """
 GGGGGGGzGGGGGGGH
 GHGGGGGzGGGGGGGG
@@ -640,8 +686,8 @@ ZZZZZZZZZZZZZZZZ
 """
 
 
-def _rows(grid: str, name: str) -> list[str]:
-    return parse_frame(grid, name, TILE_PX, TILE_PX, PALETTE)
+def _rows(grid: str, name: str, palette=PALETTE) -> list[str]:
+    return parse_frame(grid, name, TILE_PX, TILE_PX, palette)
 
 
 def _shift_down(rows: list[str]) -> list[str]:
@@ -649,38 +695,41 @@ def _shift_down(rows: list[str]) -> list[str]:
     return [rows[-1]] + rows[:-1]
 
 
-def main() -> None:
+def _build_sheet(palette, *, torches_lit: bool) -> Image.Image:
+    rows = lambda grid, name: _rows(grid, name, palette)
+    torch_a = CASTLE_TORCH_A if torches_lit else CASTLE_TORCH_OUT
+    torch_b = CASTLE_TORCH_B if torches_lit else CASTLE_TORCH_OUT
     art: dict[str, list[list[str]]] = {
-        "planks": [_rows(PLANKS_1, "planks_1"), _rows(PLANKS_2, "planks_2")],
-        "stone": [_rows(STONE_1, "stone_1"), _rows(STONE_2, "stone_2"),
-                  _rows(STONE_3, "stone_3")],
+        "planks": [rows(PLANKS_1, "planks_1"), rows(PLANKS_2, "planks_2")],
+        "stone": [rows(STONE_1, "stone_1"), rows(STONE_2, "stone_2"),
+                  rows(STONE_3, "stone_3")],
         # water: [v0f0, v0f1, v1f0, v1f1] — frame 1 derived by rotation.
-        "water": [_rows(WATER_1, "water_1"),
-                  _shift_down(_rows(WATER_1, "water_1")),
-                  _rows(WATER_2, "water_2"),
-                  _shift_down(_rows(WATER_2, "water_2"))],
-        "floor": [_rows(FLOOR, "floor")],
-        "wall": [_rows(WALL, "wall")],
-        "awning": [_rows(AWNING_1, "awning_1"), _rows(AWNING_2, "awning_2")],
-        "tavern_wall": [_rows(TAVERN_WALL_1, "tavern_wall_1"),
-                        _rows(TAVERN_WALL_2, "tavern_wall_2")],
-        "tavern_window": [_rows(TAVERN_WINDOW, "tavern_window")],
-        "tavern_roof": [_rows(TAVERN_ROOF_1, "tavern_roof_1"),
-                        _rows(TAVERN_ROOF_2, "tavern_roof_2")],
-        "tavern_eave": [_rows(TAVERN_EAVE, "tavern_eave")],
-        "castle_top": [_rows(CASTLE_TOP_1, "castle_top_1"),
-                       _rows(CASTLE_TOP_2, "castle_top_2")],
-        "castle_wall": [_rows(CASTLE_WALL_1, "castle_wall_1"),
-                        _rows(CASTLE_WALL_2, "castle_wall_2")],
-        "castle_banner": [_rows(CASTLE_BANNER, "castle_banner")],
-        "castle_torch": [_rows(CASTLE_TORCH_A, "castle_torch_a"),
-                         _rows(CASTLE_TORCH_B, "castle_torch_b")],
-        "gate": [_rows(GATE, "gate")],
-        "awning_edge": [_rows(AWNING_EDGE, "awning_edge")],
-        "ruin_wall": [_rows(RUIN_WALL_1, "ruin_wall_1"),
-                      _rows(RUIN_WALL_2, "ruin_wall_2")],
-        "ruin_floor": [_rows(RUIN_FLOOR_1, "ruin_floor_1"),
-                       _rows(RUIN_FLOOR_2, "ruin_floor_2")],
+        "water": [rows(WATER_1, "water_1"),
+                  _shift_down(rows(WATER_1, "water_1")),
+                  rows(WATER_2, "water_2"),
+                  _shift_down(rows(WATER_2, "water_2"))],
+        "floor": [rows(FLOOR, "floor")],
+        "wall": [rows(WALL, "wall")],
+        "awning": [rows(AWNING_1, "awning_1"), rows(AWNING_2, "awning_2")],
+        "tavern_wall": [rows(TAVERN_WALL_1, "tavern_wall_1"),
+                        rows(TAVERN_WALL_2, "tavern_wall_2")],
+        "tavern_window": [rows(TAVERN_WINDOW, "tavern_window")],
+        "tavern_roof": [rows(TAVERN_ROOF_1, "tavern_roof_1"),
+                        rows(TAVERN_ROOF_2, "tavern_roof_2")],
+        "tavern_eave": [rows(TAVERN_EAVE, "tavern_eave")],
+        "castle_top": [rows(CASTLE_TOP_1, "castle_top_1"),
+                       rows(CASTLE_TOP_2, "castle_top_2")],
+        "castle_wall": [rows(CASTLE_WALL_1, "castle_wall_1"),
+                        rows(CASTLE_WALL_2, "castle_wall_2")],
+        "castle_banner": [rows(CASTLE_BANNER, "castle_banner")],
+        "castle_torch": [rows(torch_a, "castle_torch_a"),
+                         rows(torch_b, "castle_torch_b")],
+        "gate": [rows(GATE, "gate")],
+        "awning_edge": [rows(AWNING_EDGE, "awning_edge")],
+        "ruin_wall": [rows(RUIN_WALL_1, "ruin_wall_1"),
+                      rows(RUIN_WALL_2, "ruin_wall_2")],
+        "ruin_floor": [rows(RUIN_FLOOR_1, "ruin_floor_1"),
+                       rows(RUIN_FLOOR_2, "ruin_floor_2")],
     }
     sheet = Image.new(
         "RGBA", (SHEET_COLS * TILE_PX, SHEET_ROWS * TILE_PX), (0, 0, 0, 0)
@@ -697,11 +746,30 @@ def main() -> None:
                 for x, char in enumerate(row):
                     sheet.putpixel(
                         (col_i * TILE_PX + x, row_i * TILE_PX + y),
-                        PALETTE[char],
+                        palette[char],
                     )
-    out = ROOT / "assets" / "tilesets" / "docks.png"
-    sheet.save(out)
-    print(f"Wrote {out} ({SHEET_COLS}x{SHEET_ROWS} cells)")
+    return sheet
+
+
+def main() -> None:
+    outputs = (
+        ("docks.png", PALETTE, True),
+        ("docks_midday.png", MIDDAY_PALETTE, False),
+    )
+    for filename, palette, torches_lit in outputs:
+        sheet = _build_sheet(palette, torches_lit=torches_lit)
+        out = ROOT / "assets" / "tilesets" / filename
+        existing = Image.open(out).convert("RGBA") if out.exists() else None
+        if (
+            existing is None
+            or existing.size != sheet.size
+            or existing.tobytes() != sheet.tobytes()
+        ):
+            sheet.save(out)
+            action = "Wrote"
+        else:
+            action = "Unchanged"
+        print(f"{action} {out} ({SHEET_COLS}x{SHEET_ROWS} cells)")
 
 
 if __name__ == "__main__":

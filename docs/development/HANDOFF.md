@@ -3,14 +3,25 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `c2c0d46` (Make the tree a planar portal)
-- Current work: the table portal and the desert arrival that ends Phase 12
-- Active scope: `docs/development/PHASE-12.md`
-- Next implementation slice: Phase 12 is feature-complete. Remaining before
-  sign-off is a read of the acceptance criteria against the built phase --
-  several boxes are still unticked from slices that did land, and the
-  reference-fidelity items for the exterior and interior are the real
-  outstanding work
+- Base commit before this pass: `a3513bb` (Bring the dragon down)
+- Current work: Phase 14's playable midday return to Waterdeep
+- Active scope: `docs/development/PHASE-14.md`
+- Next implementation slice: add the docked ship and ending-state harbor
+  population on the shared docks map; leave the opening population unchanged
+
+## Phase 14 Opening Slice
+
+- Replaced Phase 13's temporary title-screen boundary with a direct handoff to
+  the shared `waterdeep_docks` map, carrying Sanity and all progression flags.
+- Added a `Waterdeep Finale` checkpoint gated by `waterdeep_returned`. It fades
+  up from the cutscene's white without becoming a new save point; the existing
+  docks Ashtray remains responsible for persistence.
+- Added a state-selected `docks_midday.png` sheet over the unchanged docks map.
+  Its brighter city palette and teal animated water distinguish the return,
+  while the northern wall keeps its torch hardware with both flames removed.
+- Added focused regression coverage for direct handoff, shared geometry,
+  opening/finale sheet selection, teal water, overall daylight lift, and
+  extinguished fixtures.
 
 ## Completed This Pass
 

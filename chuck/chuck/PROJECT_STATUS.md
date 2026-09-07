@@ -1,6 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 12 is feature-complete and Phase 13 is playable end to end.
+Updated: Phase 12 is feature-complete, Phase 13 is playable end to end, and
+Phase 14 has begun with the playable midday return to Waterdeep.
 The Collided Desert's five-map opening region is complete and has had a second art pass --
 hub, orc camp, oasis and undead ruins, now with fissured cliffs, fallen
 columns, palm trees and axe-carrying orcs -- and the eastward traversal runs
@@ -24,6 +25,21 @@ is required by the project rules
 and updated every session.
 
 ## Latest implementation
+
+- Phase 13's return cutscene now hands directly into playable Waterdeep rather
+  than ending at the title. It records `waterdeep_returned` first, carries
+  Sanity and the existing progression set through the shared checkpoint
+  loader, and fades from the cutscene's white into the docks without treating
+  the crossing itself as a save point.
+- Starting and ending Waterdeep use the same `waterdeep_docks.txt` geometry.
+  The durable return flag selects a separate midday rendering sheet: brighter
+  stone, timber, canvas, and masonry; sky-reflecting rather than glowing tavern
+  windows; and noticeably teal animated harbor water. The northern wall torch
+  fixtures remain in place but their flame frames are extinguished.
+- Added `Waterdeep Finale` as the explicit return checkpoint and focused Phase
+  14 coverage for the handoff, shared geometry, state-selected sheets, palette
+  shift, and unlit fixtures. The ship, increased harbor population, and shared
+  fountain plaza remain the next slices.
 
 - Five things in the cabin now answer when you look at them: the table map, the
   fridge, the lava lamp, the woodstove and the wall hanging. The table keeps
@@ -1319,12 +1335,10 @@ and updated every session.
 
 ## Next logical task
 
-- Phase 14: the finale at Waterdeep. The document describes it as the same
-  docks at midday -- adjusted lighting, more NPCs, final environmental
-  changes, the last Bobert conversation and the story's conclusion. Phase 13
-  has delivered Chuck back in a clean state and recorded the crossing;
-  nothing reads that flag yet, and the first thing the finale does is give it
-  something to gate.
+- Continue Phase 14 on the shared docks map: add the non-explorable docked ship,
+  fisherman, and increased ending-state market population without changing
+  the quieter opening state or obstructing Chuck's established routes. The
+  eastern fountain plaza follows as shared starting/ending geography.
 
 ## Superseded Phase 12 task
 

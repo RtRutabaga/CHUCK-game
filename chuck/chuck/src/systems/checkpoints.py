@@ -104,6 +104,12 @@ CHECKPOINTS = (
         required_flags=frozenset({"sewer_completed"}), runtime_entry=True,
     ),
     CheckpointDefinition(
+        "waterdeep_finale", "Waterdeep Finale", "waterdeep_docks",
+        position=(32.0, 208.0), facing="down",
+        required_flags=DESERT_ENTRY_FLAGS | {WATERDEEP_RETURN_FLAG},
+        fade_in=True, fade_from=(250, 250, 252),
+    ),
+    CheckpointDefinition(
         "tavern_entry", "Tavern 1", "waterdeep_tavern",
         arrival="front_entrance", facing="up",
         required_flags=frozenset({"sewer_completed"}), runtime_entry=True,

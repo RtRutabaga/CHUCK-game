@@ -9,10 +9,8 @@ blast puts him back on the Waterdeep docks.
 The tests are mostly about that join and about the boundary at the far
 end of it. The trigger must wait for the conversation to close rather
 than firing on the line, or the sentence gets cut off by its own
-consequence. And the cutscene must end at the title with the crossing
-recorded, because the finale is a phase that does not exist yet: this
-one only has to deliver him back in a clean state, which is the
-document's own wording.
+consequence. The cutscene now hands directly to Phase 14's playable
+Waterdeep state with the crossing recorded.
 
 There is also one regression pinned here on purpose. The streaming
 sequence was, briefly, twelve seconds of white -- the fade meant for
@@ -40,7 +38,7 @@ from src.scenes.return_to_waterdeep_cutscene_scene import (
     STREAM_END,
     ReturnToWaterdeepCutsceneScene,
 )
-from src.scenes.title_scene import TitleScene
+from src.scenes.world_scene import WorldScene
 from src.systems.checkpoints import (
     CHECKPOINTS, DESERT_ENTRY_FLAGS, KNOWN_PROGRESS_FLAGS,
     WATERDEEP_RETURN_FLAG,
@@ -270,34 +268,30 @@ def test_it_ends_on_the_docks_with_chuck_on_them() -> None:
         directory.cleanup()
 
 
-def test_the_phase_ends_at_the_title_with_the_crossing_recorded() -> None:
-    """The boundary, and why it is where it is.
-
-    The finale is a phase that does not exist yet, so there is nowhere
-    for this to hand to. The honest end is the one the desert arrival
-    used before the desert was built: record what happened, let the
-    title take over, and leave the player's own Ashtray owning their
-    save. This test is the statement of that -- and it is written so
-    that building the finale is what makes it fail.
-    """
+def test_the_phase_hands_to_playable_waterdeep_with_crossing_recorded() -> None:
+    """Phase 13's old title boundary becomes Phase 14's first doorway."""
     assert WATERDEEP_RETURN_FLAG in KNOWN_PROGRESS_FLAGS
     directory, game, scene = _cutscene()
     try:
         assert WATERDEEP_RETURN_FLAG not in game.progress.flags
         while scene.elapsed < FADE_END + 0.2:
             scene.update(1 / 30)
-        assert isinstance(game.scenes.current, TitleScene)
+        world = game.scenes.current
+        assert isinstance(world, WorldScene)
+        assert world.map_name == "waterdeep_docks"
+        assert game.active_checkpoint_id == "waterdeep_finale"
+        assert world.sanity.current == 48
         assert WATERDEEP_RETURN_FLAG in game.progress.flags
         # Nothing was written: the crossing is not a save point.
         assert not game.checkpoints.can_continue
 
-        # ...and there is no Waterdeep entry gated on it yet. When the
-        # finale is built this is the line that says so.
+        # The finale owns one explicit return entry. The original opening and
+        # sewer-return entries keep their older meanings.
         gated = [
             cp.checkpoint_id for cp in CHECKPOINTS
             if WATERDEEP_RETURN_FLAG in cp.required_flags
         ]
-        assert not gated, gated
+        assert gated == ["waterdeep_finale"], gated
     finally:
         game._shutdown()
         directory.cleanup()
@@ -309,7 +303,7 @@ def test_the_handoff_only_happens_once() -> None:
     try:
         while scene.elapsed < FADE_END + 3.0:
             scene.update(1 / 30)
-        assert isinstance(game.scenes.current, TitleScene)
+        assert isinstance(game.scenes.current, WorldScene)
         assert scene._handed_off
     finally:
         game._shutdown()

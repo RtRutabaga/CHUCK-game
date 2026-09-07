@@ -99,6 +99,16 @@ DOCKS = Tileset(
     },
 )
 
+# Phase 14 returns to the same docks at midday.  Geometry remains authored by
+# waterdeep_docks.txt; only the sheet changes, so the opening and finale cannot
+# quietly drift into two different versions of Waterdeep.
+DOCKS_MIDDAY = Tileset(
+    sheet="docks_midday.png",
+    order=DOCKS.order,
+    char_to_terrain=DOCKS.char_to_terrain,
+    overhead_char_to_terrain=DOCKS.overhead_char_to_terrain,
+)
+
 # --------------------------------------------------------------------------
 # The sewer (assets/tilesets/sewer.png). Its own art pass: brick tunnel
 # walls, a stone entrance landing, packed dirt and wet mud underfoot, and
@@ -753,6 +763,7 @@ COLLIDED = Tileset(
 
 TILESETS: dict[str, Tileset] = {
     "docks": DOCKS,
+    "docks_midday": DOCKS_MIDDAY,
     "sewer": SEWER,
     "tavern": TAVERN,
     "pantry": PANTRY,
@@ -855,8 +866,15 @@ MAP_TILESET: dict[str, str] = {
 }
 
 
-def tileset_for(map_name: str) -> Tileset:
-    """The Tileset a given map should draw with."""
+def tileset_for(map_name: str, *, waterdeep_returned: bool = False) -> Tileset:
+    """The Tileset a given map should draw with.
+
+    Waterdeep has one physical map in both eras.  The completed desert return
+    changes only its time-of-day sheet; every other caller keeps the original
+    opening presentation by default.
+    """
+    if map_name == "waterdeep_docks" and waterdeep_returned:
+        return DOCKS_MIDDAY
     return TILESETS[MAP_TILESET.get(map_name, "docks")]
 
 

@@ -5,11 +5,11 @@ The repository documentation is organized so Claude Code and Codex can work from
 ## Read First
 
 1. `../AGENTS.md`
-2. `development/PHASE-12.md`
+2. `development/CURRENT-PHASE.md`
 3. `design/GAME-BIBLE.md`
 
-Phase 12 is active. Phase 11 remains the completed rainy-city, urban-sewer,
-daytime-collision, and Douglas-fir handoff contract.
+Phase 14 is active. Phase 13 remains the completed Collided Desert traversal,
+rift encounter, and return-to-Waterdeep contract.
 
 Then read the topic-specific supplement relevant to the task.
 
@@ -22,9 +22,10 @@ Then read the topic-specific supplement relevant to the task.
 - `development/PHASE-10.md`: completed Zephyros and city-arrival contract.
 - `development/PHASE-11.md`: completed contract for the rainy city,
   urban sewer, daytime collision district, and Douglas fir handoff.
-- `development/PHASE-12.md`: active implementation contract for the faithful
-  two-map Cabin, four light entities, counter-map portal, soundtrack,
-  and desert handoff.
+- `development/CURRENT-PHASE.md`: short pointer to the active implementation
+  boundary and its authoritative phase contract.
+- `development/PHASE-14.md`: active implementation contract for the Waterdeep
+  finale, shared starting/ending city layout, and fountain plaza.
 - `design/references/tahuya-cabin/`: Sean-authored layout and photographic
   references for Phase 12. The layout drawing governs spatial relationships;
   photographs govern structure, materials, palette, furniture, and scale.

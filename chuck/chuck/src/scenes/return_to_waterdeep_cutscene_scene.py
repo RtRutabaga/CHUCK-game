@@ -20,11 +20,9 @@ coming, until there is nothing rushing at all -- and what is left when
 the noise stops is stone, and water, and gulls. He is standing on the
 Waterdeep docks.
 
-Then it holds, and ends at the title with the crossing recorded. The
-finale is a phase that does not exist yet, so there is nowhere for it
-to hand to: the honest thing is to bank what happened and let the
-player's own Ashtray keep their save. The desert arrival did exactly
-this before Phase 13 was built.
+Then it holds, and the white clears onto the same docks as a playable
+midday place. Phase 14 begins without making Chuck leave Waterdeep and
+come back again through a title screen.
 
 No words. He does not get a line here either.
 """
@@ -160,15 +158,16 @@ class ReturnToWaterdeepCutsceneScene(Scene):
         if self.elapsed < FADE_END or self._handed_off:
             return
         self._handed_off = True
-        # Phase 13 ends here. The finale is a phase that does not exist
-        # yet, so there is nowhere to hand to and nothing to write: the
-        # crossing is recorded and the title takes over, exactly as the
-        # desert arrival did before the desert was built. The player's
-        # own Ashtray still owns their save.
-        from src.scenes.title_scene import TitleScene
-
+        # Phase 14 begins here. Bank the crossing before the shared loader
+        # rebuilds Waterdeep so state-driven daylight is selected on its
+        # first frame. This crossing is not itself a save point; the docks'
+        # existing Ashtray still owns durable Continue state.
         self.game.progress.enable(WATERDEEP_RETURN_FLAG)
-        self.game.scenes.replace(TitleScene(self.game))
+        self.game.checkpoints.load_checkpoint(
+            "waterdeep_finale",
+            progress_flags=self.game.progress.flags,
+            sanity=self._sanity,
+        )
 
     def _play_cues(self, previous: float, current: float) -> None:
         if previous < MUSIC_START <= current:

@@ -74,6 +74,7 @@ from src.systems.cabin_progress import (
     COUNTER_MAP_AWAKENED_FLAG, apply_cabin_door_crossing,
     awakened_music_for,
 )
+from src.systems.checkpoints import WATERDEEP_RETURN_FLAG
 from src.systems.captain_confrontation import (
     CAPTAIN_ARRIVAL_SPEED,
     CAPTAIN_CONFRONTED_FLAG,
@@ -196,7 +197,15 @@ class WorldScene(Scene):
         self.tilemap = TileMap(config.MAPS_DIR / f"{self.map_name}.txt")
         if self.map_name == "waterdeep_docks" and self._sewer_completed:
             self.tilemap.open_tavern_entrance()
-        self.tilemap.load_tileset(self.game.assets, tileset_for(self.map_name))
+        self.tilemap.load_tileset(
+            self.game.assets,
+            tileset_for(
+                self.map_name,
+                waterdeep_returned=self.game.progress.has(
+                    WATERDEEP_RETURN_FLAG
+                ),
+            ),
+        )
         self._world_time = 0.0  # drives water shimmer
         # It is still raining in the daytime city, so both surface city
         # tilesets get weather; only the sewer below them is dry.
