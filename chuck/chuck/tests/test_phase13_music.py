@@ -28,14 +28,17 @@ import wave
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
-from data.music import desert, desert_arrival, desert_trio, fall_to_chult
+from data.music import (
+    desert, desert_arrival, desert_dragon, desert_trio, fall_to_chult,
+)
 from src.audio.sequencer import note_to_freq
 from src.core import config
-from src.world.transitions import AREA_MUSIC
+from src.world.transitions import AREA_MUSIC, DRAGON_MUSIC
 
 
 REGION = "desert.wav"
 CLIMAX = "desert_trio.wav"
+DRAGON = "desert_dragon.wav"
 
 
 def _samples(track: str):
@@ -244,6 +247,150 @@ def test_the_climax_loops_and_is_the_biggest_thing_in_the_phase() -> None:
             assert 0 <= note.beat < desert_trio.TOTAL_BEATS
 
 
+def test_the_wrong_note_becomes_the_key() -> None:
+    """The third turn of the same screw, and the reason it lands.
+
+    The desert is D Dorian. The mashup dropped the sixth and became D
+    minor. This drops the second and becomes D Phrygian -- so the Eb,
+    which has meant "this is going badly" since the sewer and arrives in
+    the mashup as a wrong note pressing in, is now simply the second
+    degree of the scale. Three pieces, one flattened note each time, and
+    nothing transposed at any point.
+
+    Checked as the chords rather than as a claim about a mode: the flat
+    second is a major triad on Eb and the fifth degree is diminished,
+    which between them are what a Phrygian key sounds like.
+    """
+    assert desert_dragon._ROOTS[0] == "D2" == desert_trio._ROOTS[0]
+    assert desert_dragon._TRIADS["D2"] == desert_trio._TRIADS["D2"]
+    # The flat second, and a chord now rather than a passing note.
+    assert desert_dragon._TRIADS["Eb2"] == ("Eb4", "G4", "Bb4")
+    assert desert_dragon._ROOTS.count("Eb2") >= 6, desert_dragon._ROOTS
+    # ...and the diminished fifth degree, which the mashup does not have.
+    assert desert_dragon._TRIADS["A1"] == ("A3", "C4", "Eb4")
+    assert desert_trio._TRIADS["A1"] != desert_dragon._TRIADS["A1"]
+
+    # The one chord that belongs to no key at all, under the bars the
+    # dragon is on.
+    assert "Ab1" in desert_dragon._ROOTS
+    for bar, root in enumerate(desert_dragon._ROOTS):
+        if root == "Ab1":
+            assert desert_dragon._on_the_dragon(bar), bar
+
+
+def test_the_hook_comes_back_at_four_times_the_speed() -> None:
+    """The same five notes the mashup states in half time.
+
+    That statement is the heroic one -- brass, timpani, four bars for a
+    phrase that normally goes past in a bar and a half. Here it goes
+    past in a bar and a half again, which is how the fall itself has
+    always played it, except that this time it is being played at
+    somebody.
+    """
+    assert desert_dragon._HOOK == desert_trio._HOOK
+    assert set(desert_dragon._HOOK) <= _pitches(fall_to_chult, "lead")
+
+    def longest(module) -> float:
+        track = next(candidate for candidate in module.build_tracks()
+                     if candidate.name == "brass")
+        return max(note.dur for note in track.notes)
+
+    assert longest(desert_dragon) < longest(desert_trio) / 1.5
+
+    # The desert own engine is still underneath it, on the instrument it
+    # has run on since the walk -- and at twice the rate.
+    named = {track.name: track for track in desert_dragon.build_tracks()}
+    walk = {track.name: track for track in desert.build_tracks()}
+    assert named["arp"].instrument is walk["arp"].instrument
+    assert named["reed"].instrument is walk["reed"].instrument
+    dragon_arp = sum(1 for note in named["arp"].notes
+                     if note.beat < desert_dragon.BEATS_PER_BAR)
+    walk_arp = sum(1 for note in walk["arp"].notes
+                   if note.beat < desert.BEATS_PER_BAR)
+    assert dragon_arp == walk_arp * 2, (dragon_arp, walk_arp)
+
+
+def test_it_is_the_biggest_thing_in_the_phase() -> None:
+    """Faster than either parent, louder than either, and it loops."""
+    assert (desert.TEMPO_BPM < desert_trio.TEMPO_BPM
+            < fall_to_chult.TEMPO_BPM < desert_dragon.TEMPO_BPM)
+
+    measured = _measure(DRAGON)
+    assert measured["seconds"] >= 60.0, measured
+    assert measured["peak"] <= 0.9, measured
+    assert measured["seam"] < 0.15, measured
+    assert measured["rms"] > _measure(CLIMAX)["rms"], measured
+    assert measured["rms"] > _measure(REGION)["rms"], measured
+
+    # The kit is there from the first bar. This piece does not build to
+    # anything; it is the thing that has already happened.
+    named = {track.name: track for track in desert_dragon.build_tracks()}
+    for voice in ("kick", "snare", "hats", "bass", "arp"):
+        first = min(note.beat for note in named[voice].notes)
+        assert first < desert_dragon.BEATS_PER_BAR, voice
+    for track in desert_dragon.build_tracks():
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < desert_dragon.TOTAL_BEATS
+
+
+def test_the_room_asks_for_it_when_the_wizard_finds_it() -> None:
+    """On the cut to the heroes, not on the dragon first pass.
+
+    "Good enough" cuts the camera to the three of them and the worlds
+    start arriving; a hard change of music under a hard change of shot
+    reads as one event. Two seconds later, when the animal appears at
+    the edge of the arena, there is nothing on screen for it to hit.
+
+    ...and the room goes back to its own theme when it goes back to its
+    own start, because the respawn rebuilds this arena in place rather
+    than reloading the scene.
+    """
+    import tempfile
+    from pathlib import Path as _Path
+
+    from src.core.game import Game
+    from src.scenes.dialogue_scene import DialogueScene
+    from src.systems.checkpoints import DESERT_ENTRY_FLAGS
+
+    assert DRAGON_MUSIC == DRAGON
+    assert DRAGON not in AREA_MUSIC.values(), "it belongs to a moment"
+
+    directory = tempfile.TemporaryDirectory()
+    game = Game(save_path=_Path(directory.name) / "save.json")
+    try:
+        asked: list[str] = []
+        game.audio.play_music = lambda name, loop=True: asked.append(name)
+        world = game.checkpoints.load_checkpoint(
+            "desert_trio", progress_flags=set(DESERT_ENTRY_FLAGS))
+        world._arrival_fade_t = None
+        assert asked and asked[0] == CLIMAX, asked[:1]
+
+        spot = (46 * config.TILE_SIZE, 26 * config.TILE_SIZE)
+        for _ in range(int(140 / (1 / 30))):
+            if isinstance(game.scenes.current, DialogueScene):
+                game.scenes.pop()
+                continue
+            if not isinstance(game.scenes.current, type(world)):
+                break
+            world.sanity.current = world.sanity.maximum
+            world.player.x, world.player.y = spot
+            if world.trio.collided:
+                break
+            assert DRAGON not in asked, "it started before the collision"
+            world.update(1 / 30)
+        assert world.trio.collided
+        world.update(1 / 30)
+        assert DRAGON in asked, asked[-3:]
+
+        asked.clear()
+        world._reset_enemies()
+        assert CLIMAX in asked, asked
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def test_it_is_the_only_map_east_where_the_music_changes() -> None:
     """One region, one theme, and one exception at the end of it."""
     eastern = [f"desert_east_{index}" for index in range(1, 9)]
@@ -251,6 +398,9 @@ def test_it_is_the_only_map_east_where_the_music_changes() -> None:
                  "desert_undead_ruins"] + eastern:
         assert AREA_MUSIC[name] == REGION, name
     assert AREA_MUSIC["desert_trio"] == CLIMAX
+    # ...and inside that one map it changes once more, to something
+    # that is not a map's music and is not in the table.
+    assert DRAGON_MUSIC not in AREA_MUSIC.values()
 
 
 def _run_all() -> None:

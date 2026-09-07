@@ -12,11 +12,13 @@ Astral Sea. The walk ends at the trio: they are on their map, working on the
 rift, the whole scripted conversation plays across the fight while the rift
 takes the arena a column at a time, the desert is overwhelmed by fragments of
 everywhere as they close it, and the last thing the wizard says sends Chuck
-home. Through the last of it a horde of orcs presses the two heroes who
-are fighting and a red dragon crosses the arena laying fire behind it. The
-phase runs from the cabin table to the Waterdeep docks, on one unbroken
-piece of desert music that becomes a mashup with the fall to Chult for the
-climax. This file is required by the project rules
+home. Through the last of it a horde of orcs presses the two heroes who are
+fighting, the Astral closes in from the west until the only place left to
+stand is the fight itself, and a red dragon crosses the arena laying fire
+behind it. The phase runs from the cabin table to the Waterdeep docks, on
+one unbroken piece of desert music that becomes a mashup with the fall to
+Chult for the climax and a boss theme when the dragon arrives. This file
+is required by the project rules
 and updated every session.
 
 ## Latest implementation
@@ -1188,6 +1190,73 @@ and updated every session.
   the fourth exchange and the conversation restarts from the top. That is
   correct, and it is the whole point of the dragon, and useless for a test
   about what gets said in what order.
+
+- The arena closes from behind as well. Chuck arrives on the west rim and
+  everything worth watching is twenty-five tiles east of him, which put an
+  obvious exploit in the room -- and not a cowardly one, a *sensible* one:
+  stand in the doorway, let the arrows and the horde and the dragon happen at
+  a distance, and wait out the conversation. A room with a corner in it is
+  not an encounter. It is a cutscene with a survival timer.
+- So the Astral comes in from the west too. It starts after the first
+  exchange, takes a column every 1.8 seconds, and has finished about when the
+  collision begins -- so the squeeze and the climax are one event rather than
+  two things happening at once. What is left is a band about a screen and a
+  half across with the trio at one end of it.
+- Where it stops is the horde's decision, not taste. The westmost cell orcs
+  come in from is column 28, and a front that went past it would be a spawn
+  ring inside the Sea -- a horde drowning on its way to the fight the squeeze
+  exists to push him into. A test asserts the limit against the ring rather
+  than against a number.
+- It is the sanctum breach's fiction said again, and it takes the Ashtray
+  with it: a save point left floating in the Astral Sea reads as a bug, and
+  it is the one prop in that room a player would try to walk back to, which
+  is exactly the walk this removes.
+- It pushes him, and then it finishes. The rule everywhere else is that the
+  Sea never opens where Chuck is standing -- right for the rift, which comes
+  at him from in front, and wrong for a front coming from behind: the first
+  version left a player who ignored forty-five seconds of visible Sea on a
+  single tile with the fight thirty tiles away and nothing to do but wait for
+  the dragon to find him. Three columns past him the front now takes his
+  ground as well. Standing still is a death rather than a stalemate, which is
+  both the better failure and the honest one.
+- The edge is torn rather than ruled. Taking whole columns gave a perfectly
+  straight vertical line sweeping the map, and a straight line does not read
+  as the Astral Sea, it reads as the end of the level. Each row lags the
+  front by its own fixed amount, from two sines -- not `row % n`, which is a
+  repeating sawtooth and the same problem with a different tool.
+- The music changes when the wizard finds it. `desert_dragon.wav`: the same
+  trick a third time and one step further down. The desert is D Dorian; the
+  mashup dropped the sixth and became D minor; this drops the second and
+  becomes D Phrygian. So the Eb -- which has meant "this is going badly"
+  since the sewer and arrives in the mashup as a wrong note pressing in -- is
+  now simply the second degree of the scale. The wrong note has become the
+  key, which is the shortest way to say the situation has stopped being
+  recoverable and started being the situation.
+- Everything else in it is what a boss theme is made of here: the desert's
+  own arpeggio still running and at twice the rate, a square bass hammering
+  eighths instead of walking, the fall's hook in quarter notes where the
+  mashup states it in half time, an Ab that belongs to no key at all under
+  the dragon's bars, and the full kit from bar one -- this piece does not
+  build to anything, it is the thing that has already happened.
+- 132 BPM, above both of its parents, and the loudest and densest thing in
+  the phase (0.80 peak, 0.217 RMS against the mashup's 0.72 and 0.138). It
+  starts on "Good enough" rather than on the dragon's first pass: that line
+  cuts the camera to the three of them, and a hard change of music under a
+  hard change of shot reads as one event. Two seconds later, when the animal
+  appears at the edge of the arena, there is nothing on screen to hit.
+- It is not in AREA_MUSIC, because it does not belong to a map -- it belongs
+  to a moment. The room asks for it every frame once the collision starts,
+  which is a no-op after the first, and asks for the map's own theme again on
+  reset: the respawn rebuilds this arena in place rather than reloading the
+  scene, so a player who died in the last thirty seconds would otherwise
+  begin the encounter again with the music from the end of it.
+- Six older tests changed rather than being deleted, all for one reason: they
+  parked Chuck on the arrival tile for the whole encounter, which the front
+  now takes about half a minute in. That kills him and restarts the
+  conversation -- correct, and the entire point of the front, and useless for
+  a test about what the rift does or what gets said in what order. Each now
+  holds him somewhere the front does not reach, and the one that asserted the
+  Sea never opens under him says where that rule is broken on purpose.
 
 ## Next logical task
 

@@ -48,6 +48,13 @@ from generate_desert_trio import FIGHTER, RANGER, WIZARD  # noqa: E402
 
 
 MAP_NAME = "desert_trio"
+# Somewhere the Astral coming in from the west is never going to reach.
+# These tests were written when a player could stand on the arrival tile
+# for the whole encounter; the front takes that ground about half a
+# minute in now, which kills him and restarts the conversation. Correct,
+# and the entire point of the front -- and useless for a test about what
+# the rift does or what gets said in what order.
+CLEAR_OF_IT = (46 * config.TILE_SIZE, 26 * config.TILE_SIZE)
 PROTECTED = {FIGHTER, WIZARD, RANGER}
 
 
@@ -216,6 +223,7 @@ def test_it_waits_until_the_wizard_has_found_it() -> None:
                 game.scenes.pop()
                 continue
             world.sanity.current = world.sanity.maximum
+            world.player.x, world.player.y = CLEAR_OF_IT
             world.update(1 / 30)
         assert world.trio.beats_played >= 1
         assert not world.trio.finished
@@ -226,6 +234,7 @@ def test_it_waits_until_the_wizard_has_found_it() -> None:
                 game.scenes.pop()
                 continue
             world.sanity.current = world.sanity.maximum
+            world.player.x, world.player.y = CLEAR_OF_IT
             world.update(1 / 30)
         assert world.trio.collided
         assert world.churn.sections > 10, world.churn.sections
@@ -287,6 +296,7 @@ def test_the_arriving_sections_are_drawn_as_outlines() -> None:
                 game.scenes.pop()
                 continue
             world.sanity.current = world.sanity.maximum
+            world.player.x, world.player.y = CLEAR_OF_IT
             world.update(1 / 30)
             if world.churn.flashes:
                 left, top, _w, _h, _age = world.churn.flashes[0]

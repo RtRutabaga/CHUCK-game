@@ -46,6 +46,8 @@ same way the sanctum's breach re-arms.
 
 from __future__ import annotations
 
+import math
+
 from src.core import config
 
 
@@ -88,6 +90,68 @@ ADVANCE_STEP = config.BREACH_STEP
 # ...and how many rows either side of him land at once, so it cannot be
 # outrun along the edge.
 ADVANCE_INSTANT = config.BREACH_INSTANT_RADIUS
+
+# The other front, and the one that decides where the fight happens.
+#
+# Chuck arrives on the west rim and everything worth watching is
+# twenty-five tiles east of him, which means the safest thing he can do
+# is stand in the doorway and let the encounter happen at a distance.
+# That is a room with a corner in it, and a room with a corner in it is
+# not an encounter -- it is a cutscene with a survival timer.
+#
+# So the Astral comes in behind him as well. It starts after the first
+# exchange, takes a column every couple of seconds, and stops well
+# short of the heroes: what is left when it is done is a band about a
+# screen and a half across with the trio at one end of it and nothing
+# but Sea at the other. He cannot retreat out of the fight because
+# there is no longer anywhere behind the fight to retreat to.
+#
+# It is the sanctum breach's fiction, said again: the way out closes
+# behind him and there is no walking away. The difference is that this
+# one keeps coming.
+ENCROACH_FROM = 1           # the beat it starts after -- the rift's own
+ENCROACH_START = 1          # the first column it takes, inside the rim
+ENCROACH_INTERVAL = 1.8     # seconds per column
+# ...and where it stops. Set by the horde rather than by taste: the
+# westmost cell orcs come in from is column 28, and a spawn ring inside
+# the Sea would be a horde that drowned on the way to the fight.
+ENCROACH_LIMIT = 26
+# How far past a tile the front has to have got before it will open
+# that tile under Chuck's feet.
+#
+# The rule everywhere else in this room is that the Sea never opens
+# where he is standing -- it queues the tile and takes it when he moves,
+# so the front pushes him rather than dropping him. That is right for
+# the rift, which comes at him from in front, and it strands him when it
+# comes from behind: a player who plants himself in the doorway and
+# ignores forty-five seconds of visible Sea ends up on a single tile
+# with the fight happening thirty tiles away and nothing to do but wait
+# for the dragon to find him.
+#
+# So the front gets to finish. It goes round him, gives him a few
+# seconds, and then the Sea closes over the spot as well. Standing still
+# is a death rather than a stalemate, which is both the better failure
+# and the honest one -- the west end of the arena is *gone*, and he was
+# standing in it.
+ENCROACH_GRACE = 3
+
+
+def encroach_lag(row: int) -> int:
+    """How many columns behind the front this row is.
+
+    Taking a whole column at a time gave a perfectly straight vertical
+    edge sweeping the map, and a perfectly straight edge does not read
+    as the Astral Sea -- it reads as the end of the level. The rift on
+    the other side is ragged because it follows a shore that was drawn
+    that way; this one has to be given a shore.
+
+    Two sines rather than anything modular. A lag of `row % n` is a
+    repeating sawtooth, which is the same problem in a different
+    costume: an edge with a period in it is still an edge somebody
+    drew.
+    """
+    wobble = math.sin(row * 0.47) + 0.55 * math.sin(row * 1.13 + 1.7)
+    return max(0, min(4, int(round(2.0 + 1.7 * wobble))))
 
 # Ground the rift is allowed to take. Everything else on the map --
 # the rim, a marker's tile, anything a later edit adds -- stays.
@@ -262,6 +326,10 @@ class TrioEncounter:
         self._restore: list[tuple[int, int, str]] = []
         self.flashes: list[list] = []           # [col, row, age]
         self.advances = 0
+        # The western front: the last column it has taken, and the
+        # clock to the next one.
+        self.encroached = ENCROACH_START - 1
+        self._encroach_t = 0.0
 
     # ------------------------------------------------------------------
     @property
@@ -282,9 +350,26 @@ class TrioEncounter:
         """The wizard has found it: the worlds start arriving."""
         return self._next >= CHURN_FROM
 
+    @property
+    def closing_in(self) -> bool:
+        """Is the Sea behind him still coming?"""
+        return (self._next >= ENCROACH_FROM
+                and self.encroached < ENCROACH_LIMIT)
+
     def update(self, dt: float, player_tile: tuple[int, int] | None = None,
                player_hitbox=None) -> str | None:
         """Advance the clock. Returns a dialogue id when one is due."""
+        # The western front runs on its own clock rather than on the
+        # beats. The rift takes ground when the heroes speak, because
+        # that is the room answering them; this is just the way out
+        # going, and it should go steadily whether or not anybody is
+        # saying anything.
+        if self.closing_in and player_tile is not None:
+            self._encroach_t += dt
+            while (self._encroach_t >= ENCROACH_INTERVAL
+                   and self.encroached < ENCROACH_LIMIT):
+                self._encroach_t -= ENCROACH_INTERVAL
+                self.encroach(player_tile)
         self._break_through(dt, player_hitbox)
         for flash in self.flashes:
             flash[2] += dt
@@ -326,6 +411,35 @@ class TrioEncounter:
         self.advances += 1
         return queued
 
+    def encroach(self, player_tile: tuple[int, int]) -> int:
+        """Take the next column in from the west. Returns tiles queued.
+
+        Queued rather than written, through the same delayed break the
+        rift uses -- which is also the safety valve. `_break_through`
+        refuses to open a tile Chuck is standing on and puts it back in
+        the queue, so the front cannot drop him into the Sea. It pushes
+        him instead, which is the entire point of it.
+        """
+        _col, player_row = player_tile
+        self.encroached += 1
+        queued = 0
+        for row in range(self._tilemap.height_tiles):
+            # Each row lags the front by its own fixed amount, so the
+            # edge keeps a ragged shape as it travels instead of being
+            # a ruled line crossing the map.
+            col = self.encroached - encroach_lag(row)
+            if col < ENCROACH_START:
+                continue
+            if (col, row) in self._protected:
+                continue
+            if self._tilemap.terrain_at(col, row) not in EDIBLE:
+                continue
+            spread = max(0, abs(row - player_row) - ADVANCE_INSTANT)
+            self._pending.append([spread * ADVANCE_STEP, col, row])
+            queued += 1
+        self._pending.sort()
+        return queued
+
     def _shore(self, row: int) -> int | None:
         """The westmost tile of the rift's edge in this row, if any."""
         width = self._tilemap.width_tiles
@@ -359,8 +473,15 @@ class TrioEncounter:
                 remaining.append(entry)
                 continue
             cell = pygame.Rect(col * ts, row * ts, ts, ts)
-            if player_hitbox is not None and cell.colliderect(player_hitbox):
-                remaining.append(entry)  # never open under Chuck
+            if (player_hitbox is not None and cell.colliderect(player_hitbox)
+                    and self.encroached - col < ENCROACH_GRACE):
+                # Never open under Chuck -- while the front is still
+                # anywhere near. Once it is well past this column it
+                # takes the ground he is standing on too; see
+                # ENCROACH_GRACE. The rift never meets this second test,
+                # because its columns are at the far end of the map and
+                # the western front stops less than half way.
+                remaining.append(entry)
                 continue
             old = self._tilemap.set_terrain(col, row, "V")
             self._restore.append((col, row, old))
@@ -377,6 +498,8 @@ class TrioEncounter:
         self._elapsed = 0.0
         self._next = 0
         self.advances = 0
+        self.encroached = ENCROACH_START - 1
+        self._encroach_t = 0.0
 
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
         """The same flash the sanctum's breach uses, for the same event."""

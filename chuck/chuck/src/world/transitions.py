@@ -625,3 +625,11 @@ AREA_MUSIC: dict[str, str | None] = {
     # music changes at all.
     "desert_trio": "desert_trio.wav",
 }
+
+# ...and the encounter changes again once it is inside it. When the
+# wizard finds what he was looking for the worlds start arriving and a
+# red dragon comes across the arena, and the heroic mashup stops being
+# the right music for that. This is not in AREA_MUSIC because it does
+# not belong to a map -- it belongs to a moment, and the world scene
+# asks for it when the moment arrives.
+DRAGON_MUSIC = "desert_dragon.wav"

@@ -106,7 +106,9 @@ from src.world.camera import Camera
 from src.world.collision import overlaps
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import MAP_TILESET, tileset_for
-from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
+from src.world.transitions import (
+    AREA_MUSIC, AREA_WALK_EXITS, DRAGON_MUSIC,
+)
 
 
 class WorldScene(Scene):
@@ -1012,6 +1014,31 @@ class WorldScene(Scene):
                 self.game.scenes.push(
                     DialogueScene(self.game, self.dialogue.get(beat)))
                 return
+            if self.trio.closing_in:
+                # The Ashtray goes down with the ground it was standing
+                # on. Left where it was it would be a save point
+                # floating in the Astral Sea -- which reads as a bug
+                # rather than as the west end of the arena being gone,
+                # and it is the one prop in the room a player would try
+                # to walk back to.
+                self.anchors = [
+                    anchor for anchor in self.anchors
+                    if self.tilemap.terrain_at(
+                        int(anchor.x) // config.TILE_SIZE,
+                        int(anchor.y) // config.TILE_SIZE) != "V"
+                ]
+            if self.trio.collided:
+                # The dragon's cue. Asked for every frame and a no-op
+                # after the first, which is the same idiom the region
+                # uses to carry one tune across a scene change.
+                #
+                # It starts here rather than on the dragon's first pass
+                # because here is where the camera is: "Good enough" cuts
+                # to the three of them, and a hard change of music under
+                # a hard change of shot reads as one event. Two seconds
+                # later, when the animal actually appears at the edge of
+                # the arena, there is nothing on screen to hit.
+                self.game.audio.play_music(DRAGON_MUSIC)
             if self.trio.collided and self.red_dragon is not None:
                 # Aimed at him, unless he is in the middle of dying --
                 # the same guard the rift's advance uses, and for the
@@ -2392,6 +2419,12 @@ class WorldScene(Scene):
         )
         if self.red_dragon is not None:
             self.red_dragon.load_sprites(self.game.assets)
+            # ...and the room goes back to its own theme when it goes
+            # back to its own start. The respawn rebuilds this arena in
+            # place rather than reloading the scene, so left alone a
+            # player who died in the last thirty seconds would begin the
+            # encounter again with the music from the end of it.
+            self.game.audio.play_music(AREA_MUSIC[self.map_name])
         self.infernal_corruption = (
             InfernalAstralCorruption(self.tilemap)
             if self.map_name == "phlegethos_fortress_approach" else None

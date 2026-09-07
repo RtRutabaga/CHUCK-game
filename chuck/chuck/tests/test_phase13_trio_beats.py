@@ -34,7 +34,8 @@ from src.core.game import Game
 from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import DESERT_ENTRY_FLAGS
 from src.systems.trio_encounter import (
-    BEATS, CHURN_FROM, FIRST_ADVANCE, TrioEncounter,
+    BEATS, CHURN_FROM, ENCROACH_GRACE, ENCROACH_LIMIT, FIRST_ADVANCE,
+    TrioEncounter,
 )
 from src.world import collision
 
@@ -44,6 +45,13 @@ from generate_desert_trio import FIGHTER, RANGER, WIZARD  # noqa: E402
 
 
 MAP_NAME = "desert_trio"
+# Somewhere the Astral coming in from the west is never going to reach.
+# These tests were written when a player could stand on the arrival tile
+# for the whole encounter; the front takes that ground about half a
+# minute in now, which kills him and restarts the conversation. Correct,
+# and the entire point of the front -- and useless for a test about what
+# the rift does or what gets said in what order.
+CLEAR_OF_IT = (46 * config.TILE_SIZE, 26 * config.TILE_SIZE)
 
 # The document's words, in the document's order.
 SCRIPT = {
@@ -105,6 +113,7 @@ def _play(game, world, seconds: float, step: float = 1 / 30):
             game.scenes.pop()
             continue
         world.sanity.current = world.sanity.maximum
+        world.player.x, world.player.y = CLEAR_OF_IT
         world.update(step)
     return played
 
@@ -200,9 +209,13 @@ def test_the_rift_takes_the_room_from_the_midpoint_onward() -> None:
     directory, game, world = _world()
     try:
         def sea() -> int:
+            # East of the western front only. The Astral now comes in
+            # from both sides and this test is about one of them; a
+            # count of the whole map would be measuring the sum of two
+            # things that start at different times.
             return sum(
                 1 for y in range(world.tilemap.height_tiles)
-                for x in range(world.tilemap.width_tiles)
+                for x in range(ENCROACH_LIMIT + 1, world.tilemap.width_tiles)
                 if world.tilemap.terrain_at(x, y) == "V"
             )
 
@@ -213,10 +226,14 @@ def test_the_rift_takes_the_room_from_the_midpoint_onward() -> None:
             for _ in range(int(60 / (1 / 30))):
                 if isinstance(game.scenes.current, DialogueScene):
                     break
+                world.sanity.current = world.sanity.maximum
+                world.player.x, world.player.y = CLEAR_OF_IT
                 world.update(1 / 30)
             game.scenes.pop()
             # Let the break finish spreading before measuring.
             for _ in range(120):
+                world.sanity.current = world.sanity.maximum
+                world.player.x, world.player.y = CLEAR_OF_IT
                 world.update(1 / 30)
             sizes.append(sea())
             assert world.trio.advances == max(0, index + 1 - FIRST_ADVANCE), \
@@ -239,7 +256,15 @@ def test_it_never_opens_under_anyone_who_is_standing_there() -> None:
     someone reads as a bug rather than as a cost. Chuck's is checked
     every frame of a full run, and the heroes' is checked at the end,
     which is when the rift has come as far as it ever will.
+
+    There is exactly one place this rule is broken on purpose, and it is
+    not the rift. The Astral front that comes in from the west will take
+    the ground he is standing on once it is several columns past him --
+    see ENCROACH_GRACE, and the test in test_phase13_closing_in that
+    pins it. Anywhere the front is not, the rule holds absolutely, which
+    is what this checks.
     """
+    assert ENCROACH_GRACE >= 1
     directory, game, world = _world()
     try:
         ts = config.TILE_SIZE
@@ -247,9 +272,12 @@ def test_it_never_opens_under_anyone_who_is_standing_there() -> None:
             if isinstance(game.scenes.current, DialogueScene):
                 game.scenes.pop()
                 continue
+            world.sanity.current = world.sanity.maximum
+            world.player.x, world.player.y = CLEAR_OF_IT
             world.update(1 / 30)
             col = int(world.player.x + world.player.width / 2) // ts
             row = int(world.player.y + world.player.height / 2) // ts
+            assert col > ENCROACH_LIMIT, col
             assert world.tilemap.terrain_at(col, row) != "V", (col, row)
 
         assert world.trio.advances >= 2, world.trio.advances
@@ -282,6 +310,7 @@ def test_dying_puts_the_whole_room_back() -> None:
         _play(game, world, 70.0)
         assert world.trio.beats_played >= 2
         assert world.trio.advances >= 1
+        assert world.trio.encroached > 0, "the west front never ran"
 
         # Both of them, because the room resets both: the rift and the
         # collision are separate objects doing separate things to the

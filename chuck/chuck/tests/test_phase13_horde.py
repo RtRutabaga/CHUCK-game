@@ -62,6 +62,11 @@ MAP_NAME = "desert_trio"
 HEROES = {FIGHTER, WIZARD, RANGER}
 # Close enough that a sword reaches, which is the definition of arrived.
 ARRIVED = CollisionBattleChoreographer.SLASH_REACH
+# Somewhere the Astral coming in from the west never reaches. Left on
+# the arrival tile a player is taken by that front about half a minute
+# in, which kills him and restarts the encounter -- correct, and the
+# whole point of the front, and useless for a test about anything else.
+CLEAR_OF_IT = (46 * config.TILE_SIZE, 26 * config.TILE_SIZE)
 
 
 def _tilemap() -> TileMap:
@@ -126,8 +131,14 @@ def _world():
     return directory, game, world
 
 
-def _play(game, world, seconds: float) -> float:
-    """Run the encounter, popping conversations, and return time played."""
+def _play(game, world, seconds: float, *, hold=None) -> float:
+    """Run the encounter, popping conversations, and return time played.
+
+    Chuck is parked clear of the western front unless told otherwise:
+    left on the arrival tile the Astral takes him about half a minute
+    in and the encounter restarts, which is right and is not what any
+    of these tests are about.
+    """
     played = 0.0
     for _ in range(int(seconds / (1 / 30))):
         if isinstance(game.scenes.current, DialogueScene):
@@ -136,6 +147,7 @@ def _play(game, world, seconds: float) -> float:
         if not isinstance(game.scenes.current, type(world)):
             break
         world.sanity.current = world.sanity.maximum
+        world.player.x, world.player.y = hold or CLEAR_OF_IT
         world.update(1 / 30)
         played += 1 / 30
     return played
@@ -383,14 +395,25 @@ def test_being_in_the_way_costs_him_and_stops_him() -> None:
         # them and returns before anything is resolved.
         _play(game, world, 1.0)
         orc = world.horde.orcs[0]
-        world.player.x = orc.x
-        world.player.y = orc.y
-        world.player.hurt_blink = 0.0
         before = world.sanity.current
-        standing = (world.player.x, world.player.y)
-        world.update(1 / 30)
-        assert world.sanity.current < before, world.sanity.current
-        assert (world.player.x, world.player.y) == standing
+        standing = None
+        hit = False
+        # Held against it for a second rather than checked on one frame.
+        # Sanity keeps its own invulnerability window and the room is
+        # full of things that open it -- one arrow anywhere near him a
+        # moment earlier and a single-frame check reads as the horde
+        # being harmless.
+        for _ in range(int(1.0 / (1 / 30))):
+            world.player.x, world.player.y = orc.x, orc.y
+            standing = (world.player.x, world.player.y)
+            world.update(1 / 30)
+            if world.sanity.current < before:
+                hit = True
+                # ...and it stopped him where he was rather than letting
+                # him walk through.
+                assert (world.player.x, world.player.y) == standing
+                break
+        assert hit, world.sanity.current
     finally:
         game._shutdown()
         directory.cleanup()

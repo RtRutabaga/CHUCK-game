@@ -48,6 +48,11 @@ from src.world.tilemap import TileMap
 
 MAP_NAME = "desert_trio"
 STEP = 1 / 30
+# Somewhere the Astral coming in from the west never reaches. Left on
+# the arrival tile a player is taken by that front about half a minute
+# in, which kills him and restarts the encounter -- correct, and the
+# whole point of the front, and useless for a test about anything else.
+CLEAR_OF_IT = (46 * config.TILE_SIZE, 26 * config.TILE_SIZE)
 
 
 def _tilemap() -> TileMap:
@@ -64,8 +69,16 @@ def _world():
     return directory, game, world
 
 
-def _play(game, world, seconds: float, *, hold=None) -> None:
-    """Run the room, popping conversations. `hold` pins Chuck somewhere."""
+def _play(game, world, seconds: float, *, hold="clear") -> None:
+    """Run the room, popping conversations. `hold` pins Chuck somewhere.
+
+    Parked clear of the western front by default: left on the
+    arrival tile the Astral takes him about half a minute in and
+    the encounter restarts, which is right and is not what a test
+    about the dragon is asking.
+    """
+    if hold == "clear":
+        hold = CLEAR_OF_IT
     for _ in range(int(seconds / STEP)):
         if isinstance(game.scenes.current, DialogueScene):
             game.scenes.pop()

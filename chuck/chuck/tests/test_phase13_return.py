@@ -49,6 +49,13 @@ from src.systems.trio_encounter import BEATS, CHURN_FROM
 
 
 MAP_NAME = "desert_trio"
+# Somewhere the Astral coming in from the west is never going to reach.
+# These tests were written when a player could stand on the arrival tile
+# for the whole encounter; the front takes that ground about half a
+# minute in now, which kills him and restarts the conversation. Correct,
+# and the entire point of the front -- and useless for a test about what
+# the rift does or what gets said in what order.
+CLEAR_OF_IT = (46 * config.TILE_SIZE, 26 * config.TILE_SIZE)
 
 RESOLUTION = {
     "trio_resolution": [
@@ -118,6 +125,7 @@ def test_the_room_stops_closing_once_it_starts_working() -> None:
             if not isinstance(game.scenes.current, type(world)):
                 break
             world.sanity.current = world.sanity.maximum
+            world.player.x, world.player.y = CLEAR_OF_IT
             world.update(1 / 30)
         played = dict(advances)
         assert played[len(BEATS)] == played[CHURN_FROM], played
@@ -149,6 +157,7 @@ def test_the_last_line_is_the_trigger_and_it_waits_for_the_line() -> None:
             if isinstance(scene, ReturnToWaterdeepCutsceneScene):
                 break
             world.sanity.current = world.sanity.maximum
+            world.player.x, world.player.y = CLEAR_OF_IT
             world.update(1 / 30)
         assert saw_last, "the last exchange never played"
         assert isinstance(game.scenes.current, ReturnToWaterdeepCutsceneScene)
