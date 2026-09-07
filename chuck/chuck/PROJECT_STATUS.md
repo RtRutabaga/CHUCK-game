@@ -6,7 +6,8 @@ The Collided Desert's five-map opening region is complete and has had a second a
 hub, orc camp, oasis and undead ruins, now with fissured cliffs, fallen
 columns, palm trees and axe-carrying orcs -- and the eastward traversal runs
 six maps deep, through the modern city, Chult, the Feywild, the Nine Hells, a
-ship's deck, a castle and a frozen world with a blue dragon in it, then a
+ship's deck, a crenellated castle flying its own colours and a frozen
+world with a blue dragon in it, then a
 seventh map where nine worlds meet and none of them owns the ground, and an
 eighth where the ground has mostly gone and what is left is islands in the
 Astral Sea. The walk ends at the trio: they are on their map, working on the
@@ -25,6 +26,55 @@ is required by the project rules
 and updated every session.
 
 ## Latest implementation
+
+- Finished the collided desert's castle. The medieval fragment out east
+  shipped as flat coursed ashlar: correct stone, and unmistakably a boundary
+  rather than a building. It now reads as sections of a castle -- crenellation
+  along the curtains, drum towers with arrow loops on the corners and on the
+  stumps the broken runs end in, and red-and-gold banners hanging down the
+  faces that show. 120 merlons, 16 towers and 12 banners on East 5, 32/12/5 on
+  East 7, and 38/1/2 on East 8.
+- It matters more here than it would anywhere else that the walls say
+  something: this is the one world in the collision Chuck has never visited,
+  so there is no map of it to remember and the walls are the whole of what
+  anybody ever learns about the place. A wall becomes a castle wall the moment
+  it is notched and has a tower on it, and it belongs to somebody the moment
+  there is cloth on it.
+- The banners are authored on the ground tile in front of the wall, not on the
+  wall. Props anchor to the bottom of their tile and draw upward, so a banner
+  on the stone would rise off the battlements like a flag on a pole; from one
+  tile out, cut to exactly two tiles tall, the same upward draw puts the iron
+  bracket on top of the stone and the hem on the floor. Two characters for one
+  object because the ground differs -- flagstones inside the courtyard, sand
+  outside it -- which is the same reason the docks has two barrels.
+- Four frames of a slow lift rather than a flap. Nothing else on these maps
+  moves in a wind: the fires are out and the snow falls straight down, so
+  cloth that snapped would be the one thing on screen with weather of its own.
+  The sway is a per-row horizontal offset growing toward the hem, because
+  offsetting the whole shape made it a sign swinging on a hinge.
+- The pass is collision-neutral by construction, which is the only reason it
+  could be run over maps whose geometry other suites measure to the tile --
+  East 8's islands, East 7's nine worlds, and the arena the horde has to
+  cross. Merlons and towers are converted *from* wall, so they are solid tiles
+  standing exactly where solid tiles already stood, and banners are non-solid
+  and go on ground that was already open. The test rebuilds each shipped map
+  with the castle taken back off it and asserts the walkable set is identical.
+- East 6 gets nothing. It has flagstones from the same world and not one tile
+  of wall, and conjuring a section onto it would be solid stone appearing on a
+  map measured elsewhere.
+- The first classification called anything two tiles thick a tower, and the
+  two island maps -- where every clump of that stone is thick -- came back as
+  forty towers in a heap. A mass is now crenellated into a ring and only
+  corners, turns and lone stumps get a tower; the test states that as a rule,
+  that towers are the punctuation and never outnumber the merlons.
+- The failure worth recording is the character choice. Three of the four
+  characters first picked for the new tiles were already in MARKER_DEFS -- two
+  arrival anchors and a desert transition -- so they counted as castle on maps
+  that had never been regenerated, and a blanket rename compounded it by
+  renaming the live markers as well. Recovered by reverting `tilemap.py` and
+  re-adding only tiles on characters verified absent from *both* tables.
+  TILE_DEFS and MARKER_DEFS are global across every map in the game; a
+  candidate character has to be checked against both, every time.
 
 - Furnished the modern city. Every block was a road, a kerb, a pavement and a
   wall of building, and between those four things nothing stood on the ground

@@ -198,6 +198,15 @@ _SPRITES = {
         "objects/city_bottles_2.png",
     ),
     "city_sewer_entrance": "objects/city_sewer_entrance.png",
+    # The collided desert's castle. Four frames of a slow lift rather
+    # than a flap: nothing else out there moves in a wind, so cloth that
+    # snapped would be moving for its own reasons.
+    "castle_banner": (
+        "objects/castle_banner_1.png",
+        "objects/castle_banner_2.png",
+        "objects/castle_banner_3.png",
+        "objects/castle_banner_4.png",
+    ),
     "city_fire_hydrant": "objects/city_fire_hydrant.png",
     "city_stop_sign": "objects/city_stop_sign.png",
     # One lamp, two states. A street light is off all day and on all
@@ -305,6 +314,12 @@ _ANIMATED_SPRITES = {
     ),
     "waterdeep_fountain": tuple(
         f"objects/waterdeep_fountain_{index + 1}.png" for index in range(4)
+    ),
+    # The collided desert's castle. Four frames of a slow lift rather
+    # than a flap: nothing else out there moves in a wind, so cloth that
+    # snapped would be moving for its own reasons.
+    "castle_banner": tuple(
+        f"objects/castle_banner_{index + 1}.png" for index in range(4)
     ),
 }
 _PROP_FRAME_TIME = 0.14

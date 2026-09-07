@@ -39,7 +39,9 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_collided_common import astral_fringe, dress_fragments
+from generate_collided_common import (
+    astral_fringe, dress_castle, dress_fragments,
+)
 from generate_desert_ruin_dressing import dress_ruin
 
 
@@ -326,6 +328,11 @@ def build():
 
     _garrison(grid, protected)
     dress_fragments(grid, seed=8.3, protect=protected)
+    # ...and the castle finished: crenellation on the curtain, drum
+    # towers on the corners and the stumps, banners on the faces
+    # that show. All of it converted from stone that was already
+    # there, so nothing about the walk changes.
+    dress_castle(grid, seed=7)
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⍳"
     grid[ANCHOR[1]][ANCHOR[0]] = "⍴"

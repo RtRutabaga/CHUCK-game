@@ -365,6 +365,25 @@ TILE_DEFS: dict[str, TileDef] = {
     # been to. The courtyard walks like flagstone; the wall is a wall.
     "⌼": TileDef(solid=False, color=(96, 72, 46)),
     "⌽": TileDef(solid=False, color=(128, 126, 122)),
+    # The castle, finished. Crenellation and drum towers are the same
+    # wall they replace -- solid, on the same tiles -- so a section
+    # built out of them can never be the reason a route closed.
+    "ᛦ": TileDef(solid=True, color=(92, 92, 96)),
+    "ᛧ": TileDef(solid=True, color=(92, 92, 96)),
+    # ...and its banners, which stand on the ground in front of a wall
+    # rather than on the wall itself. Props anchor to the bottom of
+    # their tile and draw upward, so a banner authored on the stone
+    # would rise off the battlements like a flag; authored one tile out
+    # it hangs down the face instead, which is what a banner does.
+    #
+    # Two characters for one object because the ground differs: inside
+    # the courtyard it hangs over flagstones and outside the wall it
+    # hangs over sand. That is the same reason the docks has both 'o'
+    # and 'O' for one barrel.
+    "ᛨ": TileDef(solid=False, color=(146, 34, 46),
+                 prop="castle_banner", under="⌽"),
+    "ᛩ": TileDef(solid=False, color=(146, 34, 46),
+                 prop="castle_banner", under="."),
     "⌾": TileDef(solid=True, color=(92, 92, 96)),
     # A frozen world, also unvisited. Snow and drift are both snowy
     # ground as far as the weather is concerned -- SnowFall masks to

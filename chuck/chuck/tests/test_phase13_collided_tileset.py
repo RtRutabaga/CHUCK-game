@@ -68,6 +68,11 @@ PROVENANCE = {
     # drift apart, and these have no second copy to drift from.
     "courtyard_stone": COLLIDED,
     "courtyard_wall": COLLIDED,
+    # ...and the two that finish it: crenellation, and a drum tower.
+    # Drawn here for the same reason and out of the same stone, which is
+    # what lets a section built from all three read as one building.
+    "courtyard_merlon": COLLIDED,
+    "courtyard_tower": COLLIDED,
     # ...and a frozen one, for the same reason.
     "snow": COLLIDED,
     "snow_drift": COLLIDED,

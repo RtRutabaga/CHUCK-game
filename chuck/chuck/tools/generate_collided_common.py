@@ -267,3 +267,146 @@ def dress_fragments(
             grid[y][x] = props[pick]
             placed.append((x, y, apart))
     return len(placed)
+
+
+# ---------------------------------------------------------------------
+# The castle, finished
+# ---------------------------------------------------------------------
+# The medieval fragment shipped as flat coursed ashlar: correct stone,
+# and unmistakably a boundary rather than a building. A wall is a castle
+# wall the moment it is notched and has a tower on the corner, and it
+# belongs to somebody the moment there is a banner on it -- and out here
+# that matters more than usual, because this is the one world in the
+# collision Chuck has never visited and the walls are all anybody will
+# ever learn about it.
+#
+# Everything below is collision-neutral by construction. Merlons and
+# towers are converted *from* wall, so they are solid tiles standing
+# where solid tiles already stood; banners are non-solid and go on
+# ground that was already open. Nothing here can close a route, which is
+# why this can run over the trio's arena and the two island maps whose
+# geometry other tests measure to the tile.
+
+COURTYARD_STONE = "⌽"
+COURTYARD_WALL = "⌾"
+COURTYARD_MERLON = "ᛦ"
+COURTYARD_TOWER = "ᛧ"
+BANNER_ON_STONE = "ᛨ"
+BANNER_ON_SAND = "ᛩ"
+
+CASTLE_WALLS = (COURTYARD_WALL, COURTYARD_MERLON, COURTYARD_TOWER)
+# Ground a banner is allowed to stand on, and which character it takes
+# there.
+BANNER_GROUND = {COURTYARD_STONE: BANNER_ON_STONE, ".": BANNER_ON_SAND}
+# How far apart they hang. Close together they stop being an
+# announcement and become bunting.
+BANNER_SPACING = 7
+
+
+def _wall_neighbours(grid, col: int, row: int) -> set[tuple[int, int]]:
+    height, width = len(grid), len(grid[0])
+    return {
+        (dcol, drow)
+        for dcol, drow in ((1, 0), (-1, 0), (0, 1), (0, -1))
+        if 0 <= col + dcol < width and 0 <= row + drow < height
+        and grid[row + drow][col + dcol] in CASTLE_WALLS
+    }
+
+
+def _is_mass(grid, col: int, row: int) -> bool:
+    """Is this wall tile part of a solid two-by-two block of wall?
+
+    A curtain wall is one tile thick and wants crenellation; anything
+    thicker is a tower or a keep and wants to be drawn as one. Told
+    apart here rather than authored per map, because the maps that have
+    this stone scatter it differently on every one of them.
+    """
+    for top in (row - 1, row):
+        for left in (col - 1, col):
+            block = [(left, top), (left + 1, top),
+                     (left, top + 1), (left + 1, top + 1)]
+            if all(
+                0 <= c < len(grid[0]) and 0 <= r < len(grid)
+                and grid[r][c] in CASTLE_WALLS
+                for c, r in block
+            ):
+                return True
+    return False
+
+
+def dress_castle(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
+    """Crenellate the walls, tower the corners, hang the banners.
+
+    Returns the count of each, and changes nothing about where anybody
+    can walk: every tile it writes is either a solid one replacing a
+    solid one, or a banner on ground that stays open.
+    """
+    height, width = len(grid), len(grid[0])
+    walls = [
+        (col, row)
+        for row in range(height) for col in range(width)
+        if grid[row][col] == COURTYARD_WALL
+    ]
+    if not walls:
+        return {COURTYARD_MERLON: 0, COURTYARD_TOWER: 0, "banner": 0}
+
+    towers, merlons = [], []
+    for col, row in walls:
+        sides = _wall_neighbours(grid, col, row)
+        # A stump -- one tile of wall left standing, or the end of a
+        # run -- is a tower. Out here that is most of what a broken
+        # castle is, and a single drum reads as one where a single
+        # crenellated tile reads as a mistake.
+        if len(sides) <= 1:
+            towers.append((col, row))
+        elif _is_mass(grid, col, row):
+            # Anything two tiles thick is a section of building rather
+            # than a curtain: crenellate the ring of it that shows and
+            # leave the inside as plain stone. Making the whole mass a
+            # tower instead gave the island maps forty drum towers in a
+            # heap, each with its own arrow slit -- which reads as a
+            # wall covered in holes rather than as one building.
+            if len(sides) < 4:
+                merlons.append((col, row))
+        else:
+            # A run that turns is a corner, and a corner is where a
+            # castle puts its tower.
+            turns = (
+                {(1, 0), (0, 1)} <= sides or {(1, 0), (0, -1)} <= sides
+                or {(-1, 0), (0, 1)} <= sides or {(-1, 0), (0, -1)} <= sides
+            )
+            (towers if turns else merlons).append((col, row))
+
+    for col, row in towers:
+        grid[row][col] = COURTYARD_TOWER
+    for col, row in merlons:
+        grid[row][col] = COURTYARD_MERLON
+
+    # Banners hang on the face a wall shows, which in this game is the
+    # south one: everything with a front puts it that way, and cloth on
+    # the far side of a wall is cloth nobody sees.
+    hung: list[tuple[int, int]] = []
+    faces = [
+        (col, row + 1)
+        for col, row in sorted(merlons + towers, key=lambda spot: spot[::-1])
+        if row + 1 < height
+        and grid[row + 1][col] in BANNER_GROUND
+    ]
+    for col, row in faces:
+        if any(max(abs(col - c), abs(row - r)) < BANNER_SPACING
+               for c, r in hung):
+            continue
+        # Room to hang: the tile below has to be open too, or the hem
+        # lands inside something.
+        if row + 1 < height and grid[row + 1][col] in CASTLE_WALLS:
+            continue
+        if (col * 7 + row * 13 + seed) % 3 == 2:
+            continue        # not on every eligible face, or it is bunting
+        grid[row][col] = BANNER_GROUND[grid[row][col]]
+        hung.append((col, row))
+
+    return {
+        COURTYARD_MERLON: len(merlons),
+        COURTYARD_TOWER: len(towers),
+        "banner": len(hung),
+    }

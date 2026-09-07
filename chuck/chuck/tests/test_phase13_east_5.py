@@ -144,11 +144,21 @@ def test_the_courtyard_is_kept_rather_than_ruined() -> None:
         (x, y) for y in range(top, bottom + 1) for x in range(left, right + 1)
         if y in (top, bottom) or x in (left, right)
     ]
+    # The wall's own vocabulary. It was ashlar and gate-gap when the
+    # courtyard was first built; it is now ashlar, crenellation, drum
+    # towers and the banners hanging in front of them -- all of it
+    # converted from the stone that was already standing, which is why
+    # the count still has to come out at exactly the perimeter.
+    STONEWORK = {"⌾", "ᛦ", "ᛧ"}
     gates = sum(1 for cell in perimeter
-                if tilemap.terrain_at(*cell) == "⌽")
+                if tilemap.terrain_at(*cell) in {"⌽", "ᛨ", "ᛩ"})
     walls = sum(1 for cell in perimeter
-                if tilemap.terrain_at(*cell) == "⌾")
+                if tilemap.terrain_at(*cell) in STONEWORK)
     assert walls + gates == len(perimeter), "something else is in the wall"
+    # ...and it is a castle rather than a boundary: notched, towered,
+    # and flying somebody's colours.
+    assert any(tilemap.terrain_at(*cell) == "ᛦ" for cell in perimeter)
+    assert any(tilemap.terrain_at(*cell) == "ᛧ" for cell in perimeter)
     # Three tiles per gate and nothing else missing.
     assert gates == len(GATES) * 3, gates
 
@@ -242,6 +252,10 @@ def test_the_worlds_keep_arriving() -> None:
         "·": "hell", "█": "hell", "≋": "hell",
         "⌼": "ship",
         "⌽": "medieval", "⌾": "medieval",
+        # The castle, finished: its crenellation, its drum towers, and
+        # the banners hanging off both. All of it the same world.
+        "ᛦ": "medieval", "ᛧ": "medieval",
+        "ᛨ": "medieval", "ᛩ": "medieval",
     }
     # ...and everything standing on them. A bush on the Feywild's floor
     # is a piece of the Feywild, so it is attributed through the ground

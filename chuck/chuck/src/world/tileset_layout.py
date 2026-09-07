@@ -707,6 +707,14 @@ COLLIDED = Tileset(
         # backdrop, and the phase document wants this to read as
         # somewhere else entirely.
         ("courtyard_wall", 4, 1),
+        # ...and the two things that make a run of ashlar read as a
+        # castle rather than as a boundary. Crenellation is the single
+        # cheapest signal there is -- a notched wall is a castle and a
+        # flat one is a fence -- and a drum tower at the corners and
+        # gates is the second. Both are the same stone as the wall, so
+        # a section built from all three is one building.
+        ("courtyard_merlon", 4, 1),
+        ("courtyard_tower", 4, 1),
         # The second world with no home: a frozen one. Its weather is
         # drawn by SnowFall, which masks itself to exactly these tiles.
         ("snow", 4, 1),
@@ -750,6 +758,8 @@ COLLIDED = Tileset(
         "⌼": "ship_floor",
         "⌽": "courtyard_stone",
         "⌾": "courtyard_wall",
+        "ᛦ": "courtyard_merlon",
+        "ᛧ": "courtyard_tower",
         "❄": "snow",
         "❅": "snow_drift",
         "❆": "ice",

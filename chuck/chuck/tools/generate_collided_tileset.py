@@ -66,6 +66,9 @@ WALL = (92, 92, 96)
 WALL_LIT = (122, 122, 126)
 WALL_DARK = (58, 58, 62)
 MOSS = (74, 96, 68)
+# The dark inside an arrow loop. Near-black read as damage --
+# a hole punched in the wall rather than something built into it.
+SLIT = (44, 44, 50)
 
 
 def draw_courtyard_stone(surface, variant: int, _frame: int) -> None:
@@ -110,6 +113,76 @@ def draw_courtyard_wall(surface, variant: int, _frame: int) -> None:
             pygame.draw.line(surface, WALL_LIT, (x, top), (x + 7, top))
     for spot in ((1, 5), (10, 10), (6, 15)):
         surface.set_at(((spot[0] + variant * 3) % TILE_PX, spot[1]), MOSS)
+
+
+def draw_courtyard_merlon(surface, variant: int, _frame: int) -> None:
+    """The wall seen from above, with its crenellation.
+
+    A castle wall and a garden wall are the same object until one of
+    them is notched. That is the whole of this tile: the same ashlar as
+    its neighbour with merlons standing along the outer edge and the
+    gaps between them showing the drop, which is what makes a run of it
+    read as something people walked along rather than something built
+    to keep sheep in.
+
+    The merlons sit on the *bottom* edge because that is the face this
+    game shows -- everything else on these maps that has a front puts it
+    south, and a wall crenellated along its top edge would be a wall
+    seen from behind.
+    """
+    surface.fill(WALL_DARK)
+    # The wall-walk along the top: a lighter band with one course line
+    # in it, so the tile has a surface people stood on as well as a face.
+    pygame.draw.rect(surface, WALL_LIT, (0, 0, TILE_PX, 4))
+    pygame.draw.line(surface, WALL, (0, 3), (TILE_PX - 1, 3))
+    for x in range(-((variant * 3) % 5), TILE_PX, 5):
+        pygame.draw.line(surface, WALL, (x, 0), (x, 2))
+
+    # The parapet: merlons standing five pixels wide with three-pixel
+    # crenels between them, over most of the tile's height.
+    #
+    # The first version gave the notches the bottom five pixels and left
+    # coursed ashlar above, which at sixteen pixels a tile came out as a
+    # thin dark fringe along a plain wall -- correct, and invisible from
+    # anywhere a player actually stands. What reads is the gap: it has
+    # to be deep enough to be a hole rather than a joint.
+    start = (variant * 2) % 8
+    for x in range(start - 8, TILE_PX, 8):
+        pygame.draw.rect(surface, WALL, (x, 5, 5, TILE_PX - 5))
+        pygame.draw.line(surface, WALL_LIT, (x, 5), (x + 4, 5))
+        pygame.draw.line(surface, WALL_DARK, (x + 4, 6), (x + 4, TILE_PX - 1))
+    pygame.draw.line(surface, WALL_DARK, (0, 4), (TILE_PX - 1, 4))
+    surface.set_at((1 + (variant * 3) % 6, TILE_PX - 2), MOSS)
+    surface.set_at((TILE_PX - 3, 8 + (variant % 4)), MOSS)
+
+
+def draw_courtyard_tower(surface, variant: int, _frame: int) -> None:
+    """A drum tower, one tile of it, with an arrow slit.
+
+    Square towers at this size are indistinguishable from the wall they
+    interrupt, which defeats the point of having them -- so it is round,
+    and the rounding is done with two corner shadows rather than with a
+    circle, because a sixteen-pixel circle is an octagon with ambitions.
+    """
+    surface.fill(WALL_DARK)
+    # The drum: courses that curve, faked by shortening each course as
+    # it approaches the top and bottom of the tile.
+    for top, inset in ((0, 3), (4, 1), (8, 0), (12, 2)):
+        pygame.draw.rect(surface, WALL,
+                         (inset, top, TILE_PX - inset * 2, 3))
+        pygame.draw.line(surface, WALL_LIT, (inset, top),
+                         (TILE_PX - 1 - inset, top))
+    # Corner shadows, which is what actually makes it read as round.
+    for corner_x in (0, TILE_PX - 2):
+        pygame.draw.rect(surface, WALL_DARK, (corner_x, 0, 2, 3))
+        pygame.draw.rect(surface, WALL_DARK, (corner_x, TILE_PX - 3, 2, 3))
+    # An arrow slit down the middle: a cross, because a vertical line
+    # alone reads as a joint in the stonework.
+    slit_x = 7 + (variant % 2)
+    pygame.draw.rect(surface, SLIT, (slit_x, 4, 2, 8))
+    pygame.draw.rect(surface, SLIT, (slit_x - 2, 7, 6, 2))
+    surface.set_at((2, 6 + (variant % 5)), MOSS)
+    surface.set_at((TILE_PX - 3, 10 - (variant % 4)), MOSS)
 
 
 # Lying snow is deliberately not white. The falling snow is drawn over
@@ -203,6 +276,8 @@ DRAW = {
     # from: Chuck has never been to one.
     "courtyard_stone": draw_courtyard_stone,
     "courtyard_wall": draw_courtyard_wall,
+    "courtyard_merlon": draw_courtyard_merlon,
+    "courtyard_tower": draw_courtyard_tower,
     # ...and a frozen world, drawn here for the same reason.
     "snow": draw_snow,
     "snow_drift": draw_snow_drift,
