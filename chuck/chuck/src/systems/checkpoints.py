@@ -110,6 +110,15 @@ CHECKPOINTS = (
         fade_in=True, fade_from=(250, 250, 252),
     ),
     CheckpointDefinition(
+        "waterdeep_plaza_from_docks", "Fountain Plaza", "waterdeep_plaza",
+        arrival="from_docks", facing="right", runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "waterdeep_plaza_finale", "Fountain Plaza Finale",
+        "waterdeep_plaza", position=(40.0, 312.0), facing="right",
+        required_flags=DESERT_ENTRY_FLAGS | {WATERDEEP_RETURN_FLAG},
+    ),
+    CheckpointDefinition(
         "tavern_entry", "Tavern 1", "waterdeep_tavern",
         arrival="front_entrance", facing="up",
         required_flags=frozenset({"sewer_completed"}), runtime_entry=True,
@@ -1418,6 +1427,11 @@ CHECKPOINTS = (
         "waterdeep_tavern_return", "Waterdeep Tavern Return",
         "waterdeep_docks", arrival="tavern_return", facing="down",
         required_flags=frozenset({"sewer_completed"}),
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "waterdeep_docks_from_plaza", "Waterdeep Plaza Return",
+        "waterdeep_docks", arrival="from_plaza", facing="left",
         development_visible=False, runtime_entry=True,
     ),
     CheckpointDefinition(

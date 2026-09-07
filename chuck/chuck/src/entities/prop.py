@@ -92,6 +92,13 @@ _SPRITES = {
     "sailing_cog": "objects/sailing_cog.png",
     # Phase 14 reuses the established cog silhouette as dockside scenery.
     "waterdeep_docked_ship": "objects/sailing_cog.png",
+    "waterdeep_fountain": "objects/waterdeep_fountain_1.png",
+    "waterdeep_closed_gate": "objects/waterdeep_closed_gate.png",
+    "waterdeep_forge": "objects/waterdeep_forge.png",
+    "waterdeep_anvil": "objects/waterdeep_anvil.png",
+    "waterdeep_alchemist_display": (
+        "objects/waterdeep_alchemist_display.png"
+    ),
     "skull_stake": "objects/skull_stake.png",
     "temple_arch_ns": "objects/temple_arch_ns.png",
     "temple_arch_ew": "objects/temple_arch_ew.png",
@@ -289,6 +296,9 @@ _ANIMATED_SPRITES = {
     "desert_fire_pit": tuple(
         f"objects/desert_fire_pit_{index + 1}.png" for index in range(6)
     ),
+    "waterdeep_fountain": tuple(
+        f"objects/waterdeep_fountain_{index + 1}.png" for index in range(4)
+    ),
 }
 _PROP_FRAME_TIME = 0.14
 # Props whose animation runs at its own pace. A lava lamp shares nothing
@@ -296,6 +306,7 @@ _PROP_FRAME_TIME = 0.14
 # blobs shot up and down like a boiling kettle.
 _PROP_FRAME_TIMES = {
     "cabin_lava_lamp": 1.6,
+    "waterdeep_fountain": 0.24,
 }
 
 # Props that respond to the interact key with a line of dialogue
@@ -318,6 +329,7 @@ PROP_DIALOGUE = {
     # The fire outside is the same fire, laid by the same hands.
     "tahuya_firepit": "cabin_woodstove",
     "tahuya_ufo": "tahuya_ufo",
+    "waterdeep_closed_gate": "plaza_gate",
     "cheese": "cheese",
     "fey_teacup": "fey_tea_warm",
     "fey_plate": "fey_set_for_one",

@@ -258,6 +258,21 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="barrel", under=","),
     "5": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
                  prop="stall_table", under=","),
+    # Phase 14 fountain-plaza scenery. Each anchor carries collision while its
+    # larger sprite supplies the human-scale silhouette above the paving.
+    "₣": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="waterdeep_fountain", under=","),
+    # Invisible footprint tiles keep the fountain's broad bowl solid while
+    # drawing the same paving as the rest of the square beneath it.
+    "⊠": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER, under=","),
+    "ϟ": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="waterdeep_closed_gate", under=","),
+    "⚒": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="waterdeep_forge", under=","),
+    "⚙": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="waterdeep_anvil", under=","),
+    "⚗": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="waterdeep_alchemist_display", under=","),
     "6": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="tavern_table", under="="),
     "7": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
@@ -909,6 +924,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "N": MarkerDef(kind="npc:dock_worker", under=","),
     "G": MarkerDef(kind="npc:guard", under=","),
     "I": MarkerDef(kind="npc:market_woman", under=","),
+    # Phase 14's shared street between the docks and fountain plaza.
+    "Ƥ": MarkerDef(kind="arrival:from_plaza", under=","),
+    "ɸ": MarkerDef(kind="arrival:from_docks", under=","),
+    "Ʀ": MarkerDef(kind="player", under=","),
     "q": MarkerDef(kind="rat", under="d"),
     "Z": MarkerDef(kind="choice:sewer_exit", under="Q"),
     "L": MarkerDef(kind="arrival:sewer_outflow", under="="),

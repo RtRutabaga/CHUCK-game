@@ -3,11 +3,11 @@
 ## Repository State
 
 - Branch: main
-- Base commit before this pass: `07d42ec` (Begin the Waterdeep finale at midday)
-- Current work: Phase 14's populated midday return to Waterdeep
+- Base commit before this pass: `99366a3` (Populate the returned Waterdeep harbor)
+- Current work: Phase 14 completed with the shared fountain plaza
 - Active scope: `docs/development/PHASE-14.md`
-- Next implementation slice: build the shared eastern fountain plaza and its
-  two population states without changing the established docks architecture
+- Next implementation slice: none. Do not begin Phase 15 until its
+  authoritative scope document exists.
 
 ## Phase 14 Opening Slice
 
@@ -43,6 +43,28 @@
   dialogue, prop, and compile checks pass. Native 320x180 harbor and market
   frames were inspected for ship/pier contact, fishing readability, crowd
   spacing, and unobstructed routes.
+
+## Phase 14 Fountain Plaza Slice
+
+- Added one 48x34 `waterdeep_plaza` map connected to the open street east of
+  the docks, south of the tavern. Two-column thresholds and named arrivals make
+  the route reversible in both Waterdeep states without altering progression.
+- Built the plaza from the existing Waterdeep stone, building, wall, awning,
+  and market vocabulary. It contains an animated central stone fountain, two
+  shops, an existing-language produce stand, and a closed northern city gate.
+- Added bespoke procedural fountain, closed-gate, forge, anvil, and potion
+  display art. Broad fountain collision follows its visible bowl while drawing
+  ordinary paving beneath it.
+- Added two gate guards, a blacksmith, an alchemist, and one market proprietor
+  to both eras. Six additional townsfolk appear only after
+  `waterdeep_returned`; no shop opens a choice, inventory, currency, or buying
+  interface.
+- Added opening and finale development checkpoints for the plaza plus hidden
+  two-way runtime entries. The existing Waterdeep Ashtray persists the return
+  flag, and Continue restores the midday plaza population and palette.
+- Focused plaza, return-state, transition, tileset, checkpoint/save, tilemap,
+  dialogue, and prop checks pass. Native 320x180 views were inspected for gate,
+  fountain, smithy, alchemist, market, crowd, and route readability.
 
 ## Completed This Pass
 

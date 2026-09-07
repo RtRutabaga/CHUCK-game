@@ -100,7 +100,8 @@ from src.systems.undead_release import (
     UndeadReleaseController, is_staged_undead,
 )
 from src.systems.waterdeep_finale import (
-    DOCKED_SHIP_TILE, FISHERMAN_TILE, RETURN_TOWNSFOLK,
+    DOCKED_SHIP_TILE, FISHERMAN_TILE, PLAZA_TOWNSFOLK,
+    RETURN_PLAZA_TOWNSFOLK, RETURN_TOWNSFOLK,
 )
 from src.ui.tutorial_hint import TutorialHint
 from src.systems.net_capture import NetCapture
@@ -637,7 +638,7 @@ class WorldScene(Scene):
                 continue  # released in finite groups as Chuck advances
             else:
                 raise ValueError(f"No spawner for object kind {kind!r}")
-        self._add_waterdeep_finale_dressing()
+        self._add_waterdeep_state_dressing()
         if self.game.progress.has(CAPTAIN_CONFRONTED_FLAG):
             self._spawn_deck_captain()
             self._stage_deck_plank()
@@ -653,26 +654,31 @@ class WorldScene(Scene):
         self._collect_pending_drops()
         self._reset_enemies()
 
-    def _add_waterdeep_finale_dressing(self) -> None:
-        """Add returned-Waterdeep scenery without changing the opening map."""
-        if (
-            self.map_name != "waterdeep_docks"
-            or not self.game.progress.has(WATERDEEP_RETURN_FLAG)
-        ):
-            return
+    def _add_waterdeep_state_dressing(self) -> None:
+        """Populate shared Waterdeep geometry for its current era."""
+        returned = self.game.progress.has(WATERDEEP_RETURN_FLAG)
+        if self.map_name == "waterdeep_docks" and returned:
+            self.props.append(Prop(
+                "waterdeep_docked_ship", *DOCKED_SHIP_TILE, self.game.assets
+            ))
+            ts = config.TILE_SIZE
+            fish_col, fish_row = FISHERMAN_TILE
+            fisherman = FishermanNPC(
+                fish_col * ts + ts / 2,
+                fish_row * ts + ts / 2,
+            )
+            fisherman.load_sprites(self.game.assets)
+            self.npcs.append(fisherman)
+            self._add_townsfolk(RETURN_TOWNSFOLK)
+        elif self.map_name == "waterdeep_plaza":
+            self._add_townsfolk(PLAZA_TOWNSFOLK)
+            if returned:
+                self._add_townsfolk(RETURN_PLAZA_TOWNSFOLK)
 
-        self.props.append(Prop(
-            "waterdeep_docked_ship", *DOCKED_SHIP_TILE, self.game.assets
-        ))
+    def _add_townsfolk(self, spawns) -> None:
+        """Build one authored group with reused human-scale sprites."""
         ts = config.TILE_SIZE
-        fish_col, fish_row = FISHERMAN_TILE
-        fisherman = FishermanNPC(
-            fish_col * ts + ts / 2,
-            fish_row * ts + ts / 2,
-        )
-        fisherman.load_sprites(self.game.assets)
-        self.npcs.append(fisherman)
-        for spawn in RETURN_TOWNSFOLK:
+        for spawn in spawns:
             col, row = spawn.tile
             npc = NPC(
                 col * ts + ts / 2,

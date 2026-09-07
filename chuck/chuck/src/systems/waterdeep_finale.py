@@ -1,8 +1,8 @@
-"""Authored population for Phase 14's returned Waterdeep docks.
+"""Authored population for Phase 14's two Waterdeep states.
 
-The physical map is shared with the opening.  These placements are therefore
-state dressing rather than map geometry: loading the same map without the
-return flag produces the quiet morning exactly as before.
+The physical maps are shared with the opening. These placements are therefore
+state dressing rather than duplicate geometry: the plaza always has its staff
+and guards, while the return flag adds the larger midday crowd.
 """
 
 from __future__ import annotations
@@ -33,4 +33,27 @@ RETURN_TOWNSFOLK = (
     TownspersonSpawn("market_woman", "market_browser", (41, 32), "up"),
     TownspersonSpawn("dock_worker", "market_browser", (46, 33), "up"),
     TownspersonSpawn("market_woman", "market_browser", (52, 32), "up"),
+)
+
+
+# Permanent plaza staff establish its function even during the quiet opening.
+# The gate itself is solid; its guards remain non-colliding like every human,
+# because Chuck can walk between boots but not through iron.
+PLAZA_TOWNSFOLK = (
+    TownspersonSpawn("guard", "plaza_guard", (21, 4), "down"),
+    TownspersonSpawn("guard", "plaza_guard", (27, 4), "down"),
+    TownspersonSpawn("dock_worker", "blacksmith", (9, 13), "down"),
+    TownspersonSpawn("market_woman", "alchemist", (37, 13), "down"),
+    TownspersonSpawn("market_woman", "plaza_townsperson", (15, 30), "right"),
+)
+
+
+# Midday brings six more people out around the fountain and south market.
+RETURN_PLAZA_TOWNSFOLK = (
+    TownspersonSpawn("dock_worker", "return_plaza_townsperson", (6, 20), "right"),
+    TownspersonSpawn("market_woman", "return_plaza_townsperson", (13, 22), "right"),
+    TownspersonSpawn("dock_worker", "return_plaza_townsperson", (19, 23), "up"),
+    TownspersonSpawn("market_woman", "return_plaza_townsperson", (30, 22), "left"),
+    TownspersonSpawn("dock_worker", "return_plaza_townsperson", (36, 20), "left"),
+    TownspersonSpawn("market_woman", "return_plaza_townsperson", (42, 24), "left"),
 )

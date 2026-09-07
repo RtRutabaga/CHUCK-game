@@ -1,7 +1,7 @@
 # CHUCK — Project Status
 
-Updated: Phase 12 is feature-complete, Phase 13 is playable end to end, and
-Phase 14 now has a playable, populated midday return to Waterdeep.
+Updated: Phases 12, 13, and 14 are feature-complete. Waterdeep now supports its
+quiet opening and populated midday finale on shared city geography.
 The Collided Desert's five-map opening region is complete and has had a second art pass --
 hub, orc camp, oasis and undead ruins, now with fissured cliffs, fallen
 columns, palm trees and axe-carrying orcs -- and the eastward traversal runs
@@ -25,6 +25,25 @@ is required by the project rules
 and updated every session.
 
 ## Latest implementation
+
+- Added a shared 48x34 fountain plaza through the docks' open eastern street.
+  Its Waterdeep-scale square includes an animated stone fountain, guarded
+  closed northern gate, blacksmith forge and anvil, alchemist bottle display,
+  and a small produce stand. The route works in both directions in both eras.
+- Both states use the same plaza map and collision. Opening Waterdeep keeps its
+  original palette and five essential plaza inhabitants; the finale selects
+  the midday sheet and adds six more townsfolk. Shopkeepers only answer Chuck
+  with short lines—there is no buying, currency, equipment, or inventory UI.
+- The existing Waterdeep Ashtray preserves the return flag across save and
+  Continue, including the plaza's midday art and larger crowd. Phase 14's
+  acceptance criteria are complete; no Phase 15 contract exists yet.
+- One test from the harbor slice had to be rewritten rather than re-pinned.
+  It asserted that the return flag gated exactly one checkpoint, which was
+  true when the docks were the only map with a midday version and stopped
+  being true the moment the plaza got one. It now states the rule instead of
+  the list -- everything the flag gates is a finale entry, the docks' own is
+  among them, and none of the opening entries is -- so the next shared map to
+  gain a second state breaks the thing this protects rather than the test.
 
 - The returned Waterdeep harbor now gains one large docked cog, a fisherman
   with a small animated rod/line/bobber idle, two extra dock workers, and three

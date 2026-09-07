@@ -2,9 +2,9 @@
 
 ## Status
 
-Active. The direct playable return, state-driven midday presentation, docked
-ship, fisherman, and increased harbor population are implemented on the shared
-docks map. The fountain plaza remains.
+Complete. The direct playable return, state-driven midday presentation, docked
+ship, fisherman, increased harbor population, and shared fountain plaza are
+implemented and verified in both Waterdeep states.
 
 The previous phase returns Chuck to Waterdeep. Phase 14 begins on the
 original Waterdeep exterior map.
@@ -336,20 +336,20 @@ Do not add:
 
 ## Fountain Plaza
 
--   [ ] Eastern route south of the tavern leads to the plaza.
--   [ ] Plaza contains a central animated fountain.
--   [ ] Plaza architecture matches Waterdeep.
--   [ ] Northern wall/gate matches the established city-wall style.
--   [ ] Northern gate is guarded and inaccessible.
--   [ ] Blacksmith is visually readable.
--   [ ] Alchemist is visually readable.
--   [ ] Shops and stands do not provide purchasing interfaces.
+-   [x] Eastern route south of the tavern leads to the plaza.
+-   [x] Plaza contains a central animated fountain.
+-   [x] Plaza architecture matches Waterdeep.
+-   [x] Northern wall/gate matches the established city-wall style.
+-   [x] Northern gate is guarded and inaccessible.
+-   [x] Blacksmith is visually readable.
+-   [x] Alchemist is visually readable.
+-   [x] Shops and stands do not provide purchasing interfaces.
 
 ## Starting Waterdeep Integration
 
--   [ ] Fountain plaza is also accessible from a new game.
--   [ ] Starting and ending states use the same underlying plaza layout.
--   [ ] Starting version retains earlier lighting.
+-   [x] Fountain plaza is also accessible from a new game.
+-   [x] Starting and ending states use the same underlying plaza layout.
+-   [x] Starting version retains earlier lighting.
 -   [x] Starting version has fewer NPCs.
 -   [x] Ending version feels significantly busier without changing the
     city's basic architecture.
@@ -357,9 +357,9 @@ Do not add:
 ## Technical
 
 -   [x] Existing Waterdeep collision remains stable.
--   [ ] Eastern map transition works in both states.
--   [ ] Existing progression remains unaffected by adding the plaza.
--   [ ] Save/checkpoint behavior remains functional.
+-   [x] Eastern map transition works in both states.
+-   [x] Existing progression remains unaffected by adding the plaza.
+-   [x] Save/checkpoint behavior remains functional.
 -   [x] State-driven Waterdeep differences are implemented cleanly where
     practical.
 

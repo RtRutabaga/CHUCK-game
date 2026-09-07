@@ -1,0 +1,37 @@
+; WATERDEEP FOUNTAIN PLAZA — shared opening/finale geometry (48x34)
+; West returns to the docks. North gate is guarded and closed.
+; West shop is the smithy; east shop is the alchemist.
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,,,ϟ,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,rrrrrrrrrrrr,,,,,,,,,,,,,,,,,,rrrrrrrrrrrr,,b
+b,,rrrrrrrrrrrr,,,,,,,,,,,,,,,,,,rrrrrrrrrrrr,,b
+b,,rrrrrrrrrrrr,,,,,,,,,,,,,,,,,,rrrrrrrrrrrr,,b
+b,,eeeeeeeeeeee,,,,,,,,,,,,,,,,,,eeeeeeeeeeee,,b
+b,,tttttttttttt,,,,,,,,,,,,,,,,,,tttttttttttt,,b
+b,,tttttttttttt,,,,,,,,,,,,,,,,,,tttttttttttt,,b
+b,,ttWttttttWtt,,,,,,,,,,,,,,,,,,ttWttttttWtt,,b
+b,,tttthttttttt,,,,,,,,,,,,,,,,,,ttttttthtttt,,b
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,⚒,,,,,,,,,,,,,,,,,,,,,,,,,,,,,⚗,,,,,,,,b
+b,,,,,,,,,,,⚙,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,⊠⊠⊠⊠⊠,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,⊠⊠⊠⊠⊠,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,⊠⊠₣⊠⊠,,,,,,,,,,,,,,,,,,,,b
+⮜⮜,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+⮜⮜ɸ,Ʀ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+⮜⮜,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,aaaaaaaaaaaaaa,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,aaaaaaaaaaaaaa,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,PuuuuuuuuuuuuP,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,1,2,,5,,3,4,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+b,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,b
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb

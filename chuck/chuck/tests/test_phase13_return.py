@@ -285,13 +285,26 @@ def test_the_phase_hands_to_playable_waterdeep_with_crossing_recorded() -> None:
         # Nothing was written: the crossing is not a save point.
         assert not game.checkpoints.can_continue
 
-        # The finale owns one explicit return entry. The original opening and
-        # sewer-return entries keep their older meanings.
-        gated = [
+        # Everything the return flag gates is a finale entry, and the
+        # docks' own is one of them. Written as the rule rather than as
+        # a list: Phase 14 shares its maps between the two states, so
+        # every map that gains a midday version gains an entry here --
+        # the plaza already has -- and pinning the names meant the next
+        # one broke this test rather than the thing it protects.
+        gated = {
             cp.checkpoint_id for cp in CHECKPOINTS
             if WATERDEEP_RETURN_FLAG in cp.required_flags
-        ]
-        assert gated == ["waterdeep_finale"], gated
+        }
+        assert "waterdeep_finale" in gated, gated
+        assert all(name.endswith("_finale") for name in gated), gated
+
+        # ...and what it protects: the opening's own entries still mean
+        # what they meant, so a new game is unaffected by any of it.
+        opening = {"waterdeep_start", "waterdeep_anchor", "waterdeep_return"}
+        assert not (gated & opening), gated
+        for cp in CHECKPOINTS:
+            if cp.checkpoint_id in opening:
+                assert WATERDEEP_RETURN_FLAG not in cp.required_flags
     finally:
         game._shutdown()
         directory.cleanup()

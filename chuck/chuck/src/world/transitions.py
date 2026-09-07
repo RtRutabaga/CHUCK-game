@@ -188,6 +188,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("waterdeep_pantry", "^"): AreaExit(
         "waterdeep_tavern", "pantry_return", "down"
     ),
+    ("waterdeep_docks", "⮞"): AreaExit(
+        "waterdeep_plaza", "from_docks", "right"
+    ),
+    ("waterdeep_plaza", "⮜"): AreaExit(
+        "waterdeep_docks", "from_plaza", "left"
+    ),
     ("chult_jungle", '"'): AreaExit(
         "chult_cog", "from_chult_1", "up"
     ),
@@ -530,6 +536,7 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
 # rendered by tools/generate_music.py.
 AREA_MUSIC: dict[str, str | None] = {
     "waterdeep_docks": "waterdeep_docks.wav",
+    "waterdeep_plaza": "waterdeep_docks.wav",
     "sewer": "sewer.wav",
     # Reuse the warm Waterdeep theme until the dedicated tavern audio pass.
     "waterdeep_tavern": "waterdeep_docks.wav",

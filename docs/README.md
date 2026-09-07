@@ -8,8 +8,9 @@ The repository documentation is organized so Claude Code and Codex can work from
 2. `development/CURRENT-PHASE.md`
 3. `design/GAME-BIBLE.md`
 
-Phase 14 is active. Phase 13 remains the completed Collided Desert traversal,
-rift encounter, and return-to-Waterdeep contract.
+Phase 14 is complete. Phase 13 remains the completed Collided Desert traversal,
+rift encounter, and return-to-Waterdeep contract. No Phase 15 scope document
+exists yet.
 
 Then read the topic-specific supplement relevant to the task.
 

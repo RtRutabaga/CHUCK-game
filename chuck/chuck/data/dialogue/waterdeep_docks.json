@@ -28,5 +28,23 @@
   ],
   "fisherman": [
     "They're not biting."
+  ],
+  "plaza_gate": [
+    "The gate is closed."
+  ],
+  "plaza_guard": [
+    "Gate's closed."
+  ],
+  "blacksmith": [
+    "I don't shoe rats."
+  ],
+  "alchemist": [
+    "No samples."
+  ],
+  "plaza_townsperson": [
+    "Mind the fountain."
+  ],
+  "return_plaza_townsperson": [
+    "It's busier after lunch."
   ]
 }

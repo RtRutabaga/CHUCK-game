@@ -90,6 +90,8 @@ DOCKS = Tileset(
         "i": "castle_torch",
         "R": "ruin_wall",
         "f": "ruin_floor",
+        "⮞": "stone",
+        "⮜": "stone",
     },
     overhead_char_to_terrain={
         "a": "awning",
@@ -784,6 +786,7 @@ TILESETS: dict[str, Tileset] = {
 # Which map draws with which tileset (default: the docks sheet).
 MAP_TILESET: dict[str, str] = {
     "waterdeep_docks": "docks",
+    "waterdeep_plaza": "docks",
     "sewer": "sewer",
     "waterdeep_tavern": "tavern",
     "waterdeep_pantry": "pantry",
@@ -873,7 +876,7 @@ def tileset_for(map_name: str, *, waterdeep_returned: bool = False) -> Tileset:
     changes only its time-of-day sheet; every other caller keeps the original
     opening presentation by default.
     """
-    if map_name == "waterdeep_docks" and waterdeep_returned:
+    if map_name in {"waterdeep_docks", "waterdeep_plaza"} and waterdeep_returned:
         return DOCKS_MIDDAY
     return TILESETS[MAP_TILESET.get(map_name, "docks")]
 
