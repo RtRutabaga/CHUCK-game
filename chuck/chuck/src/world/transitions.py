@@ -620,5 +620,8 @@ AREA_MUSIC: dict[str, str | None] = {
     "desert_east_6": "desert.wav",
     "desert_east_7": "desert.wav",
     "desert_east_8": "desert.wav",
-    "desert_trio": "desert.wav",
+    # The encounter has its own: the region's theme and the fall to
+    # Chult at once, which is the only map in the phase where the
+    # music changes at all.
+    "desert_trio": "desert_trio.wav",
 }

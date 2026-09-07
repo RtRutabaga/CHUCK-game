@@ -353,7 +353,11 @@ def test_he_can_reach_them_and_cannot_reach_the_rift() -> None:
 def test_the_walk_east_ends_here() -> None:
     assert AREA_WALK_EXITS[(BEHIND, "⮞")].destination == MAP_NAME
     assert AREA_WALK_EXITS[(MAP_NAME, "⮜")].destination == BEHIND
-    assert AREA_MUSIC[MAP_NAME] == AREA_MUSIC[BEHIND]
+    # The one map east where the music changes. Every other map in
+    # the phase shares the region's theme, which is what makes this
+    # one landing as something else worth doing at all.
+    assert AREA_MUSIC[MAP_NAME] != AREA_MUSIC[BEHIND]
+    assert AREA_MUSIC[MAP_NAME] == "desert_trio.wav"
 
     ts = config.TILE_SIZE
     directory, game, world = _world(BEHIND)

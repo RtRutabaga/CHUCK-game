@@ -12,7 +12,9 @@ Astral Sea. The walk ends at the trio: they are on their map, working on the
 rift, the whole scripted conversation plays across the fight while the rift
 takes the arena a column at a time, the desert is overwhelmed by fragments of
 everywhere as they close it, and the last thing the wizard says sends Chuck
-home. The phase runs from the cabin table to the Waterdeep docks. This file is required by the project rules
+home. The phase runs from the cabin table to the Waterdeep docks, on one
+unbroken piece of desert music that becomes a mashup with the fall to Chult
+for the climax. This file is required by the project rules
 and updated every session.
 
 ## Latest implementation
@@ -444,7 +446,8 @@ and updated every session.
   a cropped rectangle of sand. Only the shape is authored so far: the maps the
   four gaps lead to are the next slices, and adding them will add markers
   rather than change the map.
-- Added `desert.wav`, a 75-second loop in D Dorian at 96 BPM. It is the
+- Added `desert.wav`, a loop in D at 96 BPM (75 seconds when it was
+  written; two minutes now -- see the music slice below). It is the
   arrival cue's tune grown up -- same mode, same tonic, the same broken-triad
   arpeggio underneath -- so stepping out of the cutscene into the playable
   desert sounds like staying in one place. The roles are swapped, though: a
@@ -996,6 +999,62 @@ and updated every session.
   at all: the two-second fade into the quay was written as "before the docks
   arrive", which is true from the first frame -- so the whole twelve-second
   rush played under full white. There is a test pinned on it now.
+
+- The region has one piece of music now, and the arrival cutscene is part of
+  it. The cutscene used to open with a cue of its own and then hand to the
+  theme, which is two pieces of music with a join in them; it now starts the
+  theme itself and the map picks it up. The join is gone because there is
+  nothing to join -- the audio system treats a repeat request for the track it
+  is already playing as a no-op, so the tune simply carries on under the scene
+  change. The test for that compares the two calls rather than the sound,
+  because the loop flag being different is the only way it can quietly fail.
+- `desert.wav` grew from 48 to 120 seconds for that reason. At seventy-five it
+  was a map theme with a separate cue in front of it; at two minutes it is one
+  piece that can open a scene, carry a walk, and turn over without announcing
+  its own length.
+- Two thirds of it is now D Phrygian dominant over a held drone -- the flat
+  second with the major third above it, which is the interval this kind of
+  music is actually recognised by. The frame at both ends stays in D Dorian,
+  which is where the rest of the region's music lives and what the arrival cue
+  was written in, so the two halves share D and A and the joins are the same
+  room lit differently rather than modulations. Nothing was transposed.
+- The deserty part adds a drone and takes the bass off its walk; it does not
+  add drums. Piling on percussion is the cheap version of that instruction and
+  it would have made the middle of the region sound like adventure rather than
+  heat. What changes instead is that the harmony stops moving and the reed
+  ornaments instead of stating, which is the difference between a tune played
+  in a mode and one that belongs to it. A test pins the kit at two voices.
+- Added `desert_trio.wav` for the final map: the desert theme and the fall to
+  Chult at once. It works because they were already in the same key -- D
+  Dorian against D minor, same tonic chord, one note apart. So the arrangement
+  *is* that one note: eight bars of the desert as the player has had it for
+  eight maps, and then the sixth drops and the fall has arrived without
+  anything else changing. The Eb follows eight bars later, which is the fall's
+  other tell and has meant "this is going badly" since the sewer.
+- It reads as the fall because it brings the fall's own things -- its pulse,
+  its kit, its bells, its wrong note -- and stays the desert's because the
+  arpeggio underneath is the desert's arpeggio, unchanged, and the reed still
+  answers in the gaps. The heroic part is the one trick available on this
+  synth: the fall's hook, which has only ever gone past in eighths, stated on
+  brass in half time with timpani under it. Same notes, four times the length.
+- 104 BPM, between the desert's 96 and the fall's 120, so neither set of
+  material is rushed or dragged into the other's. A test asserts the ordering
+  rather than the number.
+- It is the only map east of the hub where the music changes at all, which is
+  what makes it land; a test walks all twelve desert maps to say so.
+- The old `desert_arrival.wav` cue is not orphaned. The arrival cutscene no
+  longer plays it, but the return-to-Waterdeep cutscene does -- so the tune
+  from Chuck's arrival is what plays as he leaves, which is a better place for
+  it than the thirty seconds it used to occupy.
+- Phase 12's `test_the_desert_has_a_cue_of_its_own_...` was rewritten rather
+  than deleted. Its claim was correct while Phase 12 was the last thing built:
+  with nothing playable on the far side, a one-shot sized to the scene was all
+  the crossing could have. What outlives it is the part that still matters --
+  every cue the scene fires names a file that is really there, and the three
+  quiet noises are texture rather than events -- plus the new statement that
+  the scene starts the region's theme looping and asks for nothing else. It
+  still checks `desert_arrival.wav` itself, now against the length of the
+  sequence that owns it.
 
 ## Next logical task
 

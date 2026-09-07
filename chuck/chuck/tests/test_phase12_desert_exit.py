@@ -35,6 +35,9 @@ from src.scenes.desert_arrival_cutscene_scene import (
     DesertArrivalCutsceneScene,
     _GROUND_Y, _PORTAL_HALF_W, _PORTAL_X, _SAND,
 )
+from src.scenes.return_to_waterdeep_cutscene_scene import (
+    FADE_END as RETURN_FADE_END,
+)
 from src.scenes.world_scene import WorldScene
 from src.systems.cabin_progress import (
     CABIN_ENTITY_FLAGS, COUNTER_MAP_AWAKENED_FLAG, DESERT_TRANSITION_FLAG,
@@ -42,6 +45,7 @@ from src.systems.cabin_progress import (
 from src.systems.checkpoints import KNOWN_PROGRESS_FLAGS
 from src.systems.choice import ChoiceSystem
 from src.world.tileset_layout import MAP_TILESET
+from src.world.transitions import AREA_MUSIC
 
 
 INTERIOR = "tahuya_cabin_interior"
@@ -252,12 +256,28 @@ def test_he_lights_a_cigarette_once_he_is_alone_in_it() -> None:
         directory.cleanup()
 
 
-def test_the_desert_has_a_cue_of_its_own_and_quiet_noises_under_it() -> None:
-    """One short one-shot, sized to the scene, plus subtle effects."""
+def test_the_desert_arrival_starts_the_regions_theme_and_quiet_noises_under_it() -> None:
+    """The cue is gone; the region's theme starts here instead.
+
+    Phase 12 wrote this scene a one-shot of its own that ended as the
+    scene faded, which was right while there was nothing on the far side
+    for it to hand to. Phase 13's region has a theme, and a cue in front
+    of a theme is two pieces of music with a join in them -- so the
+    scene starts the theme itself, looping, exactly as the desert map
+    will ask for it, and the map's request is a no-op. The join is not
+    smoothed over, it does not exist.
+
+    The old cue is not orphaned: the return-to-Waterdeep cutscene plays
+    it, so the tune from Chuck's arrival is what plays as he leaves. It
+    is checked here for the same properties it always had, because it is
+    still a rendered one-shot that has to be the right length for the
+    scene that now owns it.
+    """
     song = importlib.import_module("data.music.desert_arrival")
     seconds = song.TOTAL_BEATS * 60.0 / song.TEMPO_BPM
-    # It starts under the whiteout and ends as the scene fades out.
-    assert abs(seconds - (FADE_END - 3.6)) < 0.5, seconds
+    # Sized to the sequence that plays it now, ending before its fade.
+    assert seconds < RETURN_FADE_END, (seconds, RETURN_FADE_END)
+    assert seconds > RETURN_FADE_END - 8.0, seconds
 
     path = config.MUSIC_DIR / "desert_arrival.wav"
     with wave.open(str(path)) as handle:
@@ -285,16 +305,22 @@ def test_the_desert_has_a_cue_of_its_own_and_quiet_noises_under_it() -> None:
     try:
         scene = DesertArrivalCutsceneScene(game, sanity=52)
         scene.on_enter()
-        played: list[str] = []
+        played: list = []
         game.audio.play_sfx = played.append
-        game.audio.play_music = lambda name, loop=True: played.append(name)
+        game.audio.play_music = lambda name, loop=True: played.append(
+            (name, loop))
         for step in range(int(FADE_END / 0.1) + 2):
             scene.elapsed = step * 0.1
             scene._play_cues(scene.elapsed - 0.1, scene.elapsed)
-        assert "desert_arrival.wav" in played
+        # The region's theme, looping, and nothing else: the scene asks
+        # for precisely what the map it hands to will ask for.
+        music = [entry for entry in played if isinstance(entry, tuple)]
+        assert music == [("desert.wav", True)], music
+        assert AREA_MUSIC["desert_central"] == "desert.wav"
         for name in ("portal_hum", "portal_collapse", "lighter"):
             assert played.count(name) == 1, (name, played)
-        assert len([p for p in played if p.startswith("footstep")]) == 3
+        assert len([p for p in played if isinstance(p, str)
+                    and p.startswith("footstep")]) == 3
     finally:
         game._shutdown()
         directory.cleanup()

@@ -17,6 +17,12 @@ Then it holds, and goes to white rather than to black, because the last
 one went to black and the difference is the point: he has come out of a
 cabin at night into the middle of a day.
 
+The music under it is the desert's own theme rather than a cue written
+for the scene. It starts here and does not stop -- the map on the other
+side asks for the same track and the audio system leaves it alone -- so
+the arrival and the region are one piece of music with a cutscene at
+the front of it.
+
 Then it hands off into the desert. It used to end at the title instead:
 Phase 12 closed with no playable region on the far side, so the only
 honest thing it could do was record the crossing and let Continue come
@@ -199,7 +205,12 @@ class DesertArrivalCutsceneScene(Scene):
         something is being closed.
         """
         if previous < MUSIC_START <= current:
-            self.game.audio.play_music("desert_arrival.wav", loop=False)
+            # The region's own theme, not a cue in front of it. The
+            # audio system treats a repeat request for the same track
+            # as a no-op, so the desert map picks this up still
+            # playing rather than starting something: walking out of
+            # the cutscene is the same tune continuing.
+            self.game.audio.play_music("desert.wav")
         cues = (
             (DESERT_IN, "portal_hum"),
             # Two steps out of the mouth and one as he settles. Sand is
