@@ -52,6 +52,8 @@ from src.entities.redcap import Redcap
 from src.entities.reality_blocks import RealityBlockField
 from src.entities.aurora_light import AuroraLight, MAP_SPRITE_REGION
 from src.entities.blue_dragon import BlueDragon
+from src.entities import red_dragon
+from src.entities.red_dragon import RedDragonFlyby
 from src.entities.city_rain import CityRain
 from src.entities.snow_fall import SNOW_TERRAIN, SnowFall
 from src.entities.snake import TempleSnake
@@ -1010,6 +1012,23 @@ class WorldScene(Scene):
                 self.game.scenes.push(
                     DialogueScene(self.game, self.dialogue.get(beat)))
                 return
+            if self.trio.collided and self.red_dragon is not None:
+                # Aimed at him, unless he is in the middle of dying --
+                # the same guard the rift's advance uses, and for the
+                # same reason: a pass lined up on a body is a pass
+                # lined up on nothing.
+                self.red_dragon.update(
+                    dt,
+                    self._player_tile() if self._respawn_phase is None
+                    else None,
+                )
+                # It does not care whose side anybody is on. An orc
+                # standing in the fire burns the same as Chuck would,
+                # which is most of what sells the thing as weather
+                # rather than as an attack aimed at the player.
+                if self.horde is not None:
+                    for rect in self.red_dragon.lethal_rects:
+                        self.horde.cut_down(rect)
             if self.trio.collided and self.churn is not None:
                 # The heroes are closing it. The desert is overwhelmed
                 # by fragments of everywhere, in large sections that
@@ -1393,6 +1412,13 @@ class WorldScene(Scene):
                 if self.sanity.damage(dragon.damage):
                     self.player.hurt_blink = config.HURT_COOLDOWN
                     self.game.audio.play_sfx("hurt")
+        # ...and the red one's trail, which is the same contract in
+        # motion: nothing is consumed, nothing dies, and the cooldown is
+        # what stops it emptying Sanity in one stride.
+        if self.red_dragon is not None and self.red_dragon.burns(player_box):
+            if self.sanity.damage(red_dragon.SANITY_DAMAGE):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
         for spine in self.spines:
             if spine.alive and overlaps(player_box, spine.hitbox):
                 spine.alive = False
@@ -1535,8 +1561,18 @@ class WorldScene(Scene):
                 prop.draw(surface, offset)
         for pickup in self.pickups:  # flat ground litter, under everyone
             pickup.draw(surface, offset)
+        if self.red_dragon is not None:
+            # The burning ground goes under everything standing on it,
+            # so a player can see their own feet in the fire.
+            self.red_dragon.draw_ground(surface, offset)
         for drawable in self._sorted_drawables():
             drawable.draw(surface, offset)
+        if self.red_dragon is not None:
+            # ...and the animal goes over everything, because it is not
+            # standing on the floor at all. Sorting it by its feet the
+            # way the rest of the room is sorted would put a flying
+            # dragon behind a waist-high rock.
+            self.red_dragon.draw(surface, offset)
         if self.breach is not None:
             self.breach.draw(surface, offset)
         if self.trio is not None:
@@ -2344,6 +2380,18 @@ class WorldScene(Scene):
             WorldChurn(self.tilemap, self.trio._protected)
             if self.trio is not None else None
         )
+        # ...and the dragon, which arrives with it. Everything else in
+        # this room is pressure Chuck reads around himself -- arrows
+        # from a fixed point, a horde on fixed courses, a floor being
+        # repainted under him. A stripe of fire crossing the arena at
+        # whatever row he happens to be on is the one kind he has to
+        # read about *himself*, which is why it is saved for the last
+        # thirty seconds rather than running the whole encounter.
+        self.red_dragon = (
+            RedDragonFlyby(self.tilemap) if self.trio is not None else None
+        )
+        if self.red_dragon is not None:
+            self.red_dragon.load_sprites(self.game.assets)
         self.infernal_corruption = (
             InfernalAstralCorruption(self.tilemap)
             if self.map_name == "phlegethos_fortress_approach" else None

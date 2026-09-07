@@ -12,9 +12,11 @@ Astral Sea. The walk ends at the trio: they are on their map, working on the
 rift, the whole scripted conversation plays across the fight while the rift
 takes the arena a column at a time, the desert is overwhelmed by fragments of
 everywhere as they close it, and the last thing the wizard says sends Chuck
-home. The phase runs from the cabin table to the Waterdeep docks, on one
-unbroken piece of desert music that becomes a mashup with the fall to Chult
-for the climax. This file is required by the project rules
+home. Through the last of it a horde of orcs presses the two heroes who
+are fighting and a red dragon crosses the arena laying fire behind it. The
+phase runs from the cabin table to the Waterdeep docks, on one unbroken
+piece of desert music that becomes a mashup with the fall to Chult for the
+climax. This file is required by the project rules
 and updated every session.
 
 ## Latest implementation
@@ -1119,6 +1121,73 @@ and updated every session.
   the far side, and the fighter's arc at the end of it. Standing on a
   converging lane is punished hard; the middle is a road, and it leads to the
   one lane in the room that has always been lethal.
+
+- A red dragon crosses the arena during the collision. It is the blue
+  dragon's contract in motion: same construction, same palette discipline,
+  no health, nothing to fight, nothing that stops it coming. The difference
+  is that the blue one is a fixed thing that is sometimes lethal, and this
+  one is always lethal and never in the same place twice.
+- It is the fourth thing pressing Chuck in that room and it had to be a
+  different *kind* of thing from the other three or it would only have been
+  more of them. The arrows come from a fixed point, the horde walks fixed
+  courses, the churn repaints the floor without ever making it dangerous --
+  all three are pressure he reads around himself. A stripe of fire crossing
+  the arena at whatever row he is standing on is the one kind he has to read
+  about himself.
+- It aims at him once and then commits. The row comes from wherever he is
+  standing when the pass begins and is fixed for the whole crossing, so a
+  player who stays put is hit and a player who moves is not -- which is the
+  difference between a dodge and a chase, and the approach becomes a promise
+  about where the fire will be rather than a thing changing its mind.
+- That aim is also what closed the room's last safe pocket. The horde's two
+  streams converge on the fighter and the ranger and leave a seam between
+  them, so the middle row of the arena was a road with nobody on it, out of
+  the wizard's lane and off every orc's course. The dragon is the one hazard
+  that follows him into it.
+- The trail glows before it burns. Three tiles is wider than a one-foot rat
+  steps out of on reflex, so the ground is warm and harmless for a full
+  second before it catches, and then lethal for two, and then embers. Fire
+  that lit the instant the dragon arrived would be a hazard that hits before
+  it can be read.
+- It writes nothing to the map. The rift takes ground and the churn repaints
+  it; between them this arena already changes under the player faster than
+  anything else in the game, and a third thing editing the floor would make
+  it impossible to say what any given tile is. Nothing catches over the rift
+  either -- a stripe painted across the Astral Sea would hide the one edge in
+  the room that has always killed him.
+- It does not care whose side anybody is on: orcs standing in it burn, which
+  is most of what sells the thing as weather rather than as an attack aimed
+  at the player.
+- The sprite is drawn from above, and that is the one place it departs from
+  the blue dragon. Everything else in this game is seen from a low side
+  angle because everything else is standing on the same floor Chuck is. This
+  one is not. Drawn in profile the wing sweeps through exactly the space the
+  body and the tail occupy, so the bottom of every wingbeat came back as one
+  flat red mass with a plank sticking out of it -- tail behind the membrane,
+  legs behind the tail, nothing readable. From above nothing overlaps
+  anything, and the beat is carried by how far out the wings reach.
+- Twelve frames rather than the blue one's six: a wingbeat, and then the same
+  wingbeat with the jaw open. Given the breath its own two-frame pose the way
+  the blue dragon's has, the wings would stop mid-air for as long as it was
+  breathing -- the exact moment a flying thing must not look paused.
+- Two art failures worth keeping. The spine ridge drawn at any size larger
+  than three pixels stopped being scales and became chevrons, so the animal
+  came back with arrows printed down it. And the fire, drawn as rectangles,
+  was three perfectly straight bands running the width of the arena: an
+  orange flag rather than a fire, with an edge so clean it read as interface.
+  Both layers now take their height from *position* rather than from the
+  patch's index, so neighbouring patches share an edge and the stripe ripples
+  along its length.
+- One ordering bug behind that: drawn patch by patch, each patch's outer band
+  painted over the previous one's bright core, and every tongue came back
+  with its right half missing -- a row of arrowheads pointing the way the
+  dragon had come. It is drawn layer by layer now.
+- Two older tests changed rather than being deleted. `test_phase13_trio_beats`
+  ran the room without holding Sanity up, which was fine while a player
+  standing still could survive it; a passive player now burns partway through
+  the fourth exchange and the conversation restarts from the top. That is
+  correct, and it is the whole point of the dragon, and useless for a test
+  about what gets said in what order.
 
 ## Next logical task
 

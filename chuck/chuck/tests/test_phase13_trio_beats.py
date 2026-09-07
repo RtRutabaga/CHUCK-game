@@ -89,6 +89,13 @@ def _play(game, world, seconds: float, step: float = 1 / 30):
     """Run the room, closing each conversation as it opens.
 
     Returns the lines of every conversation that played, in order.
+
+    Sanity is held up the whole way, which these tests did not have to
+    do until the red dragon arrived. A player standing still in that
+    room now burns to death partway through the fourth exchange and the
+    conversation starts again from the top -- correct, and the whole
+    point of the dragon, and useless for a test about what gets said in
+    what order.
     """
     played: list[list[str]] = []
     for _ in range(int(seconds / step)):
@@ -97,6 +104,7 @@ def _play(game, world, seconds: float, step: float = 1 / 30):
             played.append(list(scene._lines))
             game.scenes.pop()
             continue
+        world.sanity.current = world.sanity.maximum
         world.update(step)
     return played
 
