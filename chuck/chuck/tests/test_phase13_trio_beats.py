@@ -268,13 +268,19 @@ def test_dying_puts_the_whole_room_back() -> None:
         assert world.trio.beats_played >= 2
         assert world.trio.advances >= 1
 
+        # Both of them, because the room resets both: the rift and the
+        # collision are separate objects doing separate things to the
+        # same arena, and healing one of them would leave the floor of
+        # somebody's last attempt lying under the next.
         world.trio.restore()
+        world.churn.restore()
         after = [
             [world.tilemap.terrain_at(x, y)
              for x in range(world.tilemap.width_tiles)]
             for y in range(world.tilemap.height_tiles)
         ]
         assert after == before, "the arena did not heal"
+        assert world.churn.sections == 0
         assert world.trio.beats_played == 0
         assert world.trio.advances == 0
         assert not world.trio.finished

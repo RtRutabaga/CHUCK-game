@@ -26,6 +26,16 @@ So Chuck's own tile is skipped and the heroes' footing is protected,
 which leaves them standing on islands by the end -- which is the right
 picture anyway.
 
+And when the last thing has been said, the collision itself arrives:
+the desert is overwhelmed by fragments of everywhere, in large sections
+that change faster and faster. That is the document's own description
+and it comes with the document's own warning attached -- readability
+must not be spent on spectacle. So the churn only ever writes *floors*.
+Nothing it does can kill Chuck, block him, or take a route away; what
+changes is what he is standing on, several tiles at a time, quicker
+every few seconds. The arena's rule was that the worlds are underfoot
+and the danger is above them, and the ending is that rule at its limit.
+
 Dying resets all of it. The room heals, the clock goes back to zero and
 the conversation starts again from the beat after the entrance, the
 same way the sanctum's breach re-arms.
@@ -69,6 +79,129 @@ ADVANCE_INSTANT = config.BREACH_INSTANT_RADIUS
 # the rim, a marker's tile, anything a later edit adds -- stays.
 EDIBLE = frozenset({".", ",", "⟁", "⌖", "=", "≡", "ᛗ", "ᛟ", "·",
                     "⌼", "⌽", "❄", "≋"})
+
+
+# The floors the collision can write. Every one of them is walkable,
+# and that is the whole safety argument: a churn that could write lava
+# or Sea would be a room where the ground kills you at random, which is
+# not survivable and not what the document is asking for.
+CHURN_FLOORS = (".", "⌖", "=", "ᛗ", "ᛟ", "·", "⌼", "⌽", "❄")
+
+# How often a section changes, at the start and at the end, and how
+# long it takes to get from one to the other. It builds toward the
+# heroes succeeding, so it accelerates; the floor is a floor because
+# below it the map stops reading as a place and starts reading as
+# static.
+CHURN_FIRST = 2.2
+CHURN_FASTEST = 0.55
+CHURN_RAMP = 40.0
+
+# How big a section is. Large, because the document says large: a churn
+# that repaints one tile at a time is a shimmer, and what is wanted is
+# whole pieces of somewhere else arriving.
+CHURN_MIN = (9, 7)
+CHURN_MAX = (18, 13)
+# How long the arriving section is outlined, so the eye can catch it.
+CHURN_FLASH = 0.35
+
+
+class WorldChurn:
+    """Fragments of everywhere, arriving in large sections, faster.
+
+    Deliberately incapable of hurting anyone. It picks a rectangle,
+    repaints every walkable floor tile in it to one world's floor, and
+    leaves everything else exactly as it was -- the rift, the lava
+    veins, the heroes' footing, anything a marker stands on. So the
+    ground under Chuck changes constantly and the map he is solving
+    never does.
+
+    Sections are chosen from a fixed sequence rather than at random.
+    The map is generated once and read many times, and a sequence that
+    differs per run is a sequence nobody can tell is working.
+    """
+
+    def __init__(self, tilemap, protected: set[tuple[int, int]]) -> None:
+        self._tilemap = tilemap
+        self._protected = set(protected)
+        self._restore: dict[tuple[int, int], str] = {}
+        self._elapsed = 0.0
+        self._timer = CHURN_FIRST
+        self.sections = 0
+        self.flashes: list[list] = []       # [left, top, w, h, age]
+
+    @property
+    def interval(self) -> float:
+        """Seconds between sections, shrinking as the heroes close in."""
+        along = min(1.0, self._elapsed / CHURN_RAMP)
+        return CHURN_FIRST + (CHURN_FASTEST - CHURN_FIRST) * along
+
+    def update(self, dt: float) -> int:
+        """Run the collision. Returns how many tiles changed this frame."""
+        self._elapsed += dt
+        for flash in self.flashes:
+            flash[4] += dt
+        self.flashes = [f for f in self.flashes if f[4] < CHURN_FLASH]
+        self._timer -= dt
+        if self._timer > 0.0:
+            return 0
+        self._timer += self.interval
+        return self._arrive()
+
+    def _arrive(self) -> int:
+        """One section of somewhere else lands on the arena."""
+        width, height = self._tilemap.width_tiles, self._tilemap.height_tiles
+        index = self.sections
+        self.sections += 1
+        # A fixed walk over the map rather than a random one, so the
+        # sequence is the same every time the encounter is played.
+        span_w = CHURN_MIN[0] + (index * 5) % (CHURN_MAX[0] - CHURN_MIN[0])
+        span_h = CHURN_MIN[1] + (index * 3) % (CHURN_MAX[1] - CHURN_MIN[1])
+        left = 1 + (index * 13) % max(1, width - span_w - 2)
+        top = 1 + (index * 7) % max(1, height - span_h - 2)
+        floor = CHURN_FLOORS[index % len(CHURN_FLOORS)]
+
+        changed = 0
+        for row in range(top, min(height - 1, top + span_h)):
+            for col in range(left, min(width - 1, left + span_w)):
+                if (col, row) in self._protected:
+                    continue
+                here = self._tilemap.terrain_at(col, row)
+                if here not in CHURN_FLOORS or here == floor:
+                    continue
+                self._restore.setdefault((col, row), here)
+                self._tilemap.set_terrain(col, row, floor)
+                changed += 1
+        if changed:
+            self.flashes.append([left, top, span_w, span_h, 0.0])
+        return changed
+
+    def restore(self) -> None:
+        for (col, row), char in self._restore.items():
+            self._tilemap.set_terrain(col, row, char)
+        self._restore = {}
+        self.flashes = []
+        self._elapsed = 0.0
+        self._timer = CHURN_FIRST
+        self.sections = 0
+
+    def draw(self, surface, camera_offset: tuple[int, int]) -> None:
+        """An outline round each arriving section, for a third of a second.
+
+        Only an outline. Filled, it washed the section it was announcing
+        and the thing a player most needs to keep track of in this room
+        is where their own feet are.
+        """
+        import pygame
+
+        ox, oy = camera_offset
+        ts = config.TILE_SIZE
+        for left, top, span_w, span_h, age in self.flashes:
+            fade = 1.0 - age / CHURN_FLASH
+            colour = (round(170 + 70 * fade), round(180 + 60 * fade), 255)
+            pygame.draw.rect(
+                surface, colour,
+                (left * ts - ox, top * ts - oy, span_w * ts, span_h * ts),
+                max(1, round(3 * fade)))
 
 
 class TrioEncounter:

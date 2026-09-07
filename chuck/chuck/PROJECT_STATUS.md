@@ -9,9 +9,10 @@ ship's deck, a castle and a frozen world with a blue dragon in it, then a
 seventh map where nine worlds meet and none of them owns the ground, and an
 eighth where the ground has mostly gone and what is left is islands in the
 Astral Sea. The walk ends at the trio: they are on their map, working on the
-rift, and the whole scripted conversation now plays across the fight while
-the rift takes the arena a column at a time. The final collision sequence,
-the resolution dialogue and the return to Waterdeep are not built. This file is required by the project rules
+rift, the whole scripted conversation plays across the fight while the rift
+takes the arena a column at a time, and when the last line lands the desert
+is overwhelmed by fragments of everywhere. The resolution dialogue and the
+return to Waterdeep are not built. This file is required by the project rules
 and updated every session.
 
 ## Latest implementation
@@ -940,13 +941,40 @@ and updated every session.
   get the encounter, not the wreckage of their previous attempt with the
   script already spent.
 
+- The final collision sequence. When the wizard says "Good enough" the desert
+  stops being a desert: large sections of it repaint to another world's floor
+  every couple of seconds, and then faster, down to a section every half
+  second. That is the document's own description -- overwhelmed by fragments
+  of locations from throughout the game, in large, rapidly changing sections.
+- It comes with the document's own warning attached, and the warning is what
+  made it buildable: readability must not be spent on spectacle. So the churn
+  only ever writes *floors*. It cannot kill Chuck, cannot block him, and
+  cannot take a route away; what changes is what he is standing on, nine or
+  more tiles at a time. The arena's rule was that the worlds are underfoot
+  and the danger is above them, and the ending is that rule at its limit.
+- That is one claim with three consequences and all three are measured
+  rather than trusted, because the failure mode is not a crash -- it is a
+  section of lava arriving under a player who had nowhere to be. Every tile
+  it wrote is checked to be walkable; everything that is not a floor (the
+  rift, the lava veins, the rim, the heroes' footing) is checked to be
+  untouched; and the set of tiles reachable from the arrival is checked to be
+  identical before and after.
+- Sections come from a fixed walk over the map rather than at random. A map
+  is generated once and read many times, and a sequence that differs per run
+  is a sequence nobody can tell is working -- including whoever has to decide
+  whether the last change improved it.
+- Each arriving section is outlined for a third of a second rather than
+  filled. Filled, the flash washed the thing it was announcing, and what a
+  player most needs to keep track of in that room is where their own feet
+  are.
+
 ## Next logical task
 
-- The end of it. The arena, the trio and the whole scripted conversation are
-  in; what is left is the final collision sequence where the desert is
-  overwhelmed by rapidly changing fragments, the resolution dialogue in which
-  the wizard notices the rat and cannot get him out, and the
-  return-to-Waterdeep cutscene that ends the phase.
+- The last two pieces, and they belong together: the resolution dialogue in
+  which the wizard notices the rat and cannot get him out, whose final line
+  *is* the trigger, and the return-to-Waterdeep cutscene it triggers. The
+  collision sequence currently builds to its fastest and holds there, which
+  is where the heroes succeeding has to land.
 
 ## Superseded Phase 12 task
 

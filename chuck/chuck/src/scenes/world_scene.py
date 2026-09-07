@@ -31,7 +31,7 @@ from src.entities.battle_hazards import (
     CollisionBattleChoreographer, FeywildRiverField,
     InfernalAstralCorruption, InfernalBattleChoreographer,
 )
-from src.systems.trio_encounter import TrioEncounter
+from src.systems.trio_encounter import TrioEncounter, WorldChurn
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.deck_pirate import DeckPirateNPC
 from src.entities.hazard import Cat
@@ -983,6 +983,13 @@ class WorldScene(Scene):
                 self.game.scenes.push(
                     DialogueScene(self.game, self.dialogue.get(beat)))
                 return
+            if self.trio.finished and self.churn is not None:
+                # The heroes are closing it. The desert is overwhelmed
+                # by fragments of everywhere, in large sections that
+                # arrive faster and faster -- and none of which can
+                # hurt him, because all any of them changes is the
+                # floor.
+                self.churn.update(dt)
         if self.breach is not None:
             if (not self.breach.triggered
                     and self._player_tile()[0] <= config.BREACH_TRIGGER_COL):
@@ -1492,6 +1499,8 @@ class WorldScene(Scene):
             self.breach.draw(surface, offset)
         if self.trio is not None:
             self.trio.draw(surface, offset)
+        if self.churn is not None:
+            self.churn.draw(surface, offset)
         if self.infernal_corruption is not None:
             self.infernal_corruption.draw(surface, offset)
         for cone in self.battle_cones:
@@ -2233,6 +2242,8 @@ class WorldScene(Scene):
         # the thing they are closing.
         if getattr(self, "trio", None) is not None:
             self.trio.restore()
+        if getattr(self, "churn", None) is not None:
+            self.churn.restore()
         self.trio = (
             TrioEncounter(
                 self.tilemap,
@@ -2245,6 +2256,14 @@ class WorldScene(Scene):
                 },
             )
             if self.map_name == "desert_trio" else None
+        )
+        # ...and the collision itself, which starts when the last thing
+        # has been said. It writes floors and nothing else, so it can
+        # share the heroes' protected footing without being able to
+        # hurt anybody standing on it.
+        self.churn = (
+            WorldChurn(self.tilemap, self.trio._protected)
+            if self.trio is not None else None
         )
         self.infernal_corruption = (
             InfernalAstralCorruption(self.tilemap)
