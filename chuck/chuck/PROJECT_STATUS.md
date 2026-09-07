@@ -15,7 +15,9 @@ everywhere as they close it, and the last thing the wizard says sends Chuck
 home. Through the last of it a horde of orcs presses the two heroes who are
 fighting, the Astral closes in from the west until the only place left to
 stand is the fight itself, and a red dragon crosses the arena laying fire
-behind it. The phase runs from the cabin table to the Waterdeep docks, on
+behind it -- coming down between crossings to spit rolling fire that gets
+faster than Chuck is. The phase runs from the cabin table to the Waterdeep
+docks, on
 one unbroken piece of desert music that becomes a mashup with the fall to
 Chult for the climax and a boss theme when the dragon arrives. This file
 is required by the project rules
@@ -1257,6 +1259,63 @@ and updated every session.
   a test about what the rift does or what gets said in what order. Each now
   holds him somewhere the front does not reach, and the one that asserted the
   Sea never opens under him says where that rule is broken on purpose.
+
+- The dragon's act is now most of the encounter rather than a coda. The last
+  two exchanges went from eighteen and fourteen seconds to forty and
+  thirty-two, and the gap is the point: up to there the room is a
+  conversation with fighting in the gaps, and from there it is a fight with
+  two lines in it. At the old lengths the dragon got two crossings and no
+  time on the ground at all -- the whole back half went past before its own
+  hazard had finished introducing itself.
+- Every pass now stops part way across. It flies in laying its stripe, comes
+  down in the arena, spits fire, climbs, and lays the rest of the stripe on
+  its way out. It was every *second* pass at first, so the plain crossings
+  would keep happening, and what that bought was two landings in the whole
+  encounter -- one step of escalation and no curve. A landing pass is not an
+  alternative to a crossing; it is a crossing with a stop in it. Four
+  landings now, and both hazards every time.
+- What it spits is balls of fire that roll along the floor, and they are a
+  different *kind* of hazard from the stripe on purpose. The stripe is a line
+  drawn once, across the whole room, that Chuck steps out of; the rolling
+  fire is a handful of slow objects coming at him from one point, which he
+  has to move between. One is a wall and the other is traffic, and having to
+  switch between reading them is most of what makes the last minute feel like
+  the last minute.
+- They get worse every time it comes down: the fan is one ball wider (three
+  to six), the balls are faster (56 to 92 px/s), and the volleys are closer
+  together. The speed is the one that matters -- it starts below Chuck's own
+  80 and ends above it, which is the moment outrunning the fire stops working
+  and stepping through the gaps is all that is left. Measured rather than
+  felt: a stationary Chuck takes eighteen hits across the act and a crude
+  sidestepping one takes four.
+- A ball costs less than the stripe. The stripe is a wall he chose to stand
+  in; a ball is one of four things that came at him while he was dealing with
+  the other three, and only one of those is avoidable at leisure.
+- It lands short of him, on ground, inside the arena. All three were failures
+  worth avoiding by construction: a landing on his own tile is a fan at
+  point-blank range, which is not a dodge but an announcement; a landing on
+  the Astral is a dragon standing on a hole with its fire dying as it leaves
+  the mouth; and by the time it starts coming down the western half of that
+  floor is gone, so "inside the map" and "on the floor" are no longer the
+  same question. It walks out from the wanted column until it finds
+  something to stand on.
+- A landed dragon sorts with the room. In the air it draws over everything,
+  because it is not on the floor at all and sorting it by its feet would put
+  a flying dragon behind a waist-high rock. Down, it goes in the y-sorted
+  pass with everything else that has feet -- otherwise eight tiles of red sit
+  on top of Chuck for six seconds, which is the one thing this arena is not
+  allowed to do.
+- Four new sprite frames, and the silhouette is the whole of the difference.
+  Landed, the wings fold back along the flanks, the legs come out from under
+  it to carry weight they were not carrying a second ago, and the tail lies
+  down instead of streaming. Without that the moment of touching the ground
+  read as the animation stopping.
+- One performance fix that will keep paying: the dragon hands the horde forty
+  rectangles a frame once its rolling fire is up, and calling `cut_down` once
+  per rectangle walked the whole horde forty times and rebuilt every hitbox
+  on each walk. `cut_down_any` walks it once. (The 3.8ms frame I chased first
+  turned out to be the music swap's one-off `mixer_music.load`, amortised
+  into the average by a benchmark that started on the wrong frame.)
 
 ## Next logical task
 

@@ -70,8 +70,16 @@ BEATS: tuple[tuple[float, str], ...] = (
     # realising it is taking, and then realising what else is caught in
     # it. The last line of the second one is the trigger for everything
     # after this map.
-    (18.0, "trio_resolution"),
-    (14.0, "trio_caught"),
+    #
+    # They are more than twice as long as the four before them, and the
+    # gap is the point. Up to here the room is a conversation with
+    # fighting in the gaps; from here it is a fight with two lines in
+    # it. The dragon arrives on the beat before these, and at the old
+    # lengths it got two crossings and no time on the ground at all --
+    # the whole back half of the encounter went past before its own
+    # hazard had finished introducing itself.
+    (40.0, "trio_resolution"),
+    (32.0, "trio_caught"),
 )
 
 # The first beat that costs ground. The early exchange is talk; from

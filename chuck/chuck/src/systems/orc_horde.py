@@ -354,6 +354,31 @@ class OrcHorde:
             self.killed += killed
         return killed
 
+    def cut_down_any(self, boxes) -> int:
+        """Kill every orc inside any of `boxes`, in one pass over them.
+
+        The dragon hands this forty-odd rectangles a frame once its
+        rolling fire is in the air -- the burning stripe plus every ball
+        on the floor -- and calling `cut_down` once per rectangle walks
+        the whole horde forty times and rebuilds every hitbox on each
+        walk. This walks it once.
+        """
+        boxes = list(boxes)
+        if not boxes:
+            return 0
+        killed = 0
+        for orc in self.orcs:
+            if not orc.alive:
+                continue
+            box = orc.hitbox
+            if any(box.colliderect(other) for other in boxes):
+                orc.alive = False
+                killed += 1
+        if killed:
+            self.orcs = [orc for orc in self.orcs if orc.alive]
+            self.killed += killed
+        return killed
+
     def kill(self, orc: HordeOrc) -> bool:
         """One arrow, one orc. Used by the ranger's shots landing."""
         if not orc.alive:

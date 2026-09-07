@@ -52,6 +52,15 @@ OUT = ROOT / "assets" / "sprites" / "hazards"
 FRAME_W, FRAME_H = 128, 96
 FLY_FRAMES = 6
 BREATH_FRAMES = 6
+# ...and then it comes down. A landed dragon is a different silhouette
+# from a flying one and it has to be, or the moment it touches the
+# ground reads as the animation stopping: the wings fold back along the
+# flanks, the whole shape narrows, and the legs come out from under it
+# to carry weight they were not carrying a second ago.
+LANDED_FRAMES = 2
+# Two more with the head down and the jaw open, which is where the
+# rolling fire comes from.
+SPIT_FRAMES = 2
 
 # Red, and hot -- but the animal has to stay darker than what comes out
 # of it. The fire is nearly white at the core, so the scales sit well
@@ -300,6 +309,141 @@ def _spine_ridge(draw, points) -> None:
                       (mid[0] + size, mid[1] + size)), fill=SCALE_PALE)
 
 
+def _folded_wing(draw, side: int, settle: float) -> None:
+    """A wing folded back along the flank, seen from above.
+
+    The spread wing is the animal working; this is the same limb with
+    the work taken out of it -- wrist tucked in at the shoulder, the
+    fingers swept back over the haunch, the whole thing lying along the
+    body instead of reaching away from it. It is the single clearest
+    signal that the dragon is on the ground, and at this size it does
+    more than the legs do.
+    """
+    def out(distance: float) -> float:
+        return SPINE_Y + side * distance
+
+    root_front = (SHOULDER_X - 8, out(6))
+    root_back = (SHOULDER_X + 12, out(8))
+    wrist = (SHOULDER_X + 4, out(16 + settle))
+    tips = (
+        (HAUNCH_X + 2, out(21 + settle)),
+        (HAUNCH_X - 4, out(15 + settle)),
+        (SHOULDER_X + 20, out(11)),
+    )
+    draw.polygon((root_front, wrist) + tips + (root_back,),
+                 fill=MEMBRANE_DOWN)
+    draw.polygon((root_front, wrist, tips[0], tips[1]), fill=MEMBRANE)
+    draw.line((root_front, wrist), fill=BONE_DIM, width=4)
+    draw.line((wrist, tips[0]), fill=BONE_DIM, width=3)
+    for tip in tips[1:]:
+        draw.line((wrist, tip), fill=BONE_DIM, width=2)
+    # The wrist claw, which on a folded wing is the bit that sticks up
+    # off the shoulder and says the limb is still a hand.
+    draw.polygon((wrist, (wrist[0] - 6, wrist[1] - side * 2),
+                  (wrist[0] - 2, wrist[1] + side * 3)), fill=HORN_DARK)
+
+
+def _planted_leg(draw, side: int, front: bool, settle: float) -> None:
+    """A leg out from under the body, taking weight.
+
+    Tucked, these are folded along the flanks and barely read. Down,
+    they have to be visible from above -- which means the foot sits
+    clear of the body's outline, and the toes point out from it.
+    """
+    if front:
+        hip = (SHOULDER_X - 4, SPINE_Y + side * 10)
+        knee = (SHOULDER_X - 10, SPINE_Y + side * (19 + settle))
+        foot = (SHOULDER_X - 17, SPINE_Y + side * (23 + settle))
+    else:
+        hip = (HAUNCH_X - 2, SPINE_Y + side * 11)
+        knee = (HAUNCH_X + 5, SPINE_Y + side * (20 + settle))
+        foot = (HAUNCH_X + 1, SPINE_Y + side * (25 + settle))
+    draw.line((hip, knee), fill=SCALE, width=9 if front else 10)
+    draw.line((knee, foot), fill=SCALE_DARK, width=6)
+    draw.ellipse((foot[0] - 5, foot[1] - 4, foot[0] + 5, foot[1] + 4),
+                 fill=SCALE_DARK)
+    for toe in range(3):
+        angle = math.radians(-52 + toe * 52)
+        tip = (foot[0] - 8 * math.cos(angle),
+               foot[1] + side * 7 * math.sin(angle))
+        draw.line((foot, tip), fill=CLAW, width=2)
+
+
+def _rolling_ball(draw, centre, radius: float, step: int) -> None:
+    """A ball of fire on the ground, leaving the mouth.
+
+    Drawn as rings rather than as a disc with a highlight: a flat disc
+    at this size is a dot, and what makes it read as burning is that
+    the middle is brighter than the edge by a lot.
+    """
+    cx, cy = centre
+    for shade, scale in ((FIRE_DEEP, 1.0), (FIRE, 0.68), (FIRE_CORE, 0.34)):
+        wobble = math.sin(step * 2.1 + scale * 5.0) * radius * 0.10
+        r = radius * scale + wobble
+        draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=shade)
+
+
+def landed_frame(step: int, spitting: bool) -> Image.Image:
+    """One frame on the ground, facing left. Wings folded, legs down."""
+    image = Image.new("RGBA", (FRAME_W, FRAME_H), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+
+    # It breathes rather than beats: a slow settle through the shoulders
+    # instead of a wingbeat. A landed animal that holds perfectly still
+    # is a statue of an animal.
+    settle = 1.0 if step % 2 else 0.0
+
+    # The tail, laid out behind and curled a little to one side. Not
+    # streaming: nothing is holding it up any more.
+    tail = [(HAUNCH_X - 2, SPINE_Y + 1), (HAUNCH_X + 11, SPINE_Y + 4),
+            (HAUNCH_X + 22, SPINE_Y + 9), (HAUNCH_X + 31, SPINE_Y + 16),
+            (TAIL_TIP_X - 8, SPINE_Y + 22)]
+    for index in range(len(tail) - 1):
+        width = max(3, 15 - index * 3)
+        draw.line((tail[index], tail[index + 1]), fill=SCALE_DARK, width=width)
+        draw.line((tail[index], tail[index + 1]), fill=SCALE,
+                  width=max(1, width - 5))
+    tip = (TAIL_TIP_X - 2, SPINE_Y + 25)
+    draw.polygon(((tip[0] - 16, tip[1] - 6), (tip[0] - 4, tip[1] - 10),
+                  (tip[0], tip[1]), (tip[0] - 8, tip[1] + 4)),
+                 fill=SCALE_DARK)
+
+    for side in (-1, 1):
+        _planted_leg(draw, side, front=False, settle=settle)
+        _planted_leg(draw, side, front=True, settle=settle)
+
+    draw.ellipse((SHOULDER_X - 14, SPINE_Y - 14 + settle,
+                  HAUNCH_X + 4, SPINE_Y + 14 - settle), fill=SCALE)
+    draw.ellipse((SHOULDER_X - 10, SPINE_Y - 10 + settle,
+                  HAUNCH_X - 2, SPINE_Y + 10 - settle), fill=SCALE_LIT)
+
+    # Spitting, the neck comes forward and down and the head goes with
+    # it. Standing straight with the jaw open it looked like a yawn.
+    reach = 6 if spitting else 0
+    draw.line((SHOULDER_X - 6, SPINE_Y, SKULL_X + 6 - reach, SPINE_Y),
+              fill=SCALE, width=17)
+    draw.line((SHOULDER_X - 6, SPINE_Y, SKULL_X + 6 - reach, SPINE_Y),
+              fill=SCALE_LIT, width=10)
+
+    _head(draw, spitting)
+
+    for side in (-1, 1):
+        _folded_wing(draw, side, settle)
+
+    _spine_ridge(draw, [(SKULL_X + 8, SPINE_Y), (SHOULDER_X - 8, SPINE_Y),
+                        (SHOULDER_X + 6, SPINE_Y), (SHOULDER_X + 20, SPINE_Y),
+                        (HAUNCH_X - 2, SPINE_Y)] + tail[1:4])
+
+    if spitting:
+        # The ball itself, half out of the mouth. The entity draws the
+        # one that is actually rolling; this is the join between the
+        # two, and without it the balls appear from nowhere a body's
+        # length in front of an animal that is clearly the cause.
+        _rolling_ball(draw, (SNOUT_X + 3 - step * 3, SPINE_Y),
+                      7.0 + step * 2.5, step)
+    return image
+
+
 def dragon_frame(step: int, breathing: bool) -> Image.Image:
     """One frame, travelling left. A pass the other way is this mirrored."""
     image = Image.new("RGBA", (FRAME_W, FRAME_H), (0, 0, 0, 0))
@@ -373,6 +517,8 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     frames = [dragon_frame(step, False) for step in range(FLY_FRAMES)]
     frames += [dragon_frame(step, True) for step in range(BREATH_FRAMES)]
+    frames += [landed_frame(step, False) for step in range(LANDED_FRAMES)]
+    frames += [landed_frame(step, True) for step in range(SPIT_FRAMES)]
     sheet = Image.new("RGBA", (FRAME_W * len(frames), FRAME_H), (0, 0, 0, 0))
     for index, frame in enumerate(frames):
         sheet.alpha_composite(frame, (index * FRAME_W, 0))

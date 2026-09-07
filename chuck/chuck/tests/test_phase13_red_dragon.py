@@ -38,8 +38,11 @@ from src.core import config
 from src.core.game import Game
 from src.entities import blue_dragon
 from src.entities.red_dragon import (
-    BURN, EMBERS, FLY_FRAMES, GLOW, LANE, LIFE, PASS_GAP, ROW_MARGIN,
-    SANITY_DAMAGE, SPEED, RedDragonFlyby,
+    BALL_DAMAGE, BALL_LIFE, BALL_SPEED, BALL_SPEED_STEP, BREATH_FRAMES, BURN,
+    EMBERS, FAN_FIRST, FLY_FRAMES, GLOW, LAND_MARGIN, LAND_STANDOFF,
+    LANDED_FRAMES, LANDED_TIME, LANE, LIFE, PASS_GAP, ROW_MARGIN,
+    SANITY_DAMAGE, SPEED, SPIT_FRAMES, TOTAL_FRAMES, VOLLEY_INTERVAL,
+    FlameBall, RedDragonFlyby,
 )
 from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import DESERT_ENTRY_FLAGS
@@ -48,6 +51,18 @@ from src.world.tilemap import TileMap
 
 MAP_NAME = "desert_trio"
 STEP = 1 / 30
+# A ball's box is square and a fraction of the lane's height, which
+# is how a spy on `cut_down` tells the rolling fire apart from the
+# stripe and from the fighter's sword.
+BALL_RADIUS_SIDE = 2 * 7.0
+
+import sys as _sys
+_sys.path.insert(0, "tools")
+from generate_desert_trio import (  # noqa: E402
+    FIGHTER as _F, RANGER as _R, WIZARD as _W,
+)
+
+HEROES = (_F, _W, _R)
 # Somewhere the Astral coming in from the west never reaches. Left on
 # the arrival tile a player is taken by that front about half a minute
 # in, which kills him and restarts the encounter -- correct, and the
@@ -57,6 +72,32 @@ CLEAR_OF_IT = (46 * config.TILE_SIZE, 26 * config.TILE_SIZE)
 
 def _tilemap() -> TileMap:
     return TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+
+
+def _worn():
+    """The arena after the rift and the western front have had it.
+
+    By the time the dragon is landing, the map it is landing on is not
+    the one on disk: the rift has taken columns off the east and the
+    Astral has come in from the west. A landing spot chosen against the
+    file would put the animal on a hole.
+    """
+    from src.systems.trio_encounter import (
+        CHURN_FROM, ENCROACH_LIMIT, FIRST_ADVANCE, TrioEncounter,
+    )
+
+    tilemap = _tilemap()
+    trio = TrioEncounter(tilemap, set(HEROES))
+    box = pygame.Rect(0, 0, 1, 1)
+    for _ in range(CHURN_FROM - FIRST_ADVANCE):
+        trio.advance((4, tilemap.height_tiles // 2))
+        for _ in range(int(20 / STEP)):
+            trio._break_through(1 / 30, box)
+    for _ in range(ENCROACH_LIMIT + 1):
+        trio.encroach((4, tilemap.height_tiles // 2))
+        for _ in range(int(20 / STEP)):
+            trio._break_through(1 / 30, box)
+    return tilemap
 
 
 def _world():
@@ -92,9 +133,14 @@ def _play(game, world, seconds: float, *, hold="clear") -> None:
 
 
 def _cross(dragon: RedDragonFlyby, row: int) -> None:
-    """One whole pass, from off the edge to off the other one."""
+    """One whole pass: in, down, up, and off the far side.
+
+    Waits on `present` rather than on `flying`, because a pass now stops
+    on the floor part way across and `flying` goes false while it is
+    down there.
+    """
     dragon.begin(row)
-    while dragon.flying:
+    while dragon.present:
         dragon.update(STEP)
 
 
@@ -141,9 +187,9 @@ def test_the_passes_alternate_sides_and_leave_a_gap() -> None:
         _cross(dragon, 20)
         directions.append(dragon.direction)
         # ...and it does not immediately come back.
-        assert not dragon.flying
+        assert not dragon.present
         dragon.update(PASS_GAP / 2)
-        assert not dragon.flying
+        assert not dragon.present
     assert directions == [1, -1, 1, -1], directions
 
 
@@ -166,12 +212,16 @@ def test_it_aims_at_him_once_and_then_commits() -> None:
 
     # Re-aimed at a different row every frame from here on; it should
     # not move an inch.
-    rows = set()
+    rows, burned = set(), set()
     for frame in range(200):
         dragon.update(STEP, player_tile=(10, frame % 40))
         rows.add(dragon.row)
+        # Collected as it goes rather than read off the end: the pass
+        # now stops on the floor part way across, and by the time it
+        # climbs out again the first stretch of stripe has burned out.
+        burned |= {round(fire[1]) for fire in dragon.fires}
     assert rows == {31}, rows
-    assert {round(fire[1]) for fire in dragon.fires} == {31 * 16 + 8}
+    assert burned == {31 * 16 + 8}, burned
 
 
 def test_the_lane_always_fits_inside_the_arena() -> None:
@@ -202,7 +252,7 @@ def test_nothing_catches_over_the_rift_or_the_rim() -> None:
     landed = 0
     for row in range(ROW_MARGIN, tilemap.height_tiles - ROW_MARGIN, 5):
         dragon.begin(row)
-        while dragon.flying:
+        while dragon.present:
             dragon.update(STEP)
             for fire in dragon.fires:
                 col = int(fire[0]) // config.TILE_SIZE
@@ -340,18 +390,18 @@ def test_it_does_not_care_whose_side_anybody_is_on() -> None:
     directory, game, world = _world()
     try:
         spot = (40 * config.TILE_SIZE, IN_THE_STREAM * config.TILE_SIZE)
-        cut_down = world.horde.cut_down
+        # `cut_down_any` is the dragon's alone -- the fighter's sword
+        # goes through `cut_down` one box at a time -- so counting at
+        # this call needs no guesswork about which box belonged to whom.
+        cut_down_any = world.horde.cut_down_any
         burnt = []
 
-        def spy(box):
-            killed = cut_down(box)
-            # The dragon's box is the width of the lane; the fighter's
-            # arc is less than half as tall. Nothing else swings.
-            if box.height >= LANE:
-                burnt.append(killed)
+        def spy(boxes):
+            killed = cut_down_any(boxes)
+            burnt.append(killed)
             return killed
 
-        world.horde.cut_down = spy
+        world.horde.cut_down_any = spy
         _play(game, world, 140.0, hold=spot)
         assert world.trio.collided
         assert world.red_dragon.passes >= 2, world.red_dragon.passes
@@ -436,13 +486,26 @@ def test_the_sheet_beats_its_wings_the_whole_time_it_breathes() -> None:
     directory, game, world = _world()
     try:
         dragon = world.red_dragon
-        assert len(dragon._frames) == FLY_FRAMES * 2
+        assert len(dragon._frames) == TOTAL_FRAMES
         dragon.begin(20)
-        seen = set()
-        while dragon.flying:
-            seen.add(dragon.frame_index)
+        crossing, grounded = set(), set()
+        while dragon.present:
+            if dragon.phase == "flying":
+                crossing.add(dragon.frame_index)
+            elif dragon.phase == "landed":
+                grounded.add(dragon.frame_index)
             dragon.update(STEP)
-        assert seen == set(range(FLY_FRAMES, FLY_FRAMES * 2)), sorted(seen)
+        # Crossing: every frame of the breathing wingbeat and nothing
+        # else.
+        breathing = set(range(FLY_FRAMES, FLY_FRAMES + BREATH_FRAMES))
+        assert crossing == breathing, sorted(crossing)
+        # Down: the folded poses, and it visibly spits rather than
+        # sitting still while fire appears in front of it.
+        base = FLY_FRAMES + BREATH_FRAMES
+        assert grounded, "it never came down"
+        assert grounded <= set(range(base, TOTAL_FRAMES)), sorted(grounded)
+        assert any(index >= base + LANDED_FRAMES for index in grounded)
+        assert any(index < base + LANDED_FRAMES for index in grounded)
         # ...and off duty it is on the plain wingbeat.
         assert dragon.frame_index < FLY_FRAMES
     finally:
@@ -479,14 +542,310 @@ def test_a_crossing_takes_about_as_long_as_it_should() -> None:
     dragon = RedDragonFlyby(tilemap)
     elapsed = 0.0
     dragon.begin(20)
-    while dragon.flying:
+    while dragon.present:
         dragon.update(STEP)
         elapsed += STEP
     span = tilemap.width_tiles * config.TILE_SIZE
-    assert abs(elapsed - span / SPEED) < 3.0, elapsed
+    # The crossing itself, plus the stop in the middle of it. Derived
+    # rather than asserted: the arena's own width over the speed is the
+    # only number here that means anything, and the landing is the one
+    # thing added to it.
+    assert abs(elapsed - (span / SPEED + LANDED_TIME)) < 4.0, elapsed
     # Three tiles of lane, and the arena is many times that: there is
     # always somewhere it is not.
     assert LANE * 4 < tilemap.height_tiles * config.TILE_SIZE
+
+
+# ----------------------------------------------------------------------
+# Coming down
+# ----------------------------------------------------------------------
+def test_it_comes_down_on_ground_it_can_stand_on() -> None:
+    """Never the Sea, never the rim, and never on top of him.
+
+    All three of those are failures I would rather not ship. A landing
+    on the Astral is a dragon standing on a hole with its fire dying the
+    instant it leaves the mouth; a landing at the map's edge is an
+    animal that looks placed rather than arrived; and a landing on his
+    own tile is a fan of rolling fire at point-blank range, which is not
+    a dodge, it is an announcement.
+
+    Checked on the worn arena as well as the fresh one, because by the
+    time it starts landing the western half of that floor is gone.
+    """
+    for label, tilemap in (("fresh", _tilemap()), ("worn", _worn())):
+        dragon = RedDragonFlyby(tilemap)
+        for col in (10, 30, 40, 50, 60):
+            dragon.begin(24, col)
+            while dragon.phase != "landed":
+                dragon.update(STEP)
+                assert dragon.present, (label, col)
+            here = int(dragon.x) // config.TILE_SIZE
+            assert not tilemap.is_solid(here, dragon.row), (label, col, here)
+            assert tilemap.terrain_at(here, dragon.row) != "V", (label, here)
+            assert LAND_MARGIN <= here <= tilemap.width_tiles - 1 - LAND_MARGIN
+            while dragon.present:
+                dragon.update(STEP)
+
+
+def test_it_stands_off_rather_than_landing_on_him() -> None:
+    """Short of him by enough that the fan has somewhere to travel."""
+    tilemap = _tilemap()
+    dragon = RedDragonFlyby(tilemap)
+    for col in (30, 40, 48):
+        dragon.begin(24, col)
+        while dragon.phase != "landed":
+            dragon.update(STEP)
+        here = int(dragon.x) // config.TILE_SIZE
+        assert abs(here - col) >= LAND_STANDOFF - 2, (col, here)
+        while dragon.present:
+            dragon.update(STEP)
+
+
+def test_the_rolling_fire_gets_worse_every_time() -> None:
+    """Wider, faster, and closer together. The curve, as three numbers.
+
+    There is no reason for the third landing to be the first one again,
+    and a hazard that repeats itself unchanged is one a player stops
+    reading after the second look. What matters most is the speed: it
+    starts below Chuck's own and ends above it, which is the moment
+    outrunning the fire stops working and stepping through the gaps is
+    the only thing left.
+    """
+    dragon = RedDragonFlyby(_tilemap())
+    fans, speeds, intervals = [], [], []
+    for _ in range(4):
+        dragon.landings += 1
+        fans.append(dragon.fan)
+        speeds.append(dragon.ball_speed)
+        intervals.append(dragon.volley_interval)
+    assert fans == sorted(fans) and fans[0] == FAN_FIRST and fans[-1] > fans[0]
+    assert speeds == sorted(speeds), speeds
+    assert intervals == sorted(intervals, reverse=True), intervals
+    assert speeds[0] == BALL_SPEED
+    # Below him, then past him.
+    assert speeds[0] < config.PLAYER_SPEED < speeds[-1], speeds
+    assert BALL_SPEED_STEP > 0 and VOLLEY_INTERVAL > 0
+
+
+def test_a_volley_is_a_fan_aimed_at_him_with_gaps_in_it() -> None:
+    """Aimed, spread, and steppable.
+
+    A fan tight enough to have no gaps is a wall, and a wall coming at
+    him from one point with no way round it is not a dodge. So the
+    spacing is measured where it actually matters: at the range the
+    dragon stands off, adjacent balls are further apart than Chuck is
+    wide.
+    """
+    dragon = RedDragonFlyby(_tilemap())
+    dragon.begin(24, 40)
+    while dragon.phase != "landed":
+        dragon.update(STEP)
+    dragon.balls.clear()
+    target = (dragon.x - 200.0, dragon.track_y + 40.0)
+    assert dragon.spit(target) == dragon.fan
+    assert len(dragon.balls) == dragon.fan
+
+    # Every ball is going roughly at him, and the middle one is going
+    # straight at him.
+    import math as _math
+    want = _math.atan2(target[1] - dragon.track_y, target[0] - dragon.x)
+    angles = sorted(_math.atan2(ball.vy, ball.vx) for ball in dragon.balls)
+    assert min(abs(angle - want) for angle in angles) < 0.25, angles
+
+    # ...and they arrive spread out rather than stacked.
+    reach = LAND_STANDOFF * config.TILE_SIZE
+    gaps = [abs(angles[i + 1] - angles[i]) * reach
+            for i in range(len(angles) - 1)]
+    assert min(gaps) > 16.0, gaps
+
+
+def test_a_ball_rolls_straight_and_stops_at_something() -> None:
+    """It does not steer, and it does not hang over a hole.
+
+    Not steering is the point of it: a thing that chased him would be a
+    second dragon, and what this room wants is an obstacle whose whole
+    future he can read the moment it leaves the mouth. Stopping at the
+    Sea is the other half -- the holes in that floor are the one thing a
+    player is already reading, and a ball of fire sitting in the middle
+    of one is a bug.
+    """
+    tilemap = _tilemap()
+    ts = config.TILE_SIZE
+    ball = FlameBall(30 * ts, 24 * ts, 1.0, 0.0, BALL_SPEED)
+    heading = (ball.vx, ball.vy)
+    for _ in range(20):
+        ball.update(STEP, tilemap)
+    assert (ball.vx, ball.vy) == heading, "it turned"
+    assert ball.y == 24 * ts
+
+    # Into the rift: it goes out rather than over.
+    edge = next(col for col in range(40, tilemap.width_tiles)
+                if tilemap.terrain_at(col, 24) == "V")
+    runner = FlameBall((edge - 3) * ts, 24 * ts + 8, 1.0, 0.0, BALL_SPEED)
+    for _ in range(int(4.0 / STEP)):
+        runner.update(STEP, tilemap)
+        if not runner.alive:
+            break
+    assert not runner.alive, "it rolled out over the Sea"
+
+    # ...and nothing rolls for ever.
+    forever = FlameBall(30 * ts, 24 * ts, 0.0, -1.0, 1.0)
+    for _ in range(int((BALL_LIFE + 1.0) / STEP)):
+        forever.update(STEP, tilemap)
+    assert not forever.alive
+
+
+def test_a_ball_costs_less_than_the_stripe() -> None:
+    """One is a wall he chose to stand in; the other is traffic.
+
+    Both are avoidable and only one of them is avoidable at leisure, so
+    the one that arrives while he is dealing with three others of its
+    kind is the cheaper mistake.
+    """
+    assert BALL_DAMAGE < SANITY_DAMAGE
+    dragon = RedDragonFlyby(_tilemap())
+    dragon.begin(24, 40)
+    while dragon.phase != "landed":
+        dragon.update(STEP)
+    # Both cleared: a ball leaves the mouth inside the stripe the
+    # dragon laid on its way in, and the stripe is the more expensive
+    # of the two, so a ball measured there measures the wrong thing.
+    dragon.balls.clear()
+    dragon.fires.clear()
+    dragon.spit((dragon.x - 100.0, dragon.track_y))
+    ball = dragon.balls[0]
+    assert dragon.damage_for(ball.hitbox) == BALL_DAMAGE
+    assert dragon.burns(ball.hitbox)
+    assert dragon.damage_for(pygame.Rect(0, 0, 2, 2)) == 0
+
+
+def test_the_encounter_gives_it_room_to_get_worse() -> None:
+    """The escalation only exists if the room lasts long enough for it.
+
+    Three landings is the minimum that reads as a curve rather than as a
+    repeat, and the last two exchanges were doubled precisely to buy
+    them. This is the test that fails if somebody shortens them again.
+    """
+    directory, game, world = _world()
+    try:
+        _play(game, world, 200.0)
+        dragon = world.red_dragon
+        assert dragon.landings >= 3, dragon.landings
+        assert dragon.passes >= 3, dragon.passes
+        # ...and it did all of it after the wizard found what he wanted.
+        assert world.trio.collided
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_the_last_two_exchanges_are_the_long_ones() -> None:
+    """The gaps are the dragon's act, and they are twice everyone else's."""
+    from src.systems.trio_encounter import BEATS, CHURN_FROM
+
+    talk = [delay for delay, _ in BEATS[:CHURN_FROM]]
+    fight = [delay for delay, _ in BEATS[CHURN_FROM:]]
+    # Either of the last two is longer than all four of the others, and
+    # between them they are more than half the encounter -- which is the
+    # claim, rather than any particular pair of numbers.
+    assert min(fight) > max(talk), (talk, fight)
+    assert min(fight) > sum(talk) / len(talk) * 2, (talk, fight)
+    assert sum(fight) > sum(talk), (talk, fight)
+
+
+def test_a_landed_dragon_sorts_with_the_room() -> None:
+    """Eight tiles of red on top of Chuck is the one thing this room
+    is not allowed to do.
+
+    In the air it draws over everything, because it is not standing on
+    the floor at all. Down, it goes in the y-sorted pass with everything
+    else that has feet -- so he passes in front of it and behind it and
+    is visible either way.
+    """
+    directory, game, world = _world()
+    try:
+        assert world.red_dragon not in world._sorted_drawables()
+        landed = False
+        for _ in range(int(200 / STEP)):
+            if isinstance(game.scenes.current, DialogueScene):
+                game.scenes.pop()
+                continue
+            if not isinstance(game.scenes.current, type(world)):
+                break
+            world.sanity.current = world.sanity.maximum
+            world.player.x, world.player.y = CLEAR_OF_IT
+            world.update(STEP)
+            dragon = world.red_dragon
+            if dragon.on_the_ground:
+                landed = True
+                assert dragon in world._sorted_drawables()
+                assert dragon.altitude == 0.0
+                assert dragon.sort_y > dragon.track_y
+            elif dragon.present:
+                assert dragon not in world._sorted_drawables()
+        assert landed, "it never came down"
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_the_rolling_fire_burns_orcs_too() -> None:
+    """It does not care whose side anybody is on, the same as the stripe.
+
+    In two halves, because the interesting one cannot be observed from
+    outside the frame it happens in. A ball kills whatever it reaches on
+    the very update it reaches it, so an orc is alive at the top of that
+    frame and gone from the list at the bottom -- sampling between
+    frames catches nothing and looks exactly like the fire not working.
+    That was true of the burning stripe as well and cost an afternoon.
+
+    So: the room is played, and the dragon's own kill path is counted at
+    the call; and then a ball is put on an orc directly and the claim
+    that rolling fire is what killed it is made where it can be seen.
+    """
+    directory, game, world = _world()
+    try:
+        # `cut_down_any` is the dragon's alone -- the fighter's sword
+        # goes through `cut_down`, one box at a time -- so counting here
+        # needs no guesswork about whose box was whose.
+        cut_down_any = world.horde.cut_down_any
+        burnt = []
+
+        def spy(boxes):
+            killed = cut_down_any(boxes)
+            burnt.append(killed)
+            return killed
+
+        world.horde.cut_down_any = spy
+        _play(game, world, 200.0, hold=(40 * config.TILE_SIZE,
+                                        IN_THE_STREAM * config.TILE_SIZE))
+        assert world.red_dragon.landings >= 2, world.red_dragon.landings
+        assert sum(burnt) > 0, "the dragon never burned anything of theirs"
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+    # ...and the rolling fire specifically, put on an orc by hand.
+    directory, game, world = _world()
+    try:
+        dragon = world.red_dragon
+        dragon.begin(24, 40)
+        while dragon.phase != "landed":
+            dragon.update(STEP)
+        orc = world.horde.orcs[0]
+        orc.x, orc.y = dragon.x - 60, dragon.track_y
+        dragon.balls.clear()
+        dragon.spit((orc.x, orc.y))
+        for _ in range(int(2.0 / STEP)):
+            for ball in dragon.balls:
+                ball.update(STEP, world.tilemap)
+            dragon.balls = [ball for ball in dragon.balls if ball.alive]
+            if world.horde.cut_down_any(dragon.ball_rects):
+                break
+        assert not orc.alive, "a ball rolled through an orc and left it"
+    finally:
+        game._shutdown()
+        directory.cleanup()
 
 
 def _run_all() -> None:

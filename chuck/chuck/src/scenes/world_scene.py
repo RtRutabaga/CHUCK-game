@@ -1048,14 +1048,22 @@ class WorldScene(Scene):
                     dt,
                     self._player_tile() if self._respawn_phase is None
                     else None,
+                    # ...and where he is to the pixel, for the volleys
+                    # it spits while it is down. A fan aimed at the
+                    # middle of his tile and a fan aimed at him are the
+                    # same fan at this range; a fan aimed at nothing is
+                    # the ranger's old problem again.
+                    self.player.hitbox.center
+                    if self._respawn_phase is None else None,
                 )
                 # It does not care whose side anybody is on. An orc
                 # standing in the fire burns the same as Chuck would,
                 # which is most of what sells the thing as weather
                 # rather than as an attack aimed at the player.
                 if self.horde is not None:
-                    for rect in self.red_dragon.lethal_rects:
-                        self.horde.cut_down(rect)
+                    self.horde.cut_down_any(
+                        self.red_dragon.lethal_rects
+                        + self.red_dragon.ball_rects)
             if self.trio.collided and self.churn is not None:
                 # The heroes are closing it. The desert is overwhelmed
                 # by fragments of everywhere, in large sections that
@@ -1442,8 +1450,12 @@ class WorldScene(Scene):
         # ...and the red one's trail, which is the same contract in
         # motion: nothing is consumed, nothing dies, and the cooldown is
         # what stops it emptying Sanity in one stride.
-        if self.red_dragon is not None and self.red_dragon.burns(player_box):
-            if self.sanity.damage(red_dragon.SANITY_DAMAGE):
+        if self.red_dragon is not None:
+            # The stripe costs more than a ball: one is a wall he chose
+            # to stand in, the other is one of four things that came at
+            # him while he was dealing with the other three.
+            burn = self.red_dragon.damage_for(player_box)
+            if burn and self.sanity.damage(burn):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
         for spine in self.spines:
@@ -1594,11 +1606,12 @@ class WorldScene(Scene):
             self.red_dragon.draw_ground(surface, offset)
         for drawable in self._sorted_drawables():
             drawable.draw(surface, offset)
-        if self.red_dragon is not None:
-            # ...and the animal goes over everything, because it is not
+        if self.red_dragon is not None and not self.red_dragon.on_the_ground:
+            # In the air it goes over everything, because it is not
             # standing on the floor at all. Sorting it by its feet the
             # way the rest of the room is sorted would put a flying
-            # dragon behind a waist-high rock.
+            # dragon behind a waist-high rock. On the ground it is in
+            # the sorted pass instead -- see `_sorted_drawables`.
             self.red_dragon.draw(surface, offset)
         if self.breach is not None:
             self.breach.draw(surface, offset)
@@ -1755,8 +1768,22 @@ class WorldScene(Scene):
                      *self.blue_dragons,
                      *self.orchid_seeds,
                      *self.battle_projectiles,
+                     *self.grounded_dragon,
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
+
+    @property
+    def grounded_dragon(self):
+        """The red dragon, but only while it is standing on the floor.
+
+        In the air it is drawn over the whole room. Down, it has to sort
+        with everything else that has feet, or eight tiles of red sit on
+        top of Chuck for seven seconds -- and the one rule this arena is
+        held to above every other is that he stays readable.
+        """
+        if self.red_dragon is None or not self.red_dragon.on_the_ground:
+            return []
+        return [self.red_dragon]
 
     @property
     def horde_orcs(self):
