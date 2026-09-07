@@ -51,6 +51,7 @@ from src.entities.raptor import Raptor
 from src.entities.redcap import Redcap
 from src.entities.reality_blocks import RealityBlockField
 from src.entities.aurora_light import AuroraLight, MAP_SPRITE_REGION
+from src.entities.street_light import StreetLightField
 from src.entities.blue_dragon import BlueDragon
 from src.entities import red_dragon
 from src.entities.red_dragon import RedDragonFlyby
@@ -225,6 +226,19 @@ class WorldScene(Scene):
         self.snow = SnowFall() if self.tilemap.has_terrain(
             SNOW_TERRAIN) else None
         # Once the table map has woken, the cabin lights go out and the
+        # ...and the night city's lamps, which are the same idea at the
+        # other end of the game: a fixed set of pools this map draws
+        # over itself. The day blocks carry the same posts on the same
+        # tiles and no field at all, which is the whole of what "the
+        # lights are off" means here.
+        self.street_lights = (
+            StreetLightField([
+                (col, row) for kind, col, row in self.tilemap.prop_tiles
+                if kind == "city_streetlight"
+            ])
+            if self.after_dark else None
+        )
+
         # room is lit by the aurora projector and the stove alone.
         self.aurora = (
             AuroraLight(self._prop_centre("cabin_woodstove"),
@@ -401,6 +415,12 @@ class WorldScene(Scene):
                     and self.game.progress.has(COUNTER_MAP_AWAKENED_FLAG)
                 ):
                     kind = "cabin_table_awakened"
+                elif kind == "city_streetlight" and self.after_dark:
+                    # The same lamp on the same tile in both cities; only
+                    # the glass differs. Swapping the sprite here rather
+                    # than authoring two characters keeps the night and
+                    # day maps directly comparable, tile for tile.
+                    kind = "city_streetlight_lit"
                 prop = Prop(kind, col, row, self.game.assets)
             self.props.append(prop)
         self.pickups: list[Cigarette] = []
@@ -854,6 +874,8 @@ class WorldScene(Scene):
             self.city_rain.update(dt)
         if self.aurora is not None:
             self.aurora.update(dt)
+        if self.street_lights is not None:
+            self.street_lights.update(dt)
         if self.reality_blocks is not None:
             self.reality_blocks.update(dt)
         if self._arrival_fade_t is not None:
@@ -1675,6 +1697,10 @@ class WorldScene(Scene):
         for cone in self.battle_cones:
             cone.draw(surface, offset)
         self.tilemap.draw_overhead(surface, offset, self._world_time)
+        if self.street_lights is not None:
+            # After the overhead pass and before the HUD: the lamps light
+            # the street, not the interface.
+            self.street_lights.draw(surface, offset)
         if self.aurora is not None:
             # After the overhead pass and before the HUD: the projector
             # lights the room, not the interface.
@@ -1858,6 +1884,18 @@ class WorldScene(Scene):
             if hit is not None:
                 self.horde.kill(hit)
                 shot.alive = False
+
+    @property
+    def after_dark(self) -> bool:
+        """Is this one of the city's night blocks?
+
+        Taken from which sheet the map draws with rather than from its
+        name. The night and day cities are the same streets at different
+        hours and their maps are near-identical; the tileset is the one
+        place the difference is already recorded, so it is the one place
+        worth asking.
+        """
+        return MAP_TILESET.get(self.map_name) == "city"
 
     @property
     def traffic_vehicles(self):

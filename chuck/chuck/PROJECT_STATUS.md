@@ -26,6 +26,50 @@ and updated every session.
 
 ## Latest implementation
 
+- Furnished the modern city. Every block was a road, a kerb, a pavement and a
+  wall of building, and between those four things nothing stood on the ground
+  at all -- which is why a street here read as a diagram of a street. It now
+  has lamp posts along the kerbs, three hydrants a map, and a stop sign where
+  a road actually ends: 134 lamps, 35 hydrants and 11 signs across the twelve
+  city maps.
+- The night city's lamps are lit and the day city's are not, which is the
+  whole of the ask and is two separate things. The sprite has a lit twin --
+  two files rather than a two-frame sheet, because this is a state and not an
+  animation -- swapped at spawn the same way the cabin's table picks its woken
+  one. And the *light* is a field of additive pools on the pavement that only
+  the night maps build.
+- Night is read off which tileset a map draws with rather than off its name.
+  The two cities are the same streets at different hours, and the sheet is the
+  one place that difference was already recorded.
+- The pools only ever add. There is no darkening pass, because the night city
+  already draws with its own night sheet -- multiplying that down to light it
+  back up is re-lighting a room that is already lit, and what came out of
+  trying it was a street darker everywhere except directly under the lamps,
+  which reads as fog rather than as night. Each pool carries its brightness in
+  its colour rather than its alpha, because an additive blit ignores alpha:
+  drawn the obvious way, white on low alpha, every lamp added 255 to
+  everything under it and the street came back as a row of white discs.
+- One placement rule makes all three safe by construction rather than by
+  inspection: nothing stands anywhere but the pavement tile against the kerb,
+  which is where real pavements are furnished and is what guarantees a lane
+  behind it. The pass then floods each map before and after and refuses to
+  return one whose reachable set differs by anything other than the tiles it
+  just filled.
+- Three failures worth keeping. The first version placed lamps before the
+  sparse things, so every tile a hydrant could have wanted was already a lamp
+  post: 180 lamps and not one hydrant or sign. The second spaced lamps by flat
+  distance, so a lamp on the north pavement suppressed the whole of the south
+  pavement nine rows below it and every street came back lit down one side --
+  spacing now runs along each kerb, and each side of a road is its own kerb.
+  The third wanted three tiles of pavement behind every post, which left City
+  Day 5 -- a canyon two tiles wide each side -- with no lamps at all.
+- Two Phase 11 tests pinned the exact prop inventory of their map, which was
+  true when a city block held nothing but its own scene and stopped being
+  true the moment the streets were furnished. They now assert the scene's
+  props at their counts, that there is some furniture, and that there is
+  nothing else -- so they still catch a stray prop without failing every time
+  a road moves a lamp.
+
 - Furnished the fountain plaza. It came out of its first pass correct and
   empty: two shops, a gate, a fountain and a stall, all of them pressed to an
   edge, and forty-two tiles by seven of unbroken paving between them. That is

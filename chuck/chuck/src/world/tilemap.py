@@ -462,6 +462,19 @@ TILE_DEFS: dict[str, TileDef] = {
     "⮟": TileDef(solid=False, color=(43, 47, 55)),
     "⮞": TileDef(solid=False, color=(43, 47, 55)),
     "⮜": TileDef(solid=False, color=(43, 47, 55)),
+    # Phase 11's streets, furnished. All three are solid: they are things
+    # standing on the pavement, and the placement pass that puts them
+    # there proves the walk stays open around every one of them.
+    #
+    # The lamp is the only one the time of day changes. Its sheet has an
+    # unlit head and a lit one, and the light it *casts* is a pool on the
+    # ground that only the night maps get -- see StreetLightField.
+    "Ⱡ": TileDef(solid=True, color=(74, 82, 92),
+                 prop="city_streetlight", under="."),
+    "Ⱨ": TileDef(solid=True, color=(168, 44, 40),
+                 prop="city_fire_hydrant", under="."),
+    "ⱦ": TileDef(solid=True, color=(172, 38, 40),
+                 prop="city_stop_sign", under="."),
     "Ƀ": TileDef(solid=False, color=(43, 47, 55),
                  prop="city_bottles", under="."),
     # An open manhole in the sidewalk, its cover levered off beside it.

@@ -16,6 +16,9 @@ before and after, tile for tile, so every route, reachability check and
 office-mass test on top of these blocks still measures the same thing.
 """
 
+import sys
+from pathlib import Path
+
 # How many rows of wall each building shows below its roofline. Kept
 # shallow on purpose: a front deep enough to fill the screen stops
 # reading as a building seen from above and starts reading as a
@@ -286,3 +289,251 @@ def mark_roads(grid: list[list[str]], *, road: str = "=") -> None:
 
     for col, row, char in marks:
         grid[row][col] = char
+
+
+# --------------------------------------------------------------------------
+# Street furniture
+# --------------------------------------------------------------------------
+# The blocks were built and then never furnished. Every city map is a road, a
+# kerb, a pavement and a wall of building, and between those four things there
+# was nothing standing on the ground at all -- which is why a street here read
+# as a diagram of a street rather than as one.
+#
+# What goes down is the boring stuff: a lamp post every so many paces along
+# the kerb, a hydrant on a corner, a stop sign where a road ends. All three
+# are solid, so all three are placed under one rule that makes them safe by
+# construction rather than by inspection.
+#
+# The rule: nothing stands anywhere the pavement is less than three tiles
+# deep, and it always stands on the tile against the kerb. Real pavements are
+# furnished at their outer edge for exactly this reason -- whatever is behind
+# the lamp post is the bit you walk down. `dress_street` then floods the map
+# before and after and refuses to return one where the two differ by anything
+# other than the tiles it just filled, so a placement can never quietly close
+# a route.
+
+STREETLIGHT = "Ⱡ"
+FIRE_HYDRANT = "Ⱨ"
+STOP_SIGN = "ⱦ"
+
+PAVEMENT = "."
+KERB = ","
+
+# How far apart the lamps stand. Nine tiles is a hundred and forty-four
+# pixels, which is most of a screen width: close enough that a night street
+# always has one in view and far enough that a row of them never reads as
+# fencing.
+LIGHT_SPACING = 16
+# ...and how much else there is. "A small amount", per the ask: these are
+# punctuation, and a hydrant every corner is a hydrant nobody looks at.
+HYDRANTS_PER_MAP = 3
+SIGNS_PER_MAP = 2
+# How much clear pavement a solid thing must leave behind it. One tile,
+# because that is what the narrow blocks have: City Day 5 is a canyon
+# with two tiles of pavement each side, and a rule that wanted three
+# left it with no lamps at all. One tile is a lane -- the flood at the
+# end of this pass is what proves it, rather than the number.
+LANE_DEPTH = 1
+
+
+def _open_chars(grid: list[list[str]]) -> set[str]:
+    """Every char in this grid that Chuck could stand on.
+
+    Derived from the runtime's own tile table rather than listed here, so
+    a new marker or a new road surface cannot quietly become a wall to
+    this pass while staying walkable to the game.
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from src.world.tilemap import MARKER_DEFS, TILE_DEFS
+
+    chars = {char for row in grid for char in row}
+    open_set = set()
+    for char in chars:
+        marker = MARKER_DEFS.get(char)
+        if marker is not None:
+            if not TILE_DEFS[marker.under].solid:
+                open_set.add(char)
+            continue
+        tile = TILE_DEFS.get(char)
+        if tile is not None and not tile.solid:
+            open_set.add(char)
+    return open_set
+
+
+def _reachable(grid, open_set: set[str]) -> set[tuple[int, int]]:
+    height, width = len(grid), len(grid[0])
+    start = next(
+        ((col, row) for row in range(height) for col in range(width)
+         if grid[row][col] in open_set), None
+    )
+    if start is None:
+        return set()
+    seen = {start}
+    frontier = [start]
+    while frontier:
+        col, row = frontier.pop()
+        for dcol, drow in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            cell = (col + dcol, row + drow)
+            if cell in seen:
+                continue
+            if not (0 <= cell[0] < width and 0 <= cell[1] < height):
+                continue
+            if grid[cell[1]][cell[0]] not in open_set:
+                continue
+            seen.add(cell)
+            frontier.append(cell)
+    return seen
+
+
+def _kerbside(grid) -> list[tuple[int, int, int, int]]:
+    """Pavement tiles against a kerb, with the direction away from it.
+
+    Returns (col, row, inward_dcol, inward_drow) for every tile that has
+    a kerb on one side and at least `LANE_DEPTH` tiles of plain pavement
+    behind it -- which is the whole of the safety argument, since the
+    lane behind is what stays walkable once the thing is standing there.
+    """
+    height, width = len(grid), len(grid[0])
+    found = []
+    for row in range(height):
+        for col in range(width):
+            if grid[row][col] != PAVEMENT:
+                continue
+            for dcol, drow in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                near = (col - dcol, row - drow)
+                if not (0 <= near[0] < width and 0 <= near[1] < height):
+                    continue
+                if grid[near[1]][near[0]] != KERB:
+                    continue
+                lane = True
+                for step in range(1, LANE_DEPTH + 1):
+                    cell = (col + dcol * step, row + drow * step)
+                    if not (0 <= cell[0] < width and 0 <= cell[1] < height):
+                        lane = False
+                        break
+                    if grid[cell[1]][cell[0]] != PAVEMENT:
+                        lane = False
+                        break
+                if lane:
+                    found.append((col, row, dcol, drow))
+                break
+    return found
+
+
+def _clear_of_everything(grid, col: int, row: int) -> bool:
+    """Is this tile and its ring plain pavement?
+
+    Authored things -- a crossing, an arrival, a person, a bottle -- get
+    a tile of air around them. A lamp post growing out of a zebra
+    crossing is not wrong so much as obviously unconsidered.
+    """
+    height, width = len(grid), len(grid[0])
+    for drow in (-1, 0, 1):
+        for dcol in (-1, 0, 1):
+            cell = (col + dcol, row + drow)
+            if not (0 <= cell[0] < width and 0 <= cell[1] < height):
+                return False
+            if grid[cell[1]][cell[0]] not in (PAVEMENT, KERB):
+                return False
+    return True
+
+
+def _is_corner(grid, col: int, row: int) -> bool:
+    """Does the kerb turn within a few tiles of here?
+
+    Stop signs go where a road ends, and the only thing in these grids
+    that says "junction" is the kerb changing direction. Measured rather
+    than authored per map, because the roads themselves are.
+    """
+    height, width = len(grid), len(grid[0])
+    horizontal = vertical = False
+    # Five tiles rather than three. A junction's own corner is usually
+    # busy -- a crossing, an arrival, somebody standing on it -- so the
+    # tile a sign can actually take is a few paces back from the turn,
+    # and at three the test could not see the turn from there.
+    for step in range(-5, 6):
+        near = (col + step, row)
+        if 0 <= near[0] < width and grid[row][near[0]] == KERB:
+            horizontal = True
+        below = (col, row + step)
+        if 0 <= below[1] < height and grid[below[1]][col] == KERB:
+            vertical = True
+    return horizontal and vertical
+
+
+def dress_street(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
+    """Stand lamps, hydrants and signs along this map's kerbs.
+
+    Deterministic: the same grid dresses the same way every time, which
+    is the rule every scattered thing in this project follows. A street
+    that furnishes itself differently per run is a street nobody can
+    tell is working.
+
+    Returns the count of each, and raises rather than returning a map
+    whose routes it has changed.
+    """
+    open_set = _open_chars(grid)
+    before = _reachable(grid, open_set)
+
+    candidates = [
+        spot for spot in _kerbside(grid)
+        if _clear_of_everything(grid, spot[0], spot[1])
+    ]
+    candidates.sort(key=lambda spot: (spot[1], spot[0]))
+
+    placed: dict[str, list[tuple[int, int]]] = {
+        STREETLIGHT: [], FIRE_HYDRANT: [], STOP_SIGN: [],
+    }
+
+    def far_enough(col: int, row: int, others, reach: int) -> bool:
+        return all(max(abs(col - c), abs(row - r)) >= reach
+                   for c, r in others)
+
+    def taken() -> list[tuple[int, int]]:
+        return [cell for group in placed.values() for cell in group]
+
+    # The sparse things choose first. There are two signs and three
+    # hydrants on a map and a dozen lamps, so letting the lamps run
+    # first meant every tile a hydrant could have wanted was already
+    # a lamp post -- which is how the first version of this pass came
+    # back with a hundred and eighty lamps and nothing else at all.
+    plain = [(col, row) for col, row, _dc, _dr in candidates]
+    corners = [spot for spot in plain if _is_corner(grid, *spot)]
+    for source, char, wanted, apart in (
+        (corners, STOP_SIGN, SIGNS_PER_MAP, 14),
+        (plain, FIRE_HYDRANT, HYDRANTS_PER_MAP, 14),
+    ):
+        for col, row in sorted(
+            source, key=lambda spot: (spot[0] * 7 + spot[1] * 13 + seed) % 101
+        ):
+            if len(placed[char]) >= wanted:
+                break
+            if far_enough(col, row, taken(), apart):
+                placed[char].append((col, row))
+
+    # Lamps space out along each kerb, and each side of a road is its
+    # own kerb. Measured as a flat distance instead, a lamp on the north
+    # pavement suppressed everything within sixteen tiles -- including
+    # the whole of the south pavement nine rows below it -- and every
+    # street came back lit down one side only.
+    runs: dict[tuple[int, int], list[tuple[int, int]]] = {}
+    for col, row, dcol, drow in candidates:
+        runs.setdefault((dcol, drow), []).append((col, row))
+    for side in sorted(runs):
+        for col, row in runs[side]:
+            if not far_enough(col, row, runs.get(("placed", *side), []),
+                              LIGHT_SPACING):
+                continue
+            if not far_enough(col, row, taken(), 3):
+                continue
+            runs.setdefault(("placed", *side), []).append((col, row))
+            placed[STREETLIGHT].append((col, row))
+
+    for char, cells in placed.items():
+        for col, row in cells:
+            grid[row][col] = char
+
+    after = _reachable(grid, open_set)
+    filled = {cell for group in placed.values() for cell in group}
+    assert after == before - filled, sorted(before - filled - after)[:8]
+    return {char: len(cells) for char, cells in placed.items()}

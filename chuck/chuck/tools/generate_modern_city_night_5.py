@@ -2,10 +2,11 @@
 
 from pathlib import Path
 
-from generate_city_map_common import mark_roads, paint_office
+from generate_city_map_common import dress_street, mark_roads, paint_office
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SEED = 87
 WIDTH = 112
 HEIGHT = 48
 
@@ -77,6 +78,9 @@ def build_map() -> list[str]:
     grid[21][12] = "ሗ"
     for col, row in ((99, 27), (82, 20), (56, 20), (29, 27), (8, 24)):
         grid[row][col] = "ል"
+    # Street furniture last, so it can see the finished pavement
+    # and refuse to stand anywhere that would close a route.
+    dress_street(grid, seed=SEED)
     mark_roads(grid)
     # The highway does not continue north into another authored map. Sever
     # the whole apparent street opening only after measuring its centre lines;

@@ -99,9 +99,17 @@ def test_city_night_6_is_a_full_scale_final_night_block() -> None:
     assert kinds["cigarette"] == 4
     assert kinds["traffic_lane:down:0"] == 1
     assert kinds["traffic_lane:up:1"] == 1
-    assert Counter(kind for kind, _col, _row in tilemap.prop_tiles) == {
-        "city_sewer_entrance": 1
-    }
+    props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
+    assert props["city_sewer_entrance"] == 1
+    # ...and the street furniture every city map carries now. Asserted as
+    # "there is some, and nothing unexpected" rather than as an exact
+    # inventory: the placement is derived from this map's own kerbs, so
+    # moving a road is allowed to move a lamp, and a pinned count would
+    # fail for that rather than for anything worth knowing about.
+    assert props["city_streetlight"] > 0
+    assert set(props) <= {
+        "city_sewer_entrance", "city_streetlight", "city_fire_hydrant", "city_stop_sign",
+    }, sorted(props)
 
     components = _office_components(tilemap)
     assert len(components) == 4

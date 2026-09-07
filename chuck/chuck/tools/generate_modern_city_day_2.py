@@ -17,9 +17,10 @@ import sys
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_city_map_common import mark_roads, terrace_mass
+from generate_city_map_common import dress_street, mark_roads, terrace_mass
 
 ROOT = Path(__file__).resolve().parents[1]
+SEED = 58
 WIDTH = 76
 HEIGHT = 58
 
@@ -136,6 +137,9 @@ def build_map() -> list[str]:
     # Dress the whole map: undifferentiated mass becomes buildings, and
     # every carriageway gets its centre line.
     terrace_mass(grid)
+    # Street furniture last, so it can see the finished pavement
+    # and refuse to stand anywhere that would close a route.
+    dress_street(grid, seed=SEED)
     mark_roads(grid)
     return ["".join(row) for row in grid]
 

@@ -198,6 +198,13 @@ _SPRITES = {
         "objects/city_bottles_2.png",
     ),
     "city_sewer_entrance": "objects/city_sewer_entrance.png",
+    "city_fire_hydrant": "objects/city_fire_hydrant.png",
+    "city_stop_sign": "objects/city_stop_sign.png",
+    # One lamp, two states. A street light is off all day and on all
+    # night; the world picks between these at spawn the same way the
+    # cabin's table picks its woken sprite.
+    "city_streetlight": "objects/city_streetlight.png",
+    "city_streetlight_lit": "objects/city_streetlight_lit.png",
     "city_bus_stop": "objects/city_bus_stop.png",
     "city_planar_portal": "objects/city_planar_portal_1.png",
     "tahuya_fir": (
