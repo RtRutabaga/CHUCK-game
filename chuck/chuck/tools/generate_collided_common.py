@@ -130,6 +130,7 @@ FRAGMENT_DRESSING: dict[str, tuple[tuple[str, ...], bool, float, int]] = {
     "ᛇ": (("⍰",), True, 0.35, 2),      # the Feywild's dense growth: trees
     "ᛟ": (("⍱", "⍲"), False, 0.0, 3),  # ...shrubs and mushrooms on its floor
     "·": (("þ",), False, 0.1, 3),      # Phlegethos's own basalt rubble
+    "⌼": (("⍶", "⍷"), False, 0.0, 4),  # the ship's barrels and crates
 }
 
 
@@ -255,6 +256,14 @@ def dress_fragments(
             if any(abs(px - x) + abs(py - y) < max(apart, gap)
                    for px, py, gap in placed):
                 continue
-            grid[y][x] = props[(x * 7 + y * 13) % len(props)]
+            # Which of the world's props, hashed rather than taken
+            # from a linear form: any of those, taken modulo two,
+            # is the parity of x + y -- so a ground with two props
+            # on it lays them out as a checkerboard, and a spacing
+            # rule on top of that picks all of one and none of the
+            # other.
+            pick = int(abs(math.sin(x * 12.9898 + y * 78.233))
+                       * 43758.5) % len(props)
+            grid[y][x] = props[pick]
             placed.append((x, y, apart))
     return len(placed)

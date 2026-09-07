@@ -194,7 +194,10 @@ def build():
     mid_y = HEIGHT // 2
     half = GAP // 2
     _rect(grid, 0, mid_y - half, RIM - 1, mid_y + half, "⮜")
-    _rect(grid, WIDTH - RIM, mid_y - half, WIDTH - 1, mid_y + half, ".")
+    # East, onward. The gap was cut as open sand while there was
+    # nothing behind it; it is a door now, and cutting it early is
+    # what stops the map changing shape when its neighbour arrives.
+    _rect(grid, WIDTH - RIM, mid_y - half, WIDTH - 1, mid_y + half, "⮞")
     for y in range(mid_y - half, mid_y + half + 1):
         for x in range(RIM, RIM + APPROACH):
             if grid[y][x] not in (",", "⟁"):
@@ -226,6 +229,7 @@ def build():
     # because they had not landed yet either.
     dress_fragments(grid, seed=7.0)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⍀"
+    grid[mid_y][WIDTH - RIM - 2] = "⍵"
     grid[ANCHOR[1]][ANCHOR[0]] = "⍄"
     return grid
 
@@ -238,6 +242,7 @@ HEADER = (
     "; west along the pool. It cannot be hurt and does not chase: the\n"
     "; map asks for timing, and the long way round the south asks for\n"
     "; nothing.\n"
+    "; East leads on to the seventh map, where nine worlds meet.\n"
     "; 'þ' basalt rubble and '⍯' jungle bush on the scraps.\n"
     "; The ruins carry the hub's own fallen pieces: '⍏'/'⍐'\n"
     "; columns, '⍖'/'⍗' fallen ones, '⍓'/'⍔' blocks.\n"

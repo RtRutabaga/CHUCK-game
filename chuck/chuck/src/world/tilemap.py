@@ -422,6 +422,14 @@ TILE_DEFS: dict[str, TileDef] = {
                  under="ᛟ"),
     "⍲": TileDef(solid=True, color=(46, 74, 60), prop="feywild_mushroom",
                  under="ᛟ"),
+    # ...and the ship's stores, on the ship's own deck. The deck is the
+    # one fragment that is furniture rather than landscape: bare, a
+    # length of planking is a floor with nothing to say it was ever at
+    # sea, and it is the largest single cell on the seventh map.
+    "⍶": TileDef(solid=True, color=(96, 72, 46), prop="barrel",
+                 under="⌼"),
+    "⍷": TileDef(solid=True, color=(96, 72, 46), prop="crate",
+                 under="⌼"),
     # Modern-city office masses. These are all solid building footprint,
     # separated into roof/cornice/facade materials only for three-quarter-view
     # rendering; none are short freestanding walls or playable platforms.
@@ -853,6 +861,12 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "⍂": MarkerDef(kind="knight", under="⌽"),
     "⍃": MarkerDef(kind="arrival:from_east_6", under="."),
     "⍄": MarkerDef(kind="anchor:desert_east_6_anchor", under="."),
+    # The seventh map east, and the way back out of it. Nine worlds on
+    # one map: its arrival and its Ashtray both stand on the sliver of
+    # desert by the west gap, which is the last ordinary ground on it.
+    "⍳": MarkerDef(kind="arrival:from_east_6", under="."),
+    "⍴": MarkerDef(kind="anchor:desert_east_7_anchor", under="."),
+    "⍵": MarkerDef(kind="arrival:from_east_7", under="."),
     # The blue dragon, facing the way its breath goes. It cannot be
     # fought, so it has no facing variants for pursuit -- only the two
     # a lane of lightning can point along.

@@ -5,9 +5,10 @@ Desert's five-map opening region is complete and has had a second art pass --
 hub, orc camp, oasis and undead ruins, now with fissured cliffs, fallen
 columns, palm trees and axe-carrying orcs -- and the eastward traversal runs
 six maps deep, through the modern city, Chult, the Feywild, the Nine Hells, a
-ship's deck, a castle and a frozen world with a blue dragon in it. Everything
-past that is not built. This file is required by the project rules and updated
-every session.
+ship's deck, a castle and a frozen world with a blue dragon in it -- and then
+a seventh map where nine worlds meet and none of them owns the ground.
+Everything past that is not built. This file is required by the project rules
+and updated every session.
 
 ## Latest implementation
 
@@ -792,12 +793,57 @@ every session.
   was nowhere on it to put anything down, and the rubble that came through
   with it had nowhere to lie.
 
+- Added `desert_east_7`, where the collision stops being tidy. Every map
+  before it is the desert with something in it; this one has nine pieces of
+  world on it and no majority -- the largest cell is under a third of the map
+  and the smallest is still worth walking into. The phase document asks for
+  the later maps to be heavily fragmented and geographically impossible, and
+  both of those turn out to be measurable: fragmented as the absence of a
+  majority, impossible as *adjacency*.
+- The cells come from scattered points rather than authored rectangles, so
+  their borders fall out of the arithmetic. Rectangles would have given
+  straight seams, and a straight seam between two worlds reads as a wall
+  somebody built. The distance is measured with a wobble on it so the borders
+  bulge and bite instead of being the exact bisectors.
+- Two of the nine are Chult and they are in opposite corners; two are desert
+  and they never touch. That is the impossible part stated plainly, and it is
+  what the test measures rather than "the worlds are present": snow against a
+  ship's deck, a courtyard against Hell, and the same world twice in places
+  that are nowhere near each other.
+- There is no sand here to fray against, so the Astral Sea frays between the
+  worlds themselves -- which means most of the map's structure is holes. The
+  route is therefore guaranteed by construction rather than found: a corridor
+  is walked from the west gap to the east before anything is torn, and every
+  tile of it is protected from tearing afterwards. It is invisible, because
+  it is made of whatever world it happens to be crossing; all that marks it
+  is that the ground there was not taken away.
+- Six kinds of enemy on one map, each standing in the world it belongs to:
+  snakes in the jungle, redcaps in the Feywild, spined devils on the basalt,
+  knights on the courtyard, skeletons in the ruins and orcs on the sand. None
+  of them is new, which is the document's "final mechanical remix" -- all of
+  them being here at once is the only thing this map does that no earlier one
+  does. They stand four tiles clear of the corridor: an enemy in the only way
+  through is a toll rather than an encounter.
+- The ship's deck got barrels and crates, its own from the ship. It is the
+  largest single cell on the map and bare planking is a floor with nothing to
+  say it was ever at sea.
+- One more instance of the modular trap, in the shared dressing helper: the
+  prop variant was picked with `(x * 7 + y * 13) % len(props)`, and any linear
+  form taken modulo two is the parity of x + y -- so a ground with two props
+  laid them out as a checkerboard, and the spacing rule on top of that picked
+  all of one and none of the other. Hashed now.
+- The sixth map's east gap is a door rather than open sand, and the seventh's
+  east edge is still rim. Same rule as the hub's four gaps: the neighbour
+  arrives as a marker, not as a reshaping.
+
 ## Next logical task
 
-- East 7 onward, toward the trio. The document wants the later maps heavily
-  fragmented and geographically impossible -- several worlds per map rather
-  than one big one -- and then the final encounter itself, which is the
-  largest remaining piece by a distance.
+- East 8 onward, and then the trio. The seventh map establishes what a
+  heavily fragmented map is and gives the region a shape to escalate from;
+  what is left is however many more of those the traversal wants, and then
+  the final encounter itself, which is the largest remaining piece by a
+  distance -- the trio's scripted dialogue, the world-separation sequence,
+  and the return-to-Waterdeep cutscene.
 
 ## Superseded Phase 12 task
 
