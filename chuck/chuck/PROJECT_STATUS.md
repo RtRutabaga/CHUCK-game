@@ -1056,6 +1056,70 @@ and updated every session.
   still checks `desert_arrival.wav` itself, now against the length of the
   sequence that owns it.
 
+- The final encounter has a horde in it. The complaint was theatrical and
+  exact: the ranger was spinning on the spot throwing arrows in every
+  direction at nothing at all. It was a fair hazard and an absurd tableau,
+  and the phase document's own line about this encounter -- that the three of
+  them "may also be fighting enemies or another threat" -- had never been
+  taken up. Now orcs come at them in a continuous stream, out of the camp
+  Chuck passed on his way into the region.
+- The horde has not noticed Chuck and never does. Each orc charges the
+  fighter or the ranger, chosen once at spawn as whichever it came in
+  nearest, and nobody charges the wizard -- he is working, and a room where
+  he had to defend himself is a room where the thing he is doing stops. What
+  it costs Chuck is being in the way of it: they are bodies in the same
+  floor, and running into one costs what running into any orc in this region
+  costs. The room became a weave rather than a chase.
+- The heroes kill in one. Her arrow drops an orc that takes eleven of
+  Chuck's scratches, and the fighter's sword takes anything that gets past
+  her -- because these are the people who do this for a living and the room
+  has to look like it. His swing is reactive now rather than on a clock, and
+  his arc goes all the way round him instead of only west, because this horde
+  converges from three sides.
+- Far fewer arrows, and the room is more dangerous for it. One aimed shot
+  every three quarters of a second where the whirl threw three every fifth of
+  one -- most of an order of magnitude fewer. A whirl is a pattern to stand
+  outside of; a line drawn between a woman and whatever is nearest to her
+  moves every time something dies, and it can be drawn straight through
+  wherever Chuck is standing. The hazard stopped being weather and became
+  traffic.
+- Two failures worth keeping, because neither is visible in the source and
+  both look like a worse fight rather than a bug. Half the first spawn ring
+  put orcs beside a lava vein, and a greedy pursuer walks into one and stays
+  there forever -- a dozen orcs standing in a field forty tiles from anybody,
+  with the ranger dutifully shooting the nearest of them. That is the
+  "attacking nothing" problem again in a new costume, and it is why every
+  approach is now simulated to the line before it is written down.
+- The second was worse and needed the arena changed. The rift takes a column
+  of ground on every beat and the Astral cracks grow with it, so by the
+  fourth exchange each hero was standing on a single tile at the end of a
+  spur one tile wide -- and nothing with a body can walk down a corridor one
+  tile wide. The fighter's sword quietly stopped being able to hit anything
+  about a minute in. The rift now spares each hero's whole 3x3, which the
+  generator already clears to plain desert, so the three of them end up on a
+  shelf jutting into the tear instead of on islands. That is a better picture
+  anyway: they are *holding* this, and holding it needs somewhere to stand.
+- The orcs go round what they cannot go through. Every other pursuer in the
+  game walks straight at what it wants, which is fine in an open room; this
+  one is neither open nor stationary. So they try the direct line every
+  frame, and follow the obstacle when it is blocked, sticking to the same way
+  round for a moment rather than reconsidering every frame -- which is how a
+  thing ends up vibrating in a corner. The subtlety that made the first
+  attempt fail: `move_and_collide` resolves the axes separately, so a
+  diagonal charge into a wall still slides a fraction of a pixel and still
+  returns a new position. "Did it move?" is always yes. The question that
+  separates walking from grinding is "did it get closer?".
+- The approaches come from the west and the south, and none from the north
+  rim, which was measured rather than chosen. The crack running from (48, 14)
+  welds onto the rift and leaves a funnel that narrows to one tile and stops,
+  so anything walking south down the map's east side ends up in a cul-de-sac
+  four tiles from the fighter with no way to know it should have gone round.
+- What the room plays like now: two converging currents with a seam between
+  them, arrows crossing that seam whenever the ranger's nearest target is on
+  the far side, and the fighter's arc at the end of it. Standing on a
+  converging lane is punished hard; the middle is a road, and it leads to the
+  one lane in the room that has always been lethal.
+
 ## Next logical task
 
 - Phase 14: the finale at Waterdeep. The document describes it as the same

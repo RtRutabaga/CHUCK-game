@@ -208,7 +208,12 @@ def test_everything_the_wizard_throws_goes_where_chuck_cannot_be() -> None:
         tick = battle.update(1 / 60)
         for shot in tick.projectiles:
             (bolts if shot.kind == "bolt" else arrows).append(shot)
-    assert bolts and arrows, (len(bolts), len(arrows))
+    assert bolts, len(bolts)
+    # ...and with nothing in the room to shoot at, the ranger does not
+    # shoot. The first version of this encounter had her whirling on the
+    # spot loosing arrows in every direction whether or not there was
+    # anybody there, which was a fair hazard and an absurd tableau.
+    assert not arrows, len(arrows)
 
     # Every bolt goes east and nowhere else. Read off the velocity,
     # which is what the projectile keeps: the direction it was given is
@@ -226,18 +231,20 @@ def test_everything_the_wizard_throws_goes_where_chuck_cannot_be() -> None:
     ]
     assert not beyond, beyond[:8]
 
-    # The arrows are the opposite: they go everywhere, and that is the
-    # hazard the room is actually made of.
-    assert min(shot.vx for shot in arrows) < 0.0
-    assert max(shot.vx for shot in arrows) > 0.0
-    assert min(shot.vy for shot in arrows) < 0.0
-    assert max(shot.vy for shot in arrows) > 0.0
-
-    # Faster than the sanctum's, because this is the worst version of a
-    # room he has survived twice. Compared, not asserted as a number.
+    # The arrows are the opposite, and the opposite of what they used to
+    # be as well: fewer than the sanctum looses, one at a time, and each
+    # one aimed. Compared rather than asserted as numbers, because what
+    # matters is the relationship -- a room where the ranger throws more
+    # lead than the sanctum's whirl is a room where she is decorating
+    # again.
     assert (CollisionBattleChoreographer.ARROW_INTERVAL
-            < config.BATTLE_ARROW_INTERVAL)
-    assert CollisionBattleChoreographer.ARROW_FAN > config.BATTLE_ARROW_FAN
+            > config.BATTLE_ARROW_INTERVAL)
+    assert CollisionBattleChoreographer.ARROW_FAN < config.BATTLE_ARROW_FAN
+    # ...and she is standing still while she does it. The whirl was the
+    # sprite spinning about its own centre; aiming and spinning at once
+    # is a body facing the wrong way.
+    ranger = next(actor for actor in actors if actor.kind == "ranger")
+    assert ranger.spin == 0.0
 
 
 def test_the_opening_lines_are_the_documents_and_play_on_arrival() -> None:
@@ -397,7 +404,13 @@ def test_the_room_renders_with_all_three_in_the_shot() -> None:
     try:
         world._pending_entrance_dialogue = None
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
-        for _ in range(40):
+        # Long enough for the wizard's first bolt. The ranger's arrows
+        # are up sooner and gone sooner -- they are aimed now, and an
+        # aimed arrow at something four tiles away is in the air for a
+        # fifth of a second -- so waiting on the slower of the two is
+        # what makes this a statement about the room rather than about
+        # the frame it happened to sample.
+        for _ in range(90):
             world.update(1 / 60)
         cx, cy = world._battle_establishing_focus()
         world.camera.focus_on(cx, cy)
@@ -406,9 +419,12 @@ def test_the_room_renders_with_all_three_in_the_shot() -> None:
             assert world.camera.y <= actor.y, actor.kind
             assert (actor.y + actor.height
                     <= world.camera.y + config.NATIVE_HEIGHT), actor.kind
-        # ...and the room is live: the ranger has been throwing arrows
-        # the whole time the camera was on them.
+        # ...and the room is live in both senses: something is in the
+        # air, and the two of them who are fighting have already killed
+        # something. A tableau where nothing dies is the tableau this
+        # encounter had before the horde existed.
         assert world.battle_projectiles, "nothing is in the air"
+        assert world.horde is not None and world.horde.killed > 0
     finally:
         game._shutdown()
         directory.cleanup()

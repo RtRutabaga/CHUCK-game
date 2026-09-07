@@ -380,51 +380,80 @@ class CollisionBattleChoreographer:
     brightest thing in the room is by construction the one thing that
     cannot hurt him, which is how a fight this crowded stays fair.
 
-    What can hurt him is the same two things as always: the ranger's
-    whirl, which throws arrows in every direction and does not care
-    where he is, and the fighter's sword where the pressing enemies
-    have got close. Both are faster than the sanctum's, because this
-    is meant to be the worst version of a room he has survived twice.
+    The other two are holding the line while he does it, and that is
+    what they are aimed at. This started out as the sanctum's whirl run
+    faster -- the ranger spinning on the spot, throwing arrows in every
+    direction -- and the trouble with it was not that it was unfair, it
+    was that she was shooting at nothing. Now she picks the nearest orc
+    and looses one arrow at it, and the fighter swings when something
+    has actually reached him rather than on a clock.
+
+    Which means far fewer arrows in the air than the whirl produced,
+    and they are not less dangerous for it. A whirl is a pattern to
+    stand outside of; a line drawn between a woman and whatever is
+    closest to her moves every time something dies, and it can be drawn
+    straight through wherever Chuck happens to be standing. The hazard
+    stopped being weather and became traffic.
     """
 
-    # Faster and wider than the sanctum's cadences. Written here rather
-    # than in config: these are this encounter's numbers, and putting
-    # them beside the originals would invite one being tuned for the
-    # other.
-    ARROW_INTERVAL = 0.22
-    ARROW_FAN = 3
-    ARROW_SPREAD = 0.5
-    SPIN_STEP = 1.1
+    # Written here rather than in config: these are this encounter's
+    # numbers, and putting them beside the sanctum's would invite one
+    # being tuned for the other.
+    #
+    # One arrow a beat, aimed, where the sanctum looses a fan of two on
+    # a shorter beat and this room used to loose three. The count is
+    # down by most of an order of magnitude and the room is more
+    # dangerous, because every one of them is going somewhere.
+    ARROW_INTERVAL = 0.75
+    ARROW_FAN = 1
     BOLT_INTERVAL = 0.5
     BOLT_FAN = 5
     BOLT_SPREAD = 0.16
-    SLASH_INTERVAL = 1.1
+    # The fighter's arc: how close something has to get, and how long
+    # before he can swing again. Reactive rather than timed, so the
+    # sword is a consequence of the horde rather than a metronome.
+    SLASH_REACH = 22.0
+    SLASH_RECOVERY = 0.34
+    SLASH_HALF_W = 15
+    SLASH_HALF_H = 12
 
-    def __init__(self, actors: list[BattleActor]) -> None:
+    def __init__(self, actors: list[BattleActor], horde=None) -> None:
         by_kind = {actor.kind: actor for actor in actors}
         self._fighter = by_kind["fighter"]
         self._wizard = by_kind["wizard"]
         self._ranger = by_kind["ranger"]
+        # What the two of them are fighting. Without it they do not
+        # fire at all, which is the point of the change: the previous
+        # version of this room went off whether or not there was
+        # anything in it.
+        self._horde = horde
         # Staggered, so the room never fires everything on one frame.
         self._arrow_timer = 0.3
         self._bolt_timer = 0.9
-        self._slash_timer = 0.6
+        self._slash_timer = 0.0
         self._slash_active = 0.0
-        self._spray_angle = 0.0
+        # She is aiming now. The whirl was the old version of this and
+        # the sprite must not keep spinning through the new one.
+        self._ranger.spin = 0.0
 
     def update(self, dt: float) -> BattleTick:
         tick = BattleTick()
 
-        self._ranger.spin = (self._ranger.spin
-                             + config.BATTLE_RANGER_SPIN_SPEED * dt) % math.tau
-
+        # One arrow at the nearest thing still coming. No target, no
+        # shot -- she does not fire into an empty arena.
         self._arrow_timer -= dt
         while self._arrow_timer <= 0.0:
             self._arrow_timer += self.ARROW_INTERVAL
-            self._spray_angle += self.SPIN_STEP
+            quarry = (self._horde.nearest_to(self._ranger.center_x,
+                                             self._ranger.center_y)
+                      if self._horde is not None else None)
+            if quarry is None:
+                continue
+            dx = quarry.center_x - self._ranger.center_x
+            dy = quarry.center_y - self._ranger.center_y
             for index in range(self.ARROW_FAN):
                 offset = index - (self.ARROW_FAN - 1) / 2.0
-                angle = self._spray_angle + offset * self.ARROW_SPREAD
+                angle = math.atan2(dy, dx) + offset * 0.12
                 tick.projectiles.append(BattleProjectile(
                     self._ranger.center_x, self._ranger.center_y,
                     math.cos(angle), math.sin(angle), "arrow"))
@@ -445,24 +474,52 @@ class CollisionBattleChoreographer:
                     math.cos(angle), math.sin(angle), "bolt"))
             self._wizard.attack_flash = config.BATTLE_ATTACK_FLASH
 
-        self._slash_timer -= dt
-        if self._slash_timer <= 0.0:
-            self._slash_timer += self.SLASH_INTERVAL
+        # The sword, when something is on him. Everything it catches
+        # dies: one stroke, whatever the thing's own durability says,
+        # because these are the people who do this for a living.
+        self._slash_timer = max(0.0, self._slash_timer - dt)
+        if self._slash_active > 0.0:
+            self._slash_active = max(0.0, self._slash_active - dt)
+        elif self._slash_timer <= 0.0 and self._something_on_him():
+            self._slash_timer = self.SLASH_RECOVERY
             self._slash_active = config.BATTLE_SLASH_ACTIVE
             self._fighter.attack_flash = config.BATTLE_ATTACK_FLASH
-        elif self._slash_active > 0.0:
-            self._slash_active = max(0.0, self._slash_active - dt)
+            if self._horde is not None:
+                self._horde.cut_down(self.slash_hitbox())
 
         return tick
 
+    def _something_on_him(self) -> bool:
+        """Is anything close enough to be worth a stroke?"""
+        if self._horde is None:
+            return False
+        nearest = self._horde.nearest_to(
+            self._fighter.center_x, self._fighter.center_y)
+        if nearest is None:
+            return False
+        reach = math.dist(
+            (self._fighter.center_x, self._fighter.center_y),
+            (nearest.center_x, nearest.center_y),
+        )
+        return reach <= self.SLASH_REACH
+
     def slash_hitbox(self):
-        """The fighter's arc, west toward whatever has reached him."""
+        """The fighter's arc, around him rather than west of him.
+
+        The sanctum's was west-only because the skeletons pressing him
+        came from one side. This horde converges from three, so an arc
+        that only covered one of them would be a sword that missed most
+        of what it is supposed to be killing -- and Chuck standing
+        beside him would be safe in a way that looked like a bug.
+        """
         if self._slash_active <= 0.0:
             return None
         import pygame
 
         return pygame.Rect(
-            int(self._fighter.x) - 14, int(self._fighter.y) - 2, 14, 12
+            int(self._fighter.center_x - self.SLASH_HALF_W),
+            int(self._fighter.center_y - self.SLASH_HALF_H),
+            self.SLASH_HALF_W * 2, self.SLASH_HALF_H * 2,
         )
 
 

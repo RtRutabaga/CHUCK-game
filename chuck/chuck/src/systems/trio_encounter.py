@@ -22,9 +22,12 @@ the heroes speak.
 What it must never do is take the ground out from under him, or from
 under the three of them: they are *holding* this, and a hero swallowed
 by the thing he is closing would read as a bug rather than as a cost.
-So Chuck's own tile is skipped and the heroes' footing is protected,
-which leaves them standing on islands by the end -- which is the right
-picture anyway.
+So Chuck's own tile is skipped and the heroes' footing is protected --
+each one's whole 3x3, so that what is left when the tear stops moving
+is a shelf the three of them are standing on rather than three separate
+islands. That is the right picture anyway, and it is also the only one
+the horde pressing them can walk up to; see `footing` for why that
+distinction turned out to matter.
 
 And when the last thing has been said, the collision itself arrives:
 the desert is overwhelmed by fragments of everywhere, in large sections
@@ -215,12 +218,44 @@ class WorldChurn:
                 max(1, round(3 * fade)))
 
 
+def footing(cells: set[tuple[int, int]]) -> set[tuple[int, int]]:
+    """A hero's tile and the eight around it: the shelf he holds.
+
+    Protecting only the tile somebody is standing on was enough while
+    the only thing that had to survive the rift was the tableau. It
+    stopped being enough the moment a horde had to *reach* them: the
+    edge is ragged, so the rows either side of a hero get taken while
+    his own does not, and what is left after four beats is three people
+    on single tiles at the end of spurs one tile wide. Nothing with a
+    body can walk down a corridor one tile wide, so the fighter's sword
+    quietly stopped being able to hit anything and the horde piled up on
+    the far bank instead -- which is the "attacking nothing" problem
+    again, in the orcs' clothes this time.
+
+    So each of them keeps the step around him as well. The generator
+    already clears that 3x3 to plain desert, so this protects a shape
+    that was authored rather than inventing one; the rift stops
+    advancing in the three rows the heroes are standing in and keeps
+    taking every other row, which leaves them on a shelf jutting into
+    the tear. That is a better picture than three islands anyway -- they
+    are *holding* this, and holding it needs somewhere to stand.
+    """
+    return {
+        (col + dx, row + dy)
+        for (col, row) in cells
+        for dx in (-1, 0, 1) for dy in (-1, 0, 1)
+    }
+
+
 class TrioEncounter:
     """The beat clock and the advancing rift, for one visit to the room."""
 
     def __init__(self, tilemap, protected: set[tuple[int, int]]) -> None:
         self._tilemap = tilemap
-        self._protected = set(protected)
+        # The shelf, not the tile: the horde has to be able to reach
+        # them, and a hero on a single tile is a hero nothing with a
+        # body can walk up to. See `footing`.
+        self._protected = footing(protected)
         self._elapsed = 0.0
         self._next = 0
         self._pending: list[list] = []          # [delay, col, row]

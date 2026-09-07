@@ -31,6 +31,7 @@ from src.entities.battle_hazards import (
     CollisionBattleChoreographer, FeywildRiverField,
     InfernalAstralCorruption, InfernalBattleChoreographer,
 )
+from src.systems.orc_horde import OrcHorde
 from src.systems.trio_encounter import TrioEncounter, WorldChurn
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.deck_pirate import DeckPirateNPC
@@ -964,12 +965,18 @@ class WorldScene(Scene):
             skull.update(dt)
         for actor in self.battle_actors:
             actor.update(dt)
+        if self.horde is not None:
+            # Before the cadences, so the ranger is aiming at where the
+            # nearest orc is now rather than at where it was. Chuck's box
+            # goes in so that nothing can be spawned on top of him.
+            self.horde.update(dt, self.player.hitbox)
         if self.battle is not None:
             tick = self.battle.update(dt)
             self.battle_projectiles.extend(tick.projectiles)
             self.battle_cones.extend(tick.cones)
             for shot in self.battle_projectiles:
                 shot.update(dt, self.tilemap)
+            self._resolve_horde_fire()
             self.battle_projectiles = [
                 shot for shot in self.battle_projectiles if shot.alive
             ]
@@ -1198,7 +1205,8 @@ class WorldScene(Scene):
                 self.sanity.deplete()
                 return
             enemies = [
-                *self.rats, *self.raccoons, *self.undead, *self.raptors,
+                *self.rats, *self.raccoons, *self.undead, *self.horde_orcs,
+                *self.raptors,
                 *self.redcaps, *self.dinosaurs, *self.snakes,
             ]
             scratch_first_target(
@@ -1248,6 +1256,20 @@ class WorldScene(Scene):
         )
         if blocking_undead is not None:
             if self.sanity.damage(blocking_undead.damage):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+            self.player.x, self.player.y = old_player_position
+
+        # The horde is not coming for him, but it is in his way. This is
+        # the weave the room is made of: their paths converge on two
+        # points and he has to cross them.
+        blocking_orc = next(
+            (orc for orc in self.horde_orcs
+             if overlaps(self.player.hitbox, orc.hitbox)),
+            None,
+        )
+        if blocking_orc is not None:
+            if self.sanity.damage(blocking_orc.damage):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
             self.player.x, self.player.y = old_player_position
@@ -1660,7 +1682,8 @@ class WorldScene(Scene):
                      *self.reactive_flowers.flowers,
                      *self.battle_actors,
                      *self.hazards, *self.rats, *self.raccoons,
-                      *self.undead, *self.raptors, *self.dinosaurs,
+                      *self.undead, *self.horde_orcs,
+                     *self.raptors, *self.dinosaurs,
                      *self.redcaps, *self.snakes, *self.chefs, *self.fencers,
                      *self.spined_devils, *self.police, *self.flameskulls,
                      *self.spitting_orchids,
@@ -1671,6 +1694,29 @@ class WorldScene(Scene):
                      *self.battle_projectiles,
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
+
+    @property
+    def horde_orcs(self):
+        """The living horde, or nothing on the maps that have none."""
+        return self.horde.orcs if self.horde is not None else []
+
+    def _resolve_horde_fire(self) -> None:
+        """The ranger's arrows landing. One arrow, one orc.
+
+        Only her arrows and only the horde: the garrison that has
+        noticed Chuck is his problem, and a room where stray hero fire
+        cleared it for him would take away the thing he is dodging.
+        """
+        if self.horde is None:
+            return
+        for shot in self.battle_projectiles:
+            if not shot.alive or shot.kind != "arrow":
+                continue
+            hit = next((orc for orc in self.horde.orcs
+                        if overlaps(shot.hitbox, orc.hitbox)), None)
+            if hit is not None:
+                self.horde.kill(hit)
+                shot.alive = False
 
     @property
     def traffic_vehicles(self):
@@ -2236,6 +2282,18 @@ class WorldScene(Scene):
         self.flameskulls: list[Flameskull] = []
         self.spitting_orchids: list[SpittingOrchid] = []
         self.orchid_seeds: list[OrchidSeed] = []
+        # What the last two of the three are fighting. Built before the
+        # cadences, because the cadences are aimed at it: the ranger has
+        # no shot without a horde and the fighter has nothing to swing
+        # at, which is the whole difference from the version of this
+        # room where she spun on the spot.
+        actors = {actor.kind: actor for actor in self.battle_actors}
+        self.horde = (
+            OrcHorde(self.tilemap, self.game.assets,
+                     fighter=actors["fighter"], ranger=actors["ranger"])
+            if self.map_name == "desert_trio"
+            and {"fighter", "ranger"} <= set(actors) else None
+        )
         # The sanctum battle restarts its cadences whenever the room does,
         # and the Astral breach heals shut and re-arms with it.
         if self.map_name == "temple_sanctum":
@@ -2243,7 +2301,8 @@ class WorldScene(Scene):
         elif self.map_name == "phlegethos_fortress_approach":
             self.battle = InfernalBattleChoreographer(self.battle_actors)
         elif self.map_name == "desert_trio":
-            self.battle = CollisionBattleChoreographer(self.battle_actors)
+            self.battle = CollisionBattleChoreographer(
+                self.battle_actors, horde=self.horde)
         else:
             self.battle = None
         self.battle_projectiles: list[BattleProjectile] = []
