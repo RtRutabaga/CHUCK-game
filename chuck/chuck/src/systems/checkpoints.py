@@ -1627,6 +1627,24 @@ CHECKPOINTS = (
         required_flags=DESERT_ENTRY_FLAGS,
         saveable=True, development_visible=False,
     ),
+    CheckpointDefinition(
+        "desert_east_7_from_east_8", "Collided Desert 7 East Return",
+        "desert_east_7", arrival="from_east_8", facing="left",
+        required_flags=DESERT_ENTRY_FLAGS,
+        development_visible=False, runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_east_8", "Collided Desert 8", "desert_east_8",
+        arrival="from_east_7", facing="right",
+        required_flags=DESERT_ENTRY_FLAGS,
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_east_8_anchor", "Collided Desert 8 Ashtray", "desert_east_8",
+        position=(152.0, 616.0), facing="right",
+        required_flags=DESERT_ENTRY_FLAGS,
+        saveable=True, development_visible=False,
+    ),
 )
 
 CHECKPOINT_BY_ID = {checkpoint.checkpoint_id: checkpoint for checkpoint in CHECKPOINTS}

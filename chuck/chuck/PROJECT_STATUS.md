@@ -5,9 +5,10 @@ Desert's five-map opening region is complete and has had a second art pass --
 hub, orc camp, oasis and undead ruins, now with fissured cliffs, fallen
 columns, palm trees and axe-carrying orcs -- and the eastward traversal runs
 six maps deep, through the modern city, Chult, the Feywild, the Nine Hells, a
-ship's deck, a castle and a frozen world with a blue dragon in it -- and then
-a seventh map where nine worlds meet and none of them owns the ground.
-Everything past that is not built. This file is required by the project rules
+ship's deck, a castle and a frozen world with a blue dragon in it, then a
+seventh map where nine worlds meet and none of them owns the ground, and an
+eighth where the ground has mostly gone and what is left is islands in the
+Astral Sea. Everything past that is not built. This file is required by the project rules
 and updated every session.
 
 ## Latest implementation
@@ -836,14 +837,53 @@ and updated every session.
   east edge is still rim. Same rule as the hub's four gaps: the neighbour
   arrives as a marker, not as a reshaping.
 
+- Added `desert_east_8`, where the ground has mostly gone. The seventh map is
+  nine worlds touching each other; this is the same worlds not touching. Two
+  thirds of it is Astral Sea, a fifth of it can be reached, and what is left
+  is islands joined by causeways two tiles wide.
+- The escalation is structural rather than another count of fragments. Up to
+  here "further gone" has meant more of somewhere else and less desert; here
+  it means there is less of *anything*, and every walk across the map is a
+  walk along a ledge with the Sea on both sides. The document lists narrow
+  routes and Astral Sea fall hazards among the things to reuse; this is both
+  at once and nothing else. Its share of Sea is tested against every earlier
+  map rather than against a number, so it cannot quietly be tuned back down
+  to merely torn.
+- Two islands have no causeway at all. They are drawn, lit, weathered and
+  impossible to stand on -- the document's "walls and towers visible through
+  Astral Sea sections" taken at its word. That one is asserted as a thing the
+  map must fail to do, because the natural drift of a later edit is to join
+  them up: an island with no bridge looks like an oversight rather than the
+  point.
+- The causeways change material halfway. A bridge from the jungle to the
+  courtyard is jungle at one end and flagstone at the other, because nobody
+  built it -- it is what happens to be left of the ground between two things
+  that were never near each other.
+- Measuring "narrow" took three goes and the failures are the interesting
+  part. Runs along x and y call a two-wide diagonal ledge four wide, because
+  a two-wide diagonal is a staircase; and a tile at a landing has island on
+  seven sides and is not a ledge in any sense a player would recognise. What
+  it finally measures is the thing the word actually means: every tile out
+  over the Sea has open Sea within a step of it, so there is nowhere to step
+  aside to.
+- The render check took three goes too, and for a reason worth keeping: half
+  these islands are dark, so brightness cannot tell them from the Sea, and
+  the Sea is drawn with a starfield, so it has *more* colours on screen than
+  a courtyard does. It asserts that four places on the map draw differently
+  from each other, which is what a missing tileset row would take away.
+- The seventh map's east gap became a door. It was cut as rim with the
+  corridor already running to it, so adding the neighbour added a marker and
+  a gap and moved nothing -- and its test now checks that the two doors match
+  each other exactly rather than that the east one is still closed.
+
 ## Next logical task
 
-- East 8 onward, and then the trio. The seventh map establishes what a
-  heavily fragmented map is and gives the region a shape to escalate from;
-  what is left is however many more of those the traversal wants, and then
-  the final encounter itself, which is the largest remaining piece by a
-  distance -- the trio's scripted dialogue, the world-separation sequence,
-  and the return-to-Waterdeep cutscene.
+- The trio. Eight maps east is a long traversal by the document's own
+  measure, and the two escalations it asks for -- heavily fragmented, and
+  geographically impossible -- both have maps that establish them now. What
+  is left is the largest remaining piece by a distance: the final encounter
+  with the fighter, the wizard and the ranger, its scripted dialogue, the
+  world-separation sequence, and the return-to-Waterdeep cutscene.
 
 ## Superseded Phase 12 task
 

@@ -866,7 +866,17 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # desert by the west gap, which is the last ordinary ground on it.
     "⍳": MarkerDef(kind="arrival:from_east_6", under="."),
     "⍴": MarkerDef(kind="anchor:desert_east_7_anchor", under="."),
+    # Coming back out of the seventh map, and going into the eighth.
+    # One character for both: an arrival is named for where you came
+    # *from*, so the sixth map's return and the eighth map's entrance
+    # are the same marker standing on two different maps -- the same
+    # way the hub's three neighbours all share one.
     "⍵": MarkerDef(kind="arrival:from_east_7", under="."),
+    # The eighth map east, where the ground has mostly gone. Its
+    # Ashtray is on the desert island by the west rim -- the last thing
+    # on the traversal wide enough to stand on and think about.
+    "⍹": MarkerDef(kind="anchor:desert_east_8_anchor", under="."),
+    "⍺": MarkerDef(kind="arrival:from_east_8", under="."),
     # The blue dragon, facing the way its breath goes. It cannot be
     # fought, so it has no facing variants for pursuit -- only the two
     # a lane of lightning can point along.

@@ -317,12 +317,11 @@ def build():
 
     half = GAP // 2
     _rect(grid, 0, MID_Y - half, RIM - 1, MID_Y + half, "⮜")
-    # East is not cut yet. The map after this one is the trio, and the
-    # gap is left as rim so that adding it adds a marker rather than
-    # reshaping this map -- the same way the hub's four gaps were cut
-    # before three of them led anywhere.
+    _rect(grid, WIDTH - RIM, MID_Y - half, WIDTH - 1, MID_Y + half, "⮞")
     for y in range(MID_Y - half, MID_Y + half + 1):
         for x in range(RIM, RIM + APPROACH):
+            grid[y][x] = "."
+        for x in range(WIDTH - RIM - APPROACH, WIDTH - RIM):
             grid[y][x] = "."
 
     _garrison(grid, protected)
@@ -330,6 +329,7 @@ def build():
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⍳"
     grid[ANCHOR[1]][ANCHOR[0]] = "⍴"
+    grid[MID_Y][WIDTH - RIM - 2] = "⍺"
     return grid
 
 
@@ -342,6 +342,7 @@ HEADER = (
     "; walked west to east before anything is torn and protected after,\n"
     "; and it is made of whatever world it happens to be crossing.\n"
     "; Six kinds of enemy, each standing in the world it belongs to.\n"
+    "; East leads on to the eighth, where the ground has mostly gone.\n"
 )
 
 

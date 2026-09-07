@@ -83,6 +83,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("desert_east_7", "⮜"): AreaExit(
         "desert_east_6", "from_east_7", "left"
     ),
+    ("desert_east_7", "⮞"): AreaExit(
+        "desert_east_8", "from_east_7", "right"
+    ),
+    ("desert_east_8", "⮜"): AreaExit(
+        "desert_east_7", "from_east_8", "left"
+    ),
     ("modern_city_arrival", "⮝"): AreaExit(
         "modern_city_night_2", "from_city_night_1", "up"
     ),
@@ -607,4 +613,5 @@ AREA_MUSIC: dict[str, str | None] = {
     "desert_east_5": "desert.wav",
     "desert_east_6": "desert.wav",
     "desert_east_7": "desert.wav",
+    "desert_east_8": "desert.wav",
 }

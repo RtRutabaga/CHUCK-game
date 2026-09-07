@@ -42,7 +42,7 @@ from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 import sys
 sys.path.insert(0, "tools")
 from generate_desert_east_7 import (  # noqa: E402
-    CLEARANCE, GARRISON, HEIGHT, MID_Y, PATH, RIM, SITES, WIDTH,
+    CLEARANCE, GAP, GARRISON, HEIGHT, MID_Y, PATH, RIM, SITES, WIDTH,
     WORLDS, site_at,
 )
 
@@ -337,20 +337,33 @@ def test_the_road_east_reaches_it_and_comes_back() -> None:
     assert CHECKPOINT_BY_ID[MAP_NAME].development_visible
 
 
-def test_the_east_edge_is_still_rim_because_nothing_is_behind_it() -> None:
-    """The gap after this one is not cut yet, and that is deliberate.
+def test_the_gap_east_became_a_door_without_the_map_moving() -> None:
+    """The rule the hub set, held to seven maps later.
 
-    The hub's four ways out were cut identically before three of them
-    led anywhere, so that adding a neighbour added a marker rather than
-    changing the map. The same rule applies here: the trio comes next,
-    and this map should not have to move when it arrives.
+    This map's east edge was cut as rim while there was nothing behind
+    it, and the corridor was walked to it anyway. Adding the eighth map
+    should therefore have added a marker and a gap and changed nothing
+    else -- so what is checked is that the two doors match each other
+    exactly, and that the way through still arrives at the new one
+    rather than having been bent toward it.
     """
     tilemap = _tilemap()
-    for y in range(HEIGHT):
-        assert tilemap.terrain_at(WIDTH - 1, y) == "#", y
-    # The corridor still runs all the way to it, so cutting the gap is
-    # the only thing that will be needed.
-    assert not tilemap.is_solid(WIDTH - RIM - 1, MID_Y)
+
+    def gap(cells) -> list[int]:
+        return [index for index, cell in enumerate(cells)
+                if not tilemap.is_solid(*cell)]
+
+    west = gap([(0, y) for y in range(HEIGHT)])
+    east = gap([(WIDTH - 1, y) for y in range(HEIGHT)])
+    assert west == east, (west, east)
+    assert len(east) == GAP, east
+    # Same distance from the middle of the side, both of them.
+    assert abs((east[0] + east[-1]) / 2 - (HEIGHT - 1) / 2) <= 0.5, east
+
+    # The corridor was already running to it: its last tile is inside
+    # the gap it now leads through.
+    assert (WIDTH - RIM - 1, MID_Y) in _corridor_cells()
+    assert MID_Y in east
 
 
 def test_the_map_renders_as_a_patchwork() -> None:
