@@ -1645,6 +1645,27 @@ CHECKPOINTS = (
         required_flags=DESERT_ENTRY_FLAGS,
         saveable=True, development_visible=False,
     ),
+    CheckpointDefinition(
+        "desert_east_8_from_trio", "Collided Desert 8 East Return",
+        "desert_east_8", arrival="from_trio", facing="left",
+        required_flags=DESERT_ENTRY_FLAGS,
+        development_visible=False, runtime_entry=True,
+    ),
+    # The phase document asks for the final trio encounter by name as a
+    # development entry, because it is the far end of a very long walk
+    # and testing it from the hub is not testing it.
+    CheckpointDefinition(
+        "desert_trio", "Final Trio Encounter", "desert_trio",
+        arrival="from_east_8", facing="right",
+        required_flags=DESERT_ENTRY_FLAGS,
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "desert_trio_anchor", "Final Trio Ashtray", "desert_trio",
+        position=(120.0, 472.0), facing="right",
+        required_flags=DESERT_ENTRY_FLAGS,
+        saveable=True, development_visible=False,
+    ),
 )
 
 CHECKPOINT_BY_ID = {checkpoint.checkpoint_id: checkpoint for checkpoint in CHECKPOINTS}

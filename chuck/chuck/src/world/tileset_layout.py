@@ -850,6 +850,7 @@ MAP_TILESET: dict[str, str] = {
     "desert_east_6": "collided",
     "desert_east_7": "collided",
     "desert_east_8": "collided",
+    "desert_trio": "collided",
     "tahuya_cabin_interior": "tahuya",
 }
 

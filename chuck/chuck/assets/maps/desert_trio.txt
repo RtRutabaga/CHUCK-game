@@ -1,0 +1,62 @@
+; DESERT TRIO - Phase 13, the final encounter (76x52).
+; The floor is nine worlds jammed together and almost none of it
+; is solid: chaotic in material, clear in shape. In a room full of
+; stray arrows what a player needs is open ground and hazards with
+; visible edges, so the worlds are underfoot and the danger is
+; above it.
+; '⍻' fighter, '⍼' wizard, '⍽' ranger, standing between Chuck and
+; the rift ('V') the wizard is opening in the east. '≋' lava veins
+; and Astral cracks give the floor teeth. Every enemy in it came
+; from one of the worlds the walk east passed through.
+############################################################################
+#..........ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽···············⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼⌼⌼⌼VVVVVVVVVVVVVV#
+#..........ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽···············⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼⌼⌼VVVVVVVVVVVVVVV#
+#......ᛊ❂..⌴ᛗᛗᛗᛗᛗᛗ⌴ᛗᛗᛗᛗᛗᛗ⌽⍂⌽⌽⌽⌽⌽Ԓ······Ԓ······⌖⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼⌼⌼VVVVVVVVVVVVVVV#
+#..........ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽⌽··············⌖⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼⌼⌼VVVVVVVVVVVVVVV#
+#..........ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽⌽·············⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼⌼VVVVVVVVVVVVVVVV#
+#..........ᛗᛗᛗᛗᛗᛗVVVᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽⌽·············⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼⌼VVVVVVVVVVVVVVVV#
+#.........ᛊᛗᛗᛗVVVVVᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽⌽⌽⌽············⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼⌼VVVVVVVVVVVVVVVV#
+#..........ᛗVVVVVᛗᛗᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽⌽⌽⌽···········⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼⌼VVVVVVVVVVVVVVVV#
+#......❂...ᛗVVᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽··········⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼VVVVVVVVVVVVVVVVV#
+#..........ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽········⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼VVVVVVVVVVVVVVVVV#
+#......ᛊ...ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽·····⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌼⌼⌼VVVVVVVVVVVVVVVVV#
+#........❄❄ᛟᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛟ⌽====≋≋===⌽⌽⌽⌽⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖....VVVVVVVVVVVVVVVVV#
+#....❄❄❄❄❄❄❄ᛟ⌺ᛟᛟᛟᛟᛟᛟ⌺ᛟᛟ=====≋≋≋=====⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖.....VVVVVVVVVVVVVVVVV#
+#.❄❄❄❄❄❄❄❄❄❄❄ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ======≋≋≋====⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗVVᛗᛗᛗ....VVVVVVVVVVVVVVVVVV#
+#❄❄❄❄❄❄❄❄❄❄❄❄❄ᛟᛟᛟᛟᛟᛟᛟᛟᛟ=======≋≋====⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗVVVᛗᛗ....VVVVVVVVVVVVVVVVVV#
+#❄❄❄❄❄❄❄❄❄❄❄❄❄ᛟᛟᛟᛟᛟᛟᛟᛟᛟ=======≋≋≋===⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗᛗVVᛗᛗ....VVVVVVVVVVVVVVVVVV#
+#❄❄❄❄❄❄❄❄❄❄❄❄❄ᛟᛟᛟᛟᛟᛟᛟᛟ=========≋≋≋==⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗᛗVVVᛗᛗ...VVVVVVVVVVVVVVVVVV#
+#❄❄❄❄❄❄❄❄❄❄❄❄❄❄ᛟᛟᛟᛟᛟᛟᛟ==========≋≋≋=⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗᛗᛗVVVᛗ...VVVVVVVVVVVVVVVVVV#
+#❄❄❄❄❄❄❄❄❄❄❄❄❄❄ᛟᛟᛟᛟᛟᛟᛟ===========≋==⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗᛗᛗᛗVVᛗ..VVVVVVVVVVVVVVVVVVV#
+#❄❄❄❄❄❄❄❄❄❄❄❄❄❄ᛟᛟᛟᛟᛟᛟᛟ==============⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗᛗᛗᛗVVV..VVVVVVVVVVVVVVVVVVV#
+#❄❄❄❄❄❄❄❄❄❄❄❄❄❄ᛟᛟᛟᛟᛟᛟᛟ==============⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗ··ᛗᛗᛗᛗVᛗ..VVVVVVVVVVVVVVVVVVV#
+#❄❄❄❄❄❄❄❄❄❄❄❄❄⌽⌽⌽⌽ᛟᛟᛟ==ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ❄❄⌖⌖⌖⌖⌖⌖⌖·········...VVVVVVVVVVVVVVVVVVV#
+#.............⌽⌽⌽⌽⌽⌽⌽ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ❄❄❄❄❄❄❄❄❄·········.⍻.VVVVVVVVVVVVVVVVVVV#
+⮜.............⌽⌽⌽⌽⌽⌽⌽ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ❄❄❄❄❄❄❄❄❄·········...VVVVVVVVVVVVVVVVVVV#
+⮜.............⌽⌽⌽⌽⌽⌽⌽ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ❄❄❄❄❄❄❄❄❄❄··········..VVVVVVVVVVVVVVVVVVV#
+⮜...⍾.........⌽⌽⌽⌽⌽⌽⌽ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ❄❄❄❄❄❄❄❄❄❄❄·········.⍼VVVVVVVVVVVVVVVVVVV#
+⮜.............⌽⌽⌽⌽⌽⌽⌽⌽ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ❄❄❄❄❄❄❄❄❄❄❄·········..VVVVVVVVVVVVVVVVVVV#
+⮜............⌽⌽⌽⌽⌽≋≋⌽⌽ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ❄❄VVV❄❄❄❄❄❄❄········...VVVVVVVVVVVVVVVVVVV#
+#......⍿.....⌽⌽⌽⌽⌽≋≋≋⌽⌽ᛟᛟᛟᛟᛟᛟᛟᛟᛟVVVVV❄❄❄❄❄❄❄❄❄·······.⍽.VVVVVVVVVVVVVVVVVVV#
+#............⌽⌽⌽⌽⌽⌽≋≋⌽⌽ᛟᛟᛟᛟᛟᛟᛟVVVVV❄❄❄❄❄❄❄❄❄❄❄·······...VVVVVVVVVVVVVVVVVVV#
+#............⌽ᛗᛗᛗᛗᛗ≋≋≋ᛗᛗᛟᛟᛟᛟᛟᛟVVᛟᛟᛟ❄❄❄❄❄❄❄❄❄❄❄·····===⌼⌼VVVVVVVVVVVVVVVVVVV#
+#...........ᛗᛗᛗᛗᛗᛗᛗᛗ≋≋ᛗᛗᛗᛗᛟᛟ····ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ❄❄❄❄··=======⌼VVVVVVVVVVVVVVVVVVV#
+#⌼⌼⌼⌼⌼⌼⌼⌼⌼⌼⌼ᛗᛗᛗᛗᛗᛗᛗᛗ≋≋≋ᛗᛗᛗ·······ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ==========VVVVVVVVVVVVVVVVVVV#
+#⌼⌼⌼⌼⌼⌼⌼⌼⌼⌼⌼ᛗᛗᛗᛗᛗᛗᛗᛗᛗ≋ᛗᛗᛗᛗ·······ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ==========.VVVVVVVVVVVVVVVVVV#
+#⌼⌼⌼⌼⌼⌼⌼⌼⌼⌼⌼ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ·······ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ==========.VVVVVVVVVVVVVVVVVV#
+#⌼⌼⌼⌼⌼⌼⌼⌼⌼⌼⌼ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ·········ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ=========..VVVVVVVVVVVVVVVVVV#
+#⌼⌼⌼⌼⌼⌼⌼⌼⌼⌼⌖ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ··········ᛟᛟᛟᛟᛟᛟᛟᛟᛟᛟ==========..VVVVVVVVVVVVVVVVVV#
+#⌼⌼⌼⌼⌼⌼⌼⌼⌼⌖⌖ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗVV·········ᛟᛟᛟᛟᛟ≋≋ᛟᛟᛟ==========..VVVVVVVVVVVVVVVVVV#
+#⌼⌼⌼⌼⌼⌼⌼⌼⌖⌖⌖ᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗᛗ❄VVV·········ᛟᛟᛟᛟ≋≋≋ᛟᛟ==========...VVVVVVVVVVVVVVVVV#
+#⌼⌼⌼⌼⌼⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗᛗᛗᛗᛗᛗᛗ❄❄❄VV❄·········ᛟᛟᛟᛟ≋≋≋ᛗ=========....VVVVVVVVVVVVVVVVV#
+#⌼⌼⌼⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗᛗᛗᛗᛗ❄❄❄❄VVV·········⌽⌽⌽⌽⌽≋≋≋=========....VVVVVVVVVVVVVVVVV#
+#⌼⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗᛗᛗ❄❄❄❄❄❄❄VV❄······⌽⌽⌽⌽⌽⌽⌽⌽≋≋≋========....VVVVVVVVVVVVVVVVV#
+#⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗᛗᛗ❄❄❄❄❄❄❄❄VVV·····⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽≋≋≋======·····VVVVVVVVVVVVVVVVV#
+#⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖ᛗ❄❄❄❄❄❄❄❄❄❄VV····⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽ᛗ≋≋≋ᛗ===·······VVVVVVVVVVVVVVVV#
+#⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖❄❄❄❄❄❄❄❄❄❄❄VVV··⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽ᛗᛗ≋ᛗᛗᛗᛗ········VVVVVVVVVVVVVVVV#
+#⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖❄❄❄❄❄❄❄❄❄❄❄❄V❄·⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽ᛗᛗᛗᛗᛗᛗᛗᛗ·······VVVVVVVVVVVVVVVV#
+#⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖❄❄❄❄❄❄❄❄❄❄❄❄❄❄⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVᛗᛗᛗᛗᛗᛗᛗ·······VVVVVVVVVVVVVVVV#
+#⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖❄❄❄❄❄❄❄❄❄❄❄❄❄❄⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVᛗᛗᛗ········VVVVVVVVVVVVVVV#
+#⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖❄❄❄❄❄❄❄❄❄❄❄❄❄❄⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽ᛗVVVVVVVᛗᛗ·······VVVVVVVVVVVVVVV#
+#⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖⌖❄❄❄❄❄❄❄❄❄❄❄❄❄❄⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽ᛗᛗᛗᛗᛗVVᛗᛗᛗᛗ······VVVVVVVVVVVVVVV#
+############################################################################

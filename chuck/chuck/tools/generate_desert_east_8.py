@@ -270,10 +270,11 @@ def build():
 
     half = GAP // 2
     _rect(grid, 0, MID_Y - half, RIM - 1, MID_Y + half, "⮜")
-    # East is left as rim. The trio is what comes next and this map
-    # should not have to change shape when it arrives.
+    _rect(grid, WIDTH - RIM, MID_Y - half, WIDTH - 1, MID_Y + half, "⮞")
     for y in range(MID_Y - half, MID_Y + half + 1):
         for x in range(RIM, RIM + APPROACH):
+            grid[y][x] = "."
+        for x in range(WIDTH - RIM - APPROACH, WIDTH - RIM):
             grid[y][x] = "."
 
     _garrison(grid, causeways)
@@ -281,6 +282,7 @@ def build():
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⍵"
     grid[ANCHOR[1]][ANCHOR[0]] = "⍹"
+    grid[MID_Y][WIDTH - RIM - 2] = "⎀"
     return grid
 
 
@@ -295,6 +297,7 @@ HEADER = (
     "; The causeways change material halfway, because nobody built\n"
     "; them -- they are what happens to be left of the ground between\n"
     "; two things that were never near each other.\n"
+    "; East is the trio, and the end of the walk.\n"
 )
 
 

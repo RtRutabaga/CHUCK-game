@@ -28,8 +28,8 @@ from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.battle_hazards import (
     AstralBreach, BattleChoreographer, BattleProjectile,
-    FeywildRiverField, InfernalAstralCorruption,
-    InfernalBattleChoreographer,
+    CollisionBattleChoreographer, FeywildRiverField,
+    InfernalAstralCorruption, InfernalBattleChoreographer,
 )
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.deck_pirate import DeckPirateNPC
@@ -264,6 +264,12 @@ class WorldScene(Scene):
                 map_name == "phlegethos_fortress_approach"
                 and arrival == "from_phlegethos_rubble"
             )
+            # The third and last of these. Same path as the other two,
+            # deliberately: a player has met the trio twice and the
+            # lines landing on the tableau the same way is most of what
+            # says this is the same three people.
+            else "trio_opening"
+            if map_name == "desert_trio" and arrival == "from_east_8"
             else None
         )
         self._restore_camera_to_player = False
@@ -2186,6 +2192,8 @@ class WorldScene(Scene):
             self.battle = BattleChoreographer(self.battle_actors)
         elif self.map_name == "phlegethos_fortress_approach":
             self.battle = InfernalBattleChoreographer(self.battle_actors)
+        elif self.map_name == "desert_trio":
+            self.battle = CollisionBattleChoreographer(self.battle_actors)
         else:
             self.battle = None
         self.battle_projectiles: list[BattleProjectile] = []

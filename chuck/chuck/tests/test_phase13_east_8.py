@@ -315,13 +315,18 @@ def test_the_road_east_reaches_it_and_comes_back() -> None:
     for entry in (MAP_NAME, f"{MAP_NAME}_anchor", "desert_east_7_from_east_8"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
 
-    # The east edge is rim: the trio is next and this map should not
-    # have to change shape when it arrives.
+    # The east gap was cut as rim while there was nothing behind it,
+    # and the far shore island was already touching it. Adding the trio
+    # added a marker and a gap and moved nothing, so the two doors have
+    # to match each other exactly.
     tilemap = _tilemap()
-    for y in range(HEIGHT):
-        assert tilemap.terrain_at(WIDTH - 1, y) == "#", y
     west = [y for y in range(HEIGHT) if not tilemap.is_solid(0, y)]
-    assert len(west) == GAP, west
+    east = [y for y in range(HEIGHT)
+            if not tilemap.is_solid(WIDTH - 1, y)]
+    assert west == east, (west, east)
+    assert len(east) == GAP, east
+    assert MID_Y in east
+    assert AREA_WALK_EXITS[(MAP_NAME, "⮞")].destination == "desert_trio"
 
 
 def test_it_renders_as_islands_in_the_sea() -> None:

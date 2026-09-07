@@ -369,6 +369,103 @@ class InfernalBattleChoreographer:
         return None
 
 
+class CollisionBattleChoreographer:
+    """The trio's last fight, and the loudest of the three.
+
+    The difference from the other two is what the wizard is doing. In
+    the sanctum and at the fortress he was shooting at something; here
+    he is *working*, driving everything he has east into the rift, and
+    the rift is the one direction Chuck can never be standing in --
+    there is nothing but Astral Sea past the heroes. So the biggest,
+    brightest thing in the room is by construction the one thing that
+    cannot hurt him, which is how a fight this crowded stays fair.
+
+    What can hurt him is the same two things as always: the ranger's
+    whirl, which throws arrows in every direction and does not care
+    where he is, and the fighter's sword where the pressing enemies
+    have got close. Both are faster than the sanctum's, because this
+    is meant to be the worst version of a room he has survived twice.
+    """
+
+    # Faster and wider than the sanctum's cadences. Written here rather
+    # than in config: these are this encounter's numbers, and putting
+    # them beside the originals would invite one being tuned for the
+    # other.
+    ARROW_INTERVAL = 0.22
+    ARROW_FAN = 3
+    ARROW_SPREAD = 0.5
+    SPIN_STEP = 1.1
+    BOLT_INTERVAL = 0.5
+    BOLT_FAN = 5
+    BOLT_SPREAD = 0.16
+    SLASH_INTERVAL = 1.1
+
+    def __init__(self, actors: list[BattleActor]) -> None:
+        by_kind = {actor.kind: actor for actor in actors}
+        self._fighter = by_kind["fighter"]
+        self._wizard = by_kind["wizard"]
+        self._ranger = by_kind["ranger"]
+        # Staggered, so the room never fires everything on one frame.
+        self._arrow_timer = 0.3
+        self._bolt_timer = 0.9
+        self._slash_timer = 0.6
+        self._slash_active = 0.0
+        self._spray_angle = 0.0
+
+    def update(self, dt: float) -> BattleTick:
+        tick = BattleTick()
+
+        self._ranger.spin = (self._ranger.spin
+                             + config.BATTLE_RANGER_SPIN_SPEED * dt) % math.tau
+
+        self._arrow_timer -= dt
+        while self._arrow_timer <= 0.0:
+            self._arrow_timer += self.ARROW_INTERVAL
+            self._spray_angle += self.SPIN_STEP
+            for index in range(self.ARROW_FAN):
+                offset = index - (self.ARROW_FAN - 1) / 2.0
+                angle = self._spray_angle + offset * self.ARROW_SPREAD
+                tick.projectiles.append(BattleProjectile(
+                    self._ranger.center_x, self._ranger.center_y,
+                    math.cos(angle), math.sin(angle), "arrow"))
+            self._ranger.attack_flash = config.BATTLE_ATTACK_FLASH
+
+        # East, into the rift, always. This is the work rather than an
+        # attack: nothing is being shot at, and the direction is fixed
+        # so that the one place it goes is the one place Chuck cannot
+        # be.
+        self._bolt_timer -= dt
+        while self._bolt_timer <= 0.0:
+            self._bolt_timer += self.BOLT_INTERVAL
+            for index in range(self.BOLT_FAN):
+                offset = index - (self.BOLT_FAN - 1) / 2.0
+                angle = offset * self.BOLT_SPREAD
+                tick.projectiles.append(BattleProjectile(
+                    self._wizard.center_x, self._wizard.center_y,
+                    math.cos(angle), math.sin(angle), "bolt"))
+            self._wizard.attack_flash = config.BATTLE_ATTACK_FLASH
+
+        self._slash_timer -= dt
+        if self._slash_timer <= 0.0:
+            self._slash_timer += self.SLASH_INTERVAL
+            self._slash_active = config.BATTLE_SLASH_ACTIVE
+            self._fighter.attack_flash = config.BATTLE_ATTACK_FLASH
+        elif self._slash_active > 0.0:
+            self._slash_active = max(0.0, self._slash_active - dt)
+
+        return tick
+
+    def slash_hitbox(self):
+        """The fighter's arc, west toward whatever has reached him."""
+        if self._slash_active <= 0.0:
+            return None
+        import pygame
+
+        return pygame.Rect(
+            int(self._fighter.x) - 14, int(self._fighter.y) - 2, 14, 12
+        )
+
+
 class InfernalAstralCorruption:
     """Timed Astral blocks that close around the fortress battle.
 

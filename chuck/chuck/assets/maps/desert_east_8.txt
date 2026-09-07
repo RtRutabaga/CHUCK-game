@@ -8,6 +8,7 @@
 ; The causeways change material halfway, because nobody built
 ; them -- they are what happens to be left of the ground between
 ; two things that were never near each other.
+; East is the trio, and the end of the walk.
 ############################################################################################
 #VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV#
 #VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV#
@@ -40,11 +41,11 @@
 #VVV...⟁⟁⟁⍟⍟⍟⟁⟁VVᛗᛗᛗᛗᛗᛗᛗᚷᚷ⍮ᛗᛗᛗᚺ⍮ᚷVVVVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌾⌾VVVVVVVVVVVVV⍏⍓⌖⌖⌖⌖⌖⌖...V#
 #VVV....⟁⟁⟁⟁⟁⟁⟁V.ᛗᛗᛗᛗᛗᛗᚷ⍮ᚺᚺVᛗᛗᛗᚺVVVVVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌾⌾VVVVVVVVVVVV.⌖⌗⌗⌖⌗⌗⌗⌖⍔⍔.V#
 #VVV....⟁⟁⟁⟁.....ᛗᛗVᛗᛗᚷ⍮ᚷᚺVVVᛗᛗᛗVVVVVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVV...⌖⌖⌖⌖⌖⌖⌗⌖⟁⟁⟁V#
-⮜................VVVVV⍮ᚷᚺVVVVVᛗᛗVVVVVVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVV⟁...⍏⌗⌖⌖⍖⌖⌖⌖⟁⟁⟁V#
-⮜...............VVVVVVVVVVVVVVᛗᛗᛗVVVVVVVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVVV⟁....⌖⌖⌖⌖⌖⌖⌗⌖⍟⍟⟁V#
-⮜...⍵............VVVVVVVVVVVVVVᛗ···VVVVVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVVV.....⌖⌗⌖⌗..⌖⌖⍟⍟VV#
-⮜.................VVVVVVVVVVVVVV·····VVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVVV....⍏⌖⌖...⌖⌖⍟⍟VV#
-⮜.................VVVVVVVVVVVVVV█·····Ԓ·███VVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVV.........⍟⍟⍟⍟⍟⍟V#
+⮜................VVVVV⍮ᚷᚺVVVVVᛗᛗVVVVVVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVV⟁...⍏⌗⌖⌖⍖⌖⌖.....⮞
+⮜...............VVVVVVVVVVVVVVᛗᛗᛗVVVVVVVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVVV⟁....⌖⌖⌖⌖⌖⌖⌗.....⮞
+⮜...⍵............VVVVVVVVVVVVVVᛗ···VVVVVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVVV.....⌖⌗⌖⌗..⌖...⎀.⮞
+⮜.................VVVVVVVVVVVVVV·····VVVVVVVVVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVVV....⍏⌖⌖...⌖.....⮞
+⮜.................VVVVVVVVVVVVVV█·····Ԓ·███VVVV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVVVVVVVVVV.........⍟⍟.....⮞
 #.⟁⟁⟁⟁............VVVVVVVVVVVVVV·þ·····███≋≋VV·⌽⌽V⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽V⌽❄❄VVVVVVVVVVV.......⍟⍟⍟⍟⍟⍟⍟V#
 #⟁⟁⟁⟁⟁⟁..⍹........VVVVVVVVVVVVVV·······██≋≋≋≋···VV⌽⌽⌽⌽⌽⌽⌽⌽⌽⌽VVV❄❄❄VVVVVVVVV❄❄.....⍔⍟⍟⍟⍟⍟⍟⍟⍟#
 #V⍟⍟⍟⟁⟁⟁.........VVVVVVVVVVVVVVVԒ······██≋≋≋···≋≋VVV⌽VVVV⌽⌽⌽VVVV❄❄❄VV❄❄VV❄❄❄❄❄...⟁⟁⍟⍟⍟⍟⍟⍟⍟⟁#

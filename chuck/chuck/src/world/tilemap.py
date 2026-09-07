@@ -877,6 +877,23 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # on the traversal wide enough to stand on and think about.
     "⍹": MarkerDef(kind="anchor:desert_east_8_anchor", under="."),
     "⍺": MarkerDef(kind="arrival:from_east_8", under="."),
+    # ------------------------------------------------------------------
+    # The final trio encounter. The three of them stand on plain desert
+    # sand: they are the one thing on the map that is not a fragment of
+    # somewhere else, and the ground under them is the ground this whole
+    # phase has been about.
+    #
+    # Reusing the established battle actors rather than authoring new
+    # ones is the point. A player has met these three twice and is meant
+    # to recognise them, which a bespoke third pair of sprites would
+    # quietly cost.
+    # ------------------------------------------------------------------
+    "⍻": MarkerDef(kind="battle:fighter", under="."),
+    "⍼": MarkerDef(kind="battle:wizard", under="."),
+    "⍽": MarkerDef(kind="battle:ranger", under="."),
+    "⍾": MarkerDef(kind="arrival:from_east_8", under="."),
+    "⍿": MarkerDef(kind="anchor:desert_trio_anchor", under="."),
+    "⎀": MarkerDef(kind="arrival:from_trio", under="."),
     # The blue dragon, facing the way its breath goes. It cannot be
     # fought, so it has no facing variants for pursuit -- only the two
     # a lane of lightning can point along.

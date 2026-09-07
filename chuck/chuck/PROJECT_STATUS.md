@@ -8,7 +8,10 @@ six maps deep, through the modern city, Chult, the Feywild, the Nine Hells, a
 ship's deck, a castle and a frozen world with a blue dragon in it, then a
 seventh map where nine worlds meet and none of them owns the ground, and an
 eighth where the ground has mostly gone and what is left is islands in the
-Astral Sea. Everything past that is not built. This file is required by the project rules
+Astral Sea. The walk ends at the trio: they are on their map, working on the
+rift, with the opening lines playing on arrival. The rest of the encounter --
+its later dialogue beats, the final collision sequence and the return to
+Waterdeep -- is not built. This file is required by the project rules
 and updated every session.
 
 ## Latest implementation
@@ -876,14 +879,47 @@ and updated every session.
   a gap and moved nothing -- and its test now checks that the two doors match
   each other exactly rather than that the east one is still closed.
 
+- Chuck has reached the trio. `desert_trio` is the arena for the final
+  encounter: the three of them holding a spot in front of the rift the wizard
+  is opening, most of the adventure's enemies pressing in, and Chuck arriving
+  in the middle of it for the third and last time.
+- The room answers two instructions that pull against each other. The
+  document wants the most chaotic version of an encounter the player has
+  survived twice, and in the same breath says not to spend readability on
+  spectacle. So the chaos is underfoot and the danger is above it: the floor
+  is nine worlds jammed together with no desert between them, and under two
+  per cent of the arena is solid. Cover would turn a fight about movement
+  into a fight about hiding, which is not a fight Chuck is allowed to win.
+- The wizard is *working* rather than fighting, and that is what keeps a room
+  this crowded fair. Everything he throws goes east into the rift, and east
+  of the heroes there is no ground at all -- so the biggest, loudest thing on
+  screen is by construction the one thing that cannot hurt the player. The
+  rift comes all the way in to him across the band his work travels down;
+  left to the bow of its edge alone there was a column of walkable floor one
+  tile wide in the lane, which is exactly the sort of gap a fight finds.
+- Everything reuses the established battle architecture: the same three
+  actors, the same projectile path, the same entrance-dialogue cut to the
+  tableau. A player has met these three twice and is meant to recognise them,
+  and a third pair of sprites would have cost that with nothing failing. What
+  is new is one choreography -- faster and wider than the sanctum's, checked
+  against it rather than against numbers of its own.
+- The three of them stand six tiles apart, not eighteen. The camera cuts to
+  the group for their lines and lifts to keep their feet off the dialogue
+  panel, so the span that fits in one frame is well under a screen's height:
+  spread down the map, as they were first, the fighter was simply not in the
+  shot.
+- The final encounter is a development entry by name, which the phase
+  document asks for: it is the far end of a very long walk, and testing it
+  from the hub is not testing it.
+
 ## Next logical task
 
-- The trio. Eight maps east is a long traversal by the document's own
-  measure, and the two escalations it asks for -- heavily fragmented, and
-  geographically impossible -- both have maps that establish them now. What
-  is left is the largest remaining piece by a distance: the final encounter
-  with the fighter, the wizard and the ranger, its scripted dialogue, the
-  world-separation sequence, and the return-to-Waterdeep cutscene.
+- The rest of the encounter. The arena, the trio and their opening lines are
+  in; what is left is the document's four later dialogue beats played against
+  the fight rather than on arrival, the final collision sequence where the
+  desert is overwhelmed by fragments, the resolution dialogue in which the
+  wizard notices Chuck, and the return-to-Waterdeep cutscene that ends the
+  phase.
 
 ## Superseded Phase 12 task
 
