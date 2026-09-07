@@ -31,6 +31,7 @@ from src.entities.battle_hazards import (
     CollisionBattleChoreographer, FeywildRiverField,
     InfernalAstralCorruption, InfernalBattleChoreographer,
 )
+from src.systems.trio_encounter import TrioEncounter
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.deck_pirate import DeckPirateNPC
 from src.entities.hazard import Cat
@@ -964,6 +965,24 @@ class WorldScene(Scene):
                     self.camera.shake(config.BATTLE_CONE_SHAKE)
                     self.game.audio.play_sfx(config.BATTLE_CONE_SOUND)
             self.battle_cones = [c for c in self.battle_cones if c.alive]
+        if self.trio is not None:
+            # The heroes talk their way through the fight on a clock,
+            # not on a trigger: Chuck is never asked to walk anywhere
+            # to advance it, because walking anywhere in this room is
+            # not something he can reliably do.
+            beat = self.trio.update(
+                dt,
+                self._player_tile() if self._respawn_phase is None else None,
+                self.player.hitbox,
+            )
+            if beat is not None:
+                self.camera.focus_on(*self._battle_establishing_focus())
+                self._restore_camera_to_player = True
+                if self.trio.advances:
+                    self.game.audio.play_sfx("vanish")
+                self.game.scenes.push(
+                    DialogueScene(self.game, self.dialogue.get(beat)))
+                return
         if self.breach is not None:
             if (not self.breach.triggered
                     and self._player_tile()[0] <= config.BREACH_TRIGGER_COL):
@@ -1471,6 +1490,8 @@ class WorldScene(Scene):
             drawable.draw(surface, offset)
         if self.breach is not None:
             self.breach.draw(surface, offset)
+        if self.trio is not None:
+            self.trio.draw(surface, offset)
         if self.infernal_corruption is not None:
             self.infernal_corruption.draw(surface, offset)
         for cone in self.battle_cones:
@@ -2205,6 +2226,25 @@ class WorldScene(Scene):
         self.breach = (
             AstralBreach(self.tilemap)
             if self.map_name == "temple_sanctum" else None
+        )
+        # The final encounter's clock. Its footing set is the heroes'
+        # own tiles: the rift takes the arena a column at a time as
+        # they talk, and the three holding it must not be swallowed by
+        # the thing they are closing.
+        if getattr(self, "trio", None) is not None:
+            self.trio.restore()
+        self.trio = (
+            TrioEncounter(
+                self.tilemap,
+                {
+                    (col, row)
+                    for kind, position in self.tilemap.object_spawns
+                    if kind.startswith("battle:")
+                    for col, row in ((int(position[0]) // config.TILE_SIZE,
+                                      int(position[1]) // config.TILE_SIZE),)
+                },
+            )
+            if self.map_name == "desert_trio" else None
         )
         self.infernal_corruption = (
             InfernalAstralCorruption(self.tilemap)

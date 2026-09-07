@@ -3,5 +3,30 @@
     "There! It's opening!",
     "I see it. Hold them back!",
     "We've come too far to lose it now."
+  ],
+  "trio_early": [
+    "The boundaries are collapsing faster.",
+    "Can you still do it?",
+    "I think so.",
+    "You think?",
+    "Would you prefer I lie?"
+  ],
+  "trio_midpoint": [
+    "It's getting worse!",
+    "No. That's good.",
+    "That doesn't look good.",
+    "It's all in one place."
+  ],
+  "trio_climax": [
+    "I need another minute!",
+    "You said that a minute ago!",
+    "Just keep them off him!"
+  ],
+  "trio_found_it": [
+    "Wait.",
+    "I found it.",
+    "You're certain?",
+    "No.",
+    "Good enough."
   ]
 }

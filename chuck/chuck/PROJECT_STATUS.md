@@ -9,9 +9,9 @@ ship's deck, a castle and a frozen world with a blue dragon in it, then a
 seventh map where nine worlds meet and none of them owns the ground, and an
 eighth where the ground has mostly gone and what is left is islands in the
 Astral Sea. The walk ends at the trio: they are on their map, working on the
-rift, with the opening lines playing on arrival. The rest of the encounter --
-its later dialogue beats, the final collision sequence and the return to
-Waterdeep -- is not built. This file is required by the project rules
+rift, and the whole scripted conversation now plays across the fight while
+the rift takes the arena a column at a time. The final collision sequence,
+the resolution dialogue and the return to Waterdeep are not built. This file is required by the project rules
 and updated every session.
 
 ## Latest implementation
@@ -912,14 +912,41 @@ and updated every session.
   document asks for: it is the far end of a very long walk, and testing it
   from the hub is not testing it.
 
+- The encounter talks its way through the fight. All four of the document's
+  later exchanges play on a clock rather than on trigger volumes -- Chuck is
+  never asked to walk anywhere to advance it, because walking anywhere in
+  that room is not something he can reliably do. Fifteen to seventeen
+  seconds of surviving between each pair, which is the instruction to keep
+  gameplay moving between dialogue moments taken literally: four beats back
+  to back would make the room a cutscene with fighting in the gaps.
+- "The environment should become increasingly unstable around Chuck" is the
+  other instruction, and here it means the rift wins ground. From the
+  midpoint on, every beat takes another column: the floor immediately west of
+  the tear breaks through to Astral Sea, which is the sanctum breach's exact
+  mechanism applied to a moving edge instead of a fixed band. The space
+  Chuck has to dodge in shrinks each time the heroes speak.
+- The edge is ragged, so what gets taken is *found* rather than computed --
+  for each row, walk west from the map's east side to the first tile that is
+  not already Sea. A column index would have cut a straight line down a torn
+  edge, which is the one thing the whole region has been avoiding.
+- Two things it must never do, both tested rather than trusted, because both
+  look like bugs when they go wrong and like nothing when they go right: it
+  never opens under Chuck, and it never takes the footing out from under the
+  three holding it. Their rows simply stop advancing, so by the last beat
+  they are standing on spits of sand with the Sea all round them -- which is
+  the right picture anyway.
+- Dying heals the arena and puts the conversation back to the start, the same
+  way the sanctum's breach re-arms. A player who dies to the last beat should
+  get the encounter, not the wreckage of their previous attempt with the
+  script already spent.
+
 ## Next logical task
 
-- The rest of the encounter. The arena, the trio and their opening lines are
-  in; what is left is the document's four later dialogue beats played against
-  the fight rather than on arrival, the final collision sequence where the
-  desert is overwhelmed by fragments, the resolution dialogue in which the
-  wizard notices Chuck, and the return-to-Waterdeep cutscene that ends the
-  phase.
+- The end of it. The arena, the trio and the whole scripted conversation are
+  in; what is left is the final collision sequence where the desert is
+  overwhelmed by rapidly changing fragments, the resolution dialogue in which
+  the wizard notices the rat and cannot get him out, and the
+  return-to-Waterdeep cutscene that ends the phase.
 
 ## Superseded Phase 12 task
 
