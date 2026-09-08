@@ -27,6 +27,54 @@ and updated every session.
 
 ## Latest implementation
 
+- Put turrets on the knight courtyards and widened the walls under the
+  banners. The corners had a drum tile each, which at one tile apiece read as
+  a slightly different piece of wall -- and a corner tower exists precisely
+  because a corner is where a castle wants height. The corner is an object
+  now: three tiles of stone with a slate cone on it and a red-and-gold pennant
+  on the finial, standing tall enough that the curtain runs into its base. It
+  is the only thing in the fragment that rises, which is what makes the walls
+  beside it read as walls of something. Four on East 5, one per corner, and
+  two on East 7.
+- The pennant is the same red and gold as the banners hanging below it. The
+  castle already says whose it is at eye level; saying it again on the
+  roofline is what a real one does, and it ties the two objects together as
+  one house rather than two ideas.
+- The banners were hanging on the open ground in front of a one-tile curtain.
+  A banner is two tiles of sprite drawn upward from the bottom of the tile it
+  stands on, so two thirds of the cloth came down past the bottom of the wall
+  and lay on the courtyard flagstones -- a banner as tall as the building it
+  was on. The wall grows a buttress under every one of them now, three tiles
+  wide and one deep on the face that shows, and the banner hangs on that: the
+  cloth covers the buttress and the curtain behind it and stops at the wall's
+  own base. Two banner tiles collapsed into one in the process, because the
+  ground it hangs over no longer varies -- it is always stone.
+- That makes the castle pass the first one in the desert that adds stone
+  rather than swapping it, and a gate out here is a hole in a wall that looks
+  exactly like the floor either side of it -- there is no reading of the
+  characters that tells a buttress it is about to plug one. So every block is
+  written, the map is flooded, and the block is taken back off if anything
+  stopped reaching anything. The test builds a wall whose only gate has a
+  buttress-sized hole under it and asserts the pass comes away empty, then the
+  same wall with room beside the gate and asserts it does not.
+- Flooding from whichever open tile came first was the first version of that
+  guard and it was wrong in the quiet way: East 7 is nine worlds in pieces and
+  its first open tile is inside one of three sealed rooms, so every block
+  measured itself against a flood that never reached it and was refused. East
+  7 came back with no turrets and no banners at all. The guard floods the
+  largest connected piece of open ground instead -- the playable map.
+- East 5's south-west corner stands on the lip of a chasm and cannot have all
+  nine tiles of a turret block. Refusing those outright left one corner of a
+  four-cornered courtyard bare, so a block is clipped to what it can stand on
+  and the sprite overhangs the drop, which is what a tower built on a cliff
+  edge does anyway.
+- Two more stale exact-inventory assertions in the East 5 suite, both of which
+  now include the new stonework: the perimeter vocabulary, and the list of
+  which character belongs to which world. Worth noting that the banners used
+  to be able to land in a gate -- they hung on open ground, and a gate gap is
+  open ground, which is why the old test had to count them as gates. They are
+  stone now and cannot.
+
 - Fixed the Feywild's giant tea table. It had four legs under it, in two
   pairs four rows apart in the same two columns. A leg is seventy pixels of
   sprite drawn upward from the bottom of its tile, so a pair four rows apart

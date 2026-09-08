@@ -201,6 +201,7 @@ _SPRITES = {
     # The collided desert's castle. Four frames of a slow lift rather
     # than a flap: nothing else out there moves in a wind, so cloth that
     # snapped would be moving for its own reasons.
+    "castle_turret": "objects/castle_turret.png",
     "castle_banner": (
         "objects/castle_banner_1.png",
         "objects/castle_banner_2.png",

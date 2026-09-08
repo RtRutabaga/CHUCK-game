@@ -21,6 +21,8 @@ anything the caller names are left alone.
 from __future__ import annotations
 
 import math
+import sys
+from pathlib import Path
 
 # Ground the fringe is allowed to eat. Anything else -- a marker, a
 # prop, a door -- is load-bearing and left where it is.
@@ -280,27 +282,41 @@ def dress_fragments(
 # collision Chuck has never visited and the walls are all anybody will
 # ever learn about it.
 #
-# Everything below is collision-neutral by construction. Merlons and
-# towers are converted *from* wall, so they are solid tiles standing
-# where solid tiles already stood; banners are non-solid and go on
-# ground that was already open. Nothing here can close a route, which is
-# why this can run over the trio's arena and the two island maps whose
-# geometry other tests measure to the tile.
+# Everything below either swaps stone for different stone or adds
+# stone and then proves, by flooding the map, that it cut nothing off.
+# That is what lets it run over the trio's arena and the two island
+# maps whose geometry other tests measure to the tile.
 
 COURTYARD_STONE = "⌽"
 COURTYARD_WALL = "⌾"
 COURTYARD_MERLON = "ᛦ"
 COURTYARD_TOWER = "ᛧ"
-BANNER_ON_STONE = "ᛨ"
-BANNER_ON_SAND = "ᛩ"
+# A corner turret: three tiles of stone with a roof on it, tall enough
+# that the curtain runs into its base. The prop stands on the middle of
+# the block's bottom row and draws upward over the whole of it.
+CASTLE_TURRET = "ᛪ"
+# A banner, hanging on wall rather than in front of it. It used to hang
+# on the ground tile below the curtain, where two thirds of the cloth
+# came down past the bottom of the wall and lay on the courtyard floor
+# like a rug. It goes on stone now, and the wall is widened under every
+# one of them so there is stone for it to hang on.
+BANNER_ON_WALL = "ᛮ"
 
-CASTLE_WALLS = (COURTYARD_WALL, COURTYARD_MERLON, COURTYARD_TOWER)
-# Ground a banner is allowed to stand on, and which character it takes
-# there.
-BANNER_GROUND = {COURTYARD_STONE: BANNER_ON_STONE, ".": BANNER_ON_SAND}
-# How far apart they hang. Close together they stop being an
+CASTLE_WALLS = (
+    COURTYARD_WALL, COURTYARD_MERLON, COURTYARD_TOWER,
+    CASTLE_TURRET, BANNER_ON_WALL,
+)
+# Ground the castle is allowed to build out over: its own swept floor
+# inside and open sand outside, and nothing else. Everything on these
+# maps that matters -- knights, arrivals, Ashtrays, lava, the Astral --
+# is some other character, so this one test keeps all of them safe.
+BUILDABLE = (".", COURTYARD_STONE)
+# How far apart the banners hang. Close together they stop being an
 # announcement and become bunting.
 BANNER_SPACING = 7
+# Turrets are three tiles across, so their middles have to be four
+# apart or the blocks grow into each other.
+TURRET_SPACING = 4
 
 
 def _wall_neighbours(grid, col: int, row: int) -> set[tuple[int, int]]:
@@ -334,12 +350,71 @@ def _is_mass(grid, col: int, row: int) -> bool:
     return False
 
 
-def dress_castle(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
-    """Crenellate the walls, tower the corners, hang the banners.
+def _open_cells(grid) -> set[tuple[int, int]]:
+    """Every tile nothing solid is standing on.
 
-    Returns the count of each, and changes nothing about where anybody
-    can walk: every tile it writes is either a solid one replacing a
-    solid one, or a banner on ground that stays open.
+    Solidity is read off the game's own table rather than guessed at,
+    so a pass that runs over eight maps of nine worlds' worth of ground
+    cannot be wrong about what a route is.
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from src.world.tilemap import MARKER_DEFS, TILE_DEFS
+
+    open_cells = set()
+    for row, line in enumerate(grid):
+        for col, char in enumerate(line):
+            marker = MARKER_DEFS.get(char)
+            tile = TILE_DEFS[marker.under if marker else char]
+            if not tile.solid:
+                open_cells.add((col, row))
+    return open_cells
+
+
+def _flood(open_cells: set, start) -> set:
+    from collections import deque
+
+    seen = {start}
+    frontier = deque([start])
+    while frontier:
+        col, row = frontier.popleft()
+        for spot in ((col + 1, row), (col - 1, row),
+                     (col, row + 1), (col, row - 1)):
+            if spot in open_cells and spot not in seen:
+                seen.add(spot)
+                frontier.append(spot)
+    return seen
+
+
+def _walkable_map(grid) -> set:
+    """The biggest connected piece of open ground: the playable map.
+
+    Flooding from whichever open tile happens to come first sounded
+    fine and was not. These maps are nine worlds in pieces, and several
+    of them have a sealed pocket somewhere -- the first open tile on
+    east 7 is in one. Every block then measured itself against a flood
+    that never reached it and was refused, and the map came back with
+    no turrets and no banners at all.
+    """
+    open_cells = _open_cells(grid)
+    best: set = set()
+    unseen = set(open_cells)
+    while unseen:
+        region = _flood(open_cells, next(iter(unseen)))
+        unseen -= region
+        if len(region) > len(best):
+            best = region
+    return best
+
+
+def dress_castle(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
+    """Crenellate the curtain, turret the corners, hang the banners.
+
+    Everything here is built out of, or onto, stone that was already
+    standing, and every block that adds stone is flooded before it is
+    kept: a turret or a buttress that shuts a gate or strands a knight
+    is taken back off rather than shipped. That is what lets a
+    furnishing pass run over maps whose geometry other suites measure to
+    the tile.
     """
     height, width = len(grid), len(grid[0])
     walls = [
@@ -348,9 +423,10 @@ def dress_castle(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
         if grid[row][col] == COURTYARD_WALL
     ]
     if not walls:
-        return {COURTYARD_MERLON: 0, COURTYARD_TOWER: 0, "banner": 0}
+        return {COURTYARD_MERLON: 0, COURTYARD_TOWER: 0,
+                CASTLE_TURRET: 0, "banner": 0}
 
-    towers, merlons = [], []
+    towers, merlons, corners = [], [], []
     for col, row in walls:
         sides = _wall_neighbours(grid, col, row)
         # A stump -- one tile of wall left standing, or the end of a
@@ -370,43 +446,115 @@ def dress_castle(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
                 merlons.append((col, row))
         else:
             # A run that turns is a corner, and a corner is where a
-            # castle puts its tower.
+            # castle puts its tower. These are the ones that get a real
+            # turret built on them further down; a stump only gets the
+            # drum tile.
             turns = (
                 {(1, 0), (0, 1)} <= sides or {(1, 0), (0, -1)} <= sides
                 or {(-1, 0), (0, 1)} <= sides or {(-1, 0), (0, -1)} <= sides
             )
-            (towers if turns else merlons).append((col, row))
+            if turns:
+                towers.append((col, row))
+                corners.append((col, row))
+            else:
+                merlons.append((col, row))
 
     for col, row in towers:
         grid[row][col] = COURTYARD_TOWER
     for col, row in merlons:
         grid[row][col] = COURTYARD_MERLON
 
-    # Banners hang on the face a wall shows, which in this game is the
-    # south one: everything with a front puts it that way, and cloth on
-    # the far side of a wall is cloth nobody sees.
+    # Nothing below this point is a like-for-like swap, so from here on
+    # the walkable map is watched.
+    reach_before = _walkable_map(grid)
+    start = min(reach_before, key=lambda spot: spot[::-1])
+
+    def _buildable(col: int, row: int) -> bool:
+        return grid[row][col] in BUILDABLE or grid[row][col] in CASTLE_WALLS
+
+    def _try(cells: dict[tuple[int, int], str]) -> bool:
+        """Write a block, keep it only if the map still holds together."""
+        if any(not _buildable(col, row) for col, row in cells):
+            return False
+        was = {spot: grid[spot[1]][spot[0]] for spot in cells}
+        for (col, row), char in cells.items():
+            grid[row][col] = char
+        after = _open_cells(grid)
+        if start in after and _flood(after, start) == reach_before & after:
+            return True
+        for (col, row), char in was.items():
+            grid[row][col] = char
+        return False
+
+    # ------------------------------------------------------------------
+    # The turrets. A corner is the one part of a castle that is taller
+    # than the rest -- that is what a corner tower is for -- and at one
+    # tile each these read as a slightly different piece of wall.
+    # ------------------------------------------------------------------
+    turrets: list[tuple[int, int]] = []
+    for col, row in sorted(corners, key=lambda spot: spot[::-1]):
+        if not (1 <= col < width - 1 and 1 <= row < height - 2):
+            continue
+        if any(max(abs(col - c), abs(row - r)) < TURRET_SPACING
+               for c, r in turrets):
+            continue
+        # Three by three where there is room for three by three. Where
+        # there is not -- the south-west corner of east 5 stands on the
+        # lip of a chasm -- the block is clipped to what it can stand
+        # on and the sprite overhangs the drop, which is what a tower
+        # built on a cliff edge does anyway. Refusing those outright
+        # left one corner of a four-cornered courtyard bare.
+        block = {
+            (col + dcol, row + drow): COURTYARD_TOWER
+            for dcol in (-1, 0, 1) for drow in (-1, 0, 1)
+            if _buildable(col + dcol, row + drow)
+        }
+        # The prop stands on the middle of the bottom row and draws
+        # upward across the whole block and a tile and a half beyond it,
+        # which is the height. Without that tile there is no turret.
+        if (col, row + 1) not in block or (col, row) not in block:
+            continue
+        block[(col, row + 1)] = CASTLE_TURRET
+        if _try(block):
+            turrets.append((col, row))
+
+    # ------------------------------------------------------------------
+    # The banners, and the wall widened to carry them.
+    #
+    # Cloth is two tiles of sprite drawn upward from the bottom of the
+    # tile it stands on. Hung on the ground in front of a one-tile
+    # curtain, two thirds of it came down past the bottom of the wall
+    # and lay on the floor -- a banner the same height as the building
+    # it is on. So the wall grows a buttress three tiles wide and one
+    # deep on the face that shows, and the banner hangs on that: the
+    # cloth now covers the buttress and the curtain behind it and stops
+    # at the wall's own base.
+    # ------------------------------------------------------------------
     hung: list[tuple[int, int]] = []
     faces = [
         (col, row + 1)
         for col, row in sorted(merlons + towers, key=lambda spot: spot[::-1])
-        if row + 1 < height
-        and grid[row + 1][col] in BANNER_GROUND
+        if row + 1 < height and grid[row + 1][col] in BUILDABLE
     ]
     for col, row in faces:
         if any(max(abs(col - c), abs(row - r)) < BANNER_SPACING
                for c, r in hung):
             continue
-        # Room to hang: the tile below has to be open too, or the hem
-        # lands inside something.
-        if row + 1 < height and grid[row + 1][col] in CASTLE_WALLS:
-            continue
         if (col * 7 + row * 13 + seed) % 3 == 2:
             continue        # not on every eligible face, or it is bunting
-        grid[row][col] = BANNER_GROUND[grid[row][col]]
-        hung.append((col, row))
+        if not 1 <= col < width - 1:
+            continue
+        buttress = {
+            (col - 1, row): COURTYARD_WALL,
+            (col, row): BANNER_ON_WALL,
+            (col + 1, row): COURTYARD_WALL,
+        }
+        if _try(buttress):
+            hung.append((col, row))
 
     return {
         COURTYARD_MERLON: len(merlons),
         COURTYARD_TOWER: len(towers),
+        CASTLE_TURRET: len(turrets),
         "banner": len(hung),
     }

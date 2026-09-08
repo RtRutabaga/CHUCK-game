@@ -146,12 +146,14 @@ def test_the_courtyard_is_kept_rather_than_ruined() -> None:
     ]
     # The wall's own vocabulary. It was ashlar and gate-gap when the
     # courtyard was first built; it is now ashlar, crenellation, drum
-    # towers and the banners hanging in front of them -- all of it
-    # converted from the stone that was already standing, which is why
-    # the count still has to come out at exactly the perimeter.
-    STONEWORK = {"⌾", "ᛦ", "ᛧ"}
+    # towers, the corner turrets standing on them, and the banners
+    # hanging on the wall itself -- and a gate is still a gap and
+    # nothing else. The banners used to be able to land in one, because
+    # they hung on open ground and a gate gap is open ground; they are
+    # stone now and cannot.
+    STONEWORK = {"⌾", "ᛦ", "ᛧ", "ᛪ", "ᛮ"}
     gates = sum(1 for cell in perimeter
-                if tilemap.terrain_at(*cell) in {"⌽", "ᛨ", "ᛩ"})
+                if tilemap.terrain_at(*cell) == "⌽")
     walls = sum(1 for cell in perimeter
                 if tilemap.terrain_at(*cell) in STONEWORK)
     assert walls + gates == len(perimeter), "something else is in the wall"
@@ -252,10 +254,11 @@ def test_the_worlds_keep_arriving() -> None:
         "·": "hell", "█": "hell", "≋": "hell",
         "⌼": "ship",
         "⌽": "medieval", "⌾": "medieval",
-        # The castle, finished: its crenellation, its drum towers, and
-        # the banners hanging off both. All of it the same world.
+        # The castle, finished: its crenellation, its drum towers, the
+        # turrets on its corners and the banners hanging on its walls.
+        # All of it the same world.
         "ᛦ": "medieval", "ᛧ": "medieval",
-        "ᛨ": "medieval", "ᛩ": "medieval",
+        "ᛪ": "medieval", "ᛮ": "medieval",
     }
     # ...and everything standing on them. A bush on the Feywild's floor
     # is a piece of the Feywild, so it is attributed through the ground

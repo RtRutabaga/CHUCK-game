@@ -380,10 +380,20 @@ TILE_DEFS: dict[str, TileDef] = {
     # the courtyard it hangs over flagstones and outside the wall it
     # hangs over sand. That is the same reason the docks has both 'o'
     # and 'O' for one barrel.
-    "ᛨ": TileDef(solid=False, color=(146, 34, 46),
-                 prop="castle_banner", under="⌽"),
-    "ᛩ": TileDef(solid=False, color=(146, 34, 46),
-                 prop="castle_banner", under="."),
+    # A banner, hanging on the wall it belongs to. It is solid because
+    # the wall under it is: the cloth is two tiles of sprite drawn
+    # upward, and hung on the open ground in front of a one-tile curtain
+    # two thirds of it came down past the bottom of the wall and lay on
+    # the courtyard floor. The placement pass widens the wall by a tile
+    # under every banner so there is stone for it to hang on.
+    "ᛮ": TileDef(solid=True, color=(146, 34, 46),
+                 prop="castle_banner", under="⌾"),
+    # The corner turret: three tiles of stone with a roof on it. The
+    # prop stands on the middle of the block's bottom row and draws up
+    # across the whole of it, so the corner is the tallest thing on the
+    # map, which is the only reason a corner tower exists.
+    "ᛪ": TileDef(solid=True, color=(92, 92, 96),
+                 prop="castle_turret", under="ᛧ"),
     "⌾": TileDef(solid=True, color=(92, 92, 96)),
     # A frozen world, also unvisited. Snow and drift are both snowy
     # ground as far as the weather is concerned -- SnowFall masks to
