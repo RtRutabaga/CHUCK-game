@@ -78,16 +78,22 @@ def test_tea_table_is_a_large_enemy_free_scale_respite() -> None:
     )
 
     props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
-    assert props["fey_table_leg"] == 4
-    assert props["fey_chair_leg"] == 3
+    # Two legs, and both of them at the front. A leg is seventy pixels
+    # of sprite drawn upward from the bottom of its tile, so the far
+    # pair that used to stand four rows behind these ones stacked into
+    # one continuous post with a joint halfway up it -- a pillar, not a
+    # table. The pair that reads is the pair holding up the edge the
+    # camera can see.
+    assert props["fey_table_leg"] == 2
     assert {
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "fey_table_leg"
-    } == {(21, 33), (52, 33), (21, 37), (52, 37)}
-    assert {
-        (col, row) for kind, col, row in tilemap.prop_tiles
-        if kind == "fey_chair_leg"
-    } == {(9, 16), (14, 20), (9, 34)}
+    } == {(21, 37), (52, 37)}
+    # And nothing stands loose in the western aisle. There were three
+    # chair legs out there, each on its own in open ground with no seat
+    # over it and no second leg near enough to belong to the same
+    # chair, which is a fence post rather than furniture.
+    assert "fey_chair_leg" not in props
     assert props["fey_plate"] == 3
     assert props["fey_teacup"] == 3
     assert props["fey_napkin"] == 3
@@ -97,6 +103,32 @@ def test_tea_table_is_a_large_enemy_free_scale_respite() -> None:
         for row in range(tilemap.height_tiles)
         for col in range(tilemap.width_tiles)
     ) > 600
+
+
+def test_the_table_edge_is_one_beam_all_the_way_round() -> None:
+    """A closed lip, with the sides drawn along their own direction.
+
+    The overhead lip is what stops anything larger than Chuck getting
+    under the table, so it has to be unbroken -- and the west and east
+    runs are their own tiles because the shared horizontal art repeated
+    down the side of the table drew eight loose planks with a gap
+    between each, which reads as a ladder bolted to the furniture.
+    """
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    for col in range(18, 56):
+        assert tilemap.terrain_at(col, 29) == "⌑", col
+        assert tilemap.terrain_at(col, 38) == "⌑", col
+    for row in range(30, 38):
+        assert tilemap.terrain_at(18, row) == "⌙", row
+        assert tilemap.terrain_at(55, row) == "⌐", row
+    # All of it is lip: Chuck walks under every tile of it and nothing
+    # larger does.
+    for char in ("⌑", "⌙", "⌐"):
+        assert char in collision.LARGE_ACTOR_PASSAGE_TERRAIN
+    assert not any(
+        tilemap.is_solid(col, row)
+        for col in (18, 55) for row in range(30, 38)
+    )
 
 
 def test_required_route_and_cache_depend_on_chuck_scale() -> None:
@@ -130,7 +162,6 @@ def test_place_settings_are_human_scale_and_say_only_short_lines() -> None:
     objects = config.SPRITES_DIR / "objects"
     expected_sizes = {
         "fey_table_leg_1.png": (34, 70),
-        "fey_chair_leg_1.png": (28, 58),
         "fey_plate.png": (52, 28),
         "fey_teacup.png": (34, 38),
         "fey_napkin.png": (42, 30),

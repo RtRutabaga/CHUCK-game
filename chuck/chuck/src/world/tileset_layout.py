@@ -397,6 +397,8 @@ FEYWILD = Tileset(
         ("fey_tabletop", 4, 1),
         ("fey_table_shadow", 3, 1),
         ("fey_table_apron", 3, 1),
+        ("fey_table_apron_w", 3, 1),
+        ("fey_table_apron_e", 3, 1),
         ("fey_tea_spill", 3, 1),
         ("fey_needle_bed", 4, 1),
         ("fey_channel", 3, 3),
@@ -440,6 +442,8 @@ FEYWILD = Tileset(
         "≀": "fey_root_passage",
         "ᚿ": "fey_mushroom_passage",
         "⌑": "fey_table_apron",
+        "⌙": "fey_table_apron_w",
+        "⌐": "fey_table_apron_e",
     },
 )
 

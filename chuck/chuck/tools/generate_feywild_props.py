@@ -165,24 +165,6 @@ def table_leg(variant: int) -> Image.Image:
     return image
 
 
-def chair_leg(variant: int) -> Image.Image:
-    image = Image.new("RGBA", (28, 58), TRANSPARENT)
-    draw = ImageDraw.Draw(image)
-    lean = (-1, 1)[variant]
-    draw.ellipse((2, 51, 26, 57), fill=(7, 27, 30, 170))
-    draw.polygon(
-        ((6 + lean, 2), (22 + lean, 2), (20, 52), (8, 52)),
-        fill=(76, 49, 54, 255),
-    )
-    draw.polygon(
-        ((9 + lean, 3), (18 + lean, 3), (17, 49), (10, 49)),
-        fill=(136, 82, 68, 255),
-    )
-    draw.line((11 + lean, 4, 12, 47), fill=(184, 116, 79, 255), width=2)
-    draw.rectangle((5, 48, 23, 54), fill=(67, 42, 47, 255))
-    return image
-
-
 def plate() -> Image.Image:
     image = Image.new("RGBA", (52, 28), TRANSPARENT)
     draw = ImageDraw.Draw(image)
@@ -251,7 +233,6 @@ def main() -> None:
     )
     for index in range(2):
         table_leg(index).save(OUT / f"fey_table_leg_{index + 1}.png")
-        chair_leg(index).save(OUT / f"fey_chair_leg_{index + 1}.png")
     plate().save(OUT / "fey_plate.png")
     teacup().save(OUT / "fey_teacup.png")
     napkin().save(OUT / "fey_napkin.png")

@@ -442,6 +442,51 @@ def table_apron(surface, variant: int, _frame: int) -> None:
                      (2 + variant * 4, 1), (4 + variant * 4, 9))
 
 
+def _table_apron_rail(surface, variant: int, outer: int) -> None:
+    """One tile of the table's lip seen along its western or eastern edge.
+
+    The lip is a beam, and a beam has a direction. Drawn with the north
+    and south art -- a band across the top of the tile -- a run of it
+    down the side of the table came out as eight loose planks with a gap
+    between each one, which is what a ladder looks like and not what the
+    edge of a table looks like.
+
+    ``outer`` is the x of the table's outside face: 0 on the west edge
+    and 15 on the east. Everything else is measured inward from there,
+    so the two runs mirror each other and together outline the table's
+    real footprint rather than floating somewhere inside it.
+    """
+    surface.fill((0, 0, 0, 0))
+    step = 1 if outer == 0 else -1
+    near = 0 if outer == 0 else 10
+    # Six pixels of beam with the last two in shadow, which is the
+    # horizontal lip turned on its side: the light edge is the one
+    # facing out of the table and the dark one is where it overhangs.
+    pygame.draw.rect(surface, TABLE_DARK, (near, 0, 6, 16))
+    pygame.draw.rect(surface, TABLE, (outer if step > 0 else outer - 3,
+                                      0, 4, 16))
+    pygame.draw.line(surface, TABLE_LIGHT, (outer, 0), (outer, 15))
+    # The same knot and trailing vine as the horizontal lip, hanging
+    # inward under the table so the four sides read as one piece of
+    # furniture rather than four.
+    knot = outer + step * 2
+    pygame.draw.rect(surface, TABLE_DARK,
+                     (min(knot, knot + step), variant * 5, 2, 5))
+    pygame.draw.line(surface, (43, 104, 69),
+                     (outer + step, 2 + variant * 4),
+                     (outer + step * 9, 4 + variant * 4))
+
+
+def table_apron_w(surface, variant: int, _frame: int) -> None:
+    """The table's west lip: the beam runs down the tile, not across it."""
+    _table_apron_rail(surface, variant, 0)
+
+
+def table_apron_e(surface, variant: int, _frame: int) -> None:
+    """The table's east lip, mirrored so its light edge faces outward."""
+    _table_apron_rail(surface, variant, 15)
+
+
 def tea_spill(surface, variant: int, _frame: int) -> None:
     tabletop(surface, variant, 0)
     points = (
@@ -525,6 +570,8 @@ DRAW = {
     "fey_tabletop": tabletop,
     "fey_table_shadow": table_shadow,
     "fey_table_apron": table_apron,
+    "fey_table_apron_w": table_apron_w,
+    "fey_table_apron_e": table_apron_e,
     "fey_tea_spill": tea_spill,
     "fey_needle_bed": needle_bed,
 }

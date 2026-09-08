@@ -27,6 +27,53 @@ and updated every session.
 
 ## Latest implementation
 
+- Fixed the Feywild's giant tea table. It had four legs under it, in two
+  pairs four rows apart in the same two columns. A leg is seventy pixels of
+  sprite drawn upward from the bottom of its tile, so a pair four rows apart
+  stacks into a hundred and thirty-four pixels of continuous post with a joint
+  halfway up it -- which is a pillar, not a table with legs. Only the front
+  pair is left, feet on the south lip and rising away under the table, which
+  is the pair this angle has any reason to show.
+- Nothing stands loose in the western aisle any more either. Three chair legs
+  were scattered there, each on its own in open ground with no seat over it
+  and no second leg near enough to belong to the same chair, so what they read
+  as was fence posts nobody built a fence out of. The freestanding legs east
+  of the table had already been cut for exactly that reason; these are the
+  same object, and the prop, its tile and its sprites are gone with them.
+- The table's lip is three tiles now rather than one. A beam has a direction,
+  and the north-south art -- a band across the top of the tile -- repeated
+  down the west and east edges drew eight loose planks with a gap between each
+  one, which reads as a ladder bolted to the furniture. The side runs have
+  their own tiles, drawn along the tile instead of across it and mirrored so
+  the lit face is the outer one, and the four runs together now outline the
+  table's actual footprint as a closed rectangle.
+- Both new tiles are the same overhead lip the old one was: Chuck walks under
+  every tile of it and nothing larger does, which is the whole scale gate on
+  this map. They are in `LARGE_ACTOR_PASSAGE_TERRAIN`, and a test walks the
+  ring and asserts it is unbroken, so the cache and the southern exit stay
+  reachable by Chuck and unreachable by anything else.
+- Regenerating the map turned up a landmine worth recording. The Feywild's
+  trees were added to the six earliest maps by editing the shipped text files
+  directly and were never written into those maps' generators, so running the
+  tea table's generator dropped a hundred and eighty trees and the dense
+  blocks went back to reading as flat green slabs. The pass is now in the
+  generator, where it can be run twice and come out the same both times: 84
+  grove trees, 83 shrubs and 5 oaks, against the 89/89/5 that shipped. The
+  other five maps in that group still have the same gap and will lose their
+  wood the day anybody regenerates one.
+- Planting as the sweep went was the first version of that pass and it eats
+  its own map -- a tile dressed on one row is no longer dense growth for the
+  neighbour test on the next, so the mass shrinks ahead of the sweep and the
+  last kind placed came out at 8 instead of 83. Every tile that can take a
+  tree is found before any of them is planted.
+- One more exact-inventory test rewritten as a rule. Phase 9 pinned the
+  Feywild's overhead characters as a literal dict, which fails the day a new
+  overhead is added whether or not the new one is right. It now asserts the
+  four cardinal boundary cuts and the table's four lips are present, and that
+  every overhead -- whatever the list grows to -- is non-solid, is not also a
+  floor, and resolves to ground somebody can stand on.
+
+
 - Finished the collided desert's castle. The medieval fragment out east
   shipped as flat coursed ashlar: correct stone, and unmistakably a boundary
   rather than a building. It now reads as sections of a castle -- crenellation

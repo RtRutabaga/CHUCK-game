@@ -75,22 +75,38 @@ def build() -> list[list[str]]:
 
     # Heavy overhead aprons frame every way into or out of the under-table
     # route. Large actors treat both apron and shadow as solid terrain.
+    # The north and south lips run across their tiles; the west and east
+    # ones run down theirs, and are a separate tile for that reason. The
+    # horizontal art repeated down the side of the table drew eight loose
+    # planks with a gap between each, which reads as a ladder bolted to
+    # the furniture rather than as the edge of a table.
     for col in range(18, 56):
         grid[29][col] = "⌑"
         grid[38][col] = "⌑"
     for row in range(30, 38):
-        grid[row][18] = "⌑"
-        grid[row][55] = "⌑"
+        grid[row][18] = "⌙"
+        grid[row][55] = "⌐"
 
-    # Four structural legs support the enormous tabletop from inside its
-    # shadow. Western chair legs retain the human-scale furniture language;
-    # the unexplained freestanding legs formerly east of the table are omitted.
-    for col, row in ((21, 33), (52, 33), (21, 37), (52, 37)):
+    # Two legs, at the front corners, and only two.
+    #
+    # There were four, a near pair and a far pair in the same columns.
+    # Legs are seventy pixels of sprite drawn upward from the bottom of
+    # their tile, so a pair four rows apart stacks into one hundred and
+    # thirty-four pixels of continuous post with a joint halfway up it --
+    # which is not a table with four legs, it is a pillar. From this
+    # angle the far pair would be behind the tabletop anyway, and what
+    # the eye wants is the two that hold up the edge it can see: these
+    # stand with their feet on the south lip and rise away under the
+    # table.
+    for col, row in ((21, 37), (52, 37)):
         grid[row][col] = "♜"
-    for col, row in (
-        (9, 16), (14, 20), (9, 34),
-    ):
-        grid[row][col] = "♧"
+
+    # Nothing stands loose in the western aisle any more either. Three
+    # chair legs were scattered there, each on its own in open ground
+    # with no seat over it and no second leg near enough to belong to
+    # the same chair, so what they read as was fence posts nobody built
+    # a fence out of. The freestanding legs east of the table were cut
+    # for exactly this reason and these are the same object.
 
     # Two complete place settings and the remnants of another gathering.
     for col, row in ((27, 18), (45, 18), (44, 28)):
@@ -137,14 +153,60 @@ def build() -> list[list[str]]:
     for col in range(FUTURE_EXIT[0] - 1, FUTURE_EXIT[0] + 2):
         grid[H - 1][col] = "⇩"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "Ռ"
+    _dress_with_vegetation(grid)
     dress_grid("feywild_tea_table", grid)
     return grid
+
+
+def _dress_with_vegetation(grid: list[list[str]]) -> None:
+    """The region's wood, standing on the dense growth it breaks up.
+
+    Every other Feywild map grows its trees here, in its own generator,
+    from its own reading of where the mass is thick. This map's were put
+    straight into the shipped text file and never written down anywhere
+    else, so the generator did not reproduce the map it ships: running
+    it dropped a hundred and eighty trees and left the dense blocks
+    reading as flat green slabs again. It is written down now, where it
+    can be run twice and come out the same both times.
+
+    Only tiles that are already dense growth with growth on three sides
+    are dressed, so this replaces solid with solid and leaves every
+    route exactly as it was -- which is what let the original pass claim
+    solidity was unchanged byte for byte.
+    """
+    height, width = len(grid), len(grid[0])
+    # Every tile that could take a tree is found before any of them is
+    # planted. Planting as we go was the first version, and it eats its
+    # own map: a tile dressed on this row is no longer dense growth for
+    # the neighbour test on the next one, so the mass shrinks ahead of
+    # the sweep and the last kind placed gets a tenth of what it should.
+    thick = [
+        (col, row)
+        for row in range(1, height - 1)
+        for col in range(1, width - 1)
+        if grid[row][col] == "#"
+        and sum(
+            grid[row + drow][col + dcol] == "#"
+            for dcol, drow in ((1, 0), (-1, 0), (0, 1), (0, -1))
+        ) >= 3
+    ]
+    for col, row in thick:
+        key = (col * 31 + row * 17) % 7
+        if key == 0:
+            grid[row][col] = "ŧ"
+        elif key == 3:
+            grid[row][col] = "Ŧ"
+        elif key == 5 and (col * 5 + row * 3) % 17 == 0:
+            # The plain oak stays a landmark rather than a third kind of
+            # tree: one in seventeen of the tiles that could take one,
+            # which on this map is a handful.
+            grid[row][col] = "Ɓ"
 
 
 def _under(char: str) -> str:
     return {
         "Պ": ".", "Ջ": ".", "Ռ": "⇩", "Ս": ".",
-        "<": ".", "♜": "░", "♧": ".",
+        "<": ".", "♜": "░",
         "◉": "▤", "☕": "▤", "⌁": "▤", "⁙": "▤",
     }.get(char, char)
 
@@ -155,8 +217,8 @@ def _reachable(
     *,
     large_actor: bool = False,
 ) -> set[tuple[int, int]]:
-    blocked = {"#", "▤", "◍", "※", "♜", "♧", "◉", "☕", "⌁", "⁙",
-               "ł", "Ł", "ŋ"}
+    blocked = {"#", "▤", "◍", "※", "♜", "◉", "☕", "⌁", "⁙",
+               "ł", "Ł", "ŋ", "ŧ", "Ŧ", "Ɓ"}
     reached = {start}
     frontier = deque([start])
     while frontier:
@@ -171,7 +233,7 @@ def _reachable(
             terrain = _under(grid[y][x])
             if terrain in blocked:
                 continue
-            if large_actor and terrain in {"≀", "░", "⌑"}:
+            if large_actor and terrain in {"≀", "░", "⌑", "⌙", "⌐"}:
                 continue
             reached.add(point)
             frontier.append(point)
@@ -191,8 +253,20 @@ def validate(grid: list[list[str]]) -> None:
     text = "".join("".join(row) for row in grid)
     assert text.count("Ջ") == 1
     assert text.count("<") == 4
-    assert text.count("♜") == 4
-    assert text.count("♧") == 3
+    assert text.count("♜") == 2
+    assert "♧" not in text
+    # The lip is unbroken all the way round, and the sides use their own
+    # tile so the beam runs the way the edge does.
+    assert all(grid[29][col] == "⌑" and grid[38][col] == "⌑"
+               for col in range(18, 56))
+    assert all(grid[row][18] == "⌙" and grid[row][55] == "⌐"
+               for row in range(30, 38))
+    # The wood, at the counts the region's own suite asks of every
+    # Feywild map. Derived from the pass above rather than pinned to it,
+    # so this says "dressed" and not "dressed exactly like this".
+    assert text.count("ŧ") >= 20
+    assert text.count("Ŧ") >= 15
+    assert 0 < text.count("Ɓ") <= text.count("ŧ")
     assert text.count("◉") == 3 and text.count("☕") == 3
     assert all(grid[0][col] == "⇧" for col in range(11, 14))
     assert all(

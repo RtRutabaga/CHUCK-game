@@ -700,11 +700,18 @@ TILE_DEFS: dict[str, TileDef] = {
     "░": TileDef(solid=False, color=(13, 38, 39)),
     "⌑": TileDef(solid=False, color=(13, 38, 39),
                  under="░", overhead="fey_table_apron"),
+    # The same lip along the table's west and east edges. Two characters
+    # rather than one because a beam has a direction: the shared
+    # horizontal art repeated down the side of the table came out as a
+    # stack of loose planks, and which face is the outer one differs
+    # between the two sides.
+    "⌙": TileDef(solid=False, color=(13, 38, 39),
+                 under="░", overhead="fey_table_apron_w"),
+    "⌐": TileDef(solid=False, color=(13, 38, 39),
+                 under="░", overhead="fey_table_apron_e"),
     "◍": TileDef(solid=True, color=(117, 76, 65)),
     "♜": TileDef(solid=True, color=(13, 38, 39),
                  prop="fey_table_leg", under="░"),
-    "♧": TileDef(solid=True, color=(20, 55, 52),
-                 prop="fey_chair_leg", under="."),
     "◉": TileDef(solid=True, color=(117, 76, 65),
                  prop="fey_plate", under="▤"),
     "☕": TileDef(solid=True, color=(117, 76, 65),

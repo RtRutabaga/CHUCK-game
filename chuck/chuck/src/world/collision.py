@@ -64,7 +64,9 @@ FALL_HAZARD_TERRAIN = frozenset({"V", "♠", "s", "≋"})
 # Overhead gaps built to Chuck's one-foot scale. They are ordinary walkable
 # terrain for him, while human-, gnome-, and monster-scale pursuers treat the
 # opening as solid and visibly stop at its mouth.
-LARGE_ACTOR_PASSAGE_TERRAIN = frozenset({"_", "≀", "░", "⌑", "ᚿ"})
+LARGE_ACTOR_PASSAGE_TERRAIN = frozenset(
+    {"_", "≀", "░", "⌑", "⌙", "⌐", "ᚿ"}
+)
 
 
 def move_and_collide(

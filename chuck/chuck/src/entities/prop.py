@@ -263,10 +263,6 @@ _SPRITES = {
         "objects/fey_table_leg_1.png",
         "objects/fey_table_leg_2.png",
     ),
-    "fey_chair_leg": (
-        "objects/fey_chair_leg_1.png",
-        "objects/fey_chair_leg_2.png",
-    ),
     "fey_plate": "objects/fey_plate.png",
     "fey_teacup": "objects/fey_teacup.png",
     "fey_napkin": "objects/fey_napkin.png",

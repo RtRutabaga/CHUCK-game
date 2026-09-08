@@ -188,22 +188,42 @@ def test_grass_beside_first_flower_can_accidentally_trigger_it() -> None:
 
 
 def test_feywild_boundaries_use_cardinal_vegetation_openings() -> None:
+    """Every overhead in the Feywild is a lid over ground somebody stands on.
+
+    Stated as a rule rather than as an inventory. The list here was exact
+    until the tea table's lip needed a west and an east tile of its own --
+    a beam has a direction, and the horizontal art repeated down the side
+    of the table drew a ladder bolted to the furniture -- and an inventory
+    fails on the day a new overhead is added whether or not the new one is
+    right.
+    """
     tileset = tileset_for(MAP_NAME)
-    expected = {
+    overheads = tileset.overhead_char_to_terrain
+    # The four cardinal cuts are still the whole boundary vocabulary...
+    assert {
         "\u2190": "fey_opening_w",
         "\u2192": "fey_opening_e",
         "\u21e7": "fey_opening_n",
         "\u21e9": "fey_opening_s",
-        "\u2240": "fey_root_passage",
-        "\u16bf": "fey_mushroom_passage",
-        "\u2311": "fey_table_apron",
-    }
-    assert tileset.overhead_char_to_terrain == expected
-    under = {"\u2240": "'", "\u16bf": "'", "\u2311": "\u2591"}
-    for char, art_name in expected.items():
+    }.items() <= overheads.items()
+    # ...the two crawl-throughs are still overheads rather than floors...
+    assert overheads["\u2240"] == "fey_root_passage"
+    assert overheads["\u16bf"] == "fey_mushroom_passage"
+    # ...and the tea table has a lip on all four of its sides, with the
+    # west and east runs drawn along their edge instead of across it.
+    assert {
+        overheads["\u2311"], overheads["\u2319"], overheads["\u2310"],
+    } == {"fey_table_apron", "fey_table_apron_w", "fey_table_apron_e"}
+
+    for char, art_name in overheads.items():
+        # An overhead is never also a floor: it draws over whatever the
+        # tile it is written on resolves to.
         assert char not in tileset.char_to_terrain
-        assert TILE_DEFS[char].under == under.get(char, "'")
         assert TILE_DEFS[char].overhead == art_name
+        assert not TILE_DEFS[char].solid, char
+        # ...and what it resolves to is ground, so Chuck fits under it.
+        assert TILE_DEFS[char].under, char
+        assert not TILE_DEFS[TILE_DEFS[char].under].solid, char
 
 
 def test_feywild_handoffs_are_three_tile_openings_on_outer_edges() -> None:
