@@ -17,7 +17,7 @@ from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.systems.dialogue import DialogueSystem
 from src.world import collision
 from src.world.tilemap import TileMap
-from src.world.tileset_layout import MAP_TILESET
+from src.world.tileset_layout import MAP_TILESET, tileset_for
 from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
 
@@ -88,7 +88,7 @@ def test_tea_table_is_a_large_enemy_free_scale_respite() -> None:
     assert {
         (col, row) for kind, col, row in tilemap.prop_tiles
         if kind == "fey_table_leg"
-    } == {(21, 37), (52, 37)}
+    } == {(21, 32), (52, 32)}
     # And nothing stands loose in the western aisle. There were three
     # chair legs out there, each on its own in open ground with no seat
     # over it and no second leg near enough to belong to the same
@@ -105,30 +105,50 @@ def test_tea_table_is_a_large_enemy_free_scale_respite() -> None:
     ) > 600
 
 
-def test_the_table_edge_is_one_beam_all_the_way_round() -> None:
-    """A closed lip, with the sides drawn along their own direction.
+def test_the_shadow_is_the_whole_of_the_table_edge() -> None:
+    """One unbroken field of shade, with nothing framing it.
 
-    The overhead lip is what stops anything larger than Chuck getting
-    under the table, so it has to be unbroken -- and the west and east
-    runs are their own tiles because the shared horizontal art repeated
-    down the side of the table drew eight loose planks with a gap
-    between each, which reads as a ladder bolted to the furniture.
+    There was a wooden lip drawn round the ring of the shadow, and from
+    above at this distance a thin border round a dark rectangle is a
+    picture frame rather than the edge of a table. Taking it off costs
+    nothing, which is the point of asserting it here: the shadow itself
+    was always the tile too low for anything bigger than Chuck, so the
+    scale gate this whole map is built on is where it always was.
     """
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
-    for col in range(18, 56):
-        assert tilemap.terrain_at(col, 29) == "⌑", col
-        assert tilemap.terrain_at(col, 38) == "⌑", col
-    for row in range(30, 38):
-        assert tilemap.terrain_at(18, row) == "⌙", row
-        assert tilemap.terrain_at(55, row) == "⌐", row
-    # All of it is lip: Chuck walks under every tile of it and nothing
-    # larger does.
-    for char in ("⌑", "⌙", "⌐"):
-        assert char in collision.LARGE_ACTOR_PASSAGE_TERRAIN
-    assert not any(
-        tilemap.is_solid(col, row)
-        for col in (18, 55) for row in range(30, 38)
-    )
+    for row in range(29, 39):
+        for col in range(18, 56):
+            char = tilemap.terrain_at(col, row)
+            assert char in {"░", "♜"}, (col, row, char)
+            # Chuck walks it; nothing larger does; and the legs
+            # standing in it are the only solid thing under there.
+            assert tilemap.is_solid(col, row) == (char == "♜")
+    assert "░" in collision.LARGE_ACTOR_PASSAGE_TERRAIN
+    assert not any(name.startswith("fey_table_apron")
+                   for name in tileset_for(MAP_NAME).info())
+
+
+def test_the_legs_hold_the_table_up() -> None:
+    """Butted against the underside, not standing loose beneath it.
+
+    A leg is seventy pixels of sprite drawn upward from the bottom of
+    its tile. Row 32 is the row where that puts its top a few pixels
+    into the tabletop, so the leg meets what it is carrying; standing
+    any further down it is a post with a gap above it, which is a leg
+    holding nothing.
+    """
+    tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
+    legs = [(col, row) for kind, col, row in tilemap.prop_tiles
+            if kind == "fey_table_leg"]
+    top_of_shadow = 29
+    for col, row in legs:
+        reach = (row + 1) * config.TILE_SIZE - LEG_HEIGHT
+        assert reach < top_of_shadow * config.TILE_SIZE, (col, row, reach)
+        # ...and not so far up that it is drawn inside the tabletop.
+        assert reach > (top_of_shadow - 1) * config.TILE_SIZE, (col, row)
+
+
+LEG_HEIGHT = 70
 
 
 def test_required_route_and_cache_depend_on_chuck_scale() -> None:

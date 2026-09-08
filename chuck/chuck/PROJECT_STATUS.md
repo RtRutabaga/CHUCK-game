@@ -27,6 +27,33 @@ and updated every session.
 
 ## Latest implementation
 
+- Took the wooden frame off the Feywild's tea table. There was a lip drawn
+  round the whole ring of the shadow, and from above at this distance a thin
+  border round a dark rectangle is a picture frame rather than the edge of a
+  table. It is gone, and with it the three tiles, the three sheet rows and the
+  three draw functions that made it -- including the west and east rails added
+  last session to stop the horizontal art reading as a ladder, which was the
+  right fix for the wrong object.
+- Nothing about the scale gate depended on it. The shadow was already the tile
+  too low for anything bigger than Chuck, so the cache and the southern exit
+  are gated exactly where they always were; the test now says that out loud
+  rather than testing the frame.
+- The shadow does the whole job on its own, so it was redrawn to be able to.
+  It is the Feywild's own ground tile at the same speckle positions with every
+  colour taken to a bit under half -- shade being the same floor with less
+  light on it, which is what makes a shaded floor read as being under
+  something where a differently-coloured floor reads as a different room.
+- Two things went with the old shadow. It carried a green line along its
+  bottom edge, which on a field ten tiles deep drew ten stripes across the
+  underside of the table and read as floorboards. And its pollen glow: every
+  ground tile out there catches one lit mote, and the one place in the Feywild
+  where nothing should be catching the light is under the furniture.
+- The two legs moved up against the table. A leg is seventy pixels of sprite
+  drawn upward from the bottom of its tile, and row 32 is the row that puts
+  its top a few pixels into the tabletop, so the leg meets what it is
+  carrying. Standing where they were, on the old frame, they were posts with
+  five tiles of gap above them -- legs holding nothing.
+
 - Put turrets on the knight courtyards and widened the walls under the
   banners. The corners had a drum tile each, which at one tile apiece read as
   a slightly different piece of wall -- and a corner tower exists precisely

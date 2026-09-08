@@ -75,30 +75,30 @@ def build() -> list[list[str]]:
 
     # Heavy overhead aprons frame every way into or out of the under-table
     # route. Large actors treat both apron and shadow as solid terrain.
-    # The north and south lips run across their tiles; the west and east
-    # ones run down theirs, and are a separate tile for that reason. The
-    # horizontal art repeated down the side of the table drew eight loose
-    # planks with a gap between each, which reads as a ladder bolted to
-    # the furniture rather than as the edge of a table.
-    for col in range(18, 56):
-        grid[29][col] = "⌑"
-        grid[38][col] = "⌑"
-    for row in range(30, 38):
-        grid[row][18] = "⌙"
-        grid[row][55] = "⌐"
+    # There is no lip round the shadow any more. There was a wooden one,
+    # a beam drawn across the top of every tile of the ring, and from
+    # above at this distance a thin frame around a dark rectangle is a
+    # picture frame rather than the edge of a table. What says "under
+    # the table" is the shadow, and it says it without help.
+    #
+    # Nothing about the scale gate depended on the frame either. The
+    # shadow was already the tile too low for anything bigger than
+    # Chuck, so taking the frame off changes how the table looks and
+    # nothing at all about who can get under it.
 
-    # Two legs, at the front corners, and only two.
+    # Two legs, and both of them up against the table.
     #
     # There were four, a near pair and a far pair in the same columns.
     # Legs are seventy pixels of sprite drawn upward from the bottom of
     # their tile, so a pair four rows apart stacks into one hundred and
     # thirty-four pixels of continuous post with a joint halfway up it --
-    # which is not a table with four legs, it is a pillar. From this
-    # angle the far pair would be behind the tabletop anyway, and what
-    # the eye wants is the two that hold up the edge it can see: these
-    # stand with their feet on the south lip and rise away under the
-    # table.
-    for col, row in ((21, 37), (52, 37)):
+    # which is not a table with four legs, it is a pillar.
+    #
+    # Row 32 is the row where a leg's top meets the underside of the
+    # tabletop and overlaps it by a few pixels, so the leg is holding
+    # the table up. Standing any further down it is a post with a gap
+    # above it, which is a leg holding nothing.
+    for col, row in ((21, 32), (52, 32)):
         grid[row][col] = "♜"
 
     # Nothing stands loose in the western aisle any more either. Three
@@ -233,7 +233,7 @@ def _reachable(
             terrain = _under(grid[y][x])
             if terrain in blocked:
                 continue
-            if large_actor and terrain in {"≀", "░", "⌑", "⌙", "⌐"}:
+            if large_actor and terrain in {"≀", "░"}:
                 continue
             reached.add(point)
             frontier.append(point)
@@ -255,12 +255,11 @@ def validate(grid: list[list[str]]) -> None:
     assert text.count("<") == 4
     assert text.count("♜") == 2
     assert "♧" not in text
-    # The lip is unbroken all the way round, and the sides use their own
-    # tile so the beam runs the way the edge does.
-    assert all(grid[29][col] == "⌑" and grid[38][col] == "⌑"
-               for col in range(18, 56))
-    assert all(grid[row][18] == "⌙" and grid[row][55] == "⌐"
-               for row in range(30, 38))
+    # The shadow is one unbroken field with nothing framing it.
+    assert all(
+        grid[row][col] in {"░", "♜"}
+        for row in range(29, 39) for col in range(18, 56)
+    )
     # The wood, at the counts the region's own suite asks of every
     # Feywild map. Derived from the pass above rather than pinned to it,
     # so this says "dressed" and not "dressed exactly like this".

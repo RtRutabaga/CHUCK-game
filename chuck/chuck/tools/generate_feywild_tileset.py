@@ -421,70 +421,37 @@ def tabletop(surface, variant: int, _frame: int) -> None:
             )
 
 
+def _shade(colour, amount: float = 0.42):
+    return tuple(round(channel * amount) for channel in colour)
+
+
 def table_shadow(surface, variant: int, _frame: int) -> None:
-    """Cool under-table ground: clearly traversable, visibly sheltered."""
-    surface.fill((11, 34, 37))
-    for index in range(4):
-        x = (variant * 5 + index * 4 + 1) % 16
-        y = (variant * 7 + index * 5 + 2) % 16
-        pygame.draw.rect(surface, (19, 52, 48), (x, y, 2, 2))
-    pygame.draw.line(surface, (39, 72, 55), (0, 15), (15, 15))
+    """The Feywild's own ground, in the dark under the table.
 
+    This is the same tile as `ground`, at the same speckle positions,
+    with every colour taken down to a bit under half. That is the whole
+    of the change and the whole of the point: shade is the same floor
+    with less light on it, so a shaded floor reads as being under
+    something, where a different floor reads as a different room.
 
-def table_apron(surface, variant: int, _frame: int) -> None:
-    """Heavy table lip overhead; Chuck remains visible beneath the lower half."""
-    surface.fill((0, 0, 0, 0))
-    pygame.draw.rect(surface, TABLE_DARK, (0, 0, 16, 6))
-    pygame.draw.rect(surface, TABLE, (0, 0, 16, 4))
-    pygame.draw.line(surface, TABLE_LIGHT, (0, 0), (15, 0))
-    pygame.draw.rect(surface, TABLE_DARK, (variant * 5, 5, 5, 2))
-    pygame.draw.line(surface, (43, 104, 69),
-                     (2 + variant * 4, 1), (4 + variant * 4, 9))
+    The frame this used to have -- a wooden lip drawn round the ring of
+    the shadow -- is gone, and it was the frame doing the explaining
+    before. From above at this distance a thin border round a dark
+    rectangle is a picture frame, not the edge of a table.
 
-
-def _table_apron_rail(surface, variant: int, outer: int) -> None:
-    """One tile of the table's lip seen along its western or eastern edge.
-
-    The lip is a beam, and a beam has a direction. Drawn with the north
-    and south art -- a band across the top of the tile -- a run of it
-    down the side of the table came out as eight loose planks with a gap
-    between each one, which is what a ladder looks like and not what the
-    edge of a table looks like.
-
-    ``outer`` is the x of the table's outside face: 0 on the west edge
-    and 15 on the east. Everything else is measured inward from there,
-    so the two runs mirror each other and together outline the table's
-    real footprint rather than floating somewhere inside it.
+    Two things went with it. The old tile carried a green line along
+    its bottom edge, which on a field ten tiles deep drew ten stripes
+    across the underside of the table and read as floorboards. And the
+    pollen glow is gone too: every other ground tile out here catches
+    one lit mote, and the one place in the Feywild where nothing should
+    be catching the light is under the furniture.
     """
-    surface.fill((0, 0, 0, 0))
-    step = 1 if outer == 0 else -1
-    near = 0 if outer == 0 else 10
-    # Six pixels of beam with the last two in shadow, which is the
-    # horizontal lip turned on its side: the light edge is the one
-    # facing out of the table and the dark one is where it overhangs.
-    pygame.draw.rect(surface, TABLE_DARK, (near, 0, 6, 16))
-    pygame.draw.rect(surface, TABLE, (outer if step > 0 else outer - 3,
-                                      0, 4, 16))
-    pygame.draw.line(surface, TABLE_LIGHT, (outer, 0), (outer, 15))
-    # The same knot and trailing vine as the horizontal lip, hanging
-    # inward under the table so the four sides read as one piece of
-    # furniture rather than four.
-    knot = outer + step * 2
-    pygame.draw.rect(surface, TABLE_DARK,
-                     (min(knot, knot + step), variant * 5, 2, 5))
-    pygame.draw.line(surface, (43, 104, 69),
-                     (outer + step, 2 + variant * 4),
-                     (outer + step * 9, 4 + variant * 4))
-
-
-def table_apron_w(surface, variant: int, _frame: int) -> None:
-    """The table's west lip: the beam runs down the tile, not across it."""
-    _table_apron_rail(surface, variant, 0)
-
-
-def table_apron_e(surface, variant: int, _frame: int) -> None:
-    """The table's east lip, mirrored so its light edge faces outward."""
-    _table_apron_rail(surface, variant, 15)
+    surface.fill(_shade(GROUND))
+    for index in range(4):
+        x = (variant * 5 + index * 7 + 2) % 16
+        y = (variant * 3 + index * 5 + 4) % 16
+        colour = GROUND_LIGHT if index == 0 else GROUND_DARK
+        pygame.draw.rect(surface, _shade(colour), (x, y, 2, 2))
 
 
 def tea_spill(surface, variant: int, _frame: int) -> None:
@@ -569,9 +536,6 @@ DRAW = {
     "fey_mushroom_passage": mushroom_passage,
     "fey_tabletop": tabletop,
     "fey_table_shadow": table_shadow,
-    "fey_table_apron": table_apron,
-    "fey_table_apron_w": table_apron_w,
-    "fey_table_apron_e": table_apron_e,
     "fey_tea_spill": tea_spill,
     "fey_needle_bed": needle_bed,
 }
