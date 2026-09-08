@@ -46,6 +46,26 @@ PARTITIONS = (
     (22, 30, 6, True), (40, 32, 8, True),
     (22, 20, 6, False), (43, 24, 8, False),
 )
+# The gate. It stands in the north wall, on the door the player
+# arrives at, and the door is widened to three tiles so there is an
+# opening under it rather than a doorway with a monument next to it.
+# The arch's own piers are the wall either side.
+GATE = 24                   # the middle of it, on the outer wall's top row
+
+# The great pillars. Every column in the ruin was a fragment, so the
+# building they were fragments of was never on screen -- these are it.
+#
+# Four flank the way in and the courtyard door, which is where a
+# building this size puts its order; two more stand outside the north
+# wall where the portico came down, and two in the south-west room,
+# which is the deepest part of the building and had nothing in it.
+GREAT_PILLARS = (
+    (21, 14), (28, 14), (36, 14), (43, 14),
+    (27, 21), (39, 21),
+    (20, 10), (44, 10),
+    (20, 33), (20, 36),
+)
+
 CHEST = (32, 26)            # in the courtyard, dead centre
 ANCHOR = (32, 44)           # outside the building, on the way in
 ARRIVAL = (30, 4)           # just inside the way in from the hub
@@ -103,6 +123,32 @@ def _wall(grid, left, top, width, height) -> None:
                 grid[y][x] = "⌗"
 
 
+def _thicken(grid) -> None:
+    """Give the outer wall a second leaf, inside the first.
+
+    One tile of stone is a garden wall. A building with rooms, a
+    courtyard and a gate in it was built thick, and at this scale the
+    difference between one tile and two is the difference between a
+    line drawn round the floor and something with a weight to it.
+
+    The inner leaf is broken much harder than the outer one, because
+    that is how these walls actually fail: the facing stays up and the
+    rubble core behind it goes. So the thickness comes and goes along
+    the run, which is what stops two tiles of wall reading as one tile
+    of wall drawn twice.
+    """
+    left, top, width, height = OUTER
+    right, bottom = left + width - 1, top + height - 1
+    for y in range(top + 1, bottom):
+        for x in range(left + 1, right):
+            if not (y in (top + 1, bottom - 1) or x in (left + 1, right - 1)):
+                continue
+            corner = (x in (left + 1, left + 2, right - 2, right - 1)
+                      and y in (top + 1, top + 2, bottom - 2, bottom - 1))
+            if corner or (x * 7 + y * 11) % 10 >= 5:
+                grid[y][x] = "⌗"
+
+
 def _partitions(grid) -> None:
     for x, y, length, horizontal in PARTITIONS:
         for step in range(length):
@@ -116,17 +162,59 @@ def _partitions(grid) -> None:
 
 
 def _doors(grid) -> None:
+    """Cut the ways in, through both leaves of the wall.
+
+    A doorway that goes through the facing and stops at the core is a
+    niche, so every door is cut twice: once in the outer ring and once
+    in the inner one directly behind it.
+    """
     left, top, width, height = OUTER
     right, bottom = left + width - 1, top + height - 1
     for side, at in DOORS:
         if side == "north":
-            _rect(grid, at, top, at + 1, top, "⌖")
+            _rect(grid, at, top, at + 1, top + 1, "⌖")
         elif side == "south":
-            _rect(grid, at, bottom, at + 1, bottom, "⌖")
+            _rect(grid, at, bottom - 1, at + 1, bottom, "⌖")
         elif side == "west":
-            _rect(grid, left, at, left, at + 1, "⌖")
+            _rect(grid, left, at, left + 1, at + 1, "⌖")
         else:
-            _rect(grid, right, at, right, at + 1, "⌖")
+            _rect(grid, right - 1, at, right, at + 1, "⌖")
+
+
+def _gate(grid) -> None:
+    """Widen the arrival door to three tiles and stand the arch on it.
+
+    The arch is one sprite five tiles across, anchored on the middle of
+    the opening. That is why the door has to be three wide: the sprite's
+    two piers land on the tiles either side, and those stay standing
+    wall, so what is solid about the gate is exactly the stone that
+    looks solid.
+    """
+    left, top, width, height = OUTER
+    for offset in (-1, 0, 1):
+        grid[top][GATE + offset] = "⌖"
+        grid[top + 1][GATE + offset] = "⌖"
+    for offset in (-2, 2):
+        grid[top][GATE + offset] = "⌗"
+        grid[top + 1][GATE + offset] = "⌗"
+    grid[top][GATE] = "⍛"
+    # The gate is the way in, so the sand in front of it is swept clear
+    # of anything the ruin dressing dropped there.
+    for row in range(top - 3, top):
+        for col in range(GATE - 2, GATE + 3):
+            if grid[row][col] not in (",", "⟁"):
+                grid[row][col] = "."
+
+
+def _great_pillars(grid) -> None:
+    """Stand the big order where a building this size would have it."""
+    for col, row in GREAT_PILLARS:
+        if not (0 <= row < HEIGHT and 0 <= col < WIDTH):
+            continue
+        if grid[row][col] == "⌖":
+            grid[row][col] = "⍕"
+        elif grid[row][col] in (".", ",", "⟁"):
+            grid[row][col] = "⍙"
 
 
 def _astral(grid) -> None:
@@ -145,6 +233,7 @@ def build():
     grid = _blank()
     _weather(grid)
     _wall(grid, *OUTER)
+    _thicken(grid)
     _partitions(grid)
     _wall(grid, *COURT)
     _doors(grid)
@@ -152,8 +241,14 @@ def build():
     # so they are dressed by the same rule and out of the same pieces --
     # a player who has walked past six broken rectangles up north
     # should recognise this as the thing they were broken off.
+    # The big order first, and the fragments round it afterwards: the
+    # ruin dressing never writes on a tile that already has something
+    # on it, so putting the pillars down first means a great one and a
+    # broken one can never want the same tile.
+    _great_pillars(grid)
     dress_ruin(grid, *OUTER, seed=OUTER[0] + OUTER[1])
     dress_ruin(grid, *COURT, seed=COURT[0] + COURT[1])
+    _gate(grid)
     _astral(grid)
 
     mid_x = WIDTH // 2
@@ -186,6 +281,8 @@ HEADER = (
     "; The Astral Sea closes the west and the south.\n"
     "; '⍏'/'⍐' standing columns, '⍖'/'⍗' fallen ones,"
     " '⍓'/'⍔' spilled blocks.\n"
+    "; '⍕'/'⍙' the great pillars and '⍛' the gate arch, which is the\n"
+    "; one piece of the building still whole. Chuck walks under it.\n"
 )
 
 

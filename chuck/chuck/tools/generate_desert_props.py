@@ -137,6 +137,268 @@ def desert_column(variant: int) -> Image.Image:
     return image
 
 
+def desert_great_pillar(variant: int) -> Image.Image:
+    """A column of the order the building was actually built at.
+
+    The ones already here are twenty pixels across and knee-high to a
+    doorway, which is the right size for a piece that has come off
+    something -- and reading the map back, that is all the ruin had.
+    Every column in it was a fragment, so the building it was supposed
+    to be a fragment *of* was never on screen.
+
+    These are that building: twenty-eight across and up to seven tiles
+    tall, wide enough that Chuck passing one loses sight of what is
+    behind it. The footprint stays a single tile, so a pillar can be
+    stood anywhere the small ones could and can never be the reason a
+    room closed; the stone overhangs its tile by six pixels a side,
+    the way the banners on the eastern castle do.
+
+    Three heights again, and for the same reason: the same column
+    repeated at one height is a colonnade, and a colonnade is a
+    building that is still standing.
+    """
+    height = (112, 88, 68)[variant]
+    width = 28
+    image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+
+    _cast_shadow(draw, (2, height - 11, 26, height - 1))
+
+    # A stepped plinth. One step is a kerb; two is architecture, and at
+    # this size that difference is most of what says the building was
+    # a serious one.
+    draw.rectangle((0, height - 10, 27, height - 1), fill=RUIN_DARK)
+    draw.rectangle((1, height - 10, 26, height - 4), fill=RUIN)
+    draw.line((1, height - 10, 26, height - 10), fill=RUIN_LIT)
+    draw.rectangle((3, height - 15, 24, height - 9), fill=RUIN_DARK)
+    draw.rectangle((4, height - 15, 23, height - 11), fill=RUIN)
+    draw.line((4, height - 15, 23, height - 15), fill=RUIN_LIT)
+
+    top = 6
+    shaft_top, shaft_bottom = top, height - 15
+    left, right = 5, 22
+    # The shaft, shaded across its width rather than in bands. A
+    # cylinder is a gradient; drawn as a lit strip, a mid strip and a
+    # dark strip it is a flat board with stripes on it, which is what
+    # the first pass at the eastern turret came back as.
+    span = right - left
+    for x in range(left, right + 1):
+        across = (x - left) / span
+        light = 1.0 - abs(across - 0.32) * 1.9
+        if light > 0.82:
+            colour = RUIN_PALE
+        elif light > 0.55:
+            colour = RUIN_LIT
+        elif light > 0.25:
+            colour = RUIN
+        else:
+            colour = RUIN_DARK
+        draw.line((x, shaft_top, x, shaft_bottom), fill=colour)
+    draw.line((left, shaft_top, left, shaft_bottom), fill=RUIN_SHADE)
+    draw.line((right, shaft_top, right, shaft_bottom), fill=RUIN_SHADE)
+
+    # Flutes: two of them, one either side of the lit line. On a shaft
+    # this wide a single groove disappears, and cutting one every three
+    # pixels turns the column into a comb.
+    for flute in (11, 17):
+        draw.line((flute, shaft_top + 3, flute, shaft_bottom - 2),
+                  fill=RUIN_DARK)
+        draw.line((flute - 1, shaft_top + 3, flute - 1, shaft_bottom - 2),
+                  fill=RUIN_PALE)
+
+    # Drum joints, and one of them open: the column has settled and the
+    # sections have slipped a little against each other.
+    slip = 0
+    for y in range(shaft_top + 12, shaft_bottom - 6, 14):
+        draw.line((left, y, right, y), fill=RUIN_SHADE)
+        draw.line((left, y + 1, right, y + 1), fill=RUIN_PALE)
+        if (y + variant) % 3 == 0 and slip == 0:
+            slip = y
+            draw.line((left, y + 2, right, y + 2), fill=RUIN_DARK)
+
+    # The break, and the drum below it chipped where the weight came
+    # off. A flat top reads as a column somebody cut to length.
+    draw.ellipse((left, top - 5, right, top + 4), fill=RUIN_PALE)
+    draw.ellipse((left + 3, top - 3, right - 3, top + 2), fill=RUIN_LIT)
+    for chip, depth in ((6, 4), (12, 5), (19, 3), (21, 4)):
+        if (chip + variant) % 2:
+            draw.rectangle((chip, top - 5, chip + 1, top - 5 + depth),
+                           fill=(0, 0, 0, 0))
+    return image
+
+
+def desert_ruin_arch() -> Image.Image:
+    """The gate the building was entered through, still standing.
+
+    Five tiles across and six and a half tall, drawn as one object
+    because an arch is one: what makes it read is the curve running
+    unbroken from one pier into the other, and a curve cut into
+    sixteen-pixel tiles is a staircase.
+
+    Only its two piers are solid. Chuck walks through the middle of it,
+    and the sprite is anchored on the tile he walks through -- so it
+    sorts against him the way it should, behind him while he is south
+    of it and in front of him once he is north.
+
+    The first version was the ring alone under a cornice, and a ring
+    with daylight either side of it is a croquet hoop. An arch is a
+    hole in a wall: the spandrels are filled, so what is standing here
+    is a piece of gatehouse with an opening cut through it, and the
+    voussoirs are the joints in that opening rather than the whole of
+    the object.
+
+    It is the one intact piece in the ruin, and that is deliberate. A
+    building where everything has fallen is a field of rubble; one
+    thing left standing is what says how high the rest of it was.
+    """
+    width, height = 80, 104
+    image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+
+    centre, springing = 40, 34
+    outer_w, outer_h = 30, 28
+    ring = 8
+
+    def intrados(y: int) -> float:
+        """Half-width of the opening at this height, above the springing."""
+        rise = (springing - y) / (outer_h - ring)
+        if rise > 1.0:
+            return 0.0
+        return (outer_w - ring) * (1.0 - rise * rise) ** 0.5
+
+    def extrados(y: int) -> float:
+        rise = (springing - y) / outer_h
+        if rise > 1.0:
+            return 0.0
+        return outer_w * (1.0 - rise * rise) ** 0.5
+
+    _cast_shadow(draw, (2, height - 9, 78, height - 1))
+
+    # ------------------------------------------------------------------
+    # The wall the opening is cut through, from the springing up to the
+    # cornice. Coursed, and lit from the west like everything else out
+    # here.
+    # ------------------------------------------------------------------
+    for y in range(6, springing + 1):
+        for x in range(3, 77):
+            across = (x - 3) / 73.0
+            colour = (RUIN_LIT if across < 0.34 else
+                      RUIN if across < 0.72 else RUIN_DARK)
+            if (y - 6) % 7 == 0:
+                colour = RUIN_SHADE
+            elif (y - 6) % 7 == 1:
+                colour = RUIN_PALE if across < 0.5 else RUIN
+            image.putpixel((x, y), colour)
+    # Perpends, offset course by course so it is not a grid.
+    for y in range(6, springing + 1):
+        if (y - 6) % 7 in (0, 1):
+            continue
+        for x in range(3 + ((y // 7) * 6) % 13, 77, 13):
+            image.putpixel((x, y), RUIN_SHADE)
+
+    # Cut the opening back out of it.
+    for y in range(springing - outer_h + ring, springing + 1):
+        half = intrados(y)
+        for x in range(round(centre - half), round(centre + half) + 1):
+            if 0 <= x < width:
+                image.putpixel((x, y), (0, 0, 0, 0))
+
+    # ------------------------------------------------------------------
+    # The voussoirs: the ring of wedge stones round the opening. They
+    # are the joints in the wall, so they are drawn on top of it.
+    # ------------------------------------------------------------------
+    for y in range(springing - outer_h, springing + 1):
+        outer, inner = extrados(y), intrados(y)
+        for x in range(round(centre - outer), round(centre + outer) + 1):
+            if not 0 <= x < width:
+                continue
+            offset = abs(x - centre)
+            if offset < inner:
+                continue
+            depth = (offset - inner) / max(1.0, outer - inner)
+            if depth < 0.2:
+                colour = RUIN_SHADE          # the soffit, turned away
+            elif x < centre - 4:
+                colour = RUIN_PALE if depth > 0.5 else RUIN_LIT
+            elif x > centre + 4:
+                colour = RUIN_DARK
+            else:
+                colour = RUIN_LIT
+            image.putpixel((x, y), colour)
+    for step in range(15):
+        angle = math.pi * (step + 0.5) / 15
+        for radius in range(outer_w - ring - 1, outer_w + 1):
+            x = round(centre - radius * math.cos(angle))
+            y = round(springing - radius * (outer_h / outer_w)
+                      * math.sin(angle))
+            if 0 <= x < width and 0 <= y < height:
+                if image.getpixel((x, y))[3]:
+                    image.putpixel((x, y), RUIN_SHADE)
+
+    # The keystone: the one wedge that is bigger than the others, which
+    # is the detail that says somebody built this rather than piled it.
+    crown = springing - outer_h
+    draw.polygon(((centre - 5, crown - 5), (centre + 5, crown - 5),
+                  (centre + 3, crown + ring + 4),
+                  (centre - 3, crown + ring + 4)), fill=RUIN_LIT)
+    draw.polygon(((centre - 5, crown - 5), (centre - 1, crown - 5),
+                  (centre - 1, crown + ring + 4),
+                  (centre - 3, crown + ring + 4)), fill=RUIN_PALE)
+    draw.line((centre - 5, crown - 5, centre + 5, crown - 5), fill=RUIN_PALE)
+    draw.line((centre - 5, crown - 5, centre - 3, crown + ring + 4),
+              fill=RUIN_SHADE)
+    draw.line((centre + 5, crown - 5, centre + 3, crown + ring + 4),
+              fill=RUIN_SHADE)
+
+    # ------------------------------------------------------------------
+    # The piers, below the springing.
+    # ------------------------------------------------------------------
+    def pier(x0: int) -> None:
+        draw.rectangle((x0, height - 8, x0 + 15, height - 1), fill=RUIN_DARK)
+        draw.rectangle((x0 + 1, height - 8, x0 + 14, height - 4), fill=RUIN)
+        draw.line((x0 + 1, height - 8, x0 + 14, height - 8), fill=RUIN_LIT)
+        for step in range(14):
+            x = x0 + 1 + step
+            light = 1.0 - abs(step / 13.0 - 0.3) * 1.8
+            colour = (RUIN_PALE if light > 0.8 else
+                      RUIN_LIT if light > 0.55 else
+                      RUIN if light > 0.25 else RUIN_DARK)
+            draw.line((x, springing + 1, x, height - 9), fill=colour)
+        draw.line((x0 + 1, springing + 1, x0 + 1, height - 9),
+                  fill=RUIN_SHADE)
+        draw.line((x0 + 14, springing + 1, x0 + 14, height - 9),
+                  fill=RUIN_SHADE)
+        for y in range(springing + 10, height - 10, 12):
+            draw.line((x0 + 1, y, x0 + 14, y), fill=RUIN_SHADE)
+            draw.line((x0 + 1, y + 1, x0 + 14, y + 1), fill=RUIN_PALE)
+        # The impost the arch springs from, oversailing the pier.
+        draw.rectangle((x0 - 1, springing - 3, x0 + 16, springing + 2),
+                       fill=RUIN_DARK)
+        draw.rectangle((x0, springing - 3, x0 + 15, springing), fill=RUIN_LIT)
+        draw.line((x0, springing - 3, x0 + 15, springing - 3), fill=RUIN_PALE)
+
+    pier(2)
+    pier(62)
+
+    # ------------------------------------------------------------------
+    # The cornice, and the corner of it that did come down. An arch with
+    # nothing broken about it is a new building standing in a ruin.
+    # ------------------------------------------------------------------
+    draw.rectangle((0, 0, 79, 6), fill=RUIN_DARK)
+    draw.rectangle((1, 0, 78, 4), fill=RUIN)
+    draw.line((1, 0, 78, 0), fill=RUIN_LIT)
+    for x in range(62, width):
+        for y in range(0, 8):
+            if (x - 62) * 2 + (7 - y) * 3 > 22:
+                image.putpixel((x, y), (0, 0, 0, 0))
+    # ...and the wall under the broken corner weathered back with it.
+    for x in range(69, 77):
+        for y in range(6, 6 + (x - 68)):
+            if 0 <= x < width and 0 <= y < height:
+                image.putpixel((x, y), (0, 0, 0, 0))
+    return image
+
+
 def desert_column_fallen(variant: int) -> Image.Image:
     """A column lying where it came down, in two or three pieces.
 
@@ -374,10 +636,13 @@ def main() -> None:
     images = []
     for index in range(3):
         images.append((f"desert_column_{index + 1}", desert_column(index)))
+        images.append((f"desert_great_pillar_{index + 1}",
+                       desert_great_pillar(index)))
         images.append((f"desert_column_fallen_{index + 1}",
                        desert_column_fallen(index)))
         images.append((f"desert_rubble_{index + 1}", desert_rubble(index)))
         images.append((f"desert_palm_{index + 1}", desert_palm(index)))
+    images.append(("desert_ruin_arch", desert_ruin_arch()))
     for frame in range(6):
         images.append((f"desert_fire_pit_{frame + 1}", desert_fire_pit(frame)))
     for name, image in images:

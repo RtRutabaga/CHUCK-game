@@ -71,6 +71,18 @@ _SPRITES = {
         "objects/desert_column_2.png",
         "objects/desert_column_3.png",
     ),
+    # The order the building was actually built at, rather than the
+    # pieces that came off it: twenty-eight across and up to seven
+    # tiles tall, on a one-tile footprint so it can stand anywhere the
+    # small ones could.
+    "desert_great_pillar": (
+        "objects/desert_great_pillar_1.png",
+        "objects/desert_great_pillar_2.png",
+        "objects/desert_great_pillar_3.png",
+    ),
+    # ...and the one piece of it still whole. Five tiles across, and
+    # Chuck walks through the middle of it.
+    "desert_ruin_arch": "objects/desert_ruin_arch.png",
     "desert_column_fallen": (
         "objects/desert_column_fallen_1.png",
         "objects/desert_column_fallen_2.png",

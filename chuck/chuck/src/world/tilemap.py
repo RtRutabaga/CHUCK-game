@@ -422,6 +422,19 @@ TILE_DEFS: dict[str, TileDef] = {
                  under="⌖"),
     "⍐": TileDef(solid=True, color=(0, 0, 0), prop="desert_column",
                  under="."),
+    # The great pillars. Solid on their own single tile, like the
+    # small columns, and the stone overhangs it by six pixels a side
+    # the way the eastern castle's banners overhang theirs.
+    "⍕": TileDef(solid=True, color=(0, 0, 0), prop="desert_great_pillar",
+                 under="⌖"),
+    "⍙": TileDef(solid=True, color=(0, 0, 0), prop="desert_great_pillar",
+                 under="."),
+    # The gate arch. Not solid: this is the tile Chuck walks through,
+    # and the sprite is anchored on it so it sorts against him -- behind
+    # him on the way up to it, in front of him once he is through. Its
+    # two piers are separate tiles of standing wall either side.
+    "⍛": TileDef(solid=False, color=(162, 146, 124), prop="desert_ruin_arch",
+                 under="⌖"),
     "⍖": TileDef(solid=True, color=(0, 0, 0), prop="desert_column_fallen",
                  under="⌖"),
     "⍗": TileDef(solid=True, color=(0, 0, 0), prop="desert_column_fallen",

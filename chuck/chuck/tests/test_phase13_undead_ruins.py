@@ -44,7 +44,8 @@ from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 import sys
 sys.path.insert(0, "tools")
 from generate_desert_undead_ruins import (  # noqa: E402
-    ASTRAL, CHEST, COURT, GAP, HEIGHT, OUTER, RIM, WIDTH,
+    ASTRAL, CHEST, COURT, GAP, GATE, GREAT_PILLARS, HEIGHT, OUTER, RIM,
+    WIDTH,
 )
 
 
@@ -211,6 +212,96 @@ def test_it_reads_as_a_building_rather_than_as_rubble() -> None:
                 for x in range(left, right + 1)
                 if tilemap.terrain_at(x, y) in ("⌖", "ᛏ"))
     assert floor > width * height * 0.4, floor
+
+
+def test_the_building_is_the_size_the_fragments_implied() -> None:
+    """A great order, a gate, and a wall with two leaves to it.
+
+    Every column in here was a broken one, because the whole ruin
+    vocabulary is *fragments* -- which is right for the hub, where the
+    scattered rectangles are pieces of this building, and wrong here,
+    where this is the building. Nothing on the map was ever the size
+    the fragments were fragments of.
+
+    So: pillars nearly seven tiles tall against the old ones' three, a
+    gate still standing whole over the way in, and an outer wall built
+    two tiles thick instead of one. One tile of stone is a garden wall.
+    """
+    tilemap = _tilemap()
+    from PIL import Image
+
+    objects = config.SPRITES_DIR / "objects"
+    with Image.open(objects / "desert_column_1.png") as small:
+        with Image.open(objects / "desert_great_pillar_1.png") as great:
+            assert great.height > small.height * 2, (great.size, small.size)
+            # ...and still on a one-tile footprint, so a pillar can
+            # stand anywhere a small column could and can never be the
+            # reason a room closed.
+            assert great.width > config.TILE_SIZE
+            assert great.width < config.TILE_SIZE * 2
+
+    standing = [(col, row) for kind, col, row in tilemap.prop_tiles
+                if kind == "desert_great_pillar"]
+    assert len(standing) >= 8, standing
+    assert set(standing) <= set(GREAT_PILLARS), \
+        sorted(set(standing) - set(GREAT_PILLARS))
+    for col, row in standing:
+        assert tilemap.is_solid(col, row), (col, row)
+
+    # The wall is two leaves for most of its run, and not for all of it:
+    # the facing stays up and the rubble core behind it goes, so the
+    # thickness has to come and go or two tiles of wall read as one
+    # tile of wall drawn twice.
+    left, top, width, height = OUTER
+    right, bottom = left + width - 1, top + height - 1
+    doubled = sum(
+        1 for col in range(left, right + 1)
+        if tilemap.terrain_at(col, top) == "⌗"
+        and tilemap.terrain_at(col, top + 1) == "⌗"
+    )
+    single = sum(1 for col in range(left, right + 1)
+                 if tilemap.terrain_at(col, top) == "⌗")
+    assert 0.4 < doubled / single < 0.95, (doubled, single)
+
+
+def test_the_gate_is_the_one_thing_still_whole_and_chuck_walks_under_it():
+    """An arch over the door the player arrives at.
+
+    A ruin where everything has fallen is a field of rubble; one thing
+    left standing is what says how high the rest of it was. It is one
+    sprite five tiles across rather than five tiles of art, because
+    what makes an arch read is the curve running unbroken from one pier
+    into the other and a curve cut into sixteen-pixel tiles is a
+    staircase.
+    """
+    tilemap = _tilemap()
+    left, top, _width, _height = OUTER
+
+    arch = [(col, row) for kind, col, row in tilemap.prop_tiles
+            if kind == "desert_ruin_arch"]
+    assert arch == [(GATE, top)], arch
+
+    from PIL import Image
+    with Image.open(config.SPRITES_DIR / "objects"
+                    / "desert_ruin_arch.png") as sprite:
+        assert sprite.width == config.TILE_SIZE * 5, sprite.size
+        # Anchored on the middle tile and drawn upward, so it covers
+        # exactly the two tiles either side of the opening.
+        assert sprite.height > config.TILE_SIZE * 5
+
+    # The opening is three tiles of it, and they are walkable...
+    for offset in (-1, 0, 1):
+        assert not tilemap.is_solid(GATE + offset, top), offset
+        assert not tilemap.is_solid(GATE + offset, top + 1), offset
+    # ...and what is solid about the gate is the stone that looks it.
+    for offset in (-2, 2):
+        assert tilemap.terrain_at(GATE + offset, top) == "⌗", offset
+        assert tilemap.terrain_at(GATE + offset, top + 1) == "⌗", offset
+
+    # And it is a way in rather than a monument: the sand in front of
+    # the gate reaches the floor behind it.
+    seen = _safe_flood(tilemap, (GATE, top - 2))
+    assert (GATE, top + 2) in seen
 
 
 def test_the_sea_closes_the_west_and_south_and_the_chest_is_reachable() -> None:

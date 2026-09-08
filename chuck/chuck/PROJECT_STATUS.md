@@ -27,6 +27,49 @@ and updated every session.
 
 ## Latest implementation
 
+- Built the undead ruins up to the size the rest of the region kept implying.
+  Every column on the map was a broken one, because the whole ruin vocabulary
+  is fragments -- which is right for the hub, where the scattered rectangles
+  are pieces of this building, and wrong here, where this *is* the building.
+  Nothing on it was ever the size those fragments were fragments of.
+- A great order: pillars twenty-eight pixels across and up to seven tiles
+  tall, against the old ones' twenty by three. Ten of them, flanking the way
+  in, the courtyard door and the deepest room. The footprint stays a single
+  tile so a pillar can stand anywhere a small column could and can never be
+  the reason a room closed; the stone overhangs its tile by six pixels a side,
+  the way the eastern castle's banners overhang theirs. Shaded across the
+  whole width rather than in three strips, because a cylinder is a gradient
+  and the strip version is a flat board with stripes on it.
+- A gate arch over the door the player arrives at, five tiles across and six
+  and a half tall, and the one piece of the building still whole. A ruin where
+  everything has fallen is a field of rubble; one thing left standing is what
+  says how high the rest of it was. It is a single sprite rather than five
+  tiles of art, because what makes an arch read is the curve running unbroken
+  from one pier into the other and a curve cut into sixteen-pixel tiles is a
+  staircase.
+- The arch's first version was the ring alone under a cornice, and a ring with
+  daylight either side of it is a croquet hoop. An arch is a hole in a wall,
+  so the spandrels are filled: what stands there now is a piece of gatehouse
+  with an opening cut through it, and the voussoirs are the joints round that
+  opening rather than the whole object.
+- Only its two piers are solid, and they are the wall either side of a door
+  widened to three tiles. The sprite is anchored on the tile Chuck walks
+  through, so it sorts against him correctly -- behind him on the way up to
+  it, in front of him once he is through -- and the opening is transparent, so
+  he shows through it while he is under the crown.
+- The outer wall is two leaves thick. One tile of stone is a garden wall, and
+  a building with rooms, a courtyard and a gate in it was built thick. The
+  inner leaf is broken much harder than the outer one, which is how these
+  walls actually fail -- the facing stays up and the rubble core goes -- so
+  the thickness comes and goes along the run, which is what stops two tiles of
+  wall reading as one tile of wall drawn twice. Every doorway is cut through
+  both leaves; a door that goes through the facing and stops at the core is a
+  niche.
+- The pillars are placed before the fragment dressing rather than after. The
+  ruin dresser never writes on a tile that already has something on it, so
+  going second meant a great pillar and a broken one could want the same tile
+  and the great one lost.
+
 - Took the wooden frame off the Feywild's tea table. There was a lip drawn
   round the whole ring of the shadow, and from above at this distance a thin
   border round a dark rectangle is a picture frame rather than the edge of a
