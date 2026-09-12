@@ -1191,6 +1191,7 @@ class WorldScene(Scene):
             update = getattr(prop, "update", None)
             if callable(update):
                 update(dt)
+        self._update_see_through_props(dt)
         self._collect_pending_drops()
 
         if self._climb_t is not None:
@@ -1819,6 +1820,22 @@ class WorldScene(Scene):
                 ts = config.TILE_SIZE
                 return (col * ts + ts / 2, row * ts + ts / 2)
         return None
+
+    def _update_see_through_props(self, dt: float) -> None:
+        """Thin the great trees while anybody is walking behind one.
+
+        Anybody, not just Chuck: an enemy that disappears behind a crown
+        this size is a hit the player had no way to see coming.
+        """
+        veiled = [prop for prop in self.props
+                  if getattr(prop, "see_through", False)]
+        if not veiled:
+            return
+        walkers = [drawable for drawable in self._sorted_drawables()
+                   if hasattr(drawable, "hitbox")
+                   and not getattr(drawable, "see_through", False)]
+        for prop in veiled:
+            prop.update_veil(walkers, dt)
 
     def _sorted_drawables(self):
         """Everything that stands in the world, painter-ordered by feet.

@@ -7,6 +7,12 @@ try:
     from tools.feywild_mushroom_dressing import dress_grid
 except ModuleNotFoundError:  # Direct execution from inside tools/.
     from feywild_mushroom_dressing import dress_grid
+try:
+    from tools.feywild_great_tree_dressing import (
+        dress_grid as plant_great_tree,
+    )
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_great_tree_dressing import dress_grid as plant_great_tree
 
 
 W, H = 72, 52
@@ -155,6 +161,7 @@ def build() -> list[list[str]]:
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "Ռ"
     _dress_with_vegetation(grid)
     dress_grid("feywild_tea_table", grid)
+    plant_great_tree("feywild_tea_table", grid)
     return grid
 
 

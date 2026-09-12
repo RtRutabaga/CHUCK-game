@@ -7,6 +7,12 @@ try:
     from tools.feywild_mushroom_dressing import dress_grid
 except ModuleNotFoundError:  # Direct execution from inside tools/.
     from feywild_mushroom_dressing import dress_grid
+try:
+    from tools.feywild_great_tree_dressing import (
+        dress_grid as plant_great_tree,
+    )
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_great_tree_dressing import dress_grid as plant_great_tree
 
 
 W, H = 64, 44
@@ -70,6 +76,7 @@ def build():
     for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
         grid[row][W - 1] = "→"
     dress_grid("feywild_cloud_staircase", grid)
+    plant_great_tree("feywild_cloud_staircase", grid)
     return grid
 
 

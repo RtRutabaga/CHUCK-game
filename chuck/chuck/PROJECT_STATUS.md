@@ -27,6 +27,38 @@ and updated every session.
 
 ## Latest implementation
 
+- Planted great trees in the Feywild: eleven tiles across and fourteen tall,
+  a trunk three tiles wide on a solid three-by-two footprint, roots running
+  out across the ground and one broad crown. No face. One per map on the nine
+  maps with room for one -- Rootways, the Tea Table, the Needle Garden, the
+  Redcap Warrens, the Displacer Meadow, the Mushroom Underways, the Luminous
+  Rapids, the Twilight Crossroads and the Cloud Staircase -- because a tree
+  this size is a landmark, and two on one map start being a wood.
+- Drawn with the title screen's shaded primitives in the Feywild's own
+  palette: violet-brown bark with twisting ridges and a seam, teal-green
+  leaves, moss on the shaded side of the base, the region's motes caught in
+  the crown. Three variants.
+- Two first-render failures. The crown was thirty separate balls and came out
+  as a tiered cake with the trunk showing through a gap in the middle; it is
+  one shaded dome now with leaf masses as bumps on it, rimmed only where they
+  break the silhouette. And two knots stacked up the trunk read immediately as
+  a pair of eyes -- the one thing asked for was no face -- so the bark splits
+  along a seam instead.
+- The spots were chosen by measuring, against four rules the suite now checks
+  on the shipped maps: the footprint is plain ground, there is open ground all
+  the way round it, nothing that matters (enemy, arrival, Ashtray, breakable,
+  exit) stands under the crown, and the trunk cuts nothing off.
+- A crown fourteen tiles tall can hide somebody completely, so the great trees
+  thin out while anybody -- Chuck or an enemy -- is standing behind one, and
+  come back when they leave. Roots and the base of the trunk stay solid with a
+  short ramp into the thinned part, so the tree keeps standing on the ground.
+  The thinned sprites are baked once per step: fading with surface alpha at
+  draw time drew a black box across the base on the first try.
+- Planted from each map's generator and also written straight into the shipped
+  maps, the same way the mushrooms are. The earliest Feywild maps carry
+  vegetation their generators do not reproduce, so regenerating Rootways to
+  plant a tree would have cut down every other tree on it.
+
 - Turned the title-screen Chuck round to face the viewer. The first version
   drew him side-on, turned away towards his cigarette, so what showed was the
   back of the jacket and legs coming out from under it at angles that only

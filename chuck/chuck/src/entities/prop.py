@@ -167,6 +167,12 @@ _SPRITES = {
         "objects/feywild_shrub_2.png",
         "objects/feywild_shrub_3.png",
     ),
+    # Eleven tiles across and fourteen tall: the Feywild's old trees.
+    "feywild_great_tree": (
+        "objects/feywild_great_tree_1.png",
+        "objects/feywild_great_tree_2.png",
+        "objects/feywild_great_tree_3.png",
+    ),
     "feywild_oak": (
         "objects/feywild_oak_1.png",
         "objects/feywild_oak_2.png",
@@ -389,6 +395,21 @@ PROP_SORT_LIFT = {
     "waterdeep_docked_ship": 80,
 }
 
+# Props big enough to hide somebody completely. Everything else in the
+# game is at most a couple of tiles tall, so a character behind it is
+# still mostly visible; the Feywild's great trees are fourteen tiles, and
+# walking north past one would lose Chuck -- or an enemy -- entirely
+# for several steps. These thin out while anybody is behind them.
+SEE_THROUGH_PROPS = frozenset({"feywild_great_tree"})
+# How much of the prop is left when it is fully thinned out, and how far
+# up from its bottom edge the part that thins begins: the roots and the
+# base of the trunk stay solid, so the tree still stands on the ground.
+SEE_THROUGH_ALPHA = 90
+SEE_THROUGH_SOLID_BASE = 40
+SEE_THROUGH_RATE = 4.0
+SEE_THROUGH_STEPS = 6
+SEE_THROUGH_BLEND = 14
+
 
 class Prop:
     """One standing object on a tile."""
@@ -427,6 +448,12 @@ class Prop:
         self._bottom = (row + 1) * ts - PROP_SORT_LIFT.get(kind, 0)
         self._size = (w, h)
         self.floor_layer = kind == "ship_captain_rug"
+        # 0 is solid, 1 is as thin as it gets. Only ever moves for the
+        # see-through kinds, which get their own copy of the image so
+        # thinning one tree does not thin every tree drawn from it.
+        self.see_through = kind in SEE_THROUGH_PROPS
+        self.veil = 0.0
+        self._thinned: dict[int, object] = {}
         self.dialogue_id = PROP_DIALOGUE.get(kind)
         self.choice_id = PROP_CHOICE.get(kind)
         if self.dialogue_id and self.choice_id:
@@ -445,9 +472,70 @@ class Prop:
         """Depth key: the tile's bottom edge (same rule as entity feet)."""
         return float(self._bottom)
 
+    def cover_rect(self):
+        """The part of a see-through prop that can hide somebody."""
+        import pygame
+
+        w, h = self._size
+        return pygame.Rect(self._draw_x, self._draw_y, w,
+                           h - SEE_THROUGH_SOLID_BASE)
+
+    def update_veil(self, walkers, dt: float) -> None:
+        """Thin out while any walker is behind this prop and under it."""
+        if not self.see_through:
+            return
+        cover = self.cover_rect()
+        hidden = any(
+            getattr(walker, "sort_y", self.sort_y) < self.sort_y
+            and cover.colliderect(walker.hitbox)
+            for walker in walkers
+        )
+        target = 1.0 if hidden else 0.0
+        step = SEE_THROUGH_RATE * dt
+        if self.veil < target:
+            self.veil = min(target, self.veil + step)
+        elif self.veil > target:
+            self.veil = max(target, self.veil - step)
+
+    def _thinned_image(self, level: int):
+        """The sprite with everything above its base faded, cached by step.
+
+        Baked rather than faded with surface alpha at draw time: setting
+        and clearing surface alpha on a per-pixel-alpha sprite each frame
+        is exactly the kind of thing that works on one renderer and draws
+        a black box on another.
+        """
+        image = self._thinned.get(level)
+        if image is None:
+            import pygame
+
+            image = self._image.copy()
+            w, h = self._size
+            keep = round(255 - (255 - SEE_THROUGH_ALPHA) * level
+                         / SEE_THROUGH_STEPS)
+            solid_top = h - SEE_THROUGH_SOLID_BASE
+            image.fill((255, 255, 255, keep),
+                       pygame.Rect(0, 0, w, solid_top - SEE_THROUGH_BLEND),
+                       special_flags=pygame.BLEND_RGBA_MULT)
+            # A short ramp into the solid base, a row at a time. A hard
+            # edge there drew a line across the trunk like a waterline.
+            for row in range(SEE_THROUGH_BLEND):
+                mix = (row + 1) / (SEE_THROUGH_BLEND + 1)
+                alpha = round(keep + (255 - keep) * mix)
+                image.fill((255, 255, 255, alpha),
+                           pygame.Rect(0, solid_top - SEE_THROUGH_BLEND + row,
+                                       w, 1),
+                           special_flags=pygame.BLEND_RGBA_MULT)
+            self._thinned[level] = image
+        return image
+
     def draw(self, surface, camera_offset: tuple[int, int]) -> None:
         ox, oy = camera_offset
-        surface.blit(self._image, (self._draw_x - ox, self._draw_y - oy))
+        image = self._image
+        if self.see_through and self.veil > 0.0:
+            image = self._thinned_image(
+                max(1, round(self.veil * SEE_THROUGH_STEPS)))
+        surface.blit(image, (self._draw_x - ox, self._draw_y - oy))
 
     def draw_region(self, surface, camera_offset: tuple[int, int],
                     region: tuple[int, int, int, int]) -> None:

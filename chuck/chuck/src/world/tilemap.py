@@ -642,6 +642,13 @@ TILE_DEFS: dict[str, TileDef] = {
     # The Feywild wood: Chult's rounded silhouettes with a violet sheen,
     # and one ordinary oak. All three stand ON the dense vegetation they
     # dress, so they break up its blocky mass without altering any route.
+    # The great trees: a trunk three tiles wide on a three-by-two solid
+    # footprint. The anchor carries the sprite, drawn up from the middle
+    # of the bottom row; the other five tiles are solid ground the trunk
+    # covers.
+    "ፐ": TileDef(solid=True, color=(82, 58, 90),
+                 prop="feywild_great_tree", under="."),
+    "ፑ": TileDef(solid=True, color=(82, 58, 90), under="."),
     "ŧ": TileDef(solid=True, color=(24, 74, 48),
                  prop="feywild_grove_tree", under="#"),
     "Ŧ": TileDef(solid=True, color=(34, 88, 46),

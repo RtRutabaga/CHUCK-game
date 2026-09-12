@@ -3,6 +3,13 @@
 from collections import deque
 from pathlib import Path
 
+try:
+    from tools.feywild_great_tree_dressing import (
+        dress_grid as plant_great_tree,
+    )
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_great_tree_dressing import dress_grid as plant_great_tree
+
 
 W, H = 68, 46
 OUT = (
@@ -108,6 +115,7 @@ def build() -> list[list[str]]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][FUTURE_EXIT[0]] = "→"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "Ո"
+    plant_great_tree("feywild_rootways", grid)
     return grid
 
 
