@@ -148,6 +148,8 @@ class HellFallingCutsceneScene(Scene):
             self.game.audio.play_sfx("hurt")
         if previous < HELL_VANISH_TIME <= self.elapsed:
             self.game.audio.play_sfx("vanish")
+            # He dies on the basalt, and it counts.
+            self.game.deaths.record()
         if previous < HELL_RESPAWN_TIME <= self.elapsed:
             self.game.audio.play_sfx("respawn")
         if previous < HELL_HANDOFF_TIME <= self.elapsed:

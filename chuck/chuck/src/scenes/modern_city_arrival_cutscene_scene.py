@@ -112,6 +112,9 @@ class ModernCityArrivalCutsceneScene(Scene):
         for cue_time, sound in cues:
             if previous < cue_time <= self.elapsed:
                 self.game.audio.play_sfx(sound)
+        # He dies on the sidewalk, and it counts.
+        if previous < VANISH_TIME <= self.elapsed:
+            self.game.deaths.record()
         if previous < IMPACT_TIME <= self.elapsed:
             self.sanity = 0
         if previous < RESPAWN_TIME <= self.elapsed:

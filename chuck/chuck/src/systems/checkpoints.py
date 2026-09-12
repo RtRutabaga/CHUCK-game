@@ -1779,6 +1779,7 @@ class CheckpointLoader:
         progress_flags=None,
         sanity: int | None = None,
         cigarettes: int | None = None,
+        deaths: int | None = None,
     ):
         """Rebuild a checkpoint identically for NEW, CONTINUE, or development."""
         from src.scenes.world_scene import WorldScene
@@ -1795,6 +1796,10 @@ class CheckpointLoader:
             # handoffs and development jumps carry it forward, banking
             # it as the new respawn-point value.
             self.game.cigarettes.commit()
+        # Deaths carry through every handoff untouched; only NEW GAME and
+        # CONTINUE set them.
+        if deaths is not None:
+            self.game.deaths.replace(deaths)
         self.game.active_checkpoint_id = checkpoint_id
         scene = WorldScene(
             self.game,
@@ -1813,7 +1818,8 @@ class CheckpointLoader:
 
     def new_game(self):
         self.saves.delete()
-        return self.load_checkpoint(OPENING_CHECKPOINT_ID, cigarettes=0)
+        return self.load_checkpoint(OPENING_CHECKPOINT_ID, cigarettes=0,
+                                    deaths=0)
 
     def valid_save(self) -> SaveRecord | None:
         record = self.saves.load()
@@ -1839,6 +1845,7 @@ class CheckpointLoader:
             progress_flags=record.progress_flags,
             sanity=record.sanity,
             cigarettes=record.cigarettes,
+            deaths=record.deaths,
         )
 
     def activate_checkpoint(self, checkpoint_id: str, sanity: int) -> bool:
@@ -1852,5 +1859,6 @@ class CheckpointLoader:
             sanity=sanity,
             progress_flags=tuple(sorted(self.game.progress.flags)),
             cigarettes=self.game.cigarettes.total,
+            deaths=self.game.deaths.total,
         )
         return self.saves.write(record)

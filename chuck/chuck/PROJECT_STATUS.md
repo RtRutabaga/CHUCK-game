@@ -27,6 +27,35 @@ and updated every session.
 
 ## Latest implementation
 
+- Added a death count. Top right, just left of the cigarette count and in
+  the same quiet voice: a rat's skull over crossed bones and the total. The
+  skull is a rat's rather than anybody's because of the long snout tapering
+  to two incisors, and the two round ears, which a real skull would not have
+  and a rat at thirteen pixels cannot do without. Pale bone with a dark
+  outline, so it reads on sand, on night streets and on Feywild green alike.
+- Two kinds of death go into it. The ordinary one -- Sanity running out, or
+  a drop into the Astral, which hands off to the same respawn -- is counted
+  once per vanish; a hit that lands while Chuck is already gone is the same
+  death. And the three cutscenes where the same thing happens to him on
+  screen: the fall to Chult, the fall into Hell and the landing in the modern
+  city, each of which plays the established impact, vanish and return. Each
+  counts at its vanish. The other eight cutscenes, where he lands on
+  something and gets up, count nothing.
+- That split is tested by running every cutscene in the game from its first
+  frame to its handoff and checking which ones moved the number, rather than
+  by asserting a list of names -- so a future cutscene that kills him, or one
+  of these three losing its death, fails the test instead of passing it.
+- The count only goes up. The cigarette count rewinds on the same respawn,
+  because what Chuck picked up past the checkpoint is lost with him; a death
+  is not something that can be lost that way, and the test asserts both
+  happening on one frame with only one of them undone. It carries through
+  every handoff, saves at the Ashtray alongside the cigarettes, restores on
+  CONTINUE and resets on NEW GAME. Saves written before it existed load with
+  none recorded, and forged values are rejected like every other field.
+- One consequence of saving it the same way as everything else: deaths since
+  the last Ashtray are not on disk until the next one, so quitting and
+  continuing forgets them along with the rest of the run since that save.
+
 - Built the undead ruins up to the size the rest of the region kept implying.
   Every column on the map was a broken one, because the whole ruin vocabulary
   is fragments -- which is right for the hub, where the scattered rectangles

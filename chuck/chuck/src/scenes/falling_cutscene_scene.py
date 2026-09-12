@@ -149,6 +149,9 @@ class FallingCutsceneScene(Scene):
         for cue_time, sound in cues:
             if previous < cue_time <= current:
                 self.game.audio.play_sfx(sound)
+        # He dies on the jungle floor: the same quiet vanish as any death.
+        if previous < VANISH_TIME <= current:
+            self.game.deaths.record()
 
     def draw(self, surface: pygame.Surface) -> None:
         if self.elapsed < IMPACT_TIME:

@@ -45,6 +45,7 @@ def test_save_format_is_readable_versioned_and_atomic() -> None:
             "sanity": 47,
             "progress_flags": ["sewer_completed"],
             "cigarettes": 0,
+            "deaths": 0,
         }
         assert saves.load() == record
         assert not path.with_suffix(".json.tmp").exists()
@@ -97,7 +98,8 @@ def test_title_without_save_disables_continue_and_new_game_uses_loader() -> None
         title._selected = 0
         title._choose()
         scene = game.scenes.current
-        assert calls == [(OPENING_CHECKPOINT_ID, {"cigarettes": 0})]
+        assert calls == [(OPENING_CHECKPOINT_ID,
+                          {"cigarettes": 0, "deaths": 0})]
         assert isinstance(scene, WorldScene)
         assert scene.map_name == "waterdeep_docks"
         assert game.active_checkpoint_id == OPENING_CHECKPOINT_ID
@@ -167,7 +169,7 @@ def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
         assert calls == [(
             "waterdeep_anchor",
             {"progress_flags": ("sewer_completed",), "sanity": 47,
-             "cigarettes": 0},
+             "cigarettes": 0, "deaths": 0},
         )]
         assert scene.map_name == "waterdeep_docks"
         assert scene.sanity.current == 47

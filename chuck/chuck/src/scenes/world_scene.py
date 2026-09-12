@@ -332,7 +332,7 @@ class WorldScene(Scene):
             start=sanity_start,
         )
         self.hud = HUD(self.sanity, self.game.assets.bitmap_font(),
-               self.game.cigarettes)
+               self.game.cigarettes, self.game.deaths)
         self._hint = (
             TutorialHint(self.game.assets)
             if self.map_name in config.TUTORIAL_MAPS
@@ -2848,6 +2848,10 @@ class WorldScene(Scene):
     # ------------------------------------------------------------------
     def _begin_respawn(self) -> None:
         """Sanity reached zero. Chuck quietly stops being here."""
+        # One death per vanish. A second depletion while he is already
+        # gone -- a hit landing during the fade -- is the same death.
+        if self._respawn_phase is None:
+            self.game.deaths.record()
         self.player.visible = False
         self.player.hurt_blink = 0.0
         self._respawn_phase = "out"

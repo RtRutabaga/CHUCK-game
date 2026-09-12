@@ -34,6 +34,9 @@ class SaveRecord:
     # The overall-game cigarette total (session 128). Defaults keep
     # pre-counter saves valid — they simply resume with zero banked.
     cigarettes: int = 0
+    # Deaths this playthrough. Defaulted for the same reason: saves
+    # written before the counter existed resume with none recorded.
+    deaths: int = 0
 
     def to_json(self) -> dict:
         return {
@@ -42,6 +45,7 @@ class SaveRecord:
             "sanity": self.sanity,
             "progress_flags": list(self.progress_flags),
             "cigarettes": self.cigarettes,
+            "deaths": self.deaths,
         }
 
 
@@ -79,8 +83,13 @@ class SaveSystem:
             return None
         if cigarettes < 0:
             return None
+        deaths = raw.get("deaths", 0)
+        if isinstance(deaths, bool) or not isinstance(deaths, int):
+            return None
+        if deaths < 0:
+            return None
         return SaveRecord(checkpoint_id, sanity, tuple(sorted(flags)),
-                          cigarettes)
+                          cigarettes, deaths)
 
     def write(self, record: SaveRecord) -> bool:
         """Atomically replace the save; return False if storage is unavailable."""

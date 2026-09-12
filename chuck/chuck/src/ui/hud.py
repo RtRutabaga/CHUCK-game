@@ -21,15 +21,58 @@ _MARGIN_X, _MARGIN_Y = 4, 4
 _FILTER_W, _H = 5, 4          # the filter never burns
 _PAPER_MAX_W = 32             # full-sanity paper length
 _EMBER_W = 2
+_GROUP_GAP = 8                # between the death count and the cigarettes
+
+
+# The death count's icon: a rat's skull over crossed bones, one pixel per
+# character. A human skull at this size is a circle with two holes in it
+# and could be anybody's; what makes it Chuck's is the long snout tapering
+# to a pair of incisors, and the two round ears, which a real skull would
+# not have and a rat at eleven pixels cannot do without.
+#   B bone   S shadow side   D socket / outline
+_DEATH_ICON = (
+    "BBDDD...DDDBB",
+    "BBDBBDDDBBDBB",
+    "DDBBBBBBBBBDD",
+    ".DBBBBBBBBBD.",
+    ".DBDDBBBDDBD.",
+    ".DBDDBBBDDSD.",
+    "..DBBBBBBSD..",
+    "..DDBBBBSDD..",
+    "DDBBDBBSDBBDD",
+    "BBDDDBDBDDDBB",
+    "BBD..D.D..DBB",
+)
+_DEATH_COLOURS = {
+    "B": (226, 218, 196),
+    "S": (168, 156, 136),
+    "D": (38, 30, 30),
+}
+
+
+def death_icon():
+    """The skull and crossbones as a small alpha surface."""
+    import pygame
+
+    height, width = len(_DEATH_ICON), len(_DEATH_ICON[0])
+    icon = pygame.Surface((width, height), pygame.SRCALPHA)
+    for y, row in enumerate(_DEATH_ICON):
+        for x, char in enumerate(row):
+            if char in _DEATH_COLOURS:
+                icon.set_at((x, y), _DEATH_COLOURS[char])
+    return icon
 
 
 class HUD:
     """Draws overlay UI on top of the world. Owned by the WorldScene."""
 
-    def __init__(self, sanity_system, font=None, cigarettes=None) -> None:
+    def __init__(self, sanity_system, font=None, cigarettes=None,
+                 deaths=None) -> None:
         self.sanity = sanity_system
         self._font = font
         self.cigarettes = cigarettes
+        self.deaths = deaths
+        self._death_icon = None
 
     def draw(self, surface) -> None:
         """Draw the cigarette meter in screen space (ignores camera)."""
@@ -48,6 +91,23 @@ class HUD:
                              pygame.Rect(icon_x, icon_y, 7, 3))
             pygame.draw.rect(surface, config.COLOR_CIG_FILTER,
                              pygame.Rect(icon_x, icon_y, 2, 3))
+
+            # The death count, just left of it and in the same voice:
+            # a rat's skull and crossbones and the total. Beside the
+            # cigarettes rather than anywhere louder, because in this
+            # game dying is quiet too.
+            if self.deaths is not None:
+                if self._death_icon is None:
+                    self._death_icon = death_icon()
+                deaths = self._font.render(f"x{self.deaths.total}")
+                deaths.set_alpha(200)
+                deaths_x = icon_x - _GROUP_GAP - deaths.get_width()
+                surface.blit(deaths, (deaths_x, _MARGIN_Y))
+                skull = self._death_icon
+                skull_y = (_MARGIN_Y + deaths.get_height() // 2
+                           - skull.get_height() // 2)
+                surface.blit(skull, (deaths_x - skull.get_width() - 2,
+                                     max(0, skull_y)))
 
         frac = max(0.0, min(1.0, self.sanity.fraction))
         paper_w = round(_PAPER_MAX_W * frac)
