@@ -18,6 +18,9 @@ MAP_OUT = ROOT / "assets" / "maps" / "waterdeep_plaza.txt"
 SPRITE_OUT = ROOT / "assets" / "sprites" / "objects"
 WIDTH = 48
 HEIGHT = 34
+# Battlements plus three courses: the closed gate is three tiles and a
+# bit tall, and a wall shorter than the gate is not a wall it is in.
+NORTH_WALL_ROWS = 4
 
 
 def fountain(frame: int) -> Image.Image:
@@ -193,7 +196,7 @@ def _building(grid: list[list[str]], left: int, right: int,
 
 # Barrels: singly or in twos, the way a working square accumulates them.
 PLAZA_BARRELS = (
-    (17, 3), (31, 3),                       # either side of the gate
+    (17, 4), (31, 4),                       # either side of the gate
     (4, 14), (34, 15),                      # the two shop yards
     (18, 15), (30, 14),
     (14, 18), (34, 18),                     # out beyond the fountain ring
@@ -204,8 +207,8 @@ PLAZA_BARRELS = (
 
 # Crates: stacked in twos and threes against walls and shop fronts.
 PLAZA_CRATES = (
-    (6, 2), (6, 3), (7, 3),                 # west of the gate
-    (40, 2), (41, 2), (41, 3),              # east of it
+    (6, 4), (7, 4),                         # west of the gate
+    (40, 4), (41, 4),                       # east of it
     (5, 14), (5, 15),                       # the smithy's yard
     (42, 14), (43, 14), (43, 15),           # the alchemist's
     (36, 22), (37, 22), (37, 23),           # the east flank
@@ -275,16 +278,21 @@ def _dress(grid: list[list[str]]) -> None:
 
 def build_map() -> list[str]:
     grid = [["," for _ in range(WIDTH)] for _ in range(HEIGHT)]
+    # The north wall is the district wall, and it is as tall as the gate
+    # set into it. Two tiles of it -- battlements and one course of brick
+    # -- left the gate standing on the paving in front of the wall like a
+    # freestanding door frame.
     grid[0] = ["w"] * WIDTH
-    grid[1] = ["b"] * WIDTH
+    for row in range(1, NORTH_WALL_ROWS):
+        grid[row] = ["b"] * WIDTH
     grid[-1] = ["b"] * WIDTH
-    for row in range(2, HEIGHT - 1):
-        grid[row][0] = "b"
+    for row in range(NORTH_WALL_ROWS, HEIGHT - 1):
         grid[row][-1] = "b"
 
-    # The west street is the same broad opening visible southeast of the
-    # tavern. Two transition columns prevent a fast-moving Chuck slipping by.
-    for row in range(19, 22):
+    # There is no west wall. The plaza is the far end of the docks' own
+    # eastern street, so its whole west side is the way back, two columns
+    # deep so a fast-moving Chuck cannot slip past the edge.
+    for row in range(NORTH_WALL_ROWS, HEIGHT - 1):
         grid[row][0] = "⮜"
         grid[row][1] = "⮜"
     grid[20][2] = "ɸ"       # arrival:from_docks
@@ -293,8 +301,9 @@ def build_map() -> list[str]:
     _building(grid, 3, 14, 5, 7)
     _building(grid, 33, 44, 5, 40)
 
-    # Guarded gate, smithy yard, alchemist display.
-    grid[3][24] = "ϟ"
+    # Guarded gate, set into the bottom course of the wall, smithy yard,
+    # alchemist display.
+    grid[NORTH_WALL_ROWS - 1][24] = "ϟ"
     grid[14][8] = "⚒"
     grid[15][12] = "⚙"
     grid[14][38] = "⚗"
@@ -347,7 +356,7 @@ def _assert_connected(rows: list[str]) -> None:
                 (21, 20), (28, 20), (24, 31),
                 # ...and the corners, because a furnishing pass is
                 # exactly the kind of change that walls one off.
-                (2, 3), (45, 3), (2, 32), (45, 32),
+                (2, 4), (45, 4), (2, 32), (45, 32),
                 (3, 20), (45, 20), (24, 13), (24, 21)}
     assert required <= seen, sorted(required - seen)
     _assert_nowhere_is_empty(rows)

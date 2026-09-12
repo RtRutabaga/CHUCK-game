@@ -17,6 +17,11 @@ class AreaExit(NamedTuple):
     arrival: str
     facing: str
     confirmation: str | None = None
+    # For a whole open map edge rather than a gap in a wall: arrive in
+    # the arrival marker's column but on the row Chuck left from (or the
+    # nearest open one), so walking off the top of a long edge does not
+    # put him back in the middle of the next map.
+    keep_row: bool = False
 
 
 AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
@@ -188,11 +193,14 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("waterdeep_pantry", "^"): AreaExit(
         "waterdeep_tavern", "pantry_return", "down"
     ),
+    # The docks and the plaza are one street with a map edge across it:
+    # the whole open east side of the docks and the whole west side of
+    # the plaza, in both eras.
     ("waterdeep_docks", "⮞"): AreaExit(
-        "waterdeep_plaza", "from_docks", "right"
+        "waterdeep_plaza", "from_docks", "right", keep_row=True
     ),
     ("waterdeep_plaza", "⮜"): AreaExit(
-        "waterdeep_docks", "from_plaza", "left"
+        "waterdeep_docks", "from_plaza", "left", keep_row=True
     ),
     ("chult_jungle", '"'): AreaExit(
         "chult_cog", "from_chult_1", "up"

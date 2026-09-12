@@ -59,11 +59,22 @@ def test_eastern_docks_street_is_a_two_way_shared_route() -> None:
     assert (plaza_exit.destination, plaza_exit.arrival, plaza_exit.facing) == (
         "waterdeep_docks", "from_plaza", "left"
     )
+    assert docks_exit.keep_row and plaza_exit.keep_row
 
     docks = TileMap(config.MAPS_DIR / "waterdeep_docks.txt")
     plaza = TileMap(config.MAPS_DIR / "waterdeep_plaza.txt")
-    assert sum(row.count("⮞") for row in docks._grid) == 6
-    assert sum(row.count("⮜") for row in plaza._grid) == 6
+    # The whole open east side of the docks is the way to the plaza: every
+    # tile on its last column that is not a building is an exit.
+    east = docks.width_tiles - 1
+    open_east = [row for row in range(docks.height_tiles)
+                 if not docks.is_solid(east, row)]
+    assert len(open_east) > 20
+    assert all(docks.terrain_at(east, row) == "⮞" for row in open_east)
+    # ...and the plaza has no west wall at all: below the north wall and
+    # above the south one, its whole west side is the way back.
+    for row in range(4, plaza.height_tiles - 1):
+        assert plaza.terrain_at(0, row) == "⮜", row
+        assert plaza.terrain_at(1, row) == "⮜", row
     assert any(kind == "arrival:from_plaza"
                for kind, _position in docks.object_spawns)
     assert any(kind == "arrival:from_docks"
@@ -161,9 +172,16 @@ def test_fountain_animates_and_the_northern_gate_is_closed() -> None:
         assert all(scene.tilemap.is_solid(col, row)
                    for row in range(16, 19) for col in range(22, 27))
 
-        assert scene.tilemap.is_solid(24, 3)
+        # The gate is set into the wall, not stood in front of it: the
+        # wall is at least as tall as the gate, the gate's tile is the
+        # wall's bottom course, and the paving starts right under it.
         assert all(scene.tilemap.is_solid(col, row)
-                   for row in (0, 1) for col in range(48))
+                   for row in range(4) for col in range(48))
+        assert scene.tilemap.terrain_at(24, 3) == "ϟ"
+        assert not scene.tilemap.is_solid(24, 4)
+        gate_prop = next(prop for prop in scene.props
+                         if prop.kind == "waterdeep_closed_gate")
+        assert gate_prop._draw_y >= 0          # its top is inside the wall
         gate = next(
             prop for prop in scene.props
             if prop.kind == "waterdeep_closed_gate"
@@ -279,8 +297,48 @@ def test_plaza_remains_navigable_around_the_fountain_and_shops() -> None:
             (21, 20), (28, 20), (15, 30),
             # The corners and the flanks, because a furnishing pass is
             # exactly the kind of change that walls one off.
-            (2, 3), (45, 3), (2, 32), (45, 32),
+            (2, 4), (45, 4), (2, 32), (45, 32),
             (3, 20), (45, 20), (6, 25), (24, 13)} <= seen
+
+
+def test_crossing_the_edge_keeps_chuck_on_his_row() -> None:
+    """Walk off the long edge anywhere and arrive level with where he left.
+
+    Both eras, both directions. Where the row he left on is a building on
+    the other side, he comes out on the nearest open row instead.
+    """
+    for checkpoint in ("waterdeep_start", "waterdeep_finale"):
+        directory, game = _game()
+        try:
+            scene = game.checkpoints.load_checkpoint(checkpoint)
+            ts = config.TILE_SIZE
+            east = scene.tilemap.width_tiles - 1
+            for row in (3, 30):
+                scene.load_map("waterdeep_docks", arrival="from_plaza",
+                               facing="left")
+                scene.player.x = east * ts + 3
+                scene.player.y = row * ts + 4
+                scene.update(1 / 60)
+                assert scene.map_name == "waterdeep_plaza", (checkpoint, row)
+                arrived = int((scene.player.y + scene.player.height / 2)
+                              // ts)
+                expected = max(row, 4)          # rows 0-3 are the wall
+                assert arrived == expected, (checkpoint, row, arrived)
+
+            # Back the other way from a row that is a building in the docks.
+            scene.load_map("waterdeep_plaza", arrival="from_docks",
+                           facing="right")
+            scene.player.x = 0 * ts + 3
+            scene.player.y = 12 * ts + 4
+            scene.update(1 / 60)
+            assert scene.map_name == "waterdeep_docks"
+            col = int((scene.player.x + scene.player.width / 2) // ts)
+            row = int((scene.player.y + scene.player.height / 2) // ts)
+            assert not scene.tilemap.is_solid(col, row)
+            assert abs(row - 12) <= 6, row
+        finally:
+            game._shutdown()
+            directory.cleanup()
 
 
 def _run_all() -> None:

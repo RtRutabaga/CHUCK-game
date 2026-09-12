@@ -27,6 +27,25 @@ and updated every session.
 
 ## Latest implementation
 
+- Opened the whole seam between the Waterdeep docks and the fountain plaza, in
+  both the opening and the finale. Every open tile down the docks' east edge
+  -- the street north of the tavern block as well as the one south of it -- is
+  now a way into the plaza, and the plaza has no west wall at all: its whole
+  west side, below the north wall, is the way back. The two maps read as one
+  street with a map edge across it rather than a doorway between rooms.
+- Crossing keeps Chuck on his row. An exit can now say it is a whole edge
+  rather than a gap; he arrives in the arrival marker's column but level with
+  where he left, or on the nearest open row where that row is a building on
+  the far side. Without it, stepping off the top of a thirty-tile edge would
+  have dropped him back in the middle of the next map every time. A test walks
+  across at several rows in both eras and both directions.
+- The plaza's north wall is four tiles now -- battlements and three courses of
+  brick -- with the closed gate set into its bottom course and the paving
+  starting right under it. At two tiles the gate, which is over three tiles
+  tall, stood on the square in front of the wall like a freestanding door
+  frame. The barrels and crates that sat on the old rows 2 and 3 moved down to
+  the foot of the wall.
+
 - Redrew the Feywild's root walls so they read as roots, on all five maps that
   have them: Rootways, the Tea Table, the Redcap Warrens, the Displacer Meadow
   and the Twilight Crossroads. The old tile was four parallel diagonal bands;

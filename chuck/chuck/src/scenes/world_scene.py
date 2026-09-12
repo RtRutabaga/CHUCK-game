@@ -180,6 +180,7 @@ class WorldScene(Scene):
         checkpoint_id: str | None = None,
         fade_in: bool = False,
         fade_from: tuple[int, int, int] = (0, 0, 0),
+        arrival_row: int | None = None,
     ) -> None:
         """(Re)build the map and all entities for an area. Used both on
         first entry and when a transition carries Chuck somewhere new."""
@@ -265,6 +266,9 @@ class WorldScene(Scene):
                     f"Map {map_name!r} has no arrival marker {arrival!r}"
                 )
             spawn_cx, spawn_cy = arrivals[arrival]
+            if arrival_row is not None:
+                spawn_cy = self._open_row_near(spawn_cx, arrival_row,
+                                               spawn_cy)
         else:
             spawn_cx, spawn_cy = self.tilemap.spawn_points.get(
                 "player",
@@ -1321,6 +1325,8 @@ class WorldScene(Scene):
                 exit_config.destination,
                 arrival=exit_config.arrival,
                 facing=exit_config.facing,
+                arrival_row=(self._player_tile()[1]
+                             if exit_config.keep_row else None),
             )
             return
         self._ladder_choice_armed = True
@@ -1824,6 +1830,25 @@ class WorldScene(Scene):
                 ts = config.TILE_SIZE
                 return (col * ts + ts / 2, row * ts + ts / 2)
         return None
+
+    def _open_row_near(self, centre_x: float, row: int,
+                       fallback_y: float) -> float:
+        """The centre y of the open tile nearest ``row`` in this column.
+
+        For arrivals along a whole map edge. The row Chuck left the last
+        map on may be a building on this one, so the search walks out
+        from it a row at a time, nearer rows first, and falls back to the
+        arrival marker itself if the whole column is closed.
+        """
+        ts = config.TILE_SIZE
+        col = int(centre_x // ts)
+        height = self.tilemap.height_tiles
+        for distance in range(height):
+            for candidate in (row - distance, row + distance):
+                if 0 <= candidate < height \
+                        and not self.tilemap.is_solid(col, candidate):
+                    return candidate * ts + ts / 2
+        return fallback_y
 
     def _update_see_through_props(self, dt: float) -> None:
         """Thin anything big enough to hide somebody while they are under it.
