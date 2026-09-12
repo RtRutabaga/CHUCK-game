@@ -48,6 +48,8 @@ LOGO_GAP = 6
 LOGO_DEPTH = 9
 CHUCK_ORIGIN = (118, 62)
 CHUCK_SIZE = (140, 152)
+# How far the head sits down into the collar from where it is drawn.
+HEAD_DROP = 7
 
 LIGHT = (-0.52, -0.62, 0.59)            # upper left, towards the viewer
 _LEN = math.sqrt(sum(c * c for c in LIGHT))
@@ -256,7 +258,7 @@ def chuck_tail(phase: int) -> Image.Image:
     """
     image = _blank()
     sway = math.sin(phase / 4 * math.tau)
-    points = [(84, 106), (104, 118), (114, 136),
+    points = [(76, 110), (100, 122), (112, 140),
               (126 + 5 * sway, 143 - 2 * sway)]
     piece = Piece(PINK, salt=3, ambient=0.3)
     segments = 22
@@ -293,17 +295,25 @@ def chuck_tail(phase: int) -> Image.Image:
 def chuck_body(blink: bool) -> Image.Image:
     """Everything but the tail and the arm with the cigarette.
 
+    He faces the viewer. The first version drew him side-on, turned
+    away towards his cigarette, and what showed was the back of the
+    jacket and a pair of legs coming out from under it at angles that
+    only work on something facing the other way. Front-on, the jacket
+    hangs open over his chest, both lapels stand up either side of his
+    neck, and only the head turns -- three-quarters, towards the hand
+    with the cigarette in it.
+
     He is leaning back on the C: shoulders over towards the stone, hips
-    and feet out away from it, ankles crossed. The far arm goes up and
-    over the top of the letter and hangs down its face, which is what
-    makes it a lean rather than a rat standing next to a word.
+    forward, long legs crossed out in front. The far arm goes back over
+    the top of the letter and hangs down its face, which is what makes
+    it a lean rather than a rat standing next to a word.
     """
     image = _blank()
 
-    # --- the far arm, over the top of the C ---------------------------
-    sleeve = Piece(JACKET, salt=11)
-    sleeve.capsule((88, 60), (110, 40), 9.5, 8.2)
-    sleeve.capsule((110, 40), (127, 46), 8.2, 6.4)
+    # --- the far arm, back over the top of the C ----------------------
+    sleeve = Piece(JACKET, salt=11, ambient=0.16)
+    sleeve.capsule((94, 64), (110, 42), 9.0, 8.0)
+    sleeve.capsule((110, 42), (127, 46), 8.0, 6.4)
     sleeve.paint(image)
     cuff = Piece(JACKET, ambient=0.08)
     cuff.capsule((126, 46), (130, 48), 5.8, 5.4)
@@ -315,137 +325,160 @@ def chuck_body(blink: bool) -> Image.Image:
         hand.capsule(base, (base[0] + 0.4, 61 + (finger % 2)), 1.6, 1.2)
     hand.paint(image)
 
-    # --- legs, crossed at the ankle ---------------------------------
-    far_leg = Piece(FUR, fur=True, salt=21)
-    far_leg.capsule((76, 104), (79, 124), 13, 8)
-    far_leg.capsule((79, 124), (62, 142), 8, 4)
+    # --- legs: long, crossed, stretched out away from the stone --------
+    # The first pass put both legs down the same line and they merged
+    # into one thick one. Knees apart, shins crossing, feet pointing
+    # opposite ways: that is what reads as crossed ankles.
+    far_leg = Piece(FUR, fur=True, salt=21, ambient=0.16)
+    far_leg.capsule((74, 108), (70, 127), 11, 7)
+    far_leg.capsule((70, 127), (52, 144), 7, 4)
     far_leg.paint(image)
     far_foot = Piece(PINK, salt=22, ambient=0.3)
-    far_foot.capsule((63, 143), (47, 146), 4, 2.6)
+    far_foot.capsule((52, 145), (36, 147), 4, 2.6)
     for toe in range(3):
-        far_foot.capsule((48 - toe, 145 + toe * 0.6), (44 - toe, 147), 1.4,
+        far_foot.capsule((37 - toe, 146 + toe * 0.6), (33 - toe, 148), 1.4,
                          1.0)
     far_foot.paint(image)
 
-    # --- the jacket, two sizes too big --------------------------------
-    jacket = Piece(JACKET, salt=31)
-    jacket.capsule((84, 62), (70, 104), 18, 19)
-    jacket.polygon([(60, 54), (100, 52), (96, 112), (52, 114)], bulge=0.5)
-    jacket.paint(image)
+    # --- the body under the jacket ------------------------------------
+    torso = Piece(FUR, fur=True, salt=30)
+    torso.capsule((64, 106), (80, 64), 17, 17)
+    torso.paint(image)
 
-    belly = Piece(BELLY, fur=True, salt=32, ambient=0.3)
-    belly.ellipse((62, 86), 10.5, 23)
-    belly.paint(image)
+    chest = Piece(BELLY, fur=True, salt=32, ambient=0.3)
+    chest.capsule((66, 106), (76, 62), 9.5, 9)
+    chest.paint(image)
 
+
+    # --- the jacket, open, two sizes too big ---------------------------
+    # The panel on his right (the viewer's left) faces the light; the
+    # other one turns away from it, towards the stone.
     near_panel = Piece(JACKET, salt=33)
-    near_panel.polygon([(50, 60), (58, 62), (54, 114), (45, 112)], bulge=0.6)
+    near_panel.polygon([(50, 58), (66, 56), (60, 88), (58, 116), (44, 114),
+                        (46, 84)], bulge=0.45)
     near_panel.paint(image)
+    far_panel = Piece(JACKET, salt=34, ambient=0.14)
+    far_panel.polygon([(84, 56), (102, 58), (98, 88), (90, 114), (74, 116),
+                       (80, 86)], bulge=0.45)
+    far_panel.paint(image)
 
-    # Folds, a seam and a pocket: the jacket is cloth, and cloth that
-    # has no creases in it is plastic.
-    for (a, b) in (((84, 70), (88, 98)), ((75, 86), (78, 106)),
-                   ((93, 60), (95, 78))):
-        _line(image, a, b, JACKET[1])
-    _line(image, (72, 94), (86, 92), JACKET[0])
-    _line(image, (72, 95), (86, 93), JACKET[3])
-    for y in range(66, 110, 4):
-        image.load()[90, y] = JACKET[1] + (255,)
-
-    collar = Piece(JACKET, salt=34, ambient=0.3)
-    collar.capsule((58, 54), (72, 58), 5, 4)
-    collar.capsule((72, 58), (94, 50), 4, 6)
-    collar.paint(image)
     pixels = image.load()
-    for x, y, c in ((65, 63, PIN), (66, 63, PIN), (65, 64, (180, 142, 60))):
-        pixels[x, y] = c + (255,)
+    # Folds and seams: cloth that has no creases in it is plastic.
+    for (a, b) in (((52, 70), (50, 100)), ((57, 96), (54, 112)),
+                   ((95, 66), (92, 96)), ((86, 96), (82, 112))):
+        _line(image, a, b, JACKET[1])
+    # A pocket flap on each side.
+    _line(image, (47, 98), (57, 97), JACKET[0])
+    _line(image, (47, 99), (57, 98), JACKET[3])
+    _line(image, (80, 98), (92, 98), JACKET[0])
+    _line(image, (80, 99), (92, 99), JACKET[2])
+    # The open edges, lit where they fold back.
+    _line(image, (66, 58), (59, 114), JACKET[4])
+    _line(image, (83, 58), (76, 114), JACKET[1])
+    # The hem, a darker band.
+    _line(image, (45, 114), (58, 116), JACKET[0])
+    _line(image, (75, 116), (90, 114), JACKET[0])
 
     near_leg = Piece(FUR, fur=True, salt=41)
-    near_leg.capsule((60, 106), (56, 126), 13, 8)
-    near_leg.capsule((56, 126), (72, 142), 8, 4)
+    near_leg.capsule((58, 110), (46, 126), 11, 7)
+    near_leg.capsule((46, 126), (64, 143), 7, 4)
     near_leg.paint(image)
     near_foot = Piece(PINK, salt=42, ambient=0.3)
-    near_foot.capsule((72, 143), (89, 146), 4, 2.6)
+    near_foot.capsule((64, 144), (80, 148), 4, 2.6)
     for toe in range(3):
-        near_foot.capsule((88 + toe, 145 + toe * 0.6), (92 + toe, 147), 1.4,
+        near_foot.capsule((79 + toe, 147 + toe * 0.5), (83 + toe, 149), 1.4,
                           1.0)
     near_foot.paint(image)
 
-    # --- head ---------------------------------------------------------
+    # Popped collar, both sides of the neck.
+    neck = Piece(FUR, fur=True, salt=35)
+    neck.capsule((72, 50), (76, 58), 8, 9)
+    neck.paint(image)
+    lapel_near = Piece(JACKET, salt=36, ambient=0.3)
+    lapel_near.polygon([(56, 48), (68, 56), (64, 72), (54, 60)], bulge=0.5)
+    lapel_near.paint(image)
+    lapel_far = Piece(JACKET, salt=37, ambient=0.2)
+    lapel_far.polygon([(92, 46), (82, 56), (86, 72), (96, 58)], bulge=0.5)
+    lapel_far.paint(image)
+    for x, y, c in ((60, 60, PIN), (61, 60, PIN), (60, 61, (180, 142, 60))):
+        pixels[x, y] = c + (255,)
+
+    # --- head, three-quarters towards the cigarette --------------------
+    # Drawn on its own sheet and set down onto the collar. At first it
+    # sat where the design put it and a rat grew a neck, which rats do
+    # not have: the head goes straight into the shoulders.
+    body = image
+    image = _blank()
     far_ear = Piece(FUR, salt=51)
-    far_ear.ellipse((90, 17), 12, 14)
+    far_ear.ellipse((70, 12), 8, 10)
     far_ear.paint(image)
     far_inner = Piece(PINK, rim=False, ambient=0.35)
-    far_inner.ellipse((88, 19), 7.5, 9.5)
+    far_inner.ellipse((70, 13), 4.5, 6.5)
     far_inner.paint(image)
 
     skull = Piece(FUR, fur=True, salt=52)
-    skull.ellipse((74, 34), 19, 16)
-    skull.ellipse((58, 40), 13, 10.5)
-    skull.ellipse((47, 43), 9, 7.5)
-    skull.ellipse((40, 45), 5.5, 4.5)
+    skull.ellipse((76, 32), 17, 15)
+    skull.ellipse((61, 33), 12, 9.5)
+    skull.ellipse((51, 32), 8.5, 7)
+    skull.ellipse((44, 31), 5, 4.2)
     skull.paint(image)
 
-    # The cheek, a shade paler than the head and no more. In belly-white
-    # it came out as a moustache.
     cheek = Piece(FUR[1:] + (BELLY[2],), fur=True, rim=False, salt=53,
                   ambient=0.3)
-    cheek.ellipse((63, 46), 8, 4.5)
+    cheek.ellipse((68, 39), 9, 5)
     cheek.paint(image)
 
     near_ear = Piece(FUR, salt=54)
-    near_ear.ellipse((70, 13), 10, 12)
+    near_ear.ellipse((90, 18), 11, 13)
     near_ear.paint(image)
     near_inner = Piece(PINK, rim=False, ambient=0.35)
-    near_inner.ellipse((68, 15), 6, 8)
+    near_inner.ellipse((89, 19), 7, 9)
     near_inner.paint(image)
 
     pixels = image.load()
 
-    # The eye. Half-lidded, always: the heavy upper lid is most of the
-    # expression, and a wide round eye on this face would be somebody
-    # else's rat. The lid is fur rather than a black band -- drawn dark
-    # all the way across, it came out as a pair of sunglasses.
-    ex, ey = 56.5, 33.0
+    # The eye: half-lidded, always. The lid is fur with a dark edge; drawn
+    # as a black band it came out as sunglasses.
+    ex, ey = 64.5, 27.5
     if blink:
-        for x in range(52, 62):
-            pixels[x, 33] = FUR[0] + (255,)
-        for x in range(53, 61):
-            pixels[x, 32] = FUR[3] + (255,)
+        for x in range(60, 70):
+            pixels[x, 28] = FUR[0] + (255,)
+        for x in range(61, 69):
+            pixels[x, 27] = FUR[3] + (255,)
     else:
-        for y in range(30, 37):
-            for x in range(51, 63):
+        for y in range(24, 32):
+            for x in range(59, 71):
                 ox = (x + 0.5 - ex) / 4.6
                 oy = (y + 0.5 - ey) / 2.9
                 if ox * ox + oy * oy <= 1.0:
                     pixels[x, y] = EYE[0] + (255,)
-        for x in range(51, 63):
-            if pixels[x, 32][:3] == EYE[0]:
-                pixels[x, 31] = FUR[3] + (255,)          # the lid
-                pixels[x, 32] = FUR[0] + (255,)          # its edge
-        pixels[55, 33] = (210, 214, 230, 255)            # the catchlight
-        for x in range(53, 60):
-            pixels[x, 36] = FUR[1] + (255,)
-    # Brow, heavy and flat.
-    _line(image, (50, 29), (61, 28), FUR[1])
+        for x in range(59, 71):
+            if pixels[x, 26][:3] == EYE[0]:
+                pixels[x, 25] = FUR[3] + (255,)
+                pixels[x, 26] = FUR[0] + (255,)
+        pixels[63, 27] = (210, 214, 230, 255)
+        for x in range(61, 68):
+            pixels[x, 31] = FUR[1] + (255,)
+    _line(image, (58, 23), (69, 22), FUR[1])
 
-    # Nose, mouth and the two incisors.
+    # Nose, mouth, incisors.
     nose = Piece(PINK, ambient=0.4)
-    nose.ellipse((35, 45), 3.2, 2.6)
+    nose.ellipse((40, 30), 3.2, 2.6)
     nose.paint(image)
-    pixels[34, 44] = PINK[4] + (255,)
-    _line(image, (38, 49), (49, 51), FUR[0])
-    for x in (39, 40):
-        pixels[x, 50] = TOOTH + (255,)
-        pixels[x, 51] = TOOTH + (255,)
-    pixels[39, 52] = (196, 170, 104, 255)
+    pixels[39, 29] = PINK[4] + (255,)
+    _line(image, (43, 35), (55, 38), FUR[0])
+    for x in (44, 45):
+        pixels[x, 36] = TOOTH + (255,)
+        pixels[x, 37] = TOOTH + (255,)
+    pixels[44, 38] = (196, 170, 104, 255)
 
-    # Whiskers, fanned forward off the snout.
-    for end in ((22, 39), (20, 45), (23, 51)):
-        _line(image, (41, 46), end, (196, 194, 206))
-    for end in ((27, 36), (28, 55)):
-        _line(image, (43, 48), end, (140, 138, 152))
+    for end in ((26, 23), (24, 30), (27, 37)):
+        _line(image, (46, 31), end, (196, 194, 206))
+    for end in ((31, 20), (32, 40)):
+        _line(image, (48, 33), end, (140, 138, 152))
 
-    return _outline(image)
+    body.alpha_composite(image, (0, HEAD_DROP))
+    return _outline(body)
 
 
 def _arm_pose(amount: float):
@@ -455,17 +488,17 @@ def _arm_pose(amount: float):
     def mix(a, b):
         return (a[0] + (b[0] - a[0]) * ease, a[1] + (b[1] - a[1]) * ease)
 
-    elbow = mix((54, 94), (52, 80))
-    hand = mix((46, 80), (41, 54))
-    angle = math.radians(-148 + (-176 + 148) * ease)
-    filter_end = mix((44, 78), (38, 50))
+    elbow = mix((44, 94), (40, 76))
+    hand = mix((38, 78), (46, 44 + HEAD_DROP))
+    angle = math.radians(-140 + (176 + 140) * ease)
+    filter_end = mix((36, 75), (44, 37 + HEAD_DROP))
     return elbow, hand, angle, filter_end
 
 
 def chuck_arm(amount: float) -> tuple[Image.Image, dict]:
     """The near arm and the cigarette, somewhere between rest and a drag."""
     image = _blank()
-    shoulder = (64, 62)
+    shoulder = (56, 64)
     elbow, hand, angle, filter_end = _arm_pose(amount)
     wrist = (elbow[0] + (hand[0] - elbow[0]) * 0.78,
              elbow[1] + (hand[1] - elbow[1]) * 0.78)
@@ -513,7 +546,7 @@ def chuck_arm(amount: float) -> tuple[Image.Image, dict]:
                     1.6, 1.2)                               # thumb
     fingers.paint(image)
 
-    mouth = (38, 50)
+    mouth = (43, 37 + HEAD_DROP)
     return _outline(image), {
         "ember": [round(ember_point[0], 1), round(ember_point[1], 1)],
         "mouth": list(mouth),

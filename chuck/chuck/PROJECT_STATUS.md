@@ -27,6 +27,21 @@ and updated every session.
 
 ## Latest implementation
 
+- Turned the title-screen Chuck round to face the viewer. The first version
+  drew him side-on, turned away towards his cigarette, so what showed was the
+  back of the jacket and legs coming out from under it at angles that only
+  work on something facing the other way. Front-on, the jacket hangs open over
+  his pale chest with both lapels standing up either side of his head, each
+  panel with its own pocket flap and folds, the one on the stone side turned
+  away from the light. Only the head turns -- three-quarters, towards the hand
+  with the cigarette.
+- Two things that went wrong on the way. Both legs first came down the same
+  line and merged into one thick one; the knees are apart now and the shins
+  cross, feet pointing opposite ways, which is what reads as crossed ankles.
+  And the head sat where it was designed and a rat grew a neck. It is drawn
+  on its own sheet and set down into the collar, and the hand, the cigarette
+  and the exhale point all follow it down by the same amount.
+
 - Rebuilt the title screen: Chuck, large, leaning on his own name in cracked
   stone against the Astral sky, having a smoke. No subtitle.
 - It is the one scene drawn at twice the game's resolution. Everything else is
