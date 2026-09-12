@@ -395,17 +395,30 @@ PROP_SORT_LIFT = {
     "waterdeep_docked_ship": 80,
 }
 
-# Props big enough to hide somebody completely. Everything else in the
-# game is at most a couple of tiles tall, so a character behind it is
-# still mostly visible; the Feywild's great trees are fourteen tiles, and
-# walking north past one would lose Chuck -- or an enemy -- entirely
-# for several steps. These thin out while anybody is behind them.
-SEE_THROUGH_PROPS = frozenset({"feywild_great_tree"})
-# How much of the prop is left when it is fully thinned out, and how far
-# up from its bottom edge the part that thins begins: the roots and the
-# base of the trunk stay solid, so the tree still stands on the ground.
-SEE_THROUGH_ALPHA = 90
+# Props big enough to hide somebody completely. Most things in the game
+# are a couple of tiles tall, so a character behind one is still mostly
+# visible; these are not, and walking behind one would lose Chuck -- or
+# an enemy -- entirely for several steps. They thin out while anybody is
+# behind them.
+#
+# Each kind says how many pixels of its bottom edge stay solid, so the
+# thing still stands on the ground while the rest of it thins: a tree's
+# roots, a mast's foot, the cabin's porch -- which Chuck walks on, and
+# which would otherwise fade under his own feet.
 SEE_THROUGH_SOLID_BASE = 40
+SEE_THROUGH_PROPS: dict[str, int] = {
+    "feywild_great_tree": SEE_THROUGH_SOLID_BASE,
+    "ship_mast_sail": 18,
+    "ship_bowsprit": 0,
+    "sailing_cog": 36,
+    "waterdeep_docked_ship": 36,
+    "cloud_tower_arch": 24,
+    "desert_ruin_arch": 10,
+    "castle_turret": 12,
+    "tahuya_cabin": 78,
+}
+# How much of the prop is left when it is fully thinned out.
+SEE_THROUGH_ALPHA = 90
 SEE_THROUGH_RATE = 4.0
 SEE_THROUGH_STEPS = 6
 SEE_THROUGH_BLEND = 14
@@ -452,6 +465,7 @@ class Prop:
         # see-through kinds, which get their own copy of the image so
         # thinning one tree does not thin every tree drawn from it.
         self.see_through = kind in SEE_THROUGH_PROPS
+        self._solid_base = min(h, SEE_THROUGH_PROPS.get(kind, 0))
         self.veil = 0.0
         self._thinned: dict[int, object] = {}
         self.dialogue_id = PROP_DIALOGUE.get(kind)
@@ -478,7 +492,7 @@ class Prop:
 
         w, h = self._size
         return pygame.Rect(self._draw_x, self._draw_y, w,
-                           h - SEE_THROUGH_SOLID_BASE)
+                           h - self._solid_base)
 
     def update_veil(self, walkers, dt: float) -> None:
         """Thin out while any walker is behind this prop and under it."""
@@ -513,18 +527,18 @@ class Prop:
             w, h = self._size
             keep = round(255 - (255 - SEE_THROUGH_ALPHA) * level
                          / SEE_THROUGH_STEPS)
-            solid_top = h - SEE_THROUGH_SOLID_BASE
+            solid_top = h - self._solid_base
+            blend = min(SEE_THROUGH_BLEND, self._solid_base)
             image.fill((255, 255, 255, keep),
-                       pygame.Rect(0, 0, w, solid_top - SEE_THROUGH_BLEND),
+                       pygame.Rect(0, 0, w, solid_top - blend),
                        special_flags=pygame.BLEND_RGBA_MULT)
             # A short ramp into the solid base, a row at a time. A hard
             # edge there drew a line across the trunk like a waterline.
-            for row in range(SEE_THROUGH_BLEND):
-                mix = (row + 1) / (SEE_THROUGH_BLEND + 1)
+            for row in range(blend):
+                mix = (row + 1) / (blend + 1)
                 alpha = round(keep + (255 - keep) * mix)
                 image.fill((255, 255, 255, alpha),
-                           pygame.Rect(0, solid_top - SEE_THROUGH_BLEND + row,
-                                       w, 1),
+                           pygame.Rect(0, solid_top - blend + row, w, 1),
                            special_flags=pygame.BLEND_RGBA_MULT)
             self._thinned[level] = image
         return image

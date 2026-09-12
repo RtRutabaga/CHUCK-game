@@ -349,6 +349,9 @@ class WorldScene(Scene):
         # Being netted holds Chuck still and drains him; it never becomes
         # a second way to die. Map reset clears it like any enemy state.
         self.net_capture = NetCapture()
+        # Canopy region -> how thinned out it is, for overhead tiles that
+        # somebody is standing under.
+        self._overhead_veils: dict[int, float] = {}
         self._respawn_phase: str | None = None  # "out" | "hold" | "in"
         self._respawn_t = 0.0
         self._fall_t: float | None = None
@@ -1697,7 +1700,8 @@ class WorldScene(Scene):
             self.infernal_corruption.draw(surface, offset)
         for cone in self.battle_cones:
             cone.draw(surface, offset)
-        self.tilemap.draw_overhead(surface, offset, self._world_time)
+        self.tilemap.draw_overhead(surface, offset, self._world_time,
+                                   self._overhead_veils)
         if self.street_lights is not None:
             # After the overhead pass and before the HUD: the lamps light
             # the street, not the interface.
@@ -1822,20 +1826,41 @@ class WorldScene(Scene):
         return None
 
     def _update_see_through_props(self, dt: float) -> None:
-        """Thin the great trees while anybody is walking behind one.
+        """Thin anything big enough to hide somebody while they are under it.
 
-        Anybody, not just Chuck: an enemy that disappears behind a crown
-        this size is a hit the player had no way to see coming.
+        The great trees, the ship's sails, the arches and the cabin as
+        props, and every canopy drawn over the world as overhead tiles --
+        market awnings, the city gate, palm crowns, the jungle's exit
+        canopy, the Feywild's hedge openings. Anybody counts, not just
+        Chuck: an enemy that disappears under an awning is a hit the
+        player had no way to see coming.
         """
-        veiled = [prop for prop in self.props
-                  if getattr(prop, "see_through", False)]
-        if not veiled:
-            return
+        from src.entities.prop import SEE_THROUGH_RATE
+
         walkers = [drawable for drawable in self._sorted_drawables()
                    if hasattr(drawable, "hitbox")
-                   and not getattr(drawable, "see_through", False)]
-        for prop in veiled:
-            prop.update_veil(walkers, dt)
+                   and not hasattr(drawable, "see_through")]
+        for prop in self.props:
+            if getattr(prop, "see_through", False):
+                prop.update_veil(walkers, dt)
+
+        covered: set[int] = set()
+        for walker in walkers:
+            box = walker.hitbox
+            # The sprite stands up above its feet: a rat whose head is
+            # under the canvas is under the canvas.
+            reach = pygame.Rect(box.left, box.top - 12, box.width,
+                                box.height + 12)
+            covered |= self.tilemap.overhead_regions_over(reach)
+        step = SEE_THROUGH_RATE * dt
+        for region in covered | set(self._overhead_veils):
+            veil = self._overhead_veils.get(region, 0.0)
+            veil = min(1.0, veil + step) if region in covered \
+                else max(0.0, veil - step)
+            if veil > 0.0:
+                self._overhead_veils[region] = veil
+            else:
+                self._overhead_veils.pop(region, None)
 
     def _sorted_drawables(self):
         """Everything that stands in the world, painter-ordered by feet.

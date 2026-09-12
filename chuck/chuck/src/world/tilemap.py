@@ -1580,6 +1580,10 @@ class TileMap:
         self._tileset_info = DOCKS.info()
         self._tile_art: dict[str, list] = {}
         self._overhead_art: dict[str, list] = {}
+        # Connected pieces of overhead art (one market awning, one palm
+        # canopy), built on first use; and faded copies of overhead tiles.
+        self._overhead_regions: dict[tuple[int, int], int] | None = None
+        self._thinned_overhead: dict[tuple[str, int, int], object] = {}
 
     def open_tavern_entrance(self) -> None:
         """Swap the authored tavern door to its post-sewer exterior state."""
@@ -1743,8 +1747,77 @@ class TileMap:
                                     ts, ts),
                     )
 
+    def overhead_regions(self) -> dict[tuple[int, int], int]:
+        """Label every overhead tile with the connected canopy it is part of.
+
+        An awning fades as one piece of canvas. Fading only the tiles
+        Chuck is touching drew a hole the shape of a rat in the middle of
+        it, which reads as a cloth with a rat-shaped tear rather than as
+        a thing he is underneath.
+        """
+        if self._overhead_regions is None:
+            from collections import deque
+
+            cells = {
+                (col, row)
+                for row, line in enumerate(self._grid)
+                for col, char in enumerate(line)
+                if char in TILE_DEFS and TILE_DEFS[char].overhead
+            }
+            labels: dict[tuple[int, int], int] = {}
+            label = 0
+            for cell in sorted(cells, key=lambda c: (c[1], c[0])):
+                if cell in labels:
+                    continue
+                labels[cell] = label
+                queue = deque([cell])
+                while queue:
+                    col, row = queue.popleft()
+                    for spot in ((col + 1, row), (col - 1, row),
+                                 (col, row + 1), (col, row - 1)):
+                        if spot in cells and spot not in labels:
+                            labels[spot] = label
+                            queue.append(spot)
+                label += 1
+            self._overhead_regions = labels
+        return self._overhead_regions
+
+    def overhead_regions_over(self, rect) -> set[int]:
+        """Which canopies cover any part of a world-space rectangle."""
+        regions = self.overhead_regions()
+        if not regions:
+            return set()
+        ts = config.TILE_SIZE
+        found = set()
+        for row in range(int(rect.top // ts), int((rect.bottom - 1) // ts) + 1):
+            for col in range(int(rect.left // ts),
+                             int((rect.right - 1) // ts) + 1):
+                label = regions.get((col, row))
+                if label is not None:
+                    found.add(label)
+        return found
+
+    def _thinned_overhead_tile(self, char: str, index: int, level: int,
+                               art) -> object:
+        key = (char, index, level)
+        tile = self._thinned_overhead.get(key)
+        if tile is None:
+            import pygame  # local: keeps parsing/collision pygame-free
+
+            from src.entities.prop import SEE_THROUGH_ALPHA, SEE_THROUGH_STEPS
+
+            tile = pygame.Surface(art.get_size(), pygame.SRCALPHA)
+            tile.blit(art, (0, 0))
+            keep = round(255 - (255 - SEE_THROUGH_ALPHA) * level
+                         / SEE_THROUGH_STEPS)
+            tile.fill((255, 255, 255, keep),
+                      special_flags=pygame.BLEND_RGBA_MULT)
+            self._thinned_overhead[key] = tile
+        return tile
+
     def draw_overhead(self, surface, camera_offset: tuple[int, int],
-                      time_s: float = 0.0) -> None:
+                      time_s: float = 0.0,
+                      veils: dict[int, float] | None = None) -> None:
         """Draw tiles that appear ABOVE entities (the market awning).
 
         Important for scale: Chuck walking under things is a core
@@ -1761,6 +1834,9 @@ class TileMap:
             camera_offset, view_w, view_h
         )
         overhead_to_terrain = self._tileset.overhead_char_to_terrain
+        regions = self.overhead_regions() if veils else None
+        if veils:
+            from src.entities.prop import SEE_THROUGH_STEPS
         for row_i in range(row0, row1):
             grid_row = self._grid[row_i]
             for col_i in range(col0, col1):
@@ -1770,5 +1846,12 @@ class TileMap:
                     name = overhead_to_terrain[char]
                     variants, frames = self._tileset_info[name]
                     idx = art_index(col_i, row_i, variants, frames, time_s)
-                    surface.blit(art[idx],
-                                 (col_i * ts - ox, row_i * ts - oy))
+                    tile = art[idx]
+                    if regions is not None:
+                        veil = veils.get(regions.get((col_i, row_i)), 0.0)
+                        if veil > 0.0:
+                            tile = self._thinned_overhead_tile(
+                                char, idx,
+                                max(1, round(veil * SEE_THROUGH_STEPS)),
+                                art[idx])
+                    surface.blit(tile, (col_i * ts - ox, row_i * ts - oy))

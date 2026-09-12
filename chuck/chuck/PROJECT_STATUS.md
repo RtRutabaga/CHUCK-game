@@ -27,6 +27,27 @@ and updated every session.
 
 ## Latest implementation
 
+- Extended the great trees' see-through fade to everything else big enough to
+  hide somebody. Two routes to the same behaviour.
+- Big props thin while a walker stands behind them: the ship's two mast sails
+  and its bowsprit, the sailing cog in the Chult jungle and the one docked in
+  Waterdeep, the cloud tower arch, the desert ruin's gate arch, the castle
+  turrets and the Tahuya cabin, alongside the great trees. Each kind now says
+  how much of its bottom edge stays solid -- a mast's foot, a tree's roots,
+  the cabin's porch, which Chuck walks on and which would otherwise fade under
+  his own feet.
+- Overhead tiles thin a whole connected canopy at a time: the market awnings,
+  the city gate, the oasis palm crowns, the jungle's exit canopy, the sewer
+  outflow and the Feywild's hedge openings and crawl-throughs. The map labels
+  each connected piece of overhead art once, and anybody standing under any
+  tile of it -- measured a little above the feet, because a rat whose head is
+  under the canvas is under the canvas -- thins all of it. Fading only the
+  tiles a character touches would cut a rat-shaped hole in the cloth. Other
+  awnings on the same street are left alone.
+- Anybody counts, as with the trees: an enemy under an awning is a hit the
+  player would otherwise not see coming. Faded tiles are baked per step and
+  cached, for the same reason the tree's are.
+
 - Gave the title screen music: a very quiet space ambience. An original
   128-second loop at 60 BPM in D Lydian that does almost nothing on purpose --
   slow pad chords that take seconds to bloom and overlap so there is never a
