@@ -30,6 +30,7 @@ from src.scenes.scene import Scene
 
 
 TITLE_DIR = "title"
+TITLE_MUSIC = "title.wav"
 
 # The smoking cycle, in seconds: resting (varied, so it never becomes a
 # metronome), the lift, the drag, and the lowering.
@@ -124,7 +125,9 @@ class TitleScene(Scene):
         return self._continue_available
 
     def on_enter(self) -> None:
-        self.game.audio.stop_music(fade_ms=250)
+        # Very quiet space ambience under the portrait; the trim in
+        # config keeps it well below every area theme.
+        self.game.audio.play_music(TITLE_MUSIC)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:

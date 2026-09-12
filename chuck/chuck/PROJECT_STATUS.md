@@ -27,6 +27,27 @@ and updated every session.
 
 ## Latest implementation
 
+- Gave the title screen music: a very quiet space ambience. An original
+  128-second loop at 60 BPM in D Lydian that does almost nothing on purpose --
+  slow pad chords that take seconds to bloom and overlap so there is never a
+  gap, a low drone so the room has a floor, sixteen single high bells placed
+  the way stars are (irregularly, never two at once) and four reverse swells
+  breathing in underneath. No percussion and no melody. The raised fourth is
+  the one strange colour, the tower theme's trick for height used here for
+  distance; the middle eight bars move the chords higher and thinner, then
+  come home into the loop.
+- Subtle twice over: mastered with a low ceiling (peak 0.48), and given a
+  stream trim of 0.5 so it plays at half the volume of every area theme.
+- The title used to stop the music on entry. It starts this track instead, and
+  the dev checkpoint menu going back to the title leaves it playing rather than
+  restarting it, because re-requesting the same stream is already a no-op.
+- The tests state "subtle" as properties of the score: slow, no percussion,
+  chords changing no more often than every eight seconds, fewer than one
+  non-chord sound every four seconds, no two bells within four beats of each
+  other and not at regular intervals, and a quiet trim. The first draft of the
+  density check counted a chord's four voices as four notes and failed a score
+  that was plainly sparse.
+
 - Planted great trees in the Feywild: eleven tiles across and fourteen tall,
   a trunk three tiles wide on a solid three-by-two footprint, roots running
   out across the ground and one broad crown. No face. One per map on the nine
