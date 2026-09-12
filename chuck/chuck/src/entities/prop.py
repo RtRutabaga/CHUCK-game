@@ -167,6 +167,12 @@ _SPRITES = {
         "objects/feywild_shrub_2.png",
         "objects/feywild_shrub_3.png",
     ),
+    # Where the Feywild's root walls gather into a knot.
+    "fey_root_knot": (
+        "objects/fey_root_knot_1.png",
+        "objects/fey_root_knot_2.png",
+        "objects/fey_root_knot_3.png",
+    ),
     # Eleven tiles across and fourteen tall: the Feywild's old trees.
     "feywild_great_tree": (
         "objects/feywild_great_tree_1.png",

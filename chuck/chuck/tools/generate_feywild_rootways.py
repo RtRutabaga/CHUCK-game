@@ -9,6 +9,10 @@ try:
     )
 except ModuleNotFoundError:  # Direct execution from inside tools/.
     from feywild_great_tree_dressing import dress_grid as plant_great_tree
+try:
+    from tools.feywild_root_dressing import dress_grid as dress_root_walls
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_root_dressing import dress_grid as dress_root_walls
 
 
 W, H = 68, 46
@@ -115,6 +119,7 @@ def build() -> list[list[str]]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][FUTURE_EXIT[0]] = "→"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "Ո"
+    dress_root_walls("feywild_rootways", grid)
     plant_great_tree("feywild_rootways", grid)
     return grid
 
@@ -144,7 +149,7 @@ def _reachable(
             if not (0 <= x < W and 0 <= y < H) or point in reached:
                 continue
             char = _under(grid[y][x])
-            if char in {"#", "※", "ł", "Ł", "ŋ"}:
+            if char in {"#", "※", "ፒ", "ፓ", "ፔ", "ł", "Ł", "ŋ"}:
                 continue
             if large_actor and char == "≀":
                 continue

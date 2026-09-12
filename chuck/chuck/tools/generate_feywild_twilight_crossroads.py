@@ -24,6 +24,10 @@ try:
     )
 except ModuleNotFoundError:  # Direct execution from inside tools/.
     from feywild_great_tree_dressing import dress_grid as plant_great_tree
+try:
+    from tools.feywild_root_dressing import dress_grid as dress_root_walls
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_root_dressing import dress_grid as dress_root_walls
 
 
 W, H = 76, 52
@@ -165,6 +169,7 @@ def build() -> list[list[str]]:
     grid[TOWER_EXIT[1]][TOWER_EXIT[0]] = MARKERS["tower"]
     grid[TOWER_RETURN[1]][TOWER_RETURN[0]] = MARKERS["tower_return"]
     dress_grid("feywild_twilight_crossroads", grid)
+    dress_root_walls("feywild_twilight_crossroads", grid)
     plant_great_tree("feywild_twilight_crossroads", grid)
     return grid
 
@@ -206,7 +211,7 @@ def _base(char: str) -> str:
 
 
 def _reachable(grid, *, flower_active: bool) -> set[tuple[int, int]]:
-    solid = {"#", "ŧ", "Ŧ", "Ɓ", "※", "ŋ"}
+    solid = {"#", "ŧ", "Ŧ", "Ɓ", "※", "ፒ", "ፓ", "ፔ", "ŋ"}
     open_tiles = set()
     for row in range(H):
         for col in range(W):

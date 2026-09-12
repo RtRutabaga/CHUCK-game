@@ -13,6 +13,10 @@ try:
     )
 except ModuleNotFoundError:  # Direct execution from inside tools/.
     from feywild_great_tree_dressing import dress_grid as plant_great_tree
+try:
+    from tools.feywild_root_dressing import dress_grid as dress_root_walls
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_root_dressing import dress_grid as dress_root_walls
 
 
 W, H = 72, 52
@@ -161,6 +165,7 @@ def build() -> list[list[str]]:
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "Ռ"
     _dress_with_vegetation(grid)
     dress_grid("feywild_tea_table", grid)
+    dress_root_walls("feywild_tea_table", grid)
     plant_great_tree("feywild_tea_table", grid)
     return grid
 
@@ -224,7 +229,7 @@ def _reachable(
     *,
     large_actor: bool = False,
 ) -> set[tuple[int, int]]:
-    blocked = {"#", "▤", "◍", "※", "♜", "◉", "☕", "⌁", "⁙",
+    blocked = {"#", "▤", "◍", "※", "ፒ", "ፓ", "ፔ", "♜", "◉", "☕", "⌁", "⁙",
                "ł", "Ł", "ŋ", "ŧ", "Ŧ", "Ɓ"}
     reached = {start}
     frontier = deque([start])

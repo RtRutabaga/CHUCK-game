@@ -231,18 +231,225 @@ def opening_s(surface, variant: int, _frame: int) -> None:
     opening(surface, variant, "s")
 
 
+# ---------------------------------------------------------------------
+# Root walls
+# ---------------------------------------------------------------------
+# The first root wall was four parallel bands drawn diagonally across
+# every tile. Tiled, that is an even stripe running across the whole
+# wall -- bark shingles, or a brown rug -- and nothing about it said
+# roots. Roots curve, cross over each other, and never repeat.
+#
+# So each tile is a small tangle of curved strands, and the strands only
+# ever leave a tile at fixed points on its edges, at a fixed thickness,
+# heading straight out. Every variant uses every one of those points, so
+# whichever two variants end up side by side, each root that runs off one
+# tile runs straight on into the next: the tangle is continuous across
+# the whole wall, and the variant hash only decides how it tangles.
+ROOT_GAP = (20, 14, 18)         # a deep hole into the mass
+ROOT_SHADE = (38, 27, 28)       # the ordinary shadow between roots
+ROOT_GAP_SOIL = (48, 34, 32)
+ROOT_EDGE = (56, 38, 36)
+ROOT_SIDE_PORTS = ((2, 1.8), (8, 2.9), (13, 2.2))    # (y, radius)
+ROOT_END_PORTS = ((3, 2.2), (11, 2.7))                # (x, radius)
+ROOT_WALL_VARIANTS = 8
+
+
+def _root_ports():
+    ports = []
+    for y, radius in ROOT_SIDE_PORTS:
+        ports.append(("left", (-0.5, y + 0.5), (1, 0), radius))
+        ports.append(("right", (16.5, y + 0.5), (-1, 0), radius))
+    for x, radius in ROOT_END_PORTS:
+        ports.append(("top", (x + 0.5, -0.5), (0, 1), radius))
+        ports.append(("bottom", (x + 0.5, 16.5), (0, -1), radius))
+    return ports
+
+
+def _variant_random(variant: int, salt: int):
+    import random
+
+    return random.Random(variant * 7919 + salt * 104729)
+
+
+def _draw_strand(surface, p0, d0, r0, p3, d3, r3, *, reach=5.5,
+                 bend=(0.0, 0.0), taper_end=False, sides=(None, None)) -> None:
+    """One root, as a cubic curve painted with shaded discs.
+
+    Lit on its upper-left side and rimmed dark, so where one strand
+    passes over another the one on top has an edge -- which is the whole
+    of what makes a tangle read as a tangle.
+    """
+    # The ends head straight out of the tile and the bend lives only in
+    # the middle. Bending the control points instead also bent the root
+    # where it crosses the edge, so the same edge point came out a
+    # different width in every variant and the wall showed its seams.
+    p1 = (p0[0] + d0[0] * reach, p0[1] + d0[1] * reach)
+    p2 = (p3[0] + d3[0] * reach, p3[1] + d3[1] * reach)
+    steps = 40
+    samples = []
+    for step in range(steps + 1):
+        t = step / steps
+        u = 1 - t
+        sway = math.sin(math.pi * t) ** 2
+        x = u ** 3 * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0]             + t ** 3 * p3[0] + bend[0] * sway
+        y = u ** 3 * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1]             + t ** 3 * p3[1] + bend[1] * sway
+        if taper_end:
+            radius = r0 + (r3 - r0) * t
+        else:
+            # Swell a little in the middle: a root is thicker between
+            # the places it bends than where it bends.
+            radius = r0 + (r3 - r0) * t + 0.5 * math.sin(t * math.pi)
+        samples.append((x, y, radius, t))
+    # Shade each pixel from its nearest point on the curve. Stamping a
+    # shaded disc at each step instead let every disc paint its dark rim
+    # over the middle of the one before, and the strands came out as
+    # rim-coloured sludge.
+    for py in range(16):
+        for px in range(16):
+            best = None
+            for x, y, radius, t in samples:
+                ox, oy = px + 0.5 - x, py + 0.5 - y
+                reach = math.hypot(ox, oy) / radius
+                if best is None or reach < best[0]:
+                    best = (reach, ox, oy, radius, t)
+            reach, ox, oy, radius, t = best
+            if reach > 1.0:
+                continue
+            # A root may only touch the tile's edge where it leaves the
+            # tile, at its own edge point. Anywhere else it would run off
+            # into a neighbour that has no root there to meet it, and the
+            # wall would show its tile grid as a line of cut-off roots.
+            edges = {side for side, on in (("left", px == 0),
+                                           ("right", px == 15),
+                                           ("top", py == 0),
+                                           ("bottom", py == 15)) if on}
+            if edges:
+                if len(edges) > 1:
+                    continue
+                edge = next(iter(edges))
+                along = px + 0.5 if edge in ("top", "bottom") else py + 0.5
+                # Allowed only right at one of this root's own edge
+                # points. Deciding by which end of the curve the pixel is
+                # nearest failed where a root loops back past its start.
+                if not any(
+                    side == edge
+                    and abs(along - (port[0] if edge in ("top", "bottom")
+                                     else port[1])) <= width
+                    for side, port, width in ((sides[0], p0, r0),
+                                              (sides[1], p3, r3))
+                ):
+                    continue
+            if reach > 1.0 - 0.75 / radius:
+                colour = ROOT_EDGE
+            elif (ox + oy) < -radius * 0.35:
+                colour = ROOT_LIGHT
+            else:
+                colour = ROOT_BROWN
+            surface.set_at((px, py), colour)
+
+
 def root_wall(surface, variant: int, _frame: int) -> None:
-    """Tangled roots dense enough to read as a continuous solid barrier."""
-    surface.fill(ROOT_DARK)
-    offsets = (0, 3, 6, 9)
-    for index, offset in enumerate(offsets):
-        y = (offset + variant * 2) % 13
-        color = ROOT_BROWN if index % 2 else ROOT_LIGHT
-        pygame.draw.line(surface, color, (-2, y), (17, y + 7), 3)
-        pygame.draw.line(surface, ROOT_DARK, (-2, y + 2), (17, y + 9), 1)
-    pygame.draw.line(surface, LEAF, (variant * 3, 0), (15, 12), 1)
-    surface.set_at(((variant * 5 + 3) % 16, (variant * 7 + 5) % 16),
-                   (VIOLET, BLUE, PINK, GOLD)[variant])
+    """A tangle of roots that carries on into every neighbouring tile."""
+    rng = _variant_random(variant, 1)
+    # Ordinary shadow between the roots, the same all the way to every
+    # edge, and a few deep holes kept well inside the tile. With the
+    # whole gap drawn near-black, the edges -- where roots may only
+    # cross at their own points -- came out as a line of dark dashes
+    # along every tile boundary and drew the grid back on the wall.
+    surface.fill(ROOT_SHADE)
+    for index in range(3):
+        cx, cy = rng.uniform(4, 12), rng.uniform(4, 12)
+        radius = rng.uniform(1.2, 2.4)
+        for py in range(16):
+            for px in range(16):
+                if math.hypot(px + 0.5 - cx, (py + 0.5 - cy) * 1.3) <= radius:
+                    surface.set_at((px, py), ROOT_GAP)
+    for index in range(7):                    # soil showing through the gaps
+        surface.set_at((rng.randrange(1, 15), rng.randrange(1, 15)),
+                       ROOT_GAP_SOIL)
+
+    ports = _root_ports()
+    # Pair every port with a port on a different side. Every variant uses
+    # all ten, so no root ever stops dead at a tile edge.
+    for _attempt in range(200):
+        order = ports[:]
+        rng.shuffle(order)
+        pairs = [(order[i], order[i + 1]) for i in range(0, 10, 2)]
+        if all(a[0] != b[0] for a, b in pairs):
+            break
+    rng.shuffle(pairs)
+    for (side_a, p0, d0, r0), (side_b, p3, d3, r3) in pairs:
+        # Loose and uneven: kept tight and regular, the tangle came out
+        # as basketwork.
+        bend = (rng.uniform(-6.0, 6.0), rng.uniform(-6.0, 6.0))
+        _draw_strand(surface, p0, d0, r0, p3, d3, r3,
+                     reach=rng.uniform(2.5, 9.0), bend=bend,
+                     sides=(side_a, side_b))
+
+    # Bark: a few darker grain marks along the lit strands.
+    for index in range(5):
+        x, y = rng.randrange(1, 15), rng.randrange(1, 15)
+        if surface.get_at((x, y))[:3] == ROOT_BROWN:
+            surface.set_at((x, y), ROOT_DARK)
+    # A hair root or a leaf, and now and then one of the Feywild's motes.
+    if variant % 2 == 0:
+        x, y = rng.randrange(3, 13), rng.randrange(3, 13)
+        if surface.get_at((x, y))[:3] in (ROOT_GAP, ROOT_SHADE):
+            surface.set_at((x, y), LEAF)
+            surface.set_at((x + 1, y - 1), LEAF_DARK)
+    if variant % 3 == 1:
+        x, y = rng.randrange(2, 14), rng.randrange(2, 14)
+        if surface.get_at((x, y))[:3] in (ROOT_GAP, ROOT_SHADE):
+            surface.set_at((x, y), (VIOLET, BLUE, PINK, GOLD)[variant % 4])
+
+
+def root_face(surface, variant: int, _frame: int) -> None:
+    """The front of a root wall, where it stops above open ground.
+
+    The roots coming down into this tile do not carry on: they curl over
+    and hang, tapering to tips, into the shadow under the mass. That edge
+    is what makes the wall a thing standing on the floor rather than a
+    brown shape cut out of it.
+    """
+    rng = _variant_random(variant, 2)
+    surface.fill(ROOT_GAP)
+    # The hollow under the overhang deepens towards the floor.
+    for y in range(9, 16):
+        shade = max(0, 14 - (y - 9) * 2)
+        for x in range(16):
+            surface.set_at((x, y), (ROOT_GAP[0] - 14 + shade,
+                                    ROOT_GAP[1] - 10 + shade,
+                                    ROOT_GAP[2] - 10 + shade))
+
+    ports = _root_ports()
+    entries = [port for port in ports
+               if port[0] == "top"
+               or (port[0] in ("left", "right") and port[1][1] < 12)]
+    rng.shuffle(entries)
+    for side, p0, d0, r0 in entries:
+        tip_x = p0[0] + (rng.uniform(-3, 3) if side == "top"
+                         else d0[0] * rng.uniform(4, 7))
+        tip = (max(1.0, min(15.0, tip_x)), rng.uniform(12.5, 15.0))
+        _draw_strand(surface, p0, d0, r0, tip, (0, -1), 0.6,
+                     reach=rng.uniform(3.5, 5.5),
+                     bend=(rng.uniform(-2, 2), rng.uniform(0, 2)),
+                     taper_end=True, sides=(side, "tip"))
+    # Hair roots hanging from the underside.
+    for index in range(3):
+        x = rng.randrange(2, 14)
+        for y in range(rng.randrange(9, 12), 16):
+            if surface.get_at((x, y))[:3] in (ROOT_BROWN, ROOT_LIGHT,
+                                              ROOT_EDGE):
+                continue
+            if rng.random() < 0.75:
+                surface.set_at((x, y), ROOT_EDGE)
+    # A little moss on the lip.
+    for index in range(2):
+        x = rng.randrange(1, 15)
+        for y in range(4, 11):
+            if surface.get_at((x, y))[:3] == ROOT_LIGHT:
+                surface.set_at((x, y), LEAF_DARK)
+                break
 
 
 def root_passage(surface, variant: int, _frame: int) -> None:
@@ -524,6 +731,7 @@ DRAW = {
     "fey_opening_n": opening_n,
     "fey_opening_s": opening_s,
     "fey_root_wall": root_wall,
+    "fey_root_face": root_face,
     "fey_root_passage": root_passage,
     "fey_camp_dirt": camp_dirt,
     "fey_rapids": rapids,

@@ -27,6 +27,41 @@ and updated every session.
 
 ## Latest implementation
 
+- Redrew the Feywild's root walls so they read as roots, on all five maps that
+  have them: Rootways, the Tea Table, the Redcap Warrens, the Displacer Meadow
+  and the Twilight Crossroads. The old tile was four parallel diagonal bands;
+  tiled into a wall it became one even stripe and read as bark shingles or a
+  brown rug.
+- The new tile is a tangle of curved, shaded strands that only ever leave a
+  tile at fixed points on its edges, at a fixed thickness, heading straight
+  out -- and every one of its eight variants uses every one of those points.
+  So whichever two variants land side by side, each root that runs off one
+  tile runs on into the next, and the tangle is continuous across the whole
+  wall. A test checks that for every pair of variants in both directions.
+- Where a root wall stops above open ground its bottom row is now a front face:
+  the roots curl over and hang in tapering tips into a shadowed hollow, so the
+  wall stands on the floor instead of being a brown shape cut out of it. And
+  along runs of wall, spaced out, a knot -- a swollen boss where several roots
+  have grown round each other, one variant with a cluster of glowing caps --
+  so a long wall has places in it. 174 face tiles and 23 knots across the five
+  maps, all solid-for-solid, so no route changed.
+- Four failures on the way to that tile, all visible in renders. Stamping a
+  shaded disc along each curve let every disc paint its rim over the middle of
+  the last, and the roots came out as sludge; each pixel is now shaded from its
+  nearest point on the curve. Kept tight and regular, the tangle read as
+  basketwork. Bending the curve's control points also bent it where it crosses
+  the tile edge, so the same edge point was a different width in every variant
+  and the seams showed; the bend now lives only in the middle of each root.
+  And with every gap drawn near-black, the edges -- where roots may only cross
+  at their own points -- became a line of dark dashes along every tile
+  boundary; ordinary gaps are a softer shadow now, with the deep holes kept
+  inside the tile. A fifth, caught by the seam test rather than by eye:
+  deciding which end of a root owned an edge pixel by the nearest point on
+  the curve failed where a root looped back past its own start.
+- Dressed from each map's generator and written straight into the shipped maps,
+  like the mushrooms and great trees, and each generator's own route check
+  treats the new pieces as the wall they are.
+
 - Extended the great trees' see-through fade to everything else big enough to
   hide somebody. Two routes to the same behaviour.
 - Big props thin while a walker stands behind them: the ship's two mast sails

@@ -25,6 +25,10 @@ try:
     )
 except ModuleNotFoundError:  # Direct execution from inside tools/.
     from feywild_great_tree_dressing import dress_grid as plant_great_tree
+try:
+    from tools.feywild_root_dressing import dress_grid as dress_root_walls
+except ModuleNotFoundError:  # Direct execution from inside tools/.
+    from feywild_root_dressing import dress_grid as dress_root_walls
 
 W, H = 74, 48
 OUT = (
@@ -145,6 +149,7 @@ def build() -> list[list[str]]:
     for col, row in MITES:
         grid[row][col] = "ღ"
     dress_grid("feywild_displacer_meadow", grid)
+    dress_root_walls("feywild_displacer_meadow", grid)
     plant_great_tree("feywild_displacer_meadow", grid)
     return grid
 
@@ -167,7 +172,7 @@ def _dress_with_vegetation(grid) -> None:
                 grid[row][col] = "Ɓ"
 
 
-SOLID = {"#", "※", "ᛘ", "ŧ", "Ŧ", "Ɓ", "ŋ"}
+SOLID = {"#", "※", "ፒ", "ፓ", "ፔ", "ᛘ", "ŧ", "Ŧ", "Ɓ", "ŋ"}
 PASSAGES = {"≀", "ᚿ"}
 
 

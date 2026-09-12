@@ -690,6 +690,14 @@ TILE_DEFS: dict[str, TileDef] = {
     # Rootways: solid knotted root masses divide the forest floor. The narrow
     # gap is ordinary path under an overhead root arch, traversable by Chuck.
     "※": TileDef(solid=True, color=(58, 43, 39)),
+    # The root wall dressed: its front face where it stops above open
+    # ground, and the knots that stand along its runs. All solid, like
+    # the wall they are made of.
+    "ፒ": TileDef(solid=True, color=(58, 43, 39)),
+    "ፓ": TileDef(solid=True, color=(58, 43, 39), prop="fey_root_knot",
+                 under="※"),
+    "ፔ": TileDef(solid=True, color=(58, 43, 39), prop="fey_root_knot",
+                 under="ፒ"),
     "≀": TileDef(solid=False, color=(45, 76, 59),
                  under="'", overhead="fey_root_passage"),
     # Luminous Rapids: fast bright water no one crosses, static wet
