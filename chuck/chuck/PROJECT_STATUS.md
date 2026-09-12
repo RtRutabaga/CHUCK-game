@@ -27,6 +27,42 @@ and updated every session.
 
 ## Latest implementation
 
+- Rebuilt the title screen: Chuck, large, leaning on his own name in cracked
+  stone against the Astral sky, having a smoke. No subtitle.
+- It is the one scene drawn at twice the game's resolution. Everything else is
+  320x180 scaled up four times, which is right for a one-foot rat in a large
+  world and wrong for the one moment he is meant to be looked at. A scene can
+  now ask for a bigger canvas (`canvas_size`); the title asks for 640x360 and
+  the game scales that up twice instead of four times. At that size Chuck is a
+  hundred and forty-five pixels tall, and the half-lidded stare, pink ears,
+  long snout with whiskers and two incisors, fur grain, the jacket two sizes
+  too big and the cigarette are all things a player can actually see.
+- Made the same way as every other asset: drawn by code, no anti-aliasing, a
+  fixed ramp per material, dithered between tones. What is new is a set of
+  shaded primitives -- capsules for limbs and tail, ellipsoids for skull and
+  snout -- lit from the upper left like the rest of the game, unioned per part
+  so a snout built of three blobs reads as one snout, each part with its own
+  dark rim so an arm in front of a jacket reads as one.
+- He moves. Tail sway, blinks, and every few seconds -- rests of different
+  lengths, so it never becomes a metronome -- he lifts the cigarette, drags
+  while the ember brightens, lowers it and lets the smoke out. A thread of
+  smoke comes off the ember the whole time, leaning away from his face. He is
+  split into layers so none of that needs every combination baked: tail
+  behind, body with eyes open or closed, near arm in five positions. The
+  generator writes where the ember and the mouth are in each frame, and a test
+  checks the ember in the metadata is the ember in the art.
+- Four things the first renders got wrong. The far arm reached out instead of
+  resting on the C; it now goes up over the top of the letter and hangs down
+  its face, and a test checks his hand overlaps the stone. The eye came out as
+  sunglasses, because the lid was drawn as a black band -- it is fur now with a
+  dark edge. A pale neck blob read as a scarf and a belly-white cheek read as
+  a moustache. And the nebula, thresholded out of a busy grain field, came
+  back spotted like a leopard; it is one smooth density through a dithered
+  ramp now, the way every lit surface in the game is shaded.
+- The smoke was invisible on the first pass: one-pixel grey specks are the
+  exact colour and size of the nebula's star dust. Each puff has a core and a
+  thinner halo now, spawned close enough together to read as a ribbon.
+
 - Added a death count. Top right, just left of the cigarette count and in
   the same quiet voice: a rat's skull over crossed bones and the total. The
   skull is a rat's rather than anybody's because of the long snout tapering

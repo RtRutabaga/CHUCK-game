@@ -116,10 +116,18 @@ class Game:
 
     def _draw(self) -> None:
         """Draw the current frame: scene -> native surface -> window."""
-        self.scenes.draw(self.native_surface)
-        pygame.transform.scale(
-            self.native_surface, self.window.get_size(), self.window
-        )
+        # A scene may ask for a bigger canvas than the game's native one
+        # -- the title does, so Chuck can be drawn with a face -- and it
+        # is then scaled up by less instead of by more.
+        size = getattr(self.scenes.current, "canvas_size", None)
+        target = self.native_surface
+        if size and tuple(size) != self.native_surface.get_size():
+            canvas = getattr(self, "_scene_canvas", None)
+            if canvas is None or canvas.get_size() != tuple(size):
+                self._scene_canvas = pygame.Surface(tuple(size))
+            target = self._scene_canvas
+        self.scenes.draw(target)
+        pygame.transform.scale(target, self.window.get_size(), self.window)
         pygame.display.flip()
 
     # ------------------------------------------------------------------
