@@ -27,6 +27,19 @@ and updated every session.
 
 ## Latest implementation
 
+- The Feywild's stone paths have lanterns. On the Shifting Hedge, the Twilight
+  Crossroads, the Pollen Orchard and the Blooming Path, crooked-post lanterns
+  glowing teal or violet stand in the hedge along the north edge of a path,
+  at least seven tiles apart, their light breathing slowly; mossy stones lie
+  along the path edges (flat, never two side by side). The Moonmoth Fen gets
+  bright lily pads on open water and reeds with cattails just off its banks,
+  all at least three tiles from any island, bank, channel or moth, so nothing
+  near a committed hop looks like somewhere to land.
+- tools/feywild_path_dressing.py edits the shipped maps. It never changes
+  walkability (lanterns are hedge, stones are path, plants are water) and
+  never lands within two tiles of a marker, because a flower toggles its
+  target's terrain and a prop drawn there would stay drawn over whatever it
+  became. The map generators are untouched, so their puzzle proofs stand.
 - Phlegethos has things lying about in it. On the arrival, the lava road, the
   lava lake, the rubble pass and the fractured way: glowing ember cracks
   (flat), vents breathing a slow column of smoke (walked past, animated, drawn

@@ -268,6 +268,15 @@ _SPRITES = {
         "objects/feywild_mushroom_2.png",
         "objects/feywild_mushroom_3.png",
     ),
+    # Lanterns along the Feywild's paths, stones at their edges, and the
+    # fen's lily pads and reeds (tools/feywild_path_dressing.py).
+    "fey_lantern_teal": "objects/fey_lantern_teal_1.png",
+    "fey_lantern_violet": "objects/fey_lantern_violet_1.png",
+    "fey_path_stones": tuple(
+        f"objects/fey_path_stones_{i + 1}.png" for i in range(3)),
+    "fen_lily_pads": tuple(
+        f"objects/fen_lily_pads_{i + 1}.png" for i in range(3)),
+    "fen_reeds": tuple(f"objects/fen_reeds_{i + 1}.png" for i in range(3)),
     "cloud_staircase": "objects/cloud_staircase.png",
     "cloud_tower_arch": "objects/cloud_tower_arch.png",
     "griffon_nest": "objects/griffon_nest.png",
@@ -406,6 +415,12 @@ _ANIMATED_SPRITES = {
     "phlegethos_vent": tuple(
         f"objects/phlegethos_vent_{index + 1}.png" for index in range(6)
     ),
+    "fey_lantern_teal": tuple(
+        f"objects/fey_lantern_teal_{index + 1}.png" for index in range(4)
+    ),
+    "fey_lantern_violet": tuple(
+        f"objects/fey_lantern_violet_{index + 1}.png" for index in range(4)
+    ),
 }
 _PROP_FRAME_TIME = 0.14
 # Props whose animation runs at its own pace. A lava lamp shares nothing
@@ -416,6 +431,9 @@ _PROP_FRAME_TIMES = {
     "waterdeep_fountain": 0.24,
     # Smoke is slow.
     "phlegethos_vent": 0.22,
+    # A breath, not a flicker.
+    "fey_lantern_teal": 0.45,
+    "fey_lantern_violet": 0.45,
 }
 
 # Props that respond to the interact key with a line of dialogue
@@ -486,6 +504,11 @@ MUTE_PROPS: frozenset[str] = frozenset({
     "phlegethos_iron_spikes",
     "phlegethos_fortress_tower",
     "phlegethos_banner",
+    "fey_lantern_teal",
+    "fey_lantern_violet",
+    "fey_path_stones",
+    "fen_lily_pads",
+    "fen_reeds",
 })
 
 # Props that lie flat on the ground: drawn under everybody, never sorted.
@@ -499,6 +522,8 @@ FLOOR_PROPS: frozenset[str] = frozenset({
     "temple_moss",
     "temple_bones",
     "phlegethos_ember_crack",
+    "fey_path_stones",
+    "fen_lily_pads",
 })
 
 # Kinds that share another kind's examine line rather than having their
