@@ -44,7 +44,8 @@ def test_the_gate_stands_between_two_towers_under_the_watchs_banners() -> None:
     banners = sorted(col for kind, col, row in props
                      if kind == "waterdeep_banner")
     assert len(banners) == 4
-    assert all(row == west_row for kind, col, row in props
+    # On the wall's bottom course, the gate's own row, not the paving.
+    assert all(row == gate[1] for kind, col, row in props
                if kind == "waterdeep_banner")
 
 

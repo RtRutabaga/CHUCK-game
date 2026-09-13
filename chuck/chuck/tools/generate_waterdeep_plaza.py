@@ -307,11 +307,13 @@ def build_map() -> list[str]:
     # alchemist display.
     grid[NORTH_WALL_ROWS - 1][24] = "ϟ"
     # A square tower a tile proud of the wall either side of the guards,
-    # and the watch's banners along the wall above both shops.
+    # and the watch's banners along the wall above both shops. The
+    # banners are set in the wall's bottom course, like the gate: stood on
+    # the paving they hung from the wall's foot down into the square.
     for col in GATE_TOWER_COLS:
         grid[NORTH_WALL_ROWS][col] = "ꝟ"
     for col in WALL_BANNER_COLS:
-        grid[NORTH_WALL_ROWS][col] = "ꝡ"
+        grid[NORTH_WALL_ROWS - 1][col] = "ꝡ"
     grid[14][8] = "⚒"
     grid[15][12] = "⚙"
     grid[14][38] = "⚗"

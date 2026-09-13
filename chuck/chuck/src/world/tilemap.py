@@ -270,7 +270,7 @@ TILE_DEFS: dict[str, TileDef] = {
     "ꝟ": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
                  prop="waterdeep_gate_tower", under=","),
     "ꝡ": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
-                 prop="waterdeep_banner", under=","),
+                 prop="waterdeep_banner", under="b"),
     # The tavern's keg rack and notice board against its north wall, and
     # the rug under the middle table; the pantry's sacks and baskets.
     "ꝣ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
@@ -934,7 +934,7 @@ TILE_DEFS: dict[str, TileDef] = {
     "ꝝ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="ship_cargo_stack", under="="),
     # The hatch grating between the exterior deck's masts: flat, walked
-    # over, seven tiles by three drawn up from the middle of its near edge.
+    # over, ten tiles by four drawn up from the middle of its near edge.
     "ꜫ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="ship_deck_grating", under="="),
     # Lower-hold reuse of the pantry's carton-filled breakable shelves/jars,

@@ -27,6 +27,15 @@ and updated every session.
 
 ## Latest implementation
 
+- The fountain plaza's four watch banners hang on the wall now. They were
+  stood on the first row of paving and drawn up from there, so their hems
+  hung below the wall's foot into the square; they are set in the wall's
+  bottom course instead, the gate's own row, so the cloth runs down the wall
+  face and ends where the wall does. The paving row they used to block is
+  open again.
+- The ship's deck grating is bigger: ten tiles by four (160x60) instead of
+  seven by three, still centred between the masts and a row lower so it
+  clears the cargo at their feet and the fencers above it.
 - The fighter has a real sword. The pale bar painted into his sprite is gone
   (a gauntlet in its place); src/entities/sword.py draws a blade with a gold
   crossguard and leather grip at his hand, held upright behind his shield at

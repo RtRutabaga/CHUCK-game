@@ -235,7 +235,7 @@ def deck_grating() -> Image.Image:
     walked over; seen at the same slight angle as the planks, so the
     frame's far edge catches the light and its near edge is in shadow.
     """
-    width, height = 112, 44
+    width, height = 160, 60
     image = Image.new("RGBA", (width, height), TRANSPARENT)
     draw = ImageDraw.Draw(image)
     hold = (26, 18, 14, 255)
