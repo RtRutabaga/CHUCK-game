@@ -537,3 +537,114 @@ def dress_street(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
     filled = {cell for group in placed.values() for cell in group}
     assert after == before - filled, sorted(before - filled - after)[:8]
     return {char: len(cells) for char, cells in placed.items()}
+
+
+# ---------------------------------------------------------------------------
+# A little more furniture, and only a little.
+#
+# One bench and one litter bin per street map, day or night, on the same
+# kerbside tiles and under the same flood rule as the lamps. The night maps
+# also get two neon signs on building fronts (on the facade's bottom course,
+# above the pavement) and a grate breathing steam. The sewers get two outflow
+# pipes and one tag on the brick above their walkways. The streets were
+# already well furnished; this is punctuation, not a second pass.
+
+BENCH = "ꟓ"
+LITTER_BIN = "ꟕ"
+NEON_SIGNS = ("ꟗ", "ꟙ", "ꜧ")
+STEAM_GRATE = "ꜩ"
+SEWER_PIPE = "ꜣ"
+SEWER_GRAFFITI = "ꜥ"
+FACADE = "▤"
+SEWER_BRICK = "b"
+SEWER_WALKWAY = "d"
+NEON_SPACING = 12
+
+
+def _spot_order(cells, seed: int):
+    return sorted(cells, key=lambda c: ((c[0] * 7 + c[1] * 13 + seed * 3)
+                                        % 97, c[1], c[0]))
+
+
+def furnish_street(grid: list[list[str]], *, seed: int = 0,
+                   night: bool = False) -> dict[str, int]:
+    """A bench and a bin; at night, two neon signs and a steam grate."""
+    open_set = _open_chars(grid)
+    before = _reachable(grid, open_set)
+
+    def apart(cell, others, reach):
+        return all(max(abs(cell[0] - c), abs(cell[1] - r)) >= reach
+                   for c, r in others)
+
+    kerbside = [(col, row) for col, row, _dc, _dr in _kerbside(grid)
+                if _clear_of_everything(grid, col, row)]
+    placed: dict[str, list[tuple[int, int]]] = {}
+    solid: list[tuple[int, int]] = []
+    for char in (BENCH, LITTER_BIN):
+        for cell in _spot_order(kerbside, seed + len(solid)):
+            if apart(cell, solid, 12) and _clear_of_everything(grid, *cell):
+                grid[cell[1]][cell[0]] = char
+                placed[char] = [cell]
+                solid.append(cell)
+                break
+
+    if night:
+        height, width = len(grid), len(grid[0])
+        fronts = [(col, row) for row in range(height - 1)
+                  for col in range(1, width - 1)
+                  if grid[row][col] == FACADE
+                  and grid[row][col - 1] == FACADE
+                  and grid[row][col + 1] == FACADE
+                  and row + 2 < height
+                  # Plain pavement in front of it, so a sign never hangs
+                  # over a lamp, a door, a person or a crossing.
+                  and all(grid[y][x] in (PAVEMENT, KERB)
+                          for y in (row + 1, row + 2)
+                          for x in (col - 1, col, col + 1))]
+        signs: list[tuple[int, int]] = []
+        for cell in _spot_order(fronts, seed):
+            if len(signs) >= 2:
+                break
+            if apart(cell, signs, NEON_SPACING):
+                # Never the same sign twice on one street.
+                char = NEON_SIGNS[(seed + len(signs)) % len(NEON_SIGNS)]
+                grid[cell[1]][cell[0]] = char
+                signs.append(cell)
+        placed["neon"] = signs
+        kerb = set(kerbside)
+        pavement = [(col, row) for row in range(1, height - 1)
+                    for col in range(1, width - 1)
+                    if grid[row][col] == PAVEMENT and (col, row) not in kerb
+                    and _clear_of_everything(grid, col, row)]
+        for cell in _spot_order(pavement, seed + 5):
+            if apart(cell, solid + signs, 6):
+                grid[cell[1]][cell[0]] = STEAM_GRATE
+                placed[STEAM_GRATE] = [cell]
+                break
+
+    after = _reachable(grid, open_set | {STEAM_GRATE})
+    assert after == before - set(solid), sorted(before - set(solid) - after)[:8]
+    return {char: len(cells) for char, cells in placed.items()}
+
+
+def furnish_sewer(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
+    """Two outflow pipes and one tag, on brick above a walkway."""
+    height, width = len(grid), len(grid[0])
+    faces = [(col, row) for row in range(height - 1)
+             for col in range(2, width - 2)
+             if all(grid[row][col + d] == SEWER_BRICK for d in (-2, -1, 0, 1, 2))
+             and grid[row + 1][col] == SEWER_WALKWAY
+             and grid[row + 1][col - 1] == SEWER_WALKWAY
+             and grid[row + 1][col + 1] == SEWER_WALKWAY]
+    placed: list[tuple[int, int]] = []
+    counts = {SEWER_PIPE: 0, SEWER_GRAFFITI: 0}
+    for cell in _spot_order(faces, seed):
+        if all(max(abs(cell[0] - c), abs(cell[1] - r)) >= 10
+               for c, r in placed):
+            char = SEWER_PIPE if counts[SEWER_PIPE] < 2 else SEWER_GRAFFITI
+            if counts[char] >= (2 if char == SEWER_PIPE else 1):
+                break
+            grid[cell[1]][cell[0]] = char
+            counts[char] += 1
+            placed.append(cell)
+    return counts

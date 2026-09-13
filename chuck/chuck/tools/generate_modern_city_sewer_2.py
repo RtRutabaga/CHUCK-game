@@ -12,7 +12,11 @@ southern end stays visibly collided, exactly as Sewer 1's did.
 """
 
 from collections import deque
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_city_map_common import furnish_sewer  # noqa: E402
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -165,6 +169,7 @@ def build_map() -> list[str]:
     for col, row in CIGARETTES:
         assert grid[row][col] in {"d", ","}, (col, row, grid[row][col])
         grid[row][col] = "ል"
+    furnish_sewer(grid, seed=695)
     return ["".join(row) for row in grid]
 
 

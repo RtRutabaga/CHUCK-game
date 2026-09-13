@@ -311,6 +311,17 @@ _SPRITES = {
     "city_streetlight": "objects/city_streetlight.png",
     "city_streetlight_lit": "objects/city_streetlight_lit.png",
     "city_bus_stop": "objects/city_bus_stop.png",
+    # A little more furniture (tools/generate_city_map_common.py's
+    # furnish_street and furnish_sewer).
+    "city_bench": "objects/city_bench.png",
+    "city_litter_bin": "objects/city_litter_bin.png",
+    "city_neon_bar": "objects/city_neon_1_1.png",
+    "city_neon_open": "objects/city_neon_2_1.png",
+    "city_neon_24h": "objects/city_neon_3_1.png",
+    "city_steam_grate": "objects/city_steam_grate_1.png",
+    "sewer_pipe": tuple(f"objects/sewer_pipe_{i + 1}.png" for i in range(2)),
+    "sewer_graffiti": tuple(
+        f"objects/sewer_graffiti_{i + 1}.png" for i in range(3)),
     "city_planar_portal": "objects/city_planar_portal_1.png",
     "tahuya_fir": (
         "objects/tahuya_fir_1.png",
@@ -428,6 +439,18 @@ _ANIMATED_SPRITES = {
     "fey_lantern_violet": tuple(
         f"objects/fey_lantern_violet_{index + 1}.png" for index in range(4)
     ),
+    "city_neon_bar": tuple(
+        f"objects/city_neon_1_{index + 1}.png" for index in range(4)
+    ),
+    "city_neon_open": tuple(
+        f"objects/city_neon_2_{index + 1}.png" for index in range(4)
+    ),
+    "city_neon_24h": tuple(
+        f"objects/city_neon_3_{index + 1}.png" for index in range(4)
+    ),
+    "city_steam_grate": tuple(
+        f"objects/city_steam_grate_{index + 1}.png" for index in range(6)
+    ),
 }
 _PROP_FRAME_TIME = 0.14
 # Props whose animation runs at its own pace. A lava lamp shares nothing
@@ -441,6 +464,11 @@ _PROP_FRAME_TIMES = {
     # A breath, not a flicker.
     "fey_lantern_teal": 0.45,
     "fey_lantern_violet": 0.45,
+    # Mostly lit, with the odd stutter.
+    "city_neon_bar": 0.5,
+    "city_neon_open": 0.61,
+    "city_neon_24h": 0.55,
+    "city_steam_grate": 0.2,
 }
 
 # Props that respond to the interact key with a line of dialogue
@@ -520,6 +548,14 @@ MUTE_PROPS: frozenset[str] = frozenset({
     "orc_tent",
     "orc_weapon_rack",
     "orc_war_drum",
+    "city_bench",
+    "city_litter_bin",
+    "city_neon_bar",
+    "city_neon_open",
+    "city_neon_24h",
+    "city_steam_grate",
+    "sewer_pipe",
+    "sewer_graffiti",
 })
 
 # Props that lie flat on the ground: drawn under everybody, never sorted.

@@ -701,6 +701,25 @@ TILE_DEFS: dict[str, TileDef] = {
     # A whole modern bus shelter displaced into Phlegethos. Its one solid
     # anchor tile is the rear post/bench footprint; the tall transparent
     # sprite carries the human scale without blocking Chuck's approach.
+    # A little more city furniture: a bench and a bin on the kerb, neon on
+    # a night facade's bottom course, a steam grate on the pavement, and
+    # pipes and tags on sewer brick.
+    "ꟓ": TileDef(solid=True, color=(104, 76, 50), prop="city_bench",
+                 under="."),
+    "ꟕ": TileDef(solid=True, color=(46, 92, 64), prop="city_litter_bin",
+                 under="."),
+    "ꟗ": TileDef(solid=True, color=(49, 52, 61), prop="city_neon_bar",
+                 under="▤"),
+    "ꟙ": TileDef(solid=True, color=(49, 52, 61), prop="city_neon_open",
+                 under="▤"),
+    "ꜧ": TileDef(solid=True, color=(49, 52, 61), prop="city_neon_24h",
+                 under="▤"),
+    "ꜩ": TileDef(solid=False, color=(45, 49, 56), prop="city_steam_grate",
+                 under="."),
+    "ꜣ": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
+                 prop="sewer_pipe", under="b"),
+    "ꜥ": TileDef(solid=True, color=config.COLOR_SOLID_PLACEHOLDER,
+                 prop="sewer_graffiti", under="b"),
     "☂": TileDef(solid=True, color=(42, 45, 50),
                  prop="city_bus_stop", under="·"),
     # Phase 9's first Feywild silhouettes: tall trees grow from the solid

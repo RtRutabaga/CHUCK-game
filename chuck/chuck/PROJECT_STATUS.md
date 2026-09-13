@@ -27,6 +27,19 @@ and updated every session.
 
 ## Latest implementation
 
+- The modern city gets a little more furniture, kept deliberately minimal
+  because its streets were already well dressed. Every street map, day and
+  night, gets one bench and one litter bin on the kerb, under the same rule
+  and flood check as the lamps. The night maps (and the arrival) also get two
+  different neon signs -- BAR, OPEN, 24H, each stuttering now and then -- on a
+  building's bottom facade course above plain pavement, and one grate
+  breathing steam. The four sewers get two rusted outflow pipes trickling down
+  the brick above their walkways and at most one spray-painted tag.
+- Placed by `furnish_street` and `furnish_sewer` in
+  tools/generate_city_map_common.py, called by every city generator right
+  after `dress_street`; all sixteen generators still reproduce their shipped
+  maps and a test says so. The night 3 and night 6 prop inventories now allow
+  the new kinds.
 - Something very large died in the desert hub. A giant ribcage lies in the
   open sand east of the centre: a horned skull on the ground at the west end,
   a half-buried spine, and five thin rib hoops rising out of the sand, one of

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from generate_city_map_common import dress_street, mark_roads, paint_office
+from generate_city_map_common import dress_street, furnish_street, mark_roads, paint_office
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -87,6 +87,7 @@ def build_map() -> list[str]:
     # Street furniture last, so it can see the finished pavement
     # and refuse to stand anywhere that would close a route.
     dress_street(grid, seed=SEED)
+    furnish_street(grid, seed=SEED, night=True)
     mark_roads(grid)
     return ["".join(row) for row in grid]
 

@@ -1,6 +1,10 @@
 """Generate City Sewer 1: a long concrete utility-tunnel introduction."""
 
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from generate_city_map_common import furnish_sewer  # noqa: E402
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,6 +84,7 @@ def build_map() -> list[str]:
         grid[row][col] = "q"
     for col, row in ((14, 17), (49, 17), (82, 33)):
         grid[row][col] = "ል"
+    furnish_sewer(grid, seed=694)
     return ["".join(row) for row in grid]
 
 

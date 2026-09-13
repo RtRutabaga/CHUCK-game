@@ -109,6 +109,9 @@ def test_city_night_6_is_a_full_scale_final_night_block() -> None:
     assert props["city_streetlight"] > 0
     assert set(props) <= {
         "city_sewer_entrance", "city_streetlight", "city_fire_hydrant", "city_stop_sign",
+        # ...and the little more furniture every night street gets.
+        "city_bench", "city_litter_bin", "city_steam_grate",
+        "city_neon_bar", "city_neon_open", "city_neon_24h",
     }, sorted(props)
 
     components = _office_components(tilemap)

@@ -31,7 +31,7 @@
 ▖▱▱▱▤ww▤ww▤w▥.,====‖====,...ቛ......VVVVVVVVVVVVVVVVVVVVVVV
 ▖▥w▤ww▤ww▤ww▥.,====‖====,..........VVVVVVVVVVVVVVVVVVVVVVV
 ▖▥▤ww▤ww▤ww▤▥.,====‖====,..........VVVVVVVVVVVVVVVVVVVVVVV
-▖▥ww▤ww▤ww▤w▥.,====‖====,..........VVVVVVVVVVVVVVVVVVVVVVV
+▖▥ww▤ww▤ww▤w▥.,====‖====,ꟓ.........VVVVVVVVVVVVVVVVVVVVVVV
 ▖▥w▤ww▤ww▤ww▥.,====‖====,....ꞏ.....VVVVVVVVVVVVVVVVVVVVVVV
 ▖▥▤ww▤ww▤ww▤▥.,====‖====,..........VVVVVVVVVVVVVVVVVVVVVVV
 ▖▥ww▤ww▤ww▤w▥.,====‖====,..........VVVVVVVVVVVVVVVVVVVVVVV
@@ -56,7 +56,7 @@
 ▖▖##..............................Ⱨ,VVVVVVVVVVVVVVVVVVVVVV
 ▖▖##..........................ቜ....,VVVVVVVVVVVVVVVVVVVVVV
 ▱▖##......ል.........ꞏ..............,VVVVVVVVVVVVVVVVVVVVVV
-▥▱▱▱...............................,VVVVVVVVVVVVVVVVVVVVVV
+▥▱▱▱..............................ꟕ,VVVVVVVVVVVVVVVVVVVVVV
 ▥▥▤w...............................,VVVVVVVVVVVVVVVVVVVVVV
 ▥▥ww...............................,VVVVVVVVVVVVVVVVVVVVVV
 ▥▥w▤.........Ⱡ,=====ቬ===,Ⱡ.........,VVVVVVVVVVVVVVVVVVVVVV
