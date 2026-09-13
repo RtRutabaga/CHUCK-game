@@ -60,6 +60,7 @@ PIER_CORNER = "ꜳ"
 BOLLARD = "ꜵ"
 BOLLARD_WEST = "ꜷ"
 ROWBOAT = "ꜹ"
+ROWBOAT_WEST = "ꝍ"
 LAMP = "ꜻ"
 SIGN_BREAD = "ꜽ"
 SIGN_FISH = "ꜿ"
@@ -68,7 +69,8 @@ WINDOW_BOX = "ꝃ"
 WASHING_6 = "ꝅ"
 WASHING_4 = "ꝇ"
 EDGES = {PIER_FACE, PIER_FACE_SHADOW, PIER_SHADOW, PIER_CORNER}
-DRESSING = EDGES | {BOLLARD, BOLLARD_WEST, ROWBOAT, LAMP, SIGN_BREAD,
+DRESSING = EDGES | {BOLLARD, BOLLARD_WEST, ROWBOAT, ROWBOAT_WEST, LAMP,
+                    SIGN_BREAD,
                     SIGN_FISH, SIGN_BARREL, WINDOW_BOX, WASHING_6, WASHING_4}
 
 BOLLARDS_SOUTH = ((8, 26), (17, 26), (10, 30), (3, 20))
@@ -79,6 +81,10 @@ BOLLARDS_WEST = ((7, 11), (7, 15), (1, 18), (7, 23))
 # face, and the fisherman casts into the basin east of it. An empty post
 # is what most mooring posts are.
 BOATS = ((3, 22),)
+# ...and one on the water west of the big pier, bow to the west-edge post
+# two tiles east of it: the post beside Bobert's barrel, which is the
+# boat the opening cutscene shows tied up by the posts where Chuck wakes.
+BOATS_WEST = ((5, 11),)
 # (20, 10) rather than (21, 11): one tile further north-west, beside the
 # west gate's pillar instead of standing in the mouth of it.
 LAMPS = ((19, 7), (24, 7), (20, 10), (38, 18), (50, 18))
@@ -147,6 +153,9 @@ def dress_grid(grid: list[list[str]]) -> None:
     for col, row in BOATS:
         assert grid[row - 2][col] == BOLLARD, (col, row)
         put(col, row, ROWBOAT, {WATER})
+    for col, row in BOATS_WEST:
+        assert grid[row][col + 2] == BOLLARD_WEST, (col, row)
+        put(col, row, ROWBOAT_WEST, {WATER})
     for col, row in LAMPS:
         put(col, row, LAMP, {","})
     for col, row, char in SIGNS:

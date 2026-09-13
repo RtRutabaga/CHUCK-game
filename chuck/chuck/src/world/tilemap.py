@@ -283,6 +283,8 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="harbour_bollard_west", under="="),
     "ꜹ": TileDef(solid=True, color=config.COLOR_WATER_PLACEHOLDER,
                  prop="harbour_rowboat", under="~"),
+    "ꝍ": TileDef(solid=True, color=config.COLOR_WATER_PLACEHOLDER,
+                 prop="harbour_rowboat_west", under="~"),
     "ꜻ": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
                  prop="waterdeep_lamp", under=","),
     "ꜽ": TileDef(solid=True, color=config.COLOR_TAVERN_WALL,
@@ -901,8 +903,11 @@ TILE_DEFS: dict[str, TileDef] = {
     "⁙": TileDef(solid=True, color=(117, 76, 65),
                  prop="fey_crumbs", under="▤"),
     # Needle Garden's dense flowering beds define projectile lanes. Orchids
-    # root directly into this solid terrain and fire outward across the path.
-    "✿": TileDef(solid=True, color=(42, 79, 56)),
+    # root in them and fire outward across the path. The beds are needles:
+    # Chuck can push through them, like Chult's thorns, and it costs him
+    # (src/systems/terrain_hazard.py). The orchids' seeds still stop at
+    # them, so the lanes are the same lanes.
+    "✿": TileDef(solid=False, color=(42, 79, 56)),
     # Phase 7 ship interiors: dark, open human-scale doorway recesses fill
     # the west, east, and south walls. They are walkable so Chuck can enter
     # the threshold; out-of-bounds collision keeps unfinished routes contained.

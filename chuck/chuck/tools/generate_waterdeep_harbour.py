@@ -185,7 +185,7 @@ def bollard(offset_x: int) -> Image.Image:
 BOAT_W, BOAT_H = 56, 44
 
 
-def rowboat(era: str) -> Image.Image:
+def rowboat(era: str, line: bool = True) -> Image.Image:
     """A rowboat lying east-west on the water, tied up to the post above.
 
     We look down into it: the inside planking and the thwarts are the
@@ -231,6 +231,8 @@ def rowboat(era: str) -> Image.Image:
     draw.line((10, 39, right - 1, 39), fill=ripple)
     draw.line((right + 1, 32, right + 2, 36), fill=ripple)
     draw.line((2, 32, 6, 36), fill=ripple)
+    if not line:
+        return image
     # The mooring line: from the bow ring up to the post's foot above,
     # dipping below the straight line between them.
     bow = (9, 27)
@@ -244,6 +246,39 @@ def rowboat(era: str) -> Image.Image:
         draw.point((round(x), round(y)), fill=ROPE)
         if step % 4 == 0:
             draw.point((round(x) + 1, round(y)), fill=ROPE_DARK)
+    draw.ellipse((bow[0] - 1, bow[1] - 1, bow[0] + 1, bow[1] + 1),
+                 outline=IRON_LIT)
+    return image
+
+
+WEST_BOAT_W, WEST_BOAT_H = 64, 24
+
+
+def rowboat_west(era: str) -> Image.Image:
+    """The rowboat on the water west of a pier, bow to the pier.
+
+    Tied by the bow to a post on the pier's west edge, a boat lies with
+    its bow pointing at the post and its stern out to sea -- the same boat
+    mirrored, not turned: seen east-west from the south, we still look
+    down into it and still see its near side under the gunwale. The line
+    runs from the bow ring east and a little down to the post's foot,
+    sagging on the way. Drawn to be anchored two tiles west of the post
+    (see tools/waterdeep_harbour_dressing.py).
+    """
+    hull = rowboat(era, line=False).transpose(Image.FLIP_LEFT_RIGHT)
+    hull = hull.crop((0, 22, BOAT_W, BOAT_H))
+    image = Image.new("RGBA", (WEST_BOAT_W, WEST_BOAT_H), CLEAR)
+    image.alpha_composite(hull, (0, 0))
+    draw = ImageDraw.Draw(image)
+    bow = (BOAT_W - 1 - 9, 5)
+    post = (59, 21)
+    for step in range(17):
+        t = step / 16
+        x = bow[0] + (post[0] - bow[0]) * t
+        y = bow[1] + (post[1] - bow[1]) * t + math.sin(t * math.pi) * 3
+        draw.point((round(x), round(y)), fill=ROPE)
+        if step % 4 == 0:
+            draw.point((round(x), round(y) + 1), fill=ROPE_DARK)
     draw.ellipse((bow[0] - 1, bow[1] - 1, bow[0] + 1, bow[1] + 1),
                  outline=IRON_LIT)
     return image
@@ -422,6 +457,7 @@ def main() -> None:
         pier_shadow(era).save(OUT / f"pier_shadow{era}.png")
         pier_corner(era).save(OUT / f"pier_corner{era}.png")
         rowboat(era).save(OUT / f"harbour_rowboat{era}.png")
+        rowboat_west(era).save(OUT / f"harbour_rowboat_west{era}.png")
     bollard(0).save(OUT / "harbour_bollard.png")
     bollard(-4).save(OUT / "harbour_bollard_west.png")
     lamp_post(True).save(OUT / "waterdeep_lamp.png")

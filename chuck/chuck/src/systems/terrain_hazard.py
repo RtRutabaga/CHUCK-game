@@ -14,6 +14,8 @@ class TerrainHazard(NamedTuple):
 
 TERRAIN_HAZARDS = {
     "|": TerrainHazard("thorns", config.THORN_SANITY_DAMAGE),
+    # The Feywild's needle beds: the same bite as Chult's thorns.
+    "✿": TerrainHazard("needles", config.THORN_SANITY_DAMAGE),
     "ʓ": TerrainHazard("sludge", config.SLUDGE_SANITY_DAMAGE),
 }
 

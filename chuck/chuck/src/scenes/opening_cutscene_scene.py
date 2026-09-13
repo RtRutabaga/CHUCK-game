@@ -4,7 +4,7 @@ The return-to-Waterdeep cutscene ends the long walk with Chuck on the
 quay at midday, looking around and lighting one. This is the same shot
 at the other end of the game, and it is built to rhyme with it: the same
 low quayside vantage, the same posts along the edge and the same boat on
-the water -- but evening, in the opening docks' own colours, and with the
+the water -- the one tied up by Bobert's barrel -- but evening, in the opening docks' own colours, and with the
 thing the other one has no room for, which is how he got there. He was
 asleep. Beside Bobert, in Bobert's barrel, who is still asleep and will
 be for the whole game.
@@ -62,7 +62,6 @@ _POST_XS = (30, 88, 236, 290)
 _POST_BASE_Y = _QUAY_Y + 5
 _MOORED_POST = 88
 _BOAT_X, _BOAT_Y = 48, 82
-_LAMP_X = 262
 
 # Bobert's barrel, and Chuck asleep against its left side and then
 # standing where he lay.
@@ -89,7 +88,6 @@ class OpeningCutsceneScene(Scene):
         self._plank_info: tuple[int, int] = (1, 1)
         self._post: pygame.Surface | None = None
         self._boat: pygame.Surface | None = None
-        self._lamp: pygame.Surface | None = None
         self._handed_off = False
 
     # ------------------------------------------------------------------
@@ -110,7 +108,6 @@ class OpeningCutsceneScene(Scene):
         self._asleep = tuple(assets.sheet("chuck/chuck_asleep.png", 16, 9)[0])
         self._barrel = self._image("objects/bobert_barrel.png")
         self._post = self._image("objects/harbour_bollard.png")
-        self._lamp = self._image("objects/waterdeep_lamp.png")
         boat = self._image("objects/harbour_rowboat.png")
         if boat is not None:
             # The hull only; the line is drawn to this view's post.
@@ -189,9 +186,6 @@ class OpeningCutsceneScene(Scene):
             surface.blit(self._boat, (_BOAT_X, _BOAT_Y))
         self._draw_quay(surface)
         self._draw_moorings(surface)
-        if self._lamp is not None:
-            surface.blit(self._lamp, (_LAMP_X, _POST_BASE_Y + 2
-                                      - self._lamp.get_height()))
         self._draw_bobert_and_chuck(surface)
         if self.elapsed < FADE_IN_END:
             self._black(surface, 1.0 - self.elapsed / FADE_IN_END)

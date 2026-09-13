@@ -27,6 +27,18 @@ and updated every session.
 
 ## Latest implementation
 
+- The Needle Garden's flowering beds are needles now: Chuck can walk through
+  them, and like Chult's thorns they cost him (the same sanity damage, in
+  src/systems/terrain_hazard.py, and not while he is in the air). The
+  spitting orchids' seeds still stop at the beds (`NEEDLE_BEDS` as extra
+  solid terrain for seeds only), so every firing lane is the lane it was, and
+  the garden's lane and bypass tests treat a bed as bounding a lane.
+- A rowboat is tied up by Bobert's barrel: on the water west of the big pier,
+  bow to the west-edge post beside him, the same boat mirrored so its line
+  runs east from the bow to the post and its stern points out to sea
+  (harbour_rowboat_west, with its midday twin). It is the boat the opening
+  cutscene shows by the posts where Chuck wakes, and the opening cutscene's
+  street lamp is gone, since there is no lamp on that stretch of dock.
 - Only the ways out reach the edge of a city map now. Every day and night city
   map (the arrival, Day 1-6, Night 2-6) was audited for walkable tiles on its
   outer row or column that are not part of a wired exit. Four maps had them:

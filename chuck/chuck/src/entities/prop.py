@@ -152,6 +152,8 @@ _SPRITES = {
     "harbour_bollard_west": "objects/harbour_bollard_west.png",
     "harbour_rowboat": "objects/harbour_rowboat.png",
     "harbour_rowboat_midday": "objects/harbour_rowboat_midday.png",
+    "harbour_rowboat_west": "objects/harbour_rowboat_west.png",
+    "harbour_rowboat_west_midday": "objects/harbour_rowboat_west_midday.png",
     "waterdeep_lamp": "objects/waterdeep_lamp.png",
     "waterdeep_lamp_midday": "objects/waterdeep_lamp_midday.png",
     "shop_sign_bread": "objects/shop_sign_bread.png",
@@ -589,6 +591,8 @@ EXAMINE_ALIAS = {
     "fey_lantern_violet": "fey_lantern",
     # The same things at midday.
     "harbour_rowboat_midday": "harbour_rowboat",
+    "harbour_rowboat_west": "harbour_rowboat",
+    "harbour_rowboat_west_midday": "harbour_rowboat",
     "waterdeep_lamp_midday": "waterdeep_lamp",
     "harbour_bollard_west": "harbour_bollard",
     "washing_line_4": "washing_line",

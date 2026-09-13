@@ -34,6 +34,13 @@ def _markers(tilemap: TileMap) -> dict[str, tuple[int, int]]:
     }
 
 
+def _blocks(tilemap: TileMap, col: int, row: int) -> bool:
+    """What bounds a lane: solid ground, or a needle bed. Chuck can push
+    through the beds at a cost, but seeds stop at them and the safe route
+    goes round them."""
+    return tilemap.is_solid(col, row) or tilemap.terrain_at(col, row) == "✿"
+
+
 def _ray(
     tilemap: TileMap, start: tuple[int, int], direction: str,
 ) -> list[tuple[int, int]]:
@@ -43,7 +50,7 @@ def _ray(
     while True:
         col += dx
         row += dy
-        if tilemap.is_solid(col, row):
+        if _blocks(tilemap, col, row):
             return cells
         cells.append((col, row))
 
@@ -64,7 +71,7 @@ def _reachable(
         ):
             if point in reached or point in blocked:
                 continue
-            if tilemap.is_solid(*point):
+            if _blocks(tilemap, *point):
                 continue
             reached.add(point)
             frontier.append(point)

@@ -160,3 +160,25 @@ def test_the_return_cutscene_has_the_harbours_posts_and_boat() -> None:
     finally:
         game._shutdown()
         directory.cleanup()
+
+
+def test_a_boat_is_tied_up_by_boberts_barrel() -> None:
+    grid = _grid()
+    bobert = next((col, row) for row, line in enumerate(grid)
+                  for col, char in enumerate(line) if char == "B")
+    for col, row in harbour.BOATS_WEST:
+        assert grid[row][col] == harbour.ROWBOAT_WEST
+        post = (col + 2, row)
+        assert grid[post[1]][post[0]] == harbour.BOLLARD_WEST
+        # The post is the one nearest Bobert.
+        assert abs(post[0] - bobert[0]) <= 4 and abs(post[1] - bobert[1]) <= 2
+    assert midday_variant("harbour_rowboat_west") == \
+        "harbour_rowboat_west_midday"
+
+
+def test_the_opening_cutscene_has_no_lamp() -> None:
+    import src.scenes.opening_cutscene_scene as opening
+
+    assert not hasattr(opening, "_LAMP_X")
+    source = Path(opening.__file__).read_text(encoding="utf-8")
+    assert "waterdeep_lamp" not in source

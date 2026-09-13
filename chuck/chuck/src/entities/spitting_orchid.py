@@ -55,7 +55,8 @@ class OrchidSeed(Entity):
         dy = vy * config.ORCHID_SEED_SPEED * dt
         target_x, target_y = self.x + dx, self.y + dy
         new_x, new_y = collision.move_and_collide(
-            self.x, self.y, self.width, self.height, dx, dy, tilemap
+            self.x, self.y, self.width, self.height, dx, dy, tilemap,
+            extra_solid_terrain=NEEDLE_BEDS,
         )
         self.x, self.y = new_x, new_y
         if abs(new_x - target_x) > 1e-4 or abs(new_y - target_y) > 1e-4:
@@ -75,6 +76,11 @@ class OrchidSeed(Entity):
         pygame.draw.rect(
             surface, (226, 156, 232), (tip_x - 1, tip_y - 1, 2, 2)
         )
+
+
+# Chuck walks through the needle beds; a seed does not. They are what
+# the lanes are cut through.
+NEEDLE_BEDS = frozenset({"✿"})
 
 
 class SpittingOrchid(Entity):
