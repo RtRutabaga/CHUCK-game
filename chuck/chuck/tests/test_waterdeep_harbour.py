@@ -127,3 +127,36 @@ def test_the_pier_is_mute_and_the_rest_answers_e() -> None:
                  "window_box", "washing_line_6", "washing_line_4"):
         assert kind not in MUTE_PROPS
         assert dialogue.get(examine_line_id(kind)), kind
+
+
+def test_no_lamp_stands_in_the_mouth_of_a_gate() -> None:
+    grid = _grid()
+    gates = [(col, row) for row, line in enumerate(grid)
+             for col, char in enumerate(line) if char == "g"]
+    for col, row in harbour.LAMPS:
+        for gate_col, gate_row in gates:
+            # Not in the three rows below a gate tile in its own column.
+            assert not (col == gate_col and gate_row < row <= gate_row + 3), \
+                (col, row)
+
+
+def test_the_return_cutscene_has_the_harbours_posts_and_boat() -> None:
+    import pygame
+
+    from src.scenes.return_to_waterdeep_cutscene_scene import (
+        HOLD_END, ReturnToWaterdeepCutsceneScene, _POST_XS,
+    )
+
+    directory = tempfile.TemporaryDirectory()
+    game = Game(save_path=Path(directory.name) / "save.json")
+    try:
+        scene = ReturnToWaterdeepCutsceneScene(game)
+        scene.on_enter()
+        assert scene._post is not None and scene._boat is not None
+        assert len(_POST_XS) >= 3
+        scene.elapsed = HOLD_END - 1.0
+        surface = pygame.Surface((320, 180))
+        scene.draw(surface)
+    finally:
+        game._shutdown()
+        directory.cleanup()

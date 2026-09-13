@@ -27,6 +27,16 @@ and updated every session.
 
 ## Latest implementation
 
+- The docks lamp that stood in the mouth of the west district-wall gate moved
+  one tile north-west, from (21, 11) to (20, 10), beside the gate's pillar; a
+  test now keeps lamps out of gate mouths.
+- The return-to-Waterdeep cutscene shows the new harbour. From its low
+  quayside vantage, four mooring posts (the map's own post sprite) stand
+  along the far edge of the planks where the dock meets the water, and the
+  midday rowboat lies on the water beyond one of them, its line running down
+  from the bow over the edge to the post. The boat's hull is cropped from the
+  map sprite, whose own line runs the other way; the cutscene draws the line
+  fresh.
 - Waterdeep's harbour is dressed, drawn to the camera's vantage (south of
   everything, above it, looking north). The rules, written out in
   tools/generate_waterdeep_harbour.py: tops are seen; south faces are seen

@@ -79,7 +79,9 @@ BOLLARDS_WEST = ((7, 11), (7, 15), (1, 18), (7, 23))
 # face, and the fisherman casts into the basin east of it. An empty post
 # is what most mooring posts are.
 BOATS = ((3, 22),)
-LAMPS = ((19, 7), (24, 7), (21, 11), (38, 18), (50, 18))
+# (20, 10) rather than (21, 11): one tile further north-west, beside the
+# west gate's pillar instead of standing in the mouth of it.
+LAMPS = ((19, 7), (24, 7), (20, 10), (38, 18), (50, 18))
 SIGNS = ((13, 4, SIGN_BREAD), (27, 4, SIGN_FISH), (40, 4, SIGN_BARREL))
 WINDOW_BOXES = ((11, 4), (16, 4), (25, 4), (30, 4), (37, 4), (42, 4),
                 (40, 16), (48, 16))

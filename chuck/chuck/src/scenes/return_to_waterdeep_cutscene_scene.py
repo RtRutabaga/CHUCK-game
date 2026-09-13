@@ -91,6 +91,17 @@ _QUAY_Y = 108
 _CHUCK_X = 148
 _CHUCK_Y = 132
 
+# The harbour dressing at the quay edge, in this view's terms: the posts
+# stand along the far edge of the planks where the dock meets the water,
+# and a rowboat lies on the water beyond one of them. Looking north from
+# the quay, the boat shows its near side and its inside and the line runs
+# down from its bow, over the edge, to the post -- the same boat and the
+# same posts the map has, at the map's own scale.
+_POST_XS = (34, 92, 214, 276)
+_POST_BASE_Y = _QUAY_Y + 5          # just in from the edge
+_MOORED_POST = 92
+_BOAT_X, _BOAT_Y = 52, 82           # top-left of the hull's crop
+
 
 def _clamp01(value: float) -> float:
     return max(0.0, min(1.0, value))
@@ -112,6 +123,8 @@ class ReturnToWaterdeepCutsceneScene(Scene):
         self._unlit: pygame.Surface | None = None
         self._planks: list[pygame.Surface] = []
         self._plank_info: tuple[int, int] = (1, 1)
+        self._post: pygame.Surface | None = None
+        self._boat: pygame.Surface | None = None
         self._handed_off = False
 
     def on_enter(self) -> None:
@@ -127,7 +140,23 @@ class ReturnToWaterdeepCutsceneScene(Scene):
         self._unlit.set_at((0, 7), (0, 0, 0, 0))
         self._unlit.set_at((1, 7), (0, 0, 0, 0))
         self._load_planks()
+        self._load_harbour()
         self.game.audio.stop_music(fade_ms=600)
+
+    def _load_harbour(self) -> None:
+        """The map's own mooring post and midday rowboat sprites."""
+        try:
+            self._post = self.game.assets.image("objects/harbour_bollard.png")
+            boat = self.game.assets.image(
+                "objects/harbour_rowboat_midday.png")
+        except (FileNotFoundError, pygame.error):
+            return
+        # The hull only: the sprite's own mooring line runs up the screen to
+        # a post south of the boat, and here the post is south of it the
+        # other way round -- below it on the screen. The line is drawn
+        # fresh instead.
+        self._boat = boat.subsurface((0, 22, boat.get_width(),
+                                      boat.get_height() - 22)).copy()
 
     def _load_planks(self) -> None:
         """The dock's own plank tiles, from the midday sheet."""
@@ -286,6 +315,8 @@ class ReturnToWaterdeepCutsceneScene(Scene):
             run = (index * 37 + int(self.elapsed * 7)) % width
             pygame.draw.rect(surface, _WATER_LIT, (run, wave_y, 13, 1))
 
+        if self._boat is not None:
+            surface.blit(self._boat, (_BOAT_X, _BOAT_Y))
         self._draw_quay(surface)
 
         # Two gulls, because the quiet needs something moving in it.
@@ -319,6 +350,27 @@ class ReturnToWaterdeepCutsceneScene(Scene):
                 pygame.draw.line(surface, _DOCK_SEAM, (0, y), (width, y))
             pygame.draw.rect(surface, _DOCK_PLANK_LIT, (0, _QUAY_Y, width, 1))
         pygame.draw.rect(surface, _DOCK_SEAM, (0, _QUAY_Y, width, 2))
+        self._draw_moorings(surface)
+
+    def _draw_moorings(self, surface: pygame.Surface) -> None:
+        """Posts along the quay edge, and the boat tied to one of them."""
+        if self._post is not None:
+            post_w, post_h = self._post.get_size()
+            for x in _POST_XS:
+                surface.blit(self._post,
+                             (x - post_w // 2, _POST_BASE_Y - post_h))
+        if self._boat is None:
+            return
+        # The bow ring, in the cropped hull's coordinates (the sprite's
+        # (9, 27) less the 22 rows cropped off its top).
+        bow = (_BOAT_X + 9, _BOAT_Y + 5)
+        post = (_MOORED_POST - 1, _POST_BASE_Y - 8)
+        steps = 18
+        for step in range(steps + 1):
+            t = step / steps
+            x = bow[0] + (post[0] - bow[0]) * t
+            y = bow[1] + (post[1] - bow[1]) * t + math.sin(t * math.pi) * 3
+            surface.set_at((round(x), round(y)), (184, 149, 91))
 
     # ------------------------------------------------------------------
     def _facing(self) -> str:
