@@ -32,9 +32,6 @@
   "plaza_gate": [
     "The gate is closed."
   ],
-  "plaza_guard": [
-    "Gate's closed."
-  ],
   "blacksmith": [
     "I don't shoe rats."
   ],
@@ -46,5 +43,32 @@
   ],
   "return_plaza_townsperson": [
     "It's busier after lunch."
+  ],
+  "dock_worker_repeat": [
+    "Still here? The cat's still here too."
+  ],
+  "market_woman_repeat": [
+    "Still no handouts. The sewer's that way."
+  ],
+  "return_dock_worker_repeat": [
+    "Still busy. Busier, if anything."
+  ],
+  "market_browser_repeat": [
+    "Still nothing in your size. I checked."
+  ],
+  "fisherman_repeat": [
+    "Still not biting. I think they know I'm here."
+  ],
+  "blacksmith_repeat": [
+    "Still don't shoe rats. Asking twice won't change it."
+  ],
+  "alchemist_repeat": [
+    "Still no samples. Especially not for rats."
+  ],
+  "plaza_townsperson_repeat": [
+    "I meant it about the fountain."
+  ],
+  "return_plaza_townsperson_repeat": [
+    "It gets worse after dinner."
   ]
 }

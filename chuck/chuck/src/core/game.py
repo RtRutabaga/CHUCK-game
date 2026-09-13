@@ -70,6 +70,8 @@ class Game:
         self.progress = ProgressState()
         self.cigarettes = CigaretteLedger()
         self.deaths = DeathCounter()
+        # People Chuck has already had a first word from this session.
+        self.spoken_to: set[tuple] = set()
         self.active_checkpoint_id = OPENING_CHECKPOINT_ID
         self.saves = SaveSystem(save_path)
         self.checkpoints = CheckpointLoader(self, self.saves)

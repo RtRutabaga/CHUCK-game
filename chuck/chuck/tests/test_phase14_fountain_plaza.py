@@ -200,7 +200,8 @@ def test_shopkeepers_only_speak_and_every_person_stands_off_the_route() -> None:
         by_dialogue = {npc.dialogue_id: npc for npc in scene.npcs}
         assert scene.dialogue.get("blacksmith") == ["I don't shoe rats."]
         assert scene.dialogue.get("alchemist") == ["No samples."]
-        assert scene.dialogue.get("plaza_guard") == ["Gate's closed."]
+        # The plaza's guards say what the docks' north-east guard says.
+        assert scene.dialogue.get("guard") == ["Stick to the docks, rat."]
         assert "blacksmith" in by_dialogue and "alchemist" in by_dialogue
 
         for spawn in (*PLAZA_TOWNSFOLK, *RETURN_PLAZA_TOWNSFOLK):

@@ -1507,6 +1507,8 @@ class WorldScene(Scene):
                     # the world directly and never open a dialogue overlay.
                     self._collect_pending_drops()
                     return
+                if target in self.npcs:
+                    dialogue_id = self._second_word(target, dialogue_id)
                 self.game.scenes.push(
                     DialogueScene(self.game, self.dialogue.get(dialogue_id))
                 )
@@ -2338,6 +2340,31 @@ class WorldScene(Scene):
         self.game.scenes.replace(
             HellFallingCutsceneScene(self.game, sanity=self.sanity.current)
         )
+
+    def _second_word(self, npc, dialogue_id: str) -> str:
+        """The same person, spoken to again, says something else.
+
+        Driven entirely by the writing: a person whose line has a
+        ``<line>_repeat`` sibling in data/dialogue says the first one the
+        first time and the second one every time after. Anyone without a
+        repeat line -- Waterdeep's guards, by design -- just says their
+        one line again.
+
+        Remembered per person, not per line, because several townsfolk
+        share a line: the second browser outside the market should still
+        get a first word in. And remembered for the session rather than
+        the visit, so walking out of the tavern and back in does not make
+        the bartender forget he already told you about the cheese.
+        """
+        repeat = f"{dialogue_id}_repeat"
+        if not self.dialogue.has(repeat):
+            return dialogue_id
+        spoken = self.game.spoken_to
+        key = (self.map_name, round(npc.x), round(npc.y), dialogue_id)
+        if key in spoken:
+            return repeat
+        spoken.add(key)
+        return dialogue_id
 
     def _interactable_in_range(self):
         """The NPC or prop Chuck could talk to right now, or None.

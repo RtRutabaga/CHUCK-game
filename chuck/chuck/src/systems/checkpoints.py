@@ -1818,6 +1818,7 @@ class CheckpointLoader:
 
     def new_game(self):
         self.saves.delete()
+        self.game.spoken_to.clear()
         return self.load_checkpoint(OPENING_CHECKPOINT_ID, cigarettes=0,
                                     deaths=0)
 

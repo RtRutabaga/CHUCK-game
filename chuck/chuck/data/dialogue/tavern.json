@@ -11,5 +11,14 @@
   ],
   "cheese": [
     "It is cheese."
+  ],
+  "bartender_repeat": [
+    "The cheese isn't getting any fresher back there."
+  ],
+  "patron_repeat": [
+    "Still out of stew. I asked again."
+  ],
+  "musician_repeat": [
+    "We're on rendition four. It's the one with the kazoo."
   ]
 }

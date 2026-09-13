@@ -40,8 +40,10 @@ RETURN_TOWNSFOLK = (
 # The gate itself is solid; its guards remain non-colliding like every human,
 # because Chuck can walk between boots but not through iron.
 PLAZA_TOWNSFOLK = (
-    TownspersonSpawn("guard", "plaza_guard", (21, 4), "down"),
-    TownspersonSpawn("guard", "plaza_guard", (27, 4), "down"),
+    # The same guard line as the one at the docks' north-east corner: it
+    # is the same city watch on the same wall.
+    TownspersonSpawn("guard", "guard", (21, 4), "down"),
+    TownspersonSpawn("guard", "guard", (27, 4), "down"),
     TownspersonSpawn("dock_worker", "blacksmith", (9, 13), "down"),
     TownspersonSpawn("market_woman", "alchemist", (37, 13), "down"),
     TownspersonSpawn("market_woman", "plaza_townsperson", (15, 30), "right"),

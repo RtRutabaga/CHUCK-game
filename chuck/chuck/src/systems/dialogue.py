@@ -53,6 +53,9 @@ class DialogueSystem:
                     )
                 self._dialogues[dialogue_id] = lines
 
+    def has(self, dialogue_id: str) -> bool:
+        return dialogue_id in self._dialogues
+
     def get(self, dialogue_id: str) -> list[str]:
         """Return the ordered lines for a dialogue id. Loud if missing."""
         if dialogue_id not in self._dialogues:

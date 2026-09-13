@@ -27,6 +27,18 @@ and updated every session.
 
 ## Latest implementation
 
+- Waterdeep's people have a second word. In both the opening and the finale,
+  every townsperson, tavern regular, shopkeeper and the fisherman says their
+  usual line the first time Chuck talks to them and a different one every time
+  after. The repeat lines live beside the originals in data/dialogue as
+  `<line>_repeat`; any line without one just repeats, so the feature is driven
+  entirely by the writing. It is remembered per person (townsfolk who share a
+  line each still get a first word in) and for the whole session rather than a
+  single visit, and a new game forgets it.
+- The guards are the exception, by design: one line, every time. The fountain
+  plaza's two gate guards now say exactly what the docks' north-east guard
+  says, and their separate `plaza_guard` line is gone. Bobert is untouched.
+
 - E looks at things now. Every prop in the game answers the interact key with
   a short line in data/dialogue/examine.json, where before only eighteen of a
   hundred and seventeen kinds had anything to say. The lines are written to be
