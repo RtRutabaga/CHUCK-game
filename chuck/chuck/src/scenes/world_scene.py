@@ -337,9 +337,12 @@ class WorldScene(Scene):
         )
         self.hud = HUD(self.sanity, self.game.assets.bitmap_font(),
                self.game.cigarettes, self.game.deaths)
+        # The opening teaches; the return does not. By the time Chuck is
+        # back on these docks he has pressed every key there is.
         self._hint = (
             TutorialHint(self.game.assets)
             if self.map_name in config.TUTORIAL_MAPS
+            and not self.game.progress.has(WATERDEEP_RETURN_FLAG)
             else None
         )
         self._jump_tutorial_complete = False

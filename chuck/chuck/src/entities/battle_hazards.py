@@ -346,6 +346,7 @@ class InfernalBattleChoreographer:
         self._fighter_timer -= dt
         if self._fighter_timer <= 0.0:
             self._fighter_timer += 1.25
+            self._fighter.swing_toward(self._pit_fiend.center_x)
             self._fighter.attack_flash = config.BATTLE_ATTACK_FLASH
 
         self._fiend_timer -= dt
@@ -483,6 +484,10 @@ class CollisionBattleChoreographer:
         elif self._slash_timer <= 0.0 and self._something_on_him():
             self._slash_timer = self.SLASH_RECOVERY
             self._slash_active = config.BATTLE_SLASH_ACTIVE
+            quarry = self._horde.nearest_to(self._fighter.center_x,
+                                            self._fighter.center_y)
+            if quarry is not None:
+                self._fighter.swing_toward(quarry.center_x)
             self._fighter.attack_flash = config.BATTLE_ATTACK_FLASH
             if self._horde is not None:
                 self._horde.cut_down(self.slash_hitbox())

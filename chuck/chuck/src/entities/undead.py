@@ -6,6 +6,7 @@ import math
 from typing import TYPE_CHECKING
 
 from src.core import config
+from src.entities import sword
 from src.entities.entity import Entity
 from src.world import collision
 
@@ -67,6 +68,22 @@ _STATS = {
 }
 
 
+# The knight's sword hand on its 16x30 frame, per facing. Facing away,
+# the sword is still in the right hand, on the side the viewer sees --
+# drawn behind the body it was hidden by the plate.
+_KNIGHT_HAND = {
+    "down": (13, 17),
+    "right": (12, 17),
+    "left": (3, 17),
+    "up": (13, 16),
+}
+# How close Chuck has to be for a knight to swing, and how long between
+# swings. The swing is the knight's; the harm is still the touch, as for
+# every pursuer built on this class.
+KNIGHT_SWING_REACH = 26.0
+KNIGHT_SWING_COOLDOWN = 0.9
+
+
 class UndeadEnemy(Entity):
     """A human-scale pursuer that is possible, but inefficient, to fight."""
 
@@ -85,6 +102,8 @@ class UndeadEnemy(Entity):
         self.facing = "down"
         self.tilemap: "TileMap | None" = None
         self._frames: dict[str, object] = {}
+        self.swing_t = 0.0
+        self._swing_cooldown = 0.0
 
     def load_sprites(self, assets: "AssetManager") -> None:
         import pygame
@@ -102,11 +121,18 @@ class UndeadEnemy(Entity):
         }
 
     def update(self, dt: float, target: "Player | None" = None) -> None:
+        if self.kind == "knight":
+            self.swing_t = max(0.0, self.swing_t - dt)
+            self._swing_cooldown = max(0.0, self._swing_cooldown - dt)
         if target is None or self.tilemap is None:
             return
         dx = (target.x + target.width / 2) - (self.x + self.width / 2)
         dy = (target.y + target.height / 2) - (self.y + self.height / 2)
         distance = math.hypot(dx, dy)
+        if (self.kind == "knight" and distance <= KNIGHT_SWING_REACH
+                and self._swing_cooldown <= 0.0):
+            self.swing_t = sword.SWING_DURATION
+            self._swing_cooldown = KNIGHT_SWING_COOLDOWN
         if distance <= 0.0 or distance > config.UNDEAD_NOTICE_RANGE:
             return
         if abs(dx) > abs(dy):
@@ -133,11 +159,11 @@ class UndeadEnemy(Entity):
         frame = self._frames.get(self.facing)
         if frame is not None:
             fw, fh = frame.get_size()
-            surface.blit(
-                frame,
-                (int(self.x + self.width / 2 - fw / 2) - ox,
-                 int(self.y + self.height - fh) - oy),
-            )
+            left = int(self.x + self.width / 2 - fw / 2) - ox
+            top = int(self.y + self.height - fh) - oy
+            surface.blit(frame, (left, top))
+            if self.kind == "knight":
+                self._draw_knight_sword(surface, left, top)
         else:
             color = {
                 "zombie": (73, 100, 62),
@@ -145,3 +171,15 @@ class UndeadEnemy(Entity):
             }.get(self.kind, (194, 191, 158))
             pygame.draw.rect(surface, color,
                              (int(self.x) - ox, int(self.y) - 22 - oy, 12, 30))
+
+    def _draw_knight_sword(self, surface, left: int, top: int) -> None:
+        hand_x, hand_y = _KNIGHT_HAND[self.facing]
+        hilt = (left + hand_x, top + hand_y)
+        rest, start, end = sword.cut_angles(self.facing)
+        if self.swing_t > 0.0:
+            progress = 1.0 - self.swing_t / sword.SWING_DURATION
+            angle = sword.swing_angle(progress, start, end)
+            sword.draw_trail(surface, hilt, start, angle)
+        else:
+            angle = rest
+        sword.draw_sword(surface, hilt, angle)

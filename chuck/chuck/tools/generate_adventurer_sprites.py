@@ -60,9 +60,11 @@ def fighter() -> Image.Image:
     d.line((4, 14, 11, 14), fill=STEEL_DARK)
     d.rectangle((0, 9, 3, 17), fill=STEEL_DARK)     # the shield, held west
     d.rectangle((1, 10, 2, 16), fill=STEEL)
-    d.rectangle((12, 10, 13, 21), fill=STEEL_LIGHT) # sword raised east
-    d.point((12, 9), fill=STEEL_LIGHT)
-    d.rectangle((12, 21, 13, 22), fill=LEATHER)     # grip
+    # The sword arm's gauntlet. The sword itself is drawn at runtime
+    # (src/entities/sword.py) so that it can swing: painted into the
+    # sprite it was a pale bar pointing one way for ever.
+    d.rectangle((12, 13, 13, 16), fill=STEEL_DARK)
+    d.point((12, 13), fill=STEEL_LIGHT)
     d.rectangle((5, 20, 10, 25), fill=LEATHER)      # skirt
     d.rectangle((5, 26, 6, 29), fill=STEEL_DARK)    # greaves
     d.rectangle((9, 26, 10, 29), fill=STEEL_DARK)

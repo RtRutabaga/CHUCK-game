@@ -27,6 +27,22 @@ and updated every session.
 
 ## Latest implementation
 
+- The fighter has a real sword. The pale bar painted into his sprite is gone
+  (a gauntlet in its place); src/entities/sword.py draws a blade with a gold
+  crossguard and leather grip at his hand, held upright behind his shield at
+  rest and swung in an overhead cut with a pale trail on every stroke his
+  battle calls -- in the sanctum, at the fortress and in the collision
+  fight. The swing lasts 0.32s, longer than the 0.18s attack flash, so the
+  cut is actually seen, and he turns to face what he is cutting: the pit
+  fiend at the fortress, whichever orc reached him in the horde.
+- The collided desert's knights carry the same sword in the right hand, in
+  every facing, and swing it when Chuck comes within 26px (then a 0.9s
+  recovery). The swing is presentation: their harm is still the touch, like
+  every pursuer on the undead architecture.
+- No tutorial hints on the final Waterdeep. The hint line ("Press E to
+  interact", scratch, jump, Ashtray) is only created for the opening's
+  tutorial maps; once the return-to-Waterdeep flag is set, the docks, tavern
+  and pantry show none.
 - The exterior deck's bowsprit no longer fades when anyone is near it. It
   hangs out over the sea where nobody can walk under it, so thinning it only
   ever made the ship's prow flicker; it is out of `SEE_THROUGH_PROPS`.
