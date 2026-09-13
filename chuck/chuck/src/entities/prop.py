@@ -115,6 +115,15 @@ _SPRITES = {
     "waterdeep_docked_ship": "objects/sailing_cog.png",
     "waterdeep_fountain": "objects/waterdeep_fountain_1.png",
     "waterdeep_closed_gate": "objects/waterdeep_closed_gate.png",
+    # A square tower either side of the gate, a tile proud of the wall,
+    # and the watch's banners along it.
+    "waterdeep_gate_tower": "objects/waterdeep_gate_tower.png",
+    "waterdeep_banner": "objects/waterdeep_banner_1.png",
+    "tavern_keg_rack": "objects/tavern_keg_rack.png",
+    "tavern_notice_board": "objects/tavern_notice_board.png",
+    "tavern_rug": "objects/tavern_rug.png",
+    "pantry_sack_pile": "objects/pantry_sack_pile.png",
+    "pantry_produce_basket": "objects/pantry_produce_basket.png",
     "waterdeep_forge": "objects/waterdeep_forge.png",
     "waterdeep_anvil": "objects/waterdeep_anvil.png",
     "waterdeep_alchemist_display": (
@@ -351,6 +360,9 @@ _ANIMATED_SPRITES = {
     "castle_banner": tuple(
         f"objects/castle_banner_{index + 1}.png" for index in range(4)
     ),
+    "waterdeep_banner": tuple(
+        f"objects/waterdeep_banner_{index + 1}.png" for index in range(4)
+    ),
 }
 _PROP_FRAME_TIME = 0.14
 # Props whose animation runs at its own pace. A lava lamp shares nothing
@@ -403,12 +415,20 @@ MUTE_PROPS: frozenset[str] = frozenset({
     "ship_stew_pot",
     "ship_rope_coil",
     "ship_cargo_stack",
+    "waterdeep_gate_tower",
+    "waterdeep_banner",
+    "tavern_keg_rack",
+    "tavern_notice_board",
+    "tavern_rug",
+    "pantry_sack_pile",
+    "pantry_produce_basket",
 })
 
 # Props that lie flat on the ground: drawn under everybody, never sorted.
 FLOOR_PROPS: frozenset[str] = frozenset({
     "ship_captain_rug",
     "ship_rope_coil",
+    "tavern_rug",
 })
 
 # Kinds that share another kind's examine line rather than having their

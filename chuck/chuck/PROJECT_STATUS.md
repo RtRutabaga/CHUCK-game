@@ -27,6 +27,20 @@ and updated every session.
 
 ## Latest implementation
 
+- Waterdeep's plaza gate has towers. A square tower of the district wall's own
+  brick, with the gate's grey stone at its corners, arrow slits and a
+  crenellated top, stands a tile proud of the wall either side of the two
+  guards, and four of the watch's blue-and-silver banners hang along the wall
+  above the two shops. The towers stand forward rather than rising because
+  the wall already runs to the top of the map. Placed by the plaza generator
+  (`GATE_TOWER_COLS`, `WALL_BANNER_COLS`), so both eras get them. The banner
+  is the castle banner's animation in a new palette; `banner()` in
+  tools/generate_castle_banner.py takes an optional palette and the castle's
+  frames are byte-identical.
+- The tavern gets a keg rack behind the bar, a notice board by the pantry
+  door and a worn green rug under the middle table (flat, walked over). The
+  pantry gets two sack piles and two produce baskets -- onions and apples, and
+  deliberately no cheese, so the one cheese stays the hook. All mute.
 - The ship below decks is furnished. The captain's cabin is a study now: two
   bookcases against the north wall between the portholes and a writing desk
   in front of them with a chart, inkpot and candle on it, and the hammock is

@@ -265,6 +265,24 @@ TILE_DEFS: dict[str, TileDef] = {
     # Invisible footprint tiles keep the fountain's broad bowl solid while
     # drawing the same paving as the rest of the square beneath it.
     "⊠": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER, under=","),
+    # The plaza's gate towers and banners, on the paving in front of the
+    # district wall and drawn up over it.
+    "ꝟ": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="waterdeep_gate_tower", under=","),
+    "ꝡ": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="waterdeep_banner", under=","),
+    # The tavern's keg rack and notice board against its north wall, and
+    # the rug under the middle table; the pantry's sacks and baskets.
+    "ꝣ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="tavern_keg_rack", under="="),
+    "ꝥ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="tavern_notice_board", under="="),
+    "ꝧ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="tavern_rug", under="="),
+    "ꝩ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="pantry_sack_pile", under="p"),
+    "ꝫ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="pantry_produce_basket", under="p"),
     "ϟ": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
                  prop="waterdeep_closed_gate", under=","),
     "⚒": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,

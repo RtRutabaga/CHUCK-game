@@ -55,6 +55,10 @@ def test_pantry_is_compact_readable_and_safely_navigable() -> None:
         "crate": 2,
         "pantry_open": 1,
         "cheese": 1,
+        # Dressing that says food store without saying cheese: the one
+        # cheese in the room is the hook.
+        "pantry_sack_pile": 2,
+        "pantry_produce_basket": 2,
     })
     cheese_tiles = {
         (col, row) for kind, col, row in pantry.prop_tiles if kind == "cheese"

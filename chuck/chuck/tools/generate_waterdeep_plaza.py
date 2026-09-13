@@ -21,6 +21,8 @@ HEIGHT = 34
 # Battlements plus three courses: the closed gate is three tiles and a
 # bit tall, and a wall shorter than the gate is not a wall it is in.
 NORTH_WALL_ROWS = 4
+GATE_TOWER_COLS = (19, 29)
+WALL_BANNER_COLS = (10, 15, 33, 38)
 
 
 def fountain(frame: int) -> Image.Image:
@@ -304,6 +306,12 @@ def build_map() -> list[str]:
     # Guarded gate, set into the bottom course of the wall, smithy yard,
     # alchemist display.
     grid[NORTH_WALL_ROWS - 1][24] = "ϟ"
+    # A square tower a tile proud of the wall either side of the guards,
+    # and the watch's banners along the wall above both shops.
+    for col in GATE_TOWER_COLS:
+        grid[NORTH_WALL_ROWS][col] = "ꝟ"
+    for col in WALL_BANNER_COLS:
+        grid[NORTH_WALL_ROWS][col] = "ꝡ"
     grid[14][8] = "⚒"
     grid[15][12] = "⚙"
     grid[14][38] = "⚗"

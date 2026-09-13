@@ -54,8 +54,13 @@ POLE = (66, 60, 54, 255)
 POLE_LIT = (98, 88, 78, 255)
 IRON = (54, 56, 60, 255)
 
+CASTLE = {
+    "cloth_dark": CLOTH_DARK, "cloth": CLOTH, "cloth_lit": CLOTH_LIT,
+    "trim": TRIM, "trim_dark": TRIM_DARK, "device": DEVICE,
+}
 
-def banner(frame: int) -> Image.Image:
+
+def banner(frame: int, palette: dict | None = None) -> Image.Image:
     """One banner, at one moment of its lift.
 
     The sway is applied as a per-row horizontal offset that grows toward
@@ -63,6 +68,11 @@ def banner(frame: int) -> Image.Image:
     free at the bottom. Offsetting the whole shape instead made it a
     sign swinging on a hinge.
     """
+    colours = palette or CASTLE
+    CLOTH_DARK, CLOTH, CLOTH_LIT = (colours["cloth_dark"], colours["cloth"],
+                                    colours["cloth_lit"])
+    TRIM, TRIM_DARK, DEVICE = (colours["trim"], colours["trim_dark"],
+                               colours["device"])
     image = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
 
