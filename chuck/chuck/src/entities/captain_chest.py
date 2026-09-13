@@ -21,6 +21,10 @@ if TYPE_CHECKING:
     from src.systems.checkpoints import ProgressState
 
 
+def examine_chest_line(kind: str, opened: bool) -> str:
+    return f"examine_{kind}_open" if opened else f"examine_{kind}"
+
+
 class CaptainChest(Entity):
     """A solid chest that physically opens and drops its reward."""
 
@@ -80,8 +84,14 @@ class CaptainChest(Entity):
     def sort_y(self) -> float:
         return float(self._bottom)
 
-    def interact(self, _by) -> None:
-        self._begin_opening()
+    def interact(self, _by) -> str:
+        """Pressing E only looks at it. Opening it takes a scratch.
+
+        E used to open it too, which made the chest the one thing in the
+        game where the two buttons did the same job -- and taught nothing
+        about which one breaks things.
+        """
+        return examine_chest_line(self.kind, self.opened)
 
     def on_scratched(self) -> None:
         self._begin_opening()

@@ -87,9 +87,20 @@ def test_interacting_animates_chest_then_drops_physical_gold_carton() -> None:
         scene.player.x = x + w / 2 - scene.player.width / 2
         scene.player.y = y + h + 1
         scene.player.facing = "up"
+        # E only looks at the chest: a line comes up, and it stays shut.
         game.input._actions_just_pressed.add("interact")
         scene.update(0.0)
         game.input._actions_just_pressed.discard("interact")
+        assert game.scenes.current is not scene
+        assert not chest.opened
+        assert chest.interact(scene.player) == "examine_ship_captain_chest"
+        game.scenes.pop()
+        assert game.scenes.current is scene
+
+        # A scratch is what opens it.
+        game.input._actions_just_pressed.add("scratch")
+        scene.update(0.0)
+        game.input._actions_just_pressed.discard("scratch")
         assert game.scenes.current is scene
         assert chest.opened
         assert game.progress.has("captain_chest_opened")
@@ -149,7 +160,7 @@ def test_collected_gold_carton_and_open_chest_persist_through_continue() -> None
             scene = game.checkpoints.load_checkpoint("ship_captain_cabin")
             chest = next(prop for prop in scene.props
                          if isinstance(prop, CaptainChest))
-            chest.interact(scene.player)
+            chest.on_scratched()
             scene.update(chest.opening_duration)
             carton = next(pickup for pickup in scene.pickups
                           if isinstance(pickup, GoldenCigaretteCarton))
@@ -174,7 +185,8 @@ def test_collected_gold_carton_and_open_chest_persist_through_continue() -> None
             assert chest.opened
             assert not any(isinstance(pickup, GoldenCigaretteCarton)
                            for pickup in scene.pickups)
-            assert chest.interact(scene.player) is None
+            # E on an open chest only looks at it.
+            assert chest.interact(scene.player) ==                 "examine_ship_captain_chest_open"
             assert resumed.cigarettes.total == config.HALFLING_LEAF_CIGARETTES
         finally:
             resumed._shutdown()
@@ -188,7 +200,7 @@ def test_open_uncollected_chest_reconstructs_carton_on_continue() -> None:
             scene = game.checkpoints.load_checkpoint("ship_captain_cabin")
             chest = next(prop for prop in scene.props
                          if isinstance(prop, CaptainChest))
-            chest.interact(scene.player)
+            chest.on_scratched()
             scene.update(chest.opening_duration)
             assert game.checkpoints.activate_checkpoint(
                 "ship_captain_anchor", scene.sanity.current

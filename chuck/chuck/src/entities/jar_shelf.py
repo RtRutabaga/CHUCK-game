@@ -27,6 +27,8 @@ from src.entities.entity import Entity
 
 
 class PantryJar(BreakableUrn):
+    EXAMINE_LINE = "examine_pantry_jar"
+
     """One round floor jar (the map's 'z' tiles): the temple urn's whole
     scratch-break lifecycle, restyled — a big-bellied tan vessel that
     shatters into cream crockery shards and spills a carton where it
@@ -81,6 +83,17 @@ class PantryJarShelf(Entity):
         self.intact = True
         self._break_time = 0.0
         self._drop_pending = False
+
+    @property
+    def dialogue_id(self) -> str:
+        """The shelf stays, so it always has something to say."""
+        return "examine_jar_shelf" if self.intact else "examine_jar_shelf_empty"
+
+    def interaction_bounds(self) -> tuple[int, int, int, int]:
+        """The footprint, padded a little, for the interact probe."""
+        pad = 3
+        return (int(self.x) - pad, int(self.y) - pad,
+                int(self.width) + pad * 2, int(self.height) + pad * 2)
 
     def load_sprite(self, assets) -> None:
         self._stocked_image = assets.image("objects/pantry_shelf.png")

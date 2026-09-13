@@ -8,6 +8,7 @@ Run from the project root with:
 
 from src.core import config
 from src.entities.prop import Prop
+from src.entities.prop import examine_line_id
 
 TS = config.TILE_SIZE
 
@@ -43,7 +44,7 @@ def test_bobert_barrel_is_a_valid_prop_kind() -> None:
 def test_tavern_door_is_human_scale() -> None:
     from src.core import config
     door = Prop("tavern_door", col=44, row=17, assets=FakeAssets(32, 34))
-    assert door.dialogue_id is None  # it's a door; it has nothing to say
+    assert door.dialogue_id == examine_line_id("tavern_door")
     x, y, w, h = door.interaction_bounds()
     # Taller than the dock worker: a human fits through.
     assert 34 >= config.NPC_FRAME_H + 4
@@ -53,7 +54,7 @@ def test_tavern_door_is_human_scale() -> None:
 
 def test_open_tavern_threshold_keeps_the_human_scale() -> None:
     doorway = Prop("tavern_open", col=44, row=17, assets=FakeAssets(48, 34))
-    assert doorway.dialogue_id is None
+    assert doorway.dialogue_id == examine_line_id("tavern_open")
     assert doorway.choice_id is None
     assert doorway._draw_x == 44 * TS + (TS - 48) // 2
     assert doorway._draw_y == 18 * TS - 34
@@ -61,13 +62,14 @@ def test_open_tavern_threshold_keeps_the_human_scale() -> None:
 
 def test_chimney_is_a_valid_mute_prop() -> None:
     p = Prop("chimney", col=37, row=9, assets=FakeAssets(12, 22))
-    assert p.dialogue_id is None
+    assert p.dialogue_id == examine_line_id("chimney")
     assert p._draw_y == 10 * TS - 22  # rises above its roof tile
 
 
 def test_skull_stake_is_a_tall_mute_prop() -> None:
     stake = Prop("skull_stake", col=27, row=24, assets=FakeAssets(12, 30))
-    assert stake.dialogue_id is None and stake.choice_id is None
+    assert stake.dialogue_id == examine_line_id("skull_stake")
+    assert stake.choice_id is None
     assert stake.sort_y == 25 * TS
     assert stake._draw_y == 25 * TS - 30
     assert stake._draw_y < 24 * TS
@@ -87,7 +89,7 @@ def test_stall_props_are_valid_and_mute() -> None:
                        ("crate_green", 16, 20), ("crate_red", 16, 20),
                        ("crate_orange", 16, 20)):
         p = Prop(kind, col=45, row=29, assets=FakeAssets(w, h))
-        assert p.dialogue_id is None
+        assert p.dialogue_id == examine_line_id(kind)
         assert p.sort_y == 30 * TS
 
 
@@ -99,12 +101,13 @@ def test_tavern_furniture_is_valid_and_mute() -> None:
         ("tavern_hearth", 28, 26),
     ):
         prop = Prop(kind, col=8, row=6, assets=FakeAssets(w, h))
-        assert prop.dialogue_id is None
+        assert prop.dialogue_id == examine_line_id(kind)
         assert prop.choice_id is None
         assert prop.sort_y == 7 * TS
 
     door = Prop("pantry_door", col=14, row=1, assets=FakeAssets(24, 30))
-    assert door.dialogue_id is None and door.choice_id is None
+    assert door.dialogue_id == examine_line_id("pantry_door")
+    assert door.choice_id is None
     assert door._draw_y == 2 * TS - 30
 
     cheese = Prop("cheese", col=14, row=6, assets=FakeAssets(10, 7))
@@ -119,7 +122,8 @@ def test_pantry_storage_and_doorway_are_valid_props() -> None:
         ("grain_sack", 12, 16),
     ):
         prop = Prop(kind, col=8, row=6, assets=FakeAssets(w, h))
-        assert prop.dialogue_id is None and prop.choice_id is None
+        assert prop.dialogue_id == examine_line_id(kind)
+        assert prop.choice_id is None
         assert prop.sort_y == 7 * TS
 
 
@@ -149,7 +153,10 @@ def test_prop_dialogue_mapping() -> None:
     house_door = Prop("house_door", 14, 4, FakeAssets(14, 20))
     assert bobert.dialogue_id == "bobert_sleeping"
     assert sign.dialogue_id == "herod_sign"
-    assert barrel.dialogue_id is None and crate.dialogue_id is None
+    # Barrels and crates say what they are -- and that a scratch won't
+    # break them.
+    assert barrel.dialogue_id == "examine_barrel"
+    assert crate.dialogue_id == "examine_crate"
     assert cheese.dialogue_id == "cheese"
     assert house_door.dialogue_id == "closed_door"
 

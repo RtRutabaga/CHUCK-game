@@ -27,6 +27,14 @@ class ReactiveFlower(Entity):
         self._active = False
         self._pulse_t = 0.0
 
+    dialogue_id = "examine_reactive_flower"
+
+    def interaction_bounds(self) -> tuple[int, int, int, int]:
+        """The footprint, padded a little, for the interact probe."""
+        pad = 3
+        return (int(self.x) - pad, int(self.y) - pad,
+                int(self.width) + pad * 2, int(self.height) + pad * 2)
+
     def load_sprites(self, assets) -> None:
         self._images = (
             assets.image("objects/feywild_reactive_flower_closed.png"),

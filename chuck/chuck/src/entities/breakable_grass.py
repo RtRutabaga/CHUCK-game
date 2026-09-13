@@ -35,6 +35,18 @@ class BreakableGrass(Entity):
         self._image = assets.image("objects/breakable_grass.png")
 
     @property
+    def dialogue_id(self) -> str | None:
+        """A hint while there is something to find; silence once scratched."""
+        return "examine_breakable_grass" if self.intact else None
+
+    def interaction_bounds(self) -> tuple[int, int, int, int]:
+        """The footprint, padded a little, for the interact probe."""
+        pad = 3
+        return (int(self.x) - pad, int(self.y) - pad,
+                int(self.width) + pad * 2, int(self.height) + pad * 2)
+
+
+    @property
     def hitbox(self):
         """Broken grass stops consuming later scratches during its debris pass."""
         if self.intact:

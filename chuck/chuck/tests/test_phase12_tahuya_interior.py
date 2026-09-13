@@ -340,8 +340,9 @@ def test_the_north_door_is_shut_and_the_lamp_is_the_only_thing_moving() -> None:
         curtains = [prop for prop in world.props
                     if prop.kind == "cabin_curtain_window"]
         assert len(curtains) == 2
-        # Curtains are scenery, not something to talk to or open.
-        assert all(prop.dialogue_id is None and prop.choice_id is None
+        # Curtains are scenery: E says what they are, and nothing opens.
+        assert all(prop.dialogue_id == "examine_cabin_curtain_window"
+                   and prop.choice_id is None
                    for prop in curtains)
     finally:
         game._shutdown()

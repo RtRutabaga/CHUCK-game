@@ -73,6 +73,18 @@ class BreakableUrn(Entity):
         self._break_time = 0.0
         self._drop_pending = False
 
+    EXAMINE_LINE = "examine_breakable_urn"
+
+    @property
+    def dialogue_id(self) -> str | None:
+        return self.EXAMINE_LINE if self.intact else None
+
+    def interaction_bounds(self) -> tuple[int, int, int, int]:
+        """The footprint, padded a little, for the interact probe."""
+        pad = 3
+        return (int(self.x) - pad, int(self.y) - pad,
+                int(self.width) + pad * 2, int(self.height) + pad * 2)
+
     def load_sprite(self, assets) -> None:
         self._image = assets.image(self._sprite_path)
 

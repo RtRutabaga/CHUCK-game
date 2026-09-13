@@ -2350,6 +2350,8 @@ class WorldScene(Scene):
             self.player.hitbox,
             self.npcs,
             [*self.props,
+             *self.breakables,
+             *self.reactive_flowers.flowers,
              *(t for t in self.choice_triggers if not t.walk_triggered)],
         )
 

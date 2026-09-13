@@ -384,6 +384,28 @@ PROP_CHOICE = {
     "sewer_grate": "sewer_grate",
 }
 
+# Kinds that share another kind's examine line rather than having their
+# own: the same object in a different state.
+EXAMINE_ALIAS = {
+    "city_streetlight_lit": "city_streetlight",
+    # Authored as props, but the world turns every one of these into the
+    # breakable they are; the line has to be the breakable's.
+    "temple_urn": "breakable_urn",
+    "grain_sack": "pantry_jar",
+    "pantry_shelf": "jar_shelf",
+}
+
+
+def examine_line_id(kind: str) -> str:
+    """The id of a prop's plain description in data/dialogue/examine.json.
+
+    Everything Chuck can walk up to says what it is when he presses E.
+    Where it looks like something a scratch might break and it isn't,
+    the line says so -- so a player learns what scratching is for
+    without breaking every barrel in Waterdeep to find out.
+    """
+    return f"examine_{EXAMINE_ALIAS.get(kind, kind)}"
+
 # How far above its own bottom edge a prop sorts, in pixels.
 #
 # A prop normally sorts on the tile it stands on, which is right for
@@ -474,8 +496,10 @@ class Prop:
         self._solid_base = min(h, SEE_THROUGH_PROPS.get(kind, 0))
         self.veil = 0.0
         self._thinned: dict[int, object] = {}
-        self.dialogue_id = PROP_DIALOGUE.get(kind)
         self.choice_id = PROP_CHOICE.get(kind)
+        self.dialogue_id = PROP_DIALOGUE.get(kind) or (
+            None if self.choice_id else examine_line_id(kind)
+        )
         if self.dialogue_id and self.choice_id:
             raise ValueError(f"{kind}: a prop has a line OR a choice, not both")
 

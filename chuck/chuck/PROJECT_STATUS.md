@@ -27,6 +27,30 @@ and updated every session.
 
 ## Latest implementation
 
+- E looks at things now. Every prop in the game answers the interact key with
+  a short line in data/dialogue/examine.json, where before only eighteen of a
+  hundred and seventeen kinds had anything to say. The lines are written to be
+  useful when it matters: the things worth scratching say so ("A tuft of
+  grass. Maybe there's a cigarette somewhere in there?", "A strange flower. It
+  looks like it could use a good scratch."), the things that look scratchable
+  and are not say that instead (barrels, crates, rubble, furniture: too big or
+  too sturdy to break with a scratch), and decoration just says what it is ("A
+  very large flower.").
+- The breakables and the Feywild's switch flowers are now things E can reach:
+  grass, temple urns, pantry jars and jar shelves each describe themselves and
+  hint at the scratch, and go quiet once broken -- except the shelf, which
+  stays and says so. Props the world always turns into breakables (temple
+  urns, grain-sack jars, jar shelves) share the breakable's line, so a sack
+  cannot claim to be unbreakable in one place and break in another.
+- Chests only open to a scratch. E used to open them too, which made the
+  chest the one object where the two buttons did the same job and taught
+  nothing about which one breaks things. E now reads the chest's description
+  -- closed, with a hint, or open and empty -- for both the captain's chest and
+  the desert ruin chest.
+- Ten older prop tests pinned doors, furniture, crates and curtains as "mute"; they now
+  assert each says its examine line. The captain's chest test was rewritten to
+  press E, see the line with the chest still shut, then scratch it open.
+
 - Opened the whole seam between the Waterdeep docks and the fountain plaza, in
   both the opening and the finale. Every open tile down the docks' east edge
   -- the street north of the tavern block as well as the one south of it -- is
