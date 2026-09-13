@@ -451,6 +451,18 @@ TILE_DEFS: dict[str, TileDef] = {
     # and the sprite is anchored on it so it sorts against him -- behind
     # him on the way up to it, in front of him once he is through. Its
     # two piers are separate tiles of standing wall either side.
+    # The hub's ribcage: seven solid tiles along its spine, the middle one
+    # carrying the sprite. The orc camp's tents stand on three solid
+    # tiles the same way; racks and the drum on one.
+    "ꞿ": TileDef(solid=True, color=(212, 198, 164),
+                 prop="desert_ribcage", under="."),
+    "ꟁ": TileDef(solid=True, color=(212, 198, 164), under="."),
+    "ꟃ": TileDef(solid=True, color=(136, 96, 60), prop="orc_tent", under="."),
+    "ꟈ": TileDef(solid=True, color=(136, 96, 60), under="."),
+    "ꟊ": TileDef(solid=True, color=(78, 56, 36),
+                 prop="orc_weapon_rack", under="."),
+    "ꟑ": TileDef(solid=True, color=(136, 96, 60),
+                 prop="orc_war_drum", under="."),
     "⍛": TileDef(solid=False, color=(162, 146, 124), prop="desert_ruin_arch",
                  under="⌖"),
     "⍖": TileDef(solid=True, color=(0, 0, 0), prop="desert_column_fallen",

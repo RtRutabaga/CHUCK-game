@@ -154,6 +154,20 @@ def _scrub(grid) -> None:
             grid[y][x] = "⍟"
 
 
+# Something very large died here. The anchor is the middle of its spine;
+# the spine lies across seven tiles of open sand, skull to the west.
+RIBCAGE = (47, 30)
+RIBCAGE_REACH = 3
+
+
+def _ribcage(grid: list[list[str]]) -> None:
+    col, row = RIBCAGE
+    for x in range(col - RIBCAGE_REACH, col + RIBCAGE_REACH + 1):
+        assert grid[row][x] in (".", ","), (x, row, grid[row][x])
+        grid[row][x] = "ꟁ"
+    grid[row][col] = "ꞿ"
+
+
 def build() -> list[list[str]]:
     grid = _blank()
     _weather(grid)
@@ -167,6 +181,7 @@ def build() -> list[list[str]]:
     for left, top, width, height in RUINS:
         dress_ruin(grid, left, top, width, height, seed=left + top)
     _scrub(grid)
+    _ribcage(grid)
 
     # The rim goes on last so nothing can be authored through it.
     _rect(grid, 0, 0, WIDTH - 1, RIM - 1, "#")

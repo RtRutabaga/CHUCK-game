@@ -27,6 +27,19 @@ and updated every session.
 
 ## Latest implementation
 
+- Something very large died in the desert hub. A giant ribcage lies in the
+  open sand east of the centre: a horned skull on the ground at the west end,
+  a half-buried spine, and five thin rib hoops rising out of the sand, one of
+  them snapped, shortening toward the tail. Seven solid tiles along the spine;
+  it fades when walked behind. It is the only one, and nothing else was added
+  to the open sand.
+- The orc camp gets its gear: three stitched-hide tents round the edge of the
+  beaten ground, two weapon racks of axes and spears by the fires, and a war
+  drum with a painted eye in the middle of the camp. No totem. Both maps are
+  still reproduced exactly by their generators (`RIBCAGE` in
+  generate_desert_central.py; `TENTS`, `RACKS`, `DRUM` in
+  generate_desert_orc_camp.py), and the camp's reachability tests are
+  unchanged. The oasis is untouched.
 - The Feywild's stone paths have lanterns. On the Shifting Hedge, the Twilight
   Crossroads, the Pollen Orchard and the Blooming Path, crooked-post lanterns
   glowing teal or violet stand in the hedge along the north edge of a path,

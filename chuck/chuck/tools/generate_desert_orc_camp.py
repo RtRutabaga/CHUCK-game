@@ -52,6 +52,12 @@ FIRES = ((31, 21), (40, 24), (36, 27), (27, 17))
 BURN = 2.4          # how far the scorch reaches from the middle, in tiles
 ORCS = ((30, 26), (37, 19), (44, 19), (35, 30), (27, 15),
         (46, 25), (33, 24))
+# The camp's gear: hide tents round the edge of the beaten ground (the
+# middle tile of three), weapon racks by the fires, and the war drum in
+# the middle of it all.
+TENTS = ((36, 14), (46, 22), (32, 30))
+RACKS = ((33, 19), (38, 23))
+DRUM = (35, 22)
 ANCHOR = (32, 39)   # south of the camp, in the open, before the fight
 START = (32, 44)    # ...and the way in, below it
 
@@ -154,10 +160,25 @@ def _camp(grid) -> None:
             grid[y][x] = "⛰"
 
 
+def _gear(grid) -> None:
+    """Tents, racks and the drum -- only ever on open ground."""
+    def place(x, y, char):
+        assert grid[y][x] in (".", ",", "⚱"), (x, y, grid[y][x])
+        grid[y][x] = char
+
+    for x, y in TENTS:
+        place(x - 1, y, "ꟈ")
+        place(x + 1, y, "ꟈ")
+        place(x, y, "ꟃ")
+    for x, y in RACKS:
+        place(x, y, "ꟊ")
+    place(*DRUM, "ꟑ")
+
+
 def _is_solid(char: str) -> bool:
     # The scorch is not in this list. It is ground now, not a fire:
     # the fire is the pit prop standing in the middle of it.
-    return char in ("#", "⌗", "⍟", "⛰", "⍘")
+    return char in ("#", "⌗", "⍟", "⛰", "⍘", "ꟃ", "ꟈ", "ꟊ", "ꟑ")
 
 
 def _scrub(grid) -> None:
@@ -171,6 +192,7 @@ def build():
     grid = _blank()
     _weather(grid)
     _camp(grid)
+    _gear(grid)
     _scrub(grid)
     _cliffs(grid)
 

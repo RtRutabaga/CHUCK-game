@@ -121,6 +121,13 @@ _SPRITES = {
     # Animated; the entry here is the first frame, which is what the
     # constructor validates the kind against.
     "desert_fire_pit": "objects/desert_fire_pit_1.png",
+    # Something very large that died in the hub's sand, and the orc
+    # camp's tents, weapon racks and war drum.
+    "desert_ribcage": "objects/desert_ribcage.png",
+    "orc_tent": tuple(f"objects/orc_tent_{i + 1}.png" for i in range(3)),
+    "orc_weapon_rack": tuple(
+        f"objects/orc_weapon_rack_{i + 1}.png" for i in range(2)),
+    "orc_war_drum": "objects/orc_war_drum.png",
     "sailing_cog": "objects/sailing_cog.png",
     # Phase 14 reuses the established cog silhouette as dockside scenery.
     "waterdeep_docked_ship": "objects/sailing_cog.png",
@@ -509,6 +516,10 @@ MUTE_PROPS: frozenset[str] = frozenset({
     "fey_path_stones",
     "fen_lily_pads",
     "fen_reeds",
+    "desert_ribcage",
+    "orc_tent",
+    "orc_weapon_rack",
+    "orc_war_drum",
 })
 
 # Props that lie flat on the ground: drawn under everybody, never sorted.
@@ -586,6 +597,7 @@ SEE_THROUGH_PROPS: dict[str, int] = {
     "cloud_tower_arch": 24,
     "desert_ruin_arch": 10,
     "temple_grand_arch": 10,
+    "desert_ribcage": 12,
     "castle_turret": 12,
     "tahuya_cabin": 78,
 }
