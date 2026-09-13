@@ -72,6 +72,17 @@ _SPRITES = {
         "objects/jungle_shrub_2.png",
         "objects/jungle_shrub_3.png",
     ),
+    # The jungle floor: what fell off the jungle, and off the temple's
+    # builders. Plus Chult's own great trees.
+    "chult_fern": tuple(f"objects/chult_fern_{i + 1}.png" for i in range(3)),
+    "chult_leaf_litter": tuple(
+        f"objects/chult_leaf_litter_{i + 1}.png" for i in range(3)),
+    "chult_fallen_log": tuple(
+        f"objects/chult_fallen_log_{i + 1}.png" for i in range(3)),
+    "chult_ruin_fragment": tuple(
+        f"objects/chult_ruin_fragment_{i + 1}.png" for i in range(3)),
+    "chult_great_tree": tuple(
+        f"objects/chult_great_tree_{i + 1}.png" for i in range(3)),
     # Phase 13's desert dressing. Tuples, so the variant is chosen from
     # the tile's own position -- three column heights, three heaps, three
     # palms -- and a run of them never repeats in a straight line.
@@ -422,6 +433,11 @@ MUTE_PROPS: frozenset[str] = frozenset({
     "tavern_rug",
     "pantry_sack_pile",
     "pantry_produce_basket",
+    "chult_fern",
+    "chult_leaf_litter",
+    "chult_fallen_log",
+    "chult_ruin_fragment",
+    "chult_great_tree",
 })
 
 # Props that lie flat on the ground: drawn under everybody, never sorted.
@@ -429,6 +445,7 @@ FLOOR_PROPS: frozenset[str] = frozenset({
     "ship_captain_rug",
     "ship_rope_coil",
     "tavern_rug",
+    "chult_leaf_litter",
 })
 
 # Kinds that share another kind's examine line rather than having their
@@ -483,6 +500,7 @@ PROP_SORT_LIFT = {
 SEE_THROUGH_SOLID_BASE = 40
 SEE_THROUGH_PROPS: dict[str, int] = {
     "feywild_great_tree": SEE_THROUGH_SOLID_BASE,
+    "chult_great_tree": SEE_THROUGH_SOLID_BASE,
     "ship_mast_sail": 18,
     "ship_bowsprit": 0,
     "sailing_cog": 36,

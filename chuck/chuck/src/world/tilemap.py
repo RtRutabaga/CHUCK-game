@@ -664,6 +664,23 @@ TILE_DEFS: dict[str, TileDef] = {
     # footprint. The anchor carries the sprite, drawn up from the middle
     # of the bottom row; the other five tiles are solid ground the trunk
     # covers.
+    # Chult's jungle floor (tools/chult_floor_dressing.py). Ferns and
+    # litter are walked over; logs (three tiles, the middle one carrying
+    # the sprite), ruin fragments, stelae and the great trees are solid.
+    "ꝭ": TileDef(solid=False, color=(37, 44, 28),
+                 prop="chult_fern", under="."),
+    "ꝯ": TileDef(solid=False, color=(37, 44, 28),
+                 prop="chult_leaf_litter", under="."),
+    "ꞁ": TileDef(solid=True, color=(78, 56, 36),
+                 prop="chult_fallen_log", under="."),
+    "ꞃ": TileDef(solid=True, color=(78, 56, 36), under="."),
+    "ꞅ": TileDef(solid=True, color=(92, 102, 84),
+                 prop="chult_ruin_fragment", under="."),
+    "ꞇ": TileDef(solid=True, color=(72, 62, 46),
+                 prop="chult_great_tree", under="."),
+    "ꞑ": TileDef(solid=True, color=(72, 62, 46), under="."),
+    "ꞓ": TileDef(solid=True, color=(92, 102, 84),
+                 prop="temple_stela", under="."),
     "ፐ": TileDef(solid=True, color=(82, 58, 90),
                  prop="feywild_great_tree", under="."),
     "ፑ": TileDef(solid=True, color=(82, 58, 90), under="."),

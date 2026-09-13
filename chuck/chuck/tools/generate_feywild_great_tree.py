@@ -55,8 +55,33 @@ MOSS = ((28, 70, 52), (46, 104, 64), (74, 140, 80), (104, 170, 96),
         (132, 196, 112))
 GLOWS = ((76, 194, 255), (193, 82, 244), (244, 108, 191), (150, 236, 200))
 
+FEYWILD = {
+    "bark": BARK, "leaf": LEAF, "leaf_deep": LEAF_DEEP, "moss": MOSS,
+    "glows": GLOWS, "shadow": (6, 26, 30, 150),
+}
+# Chult's giants: kapok-grey bark, the jungle's own greens, vines where
+# the Feywild has moss, and no motes -- nothing glows in Chult.
+JUNGLE = {
+    "bark": ((26, 22, 16), (48, 40, 30), (72, 62, 46), (98, 86, 64),
+             (126, 112, 84)),
+    "leaf": ((10, 38, 24), (17, 60, 34), (24, 86, 42), (40, 116, 52),
+             (70, 148, 64)),
+    "leaf_deep": ((6, 26, 18), (12, 44, 28), (18, 66, 36), (28, 92, 44),
+                  (48, 120, 54)),
+    "moss": ((20, 60, 30), (32, 92, 40), (51, 125, 52), (78, 150, 62),
+             (104, 172, 76)),
+    "glows": (),
+    "shadow": (12, 16, 10, 150),
+    # Lianas, hanging most of the way to the ground.
+    "strand_extra": 26,
+}
 
-def great_tree(variant: int) -> Image.Image:
+
+def great_tree(variant: int, palette: dict | None = None) -> Image.Image:
+    colours = palette or FEYWILD
+    BARK, LEAF, LEAF_DEEP, MOSS = (colours["bark"], colours["leaf"],
+                                   colours["leaf_deep"], colours["moss"])
+    GLOWS = colours["glows"]
     image = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     lean = (-4, 0, 5)[variant]
     spread = (0, 6, -4)[variant]
@@ -219,7 +244,7 @@ def great_tree(variant: int) -> Image.Image:
                 top = y
         if top is None:
             continue
-        length = 6 + (h >> 8) % 14
+        length = 6 + (h >> 8) % 14 + colours.get("strand_extra", 0)
         for step in range(length):
             y = top + step
             x = sx + round(math.sin(step * 0.5 + strand) * 0.8)
@@ -227,7 +252,7 @@ def great_tree(variant: int) -> Image.Image:
                 pixels[x, y] = MOSS[1 if step % 3 else 2] + (255,)
 
     # The Feywild's motes, caught in the crown.
-    for index in range(10):
+    for index in range(10 if GLOWS else 0):
         h = _hash(index, variant, 907)
         x = 18 + h % (W - 36)
         y = 14 + (h >> 9) % 100
@@ -245,7 +270,7 @@ def great_tree(variant: int) -> Image.Image:
     # The shadow goes underneath everything, and outside the outline.
     shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     ImageDraw.Draw(shadow).ellipse((16, 204, 160, 223),
-                                   fill=(6, 26, 30, 150))
+                                   fill=colours["shadow"])
     shadow.alpha_composite(outlined)
     return shadow
 
@@ -254,6 +279,8 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for variant in range(VARIANTS):
         great_tree(variant).save(OUT / f"feywild_great_tree_{variant + 1}.png")
+        great_tree(variant, JUNGLE).save(
+            OUT / f"chult_great_tree_{variant + 1}.png")
     print(f"Wrote {VARIANTS} great trees ({W}x{H}) to {OUT}")
 
 

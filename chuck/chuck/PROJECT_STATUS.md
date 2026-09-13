@@ -27,6 +27,22 @@ and updated every session.
 
 ## Latest implementation
 
+- Chult's jungle floor is dressed on all five maps. Ferns (walked through)
+  and dead-leaf litter (flat) are scattered over open ground; fallen logs
+  three tiles long and ruin fragments from the temple's builders -- a carved
+  block, a toppled head, a column drum -- are solid, and each is kept only if
+  it leaves every reachable tile reachable. The jungle, the cog clearing and
+  the respite each get one great tree: the Feywild's giants redrawn in Chult's
+  palette with dark kapok bark and long lianas, fading the same way. The run
+  gets only ferns and litter, and never in the three gaps its route squeezes
+  through; the temple approach gets no tree (the pyramid is the landmark) but
+  four carved stelae flank the skull-stake avenue, which is otherwise left
+  bare.
+- tools/chult_floor_dressing.py applies it to the shipped maps and holds the
+  rules (`check_great_tree`, `reachable`, `KEEP_CLEAR`); the suite checks the
+  shipped maps against the same rules. tools/generate_feywild_great_tree.py
+  takes a palette now and writes chult_great_tree_N.png as well; the Feywild
+  trees are byte-identical.
 - Waterdeep's plaza gate has towers. A square tower of the district wall's own
   brick, with the gate's grey stone at its corners, arrow slits and a
   crenellated top, stands a tile proud of the wall either side of the two
