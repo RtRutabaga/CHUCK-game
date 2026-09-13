@@ -778,6 +778,24 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="chult_fern", under="."),
     "ꝯ": TileDef(solid=False, color=(37, 44, 28),
                  prop="chult_leaf_litter", under="."),
+    # Chult 4's hidden way west: a trail under the jungle's own canopy art,
+    # so the west wall reads as more wall until Chuck is in it and the
+    # canopy thins over him. Only the outermost tile is the exit.
+    "ꝏ": TileDef(solid=False, color=(44, 45, 29),
+                 under="'", overhead="hidden_jungle"),
+    "Ꝓ": TileDef(solid=False, color=(44, 45, 29),
+                 under="'", overhead="hidden_jungle"),
+    # Chult Falls (tools/generate_chult_falls.py): the cliff and its fall,
+    # anchored mid-cliff on the pool's top edge; boulders on the shore and
+    # in the pool; the ruin chest's twin across the river.
+    "Ꝙ": TileDef(solid=True, color=(40, 38, 36),
+                 prop="chult_falls", under="#"),
+    "Ꝛ": TileDef(solid=True, color=(70, 68, 62),
+                 prop="chult_boulder", under="."),
+    "Ꝝ": TileDef(solid=True, color=(25, 74, 69),
+                 prop="chult_boulder_water", under="≈"),
+    "Ꝟ": TileDef(solid=True, color=(0, 0, 0),
+                 prop="chult_falls_chest", under="."),
     "ꞁ": TileDef(solid=True, color=(78, 56, 36),
                  prop="chult_fallen_log", under="."),
     "ꞃ": TileDef(solid=True, color=(78, 56, 36), under="."),
@@ -1210,6 +1228,8 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Γ": MarkerDef(kind="staged_undead:3:skeleton", under='"'),
     "δ": MarkerDef(kind="boundary:chult_respite", under="ð"),
     "ε": MarkerDef(kind="arrival:from_chult_3", under="."),
+    "Ꝕ": MarkerDef(kind="arrival:from_chult_falls", under="."),
+    "Ꝗ": MarkerDef(kind="arrival:from_chult_respite", under="."),
     "ζ": MarkerDef(kind="anchor:chult_4_anchor", under="."),
     "η": MarkerDef(kind="boundary:chult_temple", under="ð"),
     "θ": MarkerDef(kind="arrival:from_chult_4", under="."),

@@ -27,6 +27,30 @@ and updated every session.
 
 ## Latest implementation
 
+### Chult Falls: a hidden waterfall map off Chult 4
+
+- **Hidden way in.** Chult 4's western side pocket (row 30) now runs through the west wall. Cols 0-2 are walkable trail drawn over with the same dense-jungle overhead art as the wall (`ꝏ` exit, `Ꝓ` passage), so the wall looks unbroken until Chuck steps in and the canopy thins over him. The only tell is one trail tile at the mouth, (3,30). Coming back, Chuck arrives at (4,30), facing right (`Ꝕ`).
+- **Chult Falls** (`assets/maps/chult_falls.txt`, 48x40, made by `tools/generate_chult_falls.py`), set up like the Lost waterfall reference:
+  - **Cliff and fall:** a dark basalt cliff across the north, with moss, ferns, vines and jungle down its sides. The fall is animated in 4 frames, with mist and spray (`Ꝙ`, prop `chult_falls`; art by `tools/generate_chult_falls_art.py`).
+  - **Pool:** turquoise, with round mossy boulders on the shore (`Ꝛ`) and in the water (`Ꝝ`).
+  - **River:** one tile wide, runs south from the pool to the map's bottom edge. It is Chult 4's own `≈` stream tile.
+  - **Way in and out:** Chuck arrives on the east bank. The exit back is the jungle arch (`ð`) on the east edge.
+- **Chest:** `Ꝟ`, kind `chult_falls_chest`, on the west bank. It can only be reached by jumping the river.
+  - It is the ruin chest's twin, with its own flags (`chult_falls_chest_opened`, `chult_falls_chest_carton_collected`) and its own carton of premium Buhetian halfling leaf.
+  - The world scene now builds its flags from the kind.
+- **Wiring:**
+  - Checkpoints `chult_falls` (in the dev selector) and `chult_4_from_falls` (runtime only).
+  - Chult tileset and chult.wav.
+  - Examine lines for the falls, the boulders and the chest (closed and open).
+- **Tests:**
+  - New file `tests/test_chult_falls.py` covers:
+    - the hidden entrance art and that it can be reached
+    - exits both ways
+    - the river running unbroken from the pool to the south edge
+    - the chest needing the jump
+    - the chest's separate flags and carton
+    - the animated falls
+  - The dev selector name list in `test_checkpoints.py` gains "Chult Falls".
 - The rowboat by Bobert's barrel now lies alongside the pier rather than
   sticking out from it: north-south against the big pier's west edge, bow to
   the north, its bow line running down the pier side to the post beside him

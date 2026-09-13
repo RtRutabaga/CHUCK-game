@@ -408,16 +408,17 @@ class WorldScene(Scene):
         for kind, col, row in self.tilemap.prop_tiles:
             if kind in ("temple_urn", "pantry_shelf", "grain_sack"):
                 continue
-            if kind in ("ship_captain_chest", "desert_ruin_chest"):
+            if kind in ("ship_captain_chest", "desert_ruin_chest",
+                        "chult_falls_chest"):
                 prop = CaptainChest(
                     col, row, self.game.assets,
                     self.game.progress, kind=kind,
                     progress_flag=(
                         None if kind == "ship_captain_chest"
-                        else "desert_ruin_chest_opened"),
+                        else f"{kind}_opened"),
                     collected_flag=(
                         None if kind == "ship_captain_chest"
-                        else "desert_ruin_chest_carton_collected"),
+                        else f"{kind}_carton_collected"),
                 )
             else:
                 if (

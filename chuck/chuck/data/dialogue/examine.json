@@ -9,6 +9,8 @@
   "examine_ship_captain_chest_open": ["The captain's chest. Empty now."],
   "examine_desert_ruin_chest": ["A heavy old chest, sitting in the courtyard like it's waiting. The lid looks like it would give to a good scratch."],
   "examine_desert_ruin_chest_open": ["An open chest. Sand is already getting in."],
+  "examine_chult_falls_chest": ["A chest, out here, where nobody comes. The lid's gone soft in the damp. One good scratch."],
+  "examine_chult_falls_chest_open": ["An open chest. Moss is already moving in."],
 
   "examine_barrel": ["A barrel. Far too sturdy to break with a scratch."],
   "examine_crate": ["A shipping crate, nailed shut. Too big to break with a scratch."],
@@ -128,6 +130,9 @@
   "examine_chult_fallen_log": ["A fallen trunk, going soft with moss. Still too big to break with a scratch."],
   "examine_chult_ruin_fragment": ["A carved stone from the temple, a long way from the temple. Too heavy to scratch at."],
   "examine_chult_great_tree": ["An enormous jungle tree. The rest of the jungle grew up around it."],
+  "examine_chult_falls": ["A waterfall. Cold spray all the way over here."],
+  "examine_chult_boulder": ["A big wet rock. Not going anywhere."],
+  "examine_chult_boulder_water": ["A rock sitting in the pool."],
   "examine_temple_wall_carving": ["A carving set into the wall. Serpents, suns and faces, mostly."],
   "examine_temple_toppled_pillar": ["A pillar lying in pieces. Too heavy to break with a scratch."],
   "examine_temple_pillar_stump": ["The stump of a broken pillar. Solid stone."],

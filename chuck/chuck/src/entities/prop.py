@@ -233,6 +233,13 @@ _SPRITES = {
         f"objects/phlegethos_rubble_{i + 1}.png" for i in range(10)
     ),
     "phlegethos_lava_fall": "objects/phlegethos_lava_fall.png",
+    "chult_falls": "objects/chult_falls_1.png",
+    "chult_boulder": tuple(
+        f"objects/chult_boulder_{index + 1}.png" for index in range(3)
+    ),
+    "chult_boulder_water": tuple(
+        f"objects/chult_boulder_water_{index + 1}.png" for index in range(3)
+    ),
     # Hell's leftovers (tools/phlegethos_dressing.py), and the fortress's
     # towers and banners.
     "phlegethos_ember_crack": tuple(
@@ -409,6 +416,9 @@ _SPRITES = {
 }
 
 _ANIMATED_SPRITES = {
+    "chult_falls": tuple(
+        f"objects/chult_falls_{index + 1}.png" for index in range(4)
+    ),
     "phlegethos_lava_fall": (
         "objects/phlegethos_lava_fall.png",
         "objects/phlegethos_lava_fall_2.png",
@@ -497,6 +507,8 @@ _PROP_FRAME_TIMES = {
     "city_neon_open": 0.61,
     "city_neon_24h": 0.55,
     "city_steam_grate": 0.2,
+    # Falling water: quick, but not a strobe.
+    "chult_falls": 0.13,
 }
 
 # Props that respond to the interact key with a line of dialogue

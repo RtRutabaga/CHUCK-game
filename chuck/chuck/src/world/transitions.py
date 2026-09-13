@@ -214,6 +214,13 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("chult_respite", "ð"): AreaExit(
         "chult_temple", "from_chult_4", "up"
     ),
+    # The hidden way west out of Chult 4's side pocket, and back.
+    ("chult_respite", "ꝏ"): AreaExit(
+        "chult_falls", "from_chult_respite", "left"
+    ),
+    ("chult_falls", "ð"): AreaExit(
+        "chult_respite", "from_chult_falls", "right"
+    ),
     ("chult_temple", "Ω"): AreaExit(
         "temple_entrance", "from_temple_exterior", "up"
     ),
@@ -553,6 +560,7 @@ AREA_MUSIC: dict[str, str | None] = {
     "chult_cog": "chult.wav",
     "chult_run": "chult.wav",
     "chult_respite": "chult.wav",
+    "chult_falls": "chult.wav",
     "chult_temple": "chult.wav",
     "temple_entrance": "temple.wav",
     "temple_spikes": "temple.wav",

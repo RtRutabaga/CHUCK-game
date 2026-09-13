@@ -34,6 +34,9 @@ KNOWN_PROGRESS_FLAGS = frozenset({
     # sharing the captain's would open both at once.
     "desert_ruin_chest_opened",
     "desert_ruin_chest_carton_collected",
+    # And again at Chult Falls.
+    "chult_falls_chest_opened",
+    "chult_falls_chest_carton_collected",
     "deck_concertina_met",
     "deck_cheering_met",
     "deck_dancer_met",
@@ -184,6 +187,18 @@ CHECKPOINTS = (
     CheckpointDefinition(
         "chult_4", "Chult 4", "chult_respite",
         arrival="from_chult_3", facing="right",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True,
+    ),
+    CheckpointDefinition(
+        "chult_4_from_falls", "Chult 4 (from the Falls)", "chult_respite",
+        arrival="from_chult_falls", facing="right",
+        required_flags=frozenset({"sewer_completed", "chult_reached"}),
+        runtime_entry=True, development_visible=False,
+    ),
+    CheckpointDefinition(
+        "chult_falls", "Chult Falls", "chult_falls",
+        arrival="from_chult_respite", facing="left",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
     ),

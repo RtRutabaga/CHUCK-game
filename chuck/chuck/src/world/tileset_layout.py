@@ -244,6 +244,8 @@ CHULT = Tileset(
         "_": "fallen_log",
         '"': "jungle_exit",
         "ð": "jungle_exit",
+        "ꝏ": "dense_jungle",
+        "Ꝓ": "dense_jungle",
     },
 )
 
@@ -804,6 +806,7 @@ MAP_TILESET: dict[str, str] = {
     "chult_cog": "chult",
     "chult_run": "chult",
     "chult_respite": "chult",
+    "chult_falls": "chult",
     "chult_temple": "chult",
     "temple_entrance": "temple",
     "temple_spikes": "temple",
