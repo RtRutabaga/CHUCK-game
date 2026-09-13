@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from generate_city_map_common import dress_street, furnish_street, mark_roads, paint_office
+from generate_city_map_common import dress_street, furnish_street, mark_roads, paint_office, seal_open_edges
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -89,6 +89,7 @@ def build_map() -> list[str]:
     for row in range(0, 3):
         for col in range(24, 88):
             grid[row][col] = "V"
+    seal_open_edges(grid, "modern_city_night_5")
     return ["".join(row) for row in grid]
 
 

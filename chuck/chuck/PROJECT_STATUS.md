@@ -27,6 +27,21 @@ and updated every session.
 
 ## Latest implementation
 
+- Only the ways out reach the edge of a city map now. Every day and night city
+  map (the arrival, Day 1-6, Night 2-6) was audited for walkable tiles on its
+  outer row or column that are not part of a wired exit. Four maps had them:
+  Night 5's whole south edge, where both highways and their pavements ran
+  straight off the map; one-tile pavement slivers past building corners at
+  the top and bottom of Day 3; a tile at the top and two runs at the bottom of
+  Night 3; and one at the bottom of Night 4. Each is closed with the Astral
+  Sea three tiles deep, like the bands already sealing the cities' other
+  dead ends (Night 5's south now matches its north).
+- `seal_open_edges` in tools/generate_city_map_common.py does it, run last by
+  every day and night generator: any walkable edge tile that is not one of
+  the map's AREA_WALK_EXITS characters or an arrival marker inside an exit
+  strip, together with plain ground up to three tiles behind it, becomes
+  'V'. The generators still reproduce the shipped maps, and a test audits the
+  shipped edges.
 - New Game opens on a cutscene: Chuck wakes up on the Waterdeep docks beside
   Bobert. The same low quayside vantage as the return-to-Waterdeep cutscene,
   built to rhyme with it -- the mooring posts along the quay edge, the rowboat

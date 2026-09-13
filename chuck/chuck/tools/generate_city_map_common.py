@@ -648,3 +648,63 @@ def furnish_sewer(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
             counts[char] += 1
             placed.append(cell)
     return counts
+
+
+# ---------------------------------------------------------------------------
+# Only the ways out reach the edge.
+#
+# A street that runs off the side of the screen reads as a way on. Where it
+# is one, the map has an exit strip there; where it is not -- the far end of
+# a highway, a pavement sliver past a building's corner -- walking to it
+# found an invisible wall, which is the one thing a map should never make a
+# player test by walking into it. So every walkable tile on the map's edge
+# that is not part of a wired exit becomes the Astral Sea, three tiles deep
+# like the bands already closing the cities' other dead ends, so the break
+# in the world is drawn rather than felt.
+SEAL = "V"
+SEAL_DEPTH = 3
+# Ground that a seal may overwrite on its way in from the edge: plain
+# pavement, kerb, road and its markings, and crossings. Anything else --
+# a marker, a lamp, a building -- stops it.
+SEALABLE = {".", ",", "=", "‖", "≡", "▦"}
+
+
+def seal_open_edges(grid: list[list[str]], map_name: str) -> int:
+    """Turn every non-exit walkable edge tile, and the ground behind it,
+    into the Astral Sea. Returns how many tiles were sealed."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from src.world.tilemap import MARKER_DEFS
+    from src.world.transitions import AREA_WALK_EXITS
+
+    exits = {char for (name, char) in AREA_WALK_EXITS if name == map_name}
+    open_set = _open_chars(grid) - {SEAL}
+    height, width = len(grid), len(grid[0])
+    sealed = 0
+    for row in range(height):
+        for col in range(width):
+            on_edge = row in (0, height - 1) or col in (0, width - 1)
+            char = grid[row][col]
+            if not on_edge or char not in open_set or char in exits:
+                continue
+            # Arrival markers sit inside exit strips; leave the whole strip.
+            if char in MARKER_DEFS and MARKER_DEFS[char].kind.startswith(
+                    ("boundary:", "arrival:")):
+                continue
+            if row == 0:
+                step = (0, 1)
+            elif row == height - 1:
+                step = (0, -1)
+            elif col == 0:
+                step = (1, 0)
+            else:
+                step = (-1, 0)
+            for depth in range(SEAL_DEPTH):
+                x, y = col + step[0] * depth, row + step[1] * depth
+                if grid[y][x] not in SEALABLE and not (depth == 0
+                                                       and char == grid[y][x]):
+                    break
+                if grid[y][x] != SEAL:
+                    grid[y][x] = SEAL
+                    sealed += 1
+    return sealed
+
