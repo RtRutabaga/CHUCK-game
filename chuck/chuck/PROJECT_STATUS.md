@@ -27,6 +27,14 @@ and updated every session.
 
 ## Latest implementation
 
+- The return-to-Waterdeep cutscene now lands Chuck on the dock he actually
+  arrives on. Its quay was drawn as grey cut stone; the fade clears onto the
+  plank beside Bobert's barrel, so the quay is now tiled from the midday docks
+  sheet's own plank tiles, with variants picked by the map's `art_index` rule
+  and a dark lip where the dock drops to the water. His footstep when he looks
+  around is the wooden one. The Phase 13 return test that said "nothing warm
+  is left" now checks the sky and water for leftover desert warmth and checks
+  the quay is the dock's plank colour.
 - The new dressing answers E. Forty-one new examine lines in
   data/dialogue/examine.json cover everything added in the dressing pass that
   stands up or is worth a look, written to the same conventions as before:

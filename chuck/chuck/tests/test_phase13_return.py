@@ -29,6 +29,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 import pygame
+from collections import Counter
 
 from src.core import config
 from src.core.game import Game
@@ -245,17 +246,30 @@ def test_it_ends_on_the_docks_with_chuck_on_them() -> None:
         while scene.elapsed < (DRAG_START + HOLD_END) / 2:
             scene.update(1 / 30)
         scene.draw(surface)
-        pixels = [
+        from src.scenes.return_to_waterdeep_cutscene_scene import _QUAY_Y
+
+        above = [
             surface.get_at((x, y))[:3]
             for x in range(0, config.NATIVE_WIDTH, 5)
-            for y in range(0, config.NATIVE_HEIGHT, 4)
+            for y in range(0, _QUAY_Y, 4)
         ]
-        # Nothing warm is left. Not "everything is blue" -- the quay
-        # stone is a grey with a warm tilt to it and would fail that --
-        # but nothing with the desert's own bias in it, which is the
-        # thing that has to be gone.
-        warm = [p for p in pixels if p[0] - p[2] > 40]
-        assert len(warm) < len(pixels) * 0.05, len(warm)
+        # Nothing warm is left in the sky or the water -- nothing with
+        # the desert's own bias in it, which is the thing that has to be
+        # gone. The quay is warm, and should be: it is the dock's own
+        # planks, the ones the fade clears onto.
+        warm = [p for p in above if p[0] - p[2] > 40]
+        assert len(warm) < len(above) * 0.05, len(warm)
+        quay = Counter(
+            surface.get_at((x, y))[:3]
+            for x in range(0, config.NATIVE_WIDTH, 3)
+            for y in range(_QUAY_Y + 4, config.NATIVE_HEIGHT, 3)
+        )
+        tile = scene._planks[0]
+        tile_colour, _count = Counter(
+            tile.get_at((x, y))[:3]
+            for x in range(tile.get_width()) for y in range(tile.get_height())
+        ).most_common(1)[0]
+        assert quay.most_common(1)[0][0] == tile_colour
         top = [
             surface.get_at((x, y))[:3]
             for x in range(0, config.NATIVE_WIDTH, 5)

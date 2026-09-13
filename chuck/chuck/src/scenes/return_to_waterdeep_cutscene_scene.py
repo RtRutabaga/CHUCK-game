@@ -17,7 +17,7 @@ The fragments separating is the thing to get right, and the way to get
 it right is to make them *leave* rather than to make them busy. Bands
 of each world stream past, and one by one they thin out and stop
 coming, until there is nothing rushing at all -- and what is left when
-the noise stops is stone, and water, and gulls. He is standing on the
+the noise stops is planks, and water, and gulls. He is standing on the
 Waterdeep docks.
 
 Then it holds, and the white clears onto the same docks as a playable
@@ -36,13 +36,14 @@ import pygame
 from src.core import config
 from src.scenes.scene import Scene
 from src.systems.checkpoints import WATERDEEP_RETURN_FLAG
+from src.world.tileset_layout import DOCKS_MIDDAY, TILE_PX, art_index
 
 
 BLAST_END = 1.6         # the rift lets go: white, and a shove
 STREAM_START = 1.2      # ...and the worlds start going past
 THINNING = 7.0          # they begin leaving, one at a time
 STREAM_END = 12.0       # the last band is gone
-DOCKS_IN = 13.6         # stone, water, gulls
+DOCKS_IN = 13.6         # planks, water, gulls
 LOOK_START = 14.6       # he checks: left, right, down
 CIGARETTE_START = 17.0
 DRAG_START = 18.4
@@ -71,9 +72,14 @@ _BANDS = (
 _SEA = (14, 16, 42)
 _STAR = (226, 232, 255)
 
-_DOCK_STONE = (108, 104, 98)
-_DOCK_STONE_LIT = (140, 136, 128)
-_DOCK_JOINT = (72, 70, 66)
+# The quay is drawn from the same midday dock sheet the map he lands on
+# uses -- he arrives on the planks beside Bobert's barrel, and a cutscene
+# quay of cut stone was a different dock from the one the fade clears to.
+# The flat colours are only the headless fallback.
+_DOCK_TERRAIN = "planks"
+_DOCK_PLANK = (174, 132, 82)
+_DOCK_PLANK_LIT = (190, 150, 98)
+_DOCK_SEAM = (126, 88, 50)
 _WATER = (46, 74, 96)
 _WATER_LIT = (86, 122, 142)
 _SKY = (150, 166, 186)
@@ -104,6 +110,8 @@ class ReturnToWaterdeepCutsceneScene(Scene):
         self._sanity = sanity
         self._frames: dict[str, pygame.Surface] = {}
         self._unlit: pygame.Surface | None = None
+        self._planks: list[pygame.Surface] = []
+        self._plank_info: tuple[int, int] = (1, 1)
         self._handed_off = False
 
     def on_enter(self) -> None:
@@ -118,7 +126,20 @@ class ReturnToWaterdeepCutsceneScene(Scene):
         self._unlit = grid[2][0].copy()
         self._unlit.set_at((0, 7), (0, 0, 0, 0))
         self._unlit.set_at((1, 7), (0, 0, 0, 0))
+        self._load_planks()
         self.game.audio.stop_music(fade_ms=600)
+
+    def _load_planks(self) -> None:
+        """The dock's own plank tiles, from the midday sheet."""
+        try:
+            rows = self.game.assets.tileset(DOCKS_MIDDAY.sheet, TILE_PX)
+        except (FileNotFoundError, pygame.error):
+            return
+        for index, (name, variants, frames) in enumerate(DOCKS_MIDDAY.order):
+            if name == _DOCK_TERRAIN:
+                self._planks = rows[index][: variants * frames]
+                self._plank_info = (variants, frames)
+                return
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -176,7 +197,7 @@ class ReturnToWaterdeepCutsceneScene(Scene):
             (0.05, "vanish"),
             (STREAM_START, "portal_hum"),
             (STREAM_END, "portal_collapse"),
-            (LOOK_START, "footstep_stone_1"),
+            (LOOK_START, "footstep_wood_1"),
             (CIGARETTE_START + 1.4, "lighter"),
         )
         for cue_time, sound in cues:
@@ -249,7 +270,7 @@ class ReturnToWaterdeepCutsceneScene(Scene):
             surface.blit(band, (0, top + (band_h - depth) // 2))
 
     def _draw_docks(self, surface: pygame.Surface) -> None:
-        """Stone, water, gulls. Waterdeep, from the quayside."""
+        """Planks, water, gulls. Waterdeep, from the quayside."""
         width, height = surface.get_size()
         for y in range(_HORIZON):
             blend = y / max(1, _HORIZON)
@@ -265,14 +286,7 @@ class ReturnToWaterdeepCutsceneScene(Scene):
             run = (index * 37 + int(self.elapsed * 7)) % width
             pygame.draw.rect(surface, _WATER_LIT, (run, wave_y, 13, 1))
 
-        pygame.draw.rect(surface, _DOCK_STONE,
-                         (0, _QUAY_Y, width, height - _QUAY_Y))
-        pygame.draw.rect(surface, _DOCK_STONE_LIT, (0, _QUAY_Y, width, 2))
-        for row in range(_QUAY_Y + 6, height, 12):
-            pygame.draw.line(surface, _DOCK_JOINT, (0, row), (width, row))
-            for col in range((row // 12 % 2) * 14, width, 28):
-                pygame.draw.line(surface, _DOCK_JOINT,
-                                 (col, row), (col, min(height, row + 12)))
+        self._draw_quay(surface)
 
         # Two gulls, because the quiet needs something moving in it.
         for index, (base_x, base_y, speed) in enumerate(
@@ -281,6 +295,30 @@ class ReturnToWaterdeepCutsceneScene(Scene):
             gy = int(base_y + math.sin(self.elapsed * speed * 0.1 + index) * 3)
             pygame.draw.line(surface, _GULL, (gx - 3, gy), (gx, gy - 2))
             pygame.draw.line(surface, _GULL, (gx, gy - 2), (gx + 3, gy))
+
+    def _draw_quay(self, surface: pygame.Surface) -> None:
+        """The dock's planks, tile for tile, from the quay's edge down.
+
+        Variants are picked by the same rule the map uses, so the boards
+        do not repeat in a visible stripe. A dark lip along the top edge
+        is the side of the dock where it drops to the water.
+        """
+        width, height = surface.get_size()
+        tile = config.TILE_SIZE
+        if self._planks:
+            variants, frames = self._plank_info
+            for row, y in enumerate(range(_QUAY_Y, height, tile)):
+                for col, x in enumerate(range(0, width, tile)):
+                    art = self._planks[art_index(col, row, variants, frames,
+                                                 self.elapsed)]
+                    surface.blit(art, (x, y))
+        else:
+            pygame.draw.rect(surface, _DOCK_PLANK,
+                             (0, _QUAY_Y, width, height - _QUAY_Y))
+            for y in range(_QUAY_Y + 4, height, 4):
+                pygame.draw.line(surface, _DOCK_SEAM, (0, y), (width, y))
+            pygame.draw.rect(surface, _DOCK_PLANK_LIT, (0, _QUAY_Y, width, 1))
+        pygame.draw.rect(surface, _DOCK_SEAM, (0, _QUAY_Y, width, 2))
 
     # ------------------------------------------------------------------
     def _facing(self) -> str:
