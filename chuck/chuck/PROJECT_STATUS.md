@@ -27,6 +27,23 @@ and updated every session.
 
 ## Latest implementation
 
+- The jungle temple's four big rooms -- entrance hall, skeleton hall, shrine
+  and sanctum -- are dressed with damage and leftovers. Cracks run across
+  several slabs, beds of earth show where slabs have gone (kept well short of
+  black so they never read as pits), moss works in on floor tiles touching a
+  wall, bones lie about, and carved relief panels (a coiled serpent, a rayed
+  sun, a glyph face) are set into wall faces away from torches, skulls and
+  monuments. The skeleton hall gets two toppled pillars and two broken
+  stumps, each kept only if every reachable tile stays reachable. The sanctum
+  gets two grand arches, the desert ruin arch recut whole in the temple's
+  stone and mossed, standing against the north and south walls either side
+  of the east door, fading like the desert one.
+- tools/temple_dressing.py applies it to the shipped maps. The sanctum's
+  breach only turns plain floor into the Astral Sea, so columns 31-34 stay
+  bare (`KEEP_CLEAR_COLS`) and a test pins it. Worth knowing for any later
+  floor dressing: runtime terrain changes (the breach, Phlegethos's
+  corruption waves, the trio's churn) only act on plain floor characters, and
+  a prop drawn on a tile does not go away when its terrain changes.
 - Chult's jungle floor is dressed on all five maps. Ferns (walked through)
   and dead-leaf litter (flat) are scattered over open ground; fallen logs
   three tiles long and ruin fragments from the temple's builders -- a carved

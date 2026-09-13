@@ -172,6 +172,21 @@ _SPRITES = {
         "objects/temple_column_1.png",
         "objects/temple_column_2.png",
     ),
+    # The temple's damage and leftovers (tools/temple_dressing.py).
+    "temple_floor_crack": tuple(
+        f"objects/temple_floor_crack_{i + 1}.png" for i in range(3)),
+    "temple_missing_slabs": tuple(
+        f"objects/temple_missing_slabs_{i + 1}.png" for i in range(2)),
+    "temple_moss": tuple(f"objects/temple_moss_{i + 1}.png" for i in range(3)),
+    "temple_bones": tuple(
+        f"objects/temple_bones_{i + 1}.png" for i in range(3)),
+    "temple_wall_carving": tuple(
+        f"objects/temple_wall_carving_{i + 1}.png" for i in range(3)),
+    "temple_toppled_pillar": tuple(
+        f"objects/temple_toppled_pillar_{i + 1}.png" for i in range(3)),
+    "temple_pillar_stump": tuple(
+        f"objects/temple_pillar_stump_{i + 1}.png" for i in range(3)),
+    "temple_grand_arch": "objects/temple_grand_arch.png",
     "temple_rubble_block": tuple(
         f"objects/temple_rubble_block_{i + 1}.png" for i in range(12)
     ),
@@ -438,6 +453,14 @@ MUTE_PROPS: frozenset[str] = frozenset({
     "chult_fallen_log",
     "chult_ruin_fragment",
     "chult_great_tree",
+    "temple_floor_crack",
+    "temple_missing_slabs",
+    "temple_moss",
+    "temple_bones",
+    "temple_wall_carving",
+    "temple_toppled_pillar",
+    "temple_pillar_stump",
+    "temple_grand_arch",
 })
 
 # Props that lie flat on the ground: drawn under everybody, never sorted.
@@ -446,6 +469,10 @@ FLOOR_PROPS: frozenset[str] = frozenset({
     "ship_rope_coil",
     "tavern_rug",
     "chult_leaf_litter",
+    "temple_floor_crack",
+    "temple_missing_slabs",
+    "temple_moss",
+    "temple_bones",
 })
 
 # Kinds that share another kind's examine line rather than having their
@@ -507,6 +534,7 @@ SEE_THROUGH_PROPS: dict[str, int] = {
     "waterdeep_docked_ship": 36,
     "cloud_tower_arch": 24,
     "desert_ruin_arch": 10,
+    "temple_grand_arch": 10,
     "castle_turret": 12,
     "tahuya_cabin": 78,
 }

@@ -108,11 +108,11 @@ def _solid(char: str) -> bool:
 
 def reachable(grid: list[list[str]]) -> set[tuple[int, int]]:
     """Every walkable tile connected to the largest walkable region."""
-    height, width = len(grid), len(grid[0])
+    height = len(grid)
     seen: set[tuple[int, int]] = set()
     best: set[tuple[int, int]] = set()
     for row in range(height):
-        for col in range(width):
+        for col in range(len(grid[row])):
             if (col, row) in seen or _solid(grid[row][col]):
                 continue
             region = {(col, row)}
@@ -121,7 +121,7 @@ def reachable(grid: list[list[str]]) -> set[tuple[int, int]]:
             while queue:
                 x, y = queue.popleft()
                 for nx, ny in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
-                    if 0 <= nx < width and 0 <= ny < height \
+                    if 0 <= ny < height and 0 <= nx < len(grid[ny]) \
                             and (nx, ny) not in seen \
                             and not _solid(grid[ny][nx]):
                         seen.add((nx, ny))
