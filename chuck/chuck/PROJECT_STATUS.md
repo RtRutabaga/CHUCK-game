@@ -27,6 +27,14 @@ and updated every session.
 
 ## Latest implementation
 
+- The exterior deck's bowsprit no longer fades when anyone is near it. It
+  hangs out over the sea where nobody can walk under it, so thinning it only
+  ever made the ship's prow flicker; it is out of `SEE_THROUGH_PROPS`.
+- A hatch grating lies in the middle of the deck, centred between the two
+  masts: a thick plank frame round a lattice of crossed battens with the dark
+  of the hold showing through each square, seven tiles by three, flat and
+  walked over (a floor prop like the captain's rug). It has an examine line
+  ("Down through the gaps, the hold smells of bilge and rope.").
 - The return-to-Waterdeep cutscene now lands Chuck on the dock he actually
   arrives on. Its quay was drawn as grey cut stone; the fade clears onto the
   plank beside Bobert's barrel, so the quay is now tiled from the midday docks

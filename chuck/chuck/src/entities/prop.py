@@ -54,6 +54,7 @@ _SPRITES = {
     "ship_stew_pot": "objects/ship_stew_pot.png",
     "ship_rope_coil": "objects/ship_rope_coil.png",
     "ship_cargo_stack": "objects/ship_cargo_stack.png",
+    "ship_deck_grating": "objects/ship_deck_grating.png",
     "chimney": "objects/chimney.png",
     "sewer_grate": "objects/sewer_grate.png",
     "house_door": "objects/house_door.png",
@@ -524,6 +525,7 @@ MUTE_PROPS: frozenset[str] = frozenset({
 FLOOR_PROPS: frozenset[str] = frozenset({
     "ship_captain_rug",
     "ship_rope_coil",
+    "ship_deck_grating",
     "tavern_rug",
     "chult_leaf_litter",
     "temple_floor_crack",
@@ -592,7 +594,6 @@ SEE_THROUGH_PROPS: dict[str, int] = {
     "feywild_great_tree": SEE_THROUGH_SOLID_BASE,
     "chult_great_tree": SEE_THROUGH_SOLID_BASE,
     "ship_mast_sail": 18,
-    "ship_bowsprit": 0,
     "sailing_cog": 36,
     "waterdeep_docked_ship": 36,
     "cloud_tower_arch": 24,

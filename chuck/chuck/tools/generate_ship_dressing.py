@@ -227,6 +227,50 @@ def cargo_stack() -> Image.Image:
     return image
 
 
+def deck_grating() -> Image.Image:
+    """A hatch grating let into the deck between the masts.
+
+    A thick frame of planks round a lattice of crossed battens, with the
+    dark of the hold showing through every square. Flat on the deck and
+    walked over; seen at the same slight angle as the planks, so the
+    frame's far edge catches the light and its near edge is in shadow.
+    """
+    width, height = 112, 44
+    image = Image.new("RGBA", (width, height), TRANSPARENT)
+    draw = ImageDraw.Draw(image)
+    hold = (26, 18, 14, 255)
+    hold_deep = (14, 10, 8, 255)
+    # The frame: outline, then planks, lit along the far side.
+    draw.rectangle((0, 0, width - 1, height - 1), fill=DARK)
+    draw.rectangle((1, 1, width - 2, height - 2), fill=WOOD)
+    draw.rectangle((1, 1, width - 2, 4), fill=WOOD_LIGHT)
+    draw.line((2, 1, width - 3, 1), fill=WOOD_PALE)
+    draw.rectangle((1, height - 5, width - 2, height - 2), fill=WOOD_DARK)
+    draw.rectangle((1, 1, 4, height - 2), fill=WOOD_LIGHT)
+    draw.rectangle((width - 5, 1, width - 2, height - 2), fill=WOOD_DARK)
+    # Grain along the frame.
+    for x in range(8, width - 8, 13):
+        draw.line((x, 2, x + 5, 2), fill=WOOD)
+        draw.line((x + 4, height - 3, x + 9, height - 3), fill=DARK)
+    # The lattice: square holes in a grid of battens.
+    left, top = 6, 6
+    right, bottom = width - 7, height - 7
+    draw.rectangle((left, top, right, bottom), fill=WOOD)
+    hole, batten = 4, 2
+    step = hole + batten
+    for y in range(top + 1, bottom - hole + 2, step):
+        for x in range(left + 1, right - hole + 2, step):
+            draw.rectangle((x, y, x + hole - 1, y + hole - 1), fill=hold)
+            # Deeper at the bottom of each hole, where the batten above
+            # shades it.
+            draw.line((x, y, x + hole - 1, y), fill=hold_deep)
+            # The lit top edge of the batten below the hole.
+            draw.line((x, y + hole, x + hole - 1, y + hole), fill=WOOD_LIGHT)
+    draw.line((left, top - 1, right, top - 1), fill=DARK)
+    draw.line((left, bottom + 1, right, bottom + 1), fill=WOOD_LIGHT)
+    return image
+
+
 SPRITES = {
     "ship_bookshelf": bookshelf,
     "ship_writing_desk": writing_desk,
@@ -234,6 +278,7 @@ SPRITES = {
     "ship_stew_pot": stew_pot,
     "ship_rope_coil": rope_coil,
     "ship_cargo_stack": cargo_stack,
+    "ship_deck_grating": deck_grating,
 }
 
 

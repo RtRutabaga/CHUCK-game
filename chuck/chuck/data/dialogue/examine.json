@@ -150,5 +150,6 @@
   "examine_city_neon_24h": ["A neon sign that says 24H."],
   "examine_city_steam_grate": ["A grate breathing steam. Warm, at least."],
   "examine_sewer_pipe": ["An outflow pipe, dribbling something grey-green."],
-  "examine_sewer_graffiti": ["A tag nobody else can read."]
+  "examine_sewer_graffiti": ["A tag nobody else can read."],
+  "examine_ship_deck_grating": ["A deck grating. Down through the gaps, the hold smells of bilge and rope."]
 }

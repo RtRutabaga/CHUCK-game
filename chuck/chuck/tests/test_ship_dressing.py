@@ -83,3 +83,22 @@ def test_the_dressing_answers_e_and_the_rope_lies_flat() -> None:
         assert prop.floor_layer == (kind == "ship_rope_coil"), kind
     assert not next(t for t in TILE_DEFS.values()
                     if t.prop == "ship_rope_coil").solid
+
+
+def test_a_grating_lies_between_the_masts_and_the_bowsprit_never_fades() -> None:
+    from src.entities.prop import FLOOR_PROPS, SEE_THROUGH_PROPS
+    from src.world.tilemap import TileMap
+
+    tilemap = TileMap(config.MAPS_DIR / "ship_exterior_deck.txt")
+    masts = sorted(col for kind, col, row in tilemap.prop_tiles
+                   if kind == "ship_mast_sail")
+    gratings = [(col, row) for kind, col, row in tilemap.prop_tiles
+                if kind == "ship_deck_grating"]
+    assert len(gratings) == 1
+    col, row = gratings[0]
+    assert abs((masts[0] + masts[1]) / 2 - (col + 0.5)) <= 1
+    assert not tilemap.is_solid(col, row)
+    assert "ship_deck_grating" in FLOOR_PROPS
+    _answers_e({"ship_deck_grating"})
+    # Nobody walks under the bowsprit -- it hangs out over the sea.
+    assert "ship_bowsprit" not in SEE_THROUGH_PROPS

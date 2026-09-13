@@ -933,6 +933,10 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="ship_rope_coil", under="="),
     "ꝝ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="ship_cargo_stack", under="="),
+    # The hatch grating between the exterior deck's masts: flat, walked
+    # over, seven tiles by three drawn up from the middle of its near edge.
+    "ꜫ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_deck_grating", under="="),
     # Lower-hold reuse of the pantry's carton-filled breakable shelves/jars,
     # with ship planks beneath instead of pantry boards.
     "ƞ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
