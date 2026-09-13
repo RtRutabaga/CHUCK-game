@@ -44,7 +44,7 @@ from src.entities.pickup import Cigarette
 from src.entities.pirate_chef import PirateChef
 from src.entities.pirate_npc import PirateNPC
 from src.entities.player import Player
-from src.entities.prop import Prop
+from src.entities.prop import Prop, midday_variant
 from src.entities.rat import SewerRat
 from src.entities.raccoon import Raccoon
 from src.entities.raptor import Raptor
@@ -431,6 +431,11 @@ class WorldScene(Scene):
                     # than authoring two characters keeps the night and
                     # day maps directly comparable, tile for tile.
                     kind = "city_streetlight_lit"
+                elif self._waterdeep_midday:
+                    # Waterdeep is one map in two lights, like its tileset:
+                    # pier wood and water tints to match the midday sheet,
+                    # and the lamps out.
+                    kind = midday_variant(kind)
                 prop = Prop(kind, col, row, self.game.assets)
             self.props.append(prop)
         self.pickups: list[Cigarette] = []
@@ -1956,6 +1961,11 @@ class WorldScene(Scene):
             if hit is not None:
                 self.horde.kill(hit)
                 shot.alive = False
+
+    @property
+    def _waterdeep_midday(self) -> bool:
+        return (self.map_name in {"waterdeep_docks", "waterdeep_plaza"}
+                and self.game.progress.has(WATERDEEP_RETURN_FLAG))
 
     @property
     def after_dark(self) -> bool:

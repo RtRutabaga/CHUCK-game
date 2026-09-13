@@ -27,6 +27,39 @@ and updated every session.
 
 ## Latest implementation
 
+- Waterdeep's harbour is dressed, drawn to the camera's vantage (south of
+  everything, above it, looking north). The rules, written out in
+  tools/generate_waterdeep_harbour.py: tops are seen; south faces are seen
+  and north faces never are; east and west faces are edges; anything flat
+  against a wall faces us; anything strung between two points sags down the
+  screen.
+- The piers finally stand above the water. Their edges are derived from the
+  map, never authored: water with planks north of it shows the pier's front
+  (plank ends, the shade under the deck, a piling, the waterline); water with
+  planks west of it shows the deck's shadow; both shows both; a north-west
+  corner shows the corner of shade. North and west sides of a pier get
+  nothing, because those faces point away from us or along our view.
+- Mooring posts on south edges (above the face) and west edges (toward the
+  water), never north or east. One rowboat off the west pier, seen from
+  above -- inside planking, thwarts, oars, the painted near hull under the
+  gunwale, no far hull -- lying against the pier face with its line sagging up
+  to the post's foot. Only one: in the finale the docked ship fills the water
+  south of the big pier, the sewer outflow climbs the far pier's face, and the
+  fisherman casts into the basin.
+- Street lamps on the stone (five on the docks, four in the plaza), lit with
+  a warm glow in the opening's evening and out at midday. Shop signs hung flat
+  to the facade on a short bracket (bread, fish and barrel on the docks'
+  houses; anvil and potion beside the plaza's shop doors) and window boxes on
+  every house, tavern and shop window. Washing lines strung across the two
+  alleys between the north houses at eave height, fading when Chuck is under
+  them.
+- Kinds with a `_midday` twin swap to it on the return (`midday_variant` in
+  prop.py, applied at spawn for the docks and plaza), so pier wood and water
+  tints match the midday tileset. tools/waterdeep_harbour_dressing.py applies
+  the docks; the plaza's pieces are in its generator. Every solid piece is
+  checked against the walkable area. The pier pieces are mute; the rest have
+  examine lines. Two old docks tests now read the facade under signs and
+  window boxes.
 - The fountain plaza's four watch banners hang on the wall now. They were
   stood on the first row of paving and drawn up from there, so their hems
   hung below the wall's foot into the square; they are set in the wall's

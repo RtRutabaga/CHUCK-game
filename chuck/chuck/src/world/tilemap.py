@@ -265,6 +265,42 @@ TILE_DEFS: dict[str, TileDef] = {
     # Invisible footprint tiles keep the fountain's broad bowl solid while
     # drawing the same paving as the rest of the square beneath it.
     "⊠": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER, under=","),
+    # Waterdeep's harbour (tools/waterdeep_harbour_dressing.py). The pier's
+    # faces, shadows and corners lie on water, which stays water; posts
+    # stand on edge planks; boats float; lamps stand on stone; signs and
+    # window boxes are on the facade; washing lines are overhead.
+    "ꜭ": TileDef(solid=True, color=config.COLOR_WATER_PLACEHOLDER,
+                 prop="pier_face", under="~"),
+    "ꜯ": TileDef(solid=True, color=config.COLOR_WATER_PLACEHOLDER,
+                 prop="pier_face_shadow", under="~"),
+    "ꜱ": TileDef(solid=True, color=config.COLOR_WATER_PLACEHOLDER,
+                 prop="pier_shadow", under="~"),
+    "ꜳ": TileDef(solid=True, color=config.COLOR_WATER_PLACEHOLDER,
+                 prop="pier_corner", under="~"),
+    "ꜵ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="harbour_bollard", under="="),
+    "ꜷ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="harbour_bollard_west", under="="),
+    "ꜹ": TileDef(solid=True, color=config.COLOR_WATER_PLACEHOLDER,
+                 prop="harbour_rowboat", under="~"),
+    "ꜻ": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="waterdeep_lamp", under=","),
+    "ꜽ": TileDef(solid=True, color=config.COLOR_TAVERN_WALL,
+                 prop="shop_sign_bread", under="t"),
+    "ꜿ": TileDef(solid=True, color=config.COLOR_TAVERN_WALL,
+                 prop="shop_sign_fish", under="t"),
+    "ꝁ": TileDef(solid=True, color=config.COLOR_TAVERN_WALL,
+                 prop="shop_sign_barrel", under="t"),
+    "ꝉ": TileDef(solid=True, color=config.COLOR_TAVERN_WALL,
+                 prop="shop_sign_anvil", under="t"),
+    "ꝋ": TileDef(solid=True, color=config.COLOR_TAVERN_WALL,
+                 prop="shop_sign_potion", under="t"),
+    "ꝃ": TileDef(solid=True, color=config.COLOR_TAVERN_WALL,
+                 prop="window_box", under="W"),
+    "ꝅ": TileDef(solid=False, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="washing_line_6", under=","),
+    "ꝇ": TileDef(solid=False, color=config.COLOR_STONE_PLACEHOLDER,
+                 prop="washing_line_4", under=","),
     # The plaza's gate towers and banners, on the paving in front of the
     # district wall and drawn up over it.
     "ꝟ": TileDef(solid=True, color=config.COLOR_STONE_PLACEHOLDER,

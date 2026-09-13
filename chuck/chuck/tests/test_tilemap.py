@@ -12,7 +12,7 @@ import tempfile
 from pathlib import Path
 
 from src.core import config
-from src.world.tilemap import TileMap
+from src.world.tilemap import TILE_DEFS, TileMap
 
 TS = config.TILE_SIZE
 
@@ -151,6 +151,17 @@ def test_docks_has_the_tavern_front() -> None:
     assert any("a" in row for row in m._grid)
 
 
+def _facade(m, col, row):
+    """The facade under any sign or window box hung on it."""
+    char = m.terrain_at(col, row)
+    tile = TILE_DEFS.get(char)
+    if tile is not None and tile.prop in {
+            "window_box", "shop_sign_bread", "shop_sign_fish",
+            "shop_sign_barrel"}:
+        return tile.under
+    return char
+
+
 def test_docks_tavern_exterior_reads_as_a_building() -> None:
     """Facade-reference reskin: roof above eave above brick facade,
     two lit windows flanking the door, two chimneys, all solid, door
@@ -161,7 +172,7 @@ def test_docks_tavern_exterior_reads_as_a_building() -> None:
     counts = Counter(kind for kind, _, _ in m.prop_tiles)
     assert counts["chimney"] == 5  # 2 tavern + 1 per district house
     windows = [(c, r) for r in range(14, 18)
-               for c in range(34, 56) if m.terrain_at(c, r) == "W"]
+               for c in range(34, 56) if _facade(m, c, r) == "W"]
     assert sorted(windows) == [(40, 16), (48, 16)]  # flanking the door
     # Vertical grammar at the door column: roof, eave, facade, door.
     column = [m.terrain_at(44, r) for r in range(8, 18)]
@@ -219,11 +230,11 @@ def test_docks_district_blocks_are_houses() -> None:
         for c in block:
             assert m.terrain_at(c, 1) in "rm" and m.terrain_at(c, 2) == "r"
             assert m.terrain_at(c, 3) == "e"
-            assert m.terrain_at(c, 4) in "tWh"
+            assert _facade(m, c, 4) in "tWh"
             for r in range(1, 5):
                 assert m.is_solid(c, r), (c, r)
         assert m.terrain_at(door_col, 4) == "h"
-        windows = [c for c in block if m.terrain_at(c, 4) == "W"]
+        windows = [c for c in block if _facade(m, c, 4) == "W"]
         assert len(windows) == 2, (list(block), windows)
 
 

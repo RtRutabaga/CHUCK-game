@@ -22,6 +22,12 @@ HEIGHT = 34
 # bit tall, and a wall shorter than the gate is not a wall it is in.
 NORTH_WALL_ROWS = 4
 GATE_TOWER_COLS = (19, 29)
+# The same street furniture as the docks (tools/waterdeep_harbour_dressing
+# .py): lamps flanking the fountain and the shop corners, a sign flat on the
+# wall beside each shop door, and a box under every shop window.
+PLAZA_LAMPS = ((19, 17), (29, 17), (16, 13), (32, 13))
+SHOP_SIGNS = ((9, 11, "ꝉ"), (38, 11, "ꝋ"))
+SHOP_WINDOW_BOXES = ((5, 11), (12, 11), (35, 11), (42, 11))
 WALL_BANNER_COLS = (10, 15, 33, 38)
 
 
@@ -338,6 +344,15 @@ def build_map() -> list[str]:
         grid[29][col] = char
 
     _dress(grid)
+    for col, row in PLAZA_LAMPS:
+        assert grid[row][col] == ",", (col, row, grid[row][col])
+        grid[row][col] = "ꜻ"
+    for col, row, char in SHOP_SIGNS:
+        assert grid[row][col] == "t", (col, row, grid[row][col])
+        grid[row][col] = char
+    for col, row in SHOP_WINDOW_BOXES:
+        assert grid[row][col] == "W", (col, row, grid[row][col])
+        grid[row][col] = "ꝃ"
 
     rows = ["".join(row) for row in grid]
     assert len(rows) == HEIGHT and {len(row) for row in rows} == {WIDTH}

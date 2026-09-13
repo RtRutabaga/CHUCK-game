@@ -137,6 +137,31 @@ _SPRITES = {
     # A square tower either side of the gate, a tile proud of the wall,
     # and the watch's banners along it.
     "waterdeep_gate_tower": "objects/waterdeep_gate_tower.png",
+    # The harbour, drawn to the vantage (tools/generate_waterdeep_harbour.py
+    # explains what each piece shows and hides). Kinds with a _midday twin
+    # swap to it on the return; see midday_variant().
+    "pier_face": "objects/pier_face.png",
+    "pier_face_midday": "objects/pier_face_midday.png",
+    "pier_face_shadow": "objects/pier_face_shadow.png",
+    "pier_face_shadow_midday": "objects/pier_face_shadow_midday.png",
+    "pier_shadow": "objects/pier_shadow.png",
+    "pier_shadow_midday": "objects/pier_shadow_midday.png",
+    "pier_corner": "objects/pier_corner.png",
+    "pier_corner_midday": "objects/pier_corner_midday.png",
+    "harbour_bollard": "objects/harbour_bollard.png",
+    "harbour_bollard_west": "objects/harbour_bollard_west.png",
+    "harbour_rowboat": "objects/harbour_rowboat.png",
+    "harbour_rowboat_midday": "objects/harbour_rowboat_midday.png",
+    "waterdeep_lamp": "objects/waterdeep_lamp.png",
+    "waterdeep_lamp_midday": "objects/waterdeep_lamp_midday.png",
+    "shop_sign_bread": "objects/shop_sign_bread.png",
+    "shop_sign_fish": "objects/shop_sign_fish.png",
+    "shop_sign_barrel": "objects/shop_sign_barrel.png",
+    "shop_sign_anvil": "objects/shop_sign_anvil.png",
+    "shop_sign_potion": "objects/shop_sign_potion.png",
+    "window_box": tuple(f"objects/window_box_{i + 1}.png" for i in range(3)),
+    "washing_line_6": "objects/washing_line_6.png",
+    "washing_line_4": "objects/washing_line_4.png",
     "waterdeep_banner": "objects/waterdeep_banner_1.png",
     "tavern_keg_rack": "objects/tavern_keg_rack.png",
     "tavern_notice_board": "objects/tavern_notice_board.png",
@@ -504,12 +529,22 @@ PROP_CHOICE = {
     "sewer_grate": "sewer_grate",
 }
 
+def midday_variant(kind: str) -> str:
+    """The return-to-Waterdeep twin of a kind, or the kind itself."""
+    twin = f"{kind}_midday"
+    return twin if twin in _SPRITES else kind
+
+
 # Ground scatter that stays mute. Ferns, leaf litter, cracks, moss, loose
 # bones, ember cracks, path-edge stones and lily pads are laid down by the
 # dozen, and a line on each would put an E prompt under every other step
 # and crowd out the things that have something to say. Everything else
 # answers E like any other prop.
 MUTE_PROPS: frozenset[str] = frozenset({
+    # The pier's faces and shadows are the pier, not things on it.
+    "pier_face", "pier_face_midday", "pier_face_shadow",
+    "pier_face_shadow_midday", "pier_shadow", "pier_shadow_midday",
+    "pier_corner", "pier_corner_midday",
     "chult_fern",
     "chult_leaf_litter",
     "temple_floor_crack",
@@ -526,6 +561,9 @@ FLOOR_PROPS: frozenset[str] = frozenset({
     "ship_captain_rug",
     "ship_rope_coil",
     "ship_deck_grating",
+    "pier_face", "pier_face_midday", "pier_face_shadow",
+    "pier_face_shadow_midday", "pier_shadow", "pier_shadow_midday",
+    "pier_corner", "pier_corner_midday",
     "tavern_rug",
     "chult_leaf_litter",
     "temple_floor_crack",
@@ -549,6 +587,12 @@ EXAMINE_ALIAS = {
     # The same lantern in two lights.
     "fey_lantern_teal": "fey_lantern",
     "fey_lantern_violet": "fey_lantern",
+    # The same things at midday.
+    "harbour_rowboat_midday": "harbour_rowboat",
+    "waterdeep_lamp_midday": "waterdeep_lamp",
+    "harbour_bollard_west": "harbour_bollard",
+    "washing_line_4": "washing_line",
+    "washing_line_6": "washing_line",
 }
 
 
@@ -600,6 +644,8 @@ SEE_THROUGH_PROPS: dict[str, int] = {
     "desert_ruin_arch": 10,
     "temple_grand_arch": 10,
     "desert_ribcage": 12,
+    "washing_line_6": 0,
+    "washing_line_4": 0,
     "castle_turret": 12,
     "tahuya_cabin": 78,
 }

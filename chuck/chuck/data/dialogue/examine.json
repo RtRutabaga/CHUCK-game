@@ -151,5 +151,16 @@
   "examine_city_steam_grate": ["A grate breathing steam. Warm, at least."],
   "examine_sewer_pipe": ["An outflow pipe, dribbling something grey-green."],
   "examine_sewer_graffiti": ["A tag nobody else can read."],
-  "examine_ship_deck_grating": ["A deck grating. Down through the gaps, the hold smells of bilge and rope."]
+  "examine_ship_deck_grating": ["A deck grating. Down through the gaps, the hold smells of bilge and rope."],
+
+  "examine_harbour_bollard": ["A mooring post, rope worn into it. Too solid to scratch at."],
+  "examine_harbour_rowboat": ["A rowboat, tied up. Somebody's going fishing later, or wishes they were."],
+  "examine_waterdeep_lamp": ["A street lamp."],
+  "examine_shop_sign_bread": ["A baker's sign. The smell got here first."],
+  "examine_shop_sign_fish": ["A fishmonger's sign. The smell got here first."],
+  "examine_shop_sign_barrel": ["A cooper's sign. Barrels made while you wait. Not while a rat waits."],
+  "examine_shop_sign_anvil": ["The smith's sign."],
+  "examine_shop_sign_potion": ["The alchemist's sign. The bottle on it is a colour nothing should be."],
+  "examine_window_box": ["A window box. Somebody waters these."],
+  "examine_washing_line": ["Washing on a line. It's never going to dry in this harbour air."]
 }
