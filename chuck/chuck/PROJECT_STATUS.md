@@ -27,6 +27,26 @@ and updated every session.
 
 ## Latest implementation
 
+- New Game opens on a cutscene: Chuck wakes up on the Waterdeep docks beside
+  Bobert. The same low quayside vantage as the return-to-Waterdeep cutscene,
+  built to rhyme with it -- the mooring posts along the quay edge, the rowboat
+  tied up on the water beyond, a lit street lamp -- but in the opening docks'
+  evening: the night sheet's planks and navy water with its star flecks,
+  under a dusk sky going from indigo to a low warm glow, the first stars and
+  a late gull. About seventeen and a half seconds: fade in from black on
+  Bobert snoring in his barrel and Chuck curled asleep against it (a new
+  two-frame breathing sprite, chuck/chuck_asleep.png, from
+  generate_chuck_sprites.py; chuck.png is unchanged), Z's drifting off both
+  of them; Chuck twitches, gets up facing us, looks left, looks right, turns
+  side-on and lights a cigarette (lighter sfx, flame, then the ember and
+  smoke); fade to black. The docks music starts under it and carries into
+  the game. Interact skips to the fade.
+- The fade hands to a fresh game on the docks, which fades up out of the same
+  black. Waterdeep 1 now puts Chuck facing left, the pose the cutscene ends
+  on; the fade up is added by the cutscene rather than the checkpoint, so
+  development loads and tests are not held in a fade. The two title tests
+  that expected New Game to land straight in the world now play the
+  cutscene through first.
 - The docks lamp that stood in the mouth of the west district-wall gate moved
   one tile north-west, from (21, 11) to (20, 10), beside the gate's pillar; a
   test now keeps lamps out of gate mouths.

@@ -79,6 +79,16 @@ def test_missing_invalid_and_outdated_saves_are_graceful() -> None:
         directory.cleanup()
 
 
+def _play_through_opening(game) -> None:
+    """New Game opens on the wake-up cutscene; run it to its hand-off."""
+    from src.scenes.opening_cutscene_scene import OpeningCutsceneScene
+
+    scene = game.scenes.current
+    assert isinstance(scene, OpeningCutsceneScene)
+    while game.scenes.current is scene:
+        scene.update(0.25)
+
+
 def test_title_without_save_disables_continue_and_new_game_uses_loader() -> None:
     directory, path = _temp_save()
     game = Game(save_path=path)
@@ -97,6 +107,8 @@ def test_title_without_save_disables_continue_and_new_game_uses_loader() -> None
         )
         title._selected = 0
         title._choose()
+        assert calls == [], "the opening cutscene plays before the loader"
+        _play_through_opening(game)
         scene = game.scenes.current
         assert calls == [(OPENING_CHECKPOINT_ID,
                           {"cigarettes": 0, "deaths": 0})]
@@ -118,6 +130,7 @@ def test_new_game_clears_an_existing_save_slot() -> None:
         assert title.continue_available
         title._selected = 0
         title._choose()
+        _play_through_opening(game)
         assert not path.exists()
         assert game.active_checkpoint_id == OPENING_CHECKPOINT_ID
         assert game.progress.flags == set()

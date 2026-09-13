@@ -159,7 +159,10 @@ class TitleScene(Scene):
             return
         self.game.audio.play_sfx("interact")
         if self._selected == 0:
-            self.game.checkpoints.new_game()
+            # A new game opens on Chuck waking up beside Bobert; the
+            # cutscene starts the game itself when it fades out.
+            from src.scenes.opening_cutscene_scene import OpeningCutsceneScene
+            self.game.scenes.replace(OpeningCutsceneScene(self.game))
         elif self._selected == 1:
             self.game.checkpoints.continue_game()
         else:

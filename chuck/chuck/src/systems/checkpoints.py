@@ -83,8 +83,12 @@ class CheckpointDefinition:
 
 CHECKPOINTS = (
     CheckpointDefinition(
+        # Facing left: the opening cutscene ends on Chuck standing beside
+        # Bobert's barrel in profile with a cigarette, and the docks come
+        # up on the same pose. (The cutscene adds the fade up itself, so a
+        # direct load from the development menu is not held in a fade.)
         "waterdeep_start", "Waterdeep 1", "waterdeep_docks",
-        facing="down", runtime_entry=True,
+        facing="left", runtime_entry=True,
     ),
     CheckpointDefinition(
         "waterdeep_anchor", "Waterdeep Ashtray", "waterdeep_docks",

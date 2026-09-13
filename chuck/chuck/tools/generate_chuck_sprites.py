@@ -215,6 +215,36 @@ NAMES = [
 ]
 
 
+# Asleep, for the opening cutscene: curled on his side against Bobert's
+# barrel, head to the left, eyes shut, jacket rucked up, tail wrapped
+# round under him. Two frames of breathing -- the jacket rises and falls.
+ASLEEP_W, ASLEEP_H = 16, 9
+
+ASLEEP_IN = """
+................
+.DD.............
+.DGGG..PPPPP....
+GGGGGGPPPPPPPP..
+NGEEGGPPBBBPPPP.
+.GGGGPPPBBBBPPP.
+..DDPPPpppppPPT.
+...TTTTTTTTTTT..
+................
+"""
+
+ASLEEP_OUT = """
+................
+.DD.............
+.DGGG...........
+GGGGGGPPPPPPPP..
+NGEEGGPPBBBPPPP.
+.GGGGPPPBBBBPPP.
+..DDPPPpppppPPT.
+...TTTTTTTTTTT..
+................
+"""
+
+
 def main() -> None:
     out = (
         Path(__file__).resolve().parents[1]
@@ -223,6 +253,10 @@ def main() -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     render_sheet(SHEET, NAMES, FRAME_W, FRAME_H, PALETTE).save(out)
     print(f"Wrote {out}")
+    asleep = out.with_name("chuck_asleep.png")
+    render_sheet([[ASLEEP_IN, ASLEEP_OUT]], [["asleep_in", "asleep_out"]],
+                 ASLEEP_W, ASLEEP_H, PALETTE).save(asleep)
+    print(f"Wrote {asleep}")
 
 
 if __name__ == "__main__":
