@@ -198,6 +198,17 @@ _SPRITES = {
         f"objects/phlegethos_rubble_{i + 1}.png" for i in range(10)
     ),
     "phlegethos_lava_fall": "objects/phlegethos_lava_fall.png",
+    # Hell's leftovers (tools/phlegethos_dressing.py), and the fortress's
+    # towers and banners.
+    "phlegethos_ember_crack": tuple(
+        f"objects/phlegethos_ember_crack_{i + 1}.png" for i in range(3)),
+    "phlegethos_vent": "objects/phlegethos_vent_1.png",
+    "phlegethos_bone_heap": tuple(
+        f"objects/phlegethos_bone_heap_{i + 1}.png" for i in range(3)),
+    "phlegethos_iron_spikes": tuple(
+        f"objects/phlegethos_iron_spikes_{i + 1}.png" for i in range(3)),
+    "phlegethos_fortress_tower": "objects/phlegethos_fortress_tower.png",
+    "phlegethos_banner": "objects/phlegethos_banner_1.png",
     # Chult's rounded tree/shrub silhouettes, washed with a subtle violet
     # sheen, plus one deliberately ordinary oak so the region reads as a
     # wood rather than a field of blocks (Phase 9 vegetation pass).
@@ -389,6 +400,12 @@ _ANIMATED_SPRITES = {
     "waterdeep_banner": tuple(
         f"objects/waterdeep_banner_{index + 1}.png" for index in range(4)
     ),
+    "phlegethos_banner": tuple(
+        f"objects/phlegethos_banner_{index + 1}.png" for index in range(4)
+    ),
+    "phlegethos_vent": tuple(
+        f"objects/phlegethos_vent_{index + 1}.png" for index in range(6)
+    ),
 }
 _PROP_FRAME_TIME = 0.14
 # Props whose animation runs at its own pace. A lava lamp shares nothing
@@ -397,6 +414,8 @@ _PROP_FRAME_TIME = 0.14
 _PROP_FRAME_TIMES = {
     "cabin_lava_lamp": 1.6,
     "waterdeep_fountain": 0.24,
+    # Smoke is slow.
+    "phlegethos_vent": 0.22,
 }
 
 # Props that respond to the interact key with a line of dialogue
@@ -461,6 +480,12 @@ MUTE_PROPS: frozenset[str] = frozenset({
     "temple_toppled_pillar",
     "temple_pillar_stump",
     "temple_grand_arch",
+    "phlegethos_ember_crack",
+    "phlegethos_vent",
+    "phlegethos_bone_heap",
+    "phlegethos_iron_spikes",
+    "phlegethos_fortress_tower",
+    "phlegethos_banner",
 })
 
 # Props that lie flat on the ground: drawn under everybody, never sorted.
@@ -473,6 +498,7 @@ FLOOR_PROPS: frozenset[str] = frozenset({
     "temple_missing_slabs",
     "temple_moss",
     "temple_bones",
+    "phlegethos_ember_crack",
 })
 
 # Kinds that share another kind's examine line rather than having their

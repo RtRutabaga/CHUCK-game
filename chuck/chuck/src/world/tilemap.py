@@ -669,6 +669,21 @@ TILE_DEFS: dict[str, TileDef] = {
     # molten terrain beneath a tall cliff-face prop.
     "þ": TileDef(solid=True, color=(38, 32, 36),
                  prop="phlegethos_rubble", under="·"),
+    # Hell's leftovers (tools/phlegethos_dressing.py): ember cracks lie
+    # flat, vents are walked past, bone heaps and spikes are solid; the
+    # fortress's towers and banners stand on the row under its wall.
+    "Ɜ": TileDef(solid=False, color=(58, 35, 30),
+                 prop="phlegethos_ember_crack", under="·"),
+    "ꞵ": TileDef(solid=False, color=(58, 35, 30),
+                 prop="phlegethos_vent", under="·"),
+    "ꞷ": TileDef(solid=True, color=(58, 35, 30),
+                 prop="phlegethos_bone_heap", under="·"),
+    "ꞹ": TileDef(solid=True, color=(58, 35, 30),
+                 prop="phlegethos_iron_spikes", under="·"),
+    "ꞻ": TileDef(solid=True, color=(44, 40, 46),
+                 prop="phlegethos_fortress_tower", under="·"),
+    "ꞽ": TileDef(solid=True, color=(44, 40, 46),
+                 prop="phlegethos_banner", under="·"),
     "ƒ": TileDef(solid=True, color=(178, 45, 12),
                  prop="phlegethos_lava_fall", under="≋"),
     # A whole modern bus shelter displaced into Phlegethos. Its one solid

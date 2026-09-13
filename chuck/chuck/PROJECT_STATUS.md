@@ -27,6 +27,21 @@ and updated every session.
 
 ## Latest implementation
 
+- Phlegethos has things lying about in it. On the arrival, the lava road, the
+  lava lake, the rubble pass and the fractured way: glowing ember cracks
+  (flat), vents breathing a slow column of smoke (walked past, animated, drawn
+  as a ragged split rather than a ring so they never read as an eye), bone
+  heaps and clusters of rusted iron spikes (solid, each kept only if every
+  reachable tile stays reachable). Nothing goes within a tile of lava, a
+  fissure, the path, a marker or a prop, and the lava lake gets no solid
+  pieces at all.
+- The fortress approach gets towers and banners instead: two square towers of
+  the fortress wall's iron-black brick with ember glints, spiked merlons and
+  red-lit slits, and four black-and-ember banners, all on the open row under
+  the wall, symmetric about the gate. Its floor stays plain because the
+  battle's Astral waves only flood plain basalt. Applied by
+  tools/phlegethos_dressing.py; the banners are the castle banner's animation
+  in an infernal palette.
 - The jungle temple's four big rooms -- entrance hall, skeleton hall, shrine
   and sanctum -- are dressed with damage and leftovers. Cracks run across
   several slabs, beds of earth show where slabs have gone (kept well short of
