@@ -27,6 +27,21 @@ and updated every session.
 
 ## Latest implementation
 
+- The ship below decks is furnished. The captain's cabin is a study now: two
+  bookcases against the north wall between the portholes and a writing desk
+  in front of them with a chart, inkpot and candle on it, and the hammock is
+  gone -- the captain has a bed. The galley has a black iron stew pot beside
+  the hearth and a butcher block with a cleaver in it; the hold has lashed
+  cargo stacks against both walls and rope coils lying about; the crew
+  quarters get rope; and the exterior deck has crates, barrels, a cargo stack
+  and rope gathered at the foot of each mast. No cannons (it is a medieval
+  ship) and no new chests: the captain's is still the only one aboard, and a
+  test says so.
+- New dressing is mute. `MUTE_PROPS` in src/entities/prop.py lists set
+  dressing added after the examine pass; those props have no E line and are
+  skipped by the interact probe, so none of the tuned examine behaviour
+  changes. `FLOOR_PROPS` generalises the captain's rug: props that lie flat
+  and draw under everyone (the rope coils, walkable).
 - Waterdeep's people have a second word. In both the opening and the finale,
   every townsperson, tavern regular, shopkeeper and the fisherman says their
   usual line the first time Chuck talks to them and a different one every time

@@ -799,6 +799,23 @@ TILE_DEFS: dict[str, TileDef] = {
                  under="="),
     "ṛ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
                  prop="ship_captain_rug", under="="),
+    # Below-decks dressing. The desk is three tiles wide, so it stands on
+    # an anchor and two blank solid tiles either side, like the bed; the
+    # rope coil lies flat and is walked over.
+    "ꝑ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_bookshelf", under="="),
+    "ꝓ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_writing_desk", under="="),
+    "ꝕ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 under="="),
+    "ꝗ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_butcher_block", under="="),
+    "ꝙ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_stew_pot", under="="),
+    "ꝛ": TileDef(solid=False, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_rope_coil", under="="),
+    "ꝝ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,
+                 prop="ship_cargo_stack", under="="),
     # Lower-hold reuse of the pantry's carton-filled breakable shelves/jars,
     # with ship planks beneath instead of pantry boards.
     "ƞ": TileDef(solid=True, color=config.COLOR_PLANK_PLACEHOLDER,

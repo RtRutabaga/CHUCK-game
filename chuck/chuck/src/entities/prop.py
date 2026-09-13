@@ -45,6 +45,15 @@ _SPRITES = {
     "ship_mast_sail": "objects/ship_mast_sail.png",
     "ship_helm": "objects/ship_helm.png",
     "ship_bowsprit": "objects/ship_bowsprit.png",
+    # Below-decks dressing: the captain's study, the galley's working
+    # gear, and the rope and lashed cargo every deck of a ship has lying
+    # about.
+    "ship_bookshelf": "objects/ship_bookshelf.png",
+    "ship_writing_desk": "objects/ship_writing_desk.png",
+    "ship_butcher_block": "objects/ship_butcher_block.png",
+    "ship_stew_pot": "objects/ship_stew_pot.png",
+    "ship_rope_coil": "objects/ship_rope_coil.png",
+    "ship_cargo_stack": "objects/ship_cargo_stack.png",
     "chimney": "objects/chimney.png",
     "sewer_grate": "objects/sewer_grate.png",
     "house_door": "objects/house_door.png",
@@ -384,6 +393,24 @@ PROP_CHOICE = {
     "sewer_grate": "sewer_grate",
 }
 
+# Set dressing that stays mute. Everything placed before the examine pass
+# was written a line for; what came after is there to be looked at, not
+# read, and E stays for the things that have something to say.
+MUTE_PROPS: frozenset[str] = frozenset({
+    "ship_bookshelf",
+    "ship_writing_desk",
+    "ship_butcher_block",
+    "ship_stew_pot",
+    "ship_rope_coil",
+    "ship_cargo_stack",
+})
+
+# Props that lie flat on the ground: drawn under everybody, never sorted.
+FLOOR_PROPS: frozenset[str] = frozenset({
+    "ship_captain_rug",
+    "ship_rope_coil",
+})
+
 # Kinds that share another kind's examine line rather than having their
 # own: the same object in a different state.
 EXAMINE_ALIAS = {
@@ -488,7 +515,7 @@ class Prop:
         self._draw_y = (row + 1) * ts - h
         self._bottom = (row + 1) * ts - PROP_SORT_LIFT.get(kind, 0)
         self._size = (w, h)
-        self.floor_layer = kind == "ship_captain_rug"
+        self.floor_layer = kind in FLOOR_PROPS
         # 0 is solid, 1 is as thin as it gets. Only ever moves for the
         # see-through kinds, which get their own copy of the image so
         # thinning one tree does not thin every tree drawn from it.
@@ -498,7 +525,8 @@ class Prop:
         self._thinned: dict[int, object] = {}
         self.choice_id = PROP_CHOICE.get(kind)
         self.dialogue_id = PROP_DIALOGUE.get(kind) or (
-            None if self.choice_id else examine_line_id(kind)
+            None if self.choice_id or kind in MUTE_PROPS
+            else examine_line_id(kind)
         )
         if self.dialogue_id and self.choice_id:
             raise ValueError(f"{kind}: a prop has a line OR a choice, not both")

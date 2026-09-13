@@ -21,7 +21,7 @@ from src.entities.breakable_urn import BreakableUrn
 from src.entities.captain_chest import CaptainChest
 from src.entities.jar_shelf import PantryJar, PantryJarShelf
 from src.entities.prop import (
-    PROP_CHOICE, PROP_DIALOGUE, _SPRITES, examine_line_id,
+    MUTE_PROPS, PROP_CHOICE, PROP_DIALOGUE, _SPRITES, examine_line_id,
 )
 from src.entities.reactive_flower import ReactiveFlower
 from src.scenes.dialogue_scene import DialogueScene
@@ -31,7 +31,7 @@ from src.systems.dialogue import DialogueSystem
 def test_every_prop_has_something_to_say() -> None:
     dialogue = DialogueSystem()
     for kind in _SPRITES:
-        if kind in PROP_CHOICE:
+        if kind in PROP_CHOICE or kind in MUTE_PROPS:
             continue
         line = PROP_DIALOGUE.get(kind) or examine_line_id(kind)
         assert dialogue.get(line), kind
