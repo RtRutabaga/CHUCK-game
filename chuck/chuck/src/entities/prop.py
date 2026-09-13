@@ -503,59 +503,21 @@ PROP_CHOICE = {
     "sewer_grate": "sewer_grate",
 }
 
-# Set dressing that stays mute. Everything placed before the examine pass
-# was written a line for; what came after is there to be looked at, not
-# read, and E stays for the things that have something to say.
+# Ground scatter that stays mute. Ferns, leaf litter, cracks, moss, loose
+# bones, ember cracks, path-edge stones and lily pads are laid down by the
+# dozen, and a line on each would put an E prompt under every other step
+# and crowd out the things that have something to say. Everything else
+# answers E like any other prop.
 MUTE_PROPS: frozenset[str] = frozenset({
-    "ship_bookshelf",
-    "ship_writing_desk",
-    "ship_butcher_block",
-    "ship_stew_pot",
-    "ship_rope_coil",
-    "ship_cargo_stack",
-    "waterdeep_gate_tower",
-    "waterdeep_banner",
-    "tavern_keg_rack",
-    "tavern_notice_board",
-    "tavern_rug",
-    "pantry_sack_pile",
-    "pantry_produce_basket",
     "chult_fern",
     "chult_leaf_litter",
-    "chult_fallen_log",
-    "chult_ruin_fragment",
-    "chult_great_tree",
     "temple_floor_crack",
     "temple_missing_slabs",
     "temple_moss",
     "temple_bones",
-    "temple_wall_carving",
-    "temple_toppled_pillar",
-    "temple_pillar_stump",
-    "temple_grand_arch",
     "phlegethos_ember_crack",
-    "phlegethos_vent",
-    "phlegethos_bone_heap",
-    "phlegethos_iron_spikes",
-    "phlegethos_fortress_tower",
-    "phlegethos_banner",
-    "fey_lantern_teal",
-    "fey_lantern_violet",
     "fey_path_stones",
     "fen_lily_pads",
-    "fen_reeds",
-    "desert_ribcage",
-    "orc_tent",
-    "orc_weapon_rack",
-    "orc_war_drum",
-    "city_bench",
-    "city_litter_bin",
-    "city_neon_bar",
-    "city_neon_open",
-    "city_neon_24h",
-    "city_steam_grate",
-    "sewer_pipe",
-    "sewer_graffiti",
 })
 
 # Props that lie flat on the ground: drawn under everybody, never sorted.
@@ -582,6 +544,9 @@ EXAMINE_ALIAS = {
     "temple_urn": "breakable_urn",
     "grain_sack": "pantry_jar",
     "pantry_shelf": "jar_shelf",
+    # The same lantern in two lights.
+    "fey_lantern_teal": "fey_lantern",
+    "fey_lantern_violet": "fey_lantern",
 }
 
 

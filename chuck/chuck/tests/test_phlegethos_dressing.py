@@ -20,6 +20,17 @@ from src.entities.prop import MUTE_PROPS  # noqa: E402
 from src.world.tilemap import TILE_DEFS  # noqa: E402
 
 
+def _answers_e(kinds) -> None:
+    """Each kind has its examine line and is not in the mute scatter."""
+    from src.entities.prop import examine_line_id
+    from src.systems.dialogue import DialogueSystem
+
+    dialogue = DialogueSystem()
+    for kind in kinds:
+        assert kind not in MUTE_PROPS, kind
+        assert dialogue.get(examine_line_id(kind)), kind
+
+
 def _grid(name):
     return dressing._read(name)[2]
 
@@ -71,9 +82,10 @@ def test_the_fortress_floor_stays_plain_for_its_waves() -> None:
     assert middle - towers[0] == towers[1] - middle
 
 
-def test_the_new_pieces_are_mute() -> None:
-    assert {"phlegethos_ember_crack", "phlegethos_vent",
-            "phlegethos_bone_heap", "phlegethos_iron_spikes",
-            "phlegethos_fortress_tower", "phlegethos_banner"} <= MUTE_PROPS
+def test_the_cracks_are_mute_and_the_rest_answers_e() -> None:
+    assert "phlegethos_ember_crack" in MUTE_PROPS
+    _answers_e({"phlegethos_vent", "phlegethos_bone_heap",
+                "phlegethos_iron_spikes", "phlegethos_fortress_tower",
+                "phlegethos_banner"})
     assert not TILE_DEFS[dressing.CRACK].solid
     assert not TILE_DEFS[dressing.VENT].solid

@@ -21,6 +21,17 @@ from src.entities.prop import MUTE_PROPS, SEE_THROUGH_PROPS  # noqa: E402
 from src.world.tilemap import TileMap  # noqa: E402
 
 
+def _answers_e(kinds) -> None:
+    """Each kind has its examine line and is not in the mute scatter."""
+    from src.entities.prop import examine_line_id
+    from src.systems.dialogue import DialogueSystem
+
+    dialogue = DialogueSystem()
+    for kind in kinds:
+        assert kind not in MUTE_PROPS, kind
+        assert dialogue.get(examine_line_id(kind)), kind
+
+
 def _props(name):
     return TileMap(config.MAPS_DIR / f"{name}.txt").prop_tiles
 
@@ -54,5 +65,5 @@ def test_the_orc_camp_has_tents_racks_and_a_drum_but_no_totem() -> None:
     assert kinds.count("orc_weapon_rack") == 2
     assert kinds.count("orc_war_drum") == 1
     assert not any("totem" in kind for kind in kinds)
-    assert {"desert_ribcage", "orc_tent", "orc_weapon_rack",
-            "orc_war_drum"} <= MUTE_PROPS
+    _answers_e({"desert_ribcage", "orc_tent", "orc_weapon_rack",
+                "orc_war_drum"})

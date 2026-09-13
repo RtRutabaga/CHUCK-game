@@ -22,6 +22,17 @@ DRESSING = {"ship_bookshelf", "ship_writing_desk", "ship_butcher_block",
             "ship_stew_pot", "ship_rope_coil", "ship_cargo_stack"}
 
 
+def _answers_e(kinds) -> None:
+    """Each kind has its examine line and is not in the mute scatter."""
+    from src.entities.prop import examine_line_id
+    from src.systems.dialogue import DialogueSystem
+
+    dialogue = DialogueSystem()
+    for kind in kinds:
+        assert kind not in MUTE_PROPS, kind
+        assert dialogue.get(examine_line_id(kind)), kind
+
+
 def _kinds(map_name: str) -> list[str]:
     text = (config.MAPS_DIR / f"{map_name}.txt").read_text(encoding="utf-8")
     kinds = []
@@ -58,8 +69,8 @@ def test_the_captains_chest_is_the_only_chest_aboard() -> None:
     assert chests == ["ship_captain_chest"]
 
 
-def test_the_dressing_is_mute_and_the_rope_lies_flat() -> None:
-    assert DRESSING <= MUTE_PROPS
+def test_the_dressing_answers_e_and_the_rope_lies_flat() -> None:
+    _answers_e(DRESSING)
 
     class Assets:
         def image(self, path):
@@ -68,7 +79,7 @@ def test_the_dressing_is_mute_and_the_rope_lies_flat() -> None:
 
     for kind in DRESSING:
         prop = Prop(kind, 3, 3, Assets())
-        assert prop.dialogue_id is None, kind
+        assert prop.dialogue_id == f"examine_{kind}", kind
         assert prop.floor_layer == (kind == "ship_rope_coil"), kind
     assert not next(t for t in TILE_DEFS.values()
                     if t.prop == "ship_rope_coil").solid

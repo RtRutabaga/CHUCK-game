@@ -22,6 +22,18 @@ from src.core import config  # noqa: E402
 from src.entities.prop import MUTE_PROPS  # noqa: E402
 from src.world.tilemap import TileMap  # noqa: E402
 
+
+def _answers_e(kinds) -> None:
+    """Each kind has its examine line and is not in the mute scatter."""
+    from src.entities.prop import examine_line_id
+    from src.systems.dialogue import DialogueSystem
+
+    dialogue = DialogueSystem()
+    for kind in kinds:
+        assert kind not in MUTE_PROPS, kind
+        assert dialogue.get(examine_line_id(kind)), kind
+
+
 STREETS = ("modern_city_arrival",) + tuple(
     f"modern_city_day_{i}" for i in range(1, 7)) + tuple(
     f"modern_city_night_{i}" for i in range(2, 7))
@@ -71,6 +83,6 @@ def test_the_generators_still_reproduce_the_shipped_maps() -> None:
         assert built == shipped, name
 
 
-def test_the_new_pieces_are_mute() -> None:
-    assert {"city_bench", "city_litter_bin", "city_steam_grate",
-            "sewer_pipe", "sewer_graffiti"} | NEON <= MUTE_PROPS
+def test_the_new_pieces_answer_e() -> None:
+    _answers_e({"city_bench", "city_litter_bin", "city_steam_grate",
+                "sewer_pipe", "sewer_graffiti"} | NEON)

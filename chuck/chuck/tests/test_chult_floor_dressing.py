@@ -21,6 +21,17 @@ from src.entities.prop import MUTE_PROPS, SEE_THROUGH_PROPS  # noqa: E402
 from src.world.tilemap import TILE_DEFS, TileMap  # noqa: E402
 
 
+def _answers_e(kinds) -> None:
+    """Each kind has its examine line and is not in the mute scatter."""
+    from src.entities.prop import examine_line_id
+    from src.systems.dialogue import DialogueSystem
+
+    dialogue = DialogueSystem()
+    for kind in kinds:
+        assert kind not in MUTE_PROPS, kind
+        assert dialogue.get(examine_line_id(kind)), kind
+
+
 def _grid(name):
     return dressing._read(name)[2]
 
@@ -68,10 +79,10 @@ def test_the_run_gaps_and_the_temple_avenue_stay_bare() -> None:
                         assert grid[y][x] == dressing.STELA, (name, x, y)
 
 
-def test_the_floor_is_mute_and_the_giants_fade() -> None:
-    kinds = {"chult_fern", "chult_leaf_litter", "chult_fallen_log",
-             "chult_ruin_fragment", "chult_great_tree"}
-    assert kinds <= MUTE_PROPS
+def test_the_scatter_is_mute_the_rest_answers_e_and_the_giants_fade() -> None:
+    # The scatter is mute; the pieces worth a look say what they are.
+    assert {"chult_fern", "chult_leaf_litter"} <= MUTE_PROPS
+    _answers_e({"chult_fallen_log", "chult_ruin_fragment", "chult_great_tree"})
     assert "chult_great_tree" in SEE_THROUGH_PROPS
     assert not TILE_DEFS[dressing.FERN].solid
     assert not TILE_DEFS[dressing.LITTER].solid

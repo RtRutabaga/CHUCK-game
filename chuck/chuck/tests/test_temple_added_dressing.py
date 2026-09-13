@@ -21,6 +21,17 @@ from src.entities.prop import MUTE_PROPS, SEE_THROUGH_PROPS  # noqa: E402
 from src.world.tilemap import TILE_DEFS, TileMap  # noqa: E402
 
 
+def _answers_e(kinds) -> None:
+    """Each kind has its examine line and is not in the mute scatter."""
+    from src.entities.prop import examine_line_id
+    from src.systems.dialogue import DialogueSystem
+
+    dialogue = DialogueSystem()
+    for kind in kinds:
+        assert kind not in MUTE_PROPS, kind
+        assert dialogue.get(examine_line_id(kind)), kind
+
+
 def _grid(name):
     grid = dressing._read(name)[2]
     width = max(len(row) for row in grid)
@@ -70,11 +81,11 @@ def test_the_sanctum_breach_band_is_plain_floor() -> None:
             assert row[col] not in dressing.DRESSING - {dressing.CARVING}
 
 
-def test_the_new_pieces_are_mute_and_the_arch_fades() -> None:
-    kinds = {"temple_floor_crack", "temple_missing_slabs", "temple_moss",
-             "temple_bones", "temple_wall_carving", "temple_toppled_pillar",
-             "temple_pillar_stump", "temple_grand_arch"}
-    assert kinds <= MUTE_PROPS
+def test_the_floor_is_mute_the_rest_answers_e_and_the_arch_fades() -> None:
+    assert {"temple_floor_crack", "temple_missing_slabs", "temple_moss",
+            "temple_bones"} <= MUTE_PROPS
+    _answers_e({"temple_wall_carving", "temple_toppled_pillar",
+                "temple_pillar_stump", "temple_grand_arch"})
     assert "temple_grand_arch" in SEE_THROUGH_PROPS
     for char in (dressing.CRACK, dressing.MISSING, dressing.MOSS,
                  dressing.BONES, dressing.ARCH):

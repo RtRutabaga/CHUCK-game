@@ -27,6 +27,20 @@ and updated every session.
 
 ## Latest implementation
 
+- The new dressing answers E. Forty-one new examine lines in
+  data/dialogue/examine.json cover everything added in the dressing pass that
+  stands up or is worth a look, written to the same conventions as before:
+  things that look breakable and aren't say a scratch won't do it (the cargo
+  stack, the captain's desk, the keg rack, the flour sacks, fallen logs, ruin
+  fragments, toppled pillars, iron spikes, orc weapon racks), and decoration
+  just says what it is, dryly (the notice board's reward for a rat, the OPEN
+  sign that's lying, the basket of onions and apples with no cheese). The two
+  lantern colours share one line through `EXAMINE_ALIAS`.
+- `MUTE_PROPS` now holds only the ground scatter laid down by the dozen --
+  ferns, leaf litter, floor cracks, missing slabs, moss, loose temple bones,
+  ember cracks, path stones and lily pads -- so E prompts don't appear under
+  every other step. The dressing tests now check the rest answer E, and one
+  presses E at the tavern keg rack in the running game.
 - The modern city gets a little more furniture, kept deliberately minimal
   because its streets were already well dressed. Every street map, day and
   night, gets one bench and one litter bin on the kerb, under the same rule

@@ -16,6 +16,17 @@ from src.entities.prop import MUTE_PROPS  # noqa: E402
 from src.world.tilemap import TILE_DEFS, TileMap  # noqa: E402
 
 
+def _answers_e(kinds) -> None:
+    """Each kind has its examine line and is not in the mute scatter."""
+    from src.entities.prop import examine_line_id
+    from src.systems.dialogue import DialogueSystem
+
+    dialogue = DialogueSystem()
+    for kind in kinds:
+        assert kind not in MUTE_PROPS, kind
+        assert dialogue.get(examine_line_id(kind)), kind
+
+
 def _grid(name):
     return dressing._read(name)[2]
 
@@ -72,9 +83,9 @@ def test_the_fen_plants_stay_on_water_and_off_every_hop() -> None:
                     assert grid[y][x] not in {".", "≈"}, (col, row)
 
 
-def test_the_new_pieces_are_mute_and_walkability_is_unchanged() -> None:
-    assert {"fey_lantern_teal", "fey_lantern_violet", "fey_path_stones",
-            "fen_lily_pads", "fen_reeds"} <= MUTE_PROPS
+def test_lanterns_and_reeds_answer_e_and_walkability_is_unchanged() -> None:
+    assert {"fey_path_stones", "fen_lily_pads"} <= MUTE_PROPS
+    _answers_e({"fey_lantern_teal", "fey_lantern_violet", "fen_reeds"})
     assert TILE_DEFS[dressing.LANTERN_TEAL].solid == TILE_DEFS["#"].solid
     assert TILE_DEFS[dressing.PATH_STONES].solid == TILE_DEFS["'"].solid
     assert TILE_DEFS[dressing.LILY_PADS].solid == TILE_DEFS["~"].solid
