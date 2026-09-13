@@ -27,6 +27,14 @@ and updated every session.
 
 ## Latest implementation
 
+- The rowboat by Bobert's barrel now lies alongside the pier rather than
+  sticking out from it: north-south against the big pier's west edge, bow to
+  the north, its bow line running down the pier side to the post beside him
+  -- the way a boat is tied up, and the way the opening cutscene shows it,
+  parallel to the quay. Redrawn for that orientation rather than rotated: we
+  look down into it (planking, thwarts, oars), the bow narrows to a point
+  pointing away up the screen, the transom is the one outside face toward us,
+  and the long sides show only as gunwale rims.
 - The Needle Garden's flowering beds are needles now: Chuck can walk through
   them, and like Chult's thorns they cost him (the same sanity damage, in
   src/systems/terrain_hazard.py, and not while he is in the air). The

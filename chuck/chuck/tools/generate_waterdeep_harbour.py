@@ -251,31 +251,65 @@ def rowboat(era: str, line: bool = True) -> Image.Image:
     return image
 
 
-WEST_BOAT_W, WEST_BOAT_H = 64, 24
+WEST_BOAT_W, WEST_BOAT_H = 24, 52
 
 
 def rowboat_west(era: str) -> Image.Image:
-    """The rowboat on the water west of a pier, bow to the pier.
+    """The rowboat lying alongside a pier's west edge, bow to the north.
 
-    Tied by the bow to a post on the pier's west edge, a boat lies with
-    its bow pointing at the post and its stern out to sea -- the same boat
-    mirrored, not turned: seen east-west from the south, we still look
-    down into it and still see its near side under the gunwale. The line
-    runs from the bow ring east and a little down to the post's foot,
-    sagging on the way. Drawn to be anchored two tiles west of the post
-    (see tools/waterdeep_harbour_dressing.py).
+    A boat tied up to a pier lies along it, which is what the opening
+    cutscene shows -- the boat parallel to the quay by the posts where
+    Chuck wakes. Along a west edge that means north-south, and the vantage
+    changes what of it we see. We still look down into it: the inside
+    planking, the thwarts across, the oars shipped along it. Its bow
+    points away up the screen, so it narrows to a point with nothing
+    below it. Its stern faces us, so the transom is the one outside face
+    on show, a band of paint across the bottom. Its long sides point along
+    our line of sight and show only as the gunwale's rims, the west one
+    lit. The bow line runs from the ring down the pier side to the post's
+    foot. Drawn to be anchored on the water a tile west and a row south of
+    the post (see tools/waterdeep_harbour_dressing.py).
     """
-    hull = rowboat(era, line=False).transpose(Image.FLIP_LEFT_RIGHT)
-    hull = hull.crop((0, 22, BOAT_W, BOAT_H))
+    p = ERAS[era]
     image = Image.new("RGBA", (WEST_BOAT_W, WEST_BOAT_H), CLEAR)
-    image.alpha_composite(hull, (0, 0))
     draw = ImageDraw.Draw(image)
-    bow = (BOAT_W - 1 - 9, 5)
-    post = (59, 21)
+    # The hull's outline: pointed bow at the top, square transom below.
+    outline = [(12, 3), (19, 13), (20, 16), (20, 44), (19, 47), (5, 47),
+               (4, 44), (4, 16), (5, 13)]
+    draw.polygon(outline, fill=OUTLINE)
+    # The transom, the stern's outside face, toward us.
+    draw.rectangle((5, 41, 19, 46), fill=HULL_PAINT)
+    draw.line((5, 46, 19, 46), fill=HULL_PAINT_DARK)
+    draw.line((6, 41, 18, 41), fill=WOOD_DARK)
+    # The inside, seen from above.
+    inside = [(12, 6), (17, 14), (18, 17), (18, 40), (6, 40), (6, 17),
+              (7, 14)]
+    draw.polygon(inside, fill=WOOD)
+    for x in (9, 15):
+        draw.line((x, 15, x, 39), fill=WOOD_DARK)
+    # Gunwale rims: lit on the west, in shade on the east.
+    draw.line((5, 16, 5, 40), fill=WOOD_LIT)
+    draw.line((5, 14, 11, 4), fill=WOOD_LIT)
+    draw.line((19, 16, 19, 40), fill=WOOD_DARK)
+    draw.line((13, 4, 19, 14), fill=WOOD_DARK)
+    # Two thwarts across, and the oars shipped along the inside.
+    for y in (20, 31):
+        draw.rectangle((6, y, 18, y + 2), fill=WOOD_LIT)
+        draw.line((6, y + 2, 18, y + 2), fill=WOOD_DARK)
+    draw.line((8, 17, 8, 38), fill=(196, 160, 104, 255))
+    draw.line((10, 36, 10, 39), fill=(196, 160, 104, 255))
+    # Waterline: ripples off the stern and down the open-water side.
+    ripple = p["ripple"]
+    draw.line((5, 49, 19, 49), fill=ripple)
+    for y in (18, 27, 36):
+        draw.line((2, y, 2, y + 3), fill=ripple)
+    # The bow line: from the ring down the pier side to the post's foot.
+    bow = (14, 9)
+    post = (23, 33)
     for step in range(17):
         t = step / 16
-        x = bow[0] + (post[0] - bow[0]) * t
-        y = bow[1] + (post[1] - bow[1]) * t + math.sin(t * math.pi) * 3
+        x = bow[0] + (post[0] - bow[0]) * t + math.sin(t * math.pi) * 1.5
+        y = bow[1] + (post[1] - bow[1]) * t
         draw.point((round(x), round(y)), fill=ROPE)
         if step % 4 == 0:
             draw.point((round(x), round(y) + 1), fill=ROPE_DARK)

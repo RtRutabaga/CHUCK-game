@@ -168,7 +168,7 @@ def test_a_boat_is_tied_up_by_boberts_barrel() -> None:
                   for col, char in enumerate(line) if char == "B")
     for col, row in harbour.BOATS_WEST:
         assert grid[row][col] == harbour.ROWBOAT_WEST
-        post = (col + 2, row)
+        post = (col + 1, row - 1)
         assert grid[post[1]][post[0]] == harbour.BOLLARD_WEST
         # The post is the one nearest Bobert.
         assert abs(post[0] - bobert[0]) <= 4 and abs(post[1] - bobert[1]) <= 2

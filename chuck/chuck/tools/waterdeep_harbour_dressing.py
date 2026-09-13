@@ -81,10 +81,11 @@ BOLLARDS_WEST = ((7, 11), (7, 15), (1, 18), (7, 23))
 # face, and the fisherman casts into the basin east of it. An empty post
 # is what most mooring posts are.
 BOATS = ((3, 22),)
-# ...and one on the water west of the big pier, bow to the west-edge post
-# two tiles east of it: the post beside Bobert's barrel, which is the
-# boat the opening cutscene shows tied up by the posts where Chuck wakes.
-BOATS_WEST = ((5, 11),)
+# ...and one lying alongside the big pier's west edge, bow north, its line
+# to the west-edge post a tile east and a row north of its anchor: the post
+# beside Bobert's barrel. It is the boat the opening cutscene shows lying
+# parallel to the quay by the posts where Chuck wakes.
+BOATS_WEST = ((6, 12),)
 # (20, 10) rather than (21, 11): one tile further north-west, beside the
 # west gate's pillar instead of standing in the mouth of it.
 LAMPS = ((19, 7), (24, 7), (20, 10), (38, 18), (50, 18))
@@ -154,7 +155,8 @@ def dress_grid(grid: list[list[str]]) -> None:
         assert grid[row - 2][col] == BOLLARD, (col, row)
         put(col, row, ROWBOAT, {WATER})
     for col, row in BOATS_WEST:
-        assert grid[row][col + 2] == BOLLARD_WEST, (col, row)
+        assert grid[row - 1][col + 1] == BOLLARD_WEST, (col, row)
+        assert grid[row - 1][col] == WATER and grid[row - 2][col] == WATER
         put(col, row, ROWBOAT_WEST, {WATER})
     for col, row in LAMPS:
         put(col, row, LAMP, {","})
