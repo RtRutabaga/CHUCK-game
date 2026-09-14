@@ -10,6 +10,8 @@ Then the numbers, THE END, and a few seconds of the cat.
 
 It is a cast, not a crew: nobody who made the game is named.
 
+It all plays over the Fall to Chult cue rearranged as upbeat ska.
+
 Holding interact runs it faster; it cannot be skipped outright. Returns
 to the title when it is done.
 """
@@ -193,6 +195,8 @@ CAST: tuple[Section, ...] = (
     )),
 )
 
+# The Fall to Chult cue, as ska (data/music/credits_ska.py).
+CREDITS_MUSIC = "credits_ska.wav"
 VIEW_W, VIEW_H = config.NATIVE_WIDTH, config.NATIVE_HEIGHT
 SCROLL_SPEED = 22.0          # px per second
 FAST = 6.0                   # while interact is held
@@ -346,7 +350,7 @@ class CreditsScene(Scene):
 
     # ------------------------------------------------------------------
     def on_enter(self) -> None:
-        self.game.audio.play_music("title.wav")
+        self.game.audio.play_music(CREDITS_MUSIC)
         self._build_roll()
         self._tableau = _DocksTableau(self.game, good=self.good)
         self._tableau.on_enter()

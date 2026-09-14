@@ -27,6 +27,27 @@ and updated every session.
 
 ## Latest implementation
 
+### End credits music: Fall to Chult as ska
+
+- **What it is:** `data/music/credits_ska.py` is an upbeat ska arrangement of the Fall to Chult cue, rendered by `python tools/generate_music.py credits_ska` to `assets/audio/music/credits_ska.wav`. It is 72 bars at 168 BPM, about 103s, looping seamlessly. The credits now play it (`CREDITS_MUSIC` in `credits_scene.py`) instead of the title music.
+- **How it's built from the fall cue:**
+  - Same key (D minor) and the same Dm-Bb-C-Am / Dm-F-C-Am progression.
+  - The fall's own lead phrases go to a horn section an octave down, each one answered by offbeat horn stabs.
+  - Organ and guitar skank on every offbeat, with walking bass, kick and snare on the beat, and hats chopping the offbeats.
+- **Structure:**
+  - **Intro:** stop-time hits and the fall's rising pulse as a fanfare.
+  - **A:** the fall's lead on the horns.
+  - **B:** a lift into F major with a new tune in the fall's rhythm.
+  - **Breakdown:** a one-drop section on the fall's chromatic Eb bars.
+  - **A':** the lead again, with flute doubling above, horn harmony a third below, and kick on every beat.
+  - **Flute solo**, then an A-major turnaround back to the top.
+- **Tests:** new `tests/test_credits_music.py` covers:
+  - tempo and range
+  - every skank note on the offbeat, snare on 2 and 4
+  - horns matching the fall cue's lead note for note, an octave down
+  - same chords as the fall, plus the Eb breakdown and the F-major lift
+  - rendered quality gates (no clipping, clean loop seam, upbeat loudness)
+  - the credits scene using it
 ### End credits
 
 - **When they play:** after Bobert's ending fades to black, `EndingScene` now hands off to `CreditsScene` (`src/scenes/credits_scene.py`) instead of returning to the title. They run about 2.75 minutes over `title.wav`. Holding interact runs them 6x faster; they cannot be skipped. The title screen follows.
