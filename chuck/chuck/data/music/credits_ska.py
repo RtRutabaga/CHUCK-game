@@ -11,14 +11,18 @@ breakdown; the fall's ascending pulse becomes the fanfare that opens it.
 In the middle it lifts into F major, where a new tune in the fall's
 rhythm gets the horns to themselves.
 
-Structure (bars of 4/4, 72 bars at 168 BPM, ~103s, looping):
-    0-3    intro      stop-time horn hits and the fall's rising pulse
-    4-19   A          the fall's lead on horns, skank, walking bass
-    20-35  B          the lift into F major: a new tune in the same rhythm
-    36-43  C          one-drop breakdown on the fall's chromatic Eb bars
-    44-59  A'         the lead again, flute on top, four on the floor
-    60-67  solo       flute over Dm-Bb-C-A
-    68-71  turnaround horn hits on A major back to the top
+No intro: it opens on a bar of drums alone -- two hits and a snare roll
+-- that kicks the melody off, and the same bar brings it round again at
+the end of every loop.
+
+Structure (bars of 4/4, 68 bars at 168 BPM, ~97s, looping):
+    0      pickup     drums only: two hits and a snare roll into the tune
+    1-16   A          the fall's lead on horns, skank, walking bass
+    17-32  B          the lift into F major: a new tune in the same rhythm
+    33-40  C          one-drop breakdown on the fall's chromatic Eb bars
+    41-56  A'         the lead again, flute on top, four on the floor
+    57-64  solo       flute over Dm-Bb-C-A
+    65-67  turnaround horn hits on A major, into the pickup
 
 Voices: horns, horn harmony, flute, organ skank, guitar skank, bass,
 bells, kick, snare, hats. Note tails wrap the loop seam.
@@ -29,7 +33,7 @@ from src.audio.sequencer import Note, Track
 
 TEMPO_BPM = 168
 BEATS_PER_BAR = 4
-TOTAL_BARS = 72
+TOTAL_BARS = 68
 TOTAL_BEATS = TOTAL_BARS * BEATS_PER_BAR
 MASTER_HEADROOM = 0.85
 
@@ -114,29 +118,29 @@ def _bass_root(chord: str) -> str:
     return f"{root}{1 if _INDEX[root] >= 9 else 2}"
 
 
-# One chord per bar, for all 72.
+# One chord per bar, for all 68.
 _A_CHORDS = ("Dm", "Bb", "C", "Am", "Dm", "F", "C", "Am")
 _B_CHORDS = ("F", "C", "Bb", "C", "F", "C", "Bb", "A")
 _C_CHORDS = ("Dm", "Eb", "C", "Am", "Dm", "Eb", "C", "A")
 _SOLO_CHORDS = ("Dm", "Bb", "C", "A")
 CHORDS = (
-    ("Dm", "Dm", "Dm", "A")
+    ("A",)
     + _A_CHORDS * 2
     + _B_CHORDS * 2
     + _C_CHORDS
     + _A_CHORDS * 2
     + _SOLO_CHORDS * 2
-    + ("Dm", "Bb", "C", "A")
+    + ("Dm", "Bb", "C")
 )
 assert len(CHORDS) == TOTAL_BARS
 
-INTRO = range(0, 4)
-A = range(4, 20)
-B = range(20, 36)
-BREAK = range(36, 44)
-A2 = range(44, 60)
-SOLO = range(60, 68)
-TURN = range(68, 72)
+PICKUP = range(0, 1)
+A = range(1, 17)
+B = range(17, 33)
+BREAK = range(33, 41)
+A2 = range(41, 57)
+SOLO = range(57, 65)
+TURN = range(65, 68)
 
 
 # --- The tune --------------------------------------------------------------
@@ -198,16 +202,6 @@ def _answer(chord: str) -> list:
 
 def _tune() -> dict:
     out: dict = {}
-    # Intro: a stop-time hit, then the fall's rising pulse, three times;
-    # then the dominant, held.
-    for bar in INTRO:
-        if bar < 3:
-            out[bar] = [(0, 0.3, "D5", 1.0)] + [
-                (2 + step * 0.5, 0.35, pitch, 0.9)
-                for step, pitch in enumerate(("D4", "F4", "A4", "C5"))]
-        else:
-            out[bar] = [(0, 0.3, "E5", 1.0), (1, 0.3, "E5", 1.0),
-                        (2, 1.8, "C#5", 1.0)]
     # A and A': the fall's phrases, each answered.
     for section in (A, A2):
         for index, bar in enumerate(section):
@@ -230,16 +224,11 @@ def _tune() -> dict:
     # The solo is the flute's; the horns punch the downbeats.
     for bar in SOLO:
         out[bar] = [(0, 0.3, _shift(_voicing(CHORDS[bar])[2], 12), 0.7)]
-    # Turnaround: hits on A major, and back to the top.
-    for index, bar in enumerate(TURN):
-        chord = CHORDS[bar]
-        top = _shift(_voicing(chord)[2], 12)
-        if index < 3:
-            out[bar] = [(0, 0.3, top, 1.0), (1.5, 0.3, top, 0.9),
-                        (2.5, 1.2, _shift(top, 2), 0.85)]
-        else:
-            out[bar] = [(0, 0.3, "E5", 1.0), (1, 0.3, "E5", 1.0),
-                        (2, 0.3, "C#5", 1.0), (3, 0.3, "G5", 1.0)]
+    # Turnaround: hits, and into the drums' pickup.
+    for bar in TURN:
+        top = _shift(_voicing(CHORDS[bar])[2], 12)
+        out[bar] = [(0, 0.3, top, 1.0), (1.5, 0.3, top, 0.9),
+                    (2.5, 1.2, _shift(top, 2), 0.85)]
     return out
 
 
@@ -276,7 +265,7 @@ def _skank() -> tuple[dict, dict]:
     organ, guitar = {}, {}
     for bar, chord in enumerate(CHORDS):
         voicing = _voicing(chord)
-        if bar in INTRO or bar in TURN:
+        if bar in PICKUP or bar in TURN:
             continue
         if bar in BREAK:
             offbeats = (2.5,)
@@ -298,10 +287,11 @@ def _bass() -> dict:
         following = CHORDS[(bar + 1) % TOTAL_BARS]
         target = _midi(_bass_root(following))
         approach = _name(target - 1 if target - 1 > _midi(root) else target + 1)
-        if bar in INTRO or bar in TURN:
-            out[bar] = [(0, 0.3, root, 1.0)]
-            if bar == 3 or bar == 71:
-                out[bar].append((2, 1.5, root, 0.9))
+        if bar in PICKUP:
+            continue  # the drums' bar
+        if bar in TURN:
+            out[bar] = [(0, 0.3, root, 1.0), (1.5, 0.3, root, 0.9),
+                        (2.5, 1.2, root, 0.85)]
         elif bar in BREAK:
             # One drop: the bass leaves a hole on one and lands on three.
             out[bar] = [(0.5, 0.4, root, 0.85), (2, 0.9, root, 1.0),
@@ -314,17 +304,19 @@ def _bass() -> dict:
 
 def _bells() -> dict:
     return {bar: [(0, 1.5, _shift(_voicing(CHORDS[bar])[2], 12), 0.4)]
-            for bar in (4, 12, 20, 28, 44, 52)}
+            for bar in (A.start, A.start + 8, B.start, B.start + 8,
+                        A2.start, A2.start + 8)}
 
 
 def _kit() -> tuple[dict, dict, dict]:
     kicks, snares, hats = {}, {}, {}
     for bar in range(TOTAL_BARS):
-        if bar in INTRO or bar in TURN:
-            hits = (0,) if bar in (0, 1, 2, 68, 69, 70) else (0, 1)
+        if bar in PICKUP or bar in TURN:
+            # The pickup: two hits and a snare roll into the tune.
+            hits = (0, 1) if bar in PICKUP else (0, 1.5, 2.5)
             kicks[bar] = [(beat, 0.12, "C2", 1.0) for beat in hits]
             snares[bar] = [(beat, 0.12, "C3", 0.9) for beat in hits]
-            if bar in (3, 71):
+            if bar in PICKUP:
                 snares[bar] += [(2 + step * 0.25, 0.08, "C3",
                                  0.45 + step * 0.07) for step in range(8)]
             hats[bar] = []
@@ -342,7 +334,8 @@ def _kit() -> tuple[dict, dict, dict]:
         hats[bar] = [(beat + 0.5, 0.08, "C5", 0.8) for beat in range(4)]
         hats[bar] += [(float(beat), 0.05, "C5", 0.3) for beat in range(4)]
         # A pickup fill into each new section.
-        if (bar + 1) in (20, 36, 44, 60, 68):
+        if (bar + 1) in (B.start, BREAK.start, A2.start, SOLO.start,
+                         TURN.start):
             snares[bar] += [(3 + step * 0.25, 0.08, "C3", 0.5 + step * 0.1)
                             for step in range(4)]
     return kicks, snares, hats
@@ -358,7 +351,7 @@ def build_tracks() -> list[Track]:
         Track("flute", ins.flute, 0.8, _bars(_flute())),
         Track("organ", ins.electric_key, 0.5, _bars(organ)),
         Track("guitar", ins.pluck_lead, 0.3, _bars(guitar)),
-        Track("bass", ins.round_bass, 0.95, _bars(_bass())),
+        Track("bass", ins.round_bass, 1.2, _bars(_bass())),
         Track("bells", ins.bell, 0.6, _bars(_bells())),
         Track("kick", ins.kick, 0.9, _bars(kicks)),
         Track("snare", ins.snare, 0.8, _bars(snares)),

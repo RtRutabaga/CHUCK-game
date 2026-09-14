@@ -75,7 +75,7 @@ def test_the_horns_play_the_fall_cues_own_lead() -> None:
 def test_same_key_and_chords_as_the_fall_with_a_major_lift() -> None:
     # The fall's opening progression, Dm-Bb-C-Am then Dm-F-C-Am.
     fall_roots = [r.rstrip("0123456789") for r in fall_song._ROOTS[:8]]
-    ska_roots = [c.rstrip("m") for c in song.CHORDS[4:12]]
+    ska_roots = [c.rstrip("m") for c in song.CHORDS[song.A.start:song.A.start + 8]]
     assert ska_roots == fall_roots
     # Its chromatic Eb turns up in the breakdown...
     assert "Eb" in song.CHORDS[song.BREAK.start:song.BREAK.stop]
@@ -94,6 +94,28 @@ def test_rendered_theme_loops_cleanly_and_does_not_clip() -> None:
     assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
     rms = (sum(s * s for s in samples) / len(samples)) ** 0.5
     assert rms > 0.1, "an upbeat band, not an ambience"
+
+
+def test_no_intro_just_the_drums_kicking_the_melody_off() -> None:
+    assert song.A.start == 1 and song.PICKUP == range(0, 1)
+    tracks = {t.name: t for t in song.build_tracks()}
+    for name, track in tracks.items():
+        in_pickup = [n for n in track.notes if n.beat < song.BEATS_PER_BAR]
+        if name in ("kick", "snare"):
+            assert in_pickup, name
+        else:
+            assert not in_pickup, name
+    # The pickup ends in a snare roll.
+    roll = [n for n in tracks["snare"].notes
+            if 2 <= n.beat < song.BEATS_PER_BAR]
+    assert len(roll) >= 8
+    # The melody starts on the next bar.
+    assert min(n.beat for n in tracks["horns"].notes) == song.BEATS_PER_BAR
+
+
+def test_the_bass_sits_up_in_the_mix() -> None:
+    bass = next(t for t in song.build_tracks() if t.name == "bass")
+    assert bass.level >= 1.2
 
 
 def test_the_credits_play_it() -> None:

@@ -27,6 +27,13 @@ and updated every session.
 
 ## Latest implementation
 
+### Credits ska: no intro, louder bass
+
+- **Intro removed:** the stop-time horn and rising-pulse intro is gone. `credits_ska` now opens on a single drum-only pickup bar: two hits and a snare roll. The fall's melody starts on the next bar.
+- **Loop:** the turnaround shrinks from 4 bars to 3 and runs straight into that same pickup bar, so each loop comes round through the drums.
+- **Length:** 68 bars, about 97s. Bells and section fills are now placed relative to the section starts rather than at fixed bar numbers.
+- **Bass:** the bass track level goes from 0.95 to 1.2.
+- **Tests:** `tests/test_credits_music.py` now checks that the first bar is only kick and snare, ending in a roll, with the horns starting on bar 2. It also checks the bass level.
 ### End credits music: Fall to Chult as ska
 
 - **What it is:** `data/music/credits_ska.py` is an upbeat ska arrangement of the Fall to Chult cue, rendered by `python tools/generate_music.py credits_ska` to `assets/audio/music/credits_ska.wav`. It is 72 bars at 168 BPM, about 103s, looping seamlessly. The credits now play it (`CREDITS_MUSIC` in `credits_scene.py`) instead of the title music.
