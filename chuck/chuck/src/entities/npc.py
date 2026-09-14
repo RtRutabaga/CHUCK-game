@@ -28,6 +28,11 @@ if TYPE_CHECKING:
     from src.core.assets import AssetManager
 
 
+# Frame widths for the NPCs whose sheets are not human-width. A tortle is
+# a person with a shell on his back, and the shell is wider than he is.
+NPC_FRAME_WIDTHS = {"tortle": 24}
+
+
 class NPC(Entity):
     """A character Chuck can talk to. Or rather: who talks at Chuck."""
 
@@ -57,7 +62,7 @@ class NPC(Entity):
         import pygame
 
         row = assets.sheet(
-            f"npcs/{self.npc_id}.png", config.NPC_FRAME_W, config.NPC_FRAME_H
+            f"npcs/{self.npc_id}.png", self.frame_width, config.NPC_FRAME_H
         )[0]
         down, up, left = row
         self._frames = {
@@ -66,6 +71,10 @@ class NPC(Entity):
             "left": left,
             "right": pygame.transform.flip(left, True, False),
         }
+
+    @property
+    def frame_width(self) -> int:
+        return NPC_FRAME_WIDTHS.get(self.npc_id, config.NPC_FRAME_W)
 
     # ------------------------------------------------------------------
     # Interaction
@@ -79,7 +88,7 @@ class NPC(Entity):
         Pure math, headless-testable; the WorldScene builds the Rect.
         """
         pad = 3
-        w = config.NPC_FRAME_W + 2 * pad
+        w = self.frame_width + 2 * pad
         base_h = config.NPC_FRAME_H + 2 * pad
         h = base_h + self._interaction_extension_down
         x = int(self.x + self.width / 2 - w / 2)

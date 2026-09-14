@@ -1230,6 +1230,8 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ε": MarkerDef(kind="arrival:from_chult_3", under="."),
     "Ꝕ": MarkerDef(kind="arrival:from_chult_falls", under="."),
     "Ꝗ": MarkerDef(kind="arrival:from_chult_respite", under="."),
+    # The tortle who got to the Falls' chest first, and wants you gone.
+    "Ꝡ": MarkerDef(kind="npc:tortle", under="."),
     "ζ": MarkerDef(kind="anchor:chult_4_anchor", under="."),
     "η": MarkerDef(kind="boundary:chult_temple", under="ð"),
     "θ": MarkerDef(kind="arrival:from_chult_4", under="."),

@@ -216,3 +216,34 @@ def test_the_falls_move() -> None:
         assert len(falls[0]._frames) == 4
     finally:
         game._shutdown()
+
+
+def test_a_tortle_minds_the_chest_and_wants_chuck_gone() -> None:
+    from src.systems.dialogue import DialogueSystem
+
+    dialogue = DialogueSystem()
+    assert dialogue.get("tortle") == ["Piss off!"]
+    assert dialogue.get("tortle_repeat") == ["I said scram!"]
+
+    directory = tempfile.TemporaryDirectory()
+    game = Game(save_path=Path(directory.name) / "save.json")
+    try:
+        scene = game.checkpoints.load_checkpoint("chult_falls")
+        (tortle,) = [npc for npc in scene.npcs if npc.npc_id == "tortle"]
+        (chest,) = _find(scene.tilemap, "Ꝟ")
+        tile = (int(tortle.x + tortle.width / 2) // config.TILE_SIZE,
+                int(tortle.y + tortle.height / 2) // config.TILE_SIZE)
+        assert abs(tile[0] - chest[0]) <= 2 and tile[1] == chest[1]
+        # His sheet is shell-wide, and all three facings load.
+        assert tortle.frame_width == 24
+        assert set(tortle._frames) == {"down", "up", "left", "right"}
+        assert tortle._frames["down"].get_size() == (24, config.NPC_FRAME_H)
+        assert tortle.interaction_bounds()[2] == 24 + 6
+
+        assert tortle.interact(scene.player) == "tortle"
+        assert scene._second_word(tortle, "tortle") == "tortle"
+        assert scene._second_word(tortle, "tortle") == "tortle_repeat"
+        assert scene._second_word(tortle, "tortle") == "tortle_repeat"
+    finally:
+        game._shutdown()
+        directory.cleanup()

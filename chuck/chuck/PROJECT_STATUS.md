@@ -27,6 +27,13 @@ and updated every session.
 
 ## Latest implementation
 
+### Chult Falls: a tortle by the chest
+
+- **The tortle** stands just east of the Falls' chest, on the west bank. His sprite is `npcs/tortle.png`, made by `tools/generate_tortle_sprite.py` from the user's reference: an old, hunched turtle-man, green and beaked, with a pale plastron, a plated brown shell with moss on top, a blue vest, brown trousers and a knobbly walking stick. Like every standing NPC he has down, up and left frames, and faces Chuck when spoken to.
+- **Wider sheet:** his frames are 24px wide instead of 16 because of the shell. The standing NPC reads per-NPC frame widths from `NPC_FRAME_WIDTHS` in `src/entities/npc.py`, and his interaction zone widens to match.
+- **Dialogue** (`data/dialogue/chult.json`): "Piss off!" the first time, then "I said scram!" every time after. This uses the existing `_repeat` second-word mechanism.
+- **Map marker:** `Ꝡ` (`npc:tortle`), placed by `tools/generate_chult_falls.py` at (15,22).
+- **Tests:** a new test in `tests/test_chult_falls.py` covers his placement by the chest, the wide frames and interaction bounds, and the first line then the repeat line.
 ### Chult Falls: a hidden waterfall map off Chult 4
 
 - **Hidden way in.** Chult 4's western side pocket (row 30) now runs through the west wall. Cols 0-2 are walkable trail drawn over with the same dense-jungle overhead art as the wall (`ꝏ` exit, `Ꝓ` passage), so the wall looks unbroken until Chuck steps in and the canopy thins over him. The only tell is one trail tile at the mouth, (3,30). Coming back, Chuck arrives at (4,30), facing right (`Ꝕ`).

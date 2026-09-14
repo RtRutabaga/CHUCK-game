@@ -36,6 +36,7 @@ BOULDER = "Ꝛ"
 BOULDER_WATER = "Ꝝ"
 CHEST = "Ꝟ"
 ARRIVAL = "Ꝗ"
+TORTLE = "Ꝡ"
 EXIT = "ð"
 TRAIL = "'"
 FERN = "ꝭ"
@@ -48,6 +49,8 @@ POOL_ROWS = range(10, 17)
 ARRIVAL_TILE = (42, 24)
 EXIT_ROWS = range(23, 26)
 CHEST_TILE = (13, 22)
+# He stands just past the chest, between it and the river.
+TORTLE_TILE = (15, 22)
 EAST_GRASS = ((34, 21), (37, 30), (31, 35))
 WEST_GRASS = ((10, 27), (17, 33))
 SHORE_BOULDERS = ((15, 17), (33, 16), (31, 18), (18, 18), (13, 15))
@@ -118,6 +121,7 @@ def build() -> list[list[str]]:
             if grid[y][x] == JUNGLE and _hash(x, y, 7) % 3:
                 grid[y][x] = GROUND
     grid[row][col] = CHEST
+    grid[TORTLE_TILE[1]][TORTLE_TILE[0]] = TORTLE
 
     grid[CLIFF_ANCHOR[1]][CLIFF_ANCHOR[0]] = CLIFF
     for col, row in SHORE_BOULDERS:
@@ -161,7 +165,7 @@ def build() -> list[list[str]]:
 
 
 def _walkable(char: str) -> bool:
-    return char in (GROUND, TRAIL, ARRIVAL, FERN, LITTER, EXIT)
+    return char in (GROUND, TRAIL, ARRIVAL, TORTLE, FERN, LITTER, EXIT)
 
 
 def reachable(grid, start, jump_stream: bool = False) -> set[tuple[int, int]]:
