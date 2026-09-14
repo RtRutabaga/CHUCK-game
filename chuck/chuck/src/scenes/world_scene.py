@@ -2377,12 +2377,14 @@ class WorldScene(Scene):
             PREMIUM_CARTON_FLAGS, premium_cartons_collected)
         from src.scenes.ending_scene import EndingScene
 
+        good = (premium_cartons_collected(self.game.progress)
+                >= len(PREMIUM_CARTON_FLAGS))
+
         def end() -> None:
-            self.game.scenes.push(EndingScene(self.game))
+            self.game.scenes.push(EndingScene(self.game, good=good))
 
         def after_question() -> None:
-            if (premium_cartons_collected(self.game.progress)
-                    < len(PREMIUM_CARTON_FLAGS)):
+            if not good:
                 end()
                 return
             self.game.scenes.push(DialogueScene(

@@ -15,7 +15,7 @@ from src.entities.captain_chest import (
     PREMIUM_CARTON_FLAGS, premium_cartons_collected)
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.ending_scene import FADE, HOLD, EndingScene
-from src.scenes.title_scene import TitleScene
+from src.scenes.credits_scene import CreditsScene
 from src.systems.checkpoints import (
     DESERT_ENTRY_FLAGS, KNOWN_PROGRESS_FLAGS, WATERDEEP_RETURN_FLAG)
 from src.systems.dialogue import DialogueSystem
@@ -128,7 +128,7 @@ def test_bobert_sleeps_at_the_start_and_is_up_at_the_end() -> None:
         directory.cleanup()
 
 
-def _ends_in_fade_then_title(game) -> None:
+def _ends_in_fade_then_credits(game, good: bool) -> None:
     ending = game.scenes.current
     assert isinstance(ending, EndingScene)
     assert ending.darkness == 0.0
@@ -137,14 +137,17 @@ def _ends_in_fade_then_title(game) -> None:
     assert 0.2 < ending.darkness < 0.8  # slow
     for _ in range(int((FADE / 2 + HOLD) * 30) + 5):
         game.scenes.update(1 / 30)
-    assert isinstance(game.scenes.current, TitleScene)
+    credits = game.scenes.current
+    assert isinstance(credits, CreditsScene)
+    assert credits.good is good
+    assert len(game.scenes._stack) == 1  # the world is gone
 
 
 def test_without_all_three_cartons_the_game_ends_on_the_question() -> None:
     directory, game, world = _finale(2)
     try:
         assert _talk_to_bobert(game, world) == QUESTION
-        _ends_in_fade_then_title(game)
+        _ends_in_fade_then_credits(game, good=False)
     finally:
         game._shutdown()
         directory.cleanup()
@@ -154,7 +157,7 @@ def test_with_all_three_cartons_bobert_is_thrilled_then_the_fade() -> None:
     directory, game, world = _finale(3)
     try:
         assert _talk_to_bobert(game, world) == QUESTION + THANKS
-        _ends_in_fade_then_title(game)
+        _ends_in_fade_then_credits(game, good=True)
     finally:
         game._shutdown()
         directory.cleanup()

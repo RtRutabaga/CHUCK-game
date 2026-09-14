@@ -27,6 +27,20 @@ and updated every session.
 
 ## Latest implementation
 
+### End credits
+
+- **When they play:** after Bobert's ending fades to black, `EndingScene` now hands off to `CreditsScene` (`src/scenes/credits_scene.py`) instead of returning to the title. They run about 2.75 minutes over `title.wav`. Holding interact runs them 6x faster; they cannot be skipped. The title screen follows.
+- **Cast roll:** the cast scrolls up in the order Chuck met them, each member shown with its own sprite (big ones halved) and a one-line deadpan credit. Sections: Waterdeep, the Sewer, the Tavern, Chult, the Temple, the Ship, Phlegethos, the Feywild, Zephyros, the City, the Cabin, the Desert, and "AND" with the Premium Buhetian Halfling Leaf last. Zephyros is his cutscene face drawn small.
+- **No crew credits:** it is a cast only, and nobody who made the game is named. A test guards this.
+- **Backdrops:** each section has a slow pan across a real map from that part of the game, dimmed, with crossfades between sections. `render_backdrop` draws them from the map's ground, props and overhead layers.
+- **Final image:** the opening cutscene's evening docks, held and shown closer, rendered by `_DocksTableau`. What it shows depends on the ending:
+  - **3/3 cartons:** Bobert is awake with his own cigarette, and Chuck smokes beside him.
+  - **Otherwise:** Bobert is asleep with his Z's, and Chuck smokes alone.
+- **Closing pages:**
+  - A stats card of deaths, cigarettes and premium cartons, each with a remark.
+  - A "THE END" card.
+  - A few seconds of the cat by Bobert's barrel with no Chuck.
+- **Tests:** new `tests/test_credits.py`. `tests/test_bobert_ending.py` now expects the fade to hand off to the credits.
 ### The ending: premium carton counter, Bobert awake, fade to black
 
 - **Carton counter (HUD):** a small treasure-chest icon and `n/3` now sit left of the death count in the top bar. It counts the three premium Buhetian halfling leaf cartons as they are picked up: the captain's chest, the desert ruins chest and the Chult Falls chest. `PREMIUM_CARTON_FLAGS` and `premium_cartons_collected()` in `src/entities/captain_chest.py` read the flags each carton banks on pickup.
