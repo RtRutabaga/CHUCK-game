@@ -146,6 +146,14 @@ BOBERT_BARREL = """
 ....bbbbbbbb....
 """
 
+# Bobert at the end, awake: brows up, eyes open, looking at Chuck, and
+# his forearms up on the rim.
+BOBERT_BARREL_AWAKE = (
+    BOBERT_BARREL
+    .replace("....FFFFFFFF....\n....FeeFFeeF....",
+             "....FeeFFeeF....\n....FWeFFeWF....", 1)
+)
+
 HOUSE_DOOR = """
 .nnnnnnnnnnnn.
 nnYYYyYYyYYYnn
@@ -603,6 +611,7 @@ def main() -> None:
     _write("barrel", BARREL, 14, 19)
     _write("crate", CRATE, 16, 20)
     _write("bobert_barrel", BOBERT_BARREL, 16, 24)
+    _write("bobert_barrel_awake", BOBERT_BARREL_AWAKE, 16, 24)
     _write("herod_sign", HEROD_SIGN, 16, 24)
     _write("tavern_door", _build_tavern_door(), 48, 34)
     _write("tavern_open", _build_tavern_open(), 48, 34)

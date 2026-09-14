@@ -109,6 +109,9 @@ from src.systems.net_capture import NetCapture
 from src.systems.sanity import SanitySystem
 from src.systems.ship_motion import deck_rock_offset
 from src.ui.hud import HUD
+
+BOBERT_AWAKE_LINE = "bobert_awake"
+BOBERT_CARTONS_LINE = "bobert_awake_cartons"
 from src.world.camera import Camera
 from src.world.collision import overlaps
 from src.world.tilemap import TileMap
@@ -336,7 +339,8 @@ class WorldScene(Scene):
             start=sanity_start,
         )
         self.hud = HUD(self.sanity, self.game.assets.bitmap_font(),
-               self.game.cigarettes, self.game.deaths)
+               self.game.cigarettes, self.game.deaths,
+               progress=self.game.progress)
         # The opening teaches; the return does not. By the time Chuck is
         # back on these docks he has pressed every key there is.
         self._hint = (
@@ -432,6 +436,9 @@ class WorldScene(Scene):
                     # than authoring two characters keeps the night and
                     # day maps directly comparable, tile for tile.
                     kind = "city_streetlight_lit"
+                elif kind == "bobert_barrel" and self._waterdeep_midday:
+                    # Chuck is home, and Bobert is up.
+                    kind = "bobert_barrel_awake"
                 elif self._waterdeep_midday:
                     # Waterdeep is one map in two lights, like its tileset:
                     # pier wood and water tints to match the midday sheet,
@@ -1516,6 +1523,9 @@ class WorldScene(Scene):
                     # the world directly and never open a dialogue overlay.
                     self._collect_pending_drops()
                     return
+                if dialogue_id == BOBERT_AWAKE_LINE:
+                    self._talk_to_bobert()
+                    return
                 if target in self.npcs:
                     dialogue_id = self._second_word(target, dialogue_id)
                 self.game.scenes.push(
@@ -2354,6 +2364,34 @@ class WorldScene(Scene):
         self.game.scenes.replace(
             HellFallingCutsceneScene(self.game, sanity=self.sanity.current)
         )
+
+    def _talk_to_bobert(self) -> None:
+        """The end of the game: Bobert asks after the smokes.
+
+        With all three cartons of premium Buhetian halfling leaf, Chuck
+        has brought back something worth coming home with and Bobert says
+        so; without them the question just hangs. Either way the docks
+        fade slowly to black when he is done talking.
+        """
+        from src.entities.captain_chest import (
+            PREMIUM_CARTON_FLAGS, premium_cartons_collected)
+        from src.scenes.ending_scene import EndingScene
+
+        def end() -> None:
+            self.game.scenes.push(EndingScene(self.game))
+
+        def after_question() -> None:
+            if (premium_cartons_collected(self.game.progress)
+                    < len(PREMIUM_CARTON_FLAGS)):
+                end()
+                return
+            self.game.scenes.push(DialogueScene(
+                self.game, self.dialogue.get(BOBERT_CARTONS_LINE),
+                on_close=end))
+
+        self.game.scenes.push(DialogueScene(
+            self.game, self.dialogue.get(BOBERT_AWAKE_LINE),
+            on_close=after_question))
 
     def _second_word(self, npc, dialogue_id: str) -> str:
         """The same person, spoken to again, says something else.

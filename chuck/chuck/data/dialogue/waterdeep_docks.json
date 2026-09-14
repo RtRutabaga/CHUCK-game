@@ -8,6 +8,16 @@
   "bobert_sleeping": [
     "... Zzzzz."
   ],
+  "bobert_awake": [
+    "Chuck! Where have you been?",
+    "...",
+    "... did you bring back any smokes?"
+  ],
+  "bobert_awake_cartons": [
+    "What's this?...",
+    "Three cartons of premium Buhetian halfling leaf?!",
+    "You're the best, Chuck"
+  ],
   "herod_sign": [
     "Herod Cover Band - Tonight Only"
   ],

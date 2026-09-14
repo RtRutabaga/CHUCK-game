@@ -50,6 +50,39 @@ _DEATH_COLOURS = {
 }
 
 
+# The premium carton count's icon: a little treasure chest, the chest the
+# cartons come out of.  G gold band   W wood   w wood shadow   D outline
+_CHEST_ICON = (
+    ".DDDDDDDDD.",
+    "DWWWWWWWWWD",
+    "DwwwwGwwwwD",
+    "DDDDGGGDDDD",
+    "DWWWWGWWWWD",
+    "DGWWWWWWWGD",
+    "DwwwwwwwwwD",
+    "DDDDDDDDDDD",
+)
+_CHEST_COLOURS = {
+    "G": (232, 184, 72),
+    "W": (156, 102, 54),
+    "w": (112, 72, 40),
+    "D": (44, 30, 24),
+}
+
+
+def chest_icon():
+    """The treasure chest as a small alpha surface."""
+    import pygame
+
+    height, width = len(_CHEST_ICON), len(_CHEST_ICON[0])
+    icon = pygame.Surface((width, height), pygame.SRCALPHA)
+    for y, row in enumerate(_CHEST_ICON):
+        for x, char in enumerate(row):
+            if char in _CHEST_COLOURS:
+                icon.set_at((x, y), _CHEST_COLOURS[char])
+    return icon
+
+
 def death_icon():
     """The skull and crossbones as a small alpha surface."""
     import pygame
@@ -67,12 +100,14 @@ class HUD:
     """Draws overlay UI on top of the world. Owned by the WorldScene."""
 
     def __init__(self, sanity_system, font=None, cigarettes=None,
-                 deaths=None) -> None:
+                 deaths=None, progress=None) -> None:
         self.sanity = sanity_system
         self._font = font
         self.cigarettes = cigarettes
         self.deaths = deaths
+        self.progress = progress
         self._death_icon = None
+        self._chest_icon = None
 
     def draw(self, surface) -> None:
         """Draw the cigarette meter in screen space (ignores camera)."""
@@ -106,8 +141,27 @@ class HUD:
                 skull = self._death_icon
                 skull_y = (_MARGIN_Y + deaths.get_height() // 2
                            - skull.get_height() // 2)
-                surface.blit(skull, (deaths_x - skull.get_width() - 2,
-                                     max(0, skull_y)))
+                skull_x = deaths_x - skull.get_width() - 2
+                surface.blit(skull, (skull_x, max(0, skull_y)))
+
+                # The premium cartons, left of that: a treasure chest
+                # and how many of the three Chuck is carrying home.
+                if self.progress is not None:
+                    from src.entities.captain_chest import (
+                        PREMIUM_CARTON_FLAGS, premium_cartons_collected)
+                    if self._chest_icon is None:
+                        self._chest_icon = chest_icon()
+                    count = premium_cartons_collected(self.progress)
+                    cartons = self._font.render(
+                        f"{count}/{len(PREMIUM_CARTON_FLAGS)}")
+                    cartons.set_alpha(200)
+                    cartons_x = skull_x - _GROUP_GAP - cartons.get_width()
+                    surface.blit(cartons, (cartons_x, _MARGIN_Y))
+                    chest = self._chest_icon
+                    chest_y = (_MARGIN_Y + cartons.get_height() // 2
+                               - chest.get_height() // 2)
+                    surface.blit(chest, (cartons_x - chest.get_width() - 2,
+                                         max(0, chest_y)))
 
         frac = max(0.0, min(1.0, self.sanity.fraction))
         paper_w = round(_PAPER_MAX_W * frac)

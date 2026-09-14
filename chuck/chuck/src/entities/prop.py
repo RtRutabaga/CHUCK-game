@@ -26,6 +26,7 @@ _SPRITES = {
     "barrel": "objects/barrel.png",
     "crate": "objects/crate.png",
     "bobert_barrel": "objects/bobert_barrel.png",
+    "bobert_barrel_awake": "objects/bobert_barrel_awake.png",
     "herod_sign": "objects/herod_sign.png",
     "tavern_door": "objects/tavern_door.png",
     "tavern_open": "objects/tavern_open.png",
@@ -514,7 +515,9 @@ _PROP_FRAME_TIMES = {
 # Props that respond to the interact key with a line of dialogue
 # (ids live in data/dialogue/). Everything else stays mute scenery.
 PROP_DIALOGUE = {
-    "bobert_barrel": "bobert_sleeping",  # he does not wake up
+    "bobert_barrel": "bobert_sleeping",  # he does not wake up...
+    # ...until Chuck comes home. The world scene ends the game on it.
+    "bobert_barrel_awake": "bobert_awake",
     "herod_sign": "herod_sign",
     "house_door": "closed_door",
     "cabin_closed_door_west": "closed_door",

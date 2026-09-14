@@ -27,6 +27,22 @@ and updated every session.
 
 ## Latest implementation
 
+### The ending: premium carton counter, Bobert awake, fade to black
+
+- **Carton counter (HUD):** a small treasure-chest icon and `n/3` now sit left of the death count in the top bar. It counts the three premium Buhetian halfling leaf cartons as they are picked up: the captain's chest, the desert ruins chest and the Chult Falls chest. `PREMIUM_CARTON_FLAGS` and `premium_cartons_collected()` in `src/entities/captain_chest.py` read the flags each carton banks on pickup.
+- **Bobert awake at the end:** on the return to Waterdeep his barrel becomes `bobert_barrel_awake`, eyes open and brows up. The sprite comes from `tools/generate_prop_sprites.py`. Bobert stays asleep in the opening.
+- **Talking to him ends the game** (`WorldScene._talk_to_bobert`):
+  - He always says "Chuck! Where have you been?" / "..." / "... did you bring back any smokes?".
+  - With fewer than 3/3 cartons, the game ends there.
+  - With 3/3, he goes on: "What's this?..." / "Three cartons of premium Buhetian halfling leaf?!" / "You're the best, Chuck".
+  - Either way, `EndingScene` then fades the docks slowly to black over 6s with the music fading alongside, holds black for 3s, and returns to the title.
+  - The user's "…" is written as "..." because the bitmap font has no ellipsis glyph.
+- **Dialogue boxes** can now take an `on_close` callback, which runs when the last line is dismissed or ESC is pressed.
+- **Tests:** new `tests/test_bobert_ending.py` covers:
+  - the carton flags and lines
+  - the HUD icon and count
+  - Bobert asleep at the start and awake at the end
+  - both branches, played end to end through the real interact key, down to the fade and back to the title
 ### Chult Falls: a tortle by the chest
 
 - **The tortle** stands just east of the Falls' chest, on the west bank. His sprite is `npcs/tortle.png`, made by `tools/generate_tortle_sprite.py` from the user's reference: an old, hunched turtle-man, green and beaked, with a pale plastron, a plated brown shell with moss on top, a blue vest, brown trousers and a knobbly walking stick. Like every standing NPC he has down, up and left frames, and faces Chuck when spoken to.

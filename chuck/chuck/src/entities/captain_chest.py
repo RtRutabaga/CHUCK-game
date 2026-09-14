@@ -21,6 +21,20 @@ if TYPE_CHECKING:
     from src.systems.checkpoints import ProgressState
 
 
+# Every chest that holds a carton of premium Buhetian halfling leaf, by the
+# flag its carton banks when picked up: the captain's, the desert ruins',
+# and Chult Falls'. Bobert, at the end, wants all three.
+PREMIUM_CARTON_FLAGS = (
+    "captain_chest_carton_collected",
+    "desert_ruin_chest_carton_collected",
+    "chult_falls_chest_carton_collected",
+)
+
+
+def premium_cartons_collected(progress) -> int:
+    return sum(1 for flag in PREMIUM_CARTON_FLAGS if progress.has(flag))
+
+
 def examine_chest_line(kind: str, opened: bool) -> str:
     return f"examine_{kind}_open" if opened else f"examine_{kind}"
 

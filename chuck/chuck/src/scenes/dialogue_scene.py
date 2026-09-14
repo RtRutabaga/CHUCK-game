@@ -40,6 +40,7 @@ class DialogueScene(Scene):
         choice: Choice | None = None,
         dialogue=None,
         on_choice=None,
+        on_close=None,
     ) -> None:
         """`choice` needs `dialogue` (a DialogueSystem) to look up the
         lines of whichever branch the player picks."""
@@ -54,6 +55,7 @@ class DialogueScene(Scene):
         self._box = DialogueBox(game.assets)
         self._choice = choice
         self._on_choice = on_choice
+        self._on_close = on_close
         self._selected = 0
         self._choice_box = ChoiceBox(game.assets) if choice else None
 
@@ -85,7 +87,14 @@ class DialogueScene(Scene):
                 self.game.audio.play_sfx("interact")
                 self._box.show(self._lines[self._index])
             else:
-                self.game.scenes.pop()
+                self._close()
+
+    def _close(self) -> None:
+        """Take the box down, then hand over to whatever comes next."""
+        self.game.scenes.pop()
+        if self._on_close is not None:
+            callback, self._on_close = self._on_close, None
+            callback()
 
     def _update_choice(self) -> None:
         """Move the caret; interact commits."""
@@ -119,7 +128,7 @@ class DialogueScene(Scene):
     def handle_event(self, event: pygame.event.Event) -> None:
         """ESC also closes the conversation (politely)."""
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.scenes.pop()
+            self._close()
 
     def draw(self, surface: pygame.Surface) -> None:
         """Only the box: the world beneath drew itself already."""
