@@ -27,6 +27,17 @@ and updated every session.
 
 ## Latest implementation
 
+### Fan Content Policy notice on the title screen
+
+- **Why:** CHUCK uses places and creatures from Dungeons & Dragons. Wizards of the Coast's Fan Content Policy permits free fan content that carries this notice.
+- **What was added:** the notice (`FAN_CONTENT_NOTICE` in `src/scenes/title_scene.py`) now sits along the bottom of the title screen:
+
+  > CHUCK is unofficial Fan Content permitted under the Fan Content Policy. Not approved/endorsed by Wizards. Portions of the materials used are property of Wizards of the Coast. (c)Wizards of the Coast LLC.
+
+  - It's split over three lines on a dark translucent band so it reads against the nebula.
+  - "(c)" stands in for the copyright sign, which the pixel font doesn't have.
+- **Layout:** the menu moved up 10px with tighter spacing (24px), and the controls prompt moved to 308, to make room.
+- **Tests:** the title test now allows the notice among drawn strings and checks its wording and that every line fits the canvas.
 ### Controller support, with prompts that follow the device
 
 - **Input** (`src/core/input.py`) reads game controllers through SDL's game-controller layer: Xbox, PlayStation, Switch Pro and most PC pads.

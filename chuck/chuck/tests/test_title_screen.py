@@ -213,8 +213,40 @@ def test_there_is_no_subtitle() -> None:
         allowed = {f"{caret} {label}" for caret in (">", " ")
                    for label in scene.options}
         allowed.add("UP / DOWN   E / ENTER")
+        # ...and the Fan Content Policy notice, which is not a subtitle.
+        from src.scenes.title_scene import FAN_CONTENT_NOTICE
+        allowed.update(FAN_CONTENT_NOTICE)
         assert set(drawn) <= allowed, set(drawn) - allowed
         assert not any("RAT" in text for text in drawn)
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_the_fan_content_notice_is_on_the_title_and_fits() -> None:
+    from src.scenes.title_scene import FAN_CONTENT_NOTICE
+
+    text = " ".join(FAN_CONTENT_NOTICE)
+    assert "unofficial Fan Content permitted under the Fan Content Policy" \
+        in text
+    assert "Not approved/endorsed by Wizards" in text
+    assert "property of Wizards of the Coast" in text
+    directory, game, scene = _title()
+    try:
+        drawn = []
+        real = scene._font.render
+
+        def recording(line, *args, **kwargs):
+            image = real(line, *args, **kwargs)
+            drawn.append((line, image.get_width()))
+            return image
+
+        scene._font.render = recording
+        scene.draw(pygame.Surface(scene.canvas_size))
+        widths = dict(drawn)
+        for line in FAN_CONTENT_NOTICE:
+            assert line in widths, line
+            assert widths[line] <= scene.canvas_size[0] - 4, line
     finally:
         game._shutdown()
         directory.cleanup()

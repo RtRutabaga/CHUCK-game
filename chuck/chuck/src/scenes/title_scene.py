@@ -30,6 +30,16 @@ from src.scenes.scene import Scene
 
 
 TITLE_DIR = "title"
+
+# Wizards of the Coast's Fan Content Policy notice. CHUCK uses places and
+# creatures from Dungeons & Dragons; free fan content is permitted under
+# the policy as long as it says so. The pixel font has no copyright sign,
+# so it is written "(c)".
+FAN_CONTENT_NOTICE = (
+    "CHUCK is unofficial Fan Content permitted under the Fan Content Policy.",
+    "Not approved/endorsed by Wizards. Portions of the materials used are",
+    "property of Wizards of the Coast. (c)Wizards of the Coast LLC.",
+)
 TITLE_MUSIC = "title.wav"
 
 # The smoking cycle, in seconds: resting (varied, so it never becomes a
@@ -343,7 +353,7 @@ class TitleScene(Scene):
 
     def _draw_menu(self, canvas: pygame.Surface) -> None:
         scale = 2
-        top = 226
+        top = 216
         left = 262
         for index, label in enumerate(self.options):
             caret = ">" if index == self._selected else " "
@@ -355,7 +365,7 @@ class TitleScene(Scene):
                 rendered.set_alpha(70)
             elif index != self._selected:
                 rendered.set_alpha(215)
-            canvas.blit(rendered, (left, top + index * 26))
+            canvas.blit(rendered, (left, top + index * 24))
 
         from src.ui import prompts
 
@@ -364,4 +374,16 @@ class TitleScene(Scene):
             prompt, (prompt.get_width() * scale, prompt.get_height() * scale))
         prompt.set_alpha(165)
         canvas.blit(prompt, ((canvas.get_width() - prompt.get_width()) // 2,
-                             326))
+                             308))
+
+        # The fan content notice, small along the bottom edge, on a
+        # dark band so it reads against the nebula.
+        band = pygame.Surface((canvas.get_width(), 27), pygame.SRCALPHA)
+        band.fill((6, 6, 16, 170))
+        canvas.blit(band, (0, canvas.get_height() - band.get_height()))
+        for index, line in enumerate(FAN_CONTENT_NOTICE):
+            notice = self._font.render(line)
+            notice.set_alpha(205)
+            canvas.blit(notice,
+                        ((canvas.get_width() - notice.get_width()) // 2,
+                         334 + index * 8))
