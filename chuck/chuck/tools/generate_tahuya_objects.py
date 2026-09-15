@@ -273,14 +273,38 @@ def make_cabin():
     # Steps down off the deck toward the viewer, in front of the door
     # rather than off the far end -- they have to land on the tiles the
     # map already authored as the way up onto the porch.
+    #
+    # After the reference photograph: open stairs, painted the same worn
+    # grey-blue as the siding. Four plank treads with nothing between
+    # them but the dark under the porch, carried on a stringer at each
+    # end, and a handrail down the open side from the porch post to a
+    # post of its own at the bottom.
+    stair = (100, 116, 126)
+    stair_light = (126, 142, 150)
+    stair_dark = (72, 86, 96)
+    under = (20, 24, 28)
+    # The dark under the stairs, seen between the open treads.
+    filled(((66, 166), (120, 148), (137, 169), (83, 188)), under)
     for tread in range(4):
         dx, dy = 4 * tread, 5 * tread
-        top = ((66 + dx, 166 + dy), (120 + dx, 148 + dy),
-               (124 + dx, 153 + dy), (70 + dx, 171 + dy))
-        shape = poly(top)
+        board = ((66 + dx, 166 + dy), (120 + dx, 148 + dy),
+                 (123 + dx, 151.5 + dy), (69 + dx, 169.5 + dy))
+        shape = poly(board)
         pygame.draw.polygon(s, outline, shape)
-        pygame.draw.polygon(s, wood if tread % 2 else wood_light, shape)
-        stroke(wood_dark, (66 + dx, 167 + dy), (120 + dx, 149 + dy), 2)
+        pygame.draw.polygon(s, stair_light, shape)
+        # The tread's front edge, catching less of the light.
+        stroke(stair, (68 + dx, 168.5 + dy), (122 + dx, 150.5 + dy), 1)
+        stroke(stair_dark, (69 + dx, 170 + dy), (123 + dx, 152 + dy), 1)
+    # A stringer at each end, running from the deck to the ground.
+    for (x0, y0) in ((66, 166), (120, 148)):
+        stroke(outline, (x0, y0), (x0 + 17, y0 + 22), 4)
+        stroke(stair, (x0, y0), (x0 + 17, y0 + 22), 2)
+    # The handrail: down from the porch post to a post at the foot.
+    box(outline, 77, 161, 6, 29)
+    box(stair, 78, 162, 4, 27)
+    box(stair_light, 78, 162, 1, 27)
+    stroke(outline, (70, 140), (81, 162), 4)
+    stroke(stair_light, (70, 140), (81, 162), 2)
 
     # ---- the door, its lamp, and the windows ---------------------------
     # Wide enough to walk into without lining up on it: this is a door in

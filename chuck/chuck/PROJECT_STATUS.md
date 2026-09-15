@@ -27,6 +27,14 @@ and updated every session.
 
 ## Latest implementation
 
+### Cabin porch stairs, after the photograph
+
+- **Look:** the cabin's porch steps (drawn in `make_cabin`, `tools/generate_tahuya_objects.py`) now match the user's reference photo:
+  - Four open plank treads painted the siding's worn grey-blue, with the dark under the porch showing between them.
+  - A stringer at each end, running down to the ground.
+  - A sloping handrail on the open side, from the porch post down to its own post at the foot of the stairs.
+  - The old solid brown steps are gone. Same footprint, same position in front of the door.
+- **Collision:** the exterior map reads the porch and steps' walkable tiles off the sprite's board colours. The painted tread colours are added to `CABIN_BOARDS` in `tools/generate_tahuya_cabin_exterior.py`. Regenerating the map produces a byte-identical `tahuya_cabin_exterior.txt`, so collision is unchanged. Only `tahuya_cabin.png` changed among the Tahuya objects.
 ### More stuck-player hints, and Bobert's neighbour
 
 - **Pantry:** every plain object (barrels, crates, sack piles, produce baskets, the door) now follows its description with "No cheese here, it's in the middle of the room and it looks like it will be a leap of faith to reach". `WorldScene._points_at_the_cheese` adds it. The cheese and the scratchables (jar shelves, floor jars) don't get it.

@@ -86,7 +86,9 @@ CABIN_COVERAGE = 0.38          # how much of a tile the building must fill
 # The porch, its steps, and the deck boards, as drawn. Any tile the
 # cabin sprite fills mostly with these is board Chuck stands on rather
 # than building he walks around.
-CABIN_BOARDS = ((104, 74, 48), (138, 100, 64), (70, 48, 32), (88, 62, 40))
+CABIN_BOARDS = ((104, 74, 48), (138, 100, 64), (70, 48, 32), (88, 62, 40),
+                # The painted steps' treads.
+                (126, 142, 150), (100, 116, 126), (72, 86, 96))
 CABIN_BOARD_SHARE = 0.20
 # Where the deck meets the wall, as a fraction of the sprite height. The
 # porch posts and the railing are the same timber as the deck, so
