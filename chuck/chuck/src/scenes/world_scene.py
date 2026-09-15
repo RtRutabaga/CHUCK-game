@@ -127,6 +127,8 @@ class WorldScene(Scene):
     """The explorable world. Starts at the docks; a dialogue choice can
     carry Chuck to another map (the sewer) via load_map()."""
 
+    pausable = True
+
     def __init__(
         self,
         game,
@@ -735,11 +737,6 @@ class WorldScene(Scene):
             npc.load_sprites(self.game.assets)
             self.npcs.append(npc)
 
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        """Temporary: ESC quits until a pause menu exists."""
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     def update(self, dt: float) -> None:
         """Advance the world simulation."""

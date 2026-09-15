@@ -12,8 +12,9 @@ It is a cast, not a crew: nobody who made the game is named.
 
 It all plays over the Fall to Chult cue rearranged as upbeat ska.
 
-Holding interact runs it faster; it cannot be skipped outright. Returns
-to the title when it is done.
+Holding interact runs it faster; it cannot be skipped outright. When it
+is done it asks whether to play again: YES starts a new game from the
+opening, NO goes to the title.
 """
 
 from __future__ import annotations
@@ -330,6 +331,8 @@ class _DocksTableau(OpeningCutsceneScene):
 class CreditsScene(Scene):
     """Cast roll, final image, numbers, THE END, the cat, the title."""
 
+    pausable = True
+
     def __init__(self, game, *, good: bool) -> None:
         super().__init__(game)
         self.good = good
@@ -345,6 +348,7 @@ class CreditsScene(Scene):
         self._previous = 0
         self._switched_at = -CROSSFADE
         self._tail = 0.0            # seconds since the roll ran out
+        self.again_selected = 0     # 0 YES, 1 NO
         self._tableau: _DocksTableau | None = None
         self._stinger: _DocksTableau | None = None
 
@@ -446,7 +450,7 @@ class CreditsScene(Scene):
             if t < length:
                 return name
             t -= length
-        return "done"
+        return "again"
 
     def _page_time(self) -> tuple[float, float]:
         t = self._tail
@@ -458,6 +462,10 @@ class CreditsScene(Scene):
 
     def update(self, dt: float) -> None:
         if self.finished:
+            return
+        if self.page == "again":
+            self._tail += dt        # the question fades in
+            self._update_again()
             return
         speed = FAST if self.game.input.is_down("interact") else 1.0
         dt *= speed
@@ -474,12 +482,28 @@ class CreditsScene(Scene):
             self._tableau.advance(dt)
         if self._stinger is not None:
             self._stinger.advance(dt)
-        if self.page == "done":
-            self.finished = True
+
+    def _update_again(self) -> None:
+        """PLAY AGAIN?  YES / NO."""
+        pressed = self.game.input.was_pressed
+        if pressed("move_up") or pressed("move_down"):
+            self.again_selected = 1 - self.again_selected
+            self.game.audio.play_sfx("interact")
+        elif pressed("interact"):
+            self.game.audio.play_sfx("interact")
+            self.play_again(self.again_selected == 0)
+
+    def play_again(self, again: bool) -> None:
+        """YES: a new game from the opening. NO: the title."""
+        self.finished = True
+        scenes = self.game.scenes
+        while scenes.current is not None:
+            scenes.pop()
+        if again:
+            from src.scenes.opening_cutscene_scene import OpeningCutsceneScene
+            scenes.push(OpeningCutsceneScene(self.game))
+        else:
             from src.scenes.title_scene import TitleScene
-            scenes = self.game.scenes
-            while scenes.current is not None:
-                scenes.pop()
             scenes.push(TitleScene(self.game))
 
     def _current_section(self) -> int:
@@ -528,6 +552,8 @@ class CreditsScene(Scene):
             self._draw_page(surface, self._draw_the_end)
         elif page == "stinger":
             self._draw_page(surface, self._close_up(self._stinger))
+        elif page == "again":
+            self._draw_again(surface)
 
     @staticmethod
     def _close_up(tableau):
@@ -581,6 +607,22 @@ class CreditsScene(Scene):
             surface.blit(head, ((VIEW_W - head.get_width()) // 2, y))
             surface.blit(tail, ((VIEW_W - tail.get_width()) // 2, y + 11))
             y += 26
+
+    def _draw_again(self, surface) -> None:
+        fade = _clamp01((self._tail - TABLEAU - STATS - THE_END - STINGER)
+                        / PAGE_FADE)
+        question = self._text("PLAY AGAIN?", NAME_TINT)
+        surface.blit(question, ((VIEW_W - question.get_width()) // 2, 70))
+        for index, label in enumerate(("YES", "NO")):
+            caret = ">" if index == self.again_selected else " "
+            text = self._text(f"{caret} {label}",
+                              alpha=255 if index == self.again_selected
+                              else 180)
+            surface.blit(text, (VIEW_W // 2 - 14, 92 + index * 13))
+        if fade < 1.0:
+            veil = pygame.Surface(surface.get_size())
+            veil.set_alpha(round(255 * (1.0 - fade)))
+            surface.blit(veil, (0, 0))
 
     def _draw_the_end(self, surface) -> None:
         text = self._text("THE END")

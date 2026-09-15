@@ -27,6 +27,39 @@ and updated every session.
 
 ## Latest implementation
 
+### Pause menu, controls, volume, fullscreen, play again, saved second words
+
+- **Pause menu** (`src/scenes/pause_scene.py`)
+  - Esc during play or any cutscene opens it over the frozen scene and pauses the music. It replaces Esc quitting the game.
+    - `Game.pause()` catches Esc for scenes marked `pausable`: the world, every cutscene, the ending and the credits.
+    - Every other `game.quit()` on Esc was removed.
+  - The menu: RESUME / CONTROLS / VOLUME / FULLSCREEN: ON|OFF / QUIT TO TITLE.
+  - Quit asks first ("Anything since your last Ashtray will be lost.") with the caret starting on NO.
+  - Esc steps back a page or closes the menu.
+- **Controls page:** MOVE WASD/arrows, TALK/EXAMINE E/Enter, JUMP Space, SCRATCH F, PAUSE Esc, FULLSCREEN F11, plus "Ashtrays save your progress." It opens from the pause menu and from a new CONTROLS option on the title screen. Both use the same scene, and it draws at the title's larger canvas size when opened over the title.
+- **Volume page:** MUSIC and SOUND sliders, 0-10.
+  - Left/right adjusts; E steps up and wraps.
+  - 8 is the game as mixed, so there is headroom above it.
+  - Sound plays a blip at the new level.
+  - `AudioSystem.set_levels` scales the authored mix and updates the playing track.
+- **Display:**
+  - The window is now resizable, and F11 or the menu toggles fullscreen.
+  - Frames are scaled by whole numbers wherever they fit (1920x1080 = 6x, 2560x1440 = 8x) and letterboxed in black. A window smaller than the game is shrunk to fit (`Game.present`).
+  - vsync is only requested when the window first opens. Recreating a vsynced window to switch modes crashed SDL under the test driver, so a switch drops the request and keeps the 60fps cap.
+- **Settings file:** music, sound and fullscreen persist in `settings.json` beside the save (`src/systems/settings.py`). NEW GAME doesn't reset them, and a bad file falls back to defaults.
+- **Play again:** after the cat stinger, the credits ask "PLAY AGAIN?" YES / NO. YES starts a new game from the opening cutscene; NO goes to the title.
+- **Second words survive a reload:** the save now stores who has already had a first word (`SaveRecord.spoken`), and Continue restores it. Old saves without the field still load.
+- **Tests:**
+  - New `tests/test_pause_menu.py` covers:
+    - Esc pausing play and cutscenes, never quitting
+    - menu flow, including the quit confirm
+    - the controls list matching the key bindings, and the title's CONTROLS option
+    - volume persistence
+    - F11 and menu fullscreen
+    - whole-pixel scaling
+    - second words across a reload
+    - old-save compatibility
+  - `tests/test_credits.py` gains the play-again flow.
 ### Dragon fireballs roll across Astral cracks
 
 - **Problem:** the red dragon's rolling fireballs went out on any Astral tile. The trio arena is scattered with narrow Astral cracks, so from most landing spots much of every volley died on the first crack between the dragon and Chuck. A simulated run of six landings counted:

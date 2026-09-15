@@ -70,6 +70,8 @@ class FlightFragment:
 class ZephyrosLaunchCutsceneScene(Scene):
     """Input-free throw and horizontal inter-world flight."""
 
+    pausable = True
+
     def __init__(self, game, *, sanity: int) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -104,10 +106,6 @@ class ZephyrosLaunchCutsceneScene(Scene):
         row = self.game.assets.tileset(SEWER.sheet, TILE_PX)[row_index]
         self._astral_frames = tuple(row[:variants * frames])
         self.game.audio.stop_music(fade_ms=650)
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     @property
     def phase(self) -> str:

@@ -18,6 +18,8 @@ HOLD = 3.0    # seconds of black before the credits
 class EndingScene(Scene):
     """Fade the world beneath to black, hold, then roll the credits."""
 
+    pausable = True
+
     def __init__(self, game, *, good: bool = False) -> None:
         super().__init__(game)
         self.good = good

@@ -18,6 +18,10 @@ if TYPE_CHECKING:
 class Scene:
     """Abstract base scene. Subclass and override the hooks you need."""
 
+    # Esc opens the pause menu over this scene. Play and cutscenes pause;
+    # menus, the title and the dialogue box handle Esc themselves.
+    pausable = False
+
     def __init__(self, game: "Game") -> None:
         self.game = game
 

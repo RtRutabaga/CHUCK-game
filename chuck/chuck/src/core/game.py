@@ -34,6 +34,7 @@ from src.systems.checkpoints import (
 from src.systems.cigarettes import CigaretteLedger
 from src.systems.deaths import DeathCounter
 from src.systems.save import SaveSystem
+from src.systems.settings import DEFAULT_LEVEL, SettingsStore
 from src.scenes.boot_scene import BootScene
 
 
@@ -47,11 +48,14 @@ class Game:
                               buffer=512)
         pygame.init()
 
-        # vsync is best-effort (silently ignored where unsupported);
-        # where honored it removes the tearing ripple during scroll.
-        self.window = pygame.display.set_mode(
-            (config.WINDOW_WIDTH, config.WINDOW_HEIGHT), vsync=1
-        )
+        # The player's settings live beside the save slot (not in it:
+        # NEW GAME wipes the save, and should not reset the volume).
+        self.saves = SaveSystem(save_path)
+        self.settings_store = SettingsStore(
+            self.saves.path.with_name("settings.json"))
+        self.settings = self.settings_store.load()
+
+        self.window = self._open_window(self.settings.fullscreen)
         pygame.display.set_caption(config.GAME_TITLE)
 
         # Everything is drawn to this small surface, then scaled to the
@@ -66,6 +70,8 @@ class Game:
         self.input = InputManager()
         self.assets = AssetManager()
         self.audio = AudioSystem(self.assets)
+        self.audio.set_levels(self.settings.music / DEFAULT_LEVEL,
+                              self.settings.sound / DEFAULT_LEVEL)
         self.scenes = SceneManager(self)
         self.progress = ProgressState()
         self.cigarettes = CigaretteLedger()
@@ -73,7 +79,6 @@ class Game:
         # People Chuck has already had a first word from this session.
         self.spoken_to: set[tuple] = set()
         self.active_checkpoint_id = OPENING_CHECKPOINT_ID
-        self.saves = SaveSystem(save_path)
         self.checkpoints = CheckpointLoader(self, self.saves)
 
         # One black frame lets core systems settle before the title menu.
@@ -100,6 +105,64 @@ class Game:
         self.running = False
 
     # ------------------------------------------------------------------
+    # Window and settings
+    # ------------------------------------------------------------------
+    @staticmethod
+    def _open_window(fullscreen: bool, vsync: bool = True):
+        """A resizable window, or the desktop at full size.
+
+        vsync is best-effort (silently ignored where unsupported); where
+        honoured it removes the tearing ripple during scroll. It is only
+        asked for when the window is first opened: recreating a vsynced
+        window to switch modes crashes SDL's renderer on some drivers, so
+        a switch keeps the clock's 60fps cap and drops the vsync request.
+        If the display will not give us fullscreen, the window is the
+        fallback rather than a crash.
+        """
+        extra = {"vsync": 1} if vsync else {}
+        if fullscreen:
+            try:
+                return pygame.display.set_mode((0, 0), pygame.FULLSCREEN,
+                                               **extra)
+            except pygame.error:
+                pass
+        try:
+            return pygame.display.set_mode(
+                (config.WINDOW_WIDTH, config.WINDOW_HEIGHT),
+                pygame.RESIZABLE, **extra)
+        except pygame.error:
+            return pygame.display.set_mode(
+                (config.WINDOW_WIDTH, config.WINDOW_HEIGHT), pygame.RESIZABLE)
+
+    def set_fullscreen(self, fullscreen: bool) -> None:
+        """Switch between fullscreen and a window, and remember it."""
+        self.settings.fullscreen = bool(fullscreen)
+        self.window = self._open_window(self.settings.fullscreen,
+                                        vsync=False)
+        self.settings_store.write(self.settings)
+
+    def set_volume(self, *, music: int | None = None,
+                   sound: int | None = None) -> None:
+        """Change the music or sound level (0..10), and remember it."""
+        if music is not None:
+            self.settings.music = music
+        if sound is not None:
+            self.settings.sound = sound
+        self.audio.set_levels(self.settings.music / DEFAULT_LEVEL,
+                              self.settings.sound / DEFAULT_LEVEL)
+        self.settings_store.write(self.settings)
+
+    def pause(self) -> bool:
+        """Open the pause menu over the current scene, if it pauses."""
+        from src.scenes.pause_scene import PauseScene
+
+        current = self.scenes.current
+        if current is None or not getattr(current, "pausable", False):
+            return False
+        self.scenes.push(PauseScene(self))
+        return True
+
+    # ------------------------------------------------------------------
     # Loop phases
     # ------------------------------------------------------------------
     def _handle_events(self) -> None:
@@ -108,6 +171,15 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
+                continue
+            if event.type == pygame.VIDEORESIZE:
+                self.window = pygame.display.get_surface()
+                continue
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_F11:
+                self.set_fullscreen(not self.settings.fullscreen)
+                continue
+            if (event.type == pygame.KEYDOWN
+                    and event.key == pygame.K_ESCAPE and self.pause()):
                 continue
             self.input.process_event(event)
             self.scenes.handle_event(event)
@@ -129,13 +201,31 @@ class Game:
                 self._scene_canvas = pygame.Surface(tuple(size))
             target = self._scene_canvas
         self.scenes.draw(target)
-        pygame.transform.scale(target, self.window.get_size(), self.window)
+        self.window.fill(config.COLOR_BLACK)
+        self.window.blit(*self.present(target, self.window.get_size()))
         pygame.display.flip()
+
+    @staticmethod
+    def present(target, window_size):
+        """The scaled frame and where it goes in a window of any size.
+
+        Whole-number scaling wherever the window is at least the size of
+        the canvas, so the pixel art stays pixel-perfect -- 1920x1080 is
+        exactly 6x, 2560x1440 exactly 8x -- with black bars for whatever
+        is left over. Only a window smaller than the canvas itself is
+        scaled by a fraction, because the alternative is cropping it.
+        """
+        width, height = target.get_size()
+        win_w, win_h = window_size
+        fit = min(win_w / width, win_h / height)
+        scale = int(fit) if fit >= 1 else fit
+        size = (max(1, round(width * scale)), max(1, round(height * scale)))
+        frame = pygame.transform.scale(target, size)
+        return frame, ((win_w - size[0]) // 2, (win_h - size[1]) // 2)
 
     # ------------------------------------------------------------------
     # Shutdown
     # ------------------------------------------------------------------
     def _shutdown(self) -> None:
         """Release resources and close cleanly."""
-        # TODO: Save any persistent state here once saving exists.
         pygame.quit()

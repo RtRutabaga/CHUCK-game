@@ -67,6 +67,8 @@ def _ease(value: float) -> float:
 class DougFirCutsceneScene(Scene):
     """Forest at night, one rat, no dialogue; hands into Phase 12."""
 
+    pausable = True
+
     def __init__(self, game, sanity: int | None = None) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -83,10 +85,6 @@ class DougFirCutsceneScene(Scene):
         # The city, the rain and the Beholder theme all stop at the
         # trunk. What is on the other side is quiet.
         self.game.audio.stop_music(fade_ms=600)
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     @property
     def phase(self) -> str:

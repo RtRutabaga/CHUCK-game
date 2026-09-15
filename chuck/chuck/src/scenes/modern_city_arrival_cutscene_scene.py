@@ -37,6 +37,8 @@ def _ease(value: float) -> float:
 class ModernCityArrivalCutsceneScene(Scene):
     """Input-free close flight through rain and established death/return."""
 
+    pausable = True
+
     def __init__(self, game, *, sanity: int) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -61,10 +63,6 @@ class ModernCityArrivalCutsceneScene(Scene):
         self._left_without_cigarette = grid[2][0].copy()
         self._left_without_cigarette.set_at((0, 7), (0, 0, 0, 0))
         self._left_without_cigarette.set_at((1, 7), (0, 0, 0, 0))
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     @property
     def phase(self) -> str:

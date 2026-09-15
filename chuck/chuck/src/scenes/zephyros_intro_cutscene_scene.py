@@ -62,6 +62,8 @@ def _ease(value: float) -> float:
 class ZephyrosIntroCutsceneScene(Scene):
     """Authored reveal followed by a normally advanced conversation."""
 
+    pausable = True
+
     def __init__(self, game, *, sanity: int) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -103,12 +105,6 @@ class ZephyrosIntroCutsceneScene(Scene):
             self._line_index == len(self.dialogue) - 1
             and self._dialogue_box.is_complete
         )
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        # This cinematic is intentionally input-free.  ESC retains the
-        # project's established application-level quit behavior.
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     def update(self, dt: float) -> None:
         previous = self.elapsed

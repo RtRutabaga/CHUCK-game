@@ -46,6 +46,7 @@ def test_save_format_is_readable_versioned_and_atomic() -> None:
             "progress_flags": ["sewer_completed"],
             "cigarettes": 0,
             "deaths": 0,
+            "spoken": [],
         }
         assert saves.load() == record
         assert not path.with_suffix(".json.tmp").exists()

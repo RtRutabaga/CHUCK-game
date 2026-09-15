@@ -37,6 +37,10 @@ class SaveRecord:
     # Deaths this playthrough. Defaulted for the same reason: saves
     # written before the counter existed resume with none recorded.
     deaths: int = 0
+    # Who Chuck has already had a first word from, as (map, x, y, line)
+    # -- the second-word memory (WorldScene._second_word). Saved so a
+    # reload does not have everybody introduce themselves again.
+    spoken: tuple[tuple[str, int, int, str], ...] = ()
 
     def to_json(self) -> dict:
         return {
@@ -46,6 +50,7 @@ class SaveRecord:
             "progress_flags": list(self.progress_flags),
             "cigarettes": self.cigarettes,
             "deaths": self.deaths,
+            "spoken": [list(entry) for entry in self.spoken],
         }
 
 
@@ -88,8 +93,20 @@ class SaveSystem:
             return None
         if deaths < 0:
             return None
+        spoken = raw.get("spoken", [])
+        if not isinstance(spoken, list):
+            return None
+        entries = []
+        for entry in spoken:
+            if (not isinstance(entry, list) or len(entry) != 4
+                    or not isinstance(entry[0], str)
+                    or not isinstance(entry[3], str)
+                    or any(isinstance(v, bool) or not isinstance(v, int)
+                           for v in entry[1:3])):
+                return None
+            entries.append(tuple(entry))
         return SaveRecord(checkpoint_id, sanity, tuple(sorted(flags)),
-                          cigarettes, deaths)
+                          cigarettes, deaths, tuple(sorted(set(entries))))
 
     def write(self, record: SaveRecord) -> bool:
         """Atomically replace the save; return False if storage is unavailable."""

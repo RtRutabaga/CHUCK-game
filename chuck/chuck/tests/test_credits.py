@@ -102,6 +102,10 @@ def _run(game, credits, hold: bool = False) -> dict[str, float]:
         seen[page] = seen.get(page, 0.0) + 0.25
         if seen[page] == 0.25:
             credits.draw(surface)
+        if page == "again":
+            # It waits for an answer; this run says no.
+            credits.play_again(False)
+            continue
         game.scenes.update(0.25)
     return seen
 
@@ -115,7 +119,7 @@ def test_the_roll_runs_its_course_then_the_title() -> None:
         assert 110 < credits._height / SCROLL_SPEED < 200
         seen = _run(game, credits)
         assert list(seen) == ["cast", "tableau", "stats", "the_end",
-                              "stinger"]
+                              "stinger", "again"]
         assert isinstance(game.scenes.current, TitleScene)
     finally:
         game._shutdown()
@@ -129,7 +133,7 @@ def test_holding_interact_hurries_it_but_does_not_skip_it() -> None:
         game.scenes.push(credits)
         seen = _run(game, credits, hold=True)
         assert list(seen) == ["cast", "tableau", "stats", "the_end",
-                              "stinger"]
+                              "stinger", "again"]
         roll = credits._height / SCROLL_SPEED
         assert seen["cast"] < roll / FAST + 1.0
         assert isinstance(game.scenes.current, TitleScene)
@@ -163,3 +167,36 @@ def test_the_last_image_depends_on_the_smokes() -> None:
     finally:
         game._shutdown()
         directory.cleanup()
+
+
+def test_after_the_credits_it_offers_to_play_again() -> None:
+    from src.scenes.opening_cutscene_scene import OpeningCutsceneScene
+
+    for answer, expected in ((True, OpeningCutsceneScene),
+                             (False, TitleScene)):
+        directory, game = _game()
+        try:
+            credits = CreditsScene(game, good=True)
+            game.scenes.push(credits)
+            credits.scroll = credits._height
+            credits._tail = 1000.0
+            assert credits.page == "again"
+            # It waits: nothing moves on without an answer.
+            for _ in range(40):
+                game.scenes.update(0.25)
+            assert game.scenes.current is credits
+            surface = pygame.Surface((config.NATIVE_WIDTH,
+                                      config.NATIVE_HEIGHT))
+            credits.draw(surface)
+            if not answer:
+                game.input._actions_just_pressed.add("move_down")
+                game.scenes.update(0.0)
+                game.input._actions_just_pressed.clear()
+            game.input._actions_just_pressed.add("interact")
+            game.scenes.update(0.0)
+            game.input._actions_just_pressed.clear()
+            assert isinstance(game.scenes.current, expected)
+            assert len(game.scenes._stack) == 1
+        finally:
+            game._shutdown()
+            directory.cleanup()

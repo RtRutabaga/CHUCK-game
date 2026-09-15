@@ -1860,6 +1860,7 @@ class CheckpointLoader:
         record = self.valid_save()
         if record is None:
             return None
+        self.game.spoken_to = set(record.spoken)
         return self.load_checkpoint(
             record.checkpoint_id,
             progress_flags=record.progress_flags,
@@ -1880,5 +1881,8 @@ class CheckpointLoader:
             progress_flags=tuple(sorted(self.game.progress.flags)),
             cigarettes=self.game.cigarettes.total,
             deaths=self.game.deaths.total,
+            spoken=tuple(sorted(
+                (str(map_name), int(x), int(y), str(line))
+                for map_name, x, y, line in self.game.spoken_to)),
         )
         return self.saves.write(record)

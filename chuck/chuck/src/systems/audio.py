@@ -63,6 +63,14 @@ class AudioSystem:
         pygame.mixer.music.play(-1 if loop else 0)
         self._current_music = request
 
+    def set_levels(self, music: float, sound: float) -> None:
+        """Scale the authored mix: 1.0 is the game as it was mixed."""
+        self.music_volume = max(0.0, config.AUDIO_MUSIC_VOLUME * music)
+        self.sfx_volume = max(0.0, min(1.0, config.AUDIO_SFX_VOLUME * sound))
+        if self.enabled and self._current_music is not None:
+            pygame.mixer.music.set_volume(
+                self.volume_for(self._current_music[0]))
+
     def volume_for(self, filename: str) -> float:
         """Stream volume for one cue, including its authored trim."""
         trim = config.MUSIC_TRIM.get(filename, 1.0)

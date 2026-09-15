@@ -53,6 +53,8 @@ def _mix_color(a: tuple[int, int, int], b: tuple[int, int, int], t: float):
 class FallingCutsceneScene(Scene):
     """The complete input-free Phase 3 descent and jungle endpoint."""
 
+    pausable = True
+
     def __init__(self, game) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -87,10 +89,6 @@ class FallingCutsceneScene(Scene):
         self._left_without_cigarette.set_at((0, 7), (0, 0, 0, 0))
         self._left_without_cigarette.set_at((1, 7), (0, 0, 0, 0))
         self.game.audio.stop_music(fade_ms=350)
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     @property
     def phase(self) -> str:

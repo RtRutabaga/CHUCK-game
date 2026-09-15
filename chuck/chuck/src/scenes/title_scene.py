@@ -115,7 +115,7 @@ class TitleScene(Scene):
     # ------------------------------------------------------------------
     @property
     def options(self) -> tuple[str, ...]:
-        options = ["NEW GAME", "CONTINUE"]
+        options = ["NEW GAME", "CONTINUE", "CONTROLS"]
         if config.ENABLE_DEV_CHECKPOINT_SELECTOR:
             options.append("DEV CHECKPOINTS")
         return tuple(options)
@@ -158,13 +158,19 @@ class TitleScene(Scene):
         if not self._enabled(self._selected):
             return
         self.game.audio.play_sfx("interact")
-        if self._selected == 0:
+        choice = self.options[self._selected]
+        if choice == "NEW GAME":
             # A new game opens on Chuck waking up beside Bobert; the
             # cutscene starts the game itself when it fades out.
             from src.scenes.opening_cutscene_scene import OpeningCutsceneScene
             self.game.scenes.replace(OpeningCutsceneScene(self.game))
-        elif self._selected == 1:
+        elif choice == "CONTINUE":
             self.game.checkpoints.continue_game()
+        elif choice == "CONTROLS":
+            # The pause menu's own controls page, opened on its own.
+            from src.scenes.pause_scene import PauseScene
+            self.game.scenes.push(
+                PauseScene(self.game, page="controls", standalone=True))
         else:
             from src.scenes.checkpoint_select_scene import CheckpointSelectScene
             self.game.scenes.replace(CheckpointSelectScene(self.game))

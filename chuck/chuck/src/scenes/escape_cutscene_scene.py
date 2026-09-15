@@ -51,6 +51,8 @@ def _ease(v: float) -> float:
 class EscapeCutsceneScene(Scene):
     """Crawl -> daylight -> the ship. Ends Phase 6."""
 
+    pausable = True
+
     def __init__(self, game, sanity: int | None = None) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -64,10 +66,6 @@ class EscapeCutsceneScene(Scene):
         )
         self._frames = {"up": grid[1][0], "down": grid[0][0]}
         self.game.audio.stop_music(fade_ms=300)
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     def update(self, dt: float) -> None:
         previous = self.elapsed

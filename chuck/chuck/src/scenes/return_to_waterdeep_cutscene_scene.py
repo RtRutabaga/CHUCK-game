@@ -115,6 +115,8 @@ def _ease(value: float) -> float:
 class ReturnToWaterdeepCutsceneScene(Scene):
     """Blast, streaming worlds, and the docks. Ends Phase 13."""
 
+    pausable = True
+
     def __init__(self, game, sanity: int | None = None) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -169,10 +171,6 @@ class ReturnToWaterdeepCutsceneScene(Scene):
                 self._planks = rows[index][: variants * frames]
                 self._plank_info = (variants, frames)
                 return
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     # ------------------------------------------------------------------
     @property

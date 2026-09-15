@@ -77,6 +77,8 @@ def _clamp01(value: float) -> float:
 class OpeningCutsceneScene(Scene):
     """Evening on the docks; Chuck wakes beside Bobert. Starts the game."""
 
+    pausable = True
+
     def __init__(self, game) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -129,10 +131,6 @@ class OpeningCutsceneScene(Scene):
             return self.game.assets.image(path)
         except (FileNotFoundError, pygame.error):
             return None
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     # ------------------------------------------------------------------
     @property

@@ -100,6 +100,8 @@ def _ease(value: float) -> float:
 class DesertArrivalCutsceneScene(Scene):
     """Portal, whiteout, desert, one rat, one cigarette. Ends Phase 12."""
 
+    pausable = True
+
     def __init__(self, game, sanity: int | None = None) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -125,10 +127,6 @@ class DesertArrivalCutsceneScene(Scene):
         self._unlit.set_at((1, 7), (0, 0, 0, 0))
         # The cabin, its lightshow and its music all stop at the table.
         self.game.audio.stop_music(fade_ms=900)
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     @property
     def phase(self) -> str:

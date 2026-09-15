@@ -72,6 +72,8 @@ def _mix(
 class FeywildRiverCutsceneScene(Scene):
     """Rushing river escape ending at a held, non-playable boundary."""
 
+    pausable = True
+
     def __init__(self, game, *, sanity: int) -> None:
         super().__init__(game)
         self.sanity = sanity
@@ -90,10 +92,6 @@ class FeywildRiverCutsceneScene(Scene):
             "left": grid[2][0],
         }
         self.game.audio.stop_music(fade_ms=300)
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     @property
     def phase(self) -> str:

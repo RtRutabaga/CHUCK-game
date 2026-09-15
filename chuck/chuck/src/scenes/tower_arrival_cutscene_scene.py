@@ -46,6 +46,8 @@ def _ease(value: float) -> float:
 class TowerArrivalCutsceneScene(Scene):
     """Input-free ascent from the Feywild to the exterior platform."""
 
+    pausable = True
+
     def __init__(self, game, *, sanity: int) -> None:
         super().__init__(game)
         self.elapsed = 0.0
@@ -58,10 +60,6 @@ class TowerArrivalCutsceneScene(Scene):
             config.CHUCK_SHEET, config.CHUCK_FRAME_W, config.CHUCK_FRAME_H
         )
         self._chuck = grid[1][0]
-
-    def handle_event(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            self.game.quit()
 
     @property
     def phase(self) -> str:
