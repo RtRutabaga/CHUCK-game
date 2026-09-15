@@ -27,6 +27,12 @@ and updated every session.
 
 ## Latest implementation
 
+### Ranger's bow the right way round
+
+- **Bug:** the ranger's longbow was drawn backwards. Its wood curved in toward her body, with the string on the outside, facing the enemy.
+- **Fix:** `tools/generate_adventurer_sprites.py` now draws the bow pixel by pixel. The grip bows out west, away from her, and the tips come back to a string on her side. `npcs/ranger.png` is regenerated; the other adventurer sprites came out unchanged.
+- **Scope:** the battle actor (temple sanctum, desert trio, Phlegethos) and the end credits both draw this one sprite, so the fix covers both.
+- **Tests:** new `tests/test_ranger_bow.py` checks the grip is west of the string and the tips return to it. It fails on the old sprite. It also checks the game and the credits use the same file.
 ### Credits ska: no intro, louder bass
 
 - **Intro removed:** the stop-time horn and rising-pulse intro is gone. `credits_ska` now opens on a single drum-only pickup bar: two hits and a snare roll. The fall's melody starts on the next bar.

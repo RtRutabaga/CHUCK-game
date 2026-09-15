@@ -103,8 +103,14 @@ def ranger() -> Image.Image:
     d.rectangle((5, 18, 9, 23), fill=TUNIC_DARK)    # skirted hem
     d.rectangle((5, 24, 6, 29), fill=LEATHER)       # boots
     d.rectangle((8, 24, 9, 29), fill=LEATHER)
-    d.arc((-4, 4, 3, 24), 270, 90, fill=BOW, width=2)   # longbow, west
-    d.line((2, 5, 2, 23), fill=STRING)                  # string
+    # The longbow, held out west toward the beholder: the wood bows out
+    # away from her, and the string runs tip to tip on her side of it.
+    for y, xs in ((4, (2, 3)), (5, (2,)), (6, (1, 2)), (7, (1,)), (8, (1,))):
+        for x in xs:
+            d.point((x, y), fill=BOW)
+            d.point((x, 28 - y), fill=BOW)
+    d.rectangle((0, 9, 1, 19), fill=BOW)
+    d.line((3, 5, 3, 23), fill=STRING)                  # string
     return image
 
 
