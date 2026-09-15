@@ -30,6 +30,10 @@ from src.scenes.scene import Scene
 
 
 TITLE_DIR = "title"
+# How far the portrait, the name and the menu sit above where the art
+# was laid out, to leave the Fan Content notice its own space at the
+# bottom of the screen.
+TITLE_LIFT = 12
 
 # Wizards of the Coast's Fan Content Policy notice. CHUCK uses places and
 # creatures from Dungeons & Dragons; free fan content is permitted under
@@ -117,8 +121,10 @@ class TitleScene(Scene):
 
         meta_path = config.SPRITES_DIR / TITLE_DIR / "title.json"
         self._meta = json.loads(meta_path.read_text(encoding="utf-8"))
-        self._chuck_origin = tuple(self._meta["chuck_origin"])
-        self._logo_origin = tuple(self._meta["logo"]["origin"])
+        cx, cy = self._meta["chuck_origin"]
+        lx, ly = self._meta["logo"]["origin"]
+        self._chuck_origin = (cx, cy - TITLE_LIFT)
+        self._logo_origin = (lx, ly - TITLE_LIFT)
         self._arms = self._meta["arm_frames"]
         self._images_loaded = False
 
@@ -353,7 +359,7 @@ class TitleScene(Scene):
 
     def _draw_menu(self, canvas: pygame.Surface) -> None:
         scale = 2
-        top = 216
+        top = 216 - TITLE_LIFT
         left = 262
         for index, label in enumerate(self.options):
             caret = ">" if index == self._selected else " "
@@ -374,7 +380,7 @@ class TitleScene(Scene):
             prompt, (prompt.get_width() * scale, prompt.get_height() * scale))
         prompt.set_alpha(165)
         canvas.blit(prompt, ((canvas.get_width() - prompt.get_width()) // 2,
-                             308))
+                             314 - TITLE_LIFT))
 
         # The fan content notice, small along the bottom edge, on a
         # dark band so it reads against the nebula.

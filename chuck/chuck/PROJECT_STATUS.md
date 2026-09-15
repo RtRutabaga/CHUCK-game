@@ -27,6 +27,10 @@ and updated every session.
 
 ## Latest implementation
 
+### Title screen content lifted clear of the notice
+
+- **What moved:** Chuck's portrait, the CHUCK logo and the menu now sit 12 canvas pixels higher (`TITLE_LIFT` in `src/scenes/title_scene.py`), applied to the art's metadata origins so the ember, smoke and mouth positions move with them.
+- **Controls prompt:** it gets a little more room below the last menu option, so the menu and prompt no longer crowd the Fan Content notice band at the bottom.
 ### Fan Content Policy notice on the title screen
 
 - **Why:** CHUCK uses places and creatures from Dungeons & Dragons. Wizards of the Coast's Fan Content Policy permits free fan content that carries this notice.
