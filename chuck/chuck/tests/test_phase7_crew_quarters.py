@@ -72,7 +72,8 @@ def test_seated_pirate_uses_first_then_repeat_dialogue_and_animates() -> None:
         "Well I'll be. Never seen a rat wearin' a coat before."
     ]
     assert dialogue.get("seated_pirate_repeat") == [
-        "Still wearin' the coat, then."
+        "You seem like a good listener, I bet all of the crew would love "
+        "to bend your ear"
     ]
     game = Game()
     try:

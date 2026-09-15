@@ -114,7 +114,7 @@ CAST: tuple[Section, ...] = (
                _npc("seated_pirate")),
         Member("The Concertina Pirate", "Still considering it.",
                _npc("concertina_pirate")),
-        Member("The Cheering Pirate", "Good sea for it.",
+        Member("The Cheering Pirate", "Don't mind Jeffries.",
                _npc("cheering_pirate")),
         Member("The Dancing Pirate", "Other half's his.",
                _npc("dancing_pirate")),

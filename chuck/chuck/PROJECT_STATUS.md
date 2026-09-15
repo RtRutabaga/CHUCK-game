@@ -27,6 +27,13 @@ and updated every session.
 
 ## Latest implementation
 
+### Guiding a stuck player: ship and cabin hints
+
+- **Seated pirate (crew quarters, by the table at the ladder up to the deck):** his second and later line is now "You seem like a good listener, I bet all of the crew would love to bend your ear". It points at the captain confrontation's gate, which needs every crew conversation.
+- **Cheering pirate (exterior deck):** his second and later line is now "You're not smoking the captain's cigarettes, are you!?". It points at the other half of that gate, the captain's chest.
+- **Cabin exterior:** examining the cabin now reads "A cabin in the woods. Maybe someone inside knows the way forward".
+- **Credits:** the cast roll's line for the cheering pirate was his old second line, so it now reads "Don't mind Jeffries."
+- **Tests:** new `tests/test_stuck_hints.py` covers the lines and ties both pirate hints to `CAPTAIN_REQUIRED_FLAGS`. `test_phase7_crew_quarters` is updated for the new line. All three fit the dialogue box in two lines.
 ### Ranger's bow the right way round
 
 - **Bug:** the ranger's longbow was drawn backwards. Its wood curved in toward her body, with the string on the outside, facing the enemy.
