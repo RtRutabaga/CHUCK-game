@@ -27,6 +27,16 @@ and updated every session.
 
 ## Latest implementation
 
+### More stuck-player hints, and Bobert's neighbour
+
+- **Pantry:** every plain object (barrels, crates, sack piles, produce baskets, the door) now follows its description with "No cheese here, it's in the middle of the room and it looks like it will be a leap of faith to reach". `WorldScene._points_at_the_cheese` adds it. The cheese and the scratchables (jar shelves, floor jars) don't get it.
+- **Chult 3:** two trail tiles at (27,2) and (28,2) extend the existing trail so it runs straight into the mouth of the Chuck-sized tunnel under the fallen log.
+- **Feywild:** the spiral flowers now read "A very large flower. Doesn't seem like it does anything, unlike those other flowers".
+- **City Night 3:** the homeless man's second word is "The street runs out a few blocks on. Only way on from there is down, buddy.". It points at the Night 6 sewer entrance. It gives no compass direction because the route turns north then west.
+- **Final Waterdeep:** the dock worker nearest Bobert's barrel has his own lines under the `bobert_neighbour` dialogue id:
+  - First: "You're back! Bobert's been moping in his barrel all week! I'm sure he's happy to see you".
+  - Every time after: "yep..." then "... I'm still unemployed".
+- **Tests:** these are covered in `tests/test_stuck_hints.py`, with the pantry hint checked through the real interact key. `test_examine` and `test_phase14_waterdeep_return` are updated for the changed lines and counts.
 ### Guiding a stuck player: ship and cabin hints
 
 - **Seated pirate (crew quarters, by the table at the ladder up to the deck):** his second and later line is now "You seem like a good listener, I bet all of the crew would love to bend your ear". It points at the captain confrontation's gate, which needs every crew conversation.

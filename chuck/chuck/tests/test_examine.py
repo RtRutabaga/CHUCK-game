@@ -57,7 +57,8 @@ def test_things_that_look_scratchable_say_whether_they_are() -> None:
         assert "scratch" in says(line_id) or "cigarette" in says(line_id), \
             line_id
     # Decoration just says what it is, briefly.
-    assert says(examine_line_id("feywild_spiral")) == "a very large flower."
+    assert says(examine_line_id("feywild_spiral")).startswith(
+        "a very large flower.")
 
 
 def test_breakables_and_switch_flowers_answer_e_until_broken() -> None:

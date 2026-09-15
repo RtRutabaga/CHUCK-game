@@ -187,7 +187,9 @@ def test_return_population_is_state_gated_and_noticeably_busier() -> None:
         assert len(fishermen) == 1
         assert len(finale.npcs) == opening_count + 1 + len(RETURN_TOWNSFOLK)
         assert sum(n.dialogue_id == "return_dock_worker"
-                   for n in finale.npcs) == 2
+                   for n in finale.npcs) == 1
+        assert sum(n.dialogue_id == "bobert_neighbour"
+                   for n in finale.npcs) == 1
         assert sum(n.dialogue_id == "market_browser"
                    for n in finale.npcs) == 3
         assert finale.dialogue.get("return_dock_worker") == ["Busy today."]

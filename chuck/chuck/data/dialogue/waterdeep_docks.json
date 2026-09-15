@@ -5,6 +5,16 @@
     "Harbormaster says it's fine. The ship says nothing.",
     "Anyway. Watch out for the cat."
   ],
+  "pantry_cheese_hint": [
+    "No cheese here, it's in the middle of the room and it looks like it will be a leap of faith to reach"
+  ],
+  "bobert_neighbour": [
+    "You're back! Bobert's been moping in his barrel all week! I'm sure he's happy to see you"
+  ],
+  "bobert_neighbour_repeat": [
+    "yep...",
+    "... I'm still unemployed"
+  ],
   "bobert_sleeping": [
     "... Zzzzz."
   ],

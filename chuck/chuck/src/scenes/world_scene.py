@@ -111,6 +111,7 @@ from src.systems.ship_motion import deck_rock_offset
 from src.ui.hud import HUD
 
 BOBERT_AWAKE_LINE = "bobert_awake"
+PANTRY_CHEESE_HINT = "pantry_cheese_hint"
 BOBERT_CARTONS_LINE = "bobert_awake_cartons"
 from src.world.camera import Camera
 from src.world.collision import overlaps
@@ -1528,9 +1529,10 @@ class WorldScene(Scene):
                     return
                 if target in self.npcs:
                     dialogue_id = self._second_word(target, dialogue_id)
-                self.game.scenes.push(
-                    DialogueScene(self.game, self.dialogue.get(dialogue_id))
-                )
+                lines = list(self.dialogue.get(dialogue_id))
+                if self._points_at_the_cheese(target):
+                    lines += self.dialogue.get(PANTRY_CHEESE_HINT)
+                self.game.scenes.push(DialogueScene(self.game, lines))
                 return  # the world holds its breath
 
         player_box = self.player.hitbox
@@ -2364,6 +2366,20 @@ class WorldScene(Scene):
         self.game.scenes.replace(
             HellFallingCutsceneScene(self.game, sanity=self.sanity.current)
         )
+
+    def _points_at_the_cheese(self, target) -> bool:
+        """In the pantry, every plain object says where the cheese is.
+
+        The way on from the pantry is a jump into the sky to the cheese in
+        the middle of the room, and nothing about a hole in the floor says
+        "jump in". So the things Chuck looks at while he is working it out
+        -- the barrels, crates, sacks, baskets, the door -- all end on the
+        same nudge. The cheese itself does not, and neither do the jars
+        and shelves: they are for scratching.
+        """
+        return (self.map_name == "waterdeep_pantry"
+                and target in self.props
+                and getattr(target, "kind", None) != "cheese")
 
     def _talk_to_bobert(self) -> None:
         """The end of the game: Bobert asks after the smokes.
