@@ -27,6 +27,12 @@ and updated every session.
 
 ## Latest implementation
 
+### No jungle vines on the cog docked in final Waterdeep
+
+- **Problem:** the cog tied up in the return-to-Waterdeep harbour borrowed Chult's stranded `sailing_cog.png`, jungle vines and all.
+- **Fix:** `sailing_cog()` in `tools/generate_chult_props.py` now takes `overgrown`. The tool also writes a clean `waterdeep_docked_ship.png`, the same ship without the hull vines or the vine on the masthead. The `waterdeep_docked_ship` prop uses the clean sprite.
+- **Chult unchanged:** the Chult cog keeps its vines, and its sprite regenerates pixel-identical.
+- **Tests:** new `tests/test_docked_ship_clean.py`.
 ### Cabin porch stairs, after the photograph
 
 - **Look:** the cabin's porch steps (drawn in `make_cabin`, `tools/generate_tahuya_objects.py`) now match the user's reference photo:

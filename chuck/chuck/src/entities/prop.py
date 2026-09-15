@@ -131,8 +131,9 @@ _SPRITES = {
         f"objects/orc_weapon_rack_{i + 1}.png" for i in range(2)),
     "orc_war_drum": "objects/orc_war_drum.png",
     "sailing_cog": "objects/sailing_cog.png",
-    # Phase 14 reuses the established cog silhouette as dockside scenery.
-    "waterdeep_docked_ship": "objects/sailing_cog.png",
+    # Phase 14 reuses the established cog silhouette as dockside scenery,
+    # without the jungle vines the stranded one has in Chult.
+    "waterdeep_docked_ship": "objects/waterdeep_docked_ship.png",
     "waterdeep_fountain": "objects/waterdeep_fountain_1.png",
     "waterdeep_closed_gate": "objects/waterdeep_closed_gate.png",
     # A square tower either side of the gate, a tile proud of the wall,

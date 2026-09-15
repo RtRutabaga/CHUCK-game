@@ -103,8 +103,13 @@ def jungle_shrub(variant: int) -> Image.Image:
     return image
 
 
-def sailing_cog() -> Image.Image:
-    """A huge three-quarter-view cog between bird's-eye and side elevation."""
+def sailing_cog(overgrown: bool = True) -> Image.Image:
+    """A huge three-quarter-view cog between bird's-eye and side elevation.
+
+    overgrown draws the jungle vines of the cog stranded in Chult. The
+    same ship tied up in Waterdeep harbour at the end is drawn clean:
+    nothing grows on a hull that has been at sea.
+    """
     image = Image.new("RGBA", (224, 152), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
 
@@ -184,6 +189,8 @@ def sailing_cog() -> Image.Image:
     draw.polygon(((109, 104), (121, 104), (123, 109), (107, 109)),
                  fill=wood)
 
+    if not overgrown:
+        return image
     # Jungle growth tangles around the stranded base; there is no ladder.
     draw.line((20, 125, 48, 143, 77, 139), fill=vine_dark, width=3)
     draw.line((193, 128, 160, 144, 126, 141), fill=vine, width=3)
@@ -232,6 +239,7 @@ def main() -> None:
         ("jungle_shrub_2", jungle_shrub(1)),
         ("jungle_shrub_3", jungle_shrub(2)),
         ("sailing_cog", sailing_cog()),
+        ("waterdeep_docked_ship", sailing_cog(overgrown=False)),
         ("skull_stake", skull_stake()),
     ):
         path = OUT / f"{name}.png"
