@@ -27,6 +27,37 @@ and updated every session.
 
 ## Latest implementation
 
+### Controller support, with prompts that follow the device
+
+- **Input** (`src/core/input.py`) reads game controllers through SDL's game-controller layer: Xbox, PlayStation, Switch Pro and most PC pads.
+  - Pads plugged in at startup or mid-game are picked up.
+  - Buttons are read by position on every pad (`SDL_GAMECONTROLLER_USE_BUTTON_LABELS=0`), so the layout doesn't move between brands.
+- **Layout:**
+  - Left stick or D-pad: move and navigate menus.
+  - South button (Xbox A): talk, examine, confirm.
+  - East button (Xbox B): jump, and back in menus.
+  - West button (Xbox X): scratch.
+  - Start or Back: pause, and back out of the pause menu.
+- **Stick handling:** the stick is read as four directions with hysteresis (press at 0.5, release under 0.35). Movement stays eight-way, so jumps and stream crossings behave exactly as on the keyboard.
+  - An action is held while any key, button or stick direction holds it, so letting go of one doesn't cancel another.
+- **Unplugging:** pulling the pad in use pauses the game and releases everything it was holding.
+- **Prompts** (`src/ui/prompts.py`) name whatever the player last touched:
+  - **Keyboard:** unchanged text.
+  - **Xbox:** A / B / X / START.
+  - **PlayStation:** CROSS / CIRCLE / SQUARE / OPTIONS, in words. Nine-pixel symbol icons were tried and read as punctuation.
+  - **Switch:** B / A / Y / PLUS, Nintendo's letters for the same positions.
+  - This covers the tutorial hints, the title prompt, the controls page (which gets a controller version with "F11 (KEYBOARD)") and the menu footers.
+- **Hint position:** tutorial hints moved down to 18px so the longer controller lines clear the HUD counters.
+- **Tests:** new `tests/test_controller.py` covers:
+  - the layout and positional buttons
+  - stick hysteresis and eight-way diagonals
+  - multi-source holds
+  - device and pad-kind detection
+  - prompts per pad
+  - Start pausing and B backing out
+  - Chuck walking on the stick
+  - unplug-to-pause
+- **Not yet done:** tested with synthetic controller events only; it still needs a check with a real pad.
 ### Pause menu, controls, volume, fullscreen, play again, saved second words
 
 - **Pause menu** (`src/scenes/pause_scene.py`)

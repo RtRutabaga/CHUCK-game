@@ -538,7 +538,7 @@ DIALOGUE_CPS = 40           # typewriter speed, characters per second
 # src/ui/tutorial_hint.py. Not instructional UI for the whole game.)
 # ---------------------------------------------------------------------------
 TUTORIAL_MAPS = {"waterdeep_docks", "sewer", "waterdeep_pantry"}
-TUTORIAL_HINT_TOP = 8       # pixels from the top of the 320x180 view
+TUTORIAL_HINT_TOP = 18      # pixels from the top: below the HUD row
 HINT_INTERACT = "Press E to interact"
 HINT_JUMP = "Press SPACE to jump"
 HINT_SCRATCH = "Press F to scratch"

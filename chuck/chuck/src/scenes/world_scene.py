@@ -348,7 +348,7 @@ class WorldScene(Scene):
         # The opening teaches; the return does not. By the time Chuck is
         # back on these docks he has pressed every key there is.
         self._hint = (
-            TutorialHint(self.game.assets)
+            TutorialHint(self.game.assets, self.game.input)
             if self.map_name in config.TUTORIAL_MAPS
             and not self.game.progress.has(WATERDEEP_RETURN_FLAG)
             else None

@@ -357,7 +357,9 @@ class TitleScene(Scene):
                 rendered.set_alpha(215)
             canvas.blit(rendered, (left, top + index * 26))
 
-        prompt = self._font.render("UP / DOWN   E / ENTER")
+        from src.ui import prompts
+
+        prompt = self._font.render(prompts.title_prompt(self.game.input))
         prompt = pygame.transform.scale(
             prompt, (prompt.get_width() * scale, prompt.get_height() * scale))
         prompt.set_alpha(165)

@@ -21,11 +21,18 @@ from src.core import config
 class TutorialHint:
     """Draws one centered line of hint text near the top of the view."""
 
-    def __init__(self, assets) -> None:
+    def __init__(self, assets, input_manager=None) -> None:
         self._font = assets.bitmap_font()
+        self._input = input_manager
 
     def draw(self, surface, text: str) -> None:
-        """Centered horizontally, TUTORIAL_HINT_TOP px from the top."""
-        rendered = self._font.render(text)
+        """Centered horizontally, TUTORIAL_HINT_TOP px from the top.
+
+        Names the button rather than the key when the player is on a
+        controller (src/ui/prompts.py).
+        """
+        from src.ui import prompts
+
+        rendered = self._font.render(prompts.hint(self._input, text))
         x = (surface.get_width() - rendered.get_width()) // 2
         surface.blit(rendered, (x, config.TUTORIAL_HINT_TOP))

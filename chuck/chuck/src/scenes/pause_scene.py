@@ -22,6 +22,7 @@ import pygame
 from src.core import config
 from src.scenes.scene import Scene
 from src.systems.settings import LEVELS
+from src.ui import prompts
 
 # What the controls page says. One row per action, in the order a player
 # needs them.
@@ -34,6 +35,21 @@ CONTROLS = (
     ("FULLSCREEN", "F11"),
 )
 CONTROLS_NOTE = "Ashtrays save your progress."
+
+
+def controls_rows(input_manager) -> tuple[tuple[str, str], ...]:
+    """The controls page for whatever the player last used."""
+    if input_manager is None or not input_manager.using_controller:
+        return CONTROLS
+    label = prompts.label
+    return (
+        ("MOVE", prompts.PAD_MOVE),
+        ("TALK / EXAMINE", label(input_manager, "interact")),
+        ("JUMP", label(input_manager, "jump")),
+        ("SCRATCH", label(input_manager, "scratch")),
+        ("PAUSE", label(input_manager, "pause")),
+        ("FULLSCREEN", "F11 (KEYBOARD)"),
+    )
 
 MAIN = ("RESUME", "CONTROLS", "VOLUME", "FULLSCREEN", "QUIT TO TITLE")
 VOLUME = ("MUSIC", "SOUND", "BACK")
@@ -128,6 +144,10 @@ class PauseScene(Scene):
     def update(self, dt: float) -> None:
         del dt
         pressed = self.game.input.was_pressed
+        if pressed("back"):
+            # A controller's back button (Esc arrives through handle_event).
+            self.back()
+            return
         if self.page == "controls":
             if pressed("interact"):
                 self.back()
@@ -251,15 +271,16 @@ class PauseScene(Scene):
     def _draw_controls(self, canvas) -> None:
         rect = self._panel(canvas, 230, 146, "CONTROLS")
         line = self._font.get_height() + 5
-        for index, (action, keys) in enumerate(CONTROLS):
+        rows = controls_rows(self.game.input)
+        for index, (action, keys) in enumerate(rows):
             y = rect.y + 26 + index * line
             canvas.blit(self._text(action, alpha=200), (rect.x + 14, y))
             key_text = self._text(keys, TITLE_TINT)
             canvas.blit(key_text, (rect.right - 14 - key_text.get_width(), y))
         note = self._text(CONTROLS_NOTE, alpha=190)
         canvas.blit(note, (rect.centerx - note.get_width() // 2,
-                           rect.y + 26 + len(CONTROLS) * line + 3))
-        self._footer(canvas, rect, "E / ESC: BACK")
+                           rect.y + 26 + len(rows) * line + 3))
+        self._footer(canvas, rect, prompts.back_footer(self.game.input))
 
     def _draw_volume(self, canvas) -> None:
         rect = self._panel(canvas, 190, 96, "VOLUME")

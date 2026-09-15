@@ -25,7 +25,7 @@ os.environ.setdefault("SDL_WINDOWS_DPI_AWARENESS", "permonitorv2")
 
 from src.core import config
 from src.core.assets import AssetManager
-from src.core.input import InputManager
+from src.core.input import InputManager, use_positional_buttons
 from src.core.scene_manager import SceneManager
 from src.systems.audio import AudioSystem
 from src.systems.checkpoints import (
@@ -46,6 +46,7 @@ class Game:
         # Match the mixer to our rendered audio before pygame.init.
         pygame.mixer.pre_init(frequency=22050, size=-16, channels=2,
                               buffer=512)
+        use_positional_buttons()
         pygame.init()
 
         # The player's settings live beside the save slot (not in it:
@@ -68,6 +69,7 @@ class Game:
         self.running = False
 
         self.input = InputManager()
+        self.input.start_controllers()
         self.assets = AssetManager()
         self.audio = AudioSystem(self.assets)
         self.audio.set_levels(self.settings.music / DEFAULT_LEVEL,
@@ -152,6 +154,15 @@ class Game:
                               self.settings.sound / DEFAULT_LEVEL)
         self.settings_store.write(self.settings)
 
+    def _start_pressed(self) -> None:
+        from src.scenes.pause_scene import PauseScene
+
+        current = self.scenes.current
+        if isinstance(current, PauseScene):
+            current.back()
+        else:
+            self.pause()
+
     def pause(self) -> bool:
         """Open the pause menu over the current scene, if it pauses."""
         from src.scenes.pause_scene import PauseScene
@@ -182,6 +193,17 @@ class Game:
                     and event.key == pygame.K_ESCAPE and self.pause()):
                 continue
             self.input.process_event(event)
+            if (event.type == pygame.CONTROLLERBUTTONDOWN
+                    and event.button in (pygame.CONTROLLER_BUTTON_START,
+                                         pygame.CONTROLLER_BUTTON_BACK)):
+                # Start is Esc for a controller: it pauses, and in the
+                # pause menu it steps back out again.
+                self._start_pressed()
+                continue
+            if self.input.lost_controller is not None:
+                # The pad in use came unplugged: stop, rather than let
+                # Chuck walk on into whatever he was walking at.
+                self.pause()
             self.scenes.handle_event(event)
 
     def _update(self, dt: float) -> None:
