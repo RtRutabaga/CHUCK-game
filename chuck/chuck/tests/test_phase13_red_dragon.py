@@ -46,6 +46,8 @@ from src.entities.red_dragon import (
 )
 from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import DESERT_ENTRY_FLAGS
+from src.systems.trio_encounter import (
+    BEATS as _TRIO_BEATS, CHURN_FROM as _TRIO_COLLIDES)
 from src.world.tilemap import TileMap
 
 
@@ -108,6 +110,10 @@ def _world():
     )
     world._arrival_fade_t = None
     return directory, game, world
+
+
+# When the wizard finds it, and the dragon with it: the talk before that.
+_DRAGON_DUE = sum(delay for delay, _ in _TRIO_BEATS[:_TRIO_COLLIDES])
 
 
 def _play(game, world, seconds: float, *, hold="clear") -> None:
@@ -461,7 +467,7 @@ def test_the_animal_is_in_the_air_and_the_fire_is_on_the_floor() -> None:
     directory, game, world = _world()
     try:
         assert world.red_dragon not in world._sorted_drawables()
-        _play(game, world, 66.0)
+        _play(game, world, _DRAGON_DUE + 4.0)
         dragon = world.red_dragon
         assert dragon.flying or dragon.fires, "nothing to draw yet"
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
@@ -520,7 +526,7 @@ def test_only_the_trios_map_has_one_and_dying_sends_it_home() -> None:
             "desert_east_8", progress_flags=set(DESERT_ENTRY_FLAGS))
         assert elsewhere.red_dragon is None
 
-        _play(game, world, 70.0)
+        _play(game, world, _DRAGON_DUE + 8.0)
         assert world.red_dragon.passes > 0
         world._reset_enemies()
         assert world.red_dragon.passes == 0
@@ -749,7 +755,9 @@ def test_the_last_two_exchanges_are_the_long_ones() -> None:
     # between them they are more than half the encounter -- which is the
     # claim, rather than any particular pair of numbers.
     assert min(fight) > max(talk), (talk, fight)
-    assert min(fight) > sum(talk) / len(talk) * 2, (talk, fight)
+    # Half as long again as the talk, since the talk grew to fit the
+    # orcs' siege; it was twice as long before that.
+    assert min(fight) > sum(talk) / len(talk) * 1.5, (talk, fight)
     assert sum(fight) > sum(talk), (talk, fight)
 
 

@@ -280,6 +280,10 @@ class RedDragonFlyby:
         self._volley = 0.0
         self._since_drop = 0.0
         self._elapsed = 0.0
+        # A row for the next pass to take instead of Chuck's, and no
+        # landing on it: the final encounter sends its first pass down
+        # the orcs' catapult. None means the ordinary pass at him.
+        self.aim_row: int | None = None
         # [x, y, age] per patch of burning floor, oldest first.
         self.fires: list[list] = []
         self.balls: list[FlameBall] = []
@@ -337,7 +341,8 @@ class RedDragonFlyby:
     # ------------------------------------------------------------------
     # The pass
     # ------------------------------------------------------------------
-    def begin(self, row: int, land_col: int | None = None) -> None:
+    def begin(self, row: int, land_col: int | None = None,
+              land: bool = True) -> None:
         """Send it across at `row`, from whichever side it did not last."""
         top = ROW_MARGIN
         bottom = self._tilemap.height_tiles - 1 - ROW_MARGIN
@@ -351,7 +356,7 @@ class RedDragonFlyby:
         self.passes += 1
         self._since_drop = 0.0
         self._land_at = None
-        if self.passes % LAND_EVERY == 0:
+        if land and self.passes % LAND_EVERY == 0:
             self._land_at = self._landing_spot(land_col)
 
     def _landing_spot(self, land_col: int | None) -> float:
@@ -396,7 +401,11 @@ class RedDragonFlyby:
 
         if self.phase == "waiting":
             self._wait -= dt
-            if self._wait <= 0.0:
+            if self._wait <= 0.0 and self.aim_row is not None:
+                # A row somebody else chose, flown straight across.
+                row, self.aim_row = self.aim_row, None
+                self.begin(row, land=False)
+            elif self._wait <= 0.0:
                 # Aimed at wherever he is standing *now*, and then
                 # fixed. Re-aiming in flight would be a dragon chasing
                 # a rat, which is both unfair and beneath it.

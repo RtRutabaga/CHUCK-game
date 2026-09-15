@@ -27,6 +27,36 @@ and updated every session.
 
 ## Latest implementation
 
+### Final trio encounter: the orcs' siege (archers, catapult, dragon)
+
+- **Archers** (`src/systems/orc_siege.py`, `OrcArcher`): 5s into the encounter, five orc archers march in single file, three from the north edge and two from the south. They walk straight lines to posts a long bowshot from the heroes: (38,5), (44,8), (50,4), (39,44), (36,47).
+  - Once posted, each looses an `orc_arrow` every 2.8s, staggered and cycling targets across the fighter, wizard and ranger.
+  - The arrows are a new battle projectile kind: black shaft, red fletching, speed 118, 10 Sanity. Each is spent when it reaches the hero, so it crosses the arena as traffic for Chuck to dodge.
+  - Sprite: `hazards/orc_archer.png`, the desert orc with a bow and quiver instead of the axe (`orc_frame(weapon="bow")` in `tools/generate_undead_sprites.py`).
+- **Catapult** (`Catapult`, art `hazards/orc_catapult.png` from `tools/generate_orc_catapult.py`, with cocked, loosing, loosed and wreck frames):
+  - Two orc operators push it in from the south edge to (32,41), starting 3s after the midpoint exchange.
+  - It looses a rock every 3.4s at one of the heroes. The rock is lobbed in an arc with a growing shadow marking where it lands, comes down short of the hero (cycled landing points and spread), then rolls the rest of the way.
+  - Rolling rocks are the thing to dodge: 15 Sanity each. They are spent against the heroes' line or on the Astral.
+  - The catapult is an obstacle Chuck bumps into, not a damage source. The archers and operators count as orcs in his way, the same as the horde (`horde_orcs`).
+- **Dragon:** its first pass is sent down the catapult's row with no landing (`RedDragonFlyby.aim_row`; `begin(..., land=False)`).
+  - The stripe of fire wrecks the catapult, which smoulders, and kills both operators.
+  - After that the dragon hunts Chuck as before.
+  - Its fire and fireballs also burn any archer they touch.
+  - Safety net: the catapult never outlasts the second pass.
+- **Timing:** the conversation is longer to make room.
+  - The talk beats go from 15/17/17/13 to 20/22/23/17 seconds.
+  - The dragon's two beats go from 40/32 to 44/39, so the fight still outlasts the talk.
+  - In the simulated run: archers were posted at 12s, the catapult arrived at 45s and got 11 rocks off, the dragon came at 82s, and the catapult was wrecked at 89s.
+- **Resets:** a death rebuilds the siege with the horde.
+- **Tests:**
+  - New `tests/test_trio_siege.py` covers:
+    - march paths over open floor
+    - the timeline end to end in the real room
+    - arrows aimed at and spent at the heroes
+    - rock damage and catapult blocking
+    - the dragon's catapult pass
+    - rebuild on death
+  - `tests/test_phase13_red_dragon.py` now derives the dragon's arrival from `BEATS` and says the fight beats are half as long again as the talk, where it used to require twice as long.
 ### No jungle vines on the cog docked in final Waterdeep
 
 - **Problem:** the cog tied up in the return-to-Waterdeep harbour borrowed Chult's stranded `sailing_cog.png`, jungle vines and all.

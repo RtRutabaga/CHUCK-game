@@ -31,6 +31,11 @@ _PROJECTILES = {
               7, 2, None),
     "bolt": (config.BATTLE_BOLT_SPEED, config.BATTLE_BOLT_SANITY_DAMAGE,
              5, 5, None),
+    # The orc archers' arrows at the trio (src/systems/orc_siege.py).
+    # Slower than the ranger's, so they can be seen coming across the
+    # room, and spent at the hero they were loosed at.
+    "orc_arrow": (config.BATTLE_ORC_ARROW_SPEED,
+                  config.BATTLE_ORC_ARROW_SANITY_DAMAGE, 7, 2, None),
 }
 
 _COLORS = {
@@ -38,6 +43,8 @@ _COLORS = {
     "ray": ((198, 54, 46), (255, 172, 148)),
     "arrow": ((112, 80, 46), (226, 222, 210)),
     "bolt": ((118, 214, 190), (224, 250, 242)),
+    # Black shaft, red fletching: not the ranger's.
+    "orc_arrow": ((52, 40, 30), (196, 64, 48)),
 }
 
 
@@ -95,7 +102,7 @@ class BattleProjectile(Entity):
 
         ox, oy = camera_offset
         body, bright = _COLORS[self.kind]
-        if self.kind == "arrow":
+        if self.kind in ("arrow", "orc_arrow"):
             # An oriented streak along the flight path, bright at the tip.
             cx = self.x + self.width / 2 - ox
             cy = self.y + self.height / 2 - oy

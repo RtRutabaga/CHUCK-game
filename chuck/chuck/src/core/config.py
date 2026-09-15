@@ -365,6 +365,8 @@ BATTLE_ARROW_SPIN_STEP = 0.85      # radians the aim whirls each beat
 BATTLE_RANGER_SPIN_SPEED = 8.0     # visual body spin, rad/s
 
 # The wizard's magic: a westward fan of bolts at the beholder, often.
+BATTLE_ORC_ARROW_SPEED = 118.0
+BATTLE_ORC_ARROW_SANITY_DAMAGE = 10
 BATTLE_BOLT_SPEED = 76.0
 BATTLE_BOLT_SANITY_DAMAGE = 15
 BATTLE_BOLT_INTERVAL = 1.05

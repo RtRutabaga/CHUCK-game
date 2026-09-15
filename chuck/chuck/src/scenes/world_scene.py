@@ -32,6 +32,7 @@ from src.entities.battle_hazards import (
     InfernalAstralCorruption, InfernalBattleChoreographer,
 )
 from src.systems.orc_horde import OrcHorde
+from src.systems.orc_siege import OrcSiege
 from src.systems.trio_encounter import TrioEncounter, WorldChurn
 from src.entities.dart_trap import DartTrap, TempleDart
 from src.entities.deck_pirate import DeckPirateNPC
@@ -1071,6 +1072,11 @@ class WorldScene(Scene):
             # nearest orc is now rather than at where it was. Chuck's box
             # goes in so that nothing can be spawned on top of him.
             self.horde.update(dt, self.player.hitbox)
+        if self.siege is not None and self.trio is not None:
+            # The rest of the orc army: archers standing off, then the
+            # catapult. On the encounter's clock, and pausing with it.
+            self.battle_projectiles.extend(
+                self.siege.update(dt, self.trio.beats_played))
         if self.battle is not None:
             tick = self.battle.update(dt)
             self.battle_projectiles.extend(tick.projectiles)
@@ -1136,6 +1142,14 @@ class WorldScene(Scene):
                 # later, when the animal actually appears at the edge of
                 # the arena, there is nothing on screen to hit.
                 self.game.audio.play_music(DRAGON_MUSIC)
+            if (self.trio.collided and self.red_dragon is not None
+                    and self.siege is not None
+                    and self.red_dragon.passes == 0
+                    and self.red_dragon.aim_row is None
+                    and self.siege.target_row is not None):
+                # Its first pass is flown down the catapult's row: the
+                # dragon's arrival is the end of the orcs' siege engine.
+                self.red_dragon.aim_row = self.siege.target_row
             if self.trio.collided and self.red_dragon is not None:
                 # Aimed at him, unless he is in the middle of dying --
                 # the same guard the rift's advance uses, and for the
@@ -1161,6 +1175,16 @@ class WorldScene(Scene):
                     self.horde.cut_down_any(
                         self.red_dragon.lethal_rects
                         + self.red_dragon.ball_rects)
+                if self.siege is not None:
+                    if self.siege.burn(self.red_dragon.lethal_rects
+                                       + self.red_dragon.ball_rects):
+                        self.game.audio.play_sfx("fireball")
+                    if (self.red_dragon.passes >= 2
+                            and self.siege.catapult is not None
+                            and not self.siege.catapult.wrecked):
+                        # However that first pass went, the catapult
+                        # does not outlast the dragon's second.
+                        self.siege.catapult.wreck()
             if self.trio.collided and self.churn is not None:
                 # The heroes are closing it. The desert is overwhelmed
                 # by fragments of everywhere, in large sections that
@@ -1427,6 +1451,9 @@ class WorldScene(Scene):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
             self.player.x, self.player.y = old_player_position
+        if self.siege is not None and self.siege.blocks(self.player.hitbox):
+            # The catapult is a thing in the way, not a thing that hurts.
+            self.player.x, self.player.y = old_player_position
 
         blocking_raptor = next(
             (raptor for raptor in self.raptors
@@ -1562,6 +1589,12 @@ class WorldScene(Scene):
             # him while he was dealing with the other three.
             burn = self.red_dragon.damage_for(player_box)
             if burn and self.sanity.damage(burn):
+                self.player.hurt_blink = config.HURT_COOLDOWN
+                self.game.audio.play_sfx("hurt")
+        if self.siege is not None:
+            # A rolling rock on its way to the heroes.
+            knock = self.siege.damage_for(player_box)
+            if knock and self.sanity.damage(knock):
                 self.player.hurt_blink = config.HURT_COOLDOWN
                 self.game.audio.play_sfx("hurt")
         for spine in self.spines:
@@ -1710,8 +1743,13 @@ class WorldScene(Scene):
             # The burning ground goes under everything standing on it,
             # so a player can see their own feet in the fire.
             self.red_dragon.draw_ground(surface, offset)
+        if self.siege is not None:
+            # Rolling rocks and the shadows of the ones still in the air.
+            self.siege.draw_ground(surface, offset)
         for drawable in self._sorted_drawables():
             drawable.draw(surface, offset)
+        if self.siege is not None:
+            self.siege.draw_air(surface, offset)
         if self.red_dragon is not None and not self.red_dragon.on_the_ground:
             # In the air it goes over everything, because it is not
             # standing on the floor at all. Sorting it by its feet the
@@ -1936,6 +1974,8 @@ class WorldScene(Scene):
                      *self.orchid_seeds,
                      *self.battle_projectiles,
                      *self.grounded_dragon,
+                     *(self.siege.drawables if self.siege is not None
+                       else ()),
                      *self.npcs, self.player]
         return sorted(drawables, key=lambda d: d.sort_y)
 
@@ -1955,7 +1995,12 @@ class WorldScene(Scene):
     @property
     def horde_orcs(self):
         """The living horde, or nothing on the maps that have none."""
-        return self.horde.orcs if self.horde is not None else []
+        orcs = self.horde.orcs if self.horde is not None else []
+        if self.siege is not None:
+            # The archers and the catapult's crew are orcs in his way
+            # the same as the horde is.
+            orcs = [*orcs, *self.siege.bodies]
+        return orcs
 
     def _resolve_horde_fire(self) -> None:
         """The ranger's arrows landing. One arrow, one orc.
@@ -2638,6 +2683,11 @@ class WorldScene(Scene):
                      fighter=actors["fighter"], ranger=actors["ranger"])
             if self.map_name == "desert_trio"
             and {"fighter", "ranger"} <= set(actors) else None
+        )
+        # ...and the rest of the orc army, standing off from them.
+        self.siege = (
+            OrcSiege(self.tilemap, self.game.assets, self.battle_actors)
+            if self.horde is not None else None
         )
         # The sanctum battle restarts its cadences whenever the room does,
         # and the Astral breach heals shut and re-arms with it.

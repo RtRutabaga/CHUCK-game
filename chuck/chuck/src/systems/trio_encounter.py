@@ -61,11 +61,16 @@ from src.core import config
 # dialogue moments, and four beats back to back would make the room a
 # conversation with fighting in the gaps rather than the other way
 # round.
+#
+# Longer than they were, because more happens in them now: the orc
+# archers march in and take their posts before the early exchange, and
+# the catapult is pushed in and gets a good number of rocks off between
+# the midpoint and the dragon (src/systems/orc_siege.py).
 BEATS: tuple[tuple[float, str], ...] = (
-    (15.0, "trio_early"),
-    (17.0, "trio_midpoint"),
-    (17.0, "trio_climax"),
-    (13.0, "trio_found_it"),
+    (20.0, "trio_early"),
+    (22.0, "trio_midpoint"),
+    (23.0, "trio_climax"),
+    (17.0, "trio_found_it"),
     # ...and then it works. These two are the resolution: the heroes
     # realising it is taking, and then realising what else is caught in
     # it. The last line of the second one is the trigger for everything
@@ -78,8 +83,8 @@ BEATS: tuple[tuple[float, str], ...] = (
     # lengths it got two crossings and no time on the ground at all --
     # the whole back half of the encounter went past before its own
     # hazard had finished introducing itself.
-    (40.0, "trio_resolution"),
-    (32.0, "trio_caught"),
+    (44.0, "trio_resolution"),
+    (39.0, "trio_caught"),
 )
 
 # The first beat that costs ground. The early exchange is talk; from

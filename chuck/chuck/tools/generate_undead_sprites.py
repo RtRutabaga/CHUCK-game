@@ -55,7 +55,7 @@ def skeleton_frame(facing: str) -> Image.Image:
     return image
 
 
-def orc_frame(facing: str) -> Image.Image:
+def orc_frame(facing: str, weapon: str = "axe") -> Image.Image:
     """Phase 13's desert orc.
 
     Built to the same silhouette as the zombie so the two read as the
@@ -120,8 +120,61 @@ def orc_frame(facing: str) -> Image.Image:
     draw.rectangle((4, 26, 7, 29), fill=leather)
     draw.rectangle((9, 26, 12, 29), fill=leather)
 
-    _battle_axe(draw, facing)
+    if weapon == "bow":
+        _longbow(draw, facing)
+    else:
+        _battle_axe(draw, facing)
     return image
+
+
+def orc_archer_frame(facing: str) -> Image.Image:
+    """The final encounter's orc archers: the same orc, with a bow.
+
+    A quiver across the back and a bow held out ahead instead of the
+    axe. Everything else is the orc Chuck has been walking past since
+    the camp, because these are the same orcs -- the ones standing off
+    and shooting rather than the ones charging in.
+    """
+    return orc_frame(facing, weapon="bow")
+
+
+def _longbow(draw, facing: str) -> None:
+    """A dark recurve held out past the silhouette, and a quiver."""
+    wood = (70, 46, 28, 255)
+    wood_lit = (112, 78, 44, 255)
+    string = (206, 200, 176, 255)
+    quiver = (110, 72, 40, 255)
+    fletch = (178, 58, 44, 255)
+
+    if facing == "up":
+        # From behind: the quiver is the thing you see, and the bow is
+        # out beside him.
+        draw.rectangle((9, 9, 11, 19), fill=quiver)
+        draw.point((9, 8), fill=fletch)
+        draw.point((11, 7), fill=fletch)
+        draw.line((1, 10, 0, 16), fill=wood, width=1)
+        draw.line((0, 16, 1, 22), fill=wood, width=1)
+        return
+    if facing == "left":
+        # In profile the bow is held out ahead, string toward him.
+        draw.rectangle((11, 8, 13, 17), fill=quiver)
+        draw.point((12, 7), fill=fletch)
+        draw.point((13, 6), fill=fletch)
+        draw.line((1, 9, 0, 15), fill=wood_lit, width=1)
+        draw.line((0, 15, 1, 22), fill=wood_lit, width=1)
+        draw.point((2, 8), fill=wood)
+        draw.point((2, 23), fill=wood)
+        draw.line((2, 9, 2, 22), fill=string, width=1)
+        return
+    # Facing the camera: the bow held across the body in the left hand,
+    # the quiver's fletching over the right shoulder.
+    draw.point((12, 9), fill=fletch)
+    draw.point((13, 8), fill=fletch)
+    draw.line((12, 10, 13, 9), fill=quiver, width=1)
+    draw.line((15, 10, 15, 22), fill=wood, width=1)
+    draw.point((14, 9), fill=wood_lit)
+    draw.point((14, 23), fill=wood_lit)
+    draw.line((13, 10, 13, 22), fill=string, width=1)
 
 
 def _battle_axe(draw, facing: str) -> None:
@@ -247,6 +300,7 @@ def main() -> None:
     for kind, make_frame in (("zombie", zombie_frame),
                              ("skeleton", skeleton_frame),
                              ("orc", orc_frame),
+                             ("orc_archer", orc_archer_frame),
                              ("knight", knight_frame)):
         sheet = Image.new("RGBA", (FRAME_W * 3, FRAME_H), (0, 0, 0, 0))
         for index, facing in enumerate(("down", "up", "left")):
