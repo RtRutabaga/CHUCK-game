@@ -873,3 +873,28 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_a_ball_rolls_across_a_crack_and_out_the_far_side() -> None:
+    """A crack is not the Sea.
+
+    The arena is scattered with narrow Astral cracks, and a ball that
+    went out on each of them never got most of the way to Chuck from
+    most places the dragon comes down. It crosses them; it still goes
+    out over the rift (see the test above).
+    """
+    tilemap = _tilemap()
+    ts = config.TILE_SIZE
+    crack = [col for col in range(tilemap.width_tiles)
+             if tilemap.terrain_at(col, 29) == "V" and 25 < col < 45]
+    assert crack and max(crack) - min(crack) < 7, crack
+    ball = FlameBall((min(crack) - 3) * ts, 29 * ts + 8, 1.0, 0.0, BALL_SPEED)
+    crossed = False
+    for _ in range(int(BALL_LIFE / STEP)):
+        ball.update(STEP, tilemap)
+        if not ball.alive:
+            break
+        if int(ball.x) // ts > max(crack) + 1:
+            crossed = True
+            break
+    assert crossed, "it went out on the crack"

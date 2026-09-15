@@ -27,6 +27,15 @@ and updated every session.
 
 ## Latest implementation
 
+### Dragon fireballs roll across Astral cracks
+
+- **Problem:** the red dragon's rolling fireballs went out on any Astral tile. The trio arena is scattered with narrow Astral cracks, so from most landing spots much of every volley died on the first crack between the dragon and Chuck. A simulated run of six landings counted:
+  - 32 balls dead within four tiles of the dragon's mouth;
+  - 82 more dead part-way across;
+  - the rest dead at the edge walls.
+- **Fix:** `FlameBall` now rolls across Astral as long as there is floor within `CRACK_REACH` (7 tiles) along its heading. It still goes out where there is nothing but Sea ahead: the eastern rift and the band closing in from the west.
+- **Result:** in the same simulation, early deaths are only at the real Sea edges and the map walls.
+- **Tests:** a new test in `tests/test_phase13_red_dragon.py` checks that a ball crosses the crack at row 29; it fails without the fix. The existing test that balls go out over the rift still passes.
 ### Final trio encounter: the orcs' siege (archers, catapult, dragon)
 
 - **Archers** (`src/systems/orc_siege.py`, `OrcArcher`): 5s into the encounter, five orc archers march in single file, three from the north edge and two from the south. They walk straight lines to posts a long bowshot from the heroes: (38,5), (44,8), (50,4), (39,44), (36,47).

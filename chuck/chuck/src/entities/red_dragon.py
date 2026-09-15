@@ -151,6 +151,10 @@ BALL_SPEED = 56.0
 BALL_SPEED_STEP = 12.0
 BALL_LIFE = 5.5
 BALL_DAMAGE = 20
+# How wide a stretch of Astral a ball will roll across, in tiles. The
+# arena's cracks are narrower than this; the rift and the band coming in
+# from the west are far wider.
+CRACK_REACH = 7
 FAN_FIRST = 3
 FAN_STEP = 1
 FAN_SPREAD = 0.40
@@ -192,6 +196,13 @@ class FlameBall:
     the Astral Sea -- because a ball of fire sitting in the middle of a
     tear in the world is a bug, and because the holes in that floor are
     the one thing a player is already reading.
+
+    ...but a crack is not the Sea. The arena is scattered with narrow
+    Astral cracks, and stopping at every one of them meant that from
+    most places the dragon comes down, most of a volley went out on the
+    first gap between it and Chuck. So it rolls across a crack and
+    carries on the far side, and only goes out where there is nothing
+    but Sea ahead of it: the rift, and the band coming in from the west.
     """
 
     def __init__(self, x: float, y: float, dx: float, dy: float,
@@ -226,8 +237,35 @@ class FlameBall:
                 and 0 <= row < tilemap.height_tiles):
             self.alive = False
             return
-        if tilemap.is_solid(col, row) or tilemap.terrain_at(col, row) == "V":
+        if tilemap.is_solid(col, row):
             self.alive = False
+        elif (tilemap.terrain_at(col, row) == "V"
+                and self._open_sea_ahead(tilemap)):
+            self.alive = False
+
+    def _open_sea_ahead(self, tilemap) -> bool:
+        """Is it rolling out over the Sea rather than across a crack?
+
+        Looked for along its own heading: if there is floor within
+        CRACK_REACH of it, it is on a crack and will reach the far side.
+        """
+        speed = math.hypot(self.vx, self.vy) or 1.0
+        ux, uy = self.vx / speed, self.vy / speed
+        ts = config.TILE_SIZE
+        reach = CRACK_REACH * ts
+        along = ts / 2
+        while along <= reach:
+            col = int(self.x + ux * along) // ts
+            row = int(self.y + uy * along) // ts
+            if not (0 <= col < tilemap.width_tiles
+                    and 0 <= row < tilemap.height_tiles):
+                return True
+            if tilemap.is_solid(col, row):
+                return True
+            if tilemap.terrain_at(col, row) != "V":
+                return False
+            along += ts / 2
+        return True
 
     def draw(self, surface: pygame.Surface,
              camera_offset: tuple[int, int]) -> None:
