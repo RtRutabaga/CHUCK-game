@@ -254,6 +254,45 @@ def test_falling_cutscene_completes_long_descent_and_jungle_return() -> None:
         game._shutdown()
 
 
+def test_nothing_in_the_store_is_smooshed_into_anything_else() -> None:
+    """The room's stores stand clear of each other and of the walls.
+
+    Props are wider than their tile -- the shelf is 28 pixels across a
+    16-pixel tile, the sack pile 30 -- so putting two of them side by
+    side buries one in the other, and putting a wide one against the
+    wall buries half of it in the wall. Both had happened along the
+    north shelf wall and at the two sack piles.
+    """
+    from src.entities.prop import _SPRITES
+
+    ts = config.TILE_SIZE
+    pantry = TileMap(config.MAPS_DIR / "waterdeep_pantry.txt")
+    boxes = []
+    for kind, col, row in pantry.prop_tiles:
+        sprite = pygame.image.load(config.SPRITES_DIR / _SPRITES[kind])
+        width, height = sprite.get_size()
+        boxes.append((kind, col, row, col * ts + ts // 2 - width // 2,
+                      (row + 1) * ts - height, width, height))
+
+    for kind, col, row, x, y, width, height in boxes:
+        for tile_col in range(x // ts, (x + width - 1) // ts + 1):
+            for tile_row in range(y // ts, row + 1):
+                if (tile_col, tile_row) == (col, row):
+                    continue
+                if pantry.is_solid(tile_col, tile_row) and not any(
+                        other[1:3] == (tile_col, tile_row) for other in boxes):
+                    raise AssertionError(
+                        f"{kind} at {(col, row)} is drawn into the wall at "
+                        f"{(tile_col, tile_row)}")
+
+    for index, first in enumerate(boxes):
+        for second in boxes[index + 1:]:
+            across = min(first[3] + first[5], second[3] + second[5])                 - max(first[3], second[3])
+            down = min(first[4] + first[6], second[4] + second[6])                 - max(first[4], second[4])
+            assert across <= 0 or down <= 0, (first[0], first[1:3],
+                                              second[0], second[1:3])
+
+
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):

@@ -27,6 +27,32 @@ and updated every session.
 
 ## Latest implementation
 
+### A tidier pantry, a stone that keeps its secret, and bones in the rubble
+
+- **The pantry's stores stand clear of each other.** Props are wider than the
+  tile they stand on -- the shelf is 28 pixels across a 16-pixel tile, the sack
+  pile 30 -- so the north wall's barrel, shelf and basket were drawn into each
+  other, and both sack piles were drawn half into the side walls. The north row
+  is spaced a clear tile between each pair, and the piles have moved in off the
+  wall. The shelves stay at columns 3 and 22 and the jars at 6 and 19, because
+  those are the tiles the breakable tests stand under.
+- **The carved stones in Chult no longer name the temple.** They said they were
+  "a long way from the temple" -- a fact about a place the player has not heard
+  of yet, two maps before they see one. Now: "A carved block, half swallowed by
+  the jungle. Something stood here once."
+- **Bones on the rubble chamber's floor.** The one temple room with no floor
+  dressing at all, and the one where the ceiling came down. `temple_dressing.py`
+  now lays bones there and nothing else: against the fallen masonry, which is
+  what the room is, but never on the lane kept clear from the arrival to the
+  crawlspace, never within two tiles of the Astral Sea in the breaches, and
+  never beside the arrival, the anchor or the crevice. The tool also leaves
+  an already-dressed map alone now instead of refusing to run.
+- **Tests:** `tests/test_pantry.py` walks every prop's drawn footprint and fails
+  if one overlaps another or is drawn into a wall; `tests/test_chult_floor_
+  dressing.py` fails if anything examinable on a Chult map says "temple";
+  `tests/test_temple_added_dressing.py` checks the rubble chamber's bones for
+  count, clearances and that they cost the room no reachable ground.
+
 ### The intro rowboat lies bow east
 
 - **The boat is mirrored.** In the opening cutscene the rowboat's bow pointed

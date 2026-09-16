@@ -90,3 +90,36 @@ def test_the_floor_is_mute_the_rest_answers_e_and_the_arch_fades() -> None:
     for char in (dressing.CRACK, dressing.MISSING, dressing.MOSS,
                  dressing.BONES, dressing.ARCH):
         assert not TILE_DEFS[char].solid
+
+
+def test_the_rubble_chamber_has_bones_on_its_floor_and_only_bones() -> None:
+    """The room the ceiling came down in, and what the ceiling left.
+
+    Bones lie against the fallen masonry -- that is the whole room --
+    but never on the lane kept clear through it, never over the Astral
+    Sea in the breaches or on its brink, and never beside a marker.
+    """
+    grid = _grid(dressing.RUBBLE_MAP)
+    kinds = _kinds(dressing.RUBBLE_MAP)
+    assert kinds.count("temple_bones") >= 15
+    assert not (set(kinds) & {"temple_floor_crack", "temple_moss",
+                              "temple_missing_slabs", "temple_wall_carving"})
+
+    beside = {dressing.FLOOR, dressing.WALL, dressing.RUBBLE_BLOCK,
+              dressing.COLUMN, dressing.PAVED, dressing.BONES}
+    others = {char for row in grid for char in row} - beside
+    assert dressing.SEA in others
+    for row, line in enumerate(grid):
+        for col, char in enumerate(line):
+            if char != dressing.BONES:
+                continue
+            assert not dressing._within(grid, col, row, 1, others), (col, row)
+            assert not dressing._within(
+                grid, col, row, dressing.RUBBLE_SEA_CLEARANCE,
+                {dressing.SEA}), (col, row)
+
+
+def test_the_rubble_chamber_is_no_harder_to_cross_for_them() -> None:
+    grid = _grid(dressing.RUBBLE_MAP)
+    assert len(dressing.reachable(grid)) \
+        == len(dressing.reachable(_undressed(grid)))

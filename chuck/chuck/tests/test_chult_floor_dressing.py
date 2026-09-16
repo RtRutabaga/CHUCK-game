@@ -86,3 +86,28 @@ def test_the_scatter_is_mute_the_rest_answers_e_and_the_giants_fade() -> None:
     assert "chult_great_tree" in SEE_THROUGH_PROPS
     assert not TILE_DEFS[dressing.FERN].solid
     assert not TILE_DEFS[dressing.LITTER].solid
+
+
+def test_nothing_in_chult_mentions_a_temple_chuck_has_not_reached() -> None:
+    """Chult is walked before the temple is ever seen.
+
+    The carved blocks in the jungle used to say they were a long way
+    from the temple, which is a fact about a place the player has no
+    idea exists yet. Anything examinable out here has to read without
+    it.
+    """
+    from src.entities.prop import examine_line_id
+    from src.systems.dialogue import DialogueSystem
+
+    dialogue = DialogueSystem()
+    kinds = {
+        kind
+        for path in sorted(config.MAPS_DIR.glob("chult_*.txt"))
+        for kind, _, _ in TileMap(path).prop_tiles
+    }
+    for kind in sorted(kinds):
+        if kind in MUTE_PROPS:
+            continue
+        lines = dialogue.get(examine_line_id(kind)) or ()
+        for line in lines:
+            assert "temple" not in line.lower(), (kind, line)

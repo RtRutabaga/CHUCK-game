@@ -5,7 +5,7 @@
 ; Shelves n, sacks z, crates [, and barrels ] keep the room food-storage first.
 ##########################
 #pppVpppppppppppppppVpppp#
-#p]nꝫpzppppppppppꝫpzppn]p#
+#ppnppzpꝫp]pppp]pꝫpzppnpp#
 #ppVppppssssssssppppVpppp#
 #ppppVppssssssssppppppVpp#
 #p[pppppssssssssppppppp[p#
@@ -13,7 +13,7 @@
 #pppVpppsssssssspppppVppp#
 #ppVVpppssssssssppppVpppp#
 #pppppVpsssssssspppVppppp#
-#ꝩppppppVVppppVVppppppppꝩ#
+#ppꝩppppVVppppVVppppppꝩpp#
 #pppppppVVVppppVVVppppppp#
 #ppVpppppppppppppppppVppp#
 #pppzppVppppppppppVppzppp#

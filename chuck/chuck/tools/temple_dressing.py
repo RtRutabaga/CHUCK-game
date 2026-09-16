@@ -15,6 +15,10 @@ floor ('·') or on plain wall ('█').
   each kept only if every reachable tile stays reachable.
 * The sanctum: a grand arch at each end of its east wall, north and
   south, flanking the door the room is left by.
+* The rubble chamber: bones and nothing else. The ceiling came down on
+  this room, so what is on its floor is what the ceiling left -- bones
+  lying against the fallen masonry, well back from the sea in the
+  breaches and never on the one lane kept clear through it.
 
 Nothing lands on the processional paving or within a tile of a marker,
 a prop or a transition.
@@ -48,8 +52,25 @@ DRESSING = {CRACK, MISSING, MOSS, BONES, CARVING, TOPPLED, TOPPLED_END,
             STUMP, ARCH, ARCH_PIER}
 PLAIN = {FLOOR, WALL} | DRESSING
 
+# The four big rooms, which get the full floor-and-wall pass.
 MAPS = ("temple_entrance", "temple_skeletons", "temple_shrine",
         "temple_sanctum")
+# The rubble chamber, which gets bones and nothing else.
+RUBBLE_MAP = "temple_rubble"
+
+# The rubble chamber's own furniture: fallen blocks, the columns that
+# were holding the ceiling up, the Astral Sea in the breaches, and the
+# paved lane left clear from the arrival to the crawlspace.
+RUBBLE_BLOCK = "ß"
+COLUMN = "¬"
+SEA = "V"
+PAVED = "≡"
+# Bones may lie against the masonry -- that is what the room is -- but
+# keep this far from the sea, and this far from each other so they read
+# as separate bodies rather than one bed of bone.
+RUBBLE_SEA_CLEARANCE = 2
+RUBBLE_BONE_SPACING = 2
+RUBBLE_BONES_PER_THOUSAND = 220
 
 # Per thousand floor tiles: cracks, missing slabs, bones, moss (of the
 # floor tiles touching a wall).
@@ -114,9 +135,52 @@ def _carving_spot(grid, col, row) -> bool:
     return not _near_something(grid, col, row + 1, 1)
 
 
+def _within(grid, col, row, radius, chars) -> bool:
+    height = len(grid)
+    return any(
+        grid[y][x] in chars
+        for y in range(row - radius, row + radius + 1)
+        for x in range(col - radius, col + radius + 1)
+        if 0 <= y < height and 0 <= x < len(grid[y]))
+
+
+def dress_rubble_chamber(grid: list[list[str]], map_name: str) -> int:
+    """Bones on the floor of the room the ceiling came down in.
+
+    Everything else in here is already wreckage, so the only clearances
+    that matter are the sea in the breaches, the lane kept clear through
+    the room, and the next set of bones along.
+    """
+    seed = _name_seed(map_name)
+    beside = {FLOOR, WALL, RUBBLE_BLOCK, COLUMN, PAVED, BONES}
+    laid = 0
+    for row in range(1, len(grid) - 1):
+        for col in range(1, len(grid[row]) - 1):
+            if grid[row][col] != FLOOR:
+                continue
+            if _hash(seed, col, row, 23) % 1000 >= RUBBLE_BONES_PER_THOUSAND:
+                continue
+            # Markers, transitions and the anchor are none of them in
+            # `beside`, so this keeps a tile clear of all of them too.
+            others = {char for line in grid for char in line} - beside
+            if _within(grid, col, row, 1, others):
+                continue
+            if _within(grid, col, row, RUBBLE_SEA_CLEARANCE, {SEA}):
+                continue
+            if _within(grid, col, row, RUBBLE_BONE_SPACING, {BONES}):
+                continue
+            grid[row][col] = BONES
+            laid += 1
+    return laid
+
+
 def dress_grid(map_name: str, grid: list[list[str]]) -> None:
     seed = _name_seed(map_name)
     height, width = len(grid), len(grid[0])
+
+    if map_name == RUBBLE_MAP:
+        dress_rubble_chamber(grid, map_name)
+        return
 
     for col, row in ARCHES_BY_MAP.get(map_name, ()):
         if not _open(grid, col, row, -2, -1, 2, 0):
@@ -193,10 +257,13 @@ def _read(map_name):
 
 
 def update_authored_maps() -> None:
-    for map_name in MAPS:
+    for map_name in MAPS + (RUBBLE_MAP,):
         path, header, grid = _read(map_name)
         if any(char in DRESSING for row in grid for char in row):
-            raise ValueError(f"{map_name} is already dressed")
+            # Dressing a room twice would pile a second pass on top of
+            # the first; the shipped map is the record, so leave it.
+            print(f"{map_name} is already dressed")
+            continue
         # A few authored rows are a tile short; pad them with wall while
         # dressing and trim them back after, so no row changes length.
         lengths = [len(row) for row in grid]
