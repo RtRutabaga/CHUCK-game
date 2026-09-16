@@ -440,6 +440,13 @@ class WorldScene(Scene):
                     # than authoring two characters keeps the night and
                     # day maps directly comparable, tile for tile.
                     kind = "city_streetlight_lit"
+                elif kind.startswith("temple_arch") and \
+                        self.map_name.startswith("phlegethos"):
+                    # Phlegethos's gates are the temple's doorway at the
+                    # temple's scale, which is the point of them -- but
+                    # they are cut into infernal basalt, not temple
+                    # stone, and they should not read as the same wall.
+                    kind = kind.replace("temple", "phlegethos")
                 elif kind == "bobert_barrel" and self._waterdeep_midday:
                     # Chuck is home, and Bobert is up.
                     kind = "bobert_barrel_awake"

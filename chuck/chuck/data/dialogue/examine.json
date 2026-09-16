@@ -51,6 +51,8 @@
   "examine_temple_column": ["A temple column. Solid stone. A scratch won't do anything."],
   "examine_temple_arch_ew": ["A stone arch, carved with serpents."],
   "examine_temple_arch_ns": ["A stone arch, carved with serpents."],
+  "examine_phlegethos_arch_ew": ["An iron-banded gate. The stone is cracked, and the cracks are lit."],
+  "examine_phlegethos_arch_ns": ["An iron-banded gate. The stone is cracked, and the cracks are lit."],
   "examine_temple_gate": ["The temple gate."],
   "examine_temple_idol": ["An idol with a very fixed stare."],
   "examine_temple_monument": ["A carved monument. The carvings are of people running."],

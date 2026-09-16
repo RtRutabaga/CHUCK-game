@@ -27,6 +27,17 @@ and updated every session.
 
 ## Latest implementation
 
+### Phlegethos's gates get their own stone
+
+- **Problem:** the region's new temple-scale gates were drawn with the temple's own arch art, so the doorways read as temple masonry set into infernal basalt. The scale was the point of them; the stone was not.
+- **New art:** `tools/generate_phlegethos_arches.py` writes `phlegethos_arch_ns.png` (48x38) and `phlegethos_arch_ew.png` (38x48) -- the same openings tile for tile, so the doorways stay devil-sized, in this region's own palette taken from the Phlegethos tileset and fortress wall:
+  - dark fortress basalt instead of mossy green temple blocks
+  - iron straps and rivets across the jambs instead of block seams
+  - ember light in the cracks, a burning keystone in the crown, and a glow standing in the doorway itself
+  - nothing growing on them
+- **Swap:** `WorldScene` builds `temple_arch_*` as `phlegethos_arch_*` on any Phlegethos map, the same way it swaps the lit city streetlight and Waterdeep's midday props. The maps and transitions are untouched.
+- **Examine:** "An iron-banded gate. The stone is cracked, and the cracks are lit."
+- **Tests:** `tests/test_phlegethos_gates.py` checks each Phlegethos map builds infernal arches and no temple ones, and that the temple still builds its own.
 ### Phlegethos: the lake comes out south, and every gate is temple-scale
 
 - **Phlegethos 3 to 4:** walking north out of the lava lake used to put Chuck against the rubble pass's west wall facing east, a quarter turn he never made. The pass now has its own gate in its south wall at (9-11, 32): he arrives just inside it at (10, 30) still facing north, and a paved spur runs up from the gate to the map's main lane.

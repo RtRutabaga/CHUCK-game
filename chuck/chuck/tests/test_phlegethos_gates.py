@@ -83,3 +83,31 @@ def test_north_out_of_the_lake_is_north_into_the_pass() -> None:
         assert scene.tilemap.terrain_at(col, row - 1) == "≡"
     finally:
         game._shutdown()
+
+
+def test_the_gates_are_infernal_stone_not_the_temples() -> None:
+    """The same doorway, in this region's own material.
+
+    Built from the temple's arch tiles, the gates came out of the wall
+    in mossy green temple blocks, which read as the temple's masonry
+    rather than as anything cut into basalt. The scale is the point of
+    them; the stone is not.
+    """
+    game = Game()
+    try:
+        # Each of these maps is entered by its own checkpoint id.
+        for name in ("phlegethos_lake", "phlegethos_rubble_pass",
+                     "phlegethos_fractured_way"):
+            scene = game.checkpoints.load_checkpoint(name)
+            kinds = {prop.kind for prop in scene.props
+                     if "arch" in prop.kind}
+            assert kinds, name
+            assert all(kind.startswith("phlegethos_arch") for kind in kinds), \
+                (name, kinds)
+        # The temple keeps its own.
+        scene = game.checkpoints.load_checkpoint("temple_2")
+        kinds = {prop.kind for prop in scene.props if "arch" in prop.kind}
+        assert kinds and all(kind.startswith("temple_arch")
+                             for kind in kinds), kinds
+    finally:
+        game._shutdown()

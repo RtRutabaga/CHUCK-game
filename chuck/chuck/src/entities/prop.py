@@ -180,6 +180,12 @@ _SPRITES = {
     "skull_stake": "objects/skull_stake.png",
     "temple_arch_ns": "objects/temple_arch_ns.png",
     "temple_arch_ew": "objects/temple_arch_ew.png",
+    # The same doorway at the same scale, in Phlegethos's own stone:
+    # iron-strapped basalt with the heat showing through it, rather
+    # than the temple's mossy green blocks. The WorldScene swaps them
+    # in by map (see _infernal_variant).
+    "phlegethos_arch_ns": "objects/phlegethos_arch_ns.png",
+    "phlegethos_arch_ew": "objects/phlegethos_arch_ew.png",
     "temple_gate": "objects/temple_gate.png",
     "temple_skull": "objects/temple_skull.png",
     "temple_monument": (
