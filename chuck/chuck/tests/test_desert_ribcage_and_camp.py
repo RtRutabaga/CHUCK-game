@@ -67,3 +67,23 @@ def test_the_orc_camp_has_tents_racks_and_a_drum_but_no_totem() -> None:
     assert not any("totem" in kind for kind in kinds)
     _answers_e({"desert_ribcage", "orc_tent", "orc_weapon_rack",
                 "orc_war_drum"})
+
+
+def test_no_sack_stands_in_a_fire() -> None:
+    """Stores beside the fires, never in one.
+
+    A fire is a ring of scorched ground with the pit standing in the
+    middle of it, and a sack dropped on the ring takes the place of one
+    of its stones -- it reads as luggage in the flames.
+    """
+    import generate_desert_orc_camp as camp
+
+    rows = [line for line in (config.MAPS_DIR / "desert_orc_camp.txt")
+            .read_text(encoding="utf-8").splitlines()
+            if not line.startswith(";")]
+    for col, row in camp.SACKS:
+        assert rows[row][col] == "⛰", (col, row, rows[row][col])
+    scorched = {(col, row) for row, line in enumerate(rows)
+                for col, char in enumerate(line) if char == "⚱"}
+    for col, row in camp.SACKS:
+        assert (col, row) not in scorched, (col, row)

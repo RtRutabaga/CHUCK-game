@@ -443,3 +443,34 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_the_table_is_drawn_over_the_fridge_beside_it() -> None:
+    """The long table's end, not the fridge's side.
+
+    The fridge stands at the table's east end and both are wider than
+    the tile they stand on, so one of them is drawn over the other.
+    Sorted by their feet alone they tie, and the fridge won it -- the
+    table's end cap disappeared into the fridge's side. A pixel of
+    sort-lift stands the fridge a hair further back instead.
+    """
+    directory = tempfile.TemporaryDirectory()
+    game = Game(save_path=Path(directory.name) / "save.json")
+    try:
+        world = game.checkpoints.load_checkpoint("tahuya_interior")
+        table = next(prop for prop in world.props
+                     if prop.kind.startswith("cabin_table"))
+        fridge = next(prop for prop in world.props
+                      if prop.kind == "cabin_mini_fridge")
+        # They touch, which is why the order matters at all.
+        assert table.interaction_bounds()[0] < fridge.interaction_bounds()[0]
+        assert (table.interaction_bounds()[0]
+                + table.interaction_bounds()[2]) > fridge.interaction_bounds()[0]
+        assert fridge.sort_y < table.sort_y
+        order = [prop.kind for prop in world._sorted_drawables()
+                 if getattr(prop, "kind", None) in
+                 (table.kind, "cabin_mini_fridge")]
+        assert order.index("cabin_mini_fridge") < order.index(table.kind)
+    finally:
+        game._shutdown()
+        directory.cleanup()

@@ -182,3 +182,53 @@ def test_the_opening_cutscene_has_no_lamp() -> None:
     assert not hasattr(opening, "_LAMP_X")
     source = Path(opening.__file__).read_text(encoding="utf-8")
     assert "waterdeep_lamp" not in source
+
+
+def test_both_cutscene_boats_lie_bow_east_on_their_lines() -> None:
+    """The opening's boat and the return's are the same boat.
+
+    The sprite's bow is its long taper, so whichever end carries less of
+    the hull is the bow; drawn, that has to be the east end, with the
+    mooring line leaving it and running on to the post. The return
+    cutscene kept its boat bow-west after the opening's was turned,
+    which put the two bookends of the game the opposite way round.
+    """
+    import pygame
+
+    from src.scenes.opening_cutscene_scene import OpeningCutsceneScene
+    from src.scenes.return_to_waterdeep_cutscene_scene import (
+        ReturnToWaterdeepCutsceneScene,
+    )
+    import src.scenes.opening_cutscene_scene as opening
+    import src.scenes.return_to_waterdeep_cutscene_scene as ret
+
+    for scene_type, module in ((OpeningCutsceneScene, opening),
+                               (ReturnToWaterdeepCutsceneScene, ret)):
+        directory = tempfile.TemporaryDirectory()
+        game = Game(save_path=Path(directory.name) / "save.json")
+        try:
+            scene = scene_type(game)
+            scene.on_enter()
+            boat = scene._boat
+            assert boat is not None, scene_type.__name__
+            boat.lock()
+            mass = [sum(1 for y in range(boat.get_height())
+                        if boat.get_at((x, y))[3] > 0)
+                    for x in range(boat.get_width())]
+            boat.unlock()
+            assert sum(mass[-8:]) < sum(mass[:8]) / 2, scene_type.__name__
+
+            surface = pygame.Surface((320, 180))
+            scene._post = None      # the posts share the rope's colour
+            scene._draw_moorings(surface)
+            line = [x for y in range(180) for x in range(320)
+                    if surface.get_at((x, y))[:3] == (184, 149, 91)]
+            assert line, scene_type.__name__
+            # The line leaves the bow at the boat's east end and runs on
+            # east to the post it is tied to.
+            assert min(line) >= module._BOAT_X + boat.get_width() - 14, \
+                scene_type.__name__
+            assert max(line) >= module._MOORED_POST - 2, scene_type.__name__
+        finally:
+            game._shutdown()
+            directory.cleanup()

@@ -42,7 +42,10 @@ WEST_ROCK = 8       # ...and how far in the western one reaches
 # The beaten ground the camp stands on, and where its stores are stacked
 # against the western cliff in the shade.
 CAMP = (22, 14, 26, 18)     # left, top, width, height
-SACKS = ((25, 18), (26, 21), (25, 24), (28, 16), (29, 27),
+# None of them inside a fire's ring of scorched ground: a sack standing
+# in the fire reads as a mistake, and it takes the place of one of the
+# ring's stones.
+SACKS = ((25, 18), (26, 21), (25, 24), (30, 16), (29, 27),
          (33, 15), (41, 17), (43, 22), (39, 28), (44, 27))
 # Fires: burnt-out pits, the only built thing in the camp. Each is a
 # patch of scorched ground with the ring of stones standing in the
@@ -156,7 +159,11 @@ def _camp(grid) -> None:
         if 0 <= cy < HEIGHT and 0 <= cx < WIDTH:
             grid[cy][cx] = "⍘"
     for x, y in SACKS:
-        if 0 <= y < HEIGHT and 0 <= x < WIDTH and not _is_solid(grid[y][x]):
+        if not (0 <= y < HEIGHT and 0 <= x < WIDTH):
+            continue
+        if grid[y][x] == "⚱":
+            raise ValueError(f"Sack at {(x, y)} stands in a fire's ring")
+        if not _is_solid(grid[y][x]):
             grid[y][x] = "⛰"
 
 

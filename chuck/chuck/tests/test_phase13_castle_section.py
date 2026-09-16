@@ -27,6 +27,8 @@ from collections import deque
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+import pygame
+
 from src.core import config
 from src.entities.prop import _ANIMATED_SPRITES, _SPRITES
 from src.world.tilemap import MARKER_DEFS, TILE_DEFS
@@ -359,3 +361,35 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_no_banner_is_drawn_into_a_turret() -> None:
+    """Cloth beside a drum tower, not behind its base.
+
+    A banner is 26 pixels wide on a 16-pixel tile and a turret is 48,
+    so a banner on the tile next to a turret has its top corner drawn
+    under the turret's stonework -- it reads as hanging off the end of
+    the wall rather than on it. One clear tile between them fixes it,
+    which is all the width either sprite needs.
+    """
+    ts = config.TILE_SIZE
+
+    def box(kind, col, row):
+        sprite = _SPRITES[kind]
+        if isinstance(sprite, tuple):
+            sprite = sprite[0]       # the variants are all one size
+        width, height = pygame.image.load(
+            config.SPRITES_DIR / sprite).get_size()
+        return pygame.Rect(col * ts + ts // 2 - width // 2,
+                           (row + 1) * ts - height, width, height)
+
+    for map_name in CASTLE_MAPS:
+        rows = _rows(map_name)
+        turrets = [box("castle_turret", col, row)
+                   for col, row in _cells(rows, {CASTLE_TURRET})]
+        for col, row in _cells(rows, {BANNER_ON_WALL}):
+            banner = box("castle_banner", col, row)
+            for turret in turrets:
+                overlap = banner.clip(turret)
+                assert overlap.width < 5 or overlap.height < 5, \
+                    (map_name, col, row, overlap)

@@ -27,6 +27,35 @@ and updated every session.
 
 ## Latest implementation
 
+### Banners on their walls, and both cutscene boats facing the same way
+
+- **The cabin's table wins.** The mini-fridge stands at the long table's east
+  end and both are wider than their tile, so one is drawn over the other; sorted
+  by their feet alone they tied and the fridge won, burying the table's end cap.
+  A pixel of `PROP_SORT_LIFT` stands the fridge a hair further back instead.
+- **Banners off the turrets.** A banner is 26 pixels wide on a 16-pixel tile and
+  a turret 48, so a banner hung on the tile beside a turret has its top corner
+  drawn under the turret's stonework -- it reads as hanging off the end of the
+  wall rather than on it. The castle's two west banners move a tile clear (their
+  buttresses widening with them), and the keep's turret on east 7, which had no
+  tile to spare beside it, rises a row instead.
+- **The pit fiend's fortress banners hang on the wall.** They were on the first
+  walkable row, so a third of each one dangled onto the dirt in front of the
+  wall. They move up onto the wall face, hems level with its base;
+  `phlegethos_dressing.py` places them on their own row now, and the banner tile
+  carries wall behind the cloth rather than floor.
+- **A sack out of the fire.** One of the orc camp's stores stood on a fire's
+  ring of scorched ground, in the place of one of its stones. It moves two tiles
+  east, the ring is whole, and the generator now refuses to put one there.
+- **Both cutscene boats face the same way.** The return to Waterdeep still had
+  its rowboat bow-west after the opening's was turned, which left the two
+  bookends of the game the opposite way round. Its hull is mirrored and moved
+  west of its post, the same composition as the opening.
+- **Tests:** banner-against-turret footprints on all three castle maps and no
+  banner hanging below the fortress wall; no sack on scorched ground; the cabin
+  table sorting after the fridge; and one test that now holds BOTH cutscene
+  boats to bow-east on their lines.
+
 ### A tidier pantry, a stone that keeps its secret, and bones in the rubble
 
 - **The pantry's stores stand clear of each other.** Props are wider than the

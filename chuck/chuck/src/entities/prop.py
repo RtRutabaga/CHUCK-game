@@ -643,6 +643,11 @@ def examine_line_id(kind: str) -> str:
 # standing on it.
 PROP_SORT_LIFT = {
     "tahuya_cabin": 78,
+    # The cabin's fridge stands beside the long table and is wider than
+    # its tile, so the two touch. A pixel of lift sorts the fridge as
+    # standing a hair further back, and the table's end draws over it
+    # instead of being buried by it.
+    "cabin_mini_fridge": 1,
     # Its anchor is at the map's south edge, but the ship meets the pier much
     # farther north. Sort at that contact so people on the near pier edge can
     # still pass in front of the hull.

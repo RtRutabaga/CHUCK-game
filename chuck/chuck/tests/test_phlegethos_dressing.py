@@ -69,11 +69,18 @@ def test_the_fortress_floor_stays_plain_for_its_waves() -> None:
     grid = _grid(dressing.FORTRESS)
     placed = [(col, row) for row, line in enumerate(grid)
               for col, char in enumerate(line) if char in dressing.DRESSING]
-    assert all(row == dressing.FORTRESS_ROW for _col, row in placed)
+    assert all(row in (dressing.FORTRESS_ROW, dressing.BANNER_ROW)
+               for _col, row in placed)
     towers = [col for col, row in placed
               if grid[row][col] == dressing.TOWER]
     banners = [col for col, row in placed
                if grid[row][col] == dressing.BANNER]
+    # The towers stand on the ground; the banners hang on the wall over
+    # it, so no part of one dangles onto the dirt in front of the wall.
+    assert all(row == dressing.FORTRESS_ROW for col, row in placed
+               if grid[row][col] == dressing.TOWER)
+    assert all(row == dressing.BANNER_ROW for col, row in placed
+               if grid[row][col] == dressing.BANNER)
     assert sorted(towers) == list(dressing.TOWER_COLS)
     assert sorted(banners) == list(dressing.BANNER_COLS)
     # Symmetric about the gate.
@@ -89,3 +96,34 @@ def test_the_cracks_are_mute_and_the_rest_answers_e() -> None:
                 "phlegethos_banner"})
     assert not TILE_DEFS[dressing.CRACK].solid
     assert not TILE_DEFS[dressing.VENT].solid
+
+
+def test_no_banner_hangs_below_the_fortress_wall() -> None:
+    """Cloth on stone all the way down to the wall's own base.
+
+    A banner is 34 pixels of sprite drawn up from the bottom of its
+    tile. Hung on the first walkable row, as these were, its bottom
+    third came down past the wall and lay on the dirt in front of it.
+    """
+    import pygame
+
+    from src.core import config
+    from src.entities.prop import _SPRITES
+
+    grid = _grid(dressing.FORTRESS)
+    height = pygame.image.load(
+        config.SPRITES_DIR / _SPRITES["phlegethos_banner"]).get_height()
+    for row, line in enumerate(grid):
+        for col, char in enumerate(line):
+            if char != dressing.BANNER:
+                continue
+            # Every tile the cloth is drawn over is wall, and its hem
+            # stops at the wall's base rather than below it.
+            for covered in range((row + 1) * config.TILE_SIZE - height,
+                                 (row + 1) * config.TILE_SIZE,
+                                 config.TILE_SIZE):
+                tile_row = covered // config.TILE_SIZE
+                assert grid[tile_row][col] in (dressing.WALL,
+                                               dressing.BANNER), \
+                    (col, tile_row, grid[tile_row][col])
+            assert grid[row + 1][col] == dressing.FLOOR, (col, row)

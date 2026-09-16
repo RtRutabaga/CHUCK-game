@@ -100,7 +100,8 @@ _CHUCK_Y = 132
 _POST_XS = (34, 92, 214, 276)
 _POST_BASE_Y = _QUAY_Y + 5          # just in from the edge
 _MOORED_POST = 92
-_BOAT_X, _BOAT_Y = 52, 82           # top-left of the hull's crop
+# West of the post it is tied to, bow pointing east at it.
+_BOAT_X, _BOAT_Y = 16, 82           # top-left of the hull's crop
 
 
 def _clamp01(value: float) -> float:
@@ -157,8 +158,13 @@ class ReturnToWaterdeepCutsceneScene(Scene):
         # a post south of the boat, and here the post is south of it the
         # other way round -- below it on the screen. The line is drawn
         # fresh instead.
-        self._boat = boat.subsurface((0, 22, boat.get_width(),
-                                      boat.get_height() - 22)).copy()
+        #
+        # Mirrored, so the bow points east at the post it is tied to --
+        # the same way the opening's boat lies, and the same way this
+        # boat lies on the map itself.
+        hull = boat.subsurface((0, 22, boat.get_width(),
+                                boat.get_height() - 22)).copy()
+        self._boat = pygame.transform.flip(hull, True, False)
 
     def _load_planks(self) -> None:
         """The dock's own plank tiles, from the midday sheet."""
@@ -359,9 +365,9 @@ class ReturnToWaterdeepCutsceneScene(Scene):
                              (x - post_w // 2, _POST_BASE_Y - post_h))
         if self._boat is None:
             return
-        # The bow ring, in the cropped hull's coordinates (the sprite's
-        # (9, 27) less the 22 rows cropped off its top).
-        bow = (_BOAT_X + 9, _BOAT_Y + 5)
+        # The bow ring is nine pixels in from the sprite's bow, which is
+        # its east end now that the hull is mirrored.
+        bow = (_BOAT_X + self._boat.get_width() - 10, _BOAT_Y + 5)
         post = (_MOORED_POST - 1, _POST_BASE_Y - 8)
         steps = 18
         for step in range(steps + 1):

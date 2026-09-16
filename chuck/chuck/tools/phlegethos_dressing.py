@@ -14,7 +14,9 @@ where a spike in the wrong place is a death.
 The fortress approach gets no floor dressing. Its battle floods plain
 basalt with the Astral Sea in waves, and those waves only take plain
 basalt: dressing there would leave holes in the seal. It gets towers
-and banners on the fortress wall instead, on the open row beneath it.
+and banners on the fortress wall instead: the towers stand on the open
+row beneath the wall, and the banners hang on the wall face itself, one
+row up, so no part of a banner dangles onto the ground in front of it.
 """
 
 from __future__ import annotations
@@ -51,9 +53,12 @@ BONE_HEAPS_PER_MAP = 4
 SPIKES_PER_MAP = 3
 NO_SOLIDS = {"phlegethos_lake"}
 
-# On the open row under the fortress wall: towers flanking the gate wide,
-# banners either side of each tower.
+# Towers stand on the open row under the fortress wall, flanking the
+# gate wide; the banners hang on the wall itself, the row above, either
+# side of each tower.
+WALL = "▓"
 FORTRESS_ROW = 7
+BANNER_ROW = FORTRESS_ROW - 1
 TOWER_COLS = (13, 35)
 BANNER_COLS = (8, 18, 30, 40)
 
@@ -75,10 +80,10 @@ def dress_grid(map_name: str, grid: list[list[str]]) -> None:
                                  f"{grid[FORTRESS_ROW][col]!r}")
             grid[FORTRESS_ROW][col] = TOWER
         for col in BANNER_COLS:
-            if grid[FORTRESS_ROW][col] != FLOOR:
-                raise ValueError(f"Banner at {(col, FORTRESS_ROW)} overlaps "
-                                 f"{grid[FORTRESS_ROW][col]!r}")
-            grid[FORTRESS_ROW][col] = BANNER
+            if grid[BANNER_ROW][col] != WALL:
+                raise ValueError(f"Banner at {(col, BANNER_ROW)} is not on "
+                                 f"wall but {grid[BANNER_ROW][col]!r}")
+            grid[BANNER_ROW][col] = BANNER
         return
 
     seed = _name_seed(map_name)

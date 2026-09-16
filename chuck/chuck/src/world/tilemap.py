@@ -732,8 +732,10 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="phlegethos_iron_spikes", under="·"),
     "ꞻ": TileDef(solid=True, color=(44, 40, 46),
                  prop="phlegethos_fortress_tower", under="·"),
+    # Hung on the fortress wall itself, not on the ground in front of
+    # it, so the stone behind the cloth is wall.
     "ꞽ": TileDef(solid=True, color=(44, 40, 46),
-                 prop="phlegethos_banner", under="·"),
+                 prop="phlegethos_banner", under="▓"),
     "ƒ": TileDef(solid=True, color=(178, 45, 12),
                  prop="phlegethos_lava_fall", under="≋"),
     # A whole modern bus shelter displaced into Phlegethos. Its one solid
