@@ -22,9 +22,13 @@ OUT = (
     / "assets" / "maps" / "phlegethos_rubble_pass.txt"
 )
 
-WEST_PASS = (1, 26)
+# The way in from the lava lake, at the temple's scale: three tiles with
+# the arch over the middle. It is in the south wall because that is the
+# way Chuck was walking when he left the lake -- coming out against the
+# west wall facing east was a quarter turn nothing in the region made.
+SOUTH_GATE = (10, 32)
 EAST_PASS = (62, 6)
-ARRIVAL = (3, 26)
+ARRIVAL = (10, 30)
 ANCHOR = (11, 25)
 RETURN_ARRIVAL = (60, 6)
 LEMURE = (8, 19)
@@ -32,7 +36,8 @@ HORNED_DEVIL = (38, 26)
 LAVA_FALL = (52, 14)
 
 PATH_POINTS = (
-    ARRIVAL,
+    (10, 31),
+    (10, 26),
     (14, 26),
     (14, 20),
     (27, 20),
@@ -44,7 +49,8 @@ PATH_POINTS = (
 
 HEADER = [
     "; PHASE 8 - PHLEGETHOS 4, THE RUBBLE PASS (64x34 tiles).",
-    "; A low-pressure east-west route winds through dark basalt rubble.",
+    "; A low-pressure route in from the south gate and out to the east,",
+    "; winding through dark basalt rubble.",
     "; A cliff-fed lava fall enters a narrow lava river; an intact slab",
     "; carries the path across. One lemure and one distant horned devil",
     "; are the map's only enemies. One Ashtray serves this map.",
@@ -166,7 +172,9 @@ def build() -> list[list[str]]:
     # east opening is a one-tile-wide, human-height vertical cleft centered
     # exactly on the paved approach; every visible dark cell is an active
     # threshold, so the art and transition footprint cannot disagree.
-    grid[WEST_PASS[1]][WEST_PASS[0]] = "«"
+    grid[SOUTH_GATE[1]][SOUTH_GATE[0] - 1] = "Δ"
+    grid[SOUTH_GATE[1]][SOUTH_GATE[0]] = "⌄"
+    grid[SOUTH_GATE[1]][SOUTH_GATE[0] + 1] = "Δ"
     for row in range(EAST_PASS[1] - 1, EAST_PASS[1] + 2):
         grid[row][EAST_PASS[0]] = "›"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Ԯ"
@@ -197,7 +205,7 @@ def validate(grid: list[list[str]]) -> int:
         ("Ashtray", ANCHOR),
         ("east arrival", RETURN_ARRIVAL),
         ("east pass", EAST_PASS),
-        ("west pass", WEST_PASS),
+        ("south gate", SOUTH_GATE),
     ):
         assert point in reached, f"{label} is unreachable"
     assert grid[LEMURE[1]][LEMURE[0]] == "Ѯ"

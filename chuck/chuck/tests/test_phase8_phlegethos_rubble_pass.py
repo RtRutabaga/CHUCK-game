@@ -48,23 +48,29 @@ def test_rubble_pass_is_a_dark_east_west_route_with_a_lava_fall() -> None:
     assert props.count("phlegethos_lava_fall") == 1
     assert props.count("temple_urn") == 3
 
-    # The route begins at the west edge and leaves through the east edge,
-    # breaking the region's prior south-to-north cadence.
-    west = next(
+    # The route begins at the south gate -- Chuck walks north out of the
+    # lake and keeps walking north into this -- and leaves through the
+    # east edge, breaking the region's prior south-to-north cadence.
+    gate_cells = {
         (col, row)
         for row in range(tilemap.height_tiles)
         for col in range(tilemap.width_tiles)
-        if tilemap.terrain_at(col, row) == "«"
-    )
+        if tilemap.terrain_at(col, row) in ("Δ", "⌄")
+    }
     east_cells = {
         (col, row)
         for row in range(tilemap.height_tiles)
         for col in range(tilemap.width_tiles)
         if tilemap.terrain_at(col, row) == "›"
     }
-    assert west[0] == 1
+    assert gate_cells == {(9, 32), (10, 32), (11, 32)}
+    assert tilemap.terrain_at(10, 32) == "⌄"      # the arch over the middle
+    assert not any(tilemap.terrain_at(col, row) == "«"
+                   for row in range(tilemap.height_tiles)
+                   for col in range(tilemap.width_tiles))
     assert east_cells == {(62, 5), (62, 6), (62, 7)}
     east = (62, 6)
+    west = (10, 32)
 
     # Arrival, Ashtray, and exit connect without crossing molten terrain or
     # rubble. The path changes rows repeatedly rather than forming a corridor.
@@ -154,7 +160,8 @@ def test_rubble_pass_checkpoint_and_both_connections_use_shared_loading() -> Non
     assert fortress.display_name == "Phlegethos 6"
 
     assert AREA_WALK_EXITS[(LAKE, "∇")].destination == MAP_NAME
-    assert AREA_WALK_EXITS[(MAP_NAME, "«")].destination == LAKE
+    assert AREA_WALK_EXITS[(LAKE, "∇")].facing == "up"
+    assert AREA_WALK_EXITS[(MAP_NAME, "⌄")].destination == LAKE
     assert AREA_WALK_EXITS[(MAP_NAME, "›")].destination == FRACTURED
     assert AREA_WALK_EXITS[(FRACTURED, "«")].destination == MAP_NAME
 

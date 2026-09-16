@@ -832,9 +832,15 @@ def test_the_lake_and_rubble_pass_connect_both_ways() -> None:
         scene.update(0.0)
         assert scene.map_name == "phlegethos_rubble_pass"  # no bounce
 
+        # He came out at the pass's south gate, walking north, rather
+        # than against its west wall facing east.
+        arrival = scene._player_tile()
+        assert arrival[1] > scene.tilemap.height_tiles - 6, arrival
+        assert scene.player.facing == "up"
+
         back = next((c, r) for r in range(scene.tilemap.height_tiles)
                     for c in range(scene.tilemap.width_tiles)
-                    if scene.tilemap.terrain_at(c, r) == "«")
+                    if scene.tilemap.terrain_at(c, r) == "⌄")
         scene.player.x = back[0] * config.TILE_SIZE + 3
         scene.player.y = back[1] * config.TILE_SIZE + 4
         scene.update(0.0)

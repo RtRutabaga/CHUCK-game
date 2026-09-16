@@ -416,23 +416,50 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_astral_wind", "⌄"): AreaExit(
         "temple_snakes", "from_temple_6", "up"
     ),
-    # Phase 8 --- Phlegethos. The ash-choked passes join the maps both ways.
+    # Phase 8 --- Phlegethos. The ash-choked passes join the maps both
+    # ways, through gates built at the temple's scale: three tiles wide,
+    # the arch over the middle one. Devils are not rat-sized, and a
+    # rat-sized doorway in their country read as a crack in a wall.
+    # Both the threshold terrain and the arch tile carry the transition,
+    # so any of the three tiles walks him through.
     ("phlegethos_arrival", "∇"): AreaExit(
+        "phlegethos_road", "from_phlegethos_1", "up"
+    ),
+    ("phlegethos_arrival", "⌂"): AreaExit(
         "phlegethos_road", "from_phlegethos_1", "up"
     ),
     ("phlegethos_road", "Δ"): AreaExit(
         "phlegethos_arrival", "from_phlegethos_2", "down"
     ),
+    ("phlegethos_road", "⌄"): AreaExit(
+        "phlegethos_arrival", "from_phlegethos_2", "down"
+    ),
     ("phlegethos_road", "∇"): AreaExit(
+        "phlegethos_lake", "from_phlegethos_2", "up"
+    ),
+    ("phlegethos_road", "⌂"): AreaExit(
         "phlegethos_lake", "from_phlegethos_2", "up"
     ),
     ("phlegethos_lake", "Δ"): AreaExit(
         "phlegethos_road", "from_phlegethos_3", "down"
     ),
-    ("phlegethos_lake", "∇"): AreaExit(
-        "phlegethos_rubble_pass", "from_phlegethos_3", "right"
+    ("phlegethos_lake", "⌄"): AreaExit(
+        "phlegethos_road", "from_phlegethos_3", "down"
     ),
-    ("phlegethos_rubble_pass", "«"): AreaExit(
+    # North out of the lake, and north into the pass: he arrives at its
+    # south gate still walking the way he set off. It used to put him
+    # against the pass's west wall facing east, a quarter turn he never
+    # made and the one direction change in the region nothing explained.
+    ("phlegethos_lake", "∇"): AreaExit(
+        "phlegethos_rubble_pass", "from_phlegethos_3", "up"
+    ),
+    ("phlegethos_lake", "⌂"): AreaExit(
+        "phlegethos_rubble_pass", "from_phlegethos_3", "up"
+    ),
+    ("phlegethos_rubble_pass", "Δ"): AreaExit(
+        "phlegethos_lake", "from_phlegethos_4", "down"
+    ),
+    ("phlegethos_rubble_pass", "⌄"): AreaExit(
         "phlegethos_lake", "from_phlegethos_4", "down"
     ),
     ("phlegethos_rubble_pass", "›"): AreaExit(
@@ -444,7 +471,13 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("phlegethos_fractured_way", "∇"): AreaExit(
         "phlegethos_fortress_approach", "from_phlegethos_rubble", "up"
     ),
+    ("phlegethos_fractured_way", "⌂"): AreaExit(
+        "phlegethos_fortress_approach", "from_phlegethos_rubble", "up"
+    ),
     ("phlegethos_fortress_approach", "Δ"): AreaExit(
+        "phlegethos_fractured_way", "from_phlegethos_fortress", "down"
+    ),
+    ("phlegethos_fortress_approach", "⌄"): AreaExit(
         "phlegethos_fractured_way", "from_phlegethos_fortress", "down"
     ),
     # Phase 9 --- ordinary paths connect in geographically wrong directions.

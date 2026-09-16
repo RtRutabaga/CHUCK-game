@@ -27,6 +27,19 @@ and updated every session.
 
 ## Latest implementation
 
+### Phlegethos: the lake comes out south, and every gate is temple-scale
+
+- **Phlegethos 3 to 4:** walking north out of the lava lake used to put Chuck against the rubble pass's west wall facing east, a quarter turn he never made. The pass now has its own gate in its south wall at (9-11, 32): he arrives just inside it at (10, 30) still facing north, and a paved spur runs up from the gate to the map's main lane.
+  - The old west arch is walled up, and the paving that ran to it is plain basalt again, so no road runs at a blank wall.
+  - `AREA_WALK_EXITS`: the lake's north exit now faces "up"; the pass's way back is its south gate.
+- **Temple-scale entrances everywhere in the region:** every way between Phlegethos maps is now three tiles wide with a temple arch over the middle (`∇⌂∇` north, `Δ⌄Δ` south, stacked `∇«∇` east-west), exactly as temple doorways are built. They were one-tile gaps, which read as cracks in a wall in a country of devils.
+  - Arrival, road (both ends), lake (both ends), fractured way (its north cleft and its west arch) and the fortress approach.
+  - The rubble pass's east cleft was already three tiles of infernal wall art and is unchanged.
+  - Both the threshold terrain and the arch tile carry the transition, so any of the three tiles walks Chuck through.
+- **Generators:** `tools/generate_phlegethos_rubble_pass.py` and `tools/generate_phlegethos_lake.py` now emit the new gates and the pass's south-to-east route, so the source of truth matches the shipped maps' geometry.
+- **Tests:**
+  - New `tests/test_phlegethos_gates.py`: every arch in the region has its two threshold tiles, every one of the three walks him through, no lone rat-sized threshold is left, and walking north out of the lake puts him at the pass's south gate facing north with the lane in front of him.
+  - `test_phase8_phlegethos` and `test_phase8_phlegethos_rubble_pass` updated for the south gate.
 ### Title screen content lifted clear of the notice
 
 - **What moved:** Chuck's portrait, the CHUCK logo and the menu now sit 12 canvas pixels higher (`TITLE_LIFT` in `src/scenes/title_scene.py`), applied to the art's metadata origins so the ember, smoke and mouth positions move with them.

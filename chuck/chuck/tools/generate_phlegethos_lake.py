@@ -83,8 +83,12 @@ def build():
         assert grid[r][c] == "·", (c, r, grid[r][c])
         grid[r][c] = "Ԁ"
     # The passes, markers, and the inert onward boundary.
-    grid[SOUTH_PASS[1]][SOUTH_PASS[0]] = "Δ"
-    grid[NORTH_PASS[1]][NORTH_PASS[0]] = "∇"
+    # Three tiles wide with the arch over the middle, as every temple
+    # doorway is built: devils are not rat-sized.
+    for offset, char in ((-1, "Δ"), (0, "⌄"), (1, "Δ")):
+        grid[SOUTH_PASS[1]][SOUTH_PASS[0] + offset] = char
+    for offset, char in ((-1, "∇"), (0, "⌂"), (1, "∇")):
+        grid[NORTH_PASS[1]][NORTH_PASS[0] + offset] = char
     grid[EXIT[1]][EXIT[0]] = "Ԍ"
     for (mc, mr), char in ((ENTRY, "Ԉ"), (ANCHOR, "Ԋ")):
         assert grid[mr][mc] in "·≡", (char, grid[mr][mc])
