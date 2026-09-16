@@ -116,3 +116,44 @@ def test_the_docks_fade_up_on_the_pose_the_cutscene_ended_on() -> None:
     finally:
         game._shutdown()
         directory.cleanup()
+
+
+def test_the_rowboat_lies_bow_east_on_its_line_to_the_post() -> None:
+    """The hull is mirrored, so the bow points at the post it is tied to.
+
+    The sprite's bow is the long taper -- ten columns of it -- and its
+    stern the blunt end, so whichever end carries less of the hull is
+    the bow. Drawn, that end has to be the east one, with the mooring
+    line leaving it and running back west to the post.
+    """
+    from src.scenes.opening_cutscene_scene import (
+        _BOAT_X, _MOORED_POST,
+    )
+
+    directory, game = _game()
+    try:
+        scene = OpeningCutsceneScene(game)
+        scene.on_enter()
+        boat = scene._boat
+        assert boat is not None
+        boat.lock()
+        mass = [sum(1 for y in range(boat.get_height())
+                    if boat.get_at((x, y))[3] > 0)
+                for x in range(boat.get_width())]
+        boat.unlock()
+        assert sum(mass[-8:]) < sum(mass[:8]) / 2
+
+        # The line leaves the bow ring at the boat's east end and runs
+        # on east to the post, so the boat lies pointing at its mooring.
+        surface = pygame.Surface((320, 180))
+        scene._post = None          # the posts share the rope's colour
+        scene._draw_moorings(surface)
+        rope = (184, 149, 91)
+        line = [(x, y) for y in range(180) for x in range(320)
+                if surface.get_at((x, y))[:3] == rope]
+        assert line
+        assert _BOAT_X + boat.get_width() - 14 <= min(x for x, _ in line)
+        assert max(x for x, _ in line) >= _MOORED_POST - 2
+    finally:
+        game._shutdown()
+        directory.cleanup()

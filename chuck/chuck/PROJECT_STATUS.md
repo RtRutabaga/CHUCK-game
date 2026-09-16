@@ -27,6 +27,24 @@ and updated every session.
 
 ## Latest implementation
 
+### The intro rowboat lies bow east
+
+- **The boat is mirrored.** In the opening cutscene the rowboat's bow pointed
+  west, away from the quay post it was tied to. The hull is flipped now, so the
+  bow points east -- the same way the boat moored by Bobert's barrel points on
+  the docks map itself, where its bollard stands two tiles east of it. They are
+  meant to be the same boat.
+- **It moved with its line.** Flipping alone left the mooring line a stub, so
+  the boat sits further west (x 48 -> 12) with the line leaving the bow ring at
+  its east end and running on to the post -- the original composition, read the
+  other way round.
+- **The credits' docks tableau** subclasses the opening scene and reuses its
+  boat and moorings, so it follows without a change.
+- **Tests:** `tests/test_opening_cutscene.py` measures the hull -- the sprite's
+  bow is its long taper, so whichever end carries less of the hull is the bow --
+  and checks that end is the east one, with the drawn line running from it out
+  to the moored post.
+
 ### One arch per doorway, and every arch on its path
 
 - **The second little doorway.** A threshold tile the arch's art does not cover is a bare dark square in the wall, and beside a real door it reads as a small door of its own. Two of them existed:

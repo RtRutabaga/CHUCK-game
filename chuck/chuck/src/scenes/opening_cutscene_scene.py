@@ -61,7 +61,10 @@ _QUAY_Y = 108
 _POST_XS = (30, 88, 236, 290)
 _POST_BASE_Y = _QUAY_Y + 5
 _MOORED_POST = 88
-_BOAT_X, _BOAT_Y = 48, 82
+# West of the post it is tied to, with its bow pointing east at it --
+# the same arrangement as the boat on the map, where the post stands two
+# tiles east of the hull.
+_BOAT_X, _BOAT_Y = 12, 82
 
 # Bobert's barrel, and Chuck asleep against its left side and then
 # standing where he lay.
@@ -113,8 +116,12 @@ class OpeningCutsceneScene(Scene):
         boat = self._image("objects/harbour_rowboat.png")
         if boat is not None:
             # The hull only; the line is drawn to this view's post.
-            self._boat = boat.subsurface(
+            # Mirrored, so the bow points east the way the boat tied up
+            # by Bobert's barrel does on the map itself -- the two are
+            # meant to be the same boat.
+            hull = boat.subsurface(
                 (0, 22, boat.get_width(), boat.get_height() - 22)).copy()
+            self._boat = pygame.transform.flip(hull, True, False)
         try:
             rows = assets.tileset(DOCKS.sheet, TILE_PX)
         except (FileNotFoundError, pygame.error):
@@ -248,7 +255,9 @@ class OpeningCutsceneScene(Scene):
                              (x - post_w // 2, _POST_BASE_Y - post_h))
         if self._boat is None:
             return
-        bow = (_BOAT_X + 9, _BOAT_Y + 5)
+        # The bow ring is nine pixels in from the sprite's bow, which is
+        # its east end now that the hull is mirrored.
+        bow = (_BOAT_X + self._boat.get_width() - 10, _BOAT_Y + 5)
         post = (_MOORED_POST - 1, _POST_BASE_Y - 8)
         for step in range(19):
             t = step / 18
