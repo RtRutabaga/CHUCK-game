@@ -27,6 +27,16 @@ and updated every session.
 
 ## Latest implementation
 
+### One arch per doorway, and every arch on its path
+
+- **The second little doorway.** A threshold tile the arch's art does not cover is a bare dark square in the wall, and beside a real door it reads as a small door of its own. Two of them existed:
+  - **Phlegethos 5's west gate** (mine, from the temple-scale pass): its arch sat in the middle of three threshold tiles, so the bottom one was uncovered. The arch now sits at the bottom of the three, which is also where the art wants it.
+  - **The temple's astral wind hall**: the one gate in the temple built wrong -- the arch at the left of a two-row threshold rather than the middle of a three-row one, leaving two bare tiles beside it.
+- **A real bug behind it:** Phlegethos 5's side-door flanks were `∇`, which on that map is the north cleft to the fortress -- walking into the side of its west door took Chuck to the wrong map. Its flanks are `Δ` now, with its own transition entry.
+- **Arches centred on their paths.** Measured off the art: a north/south arch's opening is centred on its own tile, and an east-west arch's opening is centred one row above its tile, which is why every side door in the game sits at the bottom of a three-row threshold with the path through the middle row.
+  - **The temple's entrance hall** (the one entered from Chult) was the only place that failed: a four-tile processional with three-tile doors, so the north door sat against the aisle's left edge and the south door against its right. The aisle now narrows to three tiles at each end, centred on its door.
+  - Every other arch in the game already lined up.
+- **Tests:** new `tests/test_arch_alignment.py` covers every map: each arch centred on its path, no stray one- or two-tile threshold beside a doorway (the temple's long dark approach corridor still passes as a corridor), and the art facts the rule rests on. `tests/test_phlegethos_gates.py` now also checks that all three tiles of a gate lead to the same map, which is what the Phlegethos 5 bug broke.
 ### Phlegethos's gates get their own stone
 
 - **Problem:** the region's new temple-scale gates were drawn with the temple's own arch art, so the doorways read as temple masonry set into infernal basalt. The scale was the point of them; the stone was not.

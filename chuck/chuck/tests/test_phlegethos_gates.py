@@ -19,7 +19,7 @@ MAPS = ("phlegethos_arrival", "phlegethos_road", "phlegethos_lake",
         "phlegethos_rubble_pass", "phlegethos_fractured_way",
         "phlegethos_fortress_approach")
 # The threshold terrains, and the arch that goes over the middle of each.
-GATES = {"∇": "⌂", "Δ": "⌄"}
+GATES = ("∇", "Δ")
 ARCHES = {"⌂": "temple_arch_ns", "⌄": "temple_arch_ns",
           "«": "temple_arch_ew", "»": "temple_arch_ew"}
 
@@ -39,27 +39,28 @@ def test_every_way_between_these_maps_is_an_arch_three_tiles_wide() -> None:
         for col, row in arches:
             arch = tilemap.terrain_at(col, row)
             assert TILE_DEFS[arch].prop == ARCHES[arch], (name, arch)
-            # Three tiles: the arch, and its threshold either side --
-            # across for a north/south gate, above and below for one
-            # in a side wall.
+            # Three tiles. A north/south arch has its threshold either
+            # side of it; an east-west one sits at the bottom of the
+            # block with its two above, because that is where the art
+            # puts the opening (see tests/test_arch_alignment.py).
             if arch in ("⌂", "⌄"):
                 sides = [(col - 1, row), (col + 1, row)]
-                wanted = {"⌂": "∇", "⌄": "Δ"}[arch]
             else:
-                sides = [(col, row - 1), (col, row + 1)]
-                wanted = "∇"
+                sides = [(col, row - 1), (col, row - 2)]
             for side in sides:
-                assert tilemap.terrain_at(*side) == wanted, (name, side)
-            # ...and every one of the three walks him through.
-            for cell in [(col, row)] + sides:
-                assert (name, tilemap.terrain_at(*cell)) in AREA_WALK_EXITS, \
-                    (name, cell)
+                assert tilemap.terrain_at(*side) in GATES, (name, side)
+            # ...and every one of the three goes to the same place. The
+            # side door's flanks were ∇ once, which is this map's cleft
+            # to the fortress: they took Chuck to the wrong map.
+            exits = {AREA_WALK_EXITS[(name, tilemap.terrain_at(*cell))]
+                     for cell in [(col, row)] + sides}
+            assert len({exit.destination for exit in exits}) == 1, (name, col,
+                                                                    row)
         # Nothing rat-sized is left: no lone threshold tile anywhere.
         for col, row in _cells(tilemap, GATES):
             neighbours = {tilemap.terrain_at(col + dx, row + dy)
                           for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))}
-            assert neighbours & set(ARCHES) or neighbours & set(GATES), \
-                (name, col, row)
+            assert neighbours & set(ARCHES) or neighbours & set(GATES),                 (name, col, row)
 
 
 def test_north_out_of_the_lake_is_north_into_the_pass() -> None:

@@ -465,6 +465,12 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("phlegethos_rubble_pass", "›"): AreaExit(
         "phlegethos_fractured_way", "from_phlegethos_rubble", "right"
     ),
+    # Its west gate's threshold flanks use Δ, because this map's ∇ is
+    # the north cleft to the fortress and a side door must not lead
+    # there (see assets/maps/phlegethos_fractured_way.txt).
+    ("phlegethos_fractured_way", "Δ"): AreaExit(
+        "phlegethos_rubble_pass", "from_phlegethos_fortress", "left"
+    ),
     ("phlegethos_fractured_way", "«"): AreaExit(
         "phlegethos_rubble_pass", "from_phlegethos_fortress", "left"
     ),
