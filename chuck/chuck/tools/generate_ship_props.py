@@ -164,11 +164,11 @@ def mast_sail() -> Image.Image:
     image = Image.new("RGBA", (224, 192), TRANSPARENT)
     draw = ImageDraw.Draw(image)
 
-    # The mast first, so the canvas covers it and it shows in the gaps
-    # between the yards and below the lowest of them.
-    draw.rectangle((105, 0, 119, 182), fill=WOOD_DARK)
-    draw.rectangle((107, 0, 113, 182), fill=WOOD)
-    draw.line((108, 0, 108, 182), fill=WOOD_LIGHT, width=2)
+    # The canvas first: the mast stands in front of its own sails, and
+    # it is one unbroken spar all the way up. Drawn the other way round
+    # it survives only in the gaps between the yards, and a mast that
+    # comes and goes behind the cloth reads as three separate boards
+    # rather than as one pole with sails hung off it.
 
     # (centre y of the yard, half-width, depth). Biggest at the foot of
     # the mast, smallest at the head.
@@ -201,6 +201,11 @@ def mast_sail() -> Image.Image:
                   fill=WOOD_DARK, width=5)
         draw.line((left - 7, top + lift, right + 7, top - 2),
                   fill=WOOD, width=2)
+
+    # ...and the mast over all of it, head to deck.
+    draw.rectangle((105, 0, 119, 182), fill=WOOD_DARK)
+    draw.rectangle((107, 0, 113, 182), fill=WOOD)
+    draw.line((108, 0, 108, 182), fill=WOOD_LIGHT, width=2)
 
     # The mast's foot, planted in the deck below the rig.
     draw.rectangle((95, 178, 132, 189), fill=DARK)

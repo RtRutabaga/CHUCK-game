@@ -212,10 +212,18 @@ def test_each_mast_carries_three_yards_of_sail() -> None:
         widths.append(max(cols) - min(cols))
     assert widths[0] < widths[1] < widths[2], widths
 
-    # The mast runs the height of the rig and is planted in the deck
-    # below the lowest yard.
+    # The mast stands in FRONT of its own sails, unbroken from the head
+    # of the rig to the deck: drawn behind them it survives only in the
+    # gaps between the yards, and a mast that comes and goes behind the
+    # cloth reads as three boards rather than one pole carrying sails.
     wood = {(63, 42, 29), (112, 74, 43), (151, 102, 57)}
-    foot = max(row for row in range(art.height)
-               if any(art.getpixel((col, row))[:3] in wood
-                      for col in range(art.width)))
-    assert foot > runs[-1][-1], (foot, runs[-1][-1])
+    spar = [row for row in range(art.height)
+            if any(art.getpixel((col, row))[:3] in wood
+                   for col in range(105, 120))]
+    assert spar == list(range(spar[0], spar[-1] + 1)), "the mast is broken"
+    assert spar[0] <= runs[0][0], (spar[0], runs[0][0])
+    assert spar[-1] > runs[-1][-1], (spar[-1], runs[-1][-1])
+    # ...and in the middle of each sail it is wood, not canvas.
+    for run in runs:
+        middle = run[len(run) // 2]
+        assert art.getpixel((110, middle))[:3] in wood, middle

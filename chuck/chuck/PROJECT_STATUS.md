@@ -42,8 +42,13 @@ and updated every session.
   to one wind reads from overhead. The mast shows between them and is planted in
   the deck below the lowest. Same 224x192 sprite, so nothing about the map, the
   anchors or the see-through band moved.
+- **The mast stands in front of its sails.** Drawn behind them it survived only
+  in the gaps between the yards, and a mast that comes and goes behind the cloth
+  reads as three separate boards rather than as one pole with sails hung off it.
+  It is one unbroken spar from the head of the rig to the deck now.
 - **Tests:** the sail art has three separate runs of canvas up the mast, each
-  wider than the one above it, with the mast running on below the lowest.
+  wider than the one above it; the mast is unbroken from above the topmost yard
+  to below the lowest, and the middle of every sail is wood rather than canvas.
 
 ### The temple exterior reads as Mesoamerican, not as a ziggurat
 
