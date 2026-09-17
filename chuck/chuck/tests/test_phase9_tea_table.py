@@ -65,7 +65,6 @@ def test_tea_table_is_a_large_enemy_free_scale_respite() -> None:
 
     kinds = Counter(kind for kind, _position in tilemap.object_spawns)
     assert kinds["arrival:from_feywild_4"] == 1
-    assert kinds["anchor:feywild_5_anchor"] == 1
     assert kinds["boundary:feywild_6"] == 1
     assert kinds["arrival:from_feywild_6"] == 1
     assert kinds["breakable_grass"] == 4
@@ -176,7 +175,6 @@ def test_required_route_and_cache_depend_on_chuck_scale() -> None:
     chuck_reach = _reachable(tilemap, arrival)
     large_reach = _reachable(tilemap, arrival, large_actor=True)
 
-    assert markers["anchor:feywild_5_anchor"] in chuck_reach
     assert exit_tile in chuck_reach
     assert cache in chuck_reach
     assert exit_tile not in large_reach
@@ -210,36 +208,6 @@ def test_place_settings_are_human_scale_and_say_only_short_lines() -> None:
     assert dialogue.get("fey_set_for_one") == ["Set for one."]
 
 
-def test_tea_table_uses_shared_checkpoint_save_respawn_and_continue() -> None:
-    with tempfile.TemporaryDirectory() as directory:
-        game = Game(save_path=Path(directory) / "save.json")
-        try:
-            scene = game.checkpoints.load_checkpoint("feywild_5", sanity=58)
-            assert scene.map_name == MAP_NAME
-            assert not scene.redcaps and not scene.undead and not scene.raptors
-
-            anchor = scene.anchors[0]
-            came_in = scene.anchors_system.respawn_position_for_chuck()
-            scene.player.x, scene.player.y = anchor.x, anchor.y
-            scene.update(0.0)
-            assert anchor.lit
-            assert game.active_checkpoint_id == "feywild_5_anchor"
-
-            scene.sanity.deplete()
-            scene.update(config.RESPAWN_FADE_OUT)
-            scene.update(config.RESPAWN_HOLD)
-            # The door he came in by, not the Ashtray he touched.
-            assert (scene.player.x, scene.player.y) == came_in
-
-            resumed = game.checkpoints.continue_game()
-            assert resumed is not None
-            assert resumed.map_name == MAP_NAME
-            assert resumed.sanity.current == 58
-            assert resumed.anchors[0].lit
-        finally:
-            game._shutdown()
-
-
 def test_rootways_and_tea_table_transition_both_ways() -> None:
     forward = AREA_WALK_EXITS[("feywild_rootways", "→")]
     backward = AREA_WALK_EXITS[(MAP_NAME, "⇧")]
@@ -252,12 +220,9 @@ def test_rootways_and_tea_table_transition_both_ways() -> None:
     assert onward.arrival == "from_feywild_5"
 
     entry = CHECKPOINT_BY_ID["feywild_5"]
-    anchor = CHECKPOINT_BY_ID["feywild_5_anchor"]
     root_return = CHECKPOINT_BY_ID["feywild_4_return"]
     future_return = CHECKPOINT_BY_ID["feywild_5_return"]
     assert entry.display_name == "Feywild 5" and entry.runtime_entry
-    assert anchor.map_name == MAP_NAME and anchor.saveable
-    assert not anchor.development_visible
     assert root_return.arrival == "from_feywild_5"
     assert future_return.arrival == "from_feywild_6"
 

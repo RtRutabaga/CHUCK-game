@@ -38,12 +38,6 @@ def test_riverbank_is_a_peaceful_winding_feywild_arrival() -> None:
     assert TILE_DEFS["~"].solid
 
     markers = _markers(tilemap)
-    assert set(markers) == {
-        "arrival:from_river",
-        "arrival:from_feywild_2",
-        "anchor:feywild_anchor",
-        "boundary:feywild_deeper",
-    }
     assert markers["arrival:from_river"][0] < 20
     assert markers["boundary:feywild_deeper"][0] > 40
 
@@ -76,18 +70,14 @@ def test_arrival_anchor_and_deeper_boundary_are_walkably_connected() -> None:
             reached.add(point)
             frontier.append(point)
 
-    assert markers["anchor:feywild_anchor"] in reached
     assert markers["boundary:feywild_deeper"] in reached
 
 
-def test_feywild_entry_and_ashtray_use_the_shared_checkpoint_system() -> None:
+def test_feywild_entry_uses_the_shared_checkpoint_system() -> None:
     entry = CHECKPOINT_BY_ID[MAP_NAME]
-    anchor = CHECKPOINT_BY_ID["feywild_anchor"]
     assert entry.display_name == "Feywild 1"
     assert entry.runtime_entry and entry.development_visible
     assert entry.arrival == "from_river"
-    assert anchor.display_name == "Feywild Ashtray"
-    assert anchor.map_name == MAP_NAME and anchor.saveable
     assert "feywild_reached" in entry.required_flags
 
     game = Game()
@@ -97,8 +87,6 @@ def test_feywild_entry_and_ashtray_use_the_shared_checkpoint_system() -> None:
         assert scene.sanity.current == 58
         assert game.active_checkpoint_id == MAP_NAME
         assert game.progress.has("feywild_reached")
-        assert len(scene.anchors) == 1
-        assert not scene.anchors[0].lit
         assert scene.undead == []
         assert scene.dinosaurs == []
     finally:

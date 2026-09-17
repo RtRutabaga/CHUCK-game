@@ -202,11 +202,10 @@ def test_western_arrival_is_a_narrow_winding_footpath() -> None:
     assert max(path_rows) - min(path_rows) >= 3
 
 
-def test_sole_south_door_and_the_ashtray_are_reachable() -> None:
+def test_sole_south_door_and_the_far_side_are_reachable() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
     reachable = _flood(tilemap, markers["arrival:from_doug_fir"][0])
-    assert markers["anchor:tahuya_exterior_anchor"][0] in reachable
 
     for point in ((59, 31), (59, 33), (59, 44)):
         assert point in reachable, point
@@ -266,12 +265,9 @@ def test_the_visible_south_door_enters_the_interior() -> None:
         directory.cleanup()
 
 
-def test_shared_checkpoint_loader_and_physical_ashtray_persist() -> None:
+def test_shared_checkpoint_loader_and_the_save_persists() -> None:
     entry = CHECKPOINT_BY_ID["tahuya_exterior"]
-    anchor = CHECKPOINT_BY_ID["tahuya_exterior_anchor"]
     assert entry.display_name == "Cabin Exterior"
-    assert entry.runtime_entry and not entry.saveable
-    assert anchor.saveable and not anchor.development_visible
 
     directory, game = _game()
     try:
@@ -282,15 +278,15 @@ def test_shared_checkpoint_loader_and_physical_ashtray_persist() -> None:
         assert game.progress.has("doug_fir_transition_completed")
         assert game.checkpoints.saves.load() is None
 
-        assert game.checkpoints.activate_checkpoint(
-            "tahuya_exterior_anchor", sanity=world.sanity.current
+        assert game.checkpoints.write_save(
+            "tahuya_exterior", sanity=world.sanity.current
         )
         record = game.checkpoints.saves.load()
         assert record is not None
-        assert record.checkpoint_id == "tahuya_exterior_anchor"
+        assert record.checkpoint_id == "tahuya_exterior"
         continued = game.checkpoints.continue_game()
         assert continued.map_name == MAP_NAME
-        assert game.active_checkpoint_id == "tahuya_exterior_anchor"
+        assert game.active_checkpoint_id == "tahuya_exterior"
 
         continued._arrival_fade_t = None
         continued.player.x, continued.player.y = 120.0, 120.0
@@ -298,7 +294,6 @@ def test_shared_checkpoint_loader_and_physical_ashtray_persist() -> None:
         continued.update(config.RESPAWN_FADE_OUT + 0.01)
         continued.update(config.RESPAWN_HOLD + 0.01)
         assert continued._respawn_phase == "in"
-        assert (continued.player.x, continued.player.y) == anchor.position
     finally:
         game._shutdown()
         directory.cleanup()
@@ -408,7 +403,6 @@ def test_the_wood_has_an_understory_and_it_is_still_walkable() -> None:
     # The route in and the things on it are untouched by the planting.
     markers = _markers(tilemap)
     reachable = _flood(tilemap, markers["arrival:from_doug_fir"][0])
-    assert markers["anchor:tahuya_exterior_anchor"][0] in reachable
     assert (59, 33) in reachable
     assert not any((col, row) in brush
                    for col, row in ((57, 43), (70, 42)))

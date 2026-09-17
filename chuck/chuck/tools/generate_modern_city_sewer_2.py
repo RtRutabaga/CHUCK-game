@@ -25,10 +25,10 @@ HEIGHT = 62
 
 ARRIVAL = (5, 6)
 RETURN_EXIT = (0, 6)
-# The map's one Ashtray sits on the jog, in clear sight of the drop but
+# The map's waypoint sits on the jog, in clear sight of the drop but
 # outside it: the phase document forbids putting it inside the jump
 # sequence, and a failed jump should cost the course, not the whole map.
-ANCHOR = (13, 41)
+WAYPOINT = (13, 41)
 FUTURE_EXIT = (14, 61)
 
 # Narrow ledges, each cleared by one committed jump over a single Astral
@@ -141,12 +141,11 @@ def build_map() -> list[str]:
     for left, top, right, bottom in SLUDGE:
         room(left, top, right, bottom, "ʓ")
 
-    # The culvert back to Sewer 1, and the Ashtray on the first landing.
+    # The culvert back to Sewer 1.
     for row in range(5, 8):
         grid[row][0] = "⮜"
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "ሾ"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ሿ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ቀ"
 
     # The southern end: collided either side, with a marked opening in the
     # middle where the floor gave way into Sewer 3.
@@ -177,7 +176,7 @@ SOLID = {"#", "b", "R", "i", "V"}
 
 
 def _under(char: str) -> str:
-    return {"ሾ": "⮜", "ሿ": "d", "ቀ": "d", "q": "d", "ል": ".",
+    return {"ሾ": "⮜", "ሿ": "d", "q": "d", "ል": ".",
             "ቇ": "⮟"}.get(char, char)
 
 
@@ -215,11 +214,11 @@ def validate(rows: list[str]) -> None:
 
     found = _flood(rows, ARRIVAL, hops=True)
     assert RETURN_EXIT in found
-    assert ANCHOR in found
+    assert WAYPOINT in found
     for point in (*RATS, *CIGARETTES):
         assert point in found, point
-    # No rat waits on top of the Ashtray Chuck respawns at.
-    assert ANCHOR not in set(RATS)
+    # No rat waits on top of the waypoint.
+    assert WAYPOINT not in set(RATS)
 
     # The bottom chamber is only reachable by making the jumps.
     landing = (CHAMBER[0] + 2, CHAMBER[1] + 1)
@@ -278,12 +277,11 @@ def validate(rows: list[str]) -> None:
                             "V"}:
                         landings.add(neighbour)
     assert not (sludge_tiles & landings), sorted(sludge_tiles & landings)
-    # ...and the Ashtray sits outside the course entirely.
-    assert ANCHOR not in ledge_tiles and ANCHOR not in sludge_tiles
-    assert ANCHOR[1] < LEDGES[0][1], "the Ashtray is inside the jump course"
+    # ...and the waypoint sits outside the course entirely.
+    assert WAYPOINT not in ledge_tiles and WAYPOINT not in sludge_tiles
+    assert WAYPOINT[1] < LEDGES[0][1], "the waypoint is inside the jump course"
 
     text = "".join(rows)
-    assert text.count("ቀ") == 1
     assert text.count("ሿ") == 1 and text.count("ሾ") == 1
     assert text.count("q") == len(RATS)
     assert text.count("ል") == len(CIGARETTES)

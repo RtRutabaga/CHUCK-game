@@ -255,20 +255,6 @@ def test_hell_lies_across_the_way_and_has_to_be_crossed() -> None:
         directory.cleanup()
 
 
-def test_the_ashtray_stands_on_the_near_side_of_the_crossing() -> None:
-    """Dying here is likely, so the save must be before the danger."""
-    anchor = CHECKPOINT_BY_ID["desert_east_4_anchor"]
-    assert anchor.saveable and anchor.position is not None
-    ts = config.TILE_SIZE
-    col = int(anchor.position[0]) // ts
-    assert col < min(top_x for top_x, _ in CHANNELS), col
-
-    tilemap = _tilemap("desert_east_4")
-    row = int(anchor.position[1]) // ts
-    assert tilemap.terrain_at(col, row) in DESERT_GROUND
-    assert (col, row) in _flood(tilemap, _entry("desert_east_4"))
-
-
 def test_the_road_east_runs_through_both_in_both_directions() -> None:
     ts = config.TILE_SIZE
     for behind, ahead, entry in (
@@ -300,23 +286,15 @@ def test_the_road_east_runs_through_both_in_both_directions() -> None:
 
 
 def test_both_maps_have_their_own_entries() -> None:
-    for entry in ("desert_east_3", "desert_east_3_anchor",
+    for entry in ("desert_east_3", "desert_east_3",
                   "desert_east_2_from_east_3",
-                  "desert_east_4", "desert_east_4_anchor",
+                  "desert_east_4", "desert_east_4",
                   "desert_east_3_from_east_4"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
     for name in ("desert_east_3", "desert_east_4"):
         assert CHECKPOINT_BY_ID[name].development_visible
-        anchor = CHECKPOINT_BY_ID[f"{name}_anchor"]
-        assert anchor.saveable
         tilemap = _tilemap(name)
         ts = config.TILE_SIZE
-        spawn = next(p for k, p in tilemap.object_spawns
-                     if k.startswith("anchor:"))
-        assert anchor.position is not None
-        assert (int(anchor.position[0]) // ts,
-                int(anchor.position[1]) // ts) == \
-            (int(spawn[0]) // ts, int(spawn[1]) // ts), name
 
 
 def _run_all() -> None:

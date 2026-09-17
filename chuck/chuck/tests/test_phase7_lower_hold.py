@@ -28,7 +28,6 @@ def test_lower_hold_is_a_cargo_filled_rat_map() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (40, 30)
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_ship_room") == 1
-    assert kinds.count("anchor:ship_lower_hold_anchor") == 1
     assert kinds.count("rat") == 16
     prop_kinds = [kind for kind, _col, _row in tilemap.prop_tiles]
     assert prop_kinds.count("pantry_shelf") == 8
@@ -84,9 +83,6 @@ def test_lower_hold_uses_shared_ship_systems_and_returns_upstairs() -> None:
     entry = CHECKPOINT_BY_ID["ship_lower_hold"]
     assert entry.display_name == "Ship Hold"
     assert entry.map_name == MAP_NAME and entry.runtime_entry
-    anchor = CHECKPOINT_BY_ID["ship_lower_hold_anchor"]
-    assert anchor.map_name == MAP_NAME
-    assert anchor.saveable and not anchor.development_visible
 
 
 def test_ladder_transition_and_rat_respawn_use_existing_architecture() -> None:

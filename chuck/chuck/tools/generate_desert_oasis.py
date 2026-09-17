@@ -69,7 +69,7 @@ SAND_GRASS = ((13, 31), (47, 33), (15, 13), (46, 14), (11, 25), (44, 9),
 # On the turf, not below it. The anchor marker paints its own
 # under-terrain, so stood out on the sand it drew one green square
 # in the middle of a desert with nothing else green near it.
-ANCHOR = (28, 25)
+WAYPOINT = (28, 25)
 ARRIVAL = (51, 21)  # just inside the way in from the hub
 
 
@@ -161,7 +161,7 @@ def _palms(grid) -> None:
 
     Anything already spoken for is left alone. A palm is the least
     important thing on this map and it must never be the reason the
-    ashtray moved, or a tuft of cigarette grass went missing, or the
+    waypoint moved, or a tuft of cigarette grass went missing, or the
     way in stopped being clear.
     """
     cx, cy, rx, ry = POOL
@@ -226,7 +226,6 @@ def build():
     _palms(grid)
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌬"
-    grid[ANCHOR[1]][ANCHOR[0]] = "☉"
     return grid
 
 
@@ -234,7 +233,7 @@ HEADER = (
     "; DESERT OASIS - Phase 13, west of the hub (56x44). No enemies.\n"
     "; '~' water, '⩊' turf, '⏦'/'⍚' palm shade (drawn over Chuck),\n"
     "; '⍑'/'⍒' the palms casting it, standing on turf and on sand,\n"
-    "; '⩏'/'<' scratchable cigarette grass, '☉' the ashtray.\n"
+    "; '⩏'/'<' scratchable cigarette grass.\n"
     "; Rock closes the north and west; the south is the Astral Sea.\n"
 )
 

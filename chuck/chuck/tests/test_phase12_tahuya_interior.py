@@ -197,13 +197,11 @@ def test_interior_matches_the_authored_long_cabin_layout() -> None:
                for y in range(top + 1, bottom) for x in range(15, 19))
 
 
-def test_all_interior_routes_and_the_ashtray_are_reachable() -> None:
+def test_all_interior_routes_and_the_far_side_are_reachable() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
     front = markers["arrival:from_front_door"]
-    anchor = markers["anchor:tahuya_interior_anchor"]
     reachable = _flood(tilemap, front)
-    assert anchor in reachable
     assert (10, 0) not in reachable and (10, HEIGHT - 1) in reachable
     assert "arrival:from_back_door" not in markers
     # The long table's visual and solid footprints agree, leaving a generous
@@ -239,12 +237,9 @@ def test_sole_south_threshold_is_reversible_and_aligned() -> None:
     assert (MAP_NAME, "Ƣ") not in AREA_WALK_EXITS
 
 
-def test_shared_loader_and_interior_ashtray_persist() -> None:
+def test_shared_loader_and_the_interior_save_persists() -> None:
     entry = CHECKPOINT_BY_ID["tahuya_interior"]
-    anchor = CHECKPOINT_BY_ID["tahuya_interior_anchor"]
     assert entry.display_name == "Cabin Interior"
-    assert entry.runtime_entry and not entry.saveable
-    assert anchor.saveable and not anchor.development_visible
 
     directory, game = _game()
     try:
@@ -272,15 +267,15 @@ def test_shared_loader_and_interior_ashtray_persist() -> None:
                            if prop.kind == "cabin_closed_door_west")
         assert closed_door.dialogue_id == "closed_door"
 
-        assert game.checkpoints.activate_checkpoint(
-            "tahuya_interior_anchor", sanity=world.sanity.current
+        assert game.checkpoints.write_save(
+            "tahuya_interior", sanity=world.sanity.current
         )
         record = game.checkpoints.saves.load()
         assert record is not None
-        assert record.checkpoint_id == "tahuya_interior_anchor"
+        assert record.checkpoint_id == "tahuya_interior"
         continued = game.checkpoints.continue_game()
         assert continued.map_name == MAP_NAME
-        assert game.active_checkpoint_id == "tahuya_interior_anchor"
+        assert game.active_checkpoint_id == "tahuya_interior"
 
     finally:
         game._shutdown()

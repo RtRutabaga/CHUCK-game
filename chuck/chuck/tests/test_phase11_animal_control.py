@@ -178,7 +178,7 @@ def test_the_drain_is_the_same_at_any_frame_rate() -> None:
 
 def test_the_net_is_not_a_second_death_system() -> None:
     """It ends by depleting Sanity; respawning is the game's own."""
-    directory, game, world = _game_and_world("modern_city_day_2_anchor")
+    directory, game, world = _game_and_world("modern_city_day_2")
     try:
         depletions = []
         real = world.sanity._on_depleted
@@ -194,9 +194,6 @@ def test_the_net_is_not_a_second_death_system() -> None:
 
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert world.sanity.current == config.SANITY_MAX
         assert not world.net_capture.active
     finally:
@@ -230,16 +227,13 @@ def test_officers_stand_where_they_can_be_walked_around() -> None:
     officers = [(int(x // ts), int(y // ts))
                 for kind, (x, y) in tilemap.object_spawns
                 if kind == "animal_control"]
-    anchor = next((int(x // ts), int(y // ts))
-                  for kind, (x, y) in tilemap.object_spawns
-                  if kind.startswith("anchor:"))
     arrival = next((int(x // ts), int(y // ts))
                    for kind, (x, y) in tilemap.object_spawns
                    if kind.startswith("arrival:"))
     notice = config.UNDEAD_NOTICE_RANGE / ts
-    # Neither the Ashtray nor the arrival is inside an officer's reach.
+    # The arrival is not inside an officer's reach.
     for officer in officers:
-        for safe in (anchor, arrival):
+        for safe in (arrival,):
             assert (abs(officer[0] - safe[0]) + abs(officer[1] - safe[1])
                     > notice), (officer, safe)
         # ...and each stands on pavement, not in a traffic lane.

@@ -12,7 +12,7 @@ OUT = (
 
 RETURN_EXIT = (6, 45)
 ARRIVAL = (6, 44)
-ANCHOR = (12, 43)
+WAYPOINT = (12, 43)
 FLOWER = (43, 31)
 OPEN_GATE = ((31, 27), (31, 28), (31, 29))
 CLOSE_GATE = ((51, 27), (51, 28), (51, 29))
@@ -128,7 +128,6 @@ def build() -> list[list[str]]:
     for col in range(RETURN_EXIT[0] - 1, RETURN_EXIT[0] + 2):
         grid[RETURN_EXIT[1]][col] = "⇩"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Լ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "Ծ"
     grid[FLOWER[1]][FLOWER[0]] = "Ձ"
     for col, row in OPEN_GATE:
         grid[row][col] = "Ղ"
@@ -144,7 +143,6 @@ def build() -> list[list[str]]:
 def _under(char: str) -> str:
     return {
         "Լ": "'",
-        "Ծ": "'",
         "Կ": "⇧",
         "Հ": "'",
         "Ձ": ".",
@@ -184,7 +182,7 @@ def _reachable(
 
 def validate(grid: list[list[str]]) -> None:
     assert all(len(row) == W for row in grid)
-    required = {RETURN_EXIT, ANCHOR, FLOWER, DEEPER, DEEPER_RETURN}
+    required = {RETURN_EXIT, WAYPOINT, FLOWER, DEEPER, DEEPER_RETURN}
     for active in (False, True):
         reached = _reachable(grid, ARRIVAL, active=active)
         assert required <= reached

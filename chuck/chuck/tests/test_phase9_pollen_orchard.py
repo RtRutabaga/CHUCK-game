@@ -72,7 +72,6 @@ def test_orchard_is_a_large_enemy_free_pollen_lesson() -> None:
 
     kinds = Counter(kind for kind, _position in tilemap.object_spawns)
     assert kinds["arrival:from_feywild_2"] == 1
-    assert kinds["anchor:feywild_3_anchor"] == 1
     assert kinds["boundary:feywild_4"] == 1
     assert kinds["arrival:from_feywild_4"] == 1
     assert kinds["flower_switch:orchard"] == 1
@@ -99,7 +98,6 @@ def test_both_orchard_flower_routes_reach_every_required_landmark() -> None:
     controller = ReactiveFlowerController(tilemap, tilemap.object_spawns)
     arrival = markers["arrival:from_feywild_2"]
     required = {
-        markers["anchor:feywild_3_anchor"],
         markers["boundary:feywild_4"],
         markers["arrival:from_feywild_4"],
         markers["flower_switch:orchard"],
@@ -196,11 +194,8 @@ def test_orchard_uses_shared_transitions_checkpoints_and_save() -> None:
     assert backward.arrival == "from_feywild_3"
 
     entry = CHECKPOINT_BY_ID["feywild_3"]
-    anchor = CHECKPOINT_BY_ID["feywild_3_anchor"]
     return_entry = CHECKPOINT_BY_ID["feywild_2_return"]
     assert entry.display_name == "Feywild 3" and entry.runtime_entry
-    assert anchor.map_name == MAP_NAME and anchor.saveable
-    assert not anchor.development_visible
     assert return_entry.arrival == "from_feywild_3"
 
     with tempfile.TemporaryDirectory() as directory:
@@ -209,18 +204,15 @@ def test_orchard_uses_shared_transitions_checkpoints_and_save() -> None:
             scene = game.checkpoints.load_checkpoint("feywild_3", sanity=59)
             assert scene.map_name == MAP_NAME
             assert scene.undead == [] and scene.raptors == []
-            ashtray = scene.anchors[0]
-            scene.player.x = ashtray.x
-            scene.player.y = ashtray.y
             scene.update(0.0)
-            assert ashtray.lit
-            assert game.active_checkpoint_id == "feywild_3_anchor"
+            assert game.active_checkpoint_id == "feywild_3"
+            # Saved from the menu, at the door he came in by.
+            assert game.checkpoints.write_save("feywild_3", 59)
 
             resumed = game.checkpoints.continue_game()
             assert resumed is not None
             assert resumed.map_name == MAP_NAME
             assert resumed.sanity.current == 59
-            assert resumed.anchors[0].lit
             assert not resumed.reactive_flowers.groups["orchard"].active
         finally:
             game._shutdown()

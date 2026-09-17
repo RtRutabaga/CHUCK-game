@@ -46,8 +46,6 @@ EXPECTED_DIALOGUE = [
     "... Now then!",
     "I shall fling you onward!",
 ]
-
-
 def test_rope_yes_uses_validated_action_and_preserves_sanity() -> None:
     game = Game()
     try:

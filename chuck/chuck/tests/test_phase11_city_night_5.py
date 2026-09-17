@@ -85,7 +85,6 @@ def test_city_night_5_is_a_large_staged_highway_map() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (112, 48)
     assert MAP_TILESET[MAP_NAME] == "city"
     assert kinds["arrival:from_city_night_4"] == 1
-    assert kinds["anchor:modern_city_5_anchor"] == 1
     assert kinds["boundary:modern_city_night_4"] == 1
     assert kinds["npc:businessman"] == 2
     assert kinds["patrol_npc:businessman:h"] == 1
@@ -153,7 +152,6 @@ def test_every_authored_discovery_is_reachable_without_astral_fall() -> None:
     markers = _markers(tilemap)
     reached = _reachable(tilemap, markers["arrival:from_city_night_4"][0])
     required = {
-        markers["anchor:modern_city_5_anchor"][0],
         markers["boundary:modern_city_night_4"][0],
         markers["boundary:modern_city_night_6"][0],
         *markers["npc:businessman"],
@@ -195,14 +193,11 @@ def test_city_4_and_5_visual_openings_match_named_arrivals() -> None:
 
 def test_city_night_5_checkpoint_world_and_respawn_use_shared_systems() -> None:
     entry = CHECKPOINT_BY_ID["modern_city_5"]
-    anchor = CHECKPOINT_BY_ID["modern_city_5_anchor"]
     assert (entry.display_name, entry.map_name, entry.arrival) == (
         "City Night 5", MAP_NAME, "from_city_night_4"
     )
-    assert anchor.position == (1668.0, 389.0)
-    assert anchor.saveable
 
-    directory, game, world = _game_and_world("modern_city_5_anchor")
+    directory, game, world = _game_and_world("modern_city_5")
     try:
         assert world.city_rain is not None
         assert len(world.npcs) == 3
@@ -230,9 +225,6 @@ def test_city_night_5_checkpoint_world_and_respawn_use_shared_systems() -> None:
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
         assert world._respawn_phase == "in"
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert [
             [vehicle.center for vehicle in lane.vehicles]
             for lane in world.traffic_lanes

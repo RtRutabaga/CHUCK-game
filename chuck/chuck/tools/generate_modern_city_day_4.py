@@ -28,7 +28,7 @@ HEIGHT = 52
 
 ARRIVAL = (5, 6)
 RETURN_EXIT = (5, 0)
-ANCHOR = (9, 9)
+WAYPOINT = (9, 9)
 FUTURE_EXIT = (69, 43)
 
 # The broken square: slabs of pavement with single-tile gaps between.
@@ -109,7 +109,6 @@ def build_map() -> list[str]:
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ቩ"
     grid[FUTURE_EXIT[1]][WIDTH - 3] = "ቱ"  # back west from Day 5
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቪ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ቫ"
     for col, row in OFFICERS:
         assert grid[row][col] == ".", (col, row, grid[row][col])
         grid[row][col] = "ቛ"
@@ -138,7 +137,7 @@ SOLID = {"▥", "#", "▱", "▤", "w"}
 
 
 def _under(char: str) -> str:
-    return {"ቨ": "⮝", "ቩ": "⮞", "ቪ": ".", "ቫ": ".", "ቛ": ".", "ሖ": ".",
+    return {"ቨ": "⮝", "ቩ": "⮞", "ቪ": ".", "ቛ": ".", "ሖ": ".",
             "ቱ": ".",
             "ሞ": ".", "ል": ".", "ꞏ": ".", "ቜ": "."}.get(char, char)
 
@@ -180,7 +179,7 @@ def validate(rows: list[str]) -> None:
     hopped = _flood(rows, ARRIVAL, hops=True)
     walked = _flood(rows, ARRIVAL, hops=False)
 
-    assert {ANCHOR, RETURN_EXIT, FUTURE_EXIT} <= walked, (
+    assert {WAYPOINT, RETURN_EXIT, FUTURE_EXIT} <= walked, (
         "the map cannot be finished without jumping")
     for point, _axis in BUSINESSPEOPLE:
         assert point in walked, point
@@ -205,7 +204,6 @@ def validate(rows: list[str]) -> None:
     density = text.count("V") / (WIDTH * HEIGHT)
     assert density > before_density, (density, before_density)
 
-    assert text.count("ቫ") == 1
     assert text.count("ቛ") == len(OFFICERS)
     assert text.count("ል") == len(CIGARETTES)
     assert "ም" not in text, "no homeless man in the daytime city"

@@ -4,8 +4,8 @@ A tally, not a ledger. The cigarette count rewinds on death because
 what Chuck gathered past the checkpoint is lost with him; a death is
 the one thing that cannot be lost that way, so this only ever goes up.
 NEW GAME zeroes it and CONTINUE restores the saved value, exactly like
-the cigarettes -- which also means deaths since the last Ashtray are
-not on disk yet, the same as everything else since the last Ashtray.
+the cigarettes -- which also means deaths since the last save are not
+on disk yet, the same as everything else since the last save.
 
 Two kinds of death count. The ordinary one, when Sanity runs out or
 Chuck drops into the Astral and quietly stops being there. And the

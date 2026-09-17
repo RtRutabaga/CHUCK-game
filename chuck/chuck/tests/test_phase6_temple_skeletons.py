@@ -44,7 +44,6 @@ def test_skeleton_chamber_is_broad_connected_and_combat_is_avoidable() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (56, 44)
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("skeleton") == 12
-    assert kinds.count("anchor:temple_3_anchor") == 1
     assert kinds.count("arrival:from_temple_2") == 1
     assert kinds.count("boundary:temple_4") == 1
     assert sum(row.count("i") for row in tilemap._grid) == 12
@@ -93,15 +92,12 @@ def test_temple_maps_2_and_3_connect_both_ways_without_bounce() -> None:
         game._shutdown()
 
 
-def test_temple_3_ashtray_saves_continues_and_respawns_enemies() -> None:
+def test_temple_3_save_continues_and_respawns_enemies() -> None:
     entry = CHECKPOINT_BY_ID["temple_3"]
     assert entry.display_name == "Temple 3"
     assert entry.map_name == "temple_skeletons"
     assert entry.arrival == "from_temple_2"
     assert entry.runtime_entry and entry.development_visible
-    anchor_entry = CHECKPOINT_BY_ID["temple_3_anchor"]
-    assert anchor_entry.position == (436.0, 597.0)
-    assert anchor_entry.saveable and not anchor_entry.development_visible
 
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
@@ -112,16 +108,15 @@ def test_temple_3_ashtray_saves_continues_and_respawns_enemies() -> None:
         assert all(enemy.kind == "skeleton" for enemy in scene.undead)
         scene.undead[0].alive = False
         scene.undead = [enemy for enemy in scene.undead if enemy.alive]
-        anchor, = scene.anchors
-        came_in = scene.anchors_system.respawn_position_for_chuck()
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+        came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 63
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "temple_3_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("temple_3", scene.sanity.current)
+        assert game.active_checkpoint_id == "temple_3"
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        # The door he came in by, not the Ashtray he touched.
+        # The door he came in by.
         assert (scene.player.x, scene.player.y) == came_in
         assert len(scene.undead) == 12
     finally:
@@ -131,7 +126,7 @@ def test_temple_3_ashtray_saves_continues_and_respawns_enemies() -> None:
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == "temple_skeletons"
-        assert resumed.active_checkpoint_id == "temple_3_anchor"
+        assert resumed.active_checkpoint_id == "temple_3"
         assert scene.sanity.current == 63
         assert len(scene.undead) == 12
     finally:

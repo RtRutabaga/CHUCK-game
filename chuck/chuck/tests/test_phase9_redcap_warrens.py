@@ -47,7 +47,7 @@ def _tile(position):
 def _points(tilemap):
     return {kind.split(":", 1)[1]: _tile(pos)
             for kind, pos in tilemap.object_spawns
-            if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+            if kind.startswith(("arrival:", "boundary:"))}
 
 
 def _redcaps(tilemap):
@@ -93,12 +93,11 @@ def test_the_warrens_can_be_crossed_without_meeting_a_redcap() -> None:
     assert len(redcaps) == 4
 
     walkable = _flood(tilemap, start)
-    assert exit_tile in walkable and points["feywild_8_anchor"] in walkable
+    assert exit_tile in walkable
 
     # The promise: a whole crossing outside every notice range.
     safe = _flood(tilemap, start, avoid=redcaps)
     assert exit_tile in safe, "the warrens cannot be crossed safely"
-    assert points["feywild_8_anchor"] in safe
 
     # ...but the camp is still theirs. The ground around the middle
     # redcap must not appear on any safe route.
@@ -213,8 +212,6 @@ def test_warrens_checkpoints_music_and_the_fen_connection() -> None:
     entry = CHECKPOINT_BY_ID["feywild_8"]
     assert entry.display_name == "Feywild 8" and entry.runtime_entry
     assert entry.map_name == MAP_NAME and entry.arrival == "from_feywild_7"
-    anchor = CHECKPOINT_BY_ID["feywild_8_anchor"]
-    assert anchor.saveable and not anchor.development_visible
     assert tileset_for(MAP_NAME).sheet == "feywild.png"
     assert AREA_MUSIC[MAP_NAME] == "feywild.wav"
     assert AREA_WALK_EXITS[(FEN, "→")].destination == MAP_NAME

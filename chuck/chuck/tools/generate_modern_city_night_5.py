@@ -61,7 +61,6 @@ def build_map() -> list[str]:
             grid[row][col] = "⮞"
     grid[24][111] = "ሪ"
     grid[24][107] = "ረ"
-    grid[24][104] = "ሩ"
 
     # Two four-lane fields with alternating directions and staggered phases.
     for col, marker in (

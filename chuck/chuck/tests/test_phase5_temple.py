@@ -44,7 +44,6 @@ def test_temple_map_is_a_connected_enemy_free_exterior() -> None:
         "zombie", "skeleton", "raptor", "massive_dinosaur",
     } or kind.startswith("staged_undead:") for kind in kinds)
     assert kinds.count("breakable_grass") == 8
-    assert kinds.count("anchor:chult_5_anchor") == 1
     assert kinds.count("arrival:from_chult_4") == 1
     assert kinds.count("boundary:temple_interior") == 1
     # Two serpent heads at the foot of the stair, and the roof comb over
@@ -149,31 +148,27 @@ def test_map_4_boundary_enters_named_chult_5_arrival_without_bounce() -> None:
         game._shutdown()
 
 
-def test_chult_5_ashtray_saves_continue_and_respawns_through_shared_loader() -> None:
+def test_chult_5_save_continues_and_respawns_through_shared_loader() -> None:
     entry = CHECKPOINT_BY_ID["chult_5"]
     assert entry.display_name == "Chult 5"
     assert entry.map_name == "chult_temple"
     assert entry.arrival == "from_chult_4"
     assert entry.runtime_entry and entry.development_visible
-    anchor_entry = CHECKPOINT_BY_ID["chult_5_anchor"]
-    assert anchor_entry.position == (436.0, 693.0)
-    assert anchor_entry.saveable and not anchor_entry.development_visible
 
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
     game = Game(save_path=save_path)
     try:
         scene = game.checkpoints.load_checkpoint("chult_5")
-        anchor, = scene.anchors
-        came_in = scene.anchors_system.respawn_position_for_chuck()
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+        came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 53
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "chult_5_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("chult_5", scene.sanity.current)
+        assert game.active_checkpoint_id == "chult_5"
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        # The door he came in by, not the Ashtray he touched.
+        # The door he came in by.
         assert (scene.player.x, scene.player.y) == came_in
     finally:
         game._shutdown()
@@ -182,8 +177,7 @@ def test_chult_5_ashtray_saves_continue_and_respawns_through_shared_loader() -> 
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == "chult_temple"
-        assert resumed.active_checkpoint_id == "chult_5_anchor"
-        assert (scene.player.x, scene.player.y) == (436.0, 693.0)
+        assert resumed.active_checkpoint_id == "chult_5"
     finally:
         resumed._shutdown()
         directory.cleanup()

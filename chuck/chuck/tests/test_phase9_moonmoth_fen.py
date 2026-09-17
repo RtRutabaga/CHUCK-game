@@ -37,7 +37,7 @@ def _points(tilemap):
     ts = config.TILE_SIZE
     return {kind.split(":", 1)[1]: (int(x // ts), int(y // ts))
             for kind, (x, y) in tilemap.object_spawns
-            if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+            if kind.startswith(("arrival:", "boundary:"))}
 
 
 def test_the_fen_is_islands_over_water_and_cannot_be_walked() -> None:
@@ -85,7 +85,6 @@ def test_the_fen_is_islands_over_water_and_cannot_be_walked() -> None:
                   for c in range(tilemap.width_tiles)
                   if _is_safe(tilemap, c, r)}
     assert reached == every_safe, sorted(every_safe - reached)[:8]
-    assert pts["feywild_7_anchor"] in reached
     assert pts["feywild_8"] in reached
     # The hops are mandatory: walking alone never reaches the far bank.
     assert pts["feywild_8"] not in flood(False), "the fen can be walked!"
@@ -108,10 +107,9 @@ def test_every_crossing_is_exactly_one_channel_tile() -> None:
             assert crossable, (col, row)
 
 
-def test_the_fen_offers_an_optional_island_and_one_ashtray() -> None:
+def test_the_fen_offers_an_optional_island() -> None:
     tilemap = _map()
     kinds = [kind for kind, _pos in tilemap.object_spawns]
-    assert kinds.count("anchor:feywild_7_anchor") == 1  # exactly one Ashtray
     assert kinds.count("breakable_grass") >= 3          # cigarette grass
     ts = config.TILE_SIZE
     grass_rows = {int(y // ts) for kind, (x, y) in tilemap.object_spawns
@@ -180,9 +178,6 @@ def test_fen_checkpoints_art_and_music_match_the_region() -> None:
     assert entry.display_name == "Feywild 7"
     assert entry.map_name == MAP_NAME
     assert entry.arrival == "from_feywild_6" and entry.runtime_entry
-    anchor = CHECKPOINT_BY_ID["feywild_7_anchor"]
-    assert anchor.map_name == MAP_NAME
-    assert anchor.saveable and not anchor.development_visible
     assert tileset_for(MAP_NAME).sheet == "feywild.png"
     assert AREA_MUSIC[MAP_NAME] == "feywild.wav"  # uninterrupted region theme
 

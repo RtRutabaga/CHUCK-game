@@ -340,8 +340,8 @@ def test_the_crossing_comes_out_in_the_playable_desert() -> None:
 
     directory, game, world = _world(AWAKE)
     try:
-        assert game.checkpoints.activate_checkpoint(
-            "tahuya_interior_anchor", sanity=52
+        assert game.checkpoints.write_save(
+            "tahuya_interior", sanity=52
         )
         scene = DesertArrivalCutsceneScene(game, sanity=52)
         scene.on_enter()
@@ -365,14 +365,12 @@ def test_the_crossing_comes_out_in_the_playable_desert() -> None:
         assert COUNTER_MAP_AWAKENED_FLAG in game.progress.flags
         assert set(CABIN_ENTITY_FLAGS) <= game.progress.flags
 
-        # The desert's own Ashtray owns persistence from here: the
+        # The desert's own door owns persistence from here: the
         # handoff itself writes nothing, so the save still points at the
         # cabin until the player reaches the new one.
         record = game.checkpoints.saves.load()
         assert record is not None
-        assert record.checkpoint_id == "tahuya_interior_anchor"
-        assert arrived.anchors
-        assert arrived.anchors[0].checkpoint_id == "desert_central_anchor"
+        assert record.checkpoint_id == "tahuya_interior"
 
         # Handing off is a one-time event, however long the scene runs.
         scene.update(30.0)

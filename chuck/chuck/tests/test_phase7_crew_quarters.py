@@ -29,7 +29,6 @@ def test_crew_quarters_contains_the_authored_room_and_one_checkpoint() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (42, 24)
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_ship_room") == 1
-    assert kinds.count("anchor:ship_crew_anchor") == 1
     assert kinds.count(
         "pirate_npc:seated_pirate:crew_pirate_met"
     ) == 1
@@ -44,9 +43,6 @@ def test_crew_quarters_contains_the_authored_room_and_one_checkpoint() -> None:
     entry = CHECKPOINT_BY_ID["ship_crew_quarters"]
     assert entry.display_name == "Ship Crew Quarters"
     assert entry.runtime_entry and entry.map_name == MAP_NAME
-    anchor = CHECKPOINT_BY_ID["ship_crew_anchor"]
-    assert anchor.position == (116.0, 181.0)
-    assert anchor.saveable and not anchor.development_visible
 
 
 def test_east_compartment_and_exterior_deck_routes_are_reversible() -> None:
@@ -115,8 +111,8 @@ def test_crew_pirate_memory_persists_through_shared_save_loader() -> None:
         try:
             game.checkpoints.load_checkpoint("ship_crew_quarters")
             game.progress.enable("crew_pirate_met")
-            assert game.checkpoints.activate_checkpoint(
-                "ship_crew_anchor", config.SANITY_START
+            assert game.checkpoints.write_save(
+                "ship_crew_quarters", config.SANITY_START
             )
         finally:
             game._shutdown()

@@ -132,7 +132,6 @@ def test_the_jumps_are_tempting_but_never_required() -> None:
 
     # Somebody who never jumps can still cross the map and save.
     assert markers["boundary:modern_city_day_5"][0] in walked
-    assert markers["anchor:modern_city_day_4_anchor"][0] in walked
     assert markers["boundary:modern_city_day_3"][0] in walked
 
     # ...but every cigarette is out on the slabs.
@@ -153,7 +152,6 @@ def test_day_3_and_4_connect_and_share_the_day_cue() -> None:
     entry = CHECKPOINT_BY_ID[MAP_NAME]
     assert (entry.display_name, entry.map_name) == ("City Day 4", MAP_NAME)
     assert entry.runtime_entry
-    assert CHECKPOINT_BY_ID["modern_city_day_4_anchor"].saveable
 
     directory, game, world = _game_and_world(DAY_3)
     try:
@@ -175,8 +173,8 @@ def test_day_3_and_4_connect_and_share_the_day_cue() -> None:
         directory.cleanup()
 
 
-def test_a_missed_jump_falls_and_returns_to_the_ashtray() -> None:
-    directory, game, world = _game_and_world("modern_city_day_4_anchor")
+def test_a_missed_jump_falls_and_returns_to_the_door() -> None:
+    directory, game, world = _game_and_world("modern_city_day_4")
     try:
         from src.systems.fall import fall_zone_kind
 
@@ -196,11 +194,9 @@ def test_a_missed_jump_falls_and_returns_to_the_ashtray() -> None:
         # ...but not while the jump is still carrying him across.
         assert fall_zone_kind(world.tilemap, world.player.hitbox, True) is None
 
-        anchor = (world.anchors[0].x, world.anchors[0].y)
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == anchor
     finally:
         game._shutdown()
         directory.cleanup()

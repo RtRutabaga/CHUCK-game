@@ -8,7 +8,7 @@ Responsibilities (current):
 
 Responsibilities (future):
     * Y-sorted entity drawing (Chuck behind crates and chair legs).
-    * Sanity system + quiet Astral Anchor respawn on depletion.
+    * Sanity system + quiet Astral respawn on depletion.
     * Ambient audio (ocean, gulls) via the audio system.
 """
 
@@ -19,7 +19,6 @@ import math
 import pygame
 
 from src.core import config
-from src.entities.anchor import AstralAnchor
 from src.entities.battle_actor import BattleActor
 from src.entities.captain_chest import CaptainChest
 from src.entities.breakable_grass import BreakableGrass
@@ -72,7 +71,7 @@ from src.entities.animal_control import AnimalControlOfficer
 from src.entities.undead import UndeadEnemy
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.scene import Scene
-from src.systems.astral_anchor import AstralAnchorSystem
+from src.systems.respawn import RespawnPoint
 from src.systems.cabin_progress import (
     COUNTER_MAP_AWAKENED_FLAG, apply_cabin_door_crossing,
     awakened_music_for,
@@ -381,11 +380,11 @@ class WorldScene(Scene):
         # the climb and not the bottom of it. Chuck starts a tile lower
         # with the animation running, and putting him back THERE on a
         # death would drop him in the harbour.
-        self.anchors_system = AstralAnchorSystem(
-            default_position=(self.player.x, self._climb_target_y
-                              if self._climb_t is not None
-                              else self.player.y),
-            default_checkpoint_id=checkpoint_id,
+        self.respawn = RespawnPoint(
+            position=(self.player.x, self._climb_target_y
+                      if self._climb_t is not None
+                      else self.player.y),
+            checkpoint_id=checkpoint_id,
         )
         # Being netted holds Chuck still and drains him; it never becomes
         # a second way to die. Map reset clears it like any enemy state.
@@ -536,7 +535,6 @@ class WorldScene(Scene):
             jar.load_sprite(self.game.assets)
             self.breakables.append(jar)
         self.hazards: list[Cat] = []
-        self.anchors: list[AstralAnchor] = []
         self.npcs: list[NPC] = []
         self.reactive_flowers = ReactiveFlowerController(
             self.tilemap, self.tilemap.object_spawns
@@ -591,12 +589,6 @@ class WorldScene(Scene):
                 self.breakables.append(grass)
             elif kind == "cat":
                 continue  # rebuilt with all enemies below
-            elif kind.startswith("anchor:"):
-                anchor_id = kind.split(":", 1)[1]
-                anchor = AstralAnchor(cx, cy, anchor_id)
-                anchor.load_sprites(self.game.assets)
-                anchor.lit = anchor_id == checkpoint_id
-                self.anchors.append(anchor)
             elif kind.startswith("npc:"):
                 npc_id = kind.split(":", 1)[1]
                 npc = NPC(cx, cy, npc_id=npc_id, dialogue_id=npc_id)
@@ -1147,19 +1139,6 @@ class WorldScene(Scene):
                 self.game.scenes.push(
                     DialogueScene(self.game, self.dialogue.get(beat)))
                 return
-            if self.trio.closing_in:
-                # The Ashtray goes down with the ground it was standing
-                # on. Left where it was it would be a save point
-                # floating in the Astral Sea -- which reads as a bug
-                # rather than as the west end of the arena being gone,
-                # and it is the one prop in the room a player would try
-                # to walk back to.
-                self.anchors = [
-                    anchor for anchor in self.anchors
-                    if self.tilemap.terrain_at(
-                        int(anchor.x) // config.TILE_SIZE,
-                        int(anchor.y) // config.TILE_SIZE) != "V"
-                ]
             if self.trio.collided:
                 # The dragon's cue. Asked for every frame and a no-op
                 # after the first, which is the same idiom the region
@@ -1720,22 +1699,6 @@ class WorldScene(Scene):
 
         self._update_footsteps(dt)
 
-        # Anchors: touching one still banks a save, and no longer moves
-        # where Chuck comes back to. The door he walked in by is the
-        # respawn point now, on every map -- measured, that costs a
-        # median of 1.7 tiles of walking against coming back to the
-        # Ashtray, because the fights are deep in the maps and the walk
-        # was already long. The Anchor itself goes shortly.
-        for anchor in self.anchors:
-            if not anchor.lit and overlaps(player_box, anchor.hitbox):
-                for other in self.anchors:
-                    other.lit = False
-                anchor.lit = True
-                self.game.checkpoints.activate_checkpoint(
-                    anchor.checkpoint_id, self.sanity.current
-                )
-                self.game.audio.play_sfx("chime")  # singular.
-
         # Hazards: contact costs sanity (i-frames prevent draining).
         for cat in self.hazards:
             if overlaps(player_box, cat.hitbox):
@@ -1839,8 +1802,6 @@ class WorldScene(Scene):
                 self._hint.draw(surface, config.HINT_JUMP)
             elif self._scratch_hint_visible():
                 self._hint.draw(surface, config.HINT_SCRATCH)
-            elif self._anchor_hint_visible():
-                self._hint.draw(surface, config.HINT_ANCHOR)
             elif self._interactable_in_range() is not None:
                 self._hint.draw(surface, config.HINT_INTERACT)
         self._draw_net_overlay(surface, offset)
@@ -1995,14 +1956,14 @@ class WorldScene(Scene):
         """Everything that stands in the world, painter-ordered by feet.
 
         Lower on screen draws later, so characters correctly pass in
-        front of and behind props, anchors, and each other. Chuck is
+        front of and behind props and each other. Chuck is
         one foot tall; this is where that finally SHOWS.
         """
         standing_props = [
             prop for prop in self.props
             if not getattr(prop, "floor_layer", False)
         ]
-        drawables = [*standing_props, *self.breakables, *self.anchors,
+        drawables = [*standing_props, *self.breakables,
                      *self.reactive_flowers.flowers,
                      *self.battle_actors,
                      *self.hazards, *self.rats, *self.raccoons,
@@ -2163,7 +2124,7 @@ class WorldScene(Scene):
         target_cx, target_cy = self._deck_captain_spawn[:2]
         target_x = target_cx - captain.width / 2
         target_y = target_cy - captain.height / 2
-        # Step clear of the ladder and Ashtray, cross the open lower deck,
+        # Step clear of the ladder, cross the open lower deck,
         # then step north to the helm. This also avoids cutting diagonally
         # through the western mast and Jeffries.
         deck_lane_y = target_y + config.TILE_SIZE
@@ -2644,19 +2605,6 @@ class WorldScene(Scene):
         col, row = self._player_tile()
         left, right, top, bottom = config.SEWER_SCRATCH_HINT_BOUNDS
         return left <= col <= right and top <= row <= bottom
-
-    def _anchor_hint_visible(self) -> bool:
-        """Introduce the maze ashtray when Chuck comes within 1.5 tiles."""
-        if self.map_name != "sewer":
-            return False
-        player_cx = self.player.x + self.player.width / 2
-        player_cy = self.player.y + self.player.height / 2
-        reach = config.TILE_SIZE * 1.5
-        return any(
-            abs(player_cx - (anchor.x + anchor.width / 2)) <= reach
-            and abs(player_cy - (anchor.y + anchor.height / 2)) <= reach
-            for anchor in self.anchors
-        )
 
     def _update_footsteps(self, dt: float) -> None:
         """A soft tap per stride; wood on the dock, stone on the street."""
@@ -3153,7 +3101,7 @@ class WorldScene(Scene):
         elif self._respawn_phase == "hold" and self._respawn_t >= config.RESPAWN_HOLD:
             # The return: the door he came in by.
             self.player.x, self.player.y = (
-                self.anchors_system.respawn_position_for_chuck()
+                self.respawn.position_for_chuck()
             )
             self._reset_enemies()
             self.sanity.refill()

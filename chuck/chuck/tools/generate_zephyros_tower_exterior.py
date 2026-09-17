@@ -23,7 +23,7 @@ CLOUD_SOFT = "ᚫ"
 W, H = 44, 34
 OUT = Path(__file__).resolve().parents[1] / "assets/maps/zephyros_tower_exterior.txt"
 ARRIVAL = (22, 27)
-ANCHOR = (17, 25)
+WAYPOINT = (17, 25)
 ARCH_PROP = (22, 9)
 ARCH = (22, 10)
 FUTURE_RETURN = (22, 11)
@@ -63,7 +63,6 @@ def build():
     grid[ARCH[1]][ARCH[0]] = "ህ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ሆ"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ሃ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ሄ"
     return grid
 
 
@@ -98,7 +97,7 @@ def _rim(grid) -> None:
 
 
 def _base(char):
-    return {"ሃ": CLOUD, "ሄ": CLOUD, "ህ": "Ƶ",
+    return {"ሃ": CLOUD, "ህ": "Ƶ",
             "ሆ": CLOUD}.get(char, char)
 
 
@@ -115,9 +114,8 @@ def validate(grid):
             if point in walkable and point not in reached:
                 reached.add(point)
                 frontier.append(point)
-    assert ANCHOR in reached and ARCH in reached and FUTURE_RETURN in reached
+    assert WAYPOINT in reached and ARCH in reached and FUTURE_RETURN in reached
     text = "".join("".join(row) for row in grid)
-    assert text.count("ሄ") == 1 and text.count("ህ") == 1
     assert text.count("Ƶ") == 1
     assert text.count("~") > text.count(CLOUD), (
         "open sky no longer dominates")

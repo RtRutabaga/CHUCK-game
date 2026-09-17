@@ -7,7 +7,7 @@ two-tile river; one intact slab carries the path across it. The map is low
 pressure: one slow lemure lurks behind a rubble pocket and one horned devil
 paces on the far side of the lava, well outside the required route.
 
-The generator proves the complete arrival -> Ashtray -> exit route without
+The generator proves the complete arrival -> waypoint -> exit route without
 walking through lava or solid rubble before it writes the authored map.
 """
 
@@ -29,7 +29,7 @@ OUT = (
 SOUTH_GATE = (10, 32)
 EAST_PASS = (62, 6)
 ARRIVAL = (10, 30)
-ANCHOR = (11, 25)
+WAYPOINT = (11, 25)
 RETURN_ARRIVAL = (60, 6)
 LEMURE = (8, 19)
 HORNED_DEVIL = (38, 26)
@@ -53,7 +53,7 @@ HEADER = [
     "; winding through dark basalt rubble.",
     "; A cliff-fed lava fall enters a narrow lava river; an intact slab",
     "; carries the path across. One lemure and one distant horned devil",
-    "; are the map's only enemies. One Ashtray serves this map.",
+    "; are the map's only enemies.",
 ]
 
 
@@ -66,7 +66,7 @@ def _wide_path() -> set[tuple[int, int]]:
         else:
             for col in range(min(x0, x1), max(x0, x1) + 1):
                 lane.update((col, y0 + dy) for dy in (-1, 0, 1))
-    for cx, cy in (ARRIVAL, ANCHOR, RETURN_ARRIVAL):
+    for cx, cy in (ARRIVAL, WAYPOINT, RETURN_ARRIVAL):
         lane.update(
             (cx + dx, cy + dy)
             for dx in (-1, 0, 1)
@@ -178,7 +178,6 @@ def build() -> list[list[str]]:
     for row in range(EAST_PASS[1] - 1, EAST_PASS[1] + 2):
         grid[row][EAST_PASS[0]] = "›"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Ԯ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "԰"
     grid[RETURN_ARRIVAL[1]][RETURN_ARRIVAL[0]] = "Բ"
     return grid
 
@@ -202,7 +201,7 @@ def validate(grid: list[list[str]]) -> int:
                 reached.add(point)
                 frontier.append(point)
     for label, point in (
-        ("Ashtray", ANCHOR),
+        ("waypoint", WAYPOINT),
         ("east arrival", RETURN_ARRIVAL),
         ("east pass", EAST_PASS),
         ("south gate", SOUTH_GATE),

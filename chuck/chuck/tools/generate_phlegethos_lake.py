@@ -20,7 +20,7 @@ OUT = Path(__file__).resolve().parents[1] / "assets" / "maps" / "phlegethos_lake
 SOUTH_SHORE_TOP = 25      # rows 25..31 are the southern basalt shore
 NORTH_SHORE_BOTTOM = 8    # rows 2..8 are the northern shore
 ENTRY = (21, 28)
-ANCHOR = (17, 28)
+WAYPOINT = (17, 28)
 EXIT = (27, 4)
 SOUTH_PASS = (21, 32)     # back to the lava road
 NORTH_PASS = (27, 1)      # onward (inert until map 4)
@@ -42,7 +42,7 @@ HEADER = [
     "; PHASE 8 - PHLEGETHOS 3, THE LAVA LAKE (44x34 tiles).",
     "; A wide molten lake crossed by small basalt islands. Every gap is",
     "; exactly one lava tile, so each crossing is a single committed hop;",
-    "; the chain zigzags north from the south shore's Ashtray to the far",
+    "; the chain zigzags north from the south shore to the far",
     "; pass. Falling short is the usual quiet lava death and return.",
 ]
 
@@ -90,9 +90,9 @@ def build():
     for offset, char in ((-1, "∇"), (0, "⌂"), (1, "∇")):
         grid[NORTH_PASS[1]][NORTH_PASS[0] + offset] = char
     grid[EXIT[1]][EXIT[0]] = "Ԍ"
-    for (mc, mr), char in ((ENTRY, "Ԉ"), (ANCHOR, "Ԋ")):
-        assert grid[mr][mc] in "·≡", (char, grid[mr][mc])
-        grid[mr][mc] = char
+    mc, mr = ENTRY
+    assert grid[mr][mc] in "·≡", grid[mr][mc]
+    grid[mr][mc] = "Ԉ"
     return grid
 
 
@@ -121,7 +121,7 @@ def validate(grid) -> int:
     # Nothing safe may be stranded, and the far side must be reachable.
     stranded = safe - reached
     assert not stranded, f"stranded safe cells: {sorted(stranded)[:8]}"
-    for label, point in (("anchor", ANCHOR), ("exit", EXIT),
+    for label, point in (("waypoint", WAYPOINT), ("exit", EXIT),
                          ("north pass", NORTH_PASS),
                          ("south pass", SOUTH_PASS)):
         assert point in reached, f"{label} unreachable"

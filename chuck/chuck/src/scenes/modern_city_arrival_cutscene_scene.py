@@ -1,4 +1,4 @@
-"""Rainy descent, impact, and quiet return at the modern-city Ashtray."""
+"""Rainy descent, impact, and quiet return at the modern city's door."""
 
 from __future__ import annotations
 
@@ -127,11 +127,13 @@ class ModernCityArrivalCutsceneScene(Scene):
             )
         if previous < HANDOFF_TIME <= self.elapsed and not self._handed_off:
             self._handed_off = True
-            self.game.checkpoints.activate_checkpoint(
-                "modern_city_anchor", config.SANITY_MAX
+            # The city's own door owns persistence from here: the
+            # handoff writes the save at it, the way walking in would.
+            self.game.checkpoints.write_save(
+                "modern_city_1", config.SANITY_MAX
             )
             self.game.checkpoints.load_checkpoint(
-                "modern_city_anchor", sanity=config.SANITY_MAX
+                "modern_city_1", sanity=config.SANITY_MAX
             )
 
     def draw(self, surface: pygame.Surface) -> None:
@@ -190,7 +192,7 @@ class ModernCityArrivalCutsceneScene(Scene):
         pygame.draw.rect(surface, (19, 23, 31), (0, 145, 320, 35))
         pygame.draw.line(surface, (125, 145, 154), (0, 146), (319, 146), 1)
 
-        # The first city Ashtray is present throughout the fixed tableau.
+        # The city's own entrance owns persistence from here.
         anchor_x, anchor_y = 181, 130
         pygame.draw.rect(surface, (42, 40, 49), (anchor_x, anchor_y, 9, 5))
         pygame.draw.rect(surface, (116, 102, 120), (anchor_x + 1, anchor_y, 7, 1))

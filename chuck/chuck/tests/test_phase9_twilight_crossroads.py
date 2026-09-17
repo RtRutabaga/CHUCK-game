@@ -35,7 +35,7 @@ def _points(tilemap):
     return {
         kind: _tile(position)
         for kind, position in tilemap.object_spawns
-        if kind.startswith(("arrival:", "anchor:", "boundary:"))
+        if kind.startswith(("arrival:", "boundary:"))
     }
 
 
@@ -70,7 +70,6 @@ def test_crossroads_is_a_broad_twilight_culmination_not_a_boss_map() -> None:
 
     kinds = Counter(kind for kind, _position in tilemap.object_spawns)
     assert kinds["arrival:from_feywild_12"] == 1
-    assert kinds["anchor:feywild_13_anchor"] == 1
     assert kinds["boundary:feywild_tower"] == 1
     assert kinds["thorn_mite"] == 5
     assert kinds["redcap"] == 1
@@ -158,10 +157,8 @@ def test_arrival_anchor_and_main_route_do_not_force_the_redcap() -> None:
     tilemap = _map()
     points = _points(tilemap)
     start = points["arrival:from_feywild_12"]
-    anchor = points["anchor:feywild_13_anchor"]
     redcap = next(_tile(position) for kind, position in tilemap.object_spawns
                   if kind == "redcap")
-    assert anchor in _reachable(tilemap, start)
     distance = math.dist(start, redcap) * config.TILE_SIZE
     assert distance > config.REDCAP_NOTICE_RANGE * 2
 
@@ -175,9 +172,8 @@ def test_arrival_anchor_and_main_route_do_not_force_the_redcap() -> None:
 
 def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:
     entry = CHECKPOINT_BY_ID["feywild_13"]
-    anchor_cp = CHECKPOINT_BY_ID["feywild_13_anchor"]
+    anchor_cp = CHECKPOINT_BY_ID["feywild_13"]
     assert entry.display_name == "Feywild 13" and entry.runtime_entry
-    assert anchor_cp.saveable and not anchor_cp.development_visible
 
     with tempfile.TemporaryDirectory() as directory:
         game = Game(save_path=Path(directory) / "save.json")
@@ -194,12 +190,12 @@ def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:
             assert scene.map_name == MAP_NAME
             assert game.active_checkpoint_id == "feywild_13"
 
-            anchor = scene.anchors[0]
-            came_in = scene.anchors_system.respawn_position_for_chuck()
-            scene.player.x, scene.player.y = anchor.x, anchor.y
+            came_in = scene.respawn.position_for_chuck()
             scene.update(0.0)
-            assert anchor.lit
-            assert game.active_checkpoint_id == "feywild_13_anchor"
+            # Saved from the menu, at the door he came in by.
+            assert game.checkpoints.write_save(
+                "feywild_13", scene.sanity.current)
+            assert game.active_checkpoint_id == "feywild_13"
 
             scene.rats.clear()
             scene.sanity.deplete()
@@ -209,7 +205,7 @@ def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:
             assert len(scene.rats) == 5
             assert all(rat.variant == "thorn_mite" for rat in scene.rats)
             assert all(rat.attack_chase_enabled for rat in scene.rats)
-            # The door he came in by, not the Ashtray he touched.
+            # The door he came in by.
             assert (scene.player.x, scene.player.y) == came_in
 
             south = next((col, row)
@@ -222,11 +218,10 @@ def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:
             assert scene.map_name == RAPIDS
             assert game.active_checkpoint_id == "feywild_12_return"
 
-            # Continue still restores the persisted physical Ashtray, not the
-            # unsaved map edge visited afterward.
+            # Continue still restores the saved door, not the unsaved
+            # map edge visited afterward.
             resumed = game.checkpoints.continue_game()
             assert resumed is not None and resumed.map_name == MAP_NAME
-            assert resumed.anchors[0].lit
         finally:
             game._shutdown()
 

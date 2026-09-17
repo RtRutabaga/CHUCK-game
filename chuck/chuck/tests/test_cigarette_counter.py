@@ -74,7 +74,7 @@ def test_count_is_continuous_across_checkpoint_handoffs() -> None:
 
 def test_death_rewinds_the_count_to_the_respawn_point() -> None:
     """Cigarettes gathered past the active respawn point are lost with
-    Chuck: map entry and Ashtray contact both commit the total, and the
+    Chuck: map entry commits the total, and the
     quiet Astral respawn rolls back to the committed value."""
     game = Game()
     try:
@@ -90,12 +90,11 @@ def test_death_rewinds_the_count_to_the_respawn_point() -> None:
         assert game.cigarettes.total == 0
         scene.update(config.RESPAWN_FADE_IN + 0.01)  # finish the fade
 
-        # Bank some, attune the Ashtray (commit + save), bank more, die:
-        # the count rewinds exactly to the Ashtray's value.
+        # Bank some, save from the menu (which commits), bank more,
+        # die: the count rewinds exactly to the saved value.
         game.cigarettes.add(5)
-        anchor = scene.anchors[0]
-        scene.player.x, scene.player.y = anchor.x, anchor.y
-        scene.update(0.01)
+        assert game.checkpoints.write_save(
+            game.active_checkpoint_id, scene.sanity.current)
         assert game.cigarettes.checkpoint_total == 5
         game.cigarettes.add(3)
         assert game.cigarettes.total == 8
@@ -120,10 +119,8 @@ def test_anchor_save_and_continue_round_trip_the_total() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("waterdeep_start")
         game.cigarettes.add(23)
-        anchor = scene.anchors[0]
-        scene.player.x, scene.player.y = anchor.x, anchor.y
         scene.sanity.current = 47
-        scene.update(0.01)
+        assert game.checkpoints.write_save("waterdeep_start", 47)
         raw = json.loads(path.read_text(encoding="utf-8"))
         assert raw["cigarettes"] == 23
     finally:
@@ -151,16 +148,16 @@ def test_pre_counter_saves_stay_valid_with_zero_banked() -> None:
     try:
         path.write_text(json.dumps({
             "version": SAVE_VERSION,
-            "checkpoint_id": "waterdeep_anchor",
+            "checkpoint_id": "waterdeep_start",
             "sanity": 50,
             "progress_flags": [],
         }), encoding="utf-8")
         record = SaveSystem(path).load()
-        assert record == SaveRecord("waterdeep_anchor", 50, (), 0)
+        assert record == SaveRecord("waterdeep_start", 50, (), 0)
         # Forged totals are rejected like every other bad field.
         path.write_text(json.dumps({
             "version": SAVE_VERSION,
-            "checkpoint_id": "waterdeep_anchor",
+            "checkpoint_id": "waterdeep_start",
             "sanity": 50,
             "progress_flags": [],
             "cigarettes": -3,

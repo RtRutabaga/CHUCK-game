@@ -74,7 +74,6 @@ class CheckpointDefinition:
     facing: str | None = None
     climb_from_water: bool = False
     required_flags: frozenset[str] = field(default_factory=frozenset)
-    saveable: bool = False
     development_visible: bool = True
     runtime_entry: bool = False
     fade_in: bool = False
@@ -95,16 +94,8 @@ CHECKPOINTS = (
         facing="left", runtime_entry=True,
     ),
     CheckpointDefinition(
-        "waterdeep_anchor", "Waterdeep Ashtray", "waterdeep_docks",
-        position=(372.0, 421.0), facing="down", saveable=True,
-    ),
-    CheckpointDefinition(
         "sewer_entrance", "Sewer 1", "sewer",
         facing="down", runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "sewer_anchor", "Sewer 2", "sewer",
-        position=(196.0, 917.0), facing="down", saveable=True,
     ),
     CheckpointDefinition(
         "waterdeep_return", "Waterdeep 2", "waterdeep_docks",
@@ -150,12 +141,6 @@ CHECKPOINTS = (
         required_flags=frozenset({"sewer_completed"}), runtime_entry=True,
     ),
     CheckpointDefinition(
-        "chult_anchor", "Chult 1", "chult_jungle",
-        position=(500.0, 837.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True,
-    ),
-    CheckpointDefinition(
         "chult_landing", "Chult Landing", "chult_jungle",
         facing="down",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
@@ -168,22 +153,10 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "chult_2_anchor", "Chult 2 Ashtray", "chult_cog",
-        position=(644.0, 1157.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "chult_3", "Chult 3", "chult_run",
         arrival="from_chult_2", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "chult_3_anchor", "Chult 3 Ashtray", "chult_run",
-        position=(324.0, 501.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "chult_4", "Chult 4", "chult_respite",
@@ -204,22 +177,10 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "chult_4_anchor", "Chult 4 Ashtray", "chult_respite",
-        position=(132.0, 805.0), facing="right",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "chult_5", "Chult 5", "chult_temple",
         arrival="from_chult_4", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "chult_5_anchor", "Chult 5 Ashtray", "chult_temple",
-        position=(436.0, 693.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "temple_1", "Temple 1", "temple_entrance",
@@ -228,22 +189,10 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "temple_1_anchor", "Temple 1 Ashtray", "temple_entrance",
-        position=(372.0, 501.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "temple_2", "Temple 2", "temple_spikes",
         arrival="from_temple_1", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "temple_2_anchor", "Temple 2 Ashtray", "temple_spikes",
-        position=(372.0, 613.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "temple_3", "Temple 3", "temple_skeletons",
@@ -252,22 +201,10 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "temple_3_anchor", "Temple 3 Ashtray", "temple_skeletons",
-        position=(436.0, 597.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "temple_4", "Temple 4", "temple_darts",
         arrival="from_temple_3", facing="left",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "temple_4_anchor", "Temple 4 Ashtray", "temple_darts",
-        position=(980.0, 229.0), facing="left",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "temple_5", "Temple 5", "temple_snakes",
@@ -276,22 +213,10 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "temple_5_anchor", "Temple 5 Ashtray", "temple_snakes",
-        position=(788.0, 293.0), facing="left",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "temple_6", "Temple 6", "temple_astral_wind",
         arrival="from_temple_5", facing="down",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "temple_6_anchor", "Temple 6 Ashtray", "temple_astral_wind",
-        position=(276.0, 117.0), facing="down",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "temple_7", "Temple 7", "temple_shrine",
@@ -300,22 +225,10 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "temple_7_anchor", "Temple 7 Ashtray", "temple_shrine",
-        position=(420.0, 581.0), facing="down",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "temple_8", "Temple 8", "temple_gauntlet",
         arrival="from_temple_7", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "temple_8_anchor", "Temple 8 Ashtray", "temple_gauntlet",
-        position=(292.0, 405.0), facing="down",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "temple_9", "Temple 9", "temple_sanctum",
@@ -324,22 +237,10 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "temple_9_anchor", "Temple 9 Ashtray", "temple_sanctum",
-        position=(820.0, 437.0), facing="down",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "temple_rubble", "Rubble 1", "temple_rubble",
         arrival="from_fireball", facing="down",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True, fade_in=True,
-    ),
-    CheckpointDefinition(
-        "temple_rubble_anchor", "Rubble Ashtray", "temple_rubble",
-        position=(356.0, 389.0), facing="down",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "ship_deck", "Ship 1", "ship_deck",
@@ -348,34 +249,16 @@ CHECKPOINTS = (
         runtime_entry=True, fade_in=True,
     ),
     CheckpointDefinition(
-        "ship_deck_anchor", "Ship Ashtray", "ship_deck",
-        position=(116.0, 117.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "ship_lower_hold", "Ship Hold", "ship_lower_hold",
         arrival="from_ship_room", facing="down",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "ship_lower_hold_anchor", "Ship Hold Ashtray", "ship_lower_hold",
-        position=(280.0, 360.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "ship_galley", "Ship Galley", "ship_galley",
         arrival="from_ship_room", facing="left",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "ship_galley_anchor", "Ship Galley Ashtray", "ship_galley",
-        position=(116.0, 229.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "ship_deck_galley_return", "Ship Galley Return", "ship_deck",
@@ -390,12 +273,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "ship_crew_anchor", "Ship Crew Ashtray", "ship_crew_quarters",
-        position=(116.0, 181.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "ship_deck_crew_return", "Ship Crew Return", "ship_deck",
         arrival="from_crew_quarters", facing="left",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
@@ -406,12 +283,6 @@ CHECKPOINTS = (
         arrival="from_crew_quarters", facing="right",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "ship_captain_anchor", "Ship Captain Ashtray",
-        "ship_captain_cabin", position=(100.0, 229.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "ship_crew_captain_return", "Ship Captain Return",
@@ -435,12 +306,6 @@ CHECKPOINTS = (
         runtime_entry=False,
     ),
     CheckpointDefinition(
-        "ship_exterior_anchor", "Ship Exterior Ashtray",
-        "ship_exterior_deck", position=(436.0, 437.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "ship_crew_exterior_return", "Ship Exterior Return",
         "ship_crew_quarters", arrival="from_exterior_deck", facing="down",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
@@ -454,22 +319,10 @@ CHECKPOINTS = (
         runtime_entry=True, fade_in=True,
     ),
     CheckpointDefinition(
-        "phlegethos_anchor", "Phlegethos Ashtray", "phlegethos_arrival",
-        position=(340.0, 389.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "phlegethos_road", "Phlegethos 2", "phlegethos_road",
         arrival="from_phlegethos_1", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "phlegethos_road_anchor", "Phlegethos 2 Ashtray", "phlegethos_road",
-        position=(388.0, 405.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "phlegethos_1_return", "Phlegethos 1 Return", "phlegethos_arrival",
@@ -484,24 +337,11 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "phlegethos_lake_anchor", "Phlegethos 3 Ashtray", "phlegethos_lake",
-        position=(276.0, 453.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "phlegethos_rubble_pass", "Phlegethos 4",
         "phlegethos_rubble_pass",
         arrival="from_phlegethos_3", facing="right",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "phlegethos_rubble_anchor", "Phlegethos 4 Ashtray",
-        "phlegethos_rubble_pass",
-        position=(180.0, 405.0), facing="right",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "phlegethos_fractured_way", "Phlegethos 5",
@@ -511,25 +351,11 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "phlegethos_fractured_anchor", "Phlegethos 5 Ashtray",
-        "phlegethos_fractured_way",
-        position=(244.0, 597.0), facing="right",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "phlegethos_fortress_approach", "Phlegethos 6",
         "phlegethos_fortress_approach",
         arrival="from_phlegethos_rubble", facing="up",
         required_flags=frozenset({"sewer_completed", "chult_reached"}),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "phlegethos_4_anchor", "Phlegethos 6 Ashtray",
-        "phlegethos_fortress_approach",
-        position=(324.0, 453.0), facing="up",
-        required_flags=frozenset({"sewer_completed", "chult_reached"}),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "phlegethos_fractured_return", "Phlegethos 5 Return",
@@ -567,29 +393,12 @@ CHECKPOINTS = (
         runtime_entry=True, fade_in=True,
     ),
     CheckpointDefinition(
-        "feywild_anchor", "Feywild Ashtray", "feywild_riverbank",
-        position=(324.0, 437.0), facing="up",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "feywild_2", "Feywild 2", "feywild_blooming_path",
         arrival="from_feywild_1", facing="right",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "feywild_2_anchor", "Feywild 2 Ashtray",
-        "feywild_blooming_path",
-        position=(164.0, 533.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "feywild_1_return", "Feywild 1 Return", "feywild_riverbank",
@@ -608,29 +417,12 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "feywild_3_anchor", "Feywild 3 Ashtray",
-        "feywild_pollen_orchard",
-        position=(195.0, 692.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "feywild_4", "Feywild 4", "feywild_rootways",
         arrival="from_feywild_3", facing="right",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "feywild_4_anchor", "Feywild 4 Ashtray", "feywild_rootways",
-        position=(180.0, 661.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "feywild_5", "Feywild 5", "feywild_tea_table",
@@ -641,29 +433,12 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "feywild_5_anchor", "Feywild 5 Ashtray", "feywild_tea_table",
-        position=(276.0, 85.0), facing="down",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "feywild_6", "Feywild 6", "feywild_needle_garden",
         arrival="from_feywild_5", facing="down",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "feywild_6_anchor", "Feywild 6 Ashtray",
-        "feywild_needle_garden",
-        position=(260.0, 101.0), facing="down",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "feywild_7", "Feywild 7", "feywild_moonmoth_fen",
@@ -674,14 +449,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "feywild_7_anchor", "Feywild 7 Ashtray", "feywild_moonmoth_fen",
-        position=(116.0, 325.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "feywild_8", "Feywild 8", "feywild_redcap_warrens",
         arrival="from_feywild_7", facing="right",
         required_flags=frozenset({
@@ -690,28 +457,12 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "feywild_8_anchor", "Feywild 8 Ashtray", "feywild_redcap_warrens",
-        position=(1060.0, 453.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "feywild_9", "Feywild 9", "feywild_shifting_hedge",
         arrival="from_feywild_8", facing="right",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "feywild_9_anchor", "Feywild 9 Ashtray", "feywild_shifting_hedge",
-        position=(132.0, 357.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "feywild_2_return", "Feywild 2 Return",
@@ -772,14 +523,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "feywild_10_anchor", "Feywild 10 Ashtray", "feywild_displacer_meadow",
-        position=(356.0, 549.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "feywild_9_return", "Feywild 9 Return", "feywild_shifting_hedge",
         arrival="from_feywild_10", facing="left",
         required_flags=frozenset({
@@ -794,15 +537,6 @@ CHECKPOINTS = (
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "feywild_11_anchor", "Feywild 11 Ashtray",
-        "feywild_mushroom_underways",
-        position=(548.0, 373.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "feywild_10_return", "Feywild 10 Return", "feywild_displacer_meadow",
@@ -821,14 +555,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "feywild_12_anchor", "Feywild 12 Ashtray", "feywild_luminous_rapids",
-        position=(532.0, 341.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "feywild_11_return", "Feywild 11 Return", "feywild_mushroom_underways",
         arrival="from_feywild_12", facing="left",
         required_flags=frozenset({
@@ -843,15 +569,6 @@ CHECKPOINTS = (
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "feywild_13_anchor", "Feywild 13 Ashtray",
-        "feywild_twilight_crossroads",
-        position=(612.0, 709.0), facing="up",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "feywild_12_return", "Feywild 12 Return",
@@ -871,14 +588,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "zephyros_staircase_anchor", "Zephyros 1 Ashtray",
-        "feywild_cloud_staircase", position=(836.0, 533.0), facing="left",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "feywild_13_return", "Feywild 13 Return",
         "feywild_twilight_crossroads", arrival="from_feywild_tower",
         facing="right",
@@ -896,28 +605,12 @@ CHECKPOINTS = (
         runtime_entry=True, fade_in=True,
     ),
     CheckpointDefinition(
-        "zephyros_exterior_anchor", "Zephyros 2 Ashtray",
-        "zephyros_tower_exterior", position=(276.0, 405.0), facing="up",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "zephyros_3", "Zephyros 3", "zephyros_aerie",
         arrival="from_exterior", facing="up",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "zephyros_aerie_anchor", "Zephyros 3 Ashtray",
-        "zephyros_aerie", position=(372.0, 613.0), facing="up",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "zephyros_exterior_return", "Zephyros Exterior Return",
@@ -937,15 +630,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_anchor", "City Night 1 Ashtray", "modern_city_arrival",
-        position=(436.0, 693.0), facing="down",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False, fade_in=True,
-    ),
-    CheckpointDefinition(
         "modern_city_2", "City Night 2", "modern_city_night_2",
         arrival="from_city_night_1", facing="up",
         required_flags=frozenset({
@@ -953,15 +637,6 @@ CHECKPOINTS = (
             "modern_city_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "modern_city_2_anchor", "City Night 2 Ashtray",
-        "modern_city_night_2", position=(484.0, 757.0), facing="up",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "modern_city_1_return", "City Night 1 Return",
@@ -982,15 +657,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_3_anchor", "City Night 3 Ashtray",
-        "modern_city_night_3", position=(116.0, 533.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "modern_city_2_return", "City Night 2 Return",
         "modern_city_night_2", arrival="from_city_night_3", facing="left",
         required_flags=frozenset({
@@ -1007,15 +673,6 @@ CHECKPOINTS = (
             "modern_city_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "modern_city_4_anchor", "City Night 4 Ashtray",
-        "modern_city_night_4", position=(580.0, 821.0), facing="up",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "modern_city_3_return", "City Night 3 Return",
@@ -1036,15 +693,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_5_anchor", "City Night 5 Ashtray",
-        "modern_city_night_5", position=(1668.0, 389.0), facing="left",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "modern_city_4_return", "City Night 4 Return",
         "modern_city_night_4", arrival="from_city_night_5", facing="right",
         required_flags=frozenset({
@@ -1061,15 +709,6 @@ CHECKPOINTS = (
             "modern_city_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "modern_city_6_anchor", "City Night 6 Ashtray",
-        "modern_city_night_6", position=(1284.0, 389.0), facing="left",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "modern_city_5_return", "City Night 5 Return",
@@ -1090,15 +729,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_sewer_1_anchor", "City Sewer 1 Ashtray",
-        "modern_city_sewer_1", position=(180.0, 485.0), facing="up",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "modern_city_sewer_2", "City Sewer 2", "modern_city_sewer_2",
         arrival="from_city_sewer_1_culvert", facing="right",
         required_flags=frozenset({
@@ -1106,15 +736,6 @@ CHECKPOINTS = (
             "modern_city_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "modern_city_sewer_2_anchor", "City Sewer 2 Ashtray",
-        "modern_city_sewer_2", position=(212.0, 661.0), facing="down",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "modern_city_sewer_1_return", "City Sewer 1 Return",
@@ -1135,15 +756,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_sewer_3_anchor", "City Sewer 3 Ashtray",
-        "modern_city_sewer_3", position=(1012.0, 245.0), facing="left",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "modern_city_sewer_4", "City Sewer 4", "modern_city_sewer_4",
         arrival="from_city_sewer_3_west", facing="left",
         required_flags=frozenset({
@@ -1151,15 +763,6 @@ CHECKPOINTS = (
             "modern_city_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "modern_city_sewer_4_anchor", "City Sewer 4 Ashtray",
-        "modern_city_sewer_4", position=(484.0, 533.0), facing="up",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "modern_city_day_1", "City Day 1", "modern_city_day_1",
@@ -1171,15 +774,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_day_1_anchor", "City Day 1 Ashtray",
-        "modern_city_day_1", position=(260.0, 501.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "modern_city_day_2", "City Day 2", "modern_city_day_2",
         arrival="from_city_day_1", facing="right",
         required_flags=frozenset({
@@ -1187,15 +781,6 @@ CHECKPOINTS = (
             "modern_city_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "modern_city_day_2_anchor", "City Day 2 Ashtray",
-        "modern_city_day_2", position=(196.0, 613.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "modern_city_day_3", "City Day 3", "modern_city_day_3",
@@ -1207,15 +792,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_day_3_anchor", "City Day 3 Ashtray",
-        "modern_city_day_3", position=(212.0, 197.0), facing="down",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "modern_city_day_4", "City Day 4", "modern_city_day_4",
         arrival="from_city_day_3", facing="down",
         required_flags=frozenset({
@@ -1223,15 +799,6 @@ CHECKPOINTS = (
             "modern_city_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "modern_city_day_4_anchor", "City Day 4 Ashtray",
-        "modern_city_day_4", position=(148.0, 149.0), facing="down",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "modern_city_day_5", "City Day 5", "modern_city_day_5",
@@ -1243,15 +810,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "modern_city_day_5_anchor", "City Day 5 Ashtray",
-        "modern_city_day_5", position=(292.0, 133.0), facing="down",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "modern_city_day_6", "City Day 6", "modern_city_day_6",
         arrival="from_city_day_5", facing="down",
         required_flags=frozenset({
@@ -1259,15 +817,6 @@ CHECKPOINTS = (
             "modern_city_reached",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "modern_city_day_6_anchor", "City Day 6 Ashtray",
-        "modern_city_day_6", position=(164.0, 213.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "tahuya_exterior", "Cabin Exterior",
@@ -1286,24 +835,6 @@ CHECKPOINTS = (
             "modern_city_reached", "doug_fir_transition_completed",
         }),
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "tahuya_exterior_anchor", "Cabin Exterior Ashtray",
-        "tahuya_cabin_exterior", position=(387.0, 580.0), facing="right",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached", "doug_fir_transition_completed",
-        }),
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
-        "tahuya_interior_anchor", "Cabin Interior Ashtray",
-        "tahuya_cabin_interior", position=(211.0, 324.0), facing="left",
-        required_flags=frozenset({
-            "sewer_completed", "chult_reached", "feywild_reached",
-            "modern_city_reached", "doug_fir_transition_completed",
-        }),
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "tahuya_exterior_front_return", "Cabin Front Porch Return",
@@ -1496,12 +1027,6 @@ CHECKPOINTS = (
         required_flags=DESERT_ENTRY_FLAGS,
         runtime_entry=True, fade_in=True, fade_from=(252, 248, 238),
     ),
-    CheckpointDefinition(
-        "desert_central_anchor", "Desert Central Ashtray", "desert_central",
-        position=(504.0, 424.0), facing="down",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
-    ),
     # Coming back down out of the camp. Every walk exit needs a runtime
     # checkpoint on the far side naming its arrival; this is the hub's.
     CheckpointDefinition(
@@ -1515,12 +1040,6 @@ CHECKPOINTS = (
         arrival="from_desert_central", facing="up",
         required_flags=DESERT_ENTRY_FLAGS,
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "desert_orc_camp_anchor", "Orc Camp Ashtray", "desert_orc_camp",
-        position=(520.0, 632.0), facing="up",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "desert_central_from_oasis", "Desert Central West Return",
@@ -1546,19 +1065,6 @@ CHECKPOINTS = (
         required_flags=DESERT_ENTRY_FLAGS,
         runtime_entry=True,
     ),
-    CheckpointDefinition(
-        "desert_ruins_anchor", "Undead Ruins Ashtray",
-        "desert_undead_ruins",
-        position=(520.0, 712.0), facing="up",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
-        "desert_oasis_anchor", "Oasis Ashtray", "desert_oasis",
-        position=(456.0, 408.0), facing="down",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
-    ),
     # ----------------------------------------------------------------
     # ...and east out of the region, into the collided traversal.
     # ----------------------------------------------------------------
@@ -1575,12 +1081,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "desert_east_1_anchor", "Collided Desert 1 Ashtray", "desert_east_1",
-        position=(200.0, 392.0), facing="right",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "desert_east_1_from_east_2", "Collided Desert 1 East Return",
         "desert_east_1", arrival="from_east_2", facing="left",
         required_flags=DESERT_ENTRY_FLAGS,
@@ -1591,12 +1091,6 @@ CHECKPOINTS = (
         arrival="from_east_1", facing="right",
         required_flags=DESERT_ENTRY_FLAGS,
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "desert_east_2_anchor", "Collided Desert 2 Ashtray", "desert_east_2",
-        position=(104.0, 424.0), facing="right",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "desert_east_2_from_east_3", "Collided Desert 2 East Return",
@@ -1611,12 +1105,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "desert_east_3_anchor", "Collided Desert 3 Ashtray", "desert_east_3",
-        position=(104.0, 488.0), facing="right",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "desert_east_3_from_east_4", "Collided Desert 3 East Return",
         "desert_east_3", arrival="from_east_4", facing="left",
         required_flags=DESERT_ENTRY_FLAGS,
@@ -1627,12 +1115,6 @@ CHECKPOINTS = (
         arrival="from_east_3", facing="right",
         required_flags=DESERT_ENTRY_FLAGS,
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "desert_east_4_anchor", "Collided Desert 4 Ashtray", "desert_east_4",
-        position=(264.0, 456.0), facing="right",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "desert_east_4_from_east_5", "Collided Desert 4 East Return",
@@ -1647,12 +1129,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "desert_east_5_anchor", "Collided Desert 5 Ashtray", "desert_east_5",
-        position=(136.0, 456.0), facing="right",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "desert_east_5_from_east_6", "Collided Desert 5 East Return",
         "desert_east_5", arrival="from_east_6", facing="left",
         required_flags=DESERT_ENTRY_FLAGS,
@@ -1663,12 +1139,6 @@ CHECKPOINTS = (
         arrival="from_east_5", facing="right",
         required_flags=DESERT_ENTRY_FLAGS,
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "desert_east_6_anchor", "Collided Desert 6 Ashtray", "desert_east_6",
-        position=(136.0, 488.0), facing="right",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "desert_east_6_from_east_7", "Collided Desert 6 East Return",
@@ -1683,12 +1153,6 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "desert_east_7_anchor", "Collided Desert 7 Ashtray", "desert_east_7",
-        position=(104.0, 552.0), facing="right",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
-    ),
-    CheckpointDefinition(
         "desert_east_7_from_east_8", "Collided Desert 7 East Return",
         "desert_east_7", arrival="from_east_8", facing="left",
         required_flags=DESERT_ENTRY_FLAGS,
@@ -1699,12 +1163,6 @@ CHECKPOINTS = (
         arrival="from_east_7", facing="right",
         required_flags=DESERT_ENTRY_FLAGS,
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "desert_east_8_anchor", "Collided Desert 8 Ashtray", "desert_east_8",
-        position=(152.0, 616.0), facing="right",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
     ),
     CheckpointDefinition(
         "desert_east_8_from_trio", "Collided Desert 8 East Return",
@@ -1720,12 +1178,6 @@ CHECKPOINTS = (
         arrival="from_east_8", facing="right",
         required_flags=DESERT_ENTRY_FLAGS,
         runtime_entry=True,
-    ),
-    CheckpointDefinition(
-        "desert_trio_anchor", "Final Trio Ashtray", "desert_trio",
-        position=(120.0, 472.0), facing="right",
-        required_flags=DESERT_ENTRY_FLAGS,
-        saveable=True, development_visible=False,
     ),
 )
 
@@ -1757,20 +1209,10 @@ class ProgressState:
 def is_save_point(checkpoint_id: str) -> bool:
     """Is this somewhere a save may be written?
 
-    A door Chuck walked in by: those are the places the save code can
-    name, and the door is the respawn point too.
-
-    Ashtrays still count while they exist. They are on their way out --
-    the save moved to the menu and the respawn moved to the door -- and
-    the second half of this goes with them, along with every Ashtray
-    checkpoint in the table above. Until then both are accepted, so the
-    change lands in one piece rather than breaking every Ashtray test on
-    the way past.
+    A door Chuck walked in by, and nothing else: those are the places a
+    save code can name, and the door is the respawn point too.
     """
-    if checkpoint_id in save_registry.ENTRY_INDEX:
-        return True
-    checkpoint = CHECKPOINT_BY_ID.get(checkpoint_id)
-    return checkpoint is not None and checkpoint.saveable
+    return checkpoint_id in save_registry.ENTRY_INDEX
 
 
 class CheckpointLoader:
@@ -1944,6 +1386,3 @@ class CheckpointLoader:
                 for map_name, x, y, line in self.game.spoken_to)),
         )
 
-    def activate_checkpoint(self, checkpoint_id: str, sanity: int) -> bool:
-        """The Ashtray's old name for it. Goes when the Ashtray does."""
-        return self.write_save(checkpoint_id, sanity)

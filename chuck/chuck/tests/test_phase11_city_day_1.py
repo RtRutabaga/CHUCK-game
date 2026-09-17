@@ -138,7 +138,6 @@ def test_the_avenue_is_looser_than_the_night_blocks_and_visibly_broken() -> None
 
     markers = _markers(tilemap)
     reachable = _flood(tilemap, markers["arrival:from_city_sewer_4_ladder"][0])
-    assert markers["anchor:modern_city_day_1_anchor"][0] in reachable
     assert markers["boundary:modern_city_day_2"][0] in reachable
 
     # One broad avenue, a plaza off it, and a side street north: the open
@@ -189,7 +188,7 @@ def test_one_woman_in_a_red_dress_walks_a_long_pavement() -> None:
 
 
 def test_it_is_still_raining_in_the_daytime_city() -> None:
-    directory, game, world = _game_and_world("modern_city_day_1_anchor")
+    directory, game, world = _game_and_world("modern_city_day_1")
     try:
         assert world.city_rain is not None
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
@@ -199,15 +198,11 @@ def test_it_is_still_raining_in_the_daytime_city() -> None:
         entry = CHECKPOINT_BY_ID[MAP_NAME]
         assert (entry.display_name, entry.map_name) == ("City Day 1", MAP_NAME)
         assert entry.runtime_entry
-        assert CHECKPOINT_BY_ID["modern_city_day_1_anchor"].saveable
 
         world._arrival_fade_t = None
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
     finally:
         game._shutdown()
         directory.cleanup()

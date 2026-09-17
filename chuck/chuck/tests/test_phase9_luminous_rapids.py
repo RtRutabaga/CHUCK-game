@@ -46,7 +46,7 @@ def _tile(position):
 def _points(tilemap):
     return {kind.split(":", 1)[1]: _tile(pos)
             for kind, pos in tilemap.object_spawns
-            if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+            if kind.startswith(("arrival:", "boundary:"))}
 
 
 def _settle(scene, seconds):
@@ -210,7 +210,6 @@ def test_the_rapids_need_the_flowers_and_never_strand_chuck() -> None:
 
     reached = {tile for tile, _state in nodes}
     assert goal in reached, "the rapids cannot be crossed"
-    assert points["feywild_12_anchor"] in reached
     caches = {_tile(pos) for kind, pos in tilemap.object_spawns
               if kind == "breakable_grass"}
     assert caches and caches <= reached
@@ -259,8 +258,6 @@ def test_rapids_checkpoints_music_and_the_underways_connection() -> None:
     entry = CHECKPOINT_BY_ID["feywild_12"]
     assert entry.display_name == "Feywild 12" and entry.runtime_entry
     assert entry.map_name == MAP_NAME and entry.arrival == "from_feywild_11"
-    anchor = CHECKPOINT_BY_ID["feywild_12_anchor"]
-    assert anchor.saveable and not anchor.development_visible
     assert tileset_for(MAP_NAME).sheet == "feywild.png"
     assert AREA_MUSIC[MAP_NAME] == "feywild.wav"
     assert AREA_WALK_EXITS[(UNDERWAYS, "→")].destination == MAP_NAME

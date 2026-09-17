@@ -56,7 +56,7 @@ LAVA_RUN = ((60, 23), (60, 25), (61, 27), (61, 29),
 DECK = (8, 40, 12, 6)
 SCRAPS = ((10, 10, 6, 3, "ᛗ"), (66, 44, 5, 3, "ᛟ"), (16, 24, 5, 3, "="))
 SCRUB = ((20, 8), (68, 20), (14, 34), (70, 50), (22, 50))
-ANCHOR = (8, 28)
+WAYPOINT = (8, 28)
 ARRIVAL = (4, 28)
 
 
@@ -247,7 +247,6 @@ def build():
     dress_castle(grid, seed=5)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌷"
     grid[mid_y][WIDTH - RIM - 2] = "⍃"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⍁"
     return grid
 
 

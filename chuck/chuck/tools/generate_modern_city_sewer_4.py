@@ -23,7 +23,7 @@ HEIGHT = 50
 
 ARRIVAL = (50, 44)
 RETURN_EXIT = (53, 44)
-ANCHOR = (30, 33)
+WAYPOINT = (30, 33)
 LADDER = (26, 4)
 
 RATS = ((44, 41), (33, 36), (20, 27), (24, 15))
@@ -92,7 +92,6 @@ def build_map() -> list[str]:
     for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
         grid[row][RETURN_EXIT[0]] = "⮞"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቈ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ቊ"
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "ቋ"
     for col, row in RATS:
         assert grid[row][col] in {"d", ","}, (col, row, grid[row][col])
@@ -108,7 +107,7 @@ SOLID = {"#", "b", "R", "i", "V"}
 
 
 def _under(char: str) -> str:
-    return {"ቈ": "d", "ቊ": "d", "ቋ": "⮞", "q": "d", "ል": ".",
+    return {"ቈ": "d", "ቋ": "⮞", "q": "d", "ል": ".",
             "Ɫ": "d", "ɬ": "d", "ቓ": "d"}.get(char, char)
 
 
@@ -138,9 +137,9 @@ def validate(rows: list[str]) -> None:
     assert climb > run, (climb, run)
 
     found = _flood(rows, ARRIVAL)
-    assert {RETURN_EXIT, ANCHOR, LADDER, *RATS, *CIGARETTES} <= found
+    assert {RETURN_EXIT, WAYPOINT, LADDER, *RATS, *CIGARETTES} <= found
     assert (LADDER[0], LADDER[1] + 1) in found, "the ladder's foot"
-    assert ANCHOR not in set(RATS)
+    assert WAYPOINT not in set(RATS)
 
     # The ladder is one structure in two cells, the ship ladder's shape.
     assert rows[LADDER[1]][LADDER[0]] == "Ɫ"
@@ -149,7 +148,6 @@ def validate(rows: list[str]) -> None:
     text = "".join(rows)
     assert text.count("Ɫ") == 1 and text.count("ɬ") == 1
     assert text.count("ቓ") == 1
-    assert text.count("ቊ") == 1
     assert text.count("q") == len(RATS)
     assert text.count("ል") == len(CIGARETTES)
     assert "ቆ" not in text, "the region has exactly one crocodile"

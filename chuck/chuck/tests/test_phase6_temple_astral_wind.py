@@ -142,7 +142,6 @@ def test_map_6_is_a_connected_narrow_winding_route_with_eight_jump_cuts() -> Non
 
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_temple_5") == 1
-    assert kinds.count("anchor:temple_6_anchor") == 1
     assert kinds.count("boundary:temple_7") == 1
     assert not any(kind in {
         "rat", "zombie", "skeleton", "raptor", "massive_dinosaur", "snake",
@@ -220,9 +219,6 @@ def test_temple_6_checkpoint_saves_continues_and_respawns() -> None:
     assert entry.map_name == MAP_NAME
     assert entry.arrival == "from_temple_5"
     assert entry.runtime_entry and entry.development_visible
-    anchor_entry = CHECKPOINT_BY_ID["temple_6_anchor"]
-    assert anchor_entry.position == (276.0, 117.0)
-    assert anchor_entry.saveable and not anchor_entry.development_visible
 
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
@@ -230,16 +226,15 @@ def test_temple_6_checkpoint_saves_continues_and_respawns() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("temple_6")
         scene._arrival_fade_t = None
-        anchor, = scene.anchors
-        came_in = scene.anchors_system.respawn_position_for_chuck()
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+        came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 69
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "temple_6_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("temple_6", scene.sanity.current)
+        assert game.active_checkpoint_id == "temple_6"
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        # The door he came in by, not the Ashtray he touched.
+        # The door he came in by.
         assert (scene.player.x, scene.player.y) == came_in
     finally:
         game._shutdown()
@@ -248,7 +243,7 @@ def test_temple_6_checkpoint_saves_continues_and_respawns() -> None:
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == MAP_NAME
-        assert resumed.active_checkpoint_id == "temple_6_anchor"
+        assert resumed.active_checkpoint_id == "temple_6"
         assert scene.sanity.current == 69
     finally:
         resumed._shutdown()

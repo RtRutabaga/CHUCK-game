@@ -8,7 +8,7 @@ leading toward a Douglas fir forest.
 Everything here is spectacle Chuck routes around rather than fights. The
 dinosaur is scenery with teeth, the raptors and police have their own
 argument, and the phase document is explicit that the chaos must not
-create unavoidable damage at the Ashtray or the arrival. The validator
+create unavoidable damage at the waypoint or the arrival. The validator
 proves exactly that: a clear route exists from the arrival to the portal
 that never crosses a police lane or comes within notice of the dinosaur.
 
@@ -35,7 +35,7 @@ HEIGHT = 60
 
 ARRIVAL = (38, 3)
 RETURN_EXIT = (38, 0)
-ANCHOR = (10, 13)
+WAYPOINT = (10, 13)
 # The portal now waits near the far southwest end of the route. Reaching it
 # requires descending through the broken plaza rather than turning around in
 # the arrival room.
@@ -146,7 +146,6 @@ def build_map() -> list[str]:
         grid[0][col] = "⮝"
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "ቲ"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ታ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ቴ"
     grid[PORTAL[1]][PORTAL[0]] = "Ȣ"
     grid[PORTAL[1] + 1][PORTAL[0]] = "ት"
     grid[DINOSAUR[1]][DINOSAUR[0]] = "ቶ"
@@ -194,7 +193,7 @@ FLEE_TILES = 3
 
 
 def _under(char: str) -> str:
-    return {"ቲ": "⮝", "ታ": ".", "ቴ": ".", "ት": ".", "ቶ": "ᵹ", "ቷ": "ᵹ",
+    return {"ቲ": "⮝", "ታ": ".", "ት": ".", "ቶ": "ᵹ", "ቷ": "ᵹ",
             "ቸ": "ᵹ", "ሖ": ".", "ሞ": ".", "ል": ".",
             "ች": ".", "ቺ": ".", "ቻ": ".", "ቼ": "ᵹ",
             **{char: "." for char in LANES}}.get(char, char)
@@ -244,10 +243,10 @@ def validate(rows: list[str]) -> None:
 
     portal_step = (PORTAL[0], PORTAL[1] + 1)
     reach = _flood(rows, ARRIVAL)
-    assert {ANCHOR, RETURN_EXIT, portal_step, *CIGARETTES} <= reach
+    assert {WAYPOINT, RETURN_EXIT, portal_step, *CIGARETTES} <= reach
     assert math.dist(ARRIVAL, portal_step) > 50, "portal is still near spawn"
 
-    # The chaos must never make the Ashtray or the arrival unsafe, and a
+    # The chaos must never make the waypoint or the arrival unsafe, and a
     # clear route to the portal must exist: no police lane, and never
     # inside the dinosaur's notice.
     hazard = set(_lane_tiles(rows))
@@ -257,10 +256,10 @@ def validate(rows: list[str]) -> None:
         if math.dist((col, row), DINOSAUR) <= DINOSAUR_NOTICE
         or math.dist((col, row), SPIN_OFFICER) <= SPIN_DANGER
     }
-    assert ANCHOR not in hazard and ARRIVAL not in hazard
+    assert WAYPOINT not in hazard and ARRIVAL not in hazard
     clear = _flood(rows, ARRIVAL, avoid=hazard)
     assert portal_step in clear, "the portal cannot be reached safely"
-    assert ANCHOR in clear
+    assert WAYPOINT in clear
 
     # The dinosaur is over the prone businessperson, and both are in the
     # jungle rather than on the street.
@@ -300,7 +299,6 @@ def validate(rows: list[str]) -> None:
         assert density > (sum(row.count("V") for row in lines)
                           / (len(lines) * len(lines[0]))), name
 
-    assert text.count("ቴ") == 1 and text.count("ት") == 1
     assert text.count("ቺ") == 1, "one officer has lost the plot"
     assert text.count("ቻ") + text.count("ቼ") == len(FLEEING)
     assert text.count("ች") == len(CHASERS)

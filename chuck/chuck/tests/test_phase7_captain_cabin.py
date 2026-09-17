@@ -29,7 +29,6 @@ def test_captain_cabin_is_one_complete_checkpointed_ship_map() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (36, 21)
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_crew_quarters") == 1
-    assert kinds.count("anchor:ship_captain_anchor") == 1
     props = [kind for kind, _col, _row in tilemap.prop_tiles]
     assert props.count("ship_captain_chest") == 1
     assert props.count("ship_captain_bed") == 1
@@ -48,9 +47,6 @@ def test_captain_cabin_is_one_complete_checkpointed_ship_map() -> None:
     entry = CHECKPOINT_BY_ID["ship_captain_cabin"]
     assert entry.display_name == "Ship Captain Cabin"
     assert entry.runtime_entry and entry.map_name == MAP_NAME
-    anchor = CHECKPOINT_BY_ID["ship_captain_anchor"]
-    assert anchor.position == (100.0, 229.0)
-    assert anchor.saveable and not anchor.development_visible
 
 
 def test_cabin_passage_is_reversible_through_the_existing_open_doorway() -> None:
@@ -167,8 +163,8 @@ def test_collected_gold_carton_and_open_chest_persist_through_continue() -> None
             scene.player.x = carton.x
             scene.player.y = carton.y
             scene.update(0.0)
-            assert game.checkpoints.activate_checkpoint(
-                "ship_captain_anchor", scene.sanity.current
+            assert game.checkpoints.write_save(
+                "ship_captain_cabin", scene.sanity.current
             )
         finally:
             game._shutdown()
@@ -202,8 +198,8 @@ def test_open_uncollected_chest_reconstructs_carton_on_continue() -> None:
                          if isinstance(prop, CaptainChest))
             chest.on_scratched()
             scene.update(chest.opening_duration)
-            assert game.checkpoints.activate_checkpoint(
-                "ship_captain_anchor", scene.sanity.current
+            assert game.checkpoints.write_save(
+                "ship_captain_cabin", scene.sanity.current
             )
         finally:
             game._shutdown()

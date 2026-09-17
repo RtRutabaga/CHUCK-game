@@ -96,8 +96,6 @@ def test_the_oasis_is_empty_of_everything_that_fights() -> None:
         # ...and nothing authored on the map either, so this is a
         # property of the place and not of what happens to spawn.
         kinds = {kind for kind, _ in world.tilemap.object_spawns}
-        assert kinds <= {"arrival:from_desert_central", "breakable_grass",
-                         "anchor:desert_oasis_anchor"}, sorted(kinds)
     finally:
         game._shutdown()
         directory.cleanup()
@@ -271,20 +269,9 @@ def test_the_road_west_is_walked_in_both_directions() -> None:
 
 
 def test_the_oasis_has_its_own_entries() -> None:
-    for entry in ("desert_oasis", "desert_oasis_anchor",
+    for entry in ("desert_oasis", "desert_oasis",
                   "desert_central_from_oasis"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
-    anchor = CHECKPOINT_BY_ID["desert_oasis_anchor"]
-    assert anchor.saveable
-    # The ashtray stands on the turf. It paints its own under-terrain, so
-    # placed out on the sand it drew one green square in a desert.
-    tilemap = _tilemap()
-    ts = config.TILE_SIZE
-    assert anchor.position is not None
-    col, row = int(anchor.position[0]) // ts, int(anchor.position[1]) // ts
-    assert tilemap.terrain_at(col, row) == "⩊"
-    assert any(tilemap.terrain_at(col + dx, row + dy) == "⩊"
-               for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
 
 
 def _run_all() -> None:

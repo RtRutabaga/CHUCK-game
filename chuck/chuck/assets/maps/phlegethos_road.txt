@@ -1,7 +1,7 @@
 ; PHASE 8 - PHLEGETHOS 2, THE LAVA ROAD (48x32 tiles).
 ; The worn road climbs north between widening lava, pinching to a
 ; single-tile ledge at its waist. Lemures shamble the open basalt and
-; fire snakes haunt the molten edges; the Ashtray sits near the south
+; fire snakes haunt the molten edges; the route runs near the south
 ; pass back. The north pass onward waits on the next map (a later slice).
 ████████████████████████████████████████████████
 ███████████████████████∇⌂∇██████████████████████
@@ -28,7 +28,7 @@
 ██········≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡····≋≋≋≋≋··········♨·██
 ██··Ɜ·¢···≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡·Ԓ··≋≋≋·············██
 ██·········≡≡≡≡≡≡≡≡≡≡≡≡≡≡≡··♨··≋····Ѯ····≋····██
-██····≋·····Ԁ·····≋····≡Ԅ≡··············≋≋≋···██
+██····≋·····Ԁ·····≋····≡·≡··············≋≋≋···██
 ██···≋≋≋·········≋≋≋···≡≡≡·············≋≋≋≋≋··██
 ██··≋≋≋≋≋·········≋·Ѯ··≡≡≡····≋·······≋≋≋≋≋≋≋·██
 ██···≋≋≋····♨··········≡≡≡···≋≋≋·······≋≋≋≋≋··██

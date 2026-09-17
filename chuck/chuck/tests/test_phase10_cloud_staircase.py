@@ -57,7 +57,6 @@ def test_cloud_staircase_is_peaceful_reachable_and_checkpointed() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (64, 44)
     kinds = Counter(kind for kind, _ in tilemap.object_spawns)
     assert kinds["arrival:from_feywild_13"] == 1
-    assert kinds["anchor:zephyros_staircase_anchor"] == 1
     assert kinds["choice:cloud_staircase"] == 1
     assert not HOSTILES & set(kinds)
     assert Counter(kind for kind, _, _ in tilemap.prop_tiles)[
@@ -66,7 +65,6 @@ def test_cloud_staircase_is_peaceful_reachable_and_checkpointed() -> None:
 
     markers = _markers(tilemap)
     reached = _reachable(tilemap, markers["arrival:from_feywild_13"])
-    assert markers["anchor:zephyros_staircase_anchor"] in reached
     assert markers["choice:cloud_staircase"] in reached
 
 
@@ -102,9 +100,7 @@ def test_route_uses_normal_transitions_and_shared_checkpoints() -> None:
     assert back.destination == "feywild_twilight_crossroads"
     assert back.arrival == "from_feywild_tower"
     assert CHECKPOINT_BY_ID["zephyros_1"].map_name == "feywild_cloud_staircase"
-    assert CHECKPOINT_BY_ID["zephyros_staircase_anchor"].saveable
     assert CHECKPOINT_BY_ID["zephyros_2"].map_name == "zephyros_tower_exterior"
-    assert CHECKPOINT_BY_ID["zephyros_exterior_anchor"].saveable
     assert AREA_MUSIC["feywild_cloud_staircase"] == "zephyros_tower.wav"
     assert AREA_MUSIC["zephyros_tower_exterior"] == "zephyros_tower.wav"
     assert AREA_MUSIC["zephyros_aerie"] == "zephyros_tower.wav"
@@ -174,7 +170,6 @@ def test_exterior_is_open_sky_with_giant_arch_and_one_anchor() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (44, 34)
     kinds = Counter(kind for kind, _ in tilemap.object_spawns)
     assert kinds["arrival:from_staircase"] == 1
-    assert kinds["anchor:zephyros_exterior_anchor"] == 1
     assert kinds["boundary:zephyros_aerie"] == 1
     assert not HOSTILES & set(kinds)
     assert Counter(kind for kind, _, _ in tilemap.prop_tiles)[

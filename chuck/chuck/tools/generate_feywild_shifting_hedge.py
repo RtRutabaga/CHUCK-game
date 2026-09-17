@@ -30,7 +30,7 @@ OUT = (
 
 RETURN_EXIT = (0, 22)
 ARRIVAL = (1, 22)
-ANCHOR = (8, 22)
+WAYPOINT = (8, 22)
 FUTURE_RETURN = (66, 22)
 FUTURE_EXIT = (67, 22)
 
@@ -128,7 +128,6 @@ def build() -> list[list[str]]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][FUTURE_EXIT[0]] = "→"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ნ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ო"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ჟ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "პ"
     dress_grid("feywild_shifting_hedge", grid)
@@ -166,7 +165,7 @@ def _base_char(grid, col, row) -> str:
             return "#"
         if char == close_char:
             return "'"
-    return {"ნ": "'", "ო": ".", "პ": "→", "ჟ": "'", "რ": ".",
+    return {"ნ": "'", "პ": "→", "ჟ": "'", "რ": ".",
             "<": "."}.get(char, char)
 
 
@@ -264,7 +263,7 @@ def validate(grid) -> None:
     nodes, edges = _explore(grid)
     tiles_reached = {tile for tile, _state in nodes}
     assert FUTURE_EXIT in tiles_reached, "the hedge cannot be solved"
-    assert ANCHOR in tiles_reached
+    assert WAYPOINT in tiles_reached
     assert RETURN_EXIT in tiles_reached
     for grass in POCKET_GRASS:
         assert grass in tiles_reached, grass
@@ -289,7 +288,6 @@ def validate(grid) -> None:
     assert not stranded, sorted(stranded)[:6]
 
     text = "".join("".join(row) for row in grid)
-    assert text.count("ო") == 1
     assert text.count("<") == len(POCKET_GRASS)
     assert text.count("რ") == len(MITES)
     assert all(grid[row][0] == "←"

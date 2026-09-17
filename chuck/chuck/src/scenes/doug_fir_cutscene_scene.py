@@ -10,7 +10,7 @@ back to black.
 Phase 12 now continues directly from that completed boundary.  Once the
 fade reaches black, the scene selects the authored Tahuya exterior entry
 through the same checkpoint loader used by Continue and the development
-menu.  The first physical Ashtray on the grounds is still the point that
+menu.  The door onto the grounds is still the point that
 persists the crossing to disk.
 
 No words. Sanity carries into the save unchanged.
@@ -119,7 +119,7 @@ class DougFirCutsceneScene(Scene):
         self._handed_off = True
         # Phase 11 ends here.  Record the crossing, then use the shared
         # checkpoint path to enter the playable cabin grounds with the
-        # running Sanity value intact.  The nearby Ashtray owns persistence.
+        # running Sanity value intact.  The map's door owns persistence.
         self.game.progress.enable(DOUG_FIR_FLAG)
         flags = set(self.game.progress.flags)
         self.game.checkpoints.load_checkpoint(

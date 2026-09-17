@@ -110,7 +110,7 @@ CRACKS = (((12, 8), (18, 6)), ((30, 30), (36, 28)),
           ((24, 38), (28, 45)), ((48, 14), (52, 20)),
           ((42, 47), (49, 49)))
 
-ANCHOR = (7, MID_Y + 3)
+WAYPOINT = (7, MID_Y + 3)
 ARRIVAL = (4, MID_Y)
 
 
@@ -245,7 +245,6 @@ def build():
         grid[y][x] = marker
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⍾"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⍿"
     return grid
 
 

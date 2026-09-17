@@ -81,7 +81,6 @@ def test_city_night_1_establishes_the_region_and_opens_city_night_2() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (72, 54)
     assert MAP_TILESET[MAP_NAME] == "city"
     assert kinds["arrival:from_flight"] == 1
-    assert kinds["anchor:modern_city_anchor"] == 1
     assert kinds["cigarette"] == 4
     assert kinds["boundary:modern_city_night_2"] == 1
     assert kinds["arrival:from_city_night_2"] == 1
@@ -121,7 +120,6 @@ def test_every_city_night_1_discovery_is_reachable_without_astral_fall() -> None
     markers = _markers(tilemap)
     start = markers["arrival:from_flight"][0]
     required = {
-        markers["anchor:modern_city_anchor"][0],
         markers["boundary:modern_city_night_2"][0],
         *markers["cigarette"],
     }
@@ -130,14 +128,9 @@ def test_every_city_night_1_discovery_is_reachable_without_astral_fall() -> None
 
 def test_city_checkpoint_registry_preserves_phase10_save_compatibility() -> None:
     entry = CHECKPOINT_BY_ID["modern_city_1"]
-    anchor = CHECKPOINT_BY_ID["modern_city_anchor"]
     assert entry.display_name == "City Night 1"
     assert entry.map_name == MAP_NAME
     assert entry.arrival == "from_flight"
-    assert anchor.display_name == "City Night 1 Ashtray"
-    assert anchor.map_name == MAP_NAME
-    assert anchor.position == (436.0, 693.0)
-    assert anchor.saveable
 
 
 def test_city_tileset_uses_the_shared_animated_astral_hazard() -> None:

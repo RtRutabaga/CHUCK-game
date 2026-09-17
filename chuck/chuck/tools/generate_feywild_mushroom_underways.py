@@ -34,7 +34,7 @@ OUT = (
 
 RETURN_EXIT = (0, 8)
 ARRIVAL = (1, 8)
-ANCHOR = (34, 23)
+WAYPOINT = (34, 23)
 FUTURE_RETURN = (68, 40)
 FUTURE_EXIT = (69, 40)
 
@@ -116,7 +116,6 @@ def build() -> list[list[str]]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][FUTURE_EXIT[0]] = "→"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "შ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ჩ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ძ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ც"
     dress_grid("feywild_mushroom_underways", grid)
@@ -148,7 +147,7 @@ SOLID = {"#", "ᛞ", "ŧ", "Ŧ", "Ɓ", "ł", "ŋ"}
 
 
 def _under(char: str) -> str:
-    return {"შ": "'", "ჩ": "'", "ც": "→", "ძ": "'", "<": "."}.get(char, char)
+    return {"შ": "'", "ც": "→", "ძ": "'", "<": "."}.get(char, char)
 
 
 def _reachable(grid, start):
@@ -180,7 +179,7 @@ def validate(grid) -> None:
         assert char not in text, char
 
     walk = _reachable(grid, ARRIVAL)
-    assert {RETURN_EXIT, FUTURE_EXIT, FUTURE_RETURN, ANCHOR, *TUFTS} <= walk
+    assert {RETURN_EXIT, FUTURE_EXIT, FUTURE_RETURN, WAYPOINT, *TUFTS} <= walk
     for _chamber, mouth in CHAMBERS:
         assert mouth in walk, mouth
 
@@ -198,7 +197,6 @@ def validate(grid) -> None:
     assert shade >= 300, shade
     assert text.count("ᛞ") >= 40, text.count("ᛞ")
     assert text.count("<") == len(TUFTS)
-    assert text.count("ჩ") == 1
     # ...and the walk actually passes through the shade rather than beside
     # it: at least a third of what Chuck can reach is under a cap.
     shaded_walk = sum(1 for col, row in walk if grid[row][col] == "ᛥ")

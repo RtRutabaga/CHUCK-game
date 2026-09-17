@@ -27,7 +27,7 @@ OUT = (
 
 RETURN_EXIT = (12, 0)
 ARRIVAL = (12, 1)
-ANCHOR = (17, 5)
+WAYPOINT = (17, 5)
 FUTURE_RETURN = (60, 50)
 FUTURE_EXIT = (60, 51)
 CACHE_DOOR = (14, 27)
@@ -37,7 +37,7 @@ HEADER = [
     "; PHASE 9 - FEYWILD 5, THE GIANT TEA TABLE (72x52 tiles).",
     "; An abandoned Fey place setting becomes architecture to one-foot Chuck.",
     "; The required route passes beneath the table; there are no enemies.",
-    "; One physical Ashtray serves the map; Map 6 remains an inert boundary.",
+    "; Map 6 remains an inert boundary.",
 ]
 
 
@@ -160,7 +160,6 @@ def build() -> list[list[str]]:
     for col in range(RETURN_EXIT[0] - 1, RETURN_EXIT[0] + 2):
         grid[0][col] = "⇧"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Պ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "Ջ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "Ս"
     for col in range(FUTURE_EXIT[0] - 1, FUTURE_EXIT[0] + 2):
         grid[H - 1][col] = "⇩"
@@ -219,7 +218,7 @@ def _dress_with_vegetation(grid: list[list[str]]) -> None:
 
 def _under(char: str) -> str:
     return {
-        "Պ": ".", "Ջ": ".", "Ռ": "⇩", "Ս": ".",
+        "Պ": ".", "Ռ": "⇩", "Ս": ".",
         "<": ".", "♜": "▒",
         "◉": "▤", "☕": "▤", "⌁": "▤", "⁙": "▤",
     }.get(char, char)
@@ -258,14 +257,13 @@ def validate(grid: list[list[str]]) -> None:
     assert len(grid) == H and all(len(row) == W for row in grid)
     chuck_reach = _reachable(grid, ARRIVAL)
     assert {
-        RETURN_EXIT, ANCHOR, FUTURE_RETURN, FUTURE_EXIT,
+        RETURN_EXIT, WAYPOINT, FUTURE_RETURN, FUTURE_EXIT,
         CACHE_DOOR, CACHE,
     } <= chuck_reach
     large_reach = _reachable(grid, ARRIVAL, large_actor=True)
     assert FUTURE_EXIT not in large_reach
     assert CACHE not in large_reach
     text = "".join("".join(row) for row in grid)
-    assert text.count("Ջ") == 1
     assert text.count("<") == 4
     assert text.count("♜") == 2
     assert "♧" not in text

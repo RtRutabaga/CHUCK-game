@@ -40,7 +40,6 @@ def test_dart_connector_is_long_torch_lit_and_enemy_free() -> None:
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("dart_trap:down") == 4
     assert kinds.count("dart_trap:up") == 4
-    assert kinds.count("anchor:temple_4_anchor") == 1
     assert kinds.count("arrival:from_temple_3") == 1
     assert kinds.count("boundary:temple_5") == 1
     assert sum(row.count("i") for row in tilemap._grid) == 11
@@ -110,15 +109,12 @@ def test_temple_maps_3_and_4_connect_both_ways_without_bounce() -> None:
         game._shutdown()
 
 
-def test_temple_4_ashtray_saves_continues_and_resets_darts() -> None:
+def test_temple_4_save_continues_and_resets_darts() -> None:
     entry = CHECKPOINT_BY_ID["temple_4"]
     assert entry.display_name == "Temple 4"
     assert entry.map_name == "temple_darts"
     assert entry.arrival == "from_temple_3"
     assert entry.runtime_entry and entry.development_visible
-    anchor_entry = CHECKPOINT_BY_ID["temple_4_anchor"]
-    assert anchor_entry.position == (980.0, 229.0)
-    assert anchor_entry.saveable and not anchor_entry.development_visible
 
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
@@ -132,16 +128,15 @@ def test_temple_4_ashtray_saves_continues_and_resets_darts() -> None:
             if scene.darts:
                 break
         assert scene.darts
-        anchor, = scene.anchors
-        came_in = scene.anchors_system.respawn_position_for_chuck()
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+        came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 62
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "temple_4_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("temple_4", scene.sanity.current)
+        assert game.active_checkpoint_id == "temple_4"
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        # The door he came in by, not the Ashtray he touched.
+        # The door he came in by.
         assert (scene.player.x, scene.player.y) == came_in
         assert len(scene.dart_traps) == 8 and not scene.darts
     finally:
@@ -151,7 +146,7 @@ def test_temple_4_ashtray_saves_continues_and_resets_darts() -> None:
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == "temple_darts"
-        assert resumed.active_checkpoint_id == "temple_4_anchor"
+        assert resumed.active_checkpoint_id == "temple_4"
         assert scene.sanity.current == 62
         assert len(scene.dart_traps) == 8 and not scene.darts
     finally:

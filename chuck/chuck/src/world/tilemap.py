@@ -1141,49 +1141,35 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "c": MarkerDef(kind="cigarette", under=","),
     "j": MarkerDef(kind="cigarette", under="="),
     "K": MarkerDef(kind="cat", under=","),
-    "A": MarkerDef(kind="anchor:waterdeep_anchor", under=","),
-    # Phase 13. The desert hub's ashtray stands on the middle ruin's
-    # buried floor: the one place a player can see from a distance.
-    "⨀": MarkerDef(kind="anchor:desert_central_anchor", under="⌖"),
-    "⨁": MarkerDef(kind="anchor:desert_orc_camp_anchor", under="."),
-    "☉": MarkerDef(kind="anchor:desert_oasis_anchor", under="⩊"),
-    # Cigarette grass on the oasis turf: the established scratchable,
+    # Phase 13. Cigarette grass on the oasis turf: the established scratchable,
     # standing on the only green ground in the region.
     "⩏": MarkerDef(kind="breakable_grass", under="⩊"),
     "♆": MarkerDef(kind="arrival:from_oasis", under="."),
     "♁": MarkerDef(kind="arrival:from_undead_ruins", under="."),
-    "☽": MarkerDef(kind="anchor:desert_ruins_anchor", under="⌖"),
     # Skeletons patrolling the ruins: the Chult implementation exactly,
     # standing on sand outside the walls and on flagstones within.
     "ᛊ": MarkerDef(kind="skeleton", under="."),
     "ᛏ": MarkerDef(kind="skeleton", under="⌖"),
     # Phase 13's eastward traversal.
     "⌦": MarkerDef(kind="arrival:from_desert_central", under="."),
-    "⌸": MarkerDef(kind="anchor:desert_east_1_anchor", under="."),
     "⌱": MarkerDef(kind="arrival:from_east_1", under="."),
     "⌲": MarkerDef(kind="arrival:from_east_2", under="."),
-    "⌳": MarkerDef(kind="anchor:desert_east_2_anchor", under="."),
     # Snakes, in the jungle that fell in with them.
     "⌴": MarkerDef(kind="snake", under="ᛗ"),
     "⌵": MarkerDef(kind="arrival:from_east_3", under="."),
-    "⌶": MarkerDef(kind="anchor:desert_east_3_anchor", under="."),
     "⌷": MarkerDef(kind="arrival:from_east_4", under="."),
-    "⌹": MarkerDef(kind="anchor:desert_east_4_anchor", under="."),
     # Redcaps came through with the Feywild. Hell's devils needed no
     # marker of their own: Phlegethos already authored one per facing,
     # each standing on basalt, which is exactly what its fragment is.
     "⌺": MarkerDef(kind="redcap", under="ᛟ"),
     "⍀": MarkerDef(kind="arrival:from_east_5", under="."),
-    "⍁": MarkerDef(kind="anchor:desert_east_5_anchor", under="."),
     # Armoured knights, on the courtyard they came in on.
     "⍂": MarkerDef(kind="knight", under="⌽"),
     "⍃": MarkerDef(kind="arrival:from_east_6", under="."),
-    "⍄": MarkerDef(kind="anchor:desert_east_6_anchor", under="."),
     # The seventh map east, and the way back out of it. Nine worlds on
-    # one map: its arrival and its Ashtray both stand on the sliver of
-    # desert by the west gap, which is the last ordinary ground on it.
+    # one map: its arrival stands on the sliver of desert by the west
+    # gap, which is the last ordinary ground on it.
     "⍳": MarkerDef(kind="arrival:from_east_6", under="."),
-    "⍴": MarkerDef(kind="anchor:desert_east_7_anchor", under="."),
     # Coming back out of the seventh map, and going into the eighth.
     # One character for both: an arrival is named for where you came
     # *from*, so the sixth map's return and the eighth map's entrance
@@ -1191,9 +1177,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # way the hub's three neighbours all share one.
     "⍵": MarkerDef(kind="arrival:from_east_7", under="."),
     # The eighth map east, where the ground has mostly gone. Its
-    # Ashtray is on the desert island by the west rim -- the last thing
-    # on the traversal wide enough to stand on and think about.
-    "⍹": MarkerDef(kind="anchor:desert_east_8_anchor", under="."),
     "⍺": MarkerDef(kind="arrival:from_east_8", under="."),
     # ------------------------------------------------------------------
     # The final trio encounter. The three of them stand on plain desert
@@ -1210,7 +1193,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "⍼": MarkerDef(kind="battle:wizard", under="."),
     "⍽": MarkerDef(kind="battle:ranger", under="."),
     "⍾": MarkerDef(kind="arrival:from_east_8", under="."),
-    "⍿": MarkerDef(kind="anchor:desert_trio_anchor", under="."),
     "⎀": MarkerDef(kind="arrival:from_trio", under="."),
     # The blue dragon, facing the way its breath goes. It cannot be
     # fought, so it has no facing variants for pursuit -- only the two
@@ -1223,7 +1205,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # The one road between the hub and the camp, walked both ways.
     "⛲": MarkerDef(kind="arrival:from_orc_camp", under="."),
     "⌬": MarkerDef(kind="arrival:from_desert_central", under="."),
-    "Y": MarkerDef(kind="anchor:sewer_anchor", under="d"),
     "N": MarkerDef(kind="npc:dock_worker", under=","),
     "G": MarkerDef(kind="npc:guard", under=","),
     "I": MarkerDef(kind="npc:market_woman", under=","),
@@ -1245,7 +1226,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "0": MarkerDef(kind="arrival:pantry_entry", under="p"),
     "@": MarkerDef(kind="player", under="."),
     "`": MarkerDef(kind="arrival:from_chult_1", under="."),
-    "&": MarkerDef(kind="anchor:chult_anchor", under="."),
     "(": MarkerDef(kind="zombie", under="."),
     ")": MarkerDef(kind="skeleton", under="."),
     "$": MarkerDef(kind="boundary:chult_deeper", under='"'),
@@ -1255,11 +1235,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ʛ": MarkerDef(kind="breakable_grass", under="ᶠ"),
     "¿": MarkerDef(kind="elevated_npc:sailor", under="#", allow_solid=True),
     "¡": MarkerDef(kind="raptor", under="."),
-    "§": MarkerDef(kind="anchor:chult_2_anchor", under="."),
     "¶": MarkerDef(kind="massive_dinosaur", under="."),
     "¤": MarkerDef(kind="boundary:chult_run", under='"'),
     "µ": MarkerDef(kind="arrival:from_chult_2", under="."),
-    "¥": MarkerDef(kind="anchor:chult_3_anchor", under="."),
     "α": MarkerDef(kind="staged_undead:1:zombie", under='"'),
     "Α": MarkerDef(kind="staged_undead:1:skeleton", under='"'),
     "β": MarkerDef(kind="staged_undead:2:zombie", under='"'),
@@ -1272,47 +1250,37 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ꝗ": MarkerDef(kind="arrival:from_chult_respite", under="."),
     # The tortle who got to the Falls' chest first, and wants you gone.
     "Ꝡ": MarkerDef(kind="npc:tortle", under="."),
-    "ζ": MarkerDef(kind="anchor:chult_4_anchor", under="."),
     "η": MarkerDef(kind="boundary:chult_temple", under="ð"),
     "θ": MarkerDef(kind="arrival:from_chult_4", under="."),
-    "λ": MarkerDef(kind="anchor:chult_5_anchor", under="."),
     "ξ": MarkerDef(kind="boundary:temple_interior", under="Ω"),
     "ν": MarkerDef(kind="arrival:from_temple_interior", under="τ"),
     # The entrance hall's three center-aisle markers sit ON the
     # processional path, so their under-terrain matches it (no seams).
     "κ": MarkerDef(kind="arrival:from_temple_exterior", under="≡"),
-    "ρ": MarkerDef(kind="anchor:temple_1_anchor", under="≡"),
     "σ": MarkerDef(kind="boundary:temple_deeper", under="∇"),
     "υ": MarkerDef(kind="arrival:from_temple_2", under="≡"),
     "φ": MarkerDef(kind="arrival:from_temple_1", under="≡"),
-    "χ": MarkerDef(kind="anchor:temple_2_anchor", under="·"),
     "ω": MarkerDef(kind="boundary:temple_3", under="∇"),
     "Ι": MarkerDef(kind="arrival:from_temple_3", under="≡"),
     "Λ": MarkerDef(kind="arrival:from_temple_2", under="≡"),
-    "Φ": MarkerDef(kind="anchor:temple_3_anchor", under="·"),
     "Ψ": MarkerDef(kind="skeleton", under="·"),
     "Π": MarkerDef(kind="boundary:temple_4", under="∇"),
     "Σ": MarkerDef(kind="arrival:from_temple_4", under="≡"),
     "Ρ": MarkerDef(kind="arrival:from_temple_3", under="≡"),
-    "Τ": MarkerDef(kind="anchor:temple_4_anchor", under="·"),
     "Υ": MarkerDef(kind="boundary:temple_5", under="∇"),
     "Ξ": MarkerDef(kind="arrival:from_temple_5", under="≡"),
     "Η": MarkerDef(kind="arrival:from_temple_4", under="≡"),
-    "Θ": MarkerDef(kind="anchor:temple_5_anchor", under="·"),
     "Ο": MarkerDef(kind="boundary:temple_6", under="∇"),
     "ς": MarkerDef(kind="snake", under="·"),
     "Μ": MarkerDef(kind="arrival:from_temple_6", under="≡"),
     "Ζ": MarkerDef(kind="arrival:from_temple_5", under="≡"),
-    "ϑ": MarkerDef(kind="anchor:temple_6_anchor", under="·"),
     "ϖ": MarkerDef(kind="boundary:temple_7", under="∇"),
     # Temple Map 7, the shrine hall (session 121).
     "ϒ": MarkerDef(kind="arrival:from_temple_6", under="≡"),
-    "ϰ": MarkerDef(kind="anchor:temple_7_anchor", under="·"),
     "ϱ": MarkerDef(kind="boundary:temple_8", under="∇"),
     "ϵ": MarkerDef(kind="arrival:from_temple_7", under="≡"),
     # Temple Map 9, the final chamber (session 130).
     "ϻ": MarkerDef(kind="arrival:from_temple_8", under="≡"),
-    "ϼ": MarkerDef(kind="anchor:temple_9_anchor", under="·"),
     "Ͻ": MarkerDef(kind="arrival:from_temple_9", under="≡"),
     # The final chamber's battle tableau (session 131).
     "Ͼ": MarkerDef(kind="battle:fighter", under="≡"),
@@ -1321,28 +1289,22 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ё": MarkerDef(kind="battle:beholder", under="·"),
     # Temple Map 8, the gauntlet (session 122).
     "ϴ": MarkerDef(kind="arrival:from_temple_7", under="≡"),
-    "Ϲ": MarkerDef(kind="anchor:temple_8_anchor", under="·"),
     "Ϸ": MarkerDef(kind="boundary:temple_9", under="∇"),
     "Ϻ": MarkerDef(kind="arrival:from_temple_8", under="≡"),
     "↓": MarkerDef(kind="dart_trap:down", under="W", allow_solid=True),
     "↑": MarkerDef(kind="dart_trap:up", under="W", allow_solid=True),
     # The rubble map — where the scripted Fireball throws Chuck (session 135).
-    # Its arrival and ashtray sit on the one intact paved lane (session 139).
+    # Its arrival sits on the one intact paved lane (session 139).
     "Ѣ": MarkerDef(kind="arrival:from_fireball", under="≡"),
-    "Ѥ": MarkerDef(kind="anchor:temple_rubble_anchor", under="≡"),
     # The ship deck — where the crawlspace leads out (session 138).
     "Ҋ": MarkerDef(kind="arrival:from_crawlspace", under="="),
-    "Ҍ": MarkerDef(kind="anchor:ship_deck_anchor", under="="),
     "Ҝ": MarkerDef(kind="arrival:from_lower_hold", under="="),
     "Ҟ": MarkerDef(kind="arrival:from_ship_room", under="="),
-    "Ҡ": MarkerDef(kind="anchor:ship_lower_hold_anchor", under="="),
     "Ң": MarkerDef(kind="rat", under="="),
     "Ҥ": MarkerDef(kind="pirate_chef", under="="),
     "Ҧ": MarkerDef(kind="arrival:from_ship_room", under="="),
-    "Ҩ": MarkerDef(kind="anchor:ship_galley_anchor", under="="),
     "Ҫ": MarkerDef(kind="arrival:from_galley", under="="),
     "Ҭ": MarkerDef(kind="arrival:from_ship_room", under="="),
-    "Ұ": MarkerDef(kind="anchor:ship_crew_anchor", under="="),
     "Ү": MarkerDef(
         kind="pirate_npc:seated_pirate:crew_pirate_met", under="="
     ),
@@ -1351,9 +1313,7 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ҵ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
     "Ӏ": MarkerDef(kind="arrival:from_captain_cabin", under="="),
     "Ӂ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
-    "ӂ": MarkerDef(kind="anchor:ship_captain_anchor", under="="),
     "Ӄ": MarkerDef(kind="arrival:from_crew_quarters", under="="),
-    "ӄ": MarkerDef(kind="anchor:ship_exterior_anchor", under="="),
     "Ӆ": MarkerDef(kind="arrival:from_exterior_deck", under="="),
     "ӆ": MarkerDef(
         kind="deck_pirate:concertina_pirate:deck_concertina_met:concertina",
@@ -1381,7 +1341,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ҏ": MarkerDef(kind="choice:crevice", under="≡"),
     # Phlegethos arrival map — where the Nine Hells fall drops Chuck.
     "Ѩ": MarkerDef(kind="arrival:from_hell", under="≡"),
-    "Ѫ": MarkerDef(kind="anchor:phlegethos_anchor", under="·"),
     "Ѭ": MarkerDef(kind="arrival:from_phlegethos_2", under="≡"),
     # Phlegethos map 2, the lava road, and its infernal enemies. Lemures
     # are a third undead kind and fire snakes a temple-snake variant, so
@@ -1389,11 +1348,9 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Ѯ": MarkerDef(kind="lemure", under="·"),
     "Ԁ": MarkerDef(kind="fire_snake", under="·"),
     "Ԃ": MarkerDef(kind="arrival:from_phlegethos_1", under="≡"),
-    "Ԅ": MarkerDef(kind="anchor:phlegethos_road_anchor", under="·"),
     "Ԇ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
     # Phlegethos map 3, the lava lake crossed by stepping-stone islands.
     "Ԉ": MarkerDef(kind="arrival:from_phlegethos_2", under="≡"),
-    "Ԋ": MarkerDef(kind="anchor:phlegethos_lake_anchor", under="≡"),
     "Ԍ": MarkerDef(kind="arrival:from_phlegethos_4", under="≡"),
     # Spined devils perch and throw down an authored lane; flameskulls
     # weave along a horizontal or vertical haunt.
@@ -1411,7 +1368,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # and the trio's battle with the Pit Fiend.
     "Ԟ": MarkerDef(kind="horned_devil", under="·"),
     "Ԡ": MarkerDef(kind="arrival:from_phlegethos_rubble", under="≡"),
-    "Ԣ": MarkerDef(kind="anchor:phlegethos_4_anchor", under="≡"),
     "Ԥ": MarkerDef(kind="boundary:phlegethos_fortress", under="≡"),
     "Ԧ": MarkerDef(kind="battle:fighter", under="≡"),
     "Ԩ": MarkerDef(kind="battle:wizard", under="≡"),
@@ -1421,24 +1377,20 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # fortress. Its internal checkpoint IDs remain independent of display
     # numbering so existing fortress saves stay valid.
     "Ԯ": MarkerDef(kind="arrival:from_phlegethos_3", under="≡"),
-    "԰": MarkerDef(kind="anchor:phlegethos_rubble_anchor", under="≡"),
     "Բ": MarkerDef(kind="arrival:from_phlegethos_fortress", under="≡"),
     # The fractured way inserted before the fortress battle. Existing
     # fortress marker IDs remain untouched so old saves stay valid.
     "ዐ": MarkerDef(kind="arrival:from_phlegethos_rubble", under="≡"),
-    "ዑ": MarkerDef(kind="anchor:phlegethos_fractured_anchor", under="≡"),
     "ዒ": MarkerDef(kind="arrival:from_phlegethos_fortress", under="≡"),
     "ዓ": MarkerDef(kind="pit_fiend", under="·"),
     "ዕ": MarkerDef(kind="npc:businessman", under="≡"),
     # Phase 9 opens on the bank reached by the river cutscene.
     "Գ": MarkerDef(kind="arrival:from_river", under=","),
-    "Դ": MarkerDef(kind="anchor:feywild_anchor", under="'"),
     "Ե": MarkerDef(kind="boundary:feywild_deeper", under="→"),
     "Խ": MarkerDef(kind="arrival:from_feywild_2", under="'"),
     # Blooming Path: one reversible flower exchanges the upper and lower
     # authored vegetation gates. Solid target markers explicitly opt in.
     "Զ": MarkerDef(kind="arrival:from_feywild_1", under="'"),
-    "Է": MarkerDef(kind="anchor:feywild_2_anchor", under="'"),
     "Ը": MarkerDef(kind="boundary:feywild_3", under="→"),
     "Թ": MarkerDef(kind="flower_switch:intro", under="."),
     "Ժ": MarkerDef(
@@ -1448,7 +1400,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # Pollen Orchard arrivals, checkpoint, later boundary, and its optional
     # route-exchange flower.
     "Լ": MarkerDef(kind="arrival:from_feywild_2", under="'"),
-    "Ծ": MarkerDef(kind="anchor:feywild_3_anchor", under="'"),
     "Կ": MarkerDef(kind="boundary:feywild_4", under="⇧"),
     "Հ": MarkerDef(kind="arrival:from_feywild_4", under="'"),
     "Ձ": MarkerDef(kind="flower_switch:orchard", under="."),
@@ -1459,13 +1410,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "Մ": MarkerDef(kind="arrival:from_feywild_3", under="'"),
     # Rootways: first redcap pursuit and Chuck-scale protected passages.
     "Յ": MarkerDef(kind="arrival:from_feywild_3", under="'"),
-    "Ն": MarkerDef(kind="anchor:feywild_4_anchor", under="'"),
     "Շ": MarkerDef(kind="redcap", under="."),
     "Ո": MarkerDef(kind="boundary:feywild_5", under="→"),
     "Չ": MarkerDef(kind="arrival:from_feywild_5", under="'"),
     # Giant Tea Table: quiet Map 5 respite and future Needle Garden edge.
     "Պ": MarkerDef(kind="arrival:from_feywild_4", under="."),
-    "Ջ": MarkerDef(kind="anchor:feywild_5_anchor", under="."),
     "Ռ": MarkerDef(kind="boundary:feywild_6", under="⇩"),
     "Ս": MarkerDef(kind="arrival:from_feywild_6", under="."),
     # Luminous Rapids: two flower groups that raise and sink pads, the
@@ -1481,7 +1430,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     ),
     "ჱ": MarkerDef(kind="flower_close:rapids_lower", under="ᚨ"),
     "ჲ": MarkerDef(kind="arrival:from_feywild_11", under="'"),
-    "ჳ": MarkerDef(kind="anchor:feywild_12_anchor", under="."),
     "ჴ": MarkerDef(kind="boundary:feywild_13", under="→"),
     "ჵ": MarkerDef(kind="arrival:from_feywild_13", under="'"),
     # Moths fly the lanes, so they sit over the rapids themselves.
@@ -1498,25 +1446,20 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     ),
     "Ꭲ": MarkerDef(kind="flower_close:twilight", under="'"),
     "Ꭳ": MarkerDef(kind="arrival:from_feywild_12", under="'"),
-    "Ꭴ": MarkerDef(kind="anchor:feywild_13_anchor", under="."),
     "Ꭵ": MarkerDef(kind="boundary:feywild_tower", under="←"),
     "Ꭶ": MarkerDef(kind="arrival:from_feywild_tower", under="'"),
     # Phase 10 Cloud Staircase and first tower platform.
     "ሀ": MarkerDef(kind="arrival:from_feywild_13", under="'"),
-    "ሁ": MarkerDef(kind="anchor:zephyros_staircase_anchor", under="'"),
     "ሂ": MarkerDef(kind="choice:cloud_staircase", under="'"),
     "ሃ": MarkerDef(kind="arrival:from_staircase", under="ᚡ"),
-    "ሄ": MarkerDef(kind="anchor:zephyros_exterior_anchor", under="ᚡ"),
     "ህ": MarkerDef(kind="boundary:zephyros_aerie", under="Ƶ"),
     "ሆ": MarkerDef(kind="arrival:from_aerie", under="ᚡ"),
     # The Aerie: exterior return, local anchor, one colossal griffon, and
     # the stable rope boundary for Zephyros' introduction slice.
     "ሇ": MarkerDef(kind="arrival:from_exterior", under="."),
-    "ለ": MarkerDef(kind="anchor:zephyros_aerie_anchor", under="."),
     "ሉ": MarkerDef(kind="griffon", under="."),
     "ሊ": MarkerDef(kind="choice:zephyros_rope", under="."),
     "ላ": MarkerDef(kind="arrival:from_flight", under="."),
-    "ሌ": MarkerDef(kind="anchor:modern_city_anchor", under="."),
     # Phase 11 City Night 1: ordinary loose cigarettes on wet sidewalk.
     "ል": MarkerDef(kind="cigarette", under="."),
     "ሎ": MarkerDef(kind="traffic_lane:right:0", under="="),
@@ -1525,7 +1468,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሐ": MarkerDef(kind="boundary:modern_city_night_2", under="⮝"),
     "ሑ": MarkerDef(kind="arrival:from_city_night_2", under="."),
     "ሒ": MarkerDef(kind="arrival:from_city_night_1", under="."),
-    "ሓ": MarkerDef(kind="anchor:modern_city_2_anchor", under="."),
     "ሔ": MarkerDef(kind="boundary:modern_city_night_1", under="⮟"),
     "ሕ": MarkerDef(kind="npc:businessman", under="."),
     "ሖ": MarkerDef(kind="patrol_npc:businessman:h", under="."),
@@ -1534,7 +1476,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "መ": MarkerDef(kind="boundary:modern_city_night_3", under="⮞"),
     "ሙ": MarkerDef(kind="arrival:from_city_night_3", under="."),
     "ሚ": MarkerDef(kind="arrival:from_city_night_2", under="."),
-    "ማ": MarkerDef(kind="anchor:modern_city_3_anchor", under="."),
     "ሜ": MarkerDef(kind="boundary:modern_city_night_2", under="⮜"),
     "ም": MarkerDef(kind="npc:homeless_man", under="."),
     "ሞ": MarkerDef(kind="patrol_npc:businessman:v", under="."),
@@ -1544,13 +1485,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሡ": MarkerDef(kind="boundary:modern_city_night_4", under="⮝"),
     "ሢ": MarkerDef(kind="arrival:from_city_night_4", under="."),
     "ሣ": MarkerDef(kind="arrival:from_city_night_3", under="."),
-    "ሤ": MarkerDef(kind="anchor:modern_city_4_anchor", under="."),
     "ሥ": MarkerDef(kind="boundary:modern_city_night_3", under="⮟"),
     # City Night 4/5 west-east handoff and the highway lane field.
     "ሦ": MarkerDef(kind="boundary:modern_city_night_5", under="⮜"),
     "ሧ": MarkerDef(kind="arrival:from_city_night_5", under="."),
     "ረ": MarkerDef(kind="arrival:from_city_night_4", under="."),
-    "ሩ": MarkerDef(kind="anchor:modern_city_5_anchor", under="."),
     "ሪ": MarkerDef(kind="boundary:modern_city_night_4", under="⮞"),
     "ራ": MarkerDef(kind="traffic_lane:up:0", under="="),
     "ሬ": MarkerDef(kind="traffic_lane:down:1", under="="),
@@ -1564,46 +1503,39 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሳ": MarkerDef(kind="boundary:modern_city_night_6", under="⮜"),
     "ሴ": MarkerDef(kind="arrival:from_city_night_6", under="."),
     "ስ": MarkerDef(kind="arrival:from_city_night_5", under="."),
-    "ሶ": MarkerDef(kind="anchor:modern_city_6_anchor", under="."),
     "ሷ": MarkerDef(kind="boundary:modern_city_night_5", under="⮞"),
     "ሸ": MarkerDef(kind="choice:city_sewer_entrance", under="."),
     "ቓ": MarkerDef(kind="choice:city_sewer_ladder", under="d"),
-    # City Sewer 1 arrival, local Ashtray, return, and city-side return point.
+    # City Sewer 1 arrival, return, and city-side return point.
     "ሹ": MarkerDef(kind="arrival:from_city_night_6", under="d"),
-    "ሺ": MarkerDef(kind="anchor:modern_city_sewer_1_anchor", under="d"),
     "ሻ": MarkerDef(kind="boundary:modern_city_night_6", under="⮟"),
     "ሼ": MarkerDef(kind="arrival:from_city_sewer_1", under="."),
     # City Sewer 2: the culvert on from Sewer 1, its own arrival,
-    # Ashtray, and the reciprocal way back.
+    # ...and the reciprocal way back.
     "ሽ": MarkerDef(kind="boundary:modern_city_sewer_2", under="⮞"),
     "ሾ": MarkerDef(kind="boundary:modern_city_sewer_1", under="⮜"),
     "ሿ": MarkerDef(kind="arrival:from_city_sewer_1_culvert", under="d"),
-    "ቀ": MarkerDef(kind="anchor:modern_city_sewer_2_anchor", under="d"),
     "ቁ": MarkerDef(kind="arrival:from_city_sewer_2", under="d"),
     # City Sewer 3: the flooded hall, its crocodile, and the reserved
     # way on to Sewer 4.
     "ቂ": MarkerDef(kind="arrival:from_city_sewer_2_drop", under="d"),
-    "ቃ": MarkerDef(kind="anchor:modern_city_sewer_3_anchor", under="d"),
     "ቄ": MarkerDef(kind="boundary:modern_city_sewer_2", under="⮞"),
     "ቅ": MarkerDef(kind="boundary:modern_city_sewer_4", under="⮜"),
     "ቆ": MarkerDef(kind="crocodile", under="ʓ", allow_solid=False),
     "ቇ": MarkerDef(kind="arrival:from_city_sewer_3", under="d"),
     # City Sewer 4: the last tunnel, and the ladder up into daylight.
     "ቈ": MarkerDef(kind="arrival:from_city_sewer_3_west", under="d"),
-    "ቊ": MarkerDef(kind="anchor:modern_city_sewer_4_anchor", under="d"),
     "ቋ": MarkerDef(kind="boundary:modern_city_sewer_3", under="⮞"),
     "ቌ": MarkerDef(kind="arrival:from_city_sewer_4", under="d"),
-    # City Day 1: the first daylight map, its Ashtray, the woman in the
-    # red dress on her long patrol, and the reserved way on to Day 2.
+    # City Day 1: the first daylight map, the woman in the red dress on
+    # her long patrol, and the reserved way on to Day 2.
     "ቍ": MarkerDef(kind="arrival:from_city_sewer_4_ladder", under="."),
-    "ቐ": MarkerDef(kind="anchor:modern_city_day_1_anchor", under="."),
     "ቑ": MarkerDef(kind="boundary:modern_city_day_2", under="⮞"),
     "ቒ": MarkerDef(kind="patrol_npc:red_dress_woman:h", under="."),
     # City Day 2: the crossroads, and the reserved way on to Day 3.
     "ቔ": MarkerDef(kind="boundary:modern_city_day_1", under="⮜"),
     "ቕ": MarkerDef(kind="boundary:modern_city_day_3", under="⮟"),
     "ቖ": MarkerDef(kind="arrival:from_city_day_1", under="."),
-    "ቘ": MarkerDef(kind="anchor:modern_city_day_2_anchor", under="."),
     "ቚ": MarkerDef(kind="arrival:from_city_day_2", under="."),
     "ቛ": MarkerDef(kind="animal_control", under="."),
     # Police officers hold a fixed post and fire down one authored lane.
@@ -1615,25 +1547,21 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ቢ": MarkerDef(kind="boundary:modern_city_day_2", under="⮝"),
     "ባ": MarkerDef(kind="boundary:modern_city_day_4", under="⮟"),
     "ቤ": MarkerDef(kind="arrival:from_city_day_2", under="."),
-    "ብ": MarkerDef(kind="anchor:modern_city_day_3_anchor", under="."),
     "ቦ": MarkerDef(kind="arrival:from_city_day_3", under="."),
     # City Day 4: the square whose floor gave way.
     "ቨ": MarkerDef(kind="boundary:modern_city_day_3", under="⮝"),
     "ቩ": MarkerDef(kind="boundary:modern_city_day_5", under="⮞"),
     "ቪ": MarkerDef(kind="arrival:from_city_day_3", under="."),
-    "ቫ": MarkerDef(kind="anchor:modern_city_day_4_anchor", under="."),
     "ቬ": MarkerDef(kind="arrival:from_city_day_4", under="."),
     # City Day 5: the overpass, and the two spans that dropped out.
     "ቭ": MarkerDef(kind="boundary:modern_city_day_4", under="⮝"),
     "ቮ": MarkerDef(kind="boundary:modern_city_day_6", under="⮟"),
     "ቯ": MarkerDef(kind="arrival:from_city_day_4", under="."),
-    "ተ": MarkerDef(kind="anchor:modern_city_day_5_anchor", under="."),
     "ቱ": MarkerDef(kind="arrival:from_city_day_5", under="."),
     # City Day 6: the collision. Its cast stands in the Chult patch, and
     # the portal trigger sits at the far-southwest oval's threshold.
     "ቲ": MarkerDef(kind="boundary:modern_city_day_5", under="⮝"),
     "ታ": MarkerDef(kind="arrival:from_city_day_5", under="."),
-    "ቴ": MarkerDef(kind="anchor:modern_city_day_6_anchor", under="."),
     "ት": MarkerDef(kind="choice:doug_fir_portal", under="."),
     "ቶ": MarkerDef(kind="massive_dinosaur", under="ᵹ"),
     "ቷ": MarkerDef(kind="npc:prone_businessman", under="ᵹ"),
@@ -1646,13 +1574,11 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # Mushroom Underways: a quiet map, so only a checkpoint, the two
     # arrivals, and the reserved Map 12 edge.
     "შ": MarkerDef(kind="arrival:from_feywild_10", under="'"),
-    "ჩ": MarkerDef(kind="anchor:feywild_11_anchor", under="'"),
     "ც": MarkerDef(kind="boundary:feywild_12", under="→"),
     "ძ": MarkerDef(kind="arrival:from_feywild_12", under="'"),
     # Displacer Meadow: one massive stalker, the meadow's checkpoint, and
     # the reserved Map 11 edge.
     "ს": MarkerDef(kind="arrival:from_feywild_9", under="'"),
-    "ტ": MarkerDef(kind="anchor:feywild_10_anchor", under="'"),
     "უ": MarkerDef(kind="boundary:feywild_11", under="→"),
     "ფ": MarkerDef(kind="arrival:from_feywild_11", under="'"),
     "ქ": MarkerDef(kind="displacer_beast", under="."),
@@ -1680,16 +1606,14 @@ MARKER_DEFS: dict[str, MarkerDef] = {
         kind="flower_open:hedge_south", under="#", allow_solid=True
     ),
     "მ": MarkerDef(kind="flower_close:hedge_south", under="'"),
-    # Shifting Hedge arrival, Ashtray, and the reserved Map 10 edge.
+    # Shifting Hedge arrival and the reserved Map 10 edge.
     "ნ": MarkerDef(kind="arrival:from_feywild_8", under="'"),
-    "ო": MarkerDef(kind="anchor:feywild_9_anchor", under="."),
     "პ": MarkerDef(kind="boundary:feywild_10", under="→"),
     "ჟ": MarkerDef(kind="arrival:from_feywild_10", under="'"),
     "რ": MarkerDef(kind="thorn_mite", under="."),
     # Redcap Warrens: the camp's pursuers, its mite nests, one checkpoint,
     # and the future Shifting Hedge edge.
     "բ": MarkerDef(kind="arrival:from_feywild_7", under="'"),
-    "գ": MarkerDef(kind="anchor:feywild_8_anchor", under="."),
     "դ": MarkerDef(kind="boundary:feywild_9", under="→"),
     "ե": MarkerDef(kind="arrival:from_feywild_9", under="'"),
     "զ": MarkerDef(kind="redcap", under="."),
@@ -1709,21 +1633,18 @@ MARKER_DEFS: dict[str, MarkerDef] = {
         kind="spitting_orchid:right", under="✿", allow_solid=True
     ),
     "Ւ": MarkerDef(kind="arrival:from_feywild_5", under="."),
-    "Փ": MarkerDef(kind="anchor:feywild_6_anchor", under="."),
     "Ք": MarkerDef(kind="boundary:feywild_7", under="→"),
     "Օ": MarkerDef(kind="arrival:from_feywild_7", under="."),
     # Feywild map 7, the Moonmoth Fen, and its lantern moths.
     "Ֆ": MarkerDef(kind="arrival:from_feywild_6", under="'"),
-    "ՙ": MarkerDef(kind="anchor:feywild_7_anchor", under="."),
     "ֈ": MarkerDef(kind="boundary:feywild_8", under="→"),
     "ֆ": MarkerDef(kind="arrival:from_feywild_8", under=","),
     # Moths fly, so they haunt the open water itself: allow_solid keeps
     # the deep channel beneath them untouched.
     "֊": MarkerDef(kind="lantern_moth:h", under="~", allow_solid=True),
     "Ա": MarkerDef(kind="lantern_moth:v", under="~", allow_solid=True),
-    # Phase 12: cutscene arrival and the exterior's one physical Ashtray.
+    # Phase 12: the cutscene's arrival onto the grounds.
     "ኀ": MarkerDef(kind="arrival:from_doug_fir", under="⌇"),
-    "ኁ": MarkerDef(kind="anchor:tahuya_exterior_anchor", under="ᶠ"),
     # The sole cabin threshold stays spatially reversible. Runtime arrivals
     # sit one tile clear of each door so entering never immediately bounces
     # Chuck back across the same threshold.
@@ -1733,7 +1654,6 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     # The same question asked from the hardwood on the table's south
     # side. A separate glyph only because the floor differs there.
     "ኇ": MarkerDef(kind="choice:cabin_table_portal", under="Ħ"),
-    "ኆ": MarkerDef(kind="anchor:tahuya_interior_anchor", under="Ŀ"),
     # Four seated Phase 12 light entities. Their markers sit inside the
     # furniture footprints; solid under-tiles preserve the authored collision.
     "₁": MarkerDef(

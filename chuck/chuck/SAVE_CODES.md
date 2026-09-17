@@ -3,9 +3,10 @@
 The plan for replacing the Ashtray save with a code the player holds, so
 the game can be saved and resumed in a browser with no file system.
 
-Nothing here is built yet. This is the shape to build to, and the record
-of why each decision went the way it did, so a later session does not
-re-open settled ground.
+Built, in the seven commits of §9. This is the record of why each
+decision went the way it did, so a later session does not re-open
+settled ground -- and of the two things that turned out differently
+from the plan, which are marked where they sit.
 
 ---
 

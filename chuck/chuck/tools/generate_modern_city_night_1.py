@@ -74,9 +74,8 @@ def build_map() -> list[str]:
             grid[row][col] = "V"
 
     # The Phase 10 landing hands control over at this southern sidewalk.
-    # Its nearby Ashtray remains both the save point and death return point.
+    # Its door remains both the save point and the death return point.
     grid[47][27] = "ላ"
-    grid[43][27] = "ሌ"
     grid[0][28] = "ሐ"
     grid[4][28] = "ሑ"
     for col, row in ((23, 8), (48, 9), (29, 20), (44, 33)):

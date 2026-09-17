@@ -192,10 +192,6 @@ def test_everything_in_the_camp_can_be_reached_and_nothing_else_can() -> None:
     for cell in orcs:
         assert cell in seen, cell
 
-    anchor = [p for kind, p in tilemap.object_spawns
-              if kind == "anchor:desert_orc_camp_anchor"]
-    assert len(anchor) == 1
-    assert (int(anchor[0][0]) // ts, int(anchor[0][1]) // ts) in seen
 
     # The way in is the only way out. Anything else on the boundary is
     # a leak in the canyon.
@@ -261,11 +257,10 @@ def test_the_road_north_is_walked_in_both_directions() -> None:
 
 
 def test_the_camp_has_its_own_entries() -> None:
-    for entry in ("desert_orc_camp", "desert_orc_camp_anchor",
+    for entry in ("desert_orc_camp", "desert_orc_camp",
                   "desert_central_from_orc_camp"):
         checkpoint = CHECKPOINT_BY_ID[entry]
         assert checkpoint.required_flags == DESERT_ENTRY_FLAGS, entry
-    assert CHECKPOINT_BY_ID["desert_orc_camp_anchor"].saveable
     assert CHECKPOINT_BY_ID["desert_orc_camp"].development_visible
 
 

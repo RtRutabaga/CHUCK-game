@@ -28,7 +28,7 @@ NOTICE_TILES = 7.0
 
 ARRIVAL = (78, 5)
 RETURN_EXIT = (83, 5)
-ANCHOR = (63, 15)
+WAYPOINT = (63, 15)
 FUTURE_EXIT = (0, 26)
 
 CROCODILE = (38, 22)
@@ -106,7 +106,6 @@ def build_map() -> list[str]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][FUTURE_EXIT[0]] = "⮜"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቂ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ቃ"
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "ቄ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ቅ"
     grid[FUTURE_EXIT[1]][3] = "ቌ"    # where Sewer 4 sets Chuck back down
@@ -125,7 +124,7 @@ SOLID = {"#", "b", "R", "i", "V"}
 
 
 def _under(char: str) -> str:
-    return {"ቂ": "d", "ቃ": "d", "ቄ": "⮞", "ቅ": "⮜", "ቆ": "ʓ",
+    return {"ቂ": "d", "ቄ": "⮞", "ቅ": "⮜", "ቆ": "ʓ",
             "q": "d", "ል": ".", "ቌ": "d"}.get(char, char)
 
 
@@ -152,14 +151,14 @@ def validate(rows: list[str]) -> None:
     assert len(rows) == HEIGHT and all(len(row) == WIDTH for row in rows)
 
     found = _flood(rows, ARRIVAL)
-    assert {RETURN_EXIT, FUTURE_EXIT, ANCHOR, CROCODILE,
+    assert {RETURN_EXIT, FUTURE_EXIT, WAYPOINT, CROCODILE,
             *RATS, *CIGARETTES} <= found
 
     # The promise: the hall can be crossed without ever entering the
     # crocodile's notice range, so it is never a mandatory fight.
     clear = _flood(rows, ARRIVAL, avoid_crocodile=True)
     assert FUTURE_EXIT in clear, "the crocodile blocks the only way through"
-    assert ANCHOR in clear, "the Ashtray sits inside its notice range"
+    assert WAYPOINT in clear, "the waypoint sits inside its notice range"
     # ...but it does hold the middle: the channel is genuinely contested.
     assert not any(math.dist(point, CROCODILE) <= 3 for point in clear)
 
@@ -169,7 +168,6 @@ def validate(rows: list[str]) -> None:
 
     text = "".join(rows)
     assert text.count("ቆ") == 1, "exactly one crocodile in the region"
-    assert text.count("ቃ") == 1
     assert text.count("q") == len(RATS)
     assert text.count("ል") == len(CIGARETTES)
     for material in ("#", "b", "R", "i", "d", ",", "M", "%", "ʓ"):

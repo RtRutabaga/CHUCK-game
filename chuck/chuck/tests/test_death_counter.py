@@ -199,7 +199,7 @@ def test_the_count_carries_through_handoffs_and_resets_only_on_new_game():
         directory.cleanup()
 
 
-def test_the_ashtray_saves_it_and_continue_restores_it() -> None:
+def test_the_the_save_survives_a_relaunch() -> None:
     directory = tempfile.TemporaryDirectory()
     path = Path(directory.name) / "save.json"
     game = Game(save_path=path)
@@ -207,9 +207,8 @@ def test_the_ashtray_saves_it_and_continue_restores_it() -> None:
         scene = game.checkpoints.load_checkpoint("waterdeep_start")
         _die_and_return(scene)
         _die_and_return(scene)
-        anchor = scene.anchors[0]
-        scene.player.x, scene.player.y = anchor.x, anchor.y
-        scene.update(0.01)
+        assert game.checkpoints.write_save(
+            "waterdeep_start", scene.sanity.current)
         assert json.loads(path.read_text(encoding="utf-8"))["deaths"] == 2
     finally:
         game._shutdown()
@@ -229,14 +228,14 @@ def test_saves_from_before_the_counter_still_load() -> None:
     try:
         base = {
             "version": SAVE_VERSION,
-            "checkpoint_id": "waterdeep_anchor",
+            "checkpoint_id": "waterdeep_start",
             "sanity": 50,
             "progress_flags": [],
             "cigarettes": 4,
         }
         path.write_text(json.dumps(base), encoding="utf-8")
         assert SaveSystem(path).load() == SaveRecord(
-            "waterdeep_anchor", 50, (), 4, 0)
+            "waterdeep_start", 50, (), 4, 0)
         for forged in (-1, True, "3"):
             path.write_text(json.dumps({**base, "deaths": forged}),
                             encoding="utf-8")

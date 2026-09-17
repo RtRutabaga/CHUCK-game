@@ -29,7 +29,7 @@ honest thing it could do was record the crossing and let Continue come
 back to the cabin. Phase 13 built the far side, so the crossing goes
 where it always meant to go -- through the same shared checkpoint path
 the Douglas fir crossing uses, with Sanity carried through intact and
-the desert's own Ashtray owning persistence from there.
+the desert's own entrance owning persistence from there.
 
 No words.
 """
@@ -185,7 +185,7 @@ class DesertArrivalCutsceneScene(Scene):
         # Phase 12 ends and Phase 13 begins here. Record the crossing,
         # then walk out into the desert through the same shared
         # checkpoint path the Douglas fir crossing uses, with the
-        # running Sanity value intact. The desert's Ashtray owns
+        # running Sanity value intact. The desert's entrance owns
         # persistence from this point; nothing is written here.
         self.game.progress.enable(DESERT_TRANSITION_FLAG)
         self.game.checkpoints.load_checkpoint(

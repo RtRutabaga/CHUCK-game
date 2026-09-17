@@ -308,7 +308,7 @@ CASTLE_WALLS = (
 )
 # Ground the castle is allowed to build out over: its own swept floor
 # inside and open sand outside, and nothing else. Everything on these
-# maps that matters -- knights, arrivals, Ashtrays, lava, the Astral --
+# maps that matters -- knights, arrivals, lava, the Astral --
 # is some other character, so this one test keeps all of them safe.
 BUILDABLE = (".", COURTYARD_STONE)
 # How far apart the banners hang. Close together they stop being an

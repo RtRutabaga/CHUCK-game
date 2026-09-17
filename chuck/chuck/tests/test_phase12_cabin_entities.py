@@ -104,8 +104,8 @@ def test_entities_use_offset_animation_and_durable_idempotent_flags() -> None:
 
         # The existing save/checkpoint path carries all four flags without a
         # cabin-specific format or duplicate all-spoken flag.
-        assert game.checkpoints.activate_checkpoint(
-            "tahuya_interior_anchor", world.sanity.current
+        assert game.checkpoints.write_save(
+            "tahuya_interior", world.sanity.current
         )
         continued = game.checkpoints.continue_game()
         assert EXPECTED_FLAGS <= game.progress.flags

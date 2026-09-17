@@ -36,7 +36,6 @@ def test_sanctum_is_the_widest_hall_with_one_threshold_and_no_exit() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (64, 48)
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_temple_8") == 1
-    assert kinds.count("anchor:temple_9_anchor") == 1
     # No onward boundary: the Fireball is a later slice, and there is
     # no way forward on foot. The battle's skeletons (sessions 132-133)
     # are the room's only conventional enemies: three press the
@@ -53,7 +52,7 @@ def test_sanctum_is_the_widest_hall_with_one_threshold_and_no_exit() -> None:
     assert sum(row.count("ø") for row in tilemap._grid) == 6
     assert sum(row.count("≡") for row in tilemap._grid) == 138
 
-    # Fully connected from the arrival, Ashtray included.
+    # Fully connected from the arrival, door included.
     walkable = {(c, r) for r in range(tilemap.height_tiles)
                 for c in range(tilemap.width_tiles)
                 if not tilemap.is_solid(c, r)}
@@ -102,9 +101,6 @@ def test_temple_9_checkpoint_saves_continues_and_respawns() -> None:
     assert entry.map_name == MAP_NAME
     assert entry.arrival == "from_temple_8"
     assert entry.runtime_entry and entry.development_visible
-    anchor_entry = CHECKPOINT_BY_ID["temple_9_anchor"]
-    assert anchor_entry.position == (820.0, 437.0)
-    assert anchor_entry.saveable and not anchor_entry.development_visible
 
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
@@ -114,16 +110,15 @@ def test_temple_9_checkpoint_saves_continues_and_respawns() -> None:
         scene._arrival_fade_t = None
         # The entrance lines are the tableau suite's concern.
         scene._pending_entrance_dialogue = None
-        anchor, = scene.anchors
-        came_in = scene.anchors_system.respawn_position_for_chuck()
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+        came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 52
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "temple_9_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("temple_9", scene.sanity.current)
+        assert game.active_checkpoint_id == "temple_9"
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        # The door he came in by, not the Ashtray he touched.
+        # The door he came in by.
         assert (scene.player.x, scene.player.y) == came_in
     finally:
         game._shutdown()
@@ -132,7 +127,7 @@ def test_temple_9_checkpoint_saves_continues_and_respawns() -> None:
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == MAP_NAME
-        assert resumed.active_checkpoint_id == "temple_9_anchor"
+        assert resumed.active_checkpoint_id == "temple_9"
         assert scene.sanity.current == 52
     finally:
         resumed._shutdown()

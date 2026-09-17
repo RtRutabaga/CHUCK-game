@@ -324,7 +324,7 @@ def test_the_sea_closes_the_west_and_south_and_the_chest_is_reachable() -> None:
         "the courtyard is sealed"
 
     for kind, position in tilemap.object_spawns:
-        if kind not in ("skeleton", "anchor:desert_ruins_anchor"):
+        if kind != "skeleton":
             continue
         cell = (int(position[0]) // ts, int(position[1]) // ts)
         assert cell in seen, (kind, cell)
@@ -366,19 +366,12 @@ def test_the_road_south_is_walked_in_both_directions() -> None:
 
 
 def test_the_ruins_have_their_own_entries() -> None:
-    for entry in ("desert_undead_ruins", "desert_ruins_anchor",
+    for entry in ("desert_undead_ruins", "desert_undead_ruins",
                   "desert_central_from_ruins"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
-    assert CHECKPOINT_BY_ID["desert_ruins_anchor"].saveable
 
     tilemap = _tilemap()
     ts = config.TILE_SIZE
-    anchor = CHECKPOINT_BY_ID["desert_ruins_anchor"].position
-    assert anchor is not None
-    spawn = next(p for k, p in tilemap.object_spawns
-                 if k == "anchor:desert_ruins_anchor")
-    assert (int(anchor[0]) // ts, int(anchor[1]) // ts) == \
-        (int(spawn[0]) // ts, int(spawn[1]) // ts)
 
 
 def _run_all() -> None:

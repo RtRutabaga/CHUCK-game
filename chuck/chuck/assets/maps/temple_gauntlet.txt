@@ -2,7 +2,7 @@
 ; The gauntlet: the temple's defenses concentrate in the last
 ; connector before the final chamber. A spike-band climb with
 ; skeletons and guardian monuments turns west into a dart
-; corridor seeded with Astral cells. One Ashtray; the west
+; corridor seeded with Astral cells. The west
 ; boundary stays inert until Temple Map 9.
 ████████████████████████████████████████
 ████████████████████████████████████████
@@ -29,7 +29,7 @@
 ███████i█↓██↓█i██¦██¦███████████████████
 █████ø·················█████████████████
 ██∇∇∇≡≡≡V·····V········█████████████████
-██Ϸ∇∇≡Ͻ≡···········Ϲ·¬·█████████████████
+██Ϸ∇∇≡Ͻ≡·············¬·█████████████████
 ██∇«∇≡≡≡···V···········i████████████████
 █████ø·················█████████████████
 ██████i███↑██↑█i·······█████████████████

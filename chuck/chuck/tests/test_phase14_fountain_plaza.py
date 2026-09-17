@@ -133,9 +133,10 @@ def test_return_state_survives_the_existing_waterdeep_save_point() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("waterdeep_finale")
         scene._arrival_fade_t = None
-        anchor = scene.anchors[0]
-        scene.player.x, scene.player.y = anchor.x, anchor.y
         scene.update(0.01)
+        # Saved from the menu, at the docks he walked back onto.
+        assert game.checkpoints.write_save(
+            "waterdeep_return", scene.sanity.current)
         record = game.saves.load()
         assert record is not None
         assert WATERDEEP_RETURN_FLAG in record.progress_flags

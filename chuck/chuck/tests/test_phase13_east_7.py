@@ -237,11 +237,7 @@ def test_the_way_through_is_guaranteed_rather_than_found() -> None:
         assert cell in seen, cell
     assert (WIDTH - RIM - 1, MID_Y) in seen, "the east end is cut off"
 
-    # The Ashtray is on it, because this is the map you will die on.
-    anchor = CHECKPOINT_BY_ID["desert_east_7_anchor"]
-    assert anchor.position is not None
-    assert (int(anchor.position[0]) // ts,
-            int(anchor.position[1]) // ts) in seen
+    # The door is on it, because this is the map you will die on.
 
     # ...and the map is still mostly closed: a corridor through a map
     # that is open everywhere is not a corridor.
@@ -265,7 +261,7 @@ def test_six_kinds_of_enemy_each_standing_where_it_belongs() -> None:
 
     kinds: dict[str, int] = {}
     for kind, position in tilemap.object_spawns:
-        if kind.startswith(("arrival:", "anchor:")):
+        if kind.startswith(("arrival:",)):
             continue
         cell = (int(position[0]) // ts, int(position[1]) // ts)
         kinds[kind] = kinds.get(kind, 0) + 1
@@ -331,9 +327,8 @@ def test_the_road_east_reaches_it_and_comes_back() -> None:
         game._shutdown()
         directory.cleanup()
 
-    for entry in (MAP_NAME, f"{MAP_NAME}_anchor", "desert_east_6_from_east_7"):
+    for entry in (MAP_NAME, "desert_east_6_from_east_7"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
-    assert CHECKPOINT_BY_ID[f"{MAP_NAME}_anchor"].saveable
     assert CHECKPOINT_BY_ID[MAP_NAME].development_visible
 
 

@@ -38,7 +38,7 @@ OUT = (
 
 RETURN_EXIT = (38, 51)
 ARRIVAL = (38, 50)
-ANCHOR = (38, 44)
+WAYPOINT = (38, 44)
 TOWER_EXIT = (0, 14)
 TOWER_RETURN = (1, 14)
 SWITCH = (20, 17)
@@ -53,7 +53,6 @@ MARKERS = {
     "open": "Ꭱ",
     "close": "Ꭲ",
     "arrival": "Ꭳ",
-    "anchor": "Ꭴ",
     "tower": "Ꭵ",
     "tower_return": "Ꭶ",
 }
@@ -165,7 +164,6 @@ def build() -> list[list[str]]:
     for row in range(TOWER_EXIT[1] - 1, TOWER_EXIT[1] + 2):
         grid[row][0] = "←"
     grid[ARRIVAL[1]][ARRIVAL[0]] = MARKERS["arrival"]
-    grid[ANCHOR[1]][ANCHOR[0]] = MARKERS["anchor"]
     grid[TOWER_EXIT[1]][TOWER_EXIT[0]] = MARKERS["tower"]
     grid[TOWER_RETURN[1]][TOWER_RETURN[0]] = MARKERS["tower_return"]
     dress_grid("feywild_twilight_crossroads", grid)
@@ -201,7 +199,6 @@ def _base(char: str) -> str:
         MARKERS["open"]: "#",
         MARKERS["close"]: "'",
         MARKERS["arrival"]: "'",
-        MARKERS["anchor"]: ".",
         MARKERS["tower"]: "←",
         MARKERS["tower_return"]: "'",
         THORN_MITE: ".",
@@ -237,7 +234,7 @@ def validate(grid) -> None:
     assert len(grid) == H and all(len(row) == W for row in grid)
     idle = _reachable(grid, flower_active=False)
     active = _reachable(grid, flower_active=True)
-    assert SWITCH in idle and ANCHOR in idle and RETURN_EXIT in idle
+    assert SWITCH in idle and WAYPOINT in idle and RETURN_EXIT in idle
     assert TOWER_EXIT not in idle, "tower route does not require the flower"
     assert TOWER_EXIT in active, "flower does not open the tower approach"
     assert set(ROOT_PASSAGES) <= idle and set(CACHES) <= active
@@ -246,7 +243,6 @@ def validate(grid) -> None:
     assert all(grid[row][0] in {"←", MARKERS["tower"]}
                for row in range(TOWER_EXIT[1] - 1, TOWER_EXIT[1] + 2))
     text = "".join("".join(row) for row in grid)
-    assert text.count(MARKERS["anchor"]) == 1
     assert text.count(THORN_MITE) == len(MITES)
     assert text.count(REDCAP) == 1
     assert text.count("☼") >= 50

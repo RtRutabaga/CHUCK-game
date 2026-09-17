@@ -117,7 +117,7 @@ def test_bullets_travel_the_lane_and_stop_at_city_geometry() -> None:
 
 
 def test_a_round_costs_sanity_and_is_spent_on_the_hit() -> None:
-    directory, game, world = _game_and_world("modern_city_day_2_anchor")
+    directory, game, world = _game_and_world("modern_city_day_2")
     try:
         bullet = Bullet(world.player.hitbox.centerx,
                         world.player.hitbox.centery, "right")
@@ -153,7 +153,7 @@ def test_officers_hold_their_post_and_reset_with_the_map() -> None:
         directory.cleanup()
 
 
-def test_the_lanes_never_point_at_the_ashtray_or_the_arrival() -> None:
+def test_the_lanes_never_point_at_the_waypoint_or_the_arrival() -> None:
     """A hazard to route around must not fire on a respawn point."""
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     ts = config.TILE_SIZE
@@ -165,7 +165,7 @@ def test_the_lanes_never_point_at_the_ashtray_or_the_arrival() -> None:
         return (int(position[0] // ts), int(position[1] // ts))
 
     safe = {tile(pos) for kind, pos in tilemap.object_spawns
-            if kind.startswith(("anchor:", "arrival:"))}
+            if kind.startswith(("arrival:",))}
     vectors = {"left": (-1, 0), "right": (1, 0),
                "up": (0, -1), "down": (0, 1)}
     for kind, position in tilemap.object_spawns:

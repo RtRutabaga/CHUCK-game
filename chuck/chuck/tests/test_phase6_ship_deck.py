@@ -30,7 +30,6 @@ def test_the_deck_is_a_wooden_compartment_with_portholes() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (26, 13)
     kinds = [kind for kind, _pos in tilemap.object_spawns]
     assert kinds.count("arrival:from_crawlspace") == 1
-    assert kinds.count("anchor:ship_deck_anchor") == 1
     # A wooden compartment whose NORTH hull alone keeps the porthole view.
     planks = sum(row.count("=") for row in tilemap._grid)
     portholes = sum(row.count("Ø") for row in tilemap._grid)
@@ -82,10 +81,6 @@ def test_ship_checkpoints_are_registered() -> None:
     assert entry.map_name == MAP_NAME
     assert entry.arrival == "from_crawlspace"
     assert entry.runtime_entry and entry.fade_in
-    anchor = CHECKPOINT_BY_ID["ship_deck_anchor"]
-    assert anchor.map_name == MAP_NAME
-    assert anchor.position == (116.0, 117.0)
-    assert anchor.saveable and not anchor.development_visible
 
 
 def test_saying_yes_to_the_crevice_plays_the_escape_then_reaches_the_ship() -> None:

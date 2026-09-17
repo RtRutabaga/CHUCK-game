@@ -36,12 +36,12 @@ def test_save_format_is_readable_versioned_and_atomic() -> None:
     try:
         saves = SaveSystem(path)
         assert saves.load() is None
-        record = SaveRecord("sewer_anchor", 47, ("sewer_completed",))
+        record = SaveRecord("sewer_entrance", 47, ("sewer_completed",))
         assert saves.write(record)
         raw = json.loads(path.read_text(encoding="utf-8"))
         assert raw == {
             "version": SAVE_VERSION,
-            "checkpoint_id": "sewer_anchor",
+            "checkpoint_id": "sewer_entrance",
             "sanity": 47,
             "progress_flags": ["sewer_completed"],
             "cigarettes": 0,
@@ -63,13 +63,13 @@ def test_missing_invalid_and_outdated_saves_are_graceful() -> None:
             json.dumps({"version": SAVE_VERSION + 1}),
             json.dumps({
                 "version": SAVE_VERSION,
-                "checkpoint_id": "sewer_anchor",
+                "checkpoint_id": "sewer_entrance",
                 "sanity": 0,
                 "progress_flags": [],
             }),
             json.dumps({
                 "version": SAVE_VERSION,
-                "checkpoint_id": "sewer_anchor",
+                "checkpoint_id": "sewer_entrance",
                 "sanity": "lots",
                 "progress_flags": [],
             }),
@@ -124,7 +124,7 @@ def test_title_without_save_disables_continue_and_new_game_uses_loader() -> None
 
 def test_new_game_clears_an_existing_save_slot() -> None:
     directory, path = _temp_save()
-    SaveSystem(path).write(SaveRecord("sewer_anchor", 32, ()))
+    SaveSystem(path).write(SaveRecord("sewer_entrance", 32, ()))
     game = Game(save_path=path)
     try:
         title = _boot_to_title(game)
@@ -147,23 +147,22 @@ def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
         game.progress.enable("sewer_completed")
         game.scenes.replace(WorldScene(game, "waterdeep_docks"))
         scene = game.scenes.current
-        anchor = scene.anchors[0]
         scene.sanity.current = 47
-        came_in = scene.anchors_system.respawn_position_for_chuck()
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+        came_in = scene.respawn.position_for_chuck()
         scene.update(0.01)
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("waterdeep_start", 47)
 
         record = game.saves.load()
         assert record == SaveRecord(
-            "waterdeep_anchor", 47, ("sewer_completed",)
+            "waterdeep_start", 47, ("sewer_completed",)
         )
-        assert game.active_checkpoint_id == "waterdeep_anchor"
-        assert anchor.lit
+        assert game.active_checkpoint_id == "waterdeep_start"
 
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT)
         scene.update(config.RESPAWN_HOLD)
-        # The door he came in by, not the Ashtray he touched.
+        # The door he came in by.
         assert (scene.player.x, scene.player.y) == came_in
         assert scene.sanity.current == config.SANITY_MAX
     finally:
@@ -183,14 +182,13 @@ def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
         title._choose()
         scene = game.scenes.current
         assert calls == [(
-            "waterdeep_anchor",
+            "waterdeep_start",
             {"progress_flags": ("sewer_completed",), "sanity": 47,
              "cigarettes": 0, "deaths": 0},
         )]
         assert scene.map_name == "waterdeep_docks"
         assert scene.sanity.current == 47
         assert scene.tilemap.terrain_at(44, 17) == "v"
-        assert scene.anchors[0].lit
     finally:
         game._shutdown()
         directory.cleanup()
@@ -200,7 +198,7 @@ def test_continue_rejects_ids_that_are_not_save_points() -> None:
     """A save names a door Chuck walked in by, or it is not a save.
 
     `pantry_entry` used to be listed here as something to refuse, back
-    when only an Ashtray could be saved at. It is a door, so it is a
+    when only an door could be saved at. It is a door, so it is a
     save point now. What stays refused is a checkpoint that is neither
     -- `waterdeep_finale` is reached by a cutscene, not walked into --
     and an id that is not a checkpoint at all.
@@ -303,10 +301,9 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
     try:
         selector = CheckpointSelectScene(game)
         expected_names = (
-            "Waterdeep 1", "Waterdeep Ashtray", "Sewer 1", "Sewer 2",
-            "Waterdeep 2", "Waterdeep Finale", "Fountain Plaza",
+            "Waterdeep 1", "Sewer 1",             "Waterdeep 2", "Waterdeep Finale", "Fountain Plaza",
             "Fountain Plaza Finale", "Tavern 1", "Pantry 1",
-            "Chult 1", "Chult 2", "Chult 3", "Chult 4", "Chult Falls",
+            "Chult 2", "Chult 3", "Chult 4", "Chult Falls",
             "Chult 5",
             "Temple 1", "Temple 2", "Temple 3", "Temple 4", "Temple 5",
             "Temple 6", "Temple 7", "Temple 8", "Temple 9",
@@ -347,15 +344,6 @@ def test_development_selector_lists_and_loads_all_authored_test_entries() -> Non
             assert scene.map_name == checkpoint.map_name
             assert game.active_checkpoint_id == checkpoint.checkpoint_id
             assert game.progress.flags >= set(checkpoint.required_flags)
-            if checkpoint.saveable:
-                active_anchor = next(
-                    anchor for anchor in scene.anchors
-                    if anchor.checkpoint_id == checkpoint.checkpoint_id
-                )
-                assert active_anchor.lit
-                assert (scene.player.x, scene.player.y) == (
-                    active_anchor.x, active_anchor.y
-                )
             if checkpoint.map_name in {"waterdeep_tavern", "waterdeep_pantry"}:
                 assert game.progress.has("sewer_completed")
             if checkpoint.map_name in {
@@ -437,7 +425,7 @@ def test_the_new_save_format_leaves_the_old_file_where_it_was() -> None:
     try:
         old = Path(directory.name) / "save.json"
         old.write_text(json.dumps({
-            "version": 1, "checkpoint_id": "waterdeep_anchor", "sanity": 60,
+            "version": 1, "checkpoint_id": "waterdeep_start", "sanity": 60,
             "progress_flags": [], "cigarettes": 3, "deaths": 1, "spoken": [],
         }), encoding="utf-8")
         before = old.read_text(encoding="utf-8")
@@ -479,7 +467,7 @@ def test_a_door_is_a_save_point_and_a_cutscene_handoff_is_not() -> None:
         except ValueError as exc:
             assert "not a save point" in str(exc)
         else:
-            raise AssertionError("a cutscene handoff should not be saveable")
+            raise AssertionError("a cutscene handoff is not a save point")
     finally:
         game._shutdown()
         directory.cleanup()
@@ -525,7 +513,7 @@ def test_every_door_is_somewhere_chuck_can_stand() -> None:
         assert len(doors) >= 100
         for entry in doors:
             scene = game.checkpoints.load_checkpoint(entry)
-            x, y = scene.anchors_system.respawn_position_for_chuck()
+            x, y = scene.respawn.position_for_chuck()
             col = int((x + scene.player.width / 2) // size)
             row = int((y + scene.player.height / 2) // size)
             assert not scene.tilemap.is_solid(col, row), (

@@ -7,8 +7,7 @@ Run from the project root (requires Pillow, dev-only):
 Writes to assets/sprites/objects/: barrel.png (14x19), crate.png
 (16x20), bobert_barrel.png (16x24 — the landlord, asleep; Game Bible:
 present, never named, never interactable), cigarette.png (7x5, with a
-wisp of smoke), and astral_anchor.png (a 2-frame ashtray
-sheet: cold and empty | cigarette burning, ember lit).
+wisp of smoke).
 Props render TALLER than their 16px tile and are y-sorted with the
 characters, so Chuck (14px, one foot tall) visibly walks behind them —
 the scale pillar's payoff. Anchored at the tile's bottom edge.
@@ -40,10 +39,10 @@ PALETTE = {
     "O": (242, 146, 66, 255),  # ember
     "u": (198, 198, 188, 255), # paper underside
     "f": (150, 150, 162, 255), # smoke wisp
-    # astral anchor (an ashtray; the ember is the light)
-    "S": (128, 126, 130, 255), # dish rim / grate stone frame
-    "E": (94, 92, 96, 255),    # dish shadow / frame inner edge
-    "k": (58, 56, 68, 255),    # cold ash well
+    # grate stone, shared with the sewer's covers
+    "S": (128, 126, 130, 255), # frame
+    "E": (94, 92, 96, 255),    # frame inner edge
+    "k": (58, 56, 68, 255),    # the dark under it
     # HEROD sign
     "Q": (222, 206, 170, 255), # parchment
     "z": (92, 74, 58, 255),    # ink (illegible at rat scale; correct)
@@ -252,33 +251,6 @@ HEROD_SIGN = """
 ..bb........bb..
 ..bb........bb..
 """
-
-ANCHOR_DIM = """
-............
-............
-............
-..SSSSSSSS..
-.SSSSSSSSSS.
-.SSkkkkkkSS.
-.SSkkkkkkSS.
-.SSSSSSSSSS.
-.EEEEEEEEEE.
-..EEEEEEEE..
-"""
-
-ANCHOR_LIT = """
-.....f......
-......f.....
-............
-..SSSSSSSS..
-.SSSSSSSSSS.
-.SSkWWWWOSS.
-.SSkkkOxkSS.
-.SSSSSSSSSS.
-.EEEEEEEEEE.
-..EEEEEEEE..
-"""
-
 
 STALL_POST = """
 nnnnnn
@@ -639,10 +611,6 @@ def main() -> None:
     _write("crate_red", _produce_crate("r", "R"), 16, 20)
     _write("crate_orange", _produce_crate("o", "0"), 16, 20)
     _write("cigarette", CIGARETTE, 7, 5)
-    # The Astral Anchor presents as an ashtray: cold ash when
-    # dormant, a live ember when attuned. Of course it does.
-    _write_sheet("astral_anchor", [ANCHOR_DIM, ANCHOR_LIT],
-                 ["anchor_dim", "anchor_lit"], 12, 10)
 
 
 if __name__ == "__main__":

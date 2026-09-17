@@ -20,7 +20,7 @@ OUT = Path(__file__).resolve().parents[1] / "assets/maps/feywild_cloud_staircase
 
 ARRIVAL = (62, 30)
 RETURN_EXIT = (63, 30)
-ANCHOR = (52, 33)
+WAYPOINT = (52, 33)
 STAIR_ANCHOR = (28, 21)
 STAIR_TRIGGER = (28, 22)
 
@@ -71,7 +71,6 @@ def build():
 
     # Map-local markers.
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ሀ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ሁ"
     grid[STAIR_TRIGGER[1]][STAIR_TRIGGER[0]] = "ሂ"
     for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
         grid[row][W - 1] = "→"
@@ -101,7 +100,7 @@ def _dress_edge(grid):
 
 
 def _base(char):
-    return {"ሀ": "'", "ሁ": "'", "ሂ": "'", "☁": "#"}.get(char, char)
+    return {"ሀ": "'", "ሂ": "'", "☁": "#"}.get(char, char)
 
 
 def _reachable(grid):
@@ -125,10 +124,9 @@ def _reachable(grid):
 def validate(grid):
     assert len(grid) == H and all(len(row) == W for row in grid)
     reached = _reachable(grid)
-    assert ANCHOR in reached and STAIR_TRIGGER in reached and RETURN_EXIT in reached
+    assert WAYPOINT in reached and STAIR_TRIGGER in reached and RETURN_EXIT in reached
     text = "".join("".join(row) for row in grid)
     assert text.count("☁") == 1
-    assert text.count("ሁ") == 1 and text.count("ሂ") == 1
     assert all(grid[row][W - 1] == "→"
                for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2))
 

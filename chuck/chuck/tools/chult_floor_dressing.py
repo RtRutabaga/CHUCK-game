@@ -18,7 +18,7 @@ What goes down:
   avenue.
 
 Nothing lands within reach of anything that matters -- arrivals, exits,
-Ashtrays, grass, enemies, hazards, the stream -- because the tiles
+Waypoints, grass, enemies, hazards, the stream -- because the tiles
 around those are where the player's attention needs to be, not on a fern.
 """
 

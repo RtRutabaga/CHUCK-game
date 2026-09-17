@@ -58,7 +58,7 @@ RUINS = ((10, 10, 8, 6), (52, 14, 7, 7), (14, 33, 9, 5), (55, 34, 6, 6))
 OUTCROPS = ((22, 20, 3, 3), (60, 24, 3, 4), (8, 24, 2, 3), (46, 38, 4, 2))
 SCRUB = ((12, 18), (26, 12), (44, 11), (62, 17), (18, 27), (29, 39),
          (49, 30), (57, 43), (7, 38), (41, 43), (24, 44), (64, 9))
-ANCHOR = (12, 24)       # west of the tear, before the crossing
+WAYPOINT = (12, 24)       # west of the tear, before the crossing
 ARRIVAL = (4, 24)       # just inside the way in from the hub
 
 
@@ -194,7 +194,6 @@ def build():
     dress_fragments(grid, seed=0.5)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌦"
     grid[mid_y][WIDTH - RIM - 2] = "⌲"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⌸"
     return grid
 
 

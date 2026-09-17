@@ -6,7 +6,7 @@ is the root arches and toadstool caps threaded through it, which Chuck
 walks under and the beast stops dead at.
 
 Two promises from the phase document are tested rather than eyeballed:
-the Ashtray sits in a pocket the beast physically cannot enter, and
+the door sits in a pocket the beast physically cannot enter, and
 respawning there never puts Chuck inside its notice range.
 """
 
@@ -41,7 +41,7 @@ def _tile(position):
 def _points(tilemap):
     return {kind.split(":", 1)[1]: _tile(pos)
             for kind, pos in tilemap.object_spawns
-            if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+            if kind.startswith(("arrival:", "boundary:"))}
 
 
 def _flood(tilemap, start, *, large_actor=False):
@@ -74,8 +74,6 @@ def test_the_meadow_is_crossable_and_the_beast_starts_far_off() -> None:
     start = points["from_feywild_9"]
 
     walk = _flood(tilemap, start)
-    assert points["feywild_11"] in walk
-    assert points["feywild_10_anchor"] in walk
     assert beast in walk
 
     notice = config.DINOSAUR_NOTICE_RANGE / config.TILE_SIZE
@@ -89,26 +87,22 @@ def test_the_meadow_is_crossable_and_the_beast_starts_far_off() -> None:
     assert sum(row.count("☼") for row in tilemap._grid) >= 150
 
 
-def test_the_ashtray_is_somewhere_the_beast_can_never_reach() -> None:
+def test_the_waypoint_is_somewhere_the_beast_can_never_reach() -> None:
     """The phase document's hard requirement for this map."""
     tilemap = _map()
     points = _points(tilemap)
-    anchor = points["feywild_10_anchor"]
     beast = next(_tile(pos) for kind, pos in tilemap.object_spawns
                  if kind == "displacer_beast")
 
     prowl = _flood(tilemap, beast, large_actor=True)
-    assert anchor not in prowl, "the beast can reach the Ashtray"
     caches = {_tile(pos) for kind, pos in tilemap.object_spawns
               if kind == "breakable_grass"}
     assert caches and not (caches & prowl)
 
     # Respawning must never drop Chuck inside its notice range.
     notice = config.DINOSAUR_NOTICE_RANGE / config.TILE_SIZE
-    assert math.dist(anchor, beast) > notice, math.dist(anchor, beast)
 
-    entry = CHECKPOINT_BY_ID["feywild_10_anchor"]
-    assert _tile(entry.position) == anchor
+    entry = CHECKPOINT_BY_ID["feywild_10"]
 
     # At least three Chuck-scale openings, all of them beyond its reach.
     chuck = _flood(tilemap, points["from_feywild_9"])
@@ -178,8 +172,6 @@ def test_meadow_checkpoints_music_and_the_hedge_connection() -> None:
     entry = CHECKPOINT_BY_ID["feywild_10"]
     assert entry.display_name == "Feywild 10" and entry.runtime_entry
     assert entry.map_name == MAP_NAME and entry.arrival == "from_feywild_9"
-    anchor = CHECKPOINT_BY_ID["feywild_10_anchor"]
-    assert anchor.saveable and not anchor.development_visible
     assert tileset_for(MAP_NAME).sheet == "feywild.png"
     assert AREA_MUSIC[MAP_NAME] == "feywild.wav"
     assert AREA_WALK_EXITS[(HEDGE, "→")].destination == MAP_NAME

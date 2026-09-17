@@ -62,7 +62,6 @@ def test_city_sewer_1_is_long_narrow_modern_and_three_legged() -> None:
     assert tileset_for(MAP_NAME).sheet == "city_sewer.png"
     assert tileset_for(MAP_NAME).sheet != tileset_for("sewer").sheet
     assert kinds["arrival:from_city_night_6"] == 1
-    assert kinds["anchor:modern_city_sewer_1_anchor"] == 1
     assert kinds["boundary:modern_city_night_6"] == 1
     assert kinds["rat"] == 5
     assert kinds["cigarette"] == 3
@@ -81,7 +80,6 @@ def test_all_authored_content_is_reachable_before_the_astral_end() -> None:
     markers = _markers(tilemap)
     reached = _reachable(tilemap, markers["arrival:from_city_night_6"][0])
     required = {
-        markers["anchor:modern_city_sewer_1_anchor"][0],
         markers["boundary:modern_city_night_6"][0],
         *markers["rat"],
         *markers["cigarette"],
@@ -116,19 +114,17 @@ def test_city_entrance_yes_loads_sewer_and_no_remains_silent() -> None:
 
 def test_city_sewer_checkpoint_and_return_arrival_use_shared_loader() -> None:
     entry = CHECKPOINT_BY_ID["modern_city_sewer_1"]
-    anchor = CHECKPOINT_BY_ID["modern_city_sewer_1_anchor"]
     return_cp = CHECKPOINT_BY_ID["modern_city_6_return"]
     assert (entry.display_name, entry.map_name, entry.arrival) == (
         "City Sewer 1", MAP_NAME, "from_city_night_6"
     )
-    assert anchor.position == (180.0, 485.0) and anchor.saveable
     assert (return_cp.map_name, return_cp.arrival) == (
         "modern_city_night_6", "from_city_sewer_1"
     )
 
 
 def test_rats_use_ship_hold_pursuit_and_respect_astral_collision() -> None:
-    directory, game, world = _game_and_world("modern_city_sewer_1_anchor")
+    directory, game, world = _game_and_world("modern_city_sewer_1")
     try:
         assert len(world.rats) == 5
         assert all(rat.attack_chase_enabled for rat in world.rats)
@@ -158,7 +154,7 @@ def test_rats_use_ship_hold_pursuit_and_respect_astral_collision() -> None:
 
 
 def test_city_sewer_draws_without_city_rain_and_respawns_at_its_anchor() -> None:
-    directory, game, world = _game_and_world("modern_city_sewer_1_anchor")
+    directory, game, world = _game_and_world("modern_city_sewer_1")
     try:
         assert world.city_rain is None
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
@@ -171,9 +167,6 @@ def test_city_sewer_draws_without_city_rain_and_respawns_at_its_anchor() -> None
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert len(world.rats) == 5
         assert all(rat.attack_chase_enabled for rat in world.rats)
     finally:

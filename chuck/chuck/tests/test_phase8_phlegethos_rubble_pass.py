@@ -72,9 +72,9 @@ def test_rubble_pass_is_a_dark_east_west_route_with_a_lava_fall() -> None:
     east = (62, 6)
     west = (10, 32)
 
-    # Arrival, Ashtray, and exit connect without crossing molten terrain or
+    # Arrival, door, and exit connect without crossing molten terrain or
     # rubble. The path changes rows repeatedly rather than forming a corridor.
-    points = _points(tilemap, ("arrival:", "anchor:"))
+    points = _points(tilemap, ("arrival:",))
     start = points["from_phlegethos_3"]
     reached = {start}
     frontier = deque([start])
@@ -90,7 +90,6 @@ def test_rubble_pass_is_a_dark_east_west_route_with_a_lava_fall() -> None:
                 continue
             reached.add(point)
             frontier.append(point)
-    assert points["phlegethos_rubble_anchor"] in reached
     assert points["from_phlegethos_fortress"] in reached
     assert east in reached and west in reached
     path_rows = {
@@ -151,11 +150,9 @@ def test_only_one_delayed_lemure_and_one_optional_horned_devil_spawn() -> None:
 
 def test_rubble_pass_checkpoint_and_both_connections_use_shared_loading() -> None:
     entry = CHECKPOINT_BY_ID[MAP_NAME]
-    anchor = CHECKPOINT_BY_ID["phlegethos_rubble_anchor"]
     fortress = CHECKPOINT_BY_ID[FORTRESS]
     assert entry.display_name == "Phlegethos 4"
     assert entry.runtime_entry and entry.development_visible
-    assert anchor.map_name == MAP_NAME and anchor.saveable
     assert CHECKPOINT_BY_ID[FRACTURED].display_name == "Phlegethos 5"
     assert fortress.display_name == "Phlegethos 6"
 

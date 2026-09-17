@@ -70,7 +70,6 @@ def build_map() -> list[str]:
             grid[row][col] = "⮜"
     grid[33][0] = "ሜ"
     grid[33][4] = "ሚ"
-    grid[33][7] = "ማ"
     # One quiet human scene: seated on the broad lower sidewalk, with bottle
     # clusters large enough to make Chuck's scale obvious.
     grid[33][13] = "ም"

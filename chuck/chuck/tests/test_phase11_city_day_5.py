@@ -119,8 +119,7 @@ def test_the_broken_spans_are_the_route_and_are_fair() -> None:
     walked = _flood(tilemap, start, hops=False)
     assert onward in hopped, "the overpass cannot be crossed"
     assert onward not in walked, "the spans can be walked around"
-    # The Ashtray sits before the first gap, so a missed jump is cheap.
-    assert markers["anchor:modern_city_day_5_anchor"][0] in walked
+    # The door sits before the first gap, so a missed jump is cheap.
 
     spans = _spans(tilemap)
     assert len(spans) == 2, spans
@@ -149,7 +148,6 @@ def test_day_4_and_5_connect_and_share_the_day_cue() -> None:
     entry = CHECKPOINT_BY_ID[MAP_NAME]
     assert (entry.display_name, entry.map_name) == ("City Day 5", MAP_NAME)
     assert entry.runtime_entry
-    assert CHECKPOINT_BY_ID["modern_city_day_5_anchor"].saveable
 
     directory, game, world = _game_and_world(DAY_4)
     try:
@@ -172,7 +170,7 @@ def test_day_4_and_5_connect_and_share_the_day_cue() -> None:
 
 
 def test_traffic_still_runs_on_a_road_that_goes_nowhere() -> None:
-    directory, game, world = _game_and_world("modern_city_day_5_anchor")
+    directory, game, world = _game_and_world("modern_city_day_5")
     try:
         assert world.city_rain is not None
         assert len(world.traffic_lanes) == 3
@@ -188,11 +186,9 @@ def test_traffic_still_runs_on_a_road_that_goes_nowhere() -> None:
         world.camera.update(0)
         world.draw(surface)
 
-        anchor = (world.anchors[0].x, world.anchors[0].y)
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == anchor
         # Respawning lands on the footway, never in a lane or a gap.
         tile = (int(world.player.x // config.TILE_SIZE),
                 int(world.player.y // config.TILE_SIZE))

@@ -118,7 +118,6 @@ def test_the_damage_is_spreading_through_the_daytime_city() -> None:
 
     markers = _markers(tilemap)
     reachable = _flood(tilemap, markers["arrival:from_city_day_1"][0])
-    assert markers["anchor:modern_city_day_2_anchor"][0] in reachable
     assert markers["boundary:modern_city_day_3"][0] in reachable
     assert markers["boundary:modern_city_day_1"][0] in reachable
 
@@ -140,7 +139,6 @@ def test_city_day_1_and_2_connect_both_ways() -> None:
     entry = CHECKPOINT_BY_ID[MAP_NAME]
     assert (entry.display_name, entry.map_name) == ("City Day 2", MAP_NAME)
     assert entry.runtime_entry
-    assert CHECKPOINT_BY_ID["modern_city_day_2_anchor"].saveable
 
     directory, game, world = _game_and_world(DAY_1)
     try:
@@ -175,8 +173,8 @@ def test_city_day_1_and_2_connect_both_ways() -> None:
         directory.cleanup()
 
 
-def test_the_crossroads_rains_and_respawns_at_its_own_ashtray() -> None:
-    directory, game, world = _game_and_world("modern_city_day_2_anchor")
+def test_the_crossroads_rains_and_respawns_at_its_own_door() -> None:
+    directory, game, world = _game_and_world("modern_city_day_2")
     try:
         assert world.city_rain is not None
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
@@ -187,9 +185,6 @@ def test_the_crossroads_rains_and_respawns_at_its_own_ashtray() -> None:
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         # Respawning never lands Chuck in a lane.
         tile = (int(world.player.x // config.TILE_SIZE),
                 int(world.player.y // config.TILE_SIZE))

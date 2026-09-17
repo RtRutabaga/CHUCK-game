@@ -24,7 +24,7 @@ WIDTH = 88
 HEIGHT = 44
 
 ARRIVAL = (10, 30)
-ANCHOR = (16, 31)
+WAYPOINT = (16, 31)
 FUTURE_EXIT = (87, 30)
 
 # Businesspeople keep their short patrols; the woman in the red dress
@@ -100,7 +100,6 @@ def build_map() -> list[str]:
     grid[FUTURE_EXIT[1]][WIDTH - 1] = "ቑ"
     grid[FUTURE_EXIT[1]][WIDTH - 3] = "ቚ"  # where Day 2 sets Chuck down
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቍ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ቐ"
     for (col, row), axis in BUSINESSPEOPLE:
         assert grid[row][col] == ".", (col, row, grid[row][col])
         grid[row][col] = "ሖ" if axis == "h" else "ሞ"
@@ -124,7 +123,7 @@ SOLID = {"▥", "#", "▱", "▤", "w", "V"}
 
 
 def _under(char: str) -> str:
-    return {"ቍ": ".", "ቐ": ".", "ቑ": "⮞", "ሖ": ".", "ሞ": ".", "ቒ": ".",
+    return {"ቍ": ".", "ቑ": "⮞", "ሖ": ".", "ሞ": ".", "ቒ": ".",
             "ል": ".", "ꞏ": ".", "ቚ": "."}.get(char, char)
 
 
@@ -149,7 +148,7 @@ def validate(rows: list[str]) -> None:
     assert len(rows) == HEIGHT and all(len(row) == WIDTH for row in rows)
 
     found = _flood(rows, ARRIVAL)
-    assert {ANCHOR, FUTURE_EXIT, RED_DRESS, *CIGARETTES, *PUDDLES} <= found
+    assert {WAYPOINT, FUTURE_EXIT, RED_DRESS, *CIGARETTES, *PUDDLES} <= found
     for position, _axis in BUSINESSPEOPLE:
         assert position in found, position
 
@@ -169,7 +168,6 @@ def validate(rows: list[str]) -> None:
 
     text = "".join(rows)
     assert text.count("ቒ") == 1, "exactly one woman in a red dress"
-    assert text.count("ቐ") == 1
     assert text.count("ል") == len(CIGARETTES)
     assert "ም" not in text, "no homeless man in the daytime city"
     # Every road that runs off the map ends in visible Astral damage.

@@ -2,7 +2,7 @@
 
 This deliberately bounded Phase 9 opening continues the completed cutscene:
 Chuck stands on the eastern bank of the same blue-green river, finds an
-Ashtray almost immediately, and can explore a quiet enchanted clearing before
+clearing almost immediately, and can explore it before
 reaching an inert route deeper into the Feywild. No enemies or future-region
 mechanics are invented here.
 """
@@ -19,7 +19,7 @@ OUT = (
 )
 
 ARRIVAL = (15, 27)
-ANCHOR = (20, 27)
+WAYPOINT = (20, 27)
 DEEPER = (51, 6)
 RETURN = (50, 6)
 
@@ -37,7 +37,7 @@ PATH_POINTS = (
 HEADER = [
     "; PHASE 9 - FEYWILD 1, THE RIVERBANK (52x36 tiles).",
     "; Chuck regains control beside the river from the ending cutscene.",
-    "; A quiet luminous clearing leads from the shore past one Ashtray",
+    "; A quiet luminous clearing leads from the shore",
     "; to the Blooming Path deeper in the Feywild. No enemies are authored.",
 ]
 
@@ -98,7 +98,7 @@ def build() -> list[list[str]]:
     }
     protected |= {
         (cx + dx, cy + dy)
-        for cx, cy in (ARRIVAL, ANCHOR, DEEPER, RETURN)
+        for cx, cy in (ARRIVAL, WAYPOINT, DEEPER, RETURN)
         for dx in range(-2, 3)
         for dy in range(-2, 3)
     }
@@ -130,7 +130,6 @@ def build() -> list[list[str]]:
             grid[row][col] = "ŋ"
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Գ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "Դ"
     grid[RETURN[1]][RETURN[0]] = "Խ"
     # Chult-style wilderness handoff: a three-tile trail mouth cuts through
     # the actual map edge, with the stable boundary marker in its center.
@@ -158,7 +157,7 @@ def validate(grid: list[list[str]]) -> None:
             ):
                 reached.add(point)
                 frontier.append(point)
-    assert ANCHOR in reached, "arrival cannot reach the Feywild Ashtray"
+    assert WAYPOINT in reached, "arrival cannot reach the clearing"
     assert RETURN in reached, "arrival cannot reach the Blooming Path return"
     assert DEEPER in reached, "arrival cannot reach the deeper boundary"
     assert all(

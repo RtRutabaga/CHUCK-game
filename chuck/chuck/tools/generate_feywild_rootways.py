@@ -23,7 +23,7 @@ OUT = (
 
 RETURN_EXIT = (0, 40)
 ARRIVAL = (1, 40)
-ANCHOR = (11, 41)
+WAYPOINT = (11, 41)
 FUTURE_RETURN = (66, 18)
 FUTURE_EXIT = (67, 18)
 REDCAPS = ((28, 28), (52, 17))
@@ -112,7 +112,6 @@ def build() -> list[list[str]]:
     for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
         grid[row][RETURN_EXIT[0]] = "←"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Յ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "Ն"
     for col, row in REDCAPS:
         grid[row][col] = "Շ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "Չ"
@@ -126,7 +125,7 @@ def build() -> list[list[str]]:
 
 def _under(char: str) -> str:
     return {
-        "Յ": "'", "Ն": "'", "Շ": ".", "Ո": "→", "Չ": "'",
+        "Յ": "'", "Շ": ".", "Ո": "→", "Չ": "'",
         "<": ".",
     }.get(char, char)
 
@@ -162,14 +161,13 @@ def validate(grid: list[list[str]]) -> None:
     assert len(grid) == H and all(len(row) == W for row in grid)
     chuck_reach = _reachable(grid, ARRIVAL)
     assert {
-        RETURN_EXIT, ANCHOR, FUTURE_RETURN, FUTURE_EXIT,
+        RETURN_EXIT, WAYPOINT, FUTURE_RETURN, FUTURE_EXIT,
         REFUGE_DOOR, CACHE_DOOR, CACHE, *REDCAPS,
     } <= chuck_reach
     large_reach = _reachable(grid, ARRIVAL, large_actor=True)
     assert CACHE not in large_reach
     assert (30, 35) not in large_reach
     text = "".join("".join(row) for row in grid)
-    assert text.count("Ն") == 1
     assert text.count("Շ") == 2
     assert text.count("≀") == 2
     assert text.count("<") == 1

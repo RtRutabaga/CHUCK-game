@@ -128,7 +128,6 @@ def test_prompts_name_the_button_being_held() -> None:
         "Press A to interact"
     assert prompts.hint(manager, config.HINT_JUMP) == "Press B to jump"
     assert prompts.hint(manager, config.HINT_SCRATCH) == "Press X to scratch"
-    assert prompts.hint(manager, config.HINT_ANCHOR) == config.HINT_ANCHOR
     assert prompts.title_prompt(manager) == "UP / DOWN   A"
     rows = dict(controls_rows(manager))
     assert rows["MOVE"] == "LEFT STICK / D-PAD"

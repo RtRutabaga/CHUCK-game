@@ -69,7 +69,7 @@ DRIFTS = ((34, 10), (40, 26), (54, 12), (58, 34), (26, 14), (66, 20))
 SCRAPS = ((10, 12, 6, 3, "ᛗ"), (12, 44, 6, 3, "⌽"), (66, 46, 5, 3, "·"))
 RUINS = ((8, 26, 7, 6),)
 SCRUB = ((16, 20), (14, 38), (24, 48), (70, 50), (18, 8))
-ANCHOR = (8, 30)
+WAYPOINT = (8, 30)
 ARRIVAL = (4, 30)
 
 # Everything on this map that came from somewhere else.
@@ -237,7 +237,6 @@ def build():
     dress_castle(grid, seed=6)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⍀"
     grid[mid_y][WIDTH - RIM - 2] = "⍵"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⍄"
     return grid
 
 

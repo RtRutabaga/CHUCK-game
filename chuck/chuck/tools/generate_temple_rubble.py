@@ -6,7 +6,7 @@ in. The chamber is choked with fallen stone ('█' masonry rubble and '¬'
 toppled columns) and split open by numerous blocks of Astral Sea ('V',
 the walkable-but-lethal fall hazard) — it is almost impossible to pick a
 way across. But one route stays clear: a torch-lit lane winds from the
-`from_fireball` arrival, past the rubble ashtray, to the one way out —
+`from_fireball` arrival, past the rubble waypoint, to the one way out —
 the crawlspace mouth ('∇') in the south wall that leads to the ship deck.
 The open lane amid the debris makes the escape route obvious.
 
@@ -23,7 +23,7 @@ W, H = 48, 30
 OUT = Path(__file__).resolve().parents[1] / "assets" / "maps" / "temple_rubble.txt"
 
 ARRIVAL = (23, 5)      # where the blast throws Chuck in
-ANCHOR = (23, 24)      # the rubble ashtray, passed on the way out
+WAYPOINT = (23, 24)      # on the paved lane, passed on the way out
 CRAWL = (34, 28)       # the crawlspace mouth, carved into the south wall
 
 # The clear escape lane, as a polyline of axis-aligned segments. It is
@@ -37,7 +37,7 @@ HEADER = [
     "; PHASE 6 - RUBBLE MAP (48x30 tiles).",
     "; The temple's ceiling has caved in: the chamber is choked with big",
     "; broken masonry blocks and split by blocks of Astral Sea. One clear",
-    "; paved lane stays open - from the arrival, past the ashtray, to the",
+    "; paved lane stays open - from the arrival to the"
     "; crawlspace mouth in the south wall (the one way out, to the ship).",
 ]
 
@@ -59,7 +59,7 @@ def _clear_lane() -> set:
         else:
             for x in range(min(x0, x1), max(x0, x1) + 1):
                 lane |= {(x, y0 - 1), (x, y0), (x, y0 + 1)}
-    for cx, cy in (ARRIVAL, ANCHOR, (CRAWL[0], CRAWL[1] - 1)):
+    for cx, cy in (ARRIVAL, WAYPOINT, (CRAWL[0], CRAWL[1] - 1)):
         lane |= {(cx + dx, cy + dy)
                  for dx in (-1, 0, 1) for dy in (-1, 0, 1)}
     return {(c, r) for (c, r) in lane if 2 <= c < W - 2 and 2 <= r < H - 2}
@@ -128,10 +128,10 @@ def build():
     assert grid[cy - 1][cx] == "≡", grid[cy - 1][cx]
     grid[cy - 1][cx] = "Ҏ"
 
-    # Place the markers last so they sit on the paved lane.
-    for (mx, my), glyph in ((ARRIVAL, "Ѣ"), (ANCHOR, "Ѥ")):
-        assert grid[my][mx] == "≡", (glyph, grid[my][mx])
-        grid[my][mx] = glyph
+    # Place the marker last so it sits on the paved lane.
+    mx, my = ARRIVAL
+    assert grid[my][mx] == "≡", grid[my][mx]
+    grid[my][mx] = "Ѣ"
 
     return grid, rubble, astral
 
@@ -157,7 +157,7 @@ def validate(grid):
                     and not blocked(nc, nr)):
                 seen.add((nc, nr))
                 q.append((nc, nr))
-    assert ANCHOR in seen, "arrival cannot reach the anchor on foot!"
+    assert WAYPOINT in seen, "arrival cannot reach the waypoint on foot!"
     assert CRAWL in seen, "arrival cannot reach the crawlspace on foot!"
 
 

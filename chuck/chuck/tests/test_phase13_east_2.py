@@ -263,20 +263,13 @@ def test_the_road_east_continues_in_both_directions() -> None:
 
 
 def test_it_has_its_own_entries() -> None:
-    for entry in ("desert_east_2", "desert_east_2_anchor",
+    for entry in ("desert_east_2", "desert_east_2",
                   "desert_east_1_from_east_2"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
-    assert CHECKPOINT_BY_ID["desert_east_2_anchor"].saveable
     assert CHECKPOINT_BY_ID["desert_east_2"].development_visible
 
     tilemap = _tilemap()
     ts = config.TILE_SIZE
-    anchor = CHECKPOINT_BY_ID["desert_east_2_anchor"].position
-    spawn = next(p for k, p in tilemap.object_spawns
-                 if k == "anchor:desert_east_2_anchor")
-    assert anchor is not None
-    assert (int(anchor[0]) // ts, int(anchor[1]) // ts) == \
-        (int(spawn[0]) // ts, int(spawn[1]) // ts)
 
 
 def _run_all() -> None:

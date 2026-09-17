@@ -88,34 +88,6 @@ def test_outflow_yes_climbs_from_water_onto_south_pier() -> None:
         game._shutdown()
 
 
-def test_maze_ashtray_attunes_and_becomes_respawn_point() -> None:
-    with tempfile.TemporaryDirectory() as temp_dir:
-        game = Game(save_path=Path(temp_dir) / "save.json")
-        try:
-            game.scenes.replace(WorldScene(game, "sewer"))
-            scene = game.scenes.current
-            assert len(scene.anchors) == 1
-            anchor = scene.anchors[0]
-            came_in = scene.anchors_system.respawn_position_for_chuck()
-            scene.player.x, scene.player.y = anchor.x, anchor.y
-
-            assert scene._anchor_hint_visible()
-            scene.update(0.01)
-            assert anchor.lit
-            assert game.active_checkpoint_id == "sewer_anchor"
-            assert game.saves.load().checkpoint_id == "sewer_anchor"
-            assert scene.anchors_system.respawn_position_for_chuck() == came_in
-
-            scene.sanity.deplete()
-            scene.update(config.RESPAWN_FADE_OUT)
-            scene.update(config.RESPAWN_HOLD)
-            # The door he came in by, not the Ashtray he touched.
-            assert (scene.player.x, scene.player.y) == came_in
-            assert scene.player.visible
-        finally:
-            game._shutdown()
-
-
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):

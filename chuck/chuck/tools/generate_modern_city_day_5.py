@@ -27,7 +27,7 @@ HEIGHT = 68
 
 ARRIVAL = (22, 3)
 RETURN_EXIT = (22, 0)
-ANCHOR = (18, 8)
+WAYPOINT = (18, 8)
 FUTURE_EXIT = (22, 67)
 
 # The deck: pavement, kerb, two lanes, kerb, pavement.
@@ -86,7 +86,6 @@ def build_map() -> list[str]:
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ቮ"
     grid[FUTURE_EXIT[1] - 2][FUTURE_EXIT[0]] = "ቹ"  # back up from Day 6
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቯ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ተ"
     for (col, row), char in TRAFFIC:
         assert grid[row][col] == "=", (col, row, grid[row][col])
         grid[row][col] = char
@@ -116,7 +115,7 @@ LANE_CHARS = {"ሟ", "ሠ", "ሎ", "ሏ"}
 
 
 def _under(char: str) -> str:
-    return {"ቭ": "⮝", "ቮ": "⮟", "ቯ": ".", "ተ": ".", "ቛ": ".", "ሖ": ".",
+    return {"ቭ": "⮝", "ቮ": "⮟", "ቯ": ".", "ቛ": ".", "ሖ": ".",
             "ቹ": ".",
             "ሞ": ".", "ል": ".", "ꞏ": ".", "ቜ": ".",
             **{char: "=" for char in LANE_CHARS}}.get(char, char)
@@ -152,7 +151,7 @@ def validate(rows: list[str]) -> None:
 
     assert FUTURE_EXIT in hopped, "the overpass cannot be crossed"
     assert FUTURE_EXIT not in walked, "the broken spans can be walked around"
-    assert ANCHOR in walked, "the Ashtray is past a jump"
+    assert WAYPOINT in walked, "the waypoint is past a jump"
     for point in CIGARETTES:
         assert point in hopped, point
 
@@ -186,7 +185,6 @@ def validate(rows: list[str]) -> None:
                       / (len(before) * len(before[0])))
     assert text.count("V") / (WIDTH * HEIGHT) > before_density
 
-    assert text.count("ተ") == 1
     assert text.count("ል") == len(CIGARETTES)
     assert "ም" not in text, "no homeless man in the daytime city"
     for material in (".", ",", "=", "▦", "ꞏ", "V"):

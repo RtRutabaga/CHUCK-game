@@ -45,7 +45,7 @@ REDCAPS = ((30, 26), (42, 22), (36, 32), (48, 34), (26, 20), (44, 38))
 SCARS = ((10, 10, 6, 5), (66, 44, 6, 6), (62, 12, 5, 4), (12, 46, 7, 4))
 RUINS = ((6, 24, 7, 6), (64, 26, 6, 6))
 SCRUB = ((16, 16), (20, 44), (58, 18), (56, 48), (8, 36), (70, 34))
-ANCHOR = (6, 30)
+WAYPOINT = (6, 30)
 ARRIVAL = (4, 30)
 
 
@@ -251,7 +251,6 @@ def build():
     dress_fragments(grid, seed=3.1)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌲"
     grid[mid_y][WIDTH - RIM - 2] = "⌷"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⌶"
     return grid
 
 

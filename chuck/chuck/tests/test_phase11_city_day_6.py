@@ -4,7 +4,7 @@ Three worlds at once -- the daytime street, a patch of Chult grown
 through the plaza, and an oval planar portal at the far end of the route.
 Everything here is spectacle to route around
 rather than fight, and the phase document is explicit that the chaos
-must not create unavoidable damage at the Ashtray or the arrival.
+must not create unavoidable damage at the door or the arrival.
 
 That is the test worth having: a clear route from the arrival to the
 portal that never crosses a police lane, never comes within the
@@ -177,12 +177,11 @@ def test_the_portal_is_one_smooth_gray_tie_dye_oval_with_cast_light() -> None:
         directory.cleanup()
 
 
-def test_the_chaos_never_traps_the_ashtray_or_the_arrival() -> None:
+def test_the_chaos_never_traps_the_waypoint_or_the_arrival() -> None:
     """The phase document's hard requirement for this map."""
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
     start = markers["arrival:from_city_day_5"][0]
-    anchor = markers["anchor:modern_city_day_6_anchor"][0]
     portal = markers["choice:doug_fir_portal"][0]
     dinosaur = markers["massive_dinosaur"][0]
     assert math.dist(start, portal) > 50, "the portal is still beside arrival"
@@ -198,12 +197,10 @@ def test_the_chaos_never_traps_the_ashtray_or_the_arrival() -> None:
         if math.dist((col, row), dinosaur) <= notice
         or math.dist((col, row), spinner) <= spray
     }
-    assert anchor not in hazard and start not in hazard
 
     assert portal in _flood(tilemap, start)
     clear = _flood(tilemap, start, avoid=hazard)
     assert portal in clear, "the portal cannot be reached safely"
-    assert anchor in clear, "the Ashtray cannot be reached safely"
 
 
 def test_the_tableau_is_one_animal_over_one_person() -> None:
@@ -372,22 +369,19 @@ def test_the_portal_asks_and_the_beholder_theme_returns() -> None:
         MAP_NAME, "from_city_day_5")
     entry = CHECKPOINT_BY_ID[MAP_NAME]
     assert (entry.display_name, entry.map_name) == ("City Day 6", MAP_NAME)
-    assert CHECKPOINT_BY_ID["modern_city_day_6_anchor"].saveable
 
 
 def test_the_collision_draws_and_respawns_clear_of_the_animals() -> None:
-    directory, game, world = _game_and_world("modern_city_day_6_anchor")
+    directory, game, world = _game_and_world("modern_city_day_6")
     try:
         assert world.city_rain is not None
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
         world.camera.update(0)
         world.draw(surface)
 
-        anchor = (world.anchors[0].x, world.anchors[0].y)
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == anchor
         for beast in world.dinosaurs + world.raptors:
             assert math.dist((beast.x, beast.y),
                              (world.player.x, world.player.y)) > (

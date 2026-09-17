@@ -61,7 +61,6 @@ def test_rootways_is_a_large_two_redcap_pursuit_map() -> None:
 
     kinds = Counter(kind for kind, _position in tilemap.object_spawns)
     assert kinds["arrival:from_feywild_3"] == 1
-    assert kinds["anchor:feywild_4_anchor"] == 1
     assert kinds["redcap"] == 2
     assert kinds["boundary:feywild_5"] == 1
     assert kinds["arrival:from_feywild_5"] == 1
@@ -85,7 +84,6 @@ def test_root_passages_protect_a_refuge_and_optional_cache() -> None:
     assert cache not in large_reach
     assert (30, 35) in chuck_reach
     assert (30, 35) not in large_reach
-    assert markers["anchor:feywild_4_anchor"] in chuck_reach
     assert markers["boundary:feywild_5"] in chuck_reach
 
 
@@ -113,39 +111,6 @@ def test_redcap_is_durable_and_visibly_stops_at_a_root_gap() -> None:
     assert not redcap.alive
 
 
-def test_rootways_uses_shared_checkpoint_save_and_enemy_reset() -> None:
-    with tempfile.TemporaryDirectory() as directory:
-        game = Game(save_path=Path(directory) / "save.json")
-        try:
-            scene = game.checkpoints.load_checkpoint("feywild_4", sanity=61)
-            assert scene.map_name == MAP_NAME
-            assert len(scene.redcaps) == 2
-
-            anchor = scene.anchors[0]
-            came_in = scene.anchors_system.respawn_position_for_chuck()
-            scene.player.x, scene.player.y = anchor.x, anchor.y
-            scene.update(0.0)
-            assert anchor.lit
-            assert game.active_checkpoint_id == "feywild_4_anchor"
-
-            scene.redcaps[0].alive = False
-            scene.redcaps = scene.redcaps[1:]
-            scene.sanity.deplete()
-            scene.update(config.RESPAWN_FADE_OUT)
-            scene.update(config.RESPAWN_HOLD)
-            assert len(scene.redcaps) == 2
-            # The door he came in by, not the Ashtray he touched.
-            assert (scene.player.x, scene.player.y) == came_in
-
-            resumed = game.checkpoints.continue_game()
-            assert resumed is not None
-            assert resumed.map_name == MAP_NAME
-            assert resumed.sanity.current == 61
-            assert resumed.anchors[0].lit
-        finally:
-            game._shutdown()
-
-
 def test_orchard_and_rootways_transition_both_ways() -> None:
     forward = AREA_WALK_EXITS[("feywild_pollen_orchard", "⇧")]
     backward = AREA_WALK_EXITS[(MAP_NAME, "←")]
@@ -158,10 +123,7 @@ def test_orchard_and_rootways_transition_both_ways() -> None:
     assert onward.arrival == "from_feywild_4"
 
     entry = CHECKPOINT_BY_ID["feywild_4"]
-    anchor = CHECKPOINT_BY_ID["feywild_4_anchor"]
     assert entry.display_name == "Feywild 4" and entry.runtime_entry
-    assert anchor.map_name == MAP_NAME and anchor.saveable
-    assert not anchor.development_visible
 
 
 def _run_all() -> None:

@@ -3,13 +3,13 @@
 ; substitutions before the mandatory jump and one-tile rat choke. Past the
 ; encounter the tunnel opens sharply west, then grows progressively more
 ; corrupted while preserving a narrow readable route through the wrong map.
-; Four more ordinary rats and one ashtray checkpoint ('Y') are spaced along
+; Four more ordinary rats are spaced along
 ; that late safe route. The route ends at a three-tile rat-scale iron outflow;
 ; its center 'Z' marker opens the exit choice while retaining 'Q' underneath.
 ;
 ; '#' wall, ',' entrance stone, 'd' dirt, 'M' mud, '%' solid drainage,
 ; 'V' lethal Astral fall zone, 'E' player entrance, 'q' ordinary rat,
-; 'Y' dirt-based ashtray checkpoint, 'Z' interactive outflow center,
+; 'Z' interactive outflow center,
 ; '}' scratchable grass over dirt with a concealed cigarette.
 ################################################
 #############################,,,,,,,,,,,,,,,####
@@ -68,7 +68,7 @@
 ###%%VVVddVVVVdddVVVVVVdd#######################
 ###%%dVVVVddVdddVddVVVVVV#######################
 ###%%VVVVdVVddddVVVVVVdVV#######################
-####dVVVVVddYdVVVddVVVVVddd#####################
+####dVVVVVddddVVVddVVVVVddd#####################
 ####ddVVVVddddVVVVVddVVVVVd#####################
 ####dVVVVdddVVVddVVVVVVdVVV#####################
 ####ddVVddddVVVVVVddVVVVVVd#####################

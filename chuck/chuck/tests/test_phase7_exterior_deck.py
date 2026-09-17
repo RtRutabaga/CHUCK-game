@@ -48,20 +48,15 @@ def test_deck_has_one_checkpoint_and_uses_the_shared_loader() -> None:
     tilemap = _map()
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_crew_quarters") == 1
-    assert kinds.count("anchor:ship_exterior_anchor") == 1
-    assert sum(kind.startswith("anchor:") for kind in kinds) == 1
 
     entry = CHECKPOINT_BY_ID["ship_exterior_deck"]
     assert entry.display_name == "Ship Exterior Deck"
     assert entry.runtime_entry and entry.development_visible
-    anchor = CHECKPOINT_BY_ID["ship_exterior_anchor"]
-    assert anchor.saveable and not anchor.development_visible
 
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint("ship_exterior_deck")
         assert scene.map_name == MAP_NAME
-        assert len(scene.anchors) == 1
         mast_sizes = [prop._size for prop in scene.props
                       if prop.kind == "ship_mast_sail"]
         assert mast_sizes == [(224, 240), (224, 240)]
@@ -126,14 +121,14 @@ def test_every_ship_ladder_is_one_continuous_human_height_structure() -> None:
         )
 
 
-def test_exterior_ashtray_persists_and_continues_on_the_deck() -> None:
+def test_the_deck_save_persists_and_continues() -> None:
     with tempfile.TemporaryDirectory() as directory:
         path = Path(directory) / "save.json"
         game = Game(save_path=path)
         try:
             scene = game.checkpoints.load_checkpoint("ship_exterior_deck")
-            assert game.checkpoints.activate_checkpoint(
-                "ship_exterior_anchor", scene.sanity.current
+            assert game.checkpoints.write_save(
+                "ship_exterior_deck", scene.sanity.current
             )
         finally:
             game._shutdown()
@@ -142,7 +137,7 @@ def test_exterior_ashtray_persists_and_continues_on_the_deck() -> None:
         try:
             scene = resumed.checkpoints.continue_game()
             assert scene.map_name == MAP_NAME
-            assert resumed.active_checkpoint_id == "ship_exterior_anchor"
+            assert resumed.active_checkpoint_id == "ship_exterior_deck"
         finally:
             resumed._shutdown()
 

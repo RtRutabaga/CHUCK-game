@@ -215,7 +215,7 @@ class ReturnToWaterdeepCutsceneScene(Scene):
         # Phase 14 begins here. Bank the crossing before the shared loader
         # rebuilds Waterdeep so state-driven daylight is selected on its
         # first frame. This crossing is not itself a save point; the docks'
-        # existing Ashtray still owns durable Continue state.
+        # existing entrance still owns durable Continue state.
         self.game.progress.enable(WATERDEEP_RETURN_FLAG)
         self.game.checkpoints.load_checkpoint(
             "waterdeep_finale",

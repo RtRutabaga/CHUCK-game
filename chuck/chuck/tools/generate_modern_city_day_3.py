@@ -29,7 +29,7 @@ HEIGHT = 64
 
 ARRIVAL = (13, 3)
 RETURN_EXIT = (13, 0)
-ANCHOR = (13, 12)
+WAYPOINT = (13, 12)
 FUTURE_EXIT = (20, 63)
 
 # config.UNDEAD_NOTICE_RANGE is 112px; at 16px tiles that is seven.
@@ -108,7 +108,6 @@ def build_map() -> list[str]:
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ባ"
     grid[FUTURE_EXIT[1] - 2][FUTURE_EXIT[0]] = "ቬ"  # back up from Day 4
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቤ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ብ"
     for col, row in OFFICERS:
         assert grid[row][col] == ".", (col, row, grid[row][col])
         grid[row][col] = "ቛ"
@@ -138,7 +137,7 @@ LANES = {"ቝ": (1, 0), "ቜ": (-1, 0), "በ": (0, -1), "ቡ": (0, 1)}
 
 
 def _under(char: str) -> str:
-    return {"ቢ": "⮝", "ባ": "⮟", "ቤ": ".", "ብ": ".", "ቛ": ".", "ሖ": ".",
+    return {"ቢ": "⮝", "ባ": "⮟", "ቤ": ".", "ቛ": ".", "ሖ": ".",
             "ቬ": ".",
             "ሞ": ".", "ል": ".", "ꞏ": ".",
             **{char: "." for char in LANES}}.get(char, char)
@@ -183,7 +182,7 @@ def validate(rows: list[str]) -> None:
     assert len(rows) == HEIGHT and all(len(row) == WIDTH for row in rows)
 
     walk = _flood(rows, ARRIVAL)
-    assert {ANCHOR, RETURN_EXIT, FUTURE_EXIT, *CIGARETTES, *PUDDLES} <= walk
+    assert {WAYPOINT, RETURN_EXIT, FUTURE_EXIT, *CIGARETTES, *PUDDLES} <= walk
     for point, _axis in BUSINESSPEOPLE:
         assert point in walk, point
     for point in OFFICERS:
@@ -200,18 +199,17 @@ def validate(rows: list[str]) -> None:
         }
     clear = _flood(rows, ARRIVAL, avoid=hazard)
     assert FUTURE_EXIT in clear, "the street cannot be walked safely"
-    assert ANCHOR in clear, "the Ashtray is inside a hazard"
+    assert WAYPOINT in clear, "the waypoint is inside a hazard"
     assert RETURN_EXIT in clear
 
     # No lane fires along the respawn point or the way in.
-    assert not ({ANCHOR, ARRIVAL, RETURN_EXIT, FUTURE_EXIT} & _lane_tiles(rows))
+    assert not ({WAYPOINT, ARRIVAL, RETURN_EXIT, FUTURE_EXIT} & _lane_tiles(rows))
 
     text = "".join(rows)
     # The damage grows through the daytime run: more here than Day 2.
     day_two = (ROOT / "assets" / "maps" / "modern_city_day_2.txt")
     assert text.count("V") > day_two.read_text(encoding="utf-8").count("V")
 
-    assert text.count("ብ") == 1
     assert text.count("ቛ") == len(OFFICERS)
     assert sum(text.count(char) for _p, char in POLICE) == len(POLICE)
     assert text.count("ል") == len(CIGARETTES)

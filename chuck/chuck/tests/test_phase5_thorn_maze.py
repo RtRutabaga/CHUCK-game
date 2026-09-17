@@ -132,22 +132,15 @@ def test_chult_3_run_is_connected_and_reuses_chult_language() -> None:
 
 def test_chult_3_has_one_physical_save_checkpoint_and_shared_dev_entry() -> None:
     tilemap = _map("chult_run")
-    anchors = [entry for entry in tilemap.object_spawns
-               if entry[0].startswith("anchor:")]
-    assert anchors == [("anchor:chult_3_anchor", (328.0, 504.0))]
 
     entry = CHECKPOINT_BY_ID["chult_3"]
     assert entry.display_name == "Chult 3"
     assert entry.map_name == "chult_run"
     assert entry.arrival == "from_chult_2"
     assert entry.runtime_entry and entry.development_visible
-    anchor = CHECKPOINT_BY_ID["chult_3_anchor"]
-    assert anchor.map_name == "chult_run"
-    assert anchor.position == (324.0, 501.0)
-    assert anchor.saveable and not anchor.development_visible
 
 
-def test_maze_transition_and_chult_3_ashtray_do_not_bounce() -> None:
+def test_maze_transition_and_chult_3_save_do_not_bounce() -> None:
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
     game = Game(save_path=save_path)
@@ -166,11 +159,10 @@ def test_maze_transition_and_chult_3_ashtray_do_not_bounce() -> None:
         scene.update(0.0)
         assert scene.map_name == "chult_run"
 
-        ashtray, = scene.anchors
-        scene.player.x, scene.player.y = ashtray.x, ashtray.y
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "chult_3_anchor"
-        assert game.saves.load().checkpoint_id == "chult_3_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("chult_3", scene.sanity.current)
+        assert game.active_checkpoint_id == "chult_3"
+        assert game.saves.load().checkpoint_id == "chult_3"
     finally:
         game._shutdown()
 
@@ -178,8 +170,7 @@ def test_maze_transition_and_chult_3_ashtray_do_not_bounce() -> None:
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == "chult_run"
-        assert resumed.active_checkpoint_id == "chult_3_anchor"
-        assert (scene.player.x, scene.player.y) == (324.0, 501.0)
+        assert resumed.active_checkpoint_id == "chult_3"
     finally:
         resumed._shutdown()
         directory.cleanup()

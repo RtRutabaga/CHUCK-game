@@ -85,7 +85,6 @@ def test_city_sewer_2_descends_instead_of_repeating_sewer_1() -> None:
 
     kinds = Counter(kind for kind, _ in tilemap.object_spawns)
     assert kinds["arrival:from_city_sewer_1_culvert"] == 1
-    assert kinds["anchor:modern_city_sewer_2_anchor"] == 1
     assert kinds["boundary:modern_city_sewer_1"] == 1
     assert kinds["rat"] == 6
     assert kinds["cigarette"] == 3
@@ -100,17 +99,13 @@ def test_city_sewer_2_descends_instead_of_repeating_sewer_1() -> None:
         assert not tilemap.is_solid(*point), point
 
 
-def test_everything_authored_is_reachable_and_nothing_waits_on_the_ashtray() -> None:
+def test_everything_authored_is_reachable_and_nothing_waits_on_the_waypoint() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
     start = markers["arrival:from_city_sewer_1_culvert"][0]
     reached = _reachable(tilemap, start, hops=True)
-    anchor = markers["anchor:modern_city_sewer_2_anchor"][0]
 
-    assert {anchor, markers["boundary:modern_city_sewer_1"][0],
-            *markers["rat"], *markers["cigarette"]} <= reached
     # Respawning must never drop Chuck onto a rat.
-    assert anchor not in set(markers["rat"])
 
     # The southern end is collided either side of a marked opening: the
     # floor gave way here, and that hole is now the way down to Sewer 3.
@@ -173,18 +168,16 @@ def test_the_culvert_joins_the_two_sewer_maps_both_ways() -> None:
 
 def test_sewer_2_checkpoints_use_the_shared_loader() -> None:
     entry = CHECKPOINT_BY_ID[MAP_NAME]
-    anchor = CHECKPOINT_BY_ID["modern_city_sewer_2_anchor"]
     back = CHECKPOINT_BY_ID["modern_city_sewer_1_return"]
     assert (entry.display_name, entry.map_name, entry.arrival) == (
         "City Sewer 2", MAP_NAME, "from_city_sewer_1_culvert"
     )
     assert entry.runtime_entry
-    assert anchor.saveable and not anchor.development_visible
     assert (back.map_name, back.arrival) == (SEWER_1, "from_city_sewer_2")
 
 
 def test_rats_pursue_here_exactly_as_they_do_in_sewer_1() -> None:
-    directory, game, world = _game_and_world("modern_city_sewer_2_anchor")
+    directory, game, world = _game_and_world("modern_city_sewer_2")
     try:
         assert len(world.rats) == 6
         assert all(rat.attack_chase_enabled for rat in world.rats)
@@ -215,8 +208,8 @@ def test_rats_pursue_here_exactly_as_they_do_in_sewer_1() -> None:
         directory.cleanup()
 
 
-def test_sewer_2_draws_without_rain_and_respawns_at_its_own_ashtray() -> None:
-    directory, game, world = _game_and_world("modern_city_sewer_2_anchor")
+def test_sewer_2_draws_without_rain_and_respawns_at_its_own_door() -> None:
+    directory, game, world = _game_and_world("modern_city_sewer_2")
     try:
         assert world.city_rain is None   # underground: no exterior weather
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
@@ -229,9 +222,6 @@ def test_sewer_2_draws_without_rain_and_respawns_at_its_own_ashtray() -> None:
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert len(world.rats) == 6
     finally:
         game._shutdown()
@@ -255,7 +245,7 @@ def test_sludge_reuses_the_thorn_and_pollen_systems() -> None:
     art = dict((name, (v, f)) for name, v, f in tileset_for(MAP_NAME).order)
     assert art["city_sewer_sludge"][1] > 1
 
-    directory, game, world = _game_and_world("modern_city_sewer_2_anchor")
+    directory, game, world = _game_and_world("modern_city_sewer_2")
     try:
         tilemap = world.tilemap
         sludge = next(
@@ -349,18 +339,15 @@ def test_the_astral_course_must_be_jumped_and_cannot_be_walked() -> None:
     rows = {row for _col, row in gaps}
     assert len(columns) > 6 and len(rows) > 4
 
-    # The Ashtray sits above the course, never inside it.
-    anchor = markers["anchor:modern_city_sewer_2_anchor"][0]
-    assert anchor[1] < min(rows), (anchor, min(rows))
+    # The door sits above the course, never inside it.
 
 
-def test_a_missed_jump_falls_and_returns_to_this_maps_ashtray() -> None:
+def test_a_missed_jump_falls_and_returns_to_this_maps_door() -> None:
     from src.systems.fall import fall_zone_kind
 
-    directory, game, world = _game_and_world("modern_city_sewer_2_anchor")
+    directory, game, world = _game_and_world("modern_city_sewer_2")
     try:
         world._arrival_fade_t = None
-        anchor = (world.anchors[0].x, world.anchors[0].y)
         gap = next(
             (col, row)
             for row in range(44, 59)
@@ -376,7 +363,6 @@ def test_a_missed_jump_falls_and_returns_to_this_maps_ashtray() -> None:
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == anchor
     finally:
         game._shutdown()
         directory.cleanup()

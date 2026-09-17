@@ -7,7 +7,7 @@ run — cutscene handoffs and dev jumps never reset it; only NEW GAME
 does (and CONTINUE restores the saved total).
 
 Death rewinds it: whenever a respawn point is established (entering a
-map, attuning an Ashtray) the ledger commits, and the quiet Astral
+map) the ledger commits, and the quiet Astral
 respawn rolls the total back to that committed value — whatever Chuck
 gathered past the checkpoint is lost with him, like the run since a
 save never happened. Displayed quietly in the HUD's top-right corner.

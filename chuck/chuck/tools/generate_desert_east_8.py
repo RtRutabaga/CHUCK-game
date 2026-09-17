@@ -104,7 +104,7 @@ FRAGMENT_CHARS = {
     "·", "█", "≋", "⌼", "⌽", "⌾", "❄", "❅", "❆",
 }
 
-ANCHOR = (9, MID_Y + 4)
+WAYPOINT = (9, MID_Y + 4)
 ARRIVAL = (4, MID_Y)
 
 
@@ -288,7 +288,6 @@ def build():
     dress_castle(grid, seed=8)
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⍵"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⍹"
     grid[MID_Y][WIDTH - RIM - 2] = "⎀"
     return grid
 

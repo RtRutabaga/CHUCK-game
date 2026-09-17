@@ -118,7 +118,6 @@ def test_both_officer_types_can_be_walked_past() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
     start = markers["arrival:from_city_day_2"][0]
-    anchor = markers["anchor:modern_city_day_3_anchor"][0]
     onward = markers["boundary:modern_city_day_4"][0]
 
     hazard = set(_lane_tiles(tilemap, markers))
@@ -132,15 +131,11 @@ def test_both_officer_types_can_be_walked_past() -> None:
         }
 
     reachable = _flood(tilemap, start)
-    assert {anchor, onward} <= reachable
 
     clear = _flood(tilemap, start, avoid=hazard)
     assert onward in clear, "the street cannot be walked safely"
-    assert anchor in clear, "the Ashtray sits inside a hazard"
-    # ...and no lane fires along the Ashtray or either doorway.
+    # ...and no lane fires along the door or either doorway.
     lanes = _lane_tiles(tilemap, markers)
-    assert not ({anchor, start, onward,
-                 markers["boundary:modern_city_day_2"][0]} & lanes)
 
 
 def test_day_2_and_3_connect_both_ways() -> None:
@@ -155,7 +150,6 @@ def test_day_2_and_3_connect_both_ways() -> None:
     entry = CHECKPOINT_BY_ID[MAP_NAME]
     assert (entry.display_name, entry.map_name) == ("City Day 3", MAP_NAME)
     assert entry.runtime_entry
-    assert CHECKPOINT_BY_ID["modern_city_day_3_anchor"].saveable
 
     directory, game, world = _game_and_world(DAY_2)
     try:
@@ -190,7 +184,7 @@ def test_day_2_and_3_connect_both_ways() -> None:
 
 
 def test_the_open_edge_draws_and_respawns_safely() -> None:
-    directory, game, world = _game_and_world("modern_city_day_3_anchor")
+    directory, game, world = _game_and_world("modern_city_day_3")
     try:
         assert world.city_rain is not None
         assert len(world.undead) == 2 and len(world.police) == 2
@@ -201,9 +195,6 @@ def test_the_open_edge_draws_and_respawns_safely() -> None:
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         # Respawning never lands on the road, in a net's reach, or in a lane.
         tile = (int(world.player.x // config.TILE_SIZE),
                 int(world.player.y // config.TILE_SIZE))

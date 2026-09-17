@@ -190,9 +190,6 @@ def test_every_way_out_can_actually_be_reached_from_the_start() -> None:
                        ("west", (0, mid_y)), ("east", (WIDTH - 1, mid_y))):
         assert cell in seen, name
 
-    anchor = CHECKPOINT_BY_ID["desert_central_anchor"].position
-    assert anchor is not None
-    assert (int(anchor[0]) // TILE_PX, int(anchor[1]) // TILE_PX) in seen
 
     # The ruins are worth walking into rather than only around: every
     # one of them has floor inside that the flood found.
@@ -201,20 +198,12 @@ def test_every_way_out_can_actually_be_reached_from_the_start() -> None:
     assert len(floor) > 120, len(floor)
 
 
-def test_the_ashtray_stands_where_the_checkpoint_says_it_does() -> None:
-    tilemap = _tilemap()
-    anchors = [position for kind, position in tilemap.object_spawns
-               if kind == "anchor:desert_central_anchor"]
-    assert len(anchors) == 1
-    checkpoint = CHECKPOINT_BY_ID["desert_central_anchor"]
-    assert checkpoint.position == anchors[0]
-    assert checkpoint.saveable
-
+def test_both_desert_entries_are_gated_on_the_crossing() -> None:
     # Both desert entries are gated on the crossing that Phase 12 ends
     # on, so the region cannot be walked into before it exists.
     assert DESERT_TRANSITION_FLAG in DESERT_ENTRY_FLAGS
     assert DESERT_ENTRY_FLAGS <= KNOWN_PROGRESS_FLAGS
-    for entry in ("desert_central_start", "desert_central_anchor"):
+    for entry in ("desert_central_start", "desert_central_start"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
     # ...and the phase document's development access to the initial
     # desert, which is the hub's own entry.
@@ -298,8 +287,6 @@ def test_the_desert_renders_and_chuck_stands_in_it() -> None:
                   for y in range(0, config.NATIVE_HEIGHT, 7)]
         warm = [p for p in pixels if p[0] > p[2]]
         assert len(warm) > len(pixels) * 0.8, len(warm)
-        assert world.anchors
-        assert world.anchors[0].checkpoint_id == "desert_central_anchor"
     finally:
         game._shutdown()
         directory.cleanup()

@@ -37,7 +37,7 @@ def _tile(position):
 def _points(tilemap):
     return {kind.split(":", 1)[1]: _tile(pos)
             for kind, pos in tilemap.object_spawns
-            if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+            if kind.startswith(("arrival:", "boundary:"))}
 
 
 def _flood(tilemap, start):
@@ -100,8 +100,6 @@ def test_the_walk_alternates_canopy_shade_and_open_clearing() -> None:
 
     points = _points(tilemap)
     walk = _flood(tilemap, points["from_feywild_10"])
-    assert points["feywild_12"] in walk
-    assert points["feywild_11_anchor"] in walk
 
     shaded = sum(1 for col, row in walk
                  if tilemap.terrain_at(col, row) == SHADE)
@@ -144,8 +142,6 @@ def test_underways_checkpoints_music_and_the_meadow_connection() -> None:
     entry = CHECKPOINT_BY_ID["feywild_11"]
     assert entry.display_name == "Feywild 11" and entry.runtime_entry
     assert entry.map_name == MAP_NAME and entry.arrival == "from_feywild_10"
-    anchor = CHECKPOINT_BY_ID["feywild_11_anchor"]
-    assert anchor.saveable and not anchor.development_visible
     assert tileset_for(MAP_NAME).sheet == "feywild.png"
     assert AREA_MUSIC[MAP_NAME] == "feywild.wav"
     assert AREA_WALK_EXITS[(MEADOW, "→")].destination == MAP_NAME

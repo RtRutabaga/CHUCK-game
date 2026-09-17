@@ -85,7 +85,6 @@ def test_city_night_4_is_an_offset_full_scale_city_block() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (84, 60)
     assert MAP_TILESET[MAP_NAME] == "city"
     assert kinds["arrival:from_city_night_3"] == 1
-    assert kinds["anchor:modern_city_4_anchor"] == 1
     assert kinds["boundary:modern_city_night_3"] == 1
     assert kinds["npc:businessman"] == 2
     assert kinds["patrol_npc:businessman:h"] == 1
@@ -111,7 +110,6 @@ def test_map_4_content_and_both_authored_routes_are_reachable() -> None:
     markers = _markers(tilemap)
     reached = _reachable(tilemap, markers["arrival:from_city_night_3"][0])
     required = {
-        markers["anchor:modern_city_4_anchor"][0],
         markers["boundary:modern_city_night_3"][0],
         markers["boundary:modern_city_night_5"][0],
         *markers["npc:businessman"],
@@ -151,14 +149,11 @@ def test_city_3_and_4_openings_align_with_named_arrivals() -> None:
 
 def test_city_night_4_checkpoint_world_and_respawn_are_shared() -> None:
     entry = CHECKPOINT_BY_ID["modern_city_4"]
-    anchor = CHECKPOINT_BY_ID["modern_city_4_anchor"]
     assert (entry.display_name, entry.map_name, entry.arrival) == (
         "City Night 4", MAP_NAME, "from_city_night_3"
     )
-    assert anchor.position == (580.0, 821.0)
-    assert anchor.saveable
 
-    directory, game, world = _game_and_world("modern_city_4_anchor")
+    directory, game, world = _game_and_world("modern_city_4")
     try:
         assert world.city_rain is not None
         assert len(world.npcs) == 3
@@ -179,9 +174,6 @@ def test_city_night_4_checkpoint_world_and_respawn_are_shared() -> None:
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
         assert world._respawn_phase == "in"
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert len(world.raccoons) == 2
         assert all(
             enemy.scratches_remaining == config.RACCOON_SCRATCHES

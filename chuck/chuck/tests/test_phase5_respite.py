@@ -135,7 +135,6 @@ def test_respite_is_dense_meandering_and_free_of_fast_or_staged_enemies() -> Non
     } or kind.startswith("staged_undead:") for kind in kinds)
     assert kinds.count("massive_dinosaur") == 1
     assert kinds.count("breakable_grass") == 16
-    assert kinds.count("anchor:chult_4_anchor") == 1
     assert kinds.count("boundary:chult_temple") == 1
     assert tileset_for("chult_respite") is tileset_for("chult_jungle")
     assert AREA_MUSIC["chult_respite"] == "chult.wav"
@@ -235,26 +234,21 @@ def test_one_slow_dinosaur_occupies_the_open_end_clearing_without_a_gate() -> No
         game._shutdown()
 
 
-def test_chult_4_checkpoint_and_physical_ashtray_share_loader() -> None:
+def test_chult_4_checkpoint_and_the_save_share_the_loader() -> None:
     entry = CHECKPOINT_BY_ID["chult_4"]
     assert entry.display_name == "Chult 4"
     assert entry.map_name == "chult_respite"
     assert entry.arrival == "from_chult_3"
     assert entry.runtime_entry and entry.development_visible
-    anchor = CHECKPOINT_BY_ID["chult_4_anchor"]
-    assert anchor.map_name == "chult_respite"
-    assert anchor.position == (132.0, 805.0)
-    assert anchor.saveable and not anchor.development_visible
 
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
     game = Game(save_path=save_path)
     try:
         scene = game.checkpoints.load_checkpoint("chult_4")
-        ashtray, = scene.anchors
-        scene.player.x, scene.player.y = ashtray.x, ashtray.y
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "chult_4_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("chult_4", scene.sanity.current)
+        assert game.active_checkpoint_id == "chult_4"
     finally:
         game._shutdown()
 
@@ -262,8 +256,7 @@ def test_chult_4_checkpoint_and_physical_ashtray_share_loader() -> None:
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == "chult_respite"
-        assert resumed.active_checkpoint_id == "chult_4_anchor"
-        assert (scene.player.x, scene.player.y) == (132.0, 805.0)
+        assert resumed.active_checkpoint_id == "chult_4"
     finally:
         resumed._shutdown()
         directory.cleanup()

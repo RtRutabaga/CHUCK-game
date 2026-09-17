@@ -86,7 +86,6 @@ def test_the_region_doubles_back_instead_of_running_on() -> None:
 
     kinds = Counter(kind for kind, _ in tilemap.object_spawns)
     assert kinds["crocodile"] == 1
-    assert kinds["anchor:modern_city_sewer_3_anchor"] == 1
     assert kinds["rat"] == 4
     assert kinds["cigarette"] == 3
 
@@ -102,14 +101,11 @@ def test_the_crocodile_can_always_be_walked_around() -> None:
     start = markers["arrival:from_city_sewer_2_drop"][0]
     croc = markers["crocodile"][0]
     onward = markers["boundary:modern_city_sewer_4"][0]
-    anchor = markers["anchor:modern_city_sewer_3_anchor"][0]
 
     reachable = _flood(tilemap, start)
-    assert {onward, anchor, croc} <= reachable
 
     clear = _flood(tilemap, start, avoid=croc)
     assert onward in clear, "the crocodile blocks the only way through"
-    assert anchor in clear, "the Ashtray sits inside its notice range"
     # ...but it does hold the channel it lives in.
     assert not any(math.dist(point, croc) <= 3 for point in clear)
 
@@ -127,7 +123,7 @@ def test_a_crocodile_is_the_zombie_role_moving_faster() -> None:
     assert config.CROCODILE_SCRATCHES >= config.ZOMBIE_SCRATCHES
     assert config.CROCODILE_SANITY_DAMAGE >= config.ZOMBIE_SANITY_DAMAGE
 
-    directory, game, world = _game_and_world("modern_city_sewer_3_anchor")
+    directory, game, world = _game_and_world("modern_city_sewer_3")
     try:
         assert len(world.undead) == 1
         croc = world.undead[0]
@@ -170,7 +166,6 @@ def test_sewer_2_drops_into_sewer_3_and_back() -> None:
     entry = CHECKPOINT_BY_ID[MAP_NAME]
     assert (entry.display_name, entry.map_name) == ("City Sewer 3", MAP_NAME)
     assert entry.runtime_entry
-    assert CHECKPOINT_BY_ID["modern_city_sewer_3_anchor"].saveable
 
     directory, game, world = _game_and_world(SEWER_2)
     try:
@@ -206,7 +201,7 @@ def test_sewer_2_drops_into_sewer_3_and_back() -> None:
 
 
 def test_the_hall_draws_and_respawn_restores_the_crocodile() -> None:
-    directory, game, world = _game_and_world("modern_city_sewer_3_anchor")
+    directory, game, world = _game_and_world("modern_city_sewer_3")
     try:
         assert world.city_rain is None
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
@@ -221,9 +216,6 @@ def test_the_hall_draws_and_respawn_restores_the_crocodile() -> None:
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert len(world.undead) == 1 and len(world.rats) == 4
         assert world.undead[0].scratches_remaining == (
             config.CROCODILE_SCRATCHES)

@@ -20,7 +20,7 @@ OUT = ROOT / "assets" / "maps" / "phlegethos_fractured_way.txt"
 W, H = 76, 48
 WEST_PASS = (1, 38)
 ARRIVAL = (3, 38)
-ANCHOR = (15, 37)
+WAYPOINT = (15, 37)
 NORTH_PASS = (60, 1)
 RETURN_ARRIVAL = (60, 3)
 PIT_FIEND = (25, 16)
@@ -56,7 +56,7 @@ HEADER = [
     "; Rubble and small lava ponds frame a safe winding route. Flameskulls",
     "; remain over the ponds as scenery; one distant Pit Fiend is avoidable.",
     "; A modern bus stop and oblivious commuter sit before four mandatory",
-    "; one-tile Astral jumps. One Ashtray serves this map.",
+    "; one-tile Astral jumps.",
 ]
 
 
@@ -165,13 +165,12 @@ def build() -> list[list[str]]:
     for col in range(NORTH_PASS[0] - 1, NORTH_PASS[0] + 2):
         grid[NORTH_PASS[1]][col] = "∇"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ዐ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ዑ"
     grid[RETURN_ARRIVAL[1]][RETURN_ARRIVAL[0]] = "ዒ"
     return grid
 
 
 _UNDER = {
-    "ዐ": "≡", "ዑ": "≡", "ዒ": "≡", "ዓ": "·", "ዕ": "≡",
+    "ዐ": "≡", "ዒ": "≡", "ዓ": "·", "ዕ": "≡",
     "Ԛ": "≋", "Ԝ": "≋",
 }
 _SOLID = {"█", "þ", "☂"}
@@ -214,7 +213,7 @@ def validate(grid: list[list[str]]) -> tuple[int, int]:
     assert len(grid) == H and all(len(row) == W for row in grid)
     walking = _reachable(grid, allow_hops=False)
     hopping = _reachable(grid, allow_hops=True)
-    assert ANCHOR in walking and BUSINESSMAN in walking
+    assert WAYPOINT in walking and BUSINESSMAN in walking
     assert RETURN_ARRIVAL not in walking, "Astral course can be walked"
     assert RETURN_ARRIVAL in hopping and NORTH_PASS in hopping
     assert math.dist(PIT_FIEND, min(PATH_POINTS, key=lambda p: math.dist(

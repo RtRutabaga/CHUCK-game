@@ -26,9 +26,6 @@ def test_chult_map_has_landing_and_first_anchor() -> None:
     tilemap = TileMap(config.MAPS_DIR / "chult_jungle.txt")
     assert tilemap.width_tiles >= 60 and tilemap.height_tiles >= 60
     assert "player" in tilemap.spawn_points
-    anchors = [kind for kind, _position in tilemap.object_spawns
-               if kind == "anchor:chult_anchor"]
-    assert anchors == ["anchor:chult_anchor"]
 
     # Every authored floor remains connected to the landing; islands of dense
     # growth shape exploration without producing accidental trapped pockets.
@@ -126,14 +123,12 @@ def test_chult_anchor_saves_and_continue_restores_it() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("chult_landing")
         scene.update(config.AREA_FADE_DURATION + 0.01)
-        anchor = scene.anchors[0]
         scene.sanity.current = 63
-        scene.player.x, scene.player.y = anchor.x, anchor.y
-        scene.update(0.01)
+        assert game.checkpoints.write_save("chult_landing", 63)
         assert game.saves.load() == SaveRecord(
-            "chult_anchor", 63, ("chult_reached", "sewer_completed")
+            "chult_landing", 63, ("chult_reached", "sewer_completed")
         )
-        assert game.active_checkpoint_id == "chult_anchor"
+        assert game.active_checkpoint_id == "chult_landing"
     finally:
         game._shutdown()
 
@@ -142,8 +137,7 @@ def test_chult_anchor_saves_and_continue_restores_it() -> None:
         scene = game.checkpoints.continue_game()
         assert scene.map_name == "chult_jungle"
         assert scene.sanity.current == 63
-        assert game.active_checkpoint_id == "chult_anchor"
-        assert scene.anchors[0].lit
+        assert game.active_checkpoint_id == "chult_landing"
     finally:
         game._shutdown()
         directory.cleanup()

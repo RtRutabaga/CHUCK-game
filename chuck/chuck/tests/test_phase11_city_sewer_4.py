@@ -84,7 +84,6 @@ def test_the_last_tunnel_turns_north_and_climbs() -> None:
     assert abs(arrival[1] - ladder[1]) > abs(arrival[0] - ladder[0])
 
     kinds = Counter(kind for kind, _ in tilemap.object_spawns)
-    assert kinds["anchor:modern_city_sewer_4_anchor"] == 1
     assert kinds["rat"] == 4
     assert kinds["cigarette"] == 3
     # The region gets exactly one crocodile, and it lives in Sewer 3.
@@ -116,7 +115,6 @@ def test_the_ladder_is_one_human_scale_structure_at_the_end() -> None:
     markers = _markers(tilemap)
     reachable = _flood(tilemap, markers["arrival:from_city_sewer_3_west"][0])
     assert (col, row + 1) in reachable, "the ladder's foot is unreachable"
-    assert markers["anchor:modern_city_sewer_4_anchor"][0] in reachable
 
 
 def test_the_ladder_asks_before_it_climbs() -> None:
@@ -190,7 +188,6 @@ def test_sewer_3_leads_west_into_sewer_4_and_back() -> None:
     entry = CHECKPOINT_BY_ID[MAP_NAME]
     assert (entry.display_name, entry.map_name) == ("City Sewer 4", MAP_NAME)
     assert entry.runtime_entry
-    assert CHECKPOINT_BY_ID["modern_city_sewer_4_anchor"].saveable
 
     directory, game, world = _game_and_world(SEWER_3)
     try:
@@ -225,8 +222,8 @@ def test_sewer_3_leads_west_into_sewer_4_and_back() -> None:
         directory.cleanup()
 
 
-def test_the_last_tunnel_draws_and_respawns_at_its_own_ashtray() -> None:
-    directory, game, world = _game_and_world("modern_city_sewer_4_anchor")
+def test_the_last_tunnel_draws_and_respawns_at_its_own_door() -> None:
+    directory, game, world = _game_and_world("modern_city_sewer_4")
     try:
         assert world.city_rain is None
         assert all(rat.attack_chase_enabled for rat in world.rats)
@@ -240,9 +237,6 @@ def test_the_last_tunnel_draws_and_respawns_at_its_own_ashtray() -> None:
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert len(world.rats) == 4
     finally:
         game._shutdown()

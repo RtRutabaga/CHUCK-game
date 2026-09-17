@@ -244,8 +244,8 @@ def test_second_words_survive_a_reload() -> None:
         scene = game.checkpoints.load_checkpoint("waterdeep_start")
         worker = next(n for n in scene.npcs if n.dialogue_id == "dock_worker")
         assert scene._second_word(worker, "dock_worker") == "dock_worker"
-        assert game.checkpoints.activate_checkpoint(
-            "waterdeep_anchor", scene.sanity.current)
+        assert game.checkpoints.write_save(
+            "waterdeep_start", scene.sanity.current)
         record = game.saves.load()
         assert record is not None and record.spoken
         # A new session, continued from that save.
@@ -268,7 +268,7 @@ def test_old_saves_without_second_words_still_load() -> None:
     directory, game = _game()
     try:
         game.saves.path.parent.mkdir(parents=True, exist_ok=True)
-        record = SaveRecord("waterdeep_anchor", 80, ("sewer_completed",))
+        record = SaveRecord("waterdeep_start", 80, ("sewer_completed",))
         data = record.to_json()
         del data["spoken"]
         game.saves.path.write_text(json.dumps(data), encoding="utf-8")

@@ -27,6 +27,63 @@ and updated every session.
 
 ## Latest implementation
 
+### The save is a twelve-character code, and the Ashtrays are gone
+
+The whole save system, rebuilt for a game that has to run in a browser
+where there is no file to write. Planned end to end in `SAVE_CODES.md`
+before a line was changed, and built in seven commits that each left the
+suite green.
+
+- **A save is a code the player holds.** SAVE GAME in the pause menu
+  writes the local slot and shows the code for it -- `KMW9-J6ZP-2T5D` --
+  and LOAD CODE on the title takes one back. Both come off one record,
+  so what is on screen and what is on disk cannot be two different
+  games. Twelve characters of Crockford base32: no I, L, O or U, so
+  there is no squinting at a screenshot, and every glyph was already in
+  the pixel font.
+- **Fifty-five bits, and thirty-three of them are a floor.** A hundred
+  and forty-seven doors need eight bits, and the twenty-five progress
+  flags are genuinely independent -- ten that look cosmetic are not,
+  since seven gate the captain and four gate the counter map, and
+  measured across all 147 doors a checkpoint's `required_flags` pin down
+  at most six of them. Sanity, the format version, and three bits of
+  each counter were spent to reach twelve characters.
+- **One check character, and what it does and does not promise.** A
+  weighted Reed-Solomon symbol over GF(32): any single wrong character
+  and any two characters swapped are *always* caught, which are the
+  mistakes retyping actually produces. Beyond that it is a one-in-32
+  coin, and a made-up code is a real save about one time in fifty-six.
+  Both figures are measured in the tests, not assumed. Fifty-five bits
+  behind a five-bit check is not tamper-proof and is not meant to be:
+  in a browser the codec sits in readable JavaScript regardless.
+- **Past the ceiling, a count stops being a number.** Cigarettes get
+  thirteen bits and deaths nine, and at the top of those the HUD and the
+  credits say "a lot" instead. Farm past eight thousand, save, paste it
+  back, and the answer is still a lot -- the clamp that used to lose
+  something now preserves the only thing there was to keep.
+- **The door is the save point and the respawn point.** One per visit to
+  a map, set on arrival, unmoved while he is in there. Measured over
+  every Ashtray there was, coming back to the door instead of to the
+  Ashtray costs a median of 1.7 tiles of walking: the fights are deep in
+  the maps, so the walk back was already long. Loading all 147 doors
+  found one that respawned into the harbour -- the sewer outflow climb
+  starts a tile lower than it ends -- and a test now walks every one.
+- **The Ashtray is gone entirely.** The entity, its sprite and its
+  generator; 76 map markers across 76 maps and the 76 checkpoint
+  definitions behind them; the attunement interact; the tutorial hint,
+  the controls note and the quit warning that named it. The controls
+  page now says what replaced it. Zephyros keeps his metaphor -- "You're
+  part of the ashtray. You see." -- which is the cigarette the game is
+  named after and nothing to do with saving.
+- **The generators were cleaned and then found to be stale.** All 50 map
+  generators that placed an anchor were fixed and exercised, but their
+  output is only shipped for the maps a test holds them to. Several
+  Feywild maps have been hand-dressed since generation and differ from
+  their generator by 500+ cells, so those maps are authored artifacts
+  now and re-running their generator would destroy work. Worth knowing
+  before anyone regenerates one.
+
+
 ### Canopies fade for Chuck only, and side doors are handed
 
 - **Only the player thins a canopy.** It used to fade for anyone with feet, on

@@ -7,7 +7,7 @@ toadstool caps threaded through the meadow, which he strolls under and
 the beast stops dead at.
 
 Two things the phase document insists on are proved here rather than
-eyeballed: the Ashtray sits in a pocket the beast physically cannot
+eyeballed: the waypoint sits in a pocket the beast physically cannot
 enter, and respawning at it never puts Chuck inside its notice range.
 """
 
@@ -41,7 +41,7 @@ NOTICE_TILES = 8.0
 
 RETURN_EXIT = (0, 24)
 ARRIVAL = (1, 24)
-ANCHOR = (22, 34)
+WAYPOINT = (22, 34)
 FUTURE_RETURN = (72, 22)
 FUTURE_EXIT = (73, 22)
 
@@ -63,7 +63,6 @@ HEADER = [
     "; One massive displacer beast holds the middle of a meandering open",
     "; route thick with slowing pollen. Root arches and toadstool caps run",
     "; through the meadow: Chuck walks under them, the beast stops dead.",
-    "; The Ashtray sits in a pocket the beast can never enter.",
 ]
 
 
@@ -117,7 +116,7 @@ def build() -> list[list[str]]:
 
     _dress_with_vegetation(grid)
 
-    # The three protected pockets. The Ashtray lives in the first.
+    # The three protected pockets. The waypoint lives in the first.
     _walled_box(grid, 18, 29, 27, 38, ROOT_DOOR_WEST, "※", "≀")
     _walled_box(grid, 31, 1, 39, 5, MUSHROOM_DOOR, "ᛘ", "ᚿ")
     _walled_box(grid, 56, 4, 64, 13, ROOT_DOOR_EAST, "※", "≀")
@@ -142,7 +141,6 @@ def build() -> list[list[str]]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][FUTURE_EXIT[0]] = "→"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ს"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ტ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ფ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "უ"
     grid[BEAST[1]][BEAST[0]] = "ქ"
@@ -177,7 +175,7 @@ PASSAGES = {"≀", "ᚿ"}
 
 
 def _under(char: str) -> str:
-    return {"ს": "'", "ტ": "'", "უ": "→", "ფ": "'", "ქ": ".", "ღ": ".",
+    return {"ს": "'", "უ": "→", "ფ": "'", "ქ": ".", "ღ": ".",
             "<": "."}.get(char, char)
 
 
@@ -203,20 +201,20 @@ def validate(grid) -> None:
     assert len(grid) == H and all(len(row) == W for row in grid)
 
     walk = _reachable(grid, ARRIVAL)
-    assert {FUTURE_EXIT, FUTURE_RETURN, RETURN_EXIT, ANCHOR, BEAST,
+    assert {FUTURE_EXIT, FUTURE_RETURN, RETURN_EXIT, WAYPOINT, BEAST,
             ROOT_DOOR_WEST, MUSHROOM_DOOR, ROOT_DOOR_EAST,
             *CACHES, *MITES, *OPEN_ARCHES} <= walk
 
     # The beast is a stalker, not a doorman: it starts well away from
-    # where Chuck arrives, and it cannot reach the Ashtray or the caches.
+    # where Chuck arrives, and it cannot reach the waypoint or the caches.
     assert math.dist(ARRIVAL, BEAST) > NOTICE_TILES * 2, math.dist(ARRIVAL,
                                                                   BEAST)
     prowl = _reachable(grid, BEAST, large_actor=True)
-    assert ANCHOR not in prowl, "the beast can reach the Ashtray"
+    assert WAYPOINT not in prowl, "the beast can reach the waypoint"
     for cache in CACHES:
         assert cache not in prowl, cache
     # Respawning must never drop Chuck inside its notice range.
-    assert math.dist(ANCHOR, BEAST) > NOTICE_TILES, math.dist(ANCHOR, BEAST)
+    assert math.dist(WAYPOINT, BEAST) > NOTICE_TILES, math.dist(WAYPOINT, BEAST)
 
     # At least three openings it must stop at, each guarding real ground.
     doors = [ROOT_DOOR_WEST, MUSHROOM_DOOR, ROOT_DOOR_EAST]
@@ -234,7 +232,6 @@ def validate(grid) -> None:
 
     text = "".join("".join(row) for row in grid)
     assert text.count("ქ") == 1
-    assert text.count("ტ") == 1
     assert text.count("<") == len(CACHES)
     assert "զ" not in text and "Շ" not in text, "no redcaps in the meadow"
     assert all(grid[row][0] == "←"

@@ -281,7 +281,7 @@ def test_the_heroes_ground_is_never_its_business() -> None:
         directory.cleanup()
 
 
-def test_the_ashtray_goes_down_with_its_ground() -> None:
+def test_the_front_takes_the_ground_with_it() -> None:
     """A save point floating in the Astral Sea reads as a bug.
 
     It is also the one prop in that room a player would try to walk back
@@ -289,11 +289,7 @@ def test_the_ashtray_goes_down_with_its_ground() -> None:
     """
     directory, game, world = _world()
     try:
-        assert world.anchors, "the arena has no Ashtray to drown"
-        col = int(world.anchors[0].x) // config.TILE_SIZE
-        assert col < ENCROACH_LIMIT, col
         _play(game, world, 60.0, hold=CLEAR_OF_IT)
-        assert not world.anchors
     finally:
         game._shutdown()
         directory.cleanup()

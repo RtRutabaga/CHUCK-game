@@ -71,7 +71,6 @@ def build_map() -> list[str]:
             grid[row][col] = "⮟"
     grid[55][30] = "ሔ"
     grid[51][30] = "ሒ"
-    grid[47][30] = "ሓ"
 
     # Ordinary city life: two people lingering, one pacing a long sidewalk.
     grid[22][13] = "ሕ"

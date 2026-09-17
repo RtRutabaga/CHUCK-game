@@ -70,7 +70,7 @@ SCRUB = ((20, 36, ), (30, 38,), (44, 36,), (58, 45,), (12, 44,),
          (68, 30,), (26, 47,), (52, 48,))
 SNAKES = ((24, 12), (33, 8), (42, 15), (50, 10), (30, 20), (46, 6),
           (20, 7), (54, 18))
-ANCHOR = (6, 26)        # by the west gap, before any of it
+WAYPOINT = (6, 26)        # by the west gap, before any of it
 ARRIVAL = (4, 26)
 
 
@@ -278,7 +278,6 @@ def build():
     dress_fragments(grid, seed=1.8)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌱"
     grid[mid_y][WIDTH - RIM - 2] = "⌵"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⌳"
     return grid
 
 

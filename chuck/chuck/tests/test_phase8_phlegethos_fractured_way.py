@@ -69,7 +69,7 @@ def _game_and_world(checkpoint=MAP_NAME):
     return directory, game, game.checkpoints.load_checkpoint(checkpoint)
 
 
-def test_map_is_one_ashtray_route_with_only_the_avoidable_pit_fiend() -> None:
+def test_map_is_one_route_with_only_the_avoidable_pit_fiend() -> None:
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     markers = _markers(tilemap)
     counts = Counter(kind for kind, _ in tilemap.object_spawns)
@@ -78,7 +78,6 @@ def test_map_is_one_ashtray_route_with_only_the_avoidable_pit_fiend() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (76, 48)
     assert MAP_TILESET[MAP_NAME] == "phlegethos"
     assert AREA_MUSIC[MAP_NAME] == "phlegethos.wav"
-    assert counts["anchor:phlegethos_fractured_anchor"] == 1
     assert counts["arrival:from_phlegethos_rubble"] == 1
     assert counts["arrival:from_phlegethos_fortress"] == 1
     assert counts["pit_fiend"] == 1
@@ -114,12 +113,10 @@ def test_astral_course_is_the_only_mandatory_hazard() -> None:
     markers = _markers(tilemap)
     arrival = markers["arrival:from_phlegethos_rubble"][0]
     onward = markers["arrival:from_phlegethos_fortress"][0]
-    anchor = markers["anchor:phlegethos_fractured_anchor"][0]
     businessman = markers["npc:businessman"][0]
 
     walking = _reachable(tilemap, arrival)
     hopping = _reachable(tilemap, arrival, astral_hops=True)
-    assert anchor in walking and businessman in walking
     assert onward not in walking, "the Astral course can be walked around"
     assert onward in hopping
 
@@ -199,12 +196,10 @@ def test_new_map_sits_between_rubble_and_the_unchanged_fight() -> None:
     )
 
     entry = CHECKPOINT_BY_ID[MAP_NAME]
-    anchor = CHECKPOINT_BY_ID["phlegethos_fractured_anchor"]
     fortress = CHECKPOINT_BY_ID[FORTRESS]
     assert (entry.display_name, entry.arrival) == (
         "Phlegethos 5", "from_phlegethos_rubble"
     )
-    assert anchor.display_name == "Phlegethos 5 Ashtray" and anchor.saveable
     assert fortress.display_name == "Phlegethos 6"
 
 

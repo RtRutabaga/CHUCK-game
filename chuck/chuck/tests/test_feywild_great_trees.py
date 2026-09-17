@@ -3,7 +3,7 @@
 One per map on the maps with room, eleven tiles across and fourteen
 tall. The placement rules are the ones the spots were chosen by, checked
 against the shipped maps so a later edit to a map cannot quietly put a
-crown over an Ashtray or a trunk across a path. And because a tree this
+crown over a marker or a trunk across a path. And because a tree this
 tall can hide somebody completely, it thins out while anybody is
 standing behind it -- which is tested with an enemy as well as Chuck.
 """
@@ -103,7 +103,7 @@ def test_there_is_room_to_walk_all_the_way_round_it() -> None:
 
 
 def test_nothing_that_matters_stands_under_the_crown() -> None:
-    """No enemy, arrival, Ashtray, breakable or exit under fourteen tiles
+    """No enemy, arrival, breakable or exit under fourteen tiles
     of leaves -- even thinned out, that is where a player loses it."""
     for map_name, (col, row) in GREAT_TREES_BY_MAP.items():
         rows = _rows(map_name)

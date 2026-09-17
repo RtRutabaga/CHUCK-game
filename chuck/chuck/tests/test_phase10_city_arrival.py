@@ -99,31 +99,25 @@ def test_return_looks_around_then_lights_a_cigarette_in_fixed_tableau() -> None:
         directory.cleanup()
 
 
-def test_handoff_saves_and_loads_the_real_city_ashtray() -> None:
+def test_handoff_saves_and_loads_the_real_city_door() -> None:
     directory, game, scene = _game_and_scene(sanity=19)
     try:
         scene.update(HANDOFF_TIME)
         world = game.scenes.current
         assert isinstance(world, WorldScene)
         assert world.map_name == "modern_city_arrival"
-        assert game.active_checkpoint_id == "modern_city_anchor"
+        assert game.active_checkpoint_id == "modern_city_1"
         assert game.progress.has("modern_city_reached")
         assert world.sanity.current == config.SANITY_MAX
-        assert len(world.anchors) == 1
-        assert world.anchors[0].lit
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         saved = game.saves.load()
         assert saved is not None
-        assert saved.checkpoint_id == "modern_city_anchor"
+        assert saved.checkpoint_id == "modern_city_1"
         assert saved.sanity == config.SANITY_MAX
         assert "modern_city_reached" in saved.progress_flags
 
         # CONTINUE uses the same checkpoint definition and initialization.
         continued = game.checkpoints.continue_game()
         assert continued.map_name == "modern_city_arrival"
-        assert continued.anchors[0].lit
     finally:
         game._shutdown()
         directory.cleanup()
@@ -141,14 +135,12 @@ def test_city_handoff_enters_the_rainy_phase11_start_map() -> None:
             "modern_city_night_2"
         )
         assert world.city_rain is not None
-        assert len(world.anchors) == 1
         assert not world.npcs
         assert not world.hazards
         assert not world._enemy_spawns
         assert world.tilemap.width_tiles == 72
         assert world.tilemap.height_tiles == 54
         assert len(world.pickups) == 4
-        assert CHECKPOINT_BY_ID["modern_city_anchor"].saveable
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
         world.update(0.1)
         world.draw(surface)

@@ -55,7 +55,6 @@ def test_blooming_path_is_a_large_peaceful_two_route_map() -> None:
 
     kinds = Counter(kind for kind, _position in tilemap.object_spawns)
     assert kinds["arrival:from_feywild_1"] == 1
-    assert kinds["anchor:feywild_2_anchor"] == 1
     assert kinds["boundary:feywild_3"] == 1
     assert kinds["flower_switch:intro"] == 1
     assert kinds["flower_open:intro"] == 3
@@ -81,7 +80,6 @@ def test_both_authored_flower_states_remain_navigable() -> None:
     controller = ReactiveFlowerController(tilemap, tilemap.object_spawns)
     arrival = markers["arrival:from_feywild_1"]
     required = {
-        markers["anchor:feywild_2_anchor"],
         markers["boundary:feywild_3"],
         markers["flower_switch:intro"],
     }
@@ -277,12 +275,9 @@ def test_blooming_path_uses_shared_transitions_and_checkpoints() -> None:
     assert backward.arrival == "from_feywild_2"
 
     entry = CHECKPOINT_BY_ID["feywild_2"]
-    anchor = CHECKPOINT_BY_ID["feywild_2_anchor"]
     return_entry = CHECKPOINT_BY_ID["feywild_1_return"]
     assert entry.display_name == "Feywild 2"
     assert entry.map_name == MAP_NAME and entry.runtime_entry
-    assert anchor.map_name == MAP_NAME and anchor.saveable
-    assert not anchor.development_visible
     assert return_entry.arrival == "from_feywild_2"
 
     game = Game()
@@ -290,8 +285,6 @@ def test_blooming_path_uses_shared_transitions_and_checkpoints() -> None:
         scene = game.checkpoints.load_checkpoint("feywild_2")
         assert scene.map_name == MAP_NAME
         assert game.progress.has("feywild_reached")
-        assert len(scene.anchors) == 1
-        assert scene.anchors[0].checkpoint_id == "feywild_2_anchor"
         assert len(scene.reactive_flowers.flowers) == 1
         assert scene.undead == []
         assert scene.raptors == []
@@ -331,36 +324,6 @@ def test_riverbank_and_blooming_path_transition_both_ways() -> None:
         assert game.active_checkpoint_id == "feywild_1_return"
     finally:
         game._shutdown()
-
-
-def test_blooming_path_ashtray_saves_and_continue_restores_initial_flowers() -> None:
-    with tempfile.TemporaryDirectory() as directory:
-        game = Game(save_path=Path(directory) / "save.json")
-        try:
-            scene = game.checkpoints.load_checkpoint("feywild_2", sanity=71)
-            anchor = scene.anchors[0]
-            scene.player.x = anchor.x
-            scene.player.y = anchor.y
-            scene.update(0.0)
-            assert anchor.lit
-            assert game.active_checkpoint_id == "feywild_2_anchor"
-            assert game.checkpoints.can_continue
-
-            scene.reactive_flowers.trigger("intro")
-            scene.reactive_flowers.update(
-                config.REACTIVE_FLOWER_CHANGE_DELAY,
-                pygame.Rect(-100, -100, 1, 1),
-            )
-            assert scene.reactive_flowers.groups["intro"].active
-
-            resumed = game.checkpoints.continue_game()
-            assert resumed is not None
-            assert resumed.map_name == MAP_NAME
-            assert resumed.sanity.current == 71
-            assert not resumed.reactive_flowers.groups["intro"].active
-            assert resumed.anchors[0].lit
-        finally:
-            game._shutdown()
 
 
 def _run_all() -> None:

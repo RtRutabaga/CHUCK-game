@@ -2,7 +2,7 @@
 
 Chuck lands from the Nine Hells fall onto a cracked-basalt clearing
 scarred by lava. Lava is a walkable, lethal fall hazard (like the Astral
-Sea); a worn stone path winds from his landing past the Ashtray toward
+Sea); a worn stone path winds from his landing past the door toward
 the way onward. The infernal enemies, lava-island jumps, the fortress
 climax, the dedicated soundtrack, and the Feywild-river ending are later
 slices; here we just get Chuck onto the ground.
@@ -37,7 +37,6 @@ def test_arrival_is_a_basalt_clearing_scarred_by_lava() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (44, 30)
     kinds = [kind for kind, _pos in tilemap.object_spawns]
     assert kinds.count("arrival:from_hell") == 1
-    assert kinds.count("anchor:phlegethos_anchor") == 1
     assert kinds.count("arrival:from_phlegethos_2") == 1  # returning south
     lava = sum(row.count("≋") for row in tilemap._grid)
     path = sum(row.count("≡") for row in tilemap._grid)
@@ -67,7 +66,7 @@ def test_lava_is_a_lethal_walkable_fall_hazard() -> None:
     assert "≋" in collision.FALL_HAZARD_TERRAIN
 
 
-def test_arrival_reaches_the_ashtray_and_the_way_onward_on_foot() -> None:
+def test_arrival_reaches_the_way_onward_on_foot() -> None:
     tilemap = _map()
     ts = config.TILE_SIZE
     pts = {kind.split(":", 1)[1]: (int(x // ts), int(y // ts))
@@ -85,7 +84,6 @@ def test_arrival_reaches_the_ashtray_and_the_way_onward_on_foot() -> None:
                 continue
             reached.add((nc, nr))
             frontier.append((nc, nr))
-    assert pts["phlegethos_anchor"] in reached
     # ...and so is the ash-choked pass onward to the lava road.
     onward = next((c, r) for r in range(tilemap.height_tiles)
                   for c in range(tilemap.width_tiles)
@@ -117,9 +115,6 @@ def test_phlegethos_checkpoints_are_registered() -> None:
     assert entry.map_name == MAP_NAME
     assert entry.arrival == "from_hell"
     assert entry.runtime_entry and entry.fade_in
-    anchor = CHECKPOINT_BY_ID["phlegethos_anchor"]
-    assert anchor.map_name == MAP_NAME
-    assert anchor.saveable and not anchor.development_visible
 
 
 def test_phlegethos_loads_and_places_chuck_on_the_landing() -> None:
@@ -127,7 +122,6 @@ def test_phlegethos_loads_and_places_chuck_on_the_landing() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("phlegethos_arrival")
         assert scene.map_name == MAP_NAME
-        assert len(scene.anchors) == 1
         assert scene._player_tile() == (22, 27)  # the from_hell landing
     finally:
         game._shutdown()
@@ -141,7 +135,6 @@ def test_the_lava_road_pinches_to_a_ledge_and_is_walkable_end_to_end() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 32)
     kinds = [kind for kind, _pos in tilemap.object_spawns]
     assert kinds.count("arrival:from_phlegethos_1") == 1
-    assert kinds.count("anchor:phlegethos_road_anchor") == 1
     assert kinds.count("arrival:from_phlegethos_3") == 1  # back from the lake
     # Far more lava than the arrival: the road is the first real gauntlet.
     assert sum(row.count("≋") for row in tilemap._grid) >= 150
@@ -150,12 +143,12 @@ def test_the_lava_road_pinches_to_a_ledge_and_is_walkable_end_to_end() -> None:
              and tilemap.terrain_at(c, 15) == "≋"
              and tilemap.terrain_at(c, 17) == "≋"]
     assert len(ledge) >= 4, ledge
-    # Entry, Ashtray, both passes and the onward boundary all connect on
+    # Entry, door, both passes and the onward boundary all connect on
     # foot (lava is lethal, so it may never be routed through).
     ts = config.TILE_SIZE
     pts = {kind.split(":", 1)[1]: (int(x // ts), int(y // ts))
            for kind, (x, y) in tilemap.object_spawns
-           if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+           if kind.startswith(("arrival:", "boundary:"))}
     start = pts["from_phlegethos_1"]
     reached = {start}
     frontier = deque([start])
@@ -168,7 +161,6 @@ def test_the_lava_road_pinches_to_a_ledge_and_is_walkable_end_to_end() -> None:
                 continue
             reached.add(nxt)
             frontier.append(nxt)
-    assert pts["phlegethos_road_anchor"] in reached
     for char in ("∇", "Δ"):
         gap = next((c, r) for r in range(tilemap.height_tiles)
                    for c in range(tilemap.width_tiles)
@@ -259,7 +251,7 @@ def test_the_lava_lake_is_crossed_by_single_hop_stepping_stones() -> None:
     ts = config.TILE_SIZE
     pts = {kind.split(":", 1)[1]: (int(x // ts), int(y // ts))
            for kind, (x, y) in tilemap.object_spawns
-           if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+           if kind.startswith(("arrival:", "boundary:"))}
     start = pts["from_phlegethos_2"]
 
     # Walk on safe cells; jump clears EXACTLY one lava cell onto safe floor.
@@ -278,7 +270,6 @@ def test_the_lava_lake_is_crossed_by_single_hop_stepping_stones() -> None:
                 reached.add(land)
                 frontier.append(land)
     assert reached == safe, sorted(safe - reached)[:8]
-    assert pts["phlegethos_lake_anchor"] in reached
     assert pts["from_phlegethos_4"] in reached  # the far shore, onward
 
     # The crossing genuinely requires hops: the far shore is NOT reachable
@@ -492,7 +483,6 @@ def test_the_fortress_approach_establishes_the_wall_gate_and_idols() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 34)
     kinds = [kind for kind, _pos in tilemap.object_spawns]
     assert kinds.count("arrival:from_phlegethos_rubble") == 1
-    assert kinds.count("anchor:phlegethos_4_anchor") == 1
     assert kinds.count("boundary:phlegethos_fortress") == 1  # the climax
     for actor in ("fighter", "wizard", "ranger", "pit_fiend"):
         assert kinds.count(f"battle:{actor}") == 1
@@ -525,12 +515,12 @@ def test_the_fortress_approach_establishes_the_wall_gate_and_idols() -> None:
                  if tilemap.terrain_at(c, r) == "╬"}
     assert max(gate_rows) <= 8, gate_rows
 
-    # Entry, Ashtray, the gate approach and the pass back all connect on
+    # Entry, door, the gate approach and the pass back all connect on
     # foot without routing through lava.
     ts = config.TILE_SIZE
     pts = {kind.split(":", 1)[1]: (int(x // ts), int(y // ts))
            for kind, (x, y) in tilemap.object_spawns
-           if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+           if kind.startswith(("arrival:", "boundary:"))}
     start = pts["from_phlegethos_rubble"]
     reached = {start}
     frontier = deque([start])
@@ -543,7 +533,6 @@ def test_the_fortress_approach_establishes_the_wall_gate_and_idols() -> None:
                 continue
             reached.add(nxt)
             frontier.append(nxt)
-    assert pts["phlegethos_4_anchor"] in reached
     assert pts["phlegethos_fortress"] in reached
     back = next((c, r) for r in range(tilemap.height_tiles)
                 for c in range(tilemap.width_tiles)
@@ -580,28 +569,6 @@ def test_horned_devils_reuse_the_massive_dinosaur_wholesale() -> None:
         assert frame.get_height() > config.UNDEAD_FRAME_H
     finally:
         game._shutdown()
-
-
-def test_phlegethos_ashtray_markers_resolve_to_saveable_definitions() -> None:
-    """Every authored Phase 8 Ashtray must activate through the registry."""
-    for map_name in (
-        "phlegethos_arrival",
-        ROAD,
-        LAKE,
-        "phlegethos_rubble_pass",
-        "phlegethos_fractured_way",
-        APPROACH,
-    ):
-        tilemap = TileMap(config.MAPS_DIR / f"{map_name}.txt")
-        anchor_ids = [
-            kind.split(":", 1)[1]
-            for kind, _position in tilemap.object_spawns
-            if kind.startswith("anchor:")
-        ]
-        assert len(anchor_ids) == 1, (map_name, anchor_ids)
-        definition = CHECKPOINT_BY_ID[anchor_ids[0]]
-        assert definition.map_name == map_name
-        assert definition.saveable
 
 
 def test_the_trio_battles_the_pit_fiend_through_shared_choreography() -> None:

@@ -8,7 +8,6 @@ Run from the project root with:
 
 from src.core import config
 from src.entities.hazard import Cat
-from src.systems.astral_anchor import AstralAnchorSystem
 
 TS = config.TILE_SIZE
 
@@ -63,14 +62,16 @@ def test_cat_stays_on_its_row() -> None:
 
 
 def test_the_respawn_point_is_where_he_came_in_and_stays_there() -> None:
-    """It used to move when he touched an Ashtray. It does not now.
+    """It used to move when he touched an door. It does not now.
 
     One respawn point per visit to a map, set on arrival, unchanged for
     as long as he is in there.
     """
-    system = AstralAnchorSystem(default_position=(10.0, 20.0))
-    assert system.respawn_position_for_chuck() == (10.0, 20.0)
-    assert not hasattr(system, "activate"), (
+    from src.systems.respawn import RespawnPoint
+
+    point = RespawnPoint((10.0, 20.0), "waterdeep_start")
+    assert point.position_for_chuck() == (10.0, 20.0)
+    assert not hasattr(point, "activate"), (
         "nothing may move the respawn point away from the door")
 
 
@@ -86,7 +87,6 @@ def _run_all() -> None:
                 print(f"  FAIL  {name}: {exc}")
     if failures:
         raise SystemExit(f"{failures} test(s) failed")
-    print("All hazard/anchor tests passed.")
 
 
 if __name__ == "__main__":

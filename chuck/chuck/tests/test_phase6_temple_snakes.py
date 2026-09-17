@@ -40,7 +40,6 @@ def test_snake_chamber_is_broad_torch_lit_and_routes_south() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (60, 44)
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("snake") == 20
-    assert kinds.count("anchor:temple_5_anchor") == 1
     assert kinds.count("arrival:from_temple_4") == 1
     assert kinds.count("boundary:temple_6") == 1
     assert sum(row.count("i") for row in tilemap._grid) == 18
@@ -102,9 +101,6 @@ def test_temple_5_checkpoint_saves_continues_and_resets_snakes() -> None:
     assert entry.map_name == "temple_snakes"
     assert entry.arrival == "from_temple_4"
     assert entry.runtime_entry and entry.development_visible
-    anchor_entry = CHECKPOINT_BY_ID["temple_5_anchor"]
-    assert anchor_entry.position == (788.0, 293.0)
-    assert anchor_entry.saveable and not anchor_entry.development_visible
 
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
@@ -112,18 +108,17 @@ def test_temple_5_checkpoint_saves_continues_and_resets_snakes() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("temple_5")
         scene._arrival_fade_t = None
-        anchor, = scene.anchors
-        came_in = scene.anchors_system.respawn_position_for_chuck()
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+        came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 67
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "temple_5_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("temple_5", scene.sanity.current)
+        assert game.active_checkpoint_id == "temple_5"
         scene.snakes[0].alive = False
         scene.snakes = []
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        # The door he came in by, not the Ashtray he touched.
+        # The door he came in by.
         assert (scene.player.x, scene.player.y) == came_in
         assert len(scene.snakes) == 20
     finally:
@@ -133,7 +128,7 @@ def test_temple_5_checkpoint_saves_continues_and_resets_snakes() -> None:
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == "temple_snakes"
-        assert resumed.active_checkpoint_id == "temple_5_anchor"
+        assert resumed.active_checkpoint_id == "temple_5"
         assert scene.sanity.current == 67
         assert len(scene.snakes) == 20
     finally:

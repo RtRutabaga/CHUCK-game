@@ -120,8 +120,8 @@ def test_awakened_state_survives_save_continue_and_shared_dev_loading() -> None:
             "tahuya_interior", progress_flags=flags
         )
         assert _table(world).kind == "cabin_table_awakened"
-        assert game.checkpoints.activate_checkpoint(
-            "tahuya_interior_anchor", world.sanity.current
+        assert game.checkpoints.write_save(
+            "tahuya_interior", world.sanity.current
         )
         continued = game.checkpoints.continue_game()
         assert game.progress.has(COUNTER_MAP_AWAKENED_FLAG)

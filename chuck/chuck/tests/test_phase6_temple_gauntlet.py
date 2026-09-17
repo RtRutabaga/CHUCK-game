@@ -3,7 +3,7 @@
 The temple's established defenses concentrate in one L-shaped
 connector: three full-width spike bands with skeletons on the landings
 and a guardian monument pair in the vertical leg, turning west into a
-dart corridor seeded with single Astral cells. One Ashtray; the west
+dart corridor seeded with single Astral cells. One door; the west
 boundary stays inert until Temple Map 9.
 """
 
@@ -38,7 +38,6 @@ def test_gauntlet_concentrates_the_temple_defenses() -> None:
     assert kinds.count("dart_trap:down") == 2
     assert kinds.count("dart_trap:up") == 2
     assert kinds.count("arrival:from_temple_7") == 1
-    assert kinds.count("anchor:temple_8_anchor") == 1
     assert kinds.count("boundary:temple_9") == 1
     assert sum(row.count("i") for row in tilemap._grid) == 9
     assert sum(row.count("♠") for row in tilemap._grid) == 21
@@ -48,7 +47,7 @@ def test_gauntlet_concentrates_the_temple_defenses() -> None:
 
 def test_gauntlet_course_is_completable_with_single_hops() -> None:
     """Walking plus single-tile hops over spikes and Astral cells must
-    reach the Ashtray and the west boundary from the south arrival —
+    reach the door and the west boundary from the south arrival —
     the concentrated defenses never require a longer jump."""
     tilemap = _map()
     jumpable = {"♠", "V"}
@@ -80,7 +79,7 @@ def test_gauntlet_course_is_completable_with_single_hops() -> None:
                 frontier.append(land)
     assert reached == safe
     assert (2, 25) in reached or (2, 25) in passable  # the boundary
-    assert (19, 25) in reached                        # the Ashtray
+    assert (19, 25) in reached                        # the door
 
 
 def test_maps_7_and_8_connect_both_ways_without_bounce() -> None:
@@ -115,9 +114,6 @@ def test_temple_8_checkpoint_saves_continues_and_respawns() -> None:
     assert entry.map_name == MAP_NAME
     assert entry.arrival == "from_temple_7"
     assert entry.runtime_entry and entry.development_visible
-    anchor_entry = CHECKPOINT_BY_ID["temple_8_anchor"]
-    assert anchor_entry.position == (292.0, 405.0)
-    assert anchor_entry.saveable and not anchor_entry.development_visible
 
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
@@ -127,16 +123,15 @@ def test_temple_8_checkpoint_saves_continues_and_respawns() -> None:
         scene._arrival_fade_t = None
         assert len(scene.undead) == 3
         assert len(scene.dart_traps) == 4
-        anchor, = scene.anchors
-        came_in = scene.anchors_system.respawn_position_for_chuck()
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+        came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 52
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "temple_8_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("temple_8", scene.sanity.current)
+        assert game.active_checkpoint_id == "temple_8"
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        # The door he came in by, not the Ashtray he touched.
+        # The door he came in by.
         assert (scene.player.x, scene.player.y) == came_in
         assert len(scene.undead) == 3 and len(scene.dart_traps) == 4
     finally:
@@ -146,7 +141,7 @@ def test_temple_8_checkpoint_saves_continues_and_respawns() -> None:
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == MAP_NAME
-        assert resumed.active_checkpoint_id == "temple_8_anchor"
+        assert resumed.active_checkpoint_id == "temple_8"
         assert scene.sanity.current == 52
     finally:
         resumed._shutdown()

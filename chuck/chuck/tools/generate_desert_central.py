@@ -46,10 +46,10 @@ RUINS = (
     (14, 38, 7, 7),
     (45, 44, 6, 5),
 )
-# Where the ashtray stands: near the middle, on the biggest ruin's
+# The route waypoint: near the middle, on the biggest ruin's
 # floor, so the one place a player is certain to come back to is a
 # place they can see from a distance.
-ANCHOR = (31, 26)
+WAYPOINT = (31, 26)
 # Chuck arrives a little south and west of it, in the open.
 START = (28, 31)
 
@@ -231,7 +231,6 @@ def build() -> list[list[str]]:
     _rect(grid, WIDTH - RIM, mid_y - half, WIDTH - 1, mid_y + half, "⮞")
     grid[mid_y][WIDTH - RIM - 2] = "⌱"
 
-    grid[ANCHOR[1]][ANCHOR[0]] = "⨀"
     return grid
 
 

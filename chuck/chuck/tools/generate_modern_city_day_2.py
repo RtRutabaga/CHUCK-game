@@ -28,7 +28,7 @@ HEIGHT = 58
 # arrive standing in a live traffic lane.
 ARRIVAL = (2, 38)
 RETURN_EXIT = (0, 38)
-ANCHOR = (12, 38)
+WAYPOINT = (12, 38)
 FUTURE_EXIT = (38, 57)
 
 # Traffic runs on both streets, so the crossing has to be timed twice.
@@ -118,7 +118,6 @@ def build_map() -> list[str]:
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ቕ"
     grid[FUTURE_EXIT[1] - 2][FUTURE_EXIT[0]] = "ቦ"  # back up from Day 3
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ቖ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ቘ"
     for (col, row), char in TRAFFIC:
         assert grid[row][col] == "=", (col, row, grid[row][col])
         grid[row][col] = char
@@ -150,7 +149,7 @@ SOLID = {"▥", "#", "▱", "▤", "w", "V"}
 
 
 def _under(char: str) -> str:
-    return {"ቔ": "⮜", "ቕ": "⮟", "ቖ": ".", "ቘ": ".", "ሖ": ".", "ሞ": ".",
+    return {"ቔ": "⮜", "ቕ": "⮟", "ቖ": ".", "ሖ": ".", "ሞ": ".",
             "ል": ".", "ꞏ": ".", "ቛ": ".", "ቝ": ".", "በ": ".", "ቦ": ".",
             "ሎ": "=", "ሏ": "=", "ሟ": "=",
             "ሠ": "="}.get(char, char)
@@ -177,7 +176,7 @@ def validate(rows: list[str]) -> None:
     assert len(rows) == HEIGHT and all(len(row) == WIDTH for row in rows)
 
     found = _flood(rows, ARRIVAL)
-    assert {ANCHOR, RETURN_EXIT, FUTURE_EXIT, *CIGARETTES, *PUDDLES} <= found
+    assert {WAYPOINT, RETURN_EXIT, FUTURE_EXIT, *CIGARETTES, *PUDDLES} <= found
     for position, _axis in BUSINESSPEOPLE:
         assert position in found, position
     for position, _char in TRAFFIC:
@@ -196,7 +195,7 @@ def validate(rows: list[str]) -> None:
 
     assert text.count("ቛ") == len(OFFICERS)
     assert sum(text.count(char) for _pos, char in POLICE) == len(POLICE)
-    # An officer's lane must never point at the Ashtray or the arrival.
+    # An officer's lane must never point at the waypoint or the arrival.
     for (col, row), char in POLICE:
         lane = {"ቝ": (1, 0), "ቜ": (-1, 0), "በ": (0, -1), "ቡ": (0, 1)}[char]
         for step in range(1, 40):
@@ -205,12 +204,11 @@ def validate(rows: list[str]) -> None:
                 break
             if _under(rows[point[1]][point[0]]) in SOLID:
                 break
-            assert point not in {ANCHOR, ARRIVAL}, (char, point)
-    # Neither officer starts within reach of the Ashtray Chuck respawns
+            assert point not in {WAYPOINT, ARRIVAL}, (char, point)
+    # Neither officer starts within reach of the spot Chuck respawns
     # at, so returning is never straight back into a net.
     for col, row in OFFICERS:
-        assert abs(col - ANCHOR[0]) + abs(row - ANCHOR[1]) > 8, (col, row)
-    assert text.count("ቘ") == 1
+        assert abs(col - WAYPOINT[0]) + abs(row - WAYPOINT[1]) > 8, (col, row)
     assert text.count("ል") == len(CIGARETTES)
     assert "ም" not in text, "no homeless man in the daytime city"
     assert "ቒ" not in text, "the woman in the red dress walks City Day 1"

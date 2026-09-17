@@ -55,7 +55,6 @@ def build_map() -> list[str]:
             grid[row][col] = "⮟"
     grid[37][11] = "ሻ"
     grid[34][11] = "ሹ"
-    grid[30][11] = "ሺ"
     for row in range(35, HEIGHT):
         for col in range(76, 81):
             grid[row][col] = "V"
@@ -79,7 +78,7 @@ def build_map() -> list[str]:
     grid[31][88] = "ቁ"    # where Sewer 2 sets Chuck back down
 
     # Aggressive rats are spaced into distinct pressure beats, never at the
-    # entry Ashtray. Loose cigarettes reward inspecting the long turns.
+    # entry. Loose cigarettes reward inspecting the long turns.
     for col, row in ((27, 20), (42, 18), (56, 21), (75, 17), (80, 29)):
         grid[row][col] = "q"
     for col, row in ((14, 17), (49, 17), (82, 33)):

@@ -109,7 +109,7 @@ def test_traffic_hit_is_severe_and_never_leaves_chuck_embedded() -> None:
 
 
 def test_lethal_traffic_uses_normal_checkpoint_return_and_resets_lanes() -> None:
-    directory, game, world = _game_and_world("modern_city_anchor")
+    directory, game, world = _game_and_world("modern_city_1")
     try:
         world._arrival_fade_t = None
         world.sanity.current = config.TRAFFIC_SANITY_DAMAGE
@@ -123,9 +123,6 @@ def test_lethal_traffic_uses_normal_checkpoint_return_and_resets_lanes() -> None
         world.update(config.RESPAWN_HOLD + 0.01)
         assert world._respawn_phase == "in"
         assert world.sanity.current == config.SANITY_MAX
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert len(world.traffic_vehicles) == 10
     finally:
         game._shutdown()

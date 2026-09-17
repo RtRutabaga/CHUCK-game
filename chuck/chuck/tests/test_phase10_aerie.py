@@ -56,7 +56,6 @@ def test_aerie_is_a_vast_open_platform_with_four_giant_nests() -> None:
     kinds = Counter(kind for kind, _ in tilemap.object_spawns)
     props = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
     assert kinds["arrival:from_exterior"] == 1
-    assert kinds["anchor:zephyros_aerie_anchor"] == 1
     assert kinds["choice:zephyros_rope"] == 1
     assert kinds["griffon"] == 1
     assert props["griffon_nest"] == 4
@@ -90,7 +89,6 @@ def test_arrival_anchor_rope_and_return_are_connected_around_the_hole() -> None:
     points = _markers(tilemap)
     arrival = points["arrival:from_exterior"]
     reached = _reachable(tilemap, arrival)
-    assert points["anchor:zephyros_aerie_anchor"] in reached
     assert points["choice:zephyros_rope"] in reached
     return_tiles = {
         (col, row) for row in range(tilemap.height_tiles)
@@ -160,21 +158,17 @@ def test_griffon_reuses_the_slow_massive_hazard_and_is_easy_to_outrun() -> None:
 
 def test_aerie_checkpoint_uses_shared_save_respawn_and_development_loader() -> None:
     entry = CHECKPOINT_BY_ID["zephyros_3"]
-    anchor = CHECKPOINT_BY_ID["zephyros_aerie_anchor"]
     assert entry.map_name == MAP_NAME and entry.runtime_entry
-    assert anchor.map_name == MAP_NAME and anchor.saveable
-    assert not anchor.development_visible
 
     with tempfile.TemporaryDirectory() as directory:
         game = Game(save_path=Path(directory) / "save.json")
         try:
             scene = game.checkpoints.load_checkpoint("zephyros_3", sanity=21)
             assert scene.map_name == MAP_NAME and scene.sanity.current == 21
-            ashtray, = scene.anchors
-            scene.player.x, scene.player.y = ashtray.x, ashtray.y
-            scene.update(0.01)
-            assert game.active_checkpoint_id == "zephyros_aerie_anchor"
-            assert game.saves.load().checkpoint_id == "zephyros_aerie_anchor"
+            # The save the menu writes, at the door he came in by.
+            assert game.checkpoints.write_save("zephyros_3", scene.sanity.current)
+            assert game.active_checkpoint_id == "zephyros_3"
+            assert game.saves.load().checkpoint_id == "zephyros_3"
         finally:
             game._shutdown()
 

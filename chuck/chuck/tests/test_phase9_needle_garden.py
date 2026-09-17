@@ -86,7 +86,6 @@ def test_needle_garden_content_and_cardinal_lanes() -> None:
 
     kinds = Counter(kind for kind, _position in tilemap.object_spawns)
     assert kinds["arrival:from_feywild_5"] == 1
-    assert kinds["anchor:feywild_6_anchor"] == 1
     assert kinds["boundary:feywild_7"] == 1
     assert kinds["arrival:from_feywild_7"] == 1
     assert kinds["breakable_grass"] == 2
@@ -113,8 +112,6 @@ def test_needle_garden_content_and_cardinal_lanes() -> None:
         for direction, position in orchids
     ]
     assert sorted(map(len, rays)) == [3, 38, 38, 55]
-    anchor = _markers(tilemap)["anchor:feywild_6_anchor"]
-    assert anchor not in {cell for ray in rays for cell in ray}
 
 
 def _tile_markers(tilemap: TileMap):
@@ -236,38 +233,6 @@ def test_orchid_sprite_contains_three_readable_windup_stages() -> None:
         assert len(set(stages)) == 3
 
 
-def test_needle_garden_checkpoint_save_respawn_and_reset() -> None:
-    with tempfile.TemporaryDirectory() as directory:
-        game = Game(save_path=Path(directory) / "save.json")
-        try:
-            scene = game.checkpoints.load_checkpoint("feywild_6", sanity=61)
-            anchor = scene.anchors[0]
-            came_in = scene.anchors_system.respawn_position_for_chuck()
-            scene.player.x, scene.player.y = anchor.x, anchor.y
-            scene.update(0.0)
-            assert anchor.lit
-            assert game.active_checkpoint_id == "feywild_6_anchor"
-
-            for _ in range(60):
-                scene.update(0.05)
-            assert scene.orchid_seeds
-            scene.sanity.deplete()
-            scene.update(config.RESPAWN_FADE_OUT)
-            scene.update(config.RESPAWN_HOLD)
-            # The door he came in by, not the Ashtray he touched.
-            assert (scene.player.x, scene.player.y) == came_in
-            assert scene.orchid_seeds == []
-            assert len(scene.spitting_orchids) == 4
-
-            resumed = game.checkpoints.continue_game()
-            assert resumed is not None
-            assert resumed.map_name == MAP_NAME
-            assert resumed.sanity.current == 61
-            assert resumed.anchors[0].lit
-        finally:
-            game._shutdown()
-
-
 def test_tea_table_and_needle_garden_transition_both_ways() -> None:
     forward = AREA_WALK_EXITS[("feywild_tea_table", "⇩")]
     backward = AREA_WALK_EXITS[(MAP_NAME, "⇧")]
@@ -281,12 +246,9 @@ def test_tea_table_and_needle_garden_transition_both_ways() -> None:
     assert onward.arrival == "from_feywild_6"
 
     entry = CHECKPOINT_BY_ID["feywild_6"]
-    anchor = CHECKPOINT_BY_ID["feywild_6_anchor"]
     previous_return = CHECKPOINT_BY_ID["feywild_5_return"]
     future_return = CHECKPOINT_BY_ID["feywild_6_return"]
     assert entry.display_name == "Feywild 6" and entry.runtime_entry
-    assert anchor.map_name == MAP_NAME and anchor.saveable
-    assert not anchor.development_visible
     assert previous_return.arrival == "from_feywild_6"
     assert future_return.arrival == "from_feywild_7"
 

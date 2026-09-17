@@ -8,7 +8,7 @@ from pathlib import Path
 W, H = 60, 46
 OUT = Path(__file__).resolve().parents[1] / "assets/maps/zephyros_aerie.txt"
 ARRIVAL = (30, 41)
-ANCHOR = (23, 38)
+WAYPOINT = (23, 38)
 ROPE_CHOICE = (29, 28)
 ROPE_PROP = (29, 27)
 GRIFFON = (13, 15)
@@ -73,7 +73,6 @@ def build():
     grid[ROPE_PROP[1]][ROPE_PROP[0]] = "℞"
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ሇ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ለ"
     grid[GRIFFON[1]][GRIFFON[0]] = "ሉ"
     grid[ROPE_CHOICE[1]][ROPE_CHOICE[0]] = "ሊ"
     return grid
@@ -81,7 +80,7 @@ def build():
 
 def _base(char):
     return {
-        "ሇ": ".", "ለ": ".", "ሉ": ".", "ሊ": ".",
+        "ሇ": ".", "ሉ": ".", "ሊ": ".",
         "♘": "#", "℞": "#",
     }.get(char, char)
 
@@ -106,7 +105,7 @@ def _reachable(grid):
 def validate(grid):
     assert len(grid) == H and all(len(row) == W for row in grid)
     reached = _reachable(grid)
-    assert {ANCHOR, ROPE_CHOICE, (30, 45)} <= reached
+    assert {WAYPOINT, ROPE_CHOICE, (30, 45)} <= reached
     assert all(nest not in reached for nest in NESTS)
     assert math.dist(ARRIVAL, GRIFFON) > 8
     text = "".join("".join(row) for row in grid)

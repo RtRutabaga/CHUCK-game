@@ -1,11 +1,3 @@
-"""The rubble map (sessions 135, 138).
-
-Where the Fireball throws Chuck: a collapsed 48x30 chamber strewn with
-Astral Sea hazard blocks. He lands on the `from_fireball` arrival at the
-top; the rubble ashtray sits below, and the one way out is a narrow
-crawlspace mouth ('∇') in the south wall that leads to the ship deck —
-all reachable on foot along the clear spine and the right-side lane.
-"""
 
 from collections import Counter, deque
 import os
@@ -32,7 +24,6 @@ def test_the_rubble_is_a_broken_chamber_of_astral_hazards() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 30)
     kinds = [kind for kind, _pos in tilemap.object_spawns]
     assert kinds.count("arrival:from_fireball") == 1
-    assert kinds.count("anchor:temple_rubble_anchor") == 1
     # Numerous Astral Sea blocks, the collapsed reality of the map.
     astral = sum(row.count("V") for row in tilemap._grid)
     assert astral >= 150, astral
@@ -53,14 +44,13 @@ def test_the_rubble_is_a_broken_chamber_of_astral_hazards() -> None:
     } for kind in kinds)
 
 
-def test_the_arrival_reaches_the_ashtray_on_foot() -> None:
+def test_the_arrival_reaches_the_lane_on_foot() -> None:
     tilemap = _map()
     ts = config.TILE_SIZE
     points = {kind.split(":", 1)[1] if ":" in kind else kind:
               (int(x // ts), int(y // ts))
               for kind, (x, y) in tilemap.object_spawns}
     start = points["from_fireball"]
-    anchor = points["temple_rubble_anchor"]
     # On foot the Astral Sea is impassable (a lethal fall hazard).
     reached = {start}
     frontier = deque([start])
@@ -73,7 +63,6 @@ def test_the_arrival_reaches_the_ashtray_on_foot() -> None:
                 continue
             reached.add((nc, nr))
             frontier.append((nc, nr))
-    assert anchor in reached
     # ...and so is the crawlspace mouth, the one way out.
     crawl = next((c, r) for r in range(tilemap.height_tiles)
                  for c in range(tilemap.width_tiles)
@@ -115,10 +104,6 @@ def test_rubble_checkpoints_are_registered() -> None:
     assert entry.map_name == MAP_NAME
     assert entry.arrival == "from_fireball"
     assert entry.runtime_entry and entry.fade_in
-    anchor = CHECKPOINT_BY_ID["temple_rubble_anchor"]
-    assert anchor.map_name == MAP_NAME
-    assert anchor.position == (356.0, 389.0)
-    assert anchor.saveable and not anchor.development_visible
 
 
 def test_the_rubble_loads_and_places_its_anchor() -> None:
@@ -126,7 +111,6 @@ def test_the_rubble_loads_and_places_its_anchor() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("temple_rubble")
         assert scene.map_name == MAP_NAME
-        assert len(scene.anchors) == 1
         assert scene._player_tile() == (23, 5)
     finally:
         game._shutdown()

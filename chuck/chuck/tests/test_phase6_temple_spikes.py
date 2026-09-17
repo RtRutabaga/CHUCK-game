@@ -35,7 +35,7 @@ def _flood(tilemap: TileMap, start: tuple[int, int],
     return reached
 
 
-def test_spike_corridor_has_five_jump_bands_skeletons_and_one_ashtray() -> None:
+def test_spike_corridor_has_five_jump_bands_and_skeletons() -> None:
     tilemap = _map()
     assert (tilemap.width_tiles, tilemap.height_tiles) == (48, 44)
     spikes = {(col, row) for row, line in enumerate(tilemap._grid)
@@ -64,7 +64,6 @@ def test_spike_corridor_has_five_jump_bands_skeletons_and_one_ashtray() -> None:
 
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_temple_1") == 1
-    assert kinds.count("anchor:temple_2_anchor") == 1
     assert kinds.count("boundary:temple_3") == 1
     assert kinds.count("skeleton") == 5
     assert sum(row.count("i") for row in tilemap._grid) == 14
@@ -105,15 +104,12 @@ def test_temple_maps_connect_both_ways_without_bounce_or_music_restart() -> None
         game._shutdown()
 
 
-def test_temple_2_ashtray_saves_continues_and_respawns() -> None:
+def test_temple_2_save_continues_and_respawns() -> None:
     entry = CHECKPOINT_BY_ID["temple_2"]
     assert entry.display_name == "Temple 2"
     assert entry.map_name == "temple_spikes"
     assert entry.arrival == "from_temple_1"
     assert entry.runtime_entry and entry.development_visible
-    anchor_entry = CHECKPOINT_BY_ID["temple_2_anchor"]
-    assert anchor_entry.position == (372.0, 613.0)
-    assert anchor_entry.saveable and not anchor_entry.development_visible
 
     directory = tempfile.TemporaryDirectory()
     save_path = Path(directory.name) / "save.json"
@@ -121,16 +117,15 @@ def test_temple_2_ashtray_saves_continues_and_respawns() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("temple_2")
         assert len(scene.undead) == 5
-        anchor, = scene.anchors
-        came_in = scene.anchors_system.respawn_position_for_chuck()
-        scene.player.x, scene.player.y = anchor.x, anchor.y
+        came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 64
-        scene.update(0.01)
-        assert game.active_checkpoint_id == "temple_2_anchor"
+        # The save the menu writes, at the door he came in by.
+        assert game.checkpoints.write_save("temple_2", scene.sanity.current)
+        assert game.active_checkpoint_id == "temple_2"
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        # The door he came in by, not the Ashtray he touched.
+        # The door he came in by.
         assert (scene.player.x, scene.player.y) == came_in
         assert len(scene.undead) == 5
     finally:
@@ -140,7 +135,7 @@ def test_temple_2_ashtray_saves_continues_and_respawns() -> None:
     try:
         scene = resumed.checkpoints.continue_game()
         assert scene.map_name == "temple_spikes"
-        assert resumed.active_checkpoint_id == "temple_2_anchor"
+        assert resumed.active_checkpoint_id == "temple_2"
         assert scene.sanity.current == 64
     finally:
         resumed._shutdown()

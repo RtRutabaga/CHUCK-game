@@ -158,8 +158,7 @@ def build_map():
         grid[DOOR_ROW + 1][x] = "Ɯ"
     grid[COUNTER_BOTTOM - 1][10] = "ኄ"
 
-    # Exactly one interior Ashtray, reachable along the clear central lane.
-    grid[FLOOR_TOP + 2][13] = "ኆ"
+    # The interior waypoint, reachable along the clear central lane.
     return ["".join(row) for row in grid]
 
 

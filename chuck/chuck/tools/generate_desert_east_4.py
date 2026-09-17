@@ -16,7 +16,7 @@ enough to be worth looking at first. Spined devils came through with
 it, and they are on the far side, so the crossing is the dangerous part
 rather than the arrival.
 
-The ashtray stands on the sand before the slab, which is the whole
+The waypoint sits on the sand before the slab, which is the whole
 reason it is there: this is the first map east where dying is likely.
 """
 
@@ -85,7 +85,7 @@ DEVILS = ((58, 20, "Ԓ"), (60, 34, "Ԓ"),
 SCARS = ((8, 8, 6, 5), (64, 48, 6, 5), (10, 44, 5, 6))
 RUINS = ((8, 22, 7, 6), (60, 26, 6, 6))
 SCRUB = ((16, 14), (14, 36), (66, 18), (58, 52), (18, 50))
-ANCHOR = (16, 28)       # on the sand, before the crossing
+WAYPOINT = (16, 28)       # on the sand, before the crossing
 ARRIVAL = (4, 28)
 
 
@@ -310,7 +310,6 @@ def build():
     dress_fragments(grid, seed=4.4)
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌵"
     grid[mid_y][WIDTH - RIM - 2] = "⍀"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⌹"
     return grid
 
 

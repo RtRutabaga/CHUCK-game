@@ -377,10 +377,9 @@ def build_map():
         grid[y][0] = "V"
         grid[y][WIDTH - 1] = "V"
 
-    # The cutscene emerges onto the western trail; the one Ashtray is close
+    # The cutscene emerges onto the western trail; the waypoint is close
     # enough to discover naturally but does not interrupt the reveal.
     grid[31][10] = "ኀ"
-    grid[36][24] = "ኁ"
     return ["".join(row) for row in grid]
 
 

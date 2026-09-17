@@ -85,7 +85,6 @@ def test_city_night_2_is_a_large_city_grid_with_authored_content() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (76, 56)
     assert MAP_TILESET[MAP_NAME] == "city"
     assert kinds["arrival:from_city_night_1"] == 1
-    assert kinds["anchor:modern_city_2_anchor"] == 1
     assert kinds["boundary:modern_city_night_1"] == 1
     assert kinds["boundary:modern_city_night_3"] == 1
     assert kinds["arrival:from_city_night_3"] == 1
@@ -110,7 +109,6 @@ def test_city_night_2_content_and_return_are_reachable_without_falling() -> None
     markers = _markers(tilemap)
     reached = _reachable(tilemap, markers["arrival:from_city_night_1"][0])
     required = {
-        markers["anchor:modern_city_2_anchor"][0],
         markers["boundary:modern_city_night_1"][0],
         markers["boundary:modern_city_night_3"][0],
         *markers["npc:businessman"],
@@ -133,12 +131,9 @@ def test_city_night_2_content_and_return_are_reachable_without_falling() -> None
 
 def test_city_night_2_checkpoint_and_dialogue_are_registered() -> None:
     entry = CHECKPOINT_BY_ID["modern_city_2"]
-    anchor = CHECKPOINT_BY_ID["modern_city_2_anchor"]
     assert (entry.display_name, entry.map_name, entry.arrival) == (
         "City Night 2", MAP_NAME, "from_city_night_1"
     )
-    assert anchor.position == (484.0, 757.0)
-    assert anchor.saveable
     assert DialogueSystem().get("businessman") == ["Ah! A rat!"]
 
 
@@ -171,7 +166,7 @@ def test_world_builds_rain_people_raccoon_and_traffic() -> None:
 
 
 def test_raccoon_defeat_and_death_reset_use_normal_enemy_lifecycle() -> None:
-    directory, game, world = _game_and_world("modern_city_2_anchor")
+    directory, game, world = _game_and_world("modern_city_2")
     try:
         raccoon = world.raccoons[0]
         for _ in range(config.RACCOON_SCRATCHES):

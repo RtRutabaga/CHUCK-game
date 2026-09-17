@@ -5,7 +5,7 @@ fade in on a side-view forest at night, Chuck walks out of a large
 Douglas fir, hold long enough to read, end at a stable boundary -- and
 The completed cutscene remains unchanged; Phase 12 now consumes its stable
 boundary by entering the authored cabin grounds through the shared checkpoint
-loader. Persistence still waits for the physical exterior Ashtray.
+loader. Persistence still waits for the physical exterior door.
 """
 
 import os
@@ -30,7 +30,9 @@ from src.world.tileset_layout import MAP_TILESET
 
 
 MAP_NAME = "modern_city_day_6"
-ANCHOR = "modern_city_day_6_anchor"
+
+# The door the city hands off from, where the door used to be.
+CITY_DOOR = "modern_city_day_6"
 
 
 def _game():
@@ -51,7 +53,7 @@ def test_yes_at_the_portal_leaves_the_city_for_the_forest() -> None:
 
     directory, game = _game()
     try:
-        world = game.checkpoints.load_checkpoint(ANCHOR)
+        world = game.checkpoints.load_checkpoint(CITY_DOOR)
         world._arrival_fade_t = None
         world._on_choice(yes)
         # The action waits for the prompt to close, exactly as a map
@@ -110,9 +112,8 @@ def test_the_phase_hands_into_the_shared_cabin_checkpoint() -> None:
 
     directory, game = _game()
     try:
-        world = game.checkpoints.load_checkpoint(ANCHOR)
+        world = game.checkpoints.load_checkpoint(CITY_DOOR)
         world._arrival_fade_t = None
-        assert game.active_checkpoint_id == ANCHOR
 
         scene = _scene(game, sanity=57)
         game.scenes.replace(scene)
@@ -128,7 +129,7 @@ def test_the_phase_hands_into_the_shared_cabin_checkpoint() -> None:
         assert game.active_checkpoint_id == "tahuya_exterior"
         assert exterior.sanity.current == 57
 
-        # The physical Ashtray on the cabin grounds owns persistence.
+        # The physical door on the cabin grounds owns persistence.
         record = game.checkpoints.saves.load()
         assert record is None
 

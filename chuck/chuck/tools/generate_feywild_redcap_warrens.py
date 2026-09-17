@@ -46,7 +46,7 @@ RETURN_EXIT = (0, 26)
 ARRIVAL = (1, 26)
 FUTURE_RETURN = (74, 25)
 FUTURE_EXIT = (75, 25)
-ANCHOR = (66, 28)
+WAYPOINT = (66, 28)
 
 REDCAPS = ((24, 22), (38, 30), (50, 20), (50, 38))
 MITES = ((26, 6), (29, 6), (32, 6), (40, 32), (43, 32), (46, 33))
@@ -153,7 +153,6 @@ def build() -> list[list[str]]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][FUTURE_EXIT[0]] = "→"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "բ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "գ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ե"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "դ"
     for col, row in REDCAPS:
@@ -194,7 +193,7 @@ def _dress_with_vegetation(grid) -> None:
 
 def _under(char: str) -> str:
     return {
-        "բ": "'", "գ": ".", "դ": "→", "ե": "'", "զ": ".", "է": ".",
+        "բ": "'", "դ": "→", "ե": "'", "զ": ".", "է": ".",
         "<": ".",
     }.get(char, char)
 
@@ -238,7 +237,7 @@ def validate(grid) -> None:
     assert len(grid) == H and all(len(row) == W for row in grid)
 
     walk = _reachable(grid, ARRIVAL)
-    assert {RETURN_EXIT, FUTURE_EXIT, FUTURE_RETURN, ANCHOR,
+    assert {RETURN_EXIT, FUTURE_EXIT, FUTURE_RETURN, WAYPOINT,
             REFUGE_DOOR, REFUGE_GRASS, SHORTCUT_SOUTH, SHORTCUT_NORTH,
             SHORTCUT_GRASS, *REDCAPS, *MITES} <= walk
 
@@ -246,7 +245,7 @@ def validate(grid) -> None:
     # without ever entering a redcap's notice range.
     safe = _reachable(grid, ARRIVAL, avoid_notice=True)
     assert FUTURE_EXIT in safe, "the warrens cannot be crossed safely"
-    assert ANCHOR in safe, "the Ashtray is not safely reachable"
+    assert WAYPOINT in safe, "the waypoint is not safely reachable"
     # ...but the camp itself is still genuinely guarded.
     assert not any(
         (col, row) in safe
@@ -268,7 +267,6 @@ def validate(grid) -> None:
     text = "".join("".join(row) for row in grid)
     assert text.count("զ") == 4
     assert text.count("է") == 6
-    assert text.count("գ") == 1
     assert text.count("<") == 2
     assert text.count("ᚿ") == 2 and text.count("≀") == 1
     assert all(grid[row][0] == "←"

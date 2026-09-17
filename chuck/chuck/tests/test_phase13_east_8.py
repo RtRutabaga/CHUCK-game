@@ -245,11 +245,6 @@ def test_the_far_shore_can_be_walked_to() -> None:
         assert on_it & reachable, (index, ISLANDS[index][4])
 
     ts = config.TILE_SIZE
-    anchor = CHECKPOINT_BY_ID[f"{MAP_NAME}_anchor"]
-    assert anchor.position is not None
-    assert (int(anchor.position[0]) // ts,
-            int(anchor.position[1]) // ts) in reachable
-    assert anchor.saveable
 
 
 def test_each_island_keeps_its_own_enemy_and_none_at_a_landing() -> None:
@@ -268,7 +263,7 @@ def test_each_island_keeps_its_own_enemy_and_none_at_a_landing() -> None:
 
     seen: dict[str, int] = {}
     for kind, position in tilemap.object_spawns:
-        if kind.startswith(("arrival:", "anchor:")):
+        if kind.startswith(("arrival:",)):
             continue
         cell = (int(position[0]) // ts, int(position[1]) // ts)
         seen[kind] = seen.get(kind, 0) + 1
@@ -312,7 +307,7 @@ def test_the_road_east_reaches_it_and_comes_back() -> None:
         game._shutdown()
         directory.cleanup()
 
-    for entry in (MAP_NAME, f"{MAP_NAME}_anchor", "desert_east_7_from_east_8"):
+    for entry in (MAP_NAME, "desert_east_7_from_east_8"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
 
     # The east gap was cut as rim while there was nothing behind it,

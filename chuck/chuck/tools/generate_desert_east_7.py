@@ -123,7 +123,7 @@ GARRISON = (
 )
 CLEARANCE = 4           # how far an enemy must stand off the corridor
 
-ANCHOR = (6, MID_Y + 2)
+WAYPOINT = (6, MID_Y + 2)
 ARRIVAL = (4, MID_Y)
 
 FRAGMENT_CHARS = {
@@ -335,7 +335,6 @@ def build():
     dress_castle(grid, seed=7)
 
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⍳"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⍴"
     grid[MID_Y][WIDTH - RIM - 2] = "⍺"
     return grid
 

@@ -43,7 +43,7 @@ def _tile(position):
 def _points(tilemap):
     return {kind.split(":", 1)[1]: _tile(pos)
             for kind, pos in tilemap.object_spawns
-            if kind.startswith(("arrival:", "anchor:", "boundary:"))}
+            if kind.startswith(("arrival:", "boundary:"))}
 
 
 def _new_scene(game):
@@ -227,7 +227,6 @@ def test_the_hedge_can_be_solved_and_can_never_strand_chuck() -> None:
 
     reached = {tile for tile, _state in nodes}
     assert goal in reached, "the hedge cannot be solved"
-    assert points["feywild_9_anchor"] in reached
     caches = {_tile(pos) for kind, pos in tilemap.object_spawns
               if kind == "breakable_grass"}
     assert caches and caches <= reached
@@ -263,8 +262,6 @@ def test_hedge_checkpoints_music_and_the_warrens_connection() -> None:
     entry = CHECKPOINT_BY_ID["feywild_9"]
     assert entry.display_name == "Feywild 9" and entry.runtime_entry
     assert entry.map_name == MAP_NAME and entry.arrival == "from_feywild_8"
-    anchor = CHECKPOINT_BY_ID["feywild_9_anchor"]
-    assert anchor.saveable and not anchor.development_visible
     assert tileset_for(MAP_NAME).sheet == "feywild.png"
     assert AREA_MUSIC[MAP_NAME] == "feywild.wav"
     assert AREA_WALK_EXITS[(WARRENS, "→")].destination == MAP_NAME

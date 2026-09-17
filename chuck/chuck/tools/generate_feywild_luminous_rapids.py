@@ -39,7 +39,7 @@ OUT = (
 
 RETURN_EXIT = (0, 21)
 ARRIVAL = (1, 21)
-ANCHOR = (33, 21)
+WAYPOINT = (33, 21)
 FUTURE_RETURN = (76, 21)
 FUTURE_EXIT = (77, 21)
 
@@ -169,7 +169,6 @@ def build() -> list[list[str]]:
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][FUTURE_EXIT[0]] = "→"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ჲ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "ჳ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ჵ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ჴ"
     dress_grid("feywild_luminous_rapids", grid)
@@ -208,7 +207,7 @@ def _base(grid, col, row) -> str:
             return "ᚧ"
         if char == close_char:
             return "ᚨ"
-    return {"ჲ": "'", "ჳ": ".", "ჴ": "→", "ჵ": "'", "<": ".",
+    return {"ჲ": "'", "ჴ": "→", "ჵ": "'", "<": ".",
             "ჶ": "ᚼ", "ჷ": "ᚼ", "ჸ": "#", "ჹ": "#"}.get(char, char)
 
 
@@ -294,7 +293,7 @@ def validate(grid) -> None:
     nodes, backward = _explore(grid)
     reached = {tile for tile, _state in nodes}
     assert FUTURE_EXIT in reached, "the rapids cannot be crossed"
-    assert ANCHOR in reached and RETURN_EXIT in reached
+    assert WAYPOINT in reached and RETURN_EXIT in reached
     for cache in CACHES:
         assert cache in reached, cache
 
@@ -343,7 +342,6 @@ def validate(grid) -> None:
     assert nodes == can_finish, sorted(nodes - can_finish)[:6]
 
     text = "".join("".join(row) for row in grid)
-    assert text.count("ჳ") == 1
     assert text.count("<") == len(CACHES)
     assert sum(text.count(char) for char in {c for _pos, c in MOTHS}) == len(MOTHS)
     # Orchids are a late/optional flourish here, not a gate.

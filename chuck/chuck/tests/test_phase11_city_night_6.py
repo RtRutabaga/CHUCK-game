@@ -88,7 +88,6 @@ def test_city_night_6_is_a_full_scale_final_night_block() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (88, 60)
     assert MAP_TILESET[MAP_NAME] == "city"
     assert kinds["arrival:from_city_night_5"] == 1
-    assert kinds["anchor:modern_city_6_anchor"] == 1
     assert kinds["boundary:modern_city_night_5"] == 1
     assert kinds["choice:city_sewer_entrance"] == 1
     assert kinds["arrival:from_city_sewer_1"] == 1
@@ -128,7 +127,6 @@ def test_route_turns_from_east_entry_to_the_sewer_threshold() -> None:
     markers = _markers(tilemap)
     reached = _reachable(tilemap, markers["arrival:from_city_night_5"][0])
     required = {
-        markers["anchor:modern_city_6_anchor"][0],
         markers["boundary:modern_city_night_5"][0],
         markers["choice:city_sewer_entrance"][0],
         markers["arrival:from_city_sewer_1"][0],
@@ -220,14 +218,11 @@ def test_the_sewer_entrance_is_an_open_manhole_in_the_pavement() -> None:
 
 def test_checkpoint_world_and_death_reset_use_shared_systems() -> None:
     entry = CHECKPOINT_BY_ID["modern_city_6"]
-    anchor = CHECKPOINT_BY_ID["modern_city_6_anchor"]
     assert (entry.display_name, entry.map_name, entry.arrival) == (
         "City Night 6", MAP_NAME, "from_city_night_5"
     )
-    assert anchor.position == (1284.0, 389.0)
-    assert anchor.saveable
 
-    directory, game, world = _game_and_world("modern_city_6_anchor")
+    directory, game, world = _game_and_world("modern_city_6")
     try:
         assert world.city_rain is not None
         assert len(world.npcs) == 3
@@ -249,9 +244,6 @@ def test_checkpoint_world_and_death_reset_use_shared_systems() -> None:
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert [
             [vehicle.center for vehicle in lane.vehicles]
             for lane in world.traffic_lanes

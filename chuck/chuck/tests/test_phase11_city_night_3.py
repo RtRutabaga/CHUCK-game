@@ -86,7 +86,6 @@ def test_city_night_3_has_large_blocks_and_one_homeless_scene() -> None:
     assert (tilemap.width_tiles, tilemap.height_tiles) == (80, 56)
     assert MAP_TILESET[MAP_NAME] == "city"
     assert kinds["arrival:from_city_night_2"] == 1
-    assert kinds["anchor:modern_city_3_anchor"] == 1
     assert kinds["boundary:modern_city_night_2"] == 1
     assert kinds["boundary:modern_city_night_4"] == 1
     assert kinds["arrival:from_city_night_4"] == 1
@@ -126,7 +125,6 @@ def test_every_map_3_discovery_is_reachable_without_astral_fall() -> None:
     markers = _markers(tilemap)
     reached = _reachable(tilemap, markers["arrival:from_city_night_2"][0])
     required = {
-        markers["anchor:modern_city_3_anchor"][0],
         markers["boundary:modern_city_night_2"][0],
         markers["boundary:modern_city_night_4"][0],
         *markers["npc:homeless_man"],
@@ -166,12 +164,9 @@ def test_map_2_and_3_visual_openings_match_their_named_arrivals() -> None:
 
 def test_checkpoint_dialogue_and_scene_entities_are_shared_systems() -> None:
     entry = CHECKPOINT_BY_ID["modern_city_3"]
-    anchor = CHECKPOINT_BY_ID["modern_city_3_anchor"]
     assert (entry.display_name, entry.map_name, entry.arrival) == (
         "City Night 3", MAP_NAME, "from_city_night_2"
     )
-    assert anchor.position == (116.0, 533.0)
-    assert anchor.saveable
     dialogue = DialogueSystem()
     assert dialogue.get("homeless_man") == ["Hey there buddy!"]
     assert dialogue.get("businessman") == ["Ah! A rat!"]
@@ -214,7 +209,7 @@ def test_homeless_and_bottle_sprites_keep_human_scale() -> None:
 
 
 def test_city_night_3_sanity_return_uses_its_anchor_and_resets_raccoons() -> None:
-    directory, game, world = _game_and_world("modern_city_3_anchor")
+    directory, game, world = _game_and_world("modern_city_3")
     try:
         world._arrival_fade_t = None
         world.raccoons[0].on_scratched()
@@ -227,9 +222,6 @@ def test_city_night_3_sanity_return_uses_its_anchor_and_resets_raccoons() -> Non
         world.update(config.RESPAWN_HOLD + 0.01)
         assert world._respawn_phase == "in"
         assert world.sanity.current == config.SANITY_MAX
-        assert (world.player.x, world.player.y) == (
-            world.anchors[0].x, world.anchors[0].y
-        )
         assert len(world.raccoons) == 2
         assert all(
             enemy.scratches_remaining == config.RACCOON_SCRATCHES

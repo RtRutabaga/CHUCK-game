@@ -67,7 +67,7 @@ GREAT_PILLARS = (
 )
 
 CHEST = (32, 26)            # in the courtyard, dead centre
-ANCHOR = (32, 44)           # outside the building, on the way in
+WAYPOINT = (32, 44)           # outside the building, on the way in
 ARRIVAL = (30, 4)           # just inside the way in from the hub
 
 SKELETONS = ((24, 17), (40, 17), (20, 26), (44, 28), (30, 34),
@@ -264,7 +264,6 @@ def build():
     # this map is the hub's -- the same one the camp and the oasis
     # use. The ruins' own name belongs on the hub's south edge.
     grid[ARRIVAL[1]][ARRIVAL[0]] = "⌬"
-    grid[ANCHOR[1]][ANCHOR[0]] = "☽"
     for x, y in SKELETONS:
         if grid[y][x] in (".", ",", "⟁"):
             grid[y][x] = "ᛊ"
@@ -277,7 +276,7 @@ HEADER = (
     "; DESERT UNDEAD RUINS - Phase 13, south of the hub (60x52).\n"
     "; One building with rooms and a courtyard, not scattered rubble:\n"
     "; '⌗' standing wall, '⌖' its buried floor, '⎈' the chest in the\n"
-    "; courtyard, 'ᛊ'/'ᛏ' patrolling skeletons, '☽' the ashtray.\n"
+    "; courtyard, 'ᛊ'/'ᛏ' patrolling skeletons.\n"
     "; The Astral Sea closes the west and the south.\n"
     "; '⍏'/'⍐' standing columns, '⍖'/'⍗' fallen ones,"
     " '⍓'/'⍔' spilled blocks.\n"

@@ -9,7 +9,7 @@ under the menu moves while it is open, and the music is paused with it.
     VOLUME           music and sound, as two sliders
     SAVE GAME        writes the slot, and shows the code for it
     FULLSCREEN: ON/OFF   (F11 does the same thing anywhere)
-    QUIT TO TITLE    asks first -- anything since the last Ashtray is lost
+    QUIT TO TITLE    asks first -- anything unsaved is lost
 
 The title screen opens two of these pages on their own through the same
 scene -- controls (`page="controls"`) and the code field
@@ -46,7 +46,12 @@ CONTROLS = (
     ("PAUSE", "ESC"),
     ("FULLSCREEN", "F11"),
 )
-CONTROLS_NOTE = "Ashtrays save your progress."
+
+
+# The line under the controls. It used to name the Ashtrays; with those
+# gone it names what replaced them, which is the thing a player who has
+# opened this page is most likely looking for.
+CONTROLS_NOTE = "SAVE GAME gives you a code."
 
 
 def controls_rows(input_manager) -> tuple[tuple[str, str], ...]:
@@ -495,7 +500,7 @@ class PauseScene(Scene):
 
     def _draw_confirm(self, canvas) -> None:
         rect = self._panel(canvas, 236, 84, "QUIT TO TITLE?")
-        for index, line in enumerate(("Anything since your last Ashtray",
+        for index, line in enumerate(("Anything since your last save",
                                       "will be lost.")):
             text = self._text(line, alpha=200)
             canvas.blit(text, (rect.centerx - text.get_width() // 2,

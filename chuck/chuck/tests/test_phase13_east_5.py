@@ -303,10 +303,8 @@ def test_the_road_east_continues_in_both_directions() -> None:
         game._shutdown()
         directory.cleanup()
 
-    for entry in (MAP_NAME, f"{MAP_NAME}_anchor",
-                  "desert_east_4_from_east_5"):
+    for entry in (MAP_NAME,                   "desert_east_4_from_east_5"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
-    assert CHECKPOINT_BY_ID[f"{MAP_NAME}_anchor"].saveable
 
 
 def _run_all() -> None:

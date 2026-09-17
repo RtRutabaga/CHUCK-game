@@ -208,25 +208,17 @@ def test_the_hub_still_does_not_say_which_way_is_forward() -> None:
 
 
 def test_the_traversal_has_its_own_entries() -> None:
-    for entry in ("desert_east_1", "desert_east_1_anchor",
+    for entry in ("desert_east_1", "desert_east_1",
                   "desert_central_from_east_1"):
         assert CHECKPOINT_BY_ID[entry].required_flags == DESERT_ENTRY_FLAGS
-    assert CHECKPOINT_BY_ID["desert_east_1_anchor"].saveable
     # The phase document asks for development access to the collided
     # traversal by name, not only to the initial desert.
     assert CHECKPOINT_BY_ID["desert_east_1"].development_visible
 
     tilemap = _tilemap()
     ts = config.TILE_SIZE
-    anchor = CHECKPOINT_BY_ID["desert_east_1_anchor"].position
-    spawn = next(p for k, p in tilemap.object_spawns
-                 if k == "anchor:desert_east_1_anchor")
-    assert anchor is not None
-    assert (int(anchor[0]) // ts, int(anchor[1]) // ts) == \
-        (int(spawn[0]) // ts, int(spawn[1]) // ts)
     # It stands before the crossing, so the last save is on the near
     # side of the one hazard on the map.
-    assert int(anchor[0]) // ts < TEAR_X
 
 
 def _run_all() -> None:

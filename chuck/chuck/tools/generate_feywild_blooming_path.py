@@ -12,7 +12,7 @@ OUT = (
 
 ARRIVAL = (1, 33)
 RETURN_EXIT = (0, 33)
-ANCHOR = (10, 33)
+WAYPOINT = (10, 33)
 FLOWER = (22, 25)
 OPEN_GATE = ((27, 24), (27, 25), (27, 26))
 CLOSE_GATE = ((27, 19), (27, 20), (27, 21))
@@ -23,7 +23,7 @@ HEADER = [
     "; PHASE 9 - FEYWILD 2, THE BLOOMING PATH (60x42 tiles).",
     "; A quiet two-route clearing introduces one reversible flower switch.",
     "; Scratching the flower opens the lower vine gate and closes the upper.",
-    "; One Ashtray serves the map; the deeper boundary remains inert.",
+    "; The deeper boundary remains inert.",
 ]
 
 
@@ -135,7 +135,6 @@ def build() -> list[list[str]]:
     for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
         grid[row][RETURN_EXIT[0]] = "←"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Զ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "Է"
     grid[FLOWER[1]][FLOWER[0]] = "Թ"
     for col, row in OPEN_GATE:
         grid[row][col] = "Ժ"
@@ -151,7 +150,6 @@ def build() -> list[list[str]]:
 def _under(char: str) -> str:
     return {
         "Զ": "'",
-        "Է": "'",
         "Ը": "'",
         "Թ": ".",
         "Ժ": "#",
@@ -193,7 +191,7 @@ def validate(grid: list[list[str]]) -> None:
     assert all(len(row) == W for row in grid)
     for active in (False, True):
         reached = _reachable(grid, ARRIVAL, active=active)
-        assert ANCHOR in reached
+        assert WAYPOINT in reached
         assert FLOWER in reached
         assert DEEPER in reached
         assert DEEPER_RETURN in reached

@@ -1,7 +1,7 @@
 ; PHASE 8 - PHLEGETHOS ARRIVAL (44x30 tiles).
 ; Where the Nine Hells fall drops Chuck: a cracked-basalt clearing
 ; scarred by lava pools and glowing fissures. A worn stone path winds
-; north from his landing, past the Ashtray, toward the way onward
+; north from his landing, toward the way onward
 ; (boundary to the next Phlegethos map, a later slice).
 ████████████████████████████████████████████
 ████████████████████████████████████████████
@@ -27,7 +27,7 @@
 ██····≋······≡≡≡≡≡≡≡≡≡≡≡·≋···········≋····██
 ██······≋············≡≡≡≋≋≋·········≋≋≋···██
 ██·····≋≋≋···Ɜ·······≡≡≡·≋·········≋≋≋≋≋··██
-██····≋≋≋≋≋··········≡Ѫ≡············≋≋≋···██
+██····≋≋≋≋≋··········≡·≡············≋≋≋···██
 ██·····≋≋≋···········≡≡≡·········¢···≋····██
 ██······≋············≡≡≡··················██
 ██··············♨····≡Ѩ≡····♨·····♨······Ɜ██

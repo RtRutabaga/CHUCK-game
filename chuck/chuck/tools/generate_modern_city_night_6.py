@@ -61,7 +61,6 @@ def build_map() -> list[str]:
             grid[row][col] = "⮞"
     grid[24][87] = "ሷ"
     grid[24][83] = "ስ"
-    grid[24][80] = "ሶ"
 
     # An open manhole in the pavement, with the prompt on the approach
     # to it. It is out in the sidewalk rather than cut into the building

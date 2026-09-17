@@ -1,6 +1,6 @@
 ; PHASE 7 - LOWER HOLD (40x30 tiles).
 ; A cargo-heavy rat nest below the arrival compartment. Pantry shelves/jars
-; reuse their scratch-break and cigarette-carton behavior; one Ashtray and
+; reuse their scratch-break and cigarette-carton behavior;
 ; returns through the same northern ladder.
 ########################################
 ########################################
@@ -24,7 +24,7 @@
 #=====Ң=========Ң================Ң=====#
 #======================Ң===============#
 #====o===x===ʒ============ʒ===x====o===#
-#================Ҡ=====================#
+#======================================#
 #ꝝ=======================ꝛ============ꝝ#
 #====================================Ң=#
 #===========Ң==========================#

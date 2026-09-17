@@ -28,17 +28,12 @@ def test_galley_is_authored_as_one_ship_map_with_one_checkpoint() -> None:
     kinds = [kind for kind, _position in tilemap.object_spawns]
     assert kinds.count("arrival:from_ship_room") == 1
     assert kinds.count("pirate_chef") == 1
-    assert kinds.count("anchor:ship_galley_anchor") == 1
     assert tileset_for(MAP_NAME).sheet == "ship.png"
     assert AREA_MUSIC[MAP_NAME] == "ship_shanty.wav"
 
     entry = CHECKPOINT_BY_ID["ship_galley"]
     assert entry.display_name == "Ship Galley"
     assert entry.map_name == MAP_NAME and entry.runtime_entry
-    anchor = CHECKPOINT_BY_ID["ship_galley_anchor"]
-    assert anchor.map_name == MAP_NAME
-    assert anchor.position == (116.0, 229.0)
-    assert anchor.saveable and not anchor.development_visible
 
 
 def test_galley_and_arrival_compartment_use_reversible_open_passages() -> None:

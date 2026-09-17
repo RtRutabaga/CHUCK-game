@@ -11,7 +11,7 @@ rules, and the suite checks the shipped maps against the same four:
 * there is open ground all round it, so the roots have somewhere to go
   and Chuck can walk the whole way round;
 * nothing that matters stands under the crown -- no enemy, arrival,
-  Ashtray, breakable or exit -- because even see-through, a crown this
+  marker, breakable or exit -- because even see-through, a crown this
   big is where a player would lose sight of the thing they need;
 * setting the footprint solid cuts nothing off.
 

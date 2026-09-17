@@ -292,7 +292,7 @@ def test_most_of_the_adventure_is_pressing_them() -> None:
     ts = config.TILE_SIZE
     kinds: dict[str, int] = {}
     for kind, position in tilemap.object_spawns:
-        if kind.startswith(("arrival:", "anchor:", "battle:")):
+        if kind.startswith(("arrival:", "battle:")):
             continue
         cell = (int(position[0]) // ts, int(position[1]) // ts)
         kinds[kind] = kinds.get(kind, 0) + 1
@@ -390,7 +390,6 @@ def test_the_walk_east_ends_here() -> None:
     assert entry.display_name == "Final Trio Encounter"
     assert entry.development_visible and entry.runtime_entry
     assert entry.required_flags == DESERT_ENTRY_FLAGS
-    assert CHECKPOINT_BY_ID[f"{MAP_NAME}_anchor"].saveable
 
 
 def test_the_room_renders_with_all_three_in_the_shot() -> None:

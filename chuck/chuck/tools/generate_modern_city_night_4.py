@@ -68,7 +68,6 @@ def build_map() -> list[str]:
             grid[row][col] = "⮟"
     grid[59][36] = "ሥ"
     grid[55][36] = "ሣ"
-    grid[51][36] = "ሤ"
 
     grid[24][17] = "ሕ"
     grid[35][64] = "ሕ"

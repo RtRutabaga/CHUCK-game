@@ -61,7 +61,7 @@ ORCS = ((30, 26), (37, 19), (44, 19), (35, 30), (27, 15),
 TENTS = ((36, 14), (46, 22), (32, 30))
 RACKS = ((33, 19), (38, 23))
 DRUM = (35, 22)
-ANCHOR = (32, 39)   # south of the camp, in the open, before the fight
+WAYPOINT = (32, 39)   # south of the camp, in the open, before the fight
 START = (32, 44)    # ...and the way in, below it
 
 
@@ -212,7 +212,6 @@ def build():
                 grid[y][x] = "."
 
     grid[START[1]][START[0]] = "⌬"
-    grid[ANCHOR[1]][ANCHOR[0]] = "⨁"
     for x, y in ORCS:
         grid[y][x] = "❂" if grid[y][x] != "," else "⟠"
     return grid
@@ -224,7 +223,7 @@ HEADER = (
     "; the only way out is the way in, south to the central desert.\n"
     "; '⛰' scratchable sacks (the Waterdeep pantry's own), '❂'/'⟠' orcs,\n"
     "; '⚱' scorched ground with '⍘' a burnt-out fire pit in\n"
-    "; the middle of it, '⨁' the ashtray south of the fight.\n"
+    "; the middle of it.\n"
 )
 
 

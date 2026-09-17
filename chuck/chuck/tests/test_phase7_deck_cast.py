@@ -174,8 +174,8 @@ def test_all_four_pirates_switch_to_repeat_dialogue_and_persist() -> None:
                 assert pirate.interact(scene.player) == f"{pirate.npc_id}_first"
                 assert pirate.interact(scene.player) == f"{pirate.npc_id}_repeat"
             assert FLAGS <= game.progress.flags
-            assert game.checkpoints.activate_checkpoint(
-                "ship_exterior_anchor", scene.sanity.current
+            assert game.checkpoints.write_save(
+                "ship_exterior_deck", scene.sanity.current
             )
         finally:
             game._shutdown()

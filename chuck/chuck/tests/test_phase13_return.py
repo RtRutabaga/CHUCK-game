@@ -314,7 +314,7 @@ def test_the_phase_hands_to_playable_waterdeep_with_crossing_recorded() -> None:
 
         # ...and what it protects: the opening's own entries still mean
         # what they meant, so a new game is unaffected by any of it.
-        opening = {"waterdeep_start", "waterdeep_anchor", "waterdeep_return"}
+        opening = {"waterdeep_start", "waterdeep_start", "waterdeep_return"}
         assert not (gated & opening), gated
         for cp in CHECKPOINTS:
             if cp.checkpoint_id in opening:

@@ -23,7 +23,7 @@ OUT = (
 
 RETURN_EXIT = (10, 0)
 ARRIVAL = (10, 1)
-ANCHOR = (16, 6)
+WAYPOINT = (16, 6)
 FUTURE_RETURN = (70, 43)
 FUTURE_EXIT = (71, 43)
 
@@ -39,7 +39,7 @@ HEADER = [
     "; PHASE 9 - FEYWILD 6, THE NEEDLE GARDEN (72x50 tiles).",
     "; Rooted orchids telegraph and fire along authored cardinal lanes.",
     "; A pollen side path bypasses the densest crossing after the safe lesson.",
-    "; One physical Ashtray is outside every firing lane; Map 7 is inert.",
+    "; Map 7 is inert.",
 ]
 
 
@@ -136,7 +136,6 @@ def build() -> list[list[str]]:
     for col in range(RETURN_EXIT[0] - 1, RETURN_EXIT[0] + 2):
         grid[0][col] = "⇧"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "Ւ"
-    grid[ANCHOR[1]][ANCHOR[0]] = "Փ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "Օ"
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][W - 1] = "→"
@@ -149,7 +148,7 @@ def build() -> list[list[str]]:
 def _under(char: str) -> str:
     return {
         "Վ": "✿", "Տ": "✿", "Ր": "✿", "Ց": "✿",
-        "Ւ": ".", "Փ": ".", "Ք": "→", "Օ": ".",
+        "Ւ": ".", "Ք": "→", "Օ": ".",
         "<": ".",
     }.get(char, char)
 
@@ -199,7 +198,7 @@ def _ray(
 def validate(grid: list[list[str]]) -> None:
     assert len(grid) == H and all(len(row) == W for row in grid)
     reached = _reachable(grid, ARRIVAL)
-    assert {RETURN_EXIT, ANCHOR, FUTURE_RETURN, FUTURE_EXIT} <= reached
+    assert {RETURN_EXIT, WAYPOINT, FUTURE_RETURN, FUTURE_EXIT} <= reached
     assert all(position in reached for position in POLLEN)
     rays = [
         _ray(grid, (col, row), direction)
@@ -207,12 +206,11 @@ def validate(grid: list[list[str]]) -> None:
     ]
     assert min(map(len, rays[:3])) >= 8
     assert len(rays[3]) == 3  # crossing shot stops before the bypass
-    assert ANCHOR not in {cell for ray in rays for cell in ray}
+    assert WAYPOINT not in {cell for ray in rays for cell in ray}
     assert all(cell not in POLLEN for cell in rays[:2])
     assert len({(col + row * 3) % 4
                 for col, row, _marker, _direction in ORCHIDS}) == len(ORCHIDS)
     text = "".join("".join(row) for row in grid)
-    assert text.count("Փ") == 1
     assert text.count("☼") == 3
     assert text.count("<") == 2
     assert all(grid[0][col] == "⇧" for col in range(9, 12))

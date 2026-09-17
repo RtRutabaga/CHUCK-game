@@ -1,7 +1,7 @@
 ; DESERT UNDEAD RUINS - Phase 13, south of the hub (60x52).
 ; One building with rooms and a courtyard, not scattered rubble:
 ; '⌗' standing wall, '⌖' its buried floor, '⎈' the chest in the
-; courtyard, 'ᛊ'/'ᛏ' patrolling skeletons, '☽' the ashtray.
+; courtyard, 'ᛊ'/'ᛏ' patrolling skeletons.
 ; The Astral Sea closes the west and the south.
 ; '⍏'/'⍐' standing columns, '⍖'/'⍗' fallen ones, '⍓'/'⍔' spilled blocks.
 ; '⍕'/'⍙' the great pillars and '⍛' the gate arch, which is the
@@ -50,7 +50,7 @@ VVVVV..........⍐................................⍐..........#
 VVVVV.......................................⍔..............#
 VVVVV........,,.,.......................⍗........⟁.⟁..⟁....#
 VVVVV.....,,,,,,,,..............⍔..............⟁.⟁⟁⟁⟁⟁⟁⟁...#
-VVVVV...,.,,,,,,,,,.............☽.............⟁⟁⟁⟁⟁⟁⟁⟁⟁⟁⟁..#
+VVVVV...,.,,,,,,,,,...........................⟁⟁⟁⟁⟁⟁⟁⟁⟁⟁⟁..#
 VVVVV....,,,,,,,,,,,...........................⟁⟁⟁⟁⟁⟁⟁⟁⟁⟁..#
 VVVVV...,.,,,,,,,,,............................⟁⟁⟁⟁⟁⟁⟁⟁⟁...#
 VVVVV.........................VVVVVVVVVVVVVVVVV............#
