@@ -204,3 +204,38 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_the_chairs_are_furniture_rather_than_footstools() -> None:
+    """Bigger than the table, and they no longer call themselves tavern.
+
+    Furniture is architecture to a one-foot rat. At 12x14 the chair was
+    shorter than the table it is pulled up to and barely taller than
+    Chuck, which reads as a stool. And the same chair stands in the
+    ship's galley and the captain's cabin, where "a tavern chair" is
+    simply wrong -- so the line says what it is and leaves the room out
+    of it.
+    """
+    from PIL import Image
+
+    from src.entities.prop import _SPRITES, examine_line_id
+    from src.systems.dialogue import DialogueSystem
+    from src.world.tilemap import TILE_DEFS
+
+    chair = Image.open(config.SPRITES_DIR / _SPRITES["tavern_chair"])
+    table = Image.open(config.SPRITES_DIR / _SPRITES["tavern_table"])
+    assert chair.size == (15, 18)
+    assert chair.height > table.height
+    assert chair.height > config.CHUCK_FRAME_H
+
+    line = DialogueSystem().get(examine_line_id("tavern_chair"))
+    assert line and "tavern" not in " ".join(line).lower()
+
+    # It is the same chair elsewhere, which is the reason for the line.
+    char = next(ch for ch, d in TILE_DEFS.items()
+                if getattr(d, "prop", None) == "tavern_chair")
+    elsewhere = [
+        path.stem for path in sorted(config.MAPS_DIR.glob("ship_*.txt"))
+        if char in path.read_text(encoding="utf-8")
+    ]
+    assert elsewhere, "the chair used to stand outside the tavern too"

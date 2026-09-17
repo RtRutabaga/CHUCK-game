@@ -838,8 +838,14 @@ TILE_DEFS: dict[str, TileDef] = {
     # the tower arch is walkable pale stone whose huge sprite frames Chuck.
     "☁": TileDef(solid=True, color=(20, 55, 52),
                  prop="cloud_staircase", under="#"),
-    "Ƶ": TileDef(solid=False, color=(154, 160, 169),
-                 prop="cloud_tower_arch", under="."),
+    "Ƶ": TileDef(solid=False, color=(222, 232, 243),
+                 prop="cloud_tower_arch", under="ᚡ"),
+    # The platform the tower stands on is standing cloud, not masonry:
+    # the tower is a thing in the sky and the ground Chuck walks up to it
+    # on says so before he gets there. Its own chars rather than the
+    # aerie's stone, so only the approach changes.
+    "ᚡ": TileDef(solid=False, color=(222, 232, 243)),
+    "ᚣ": TileDef(solid=True, color=(189, 206, 226)),
     "♘": TileDef(solid=True, color=(154, 160, 169),
                  prop="griffon_nest", under="#"),
     "℞": TileDef(solid=True, color=(154, 160, 169),
@@ -911,6 +917,11 @@ TILE_DEFS: dict[str, TileDef] = {
     # tabletop dressing while the legs become human/Fey-scale columns.
     "▤": TileDef(solid=True, color=(117, 76, 65)),
     "░": TileDef(solid=False, color=(13, 38, 39)),
+    # The same shaded ground with the table's underside drawn OVER it:
+    # Chuck passes beneath the boards, and they thin out while he is
+    # under them the way the market's awning does.
+    "▒": TileDef(solid=False, color=(13, 38, 39),
+                 under="░", overhead="fey_table_under"),
     "◍": TileDef(solid=True, color=(117, 76, 65)),
     "♜": TileDef(solid=True, color=(13, 38, 39),
                  prop="fey_table_leg", under="░"),
@@ -1467,10 +1478,10 @@ MARKER_DEFS: dict[str, MarkerDef] = {
     "ሀ": MarkerDef(kind="arrival:from_feywild_13", under="'"),
     "ሁ": MarkerDef(kind="anchor:zephyros_staircase_anchor", under="'"),
     "ሂ": MarkerDef(kind="choice:cloud_staircase", under="'"),
-    "ሃ": MarkerDef(kind="arrival:from_staircase", under="."),
-    "ሄ": MarkerDef(kind="anchor:zephyros_exterior_anchor", under="."),
+    "ሃ": MarkerDef(kind="arrival:from_staircase", under="ᚡ"),
+    "ሄ": MarkerDef(kind="anchor:zephyros_exterior_anchor", under="ᚡ"),
     "ህ": MarkerDef(kind="boundary:zephyros_aerie", under="Ƶ"),
-    "ሆ": MarkerDef(kind="arrival:from_aerie", under="."),
+    "ሆ": MarkerDef(kind="arrival:from_aerie", under="ᚡ"),
     # The Aerie: exterior return, local anchor, one colossal griffon, and
     # the stable rope boundary for Zephyros' introduction slice.
     "ሇ": MarkerDef(kind="arrival:from_exterior", under="."),

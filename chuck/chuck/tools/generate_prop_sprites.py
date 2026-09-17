@@ -432,16 +432,20 @@ def _build_tavern_table() -> str:
 
 
 def _build_tavern_chair() -> str:
-    width, height = 12, 14
+    # Furniture is architecture to a one-foot rat, and at 12x14 this one
+    # stood shorter than the table it is pulled up to. The same chair, a
+    # size larger.
+    width, height = 15, 18
     grid = [["." for _ in range(width)] for _ in range(height)]
-    for y in range(0, 7):
-        for x in range(2, 10):
-            grid[y][x] = "C" if x not in (3, 8) else "c"
-    for x in range(1, 11):
-        grid[7][x] = "T"
-        grid[8][x] = "C"
-    for leg_x in (2, 3, 8, 9):
-        for y in range(9, height):
+    for y in range(0, 9):
+        for x in range(3, 12):
+            grid[y][x] = "C" if x not in (5, 9) else "c"
+    for x in range(1, 14):
+        grid[9][x] = "T"
+        grid[10][x] = "C"
+        grid[11][x] = "C"
+    for leg_x in (2, 3, 11, 12):
+        for y in range(12, height):
             grid[y][leg_x] = "c"
     return "\n".join("".join(row) for row in grid)
 
@@ -616,7 +620,7 @@ def main() -> None:
     _write("tavern_door", _build_tavern_door(), 48, 34)
     _write("tavern_open", _build_tavern_open(), 48, 34)
     _write("tavern_table", _build_tavern_table(), 24, 16)
-    _write("tavern_chair", _build_tavern_chair(), 12, 14)
+    _write("tavern_chair", _build_tavern_chair(), 15, 18)
     _write("bar_counter", _build_bar_counter(), 16, 20)
     _write("tavern_hearth", _build_tavern_hearth(), 28, 26)
     _write("cheese", _build_cheese(), 10, 7)

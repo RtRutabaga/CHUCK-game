@@ -45,7 +45,7 @@ GRASS = "<"
 
 CLIFF_ANCHOR = (24, 9)
 CLIFF_COLS = range(14, 35)
-POOL_ROWS = range(10, 17)
+POOL_ROWS = range(10, 15)
 ARRIVAL_TILE = (42, 24)
 EXIT_ROWS = range(23, 26)
 CHEST_TILE = (13, 22)
@@ -54,7 +54,7 @@ TORTLE_TILE = (15, 22)
 EAST_GRASS = ((34, 21), (37, 30), (31, 35))
 WEST_GRASS = ((10, 27), (17, 33))
 SHORE_BOULDERS = ((15, 17), (33, 16), (31, 18), (18, 18), (13, 15))
-POOL_BOULDERS = ((19, 12), (30, 13), (22, 15))
+POOL_BOULDERS = ((19, 12), (28, 13), (21, 11))
 
 
 def _hash(*values: int) -> int:
@@ -89,14 +89,17 @@ def build() -> list[list[str]]:
     for row in range(0, 10):
         for col in range(12, 37):
             grid[row][col] = JUNGLE
-    # The pool: flat along the cliff's foot, rounded to the south.
+    # The pool: flat along the cliff's foot, rounded to the south. Small
+    # -- a plunge pool, not a lake. A wide one pushed the only shore you
+    # could stand on so far south that the fall itself was off the top of
+    # the screen from everywhere you could get to.
     for row in POOL_ROWS:
         for col in range(14, 36):
-            if ((col - 24.5) / 10) ** 2 + ((row - 10) / 6.8) ** 2 <= 1:
+            if ((col - 24.5) / 7) ** 2 + ((row - 10) / 4) ** 2 <= 1:
                 grid[row][col] = STREAM
     # The river, one tile wide and unbroken from the pool to the south edge.
     previous = None
-    for row in range(16, H):
+    for row in range(13, H):
         col = river_col(row)
         grid[row][col] = STREAM
         if previous is not None and previous != col:

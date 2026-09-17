@@ -232,3 +232,24 @@ def test_both_cutscene_boats_lie_bow_east_on_their_lines() -> None:
         finally:
             game._shutdown()
             directory.cleanup()
+
+
+def test_the_quay_is_lit_rather_than_stacked_with_lamp_posts() -> None:
+    """Two lamps on the docks, and not three of them in one corner.
+
+    The north-west corner used to carry three posts inside a single
+    screen -- two along the wall and a third a few tiles below them --
+    which reads as a lamp yard rather than as a lit street.
+    """
+    from src.core import config
+
+    grid = _grid()
+    lamps = [(col, row) for row, line in enumerate(grid)
+             for col, char in enumerate(line) if char == harbour.LAMP]
+    assert sorted(lamps) == sorted(harbour.LAMPS)
+    cols = config.NATIVE_WIDTH // config.TILE_SIZE
+    rows = config.NATIVE_HEIGHT // config.TILE_SIZE
+    for col, row in lamps:
+        together = [spot for spot in lamps
+                    if abs(spot[0] - col) < cols and abs(spot[1] - row) < rows]
+        assert len(together) <= 2, (col, row, together)

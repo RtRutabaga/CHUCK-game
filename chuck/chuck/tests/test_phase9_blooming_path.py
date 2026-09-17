@@ -206,14 +206,14 @@ def test_feywild_boundaries_use_cardinal_vegetation_openings() -> None:
         "\u21e7": "fey_opening_n",
         "\u21e9": "fey_opening_s",
     }.items() <= overheads.items()
-    # ...and the two crawl-throughs are still overheads rather than
-    # floors. They are the whole list now: the tea table had a wooden
-    # lip drawn round the ring of its shadow and it is gone, because
-    # from above at this distance a thin frame round a dark rectangle
-    # is a picture frame rather than the edge of a table.
+    # ...the two crawl-throughs are still overheads rather than floors...
     assert overheads["\u2240"] == "fey_root_passage"
     assert overheads["\u16bf"] == "fey_mushroom_passage"
-    assert not any(name.startswith("fey_table") for name in overheads.values())
+    # ...and so is the giant tea table's underside, which is the one
+    # overhead out here that is a thing rather than a gap: Chuck walks
+    # beneath the boards, and they thin out over him while he is under
+    # them the way the market's awning does.
+    assert overheads["\u2592"] == "fey_table_under"
 
     for char, art_name in overheads.items():
         # An overhead is never also a floor: it draws over whatever the

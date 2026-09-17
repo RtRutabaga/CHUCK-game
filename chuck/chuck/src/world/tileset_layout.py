@@ -399,6 +399,7 @@ FEYWILD = Tileset(
         ("fey_root_passage", 3, 1),
         ("fey_tabletop", 4, 1),
         ("fey_table_shadow", 3, 1),
+        ("fey_table_under", 4, 1),
         ("fey_tea_spill", 3, 1),
         ("fey_needle_bed", 4, 1),
         ("fey_channel", 3, 3),
@@ -436,6 +437,7 @@ FEYWILD = Tileset(
         "ᛘ": "fey_mushroom_thicket",
     },
     overhead_char_to_terrain={
+        "▒": "fey_table_under",
         "←": "fey_opening_w",
         "→": "fey_opening_e",
         "⇧": "fey_opening_n",
@@ -455,6 +457,11 @@ TOWER = Tileset(
         ("tower_stone", 4, 1),
         ("tower_edge", 4, 1),
         ("tower_interior", 4, 1),
+        # The platform outside the tower is standing cloud rather than
+        # masonry: the tower is a thing in the sky, and the ground Chuck
+        # walks up to it on should say so before he gets there.
+        ("tower_cloud", 8, 1),
+        ("tower_cloud_edge", 4, 1),
     ],
     char_to_terrain={
         "~": "tower_sky",
@@ -463,6 +470,8 @@ TOWER = Tileset(
         "#": "tower_edge",
         "●": "tower_interior",
         "⇓": "tower_stone",
+        "ᚡ": "tower_cloud",
+        "ᚣ": "tower_cloud_edge",
     },
     overhead_char_to_terrain={},
 )

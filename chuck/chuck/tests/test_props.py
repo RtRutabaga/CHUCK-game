@@ -96,7 +96,7 @@ def test_stall_props_are_valid_and_mute() -> None:
 def test_tavern_furniture_is_valid_and_mute() -> None:
     for kind, w, h in (
         ("tavern_table", 24, 16),
-        ("tavern_chair", 12, 14),
+        ("tavern_chair", 15, 18),
         ("bar_counter", 16, 20),
         ("tavern_hearth", 28, 26),
     ):

@@ -53,6 +53,49 @@ def edge(surface, variant, _frame):
         pygame.draw.line(surface, GOLD, (4, 4), (11, 4))
 
 
+CLOUD_TOP = (247, 250, 253)
+CLOUD_BODY = (206, 221, 238)
+CLOUD_SHADE = (176, 198, 222)
+CLOUD_DEEP = (128, 158, 194)
+
+
+def cloud(surface, variant, _frame):
+    """Standing cloud: the platform outside the tower.
+
+    No lit top edge and no shaded base -- those are what make masonry
+    read as courses, and drawn on every tile of a field they would band
+    the whole platform. Billows offset by variant instead, so the floor
+    reads as one mass of cloud rather than a grid of cells.
+    """
+    surface.fill(CLOUD_BODY)
+    # Eight variants rather than four, each a differently sized billow in
+    # a different place: with fewer, the neighbouring tiles line their
+    # puffs up and the bank reads as wallpaper.
+    high = (variant * 5 + variant * variant * 3) % 16
+    drop = (variant * 7) % 6
+    wide = 11 + (variant % 3) * 3
+    pygame.draw.ellipse(surface, CLOUD_TOP,
+                        (high - 5, drop - 1, wide, 8 + variant % 3))
+    pygame.draw.ellipse(surface, CLOUD_SHADE,
+                        ((high + 9) % 16 - 4, (drop + 9) % 13, 8, 4))
+
+
+def cloud_edge(surface, variant, _frame):
+    """The rim, where the cloud stops and the drop begins.
+
+    The top half is the same bank as the floor behind it; the bottom is
+    its underside, turned away from the light. That, rather than a lip,
+    is what tells Chuck where the platform ends.
+    """
+    surface.fill(CLOUD_BODY)
+    pygame.draw.ellipse(surface, CLOUD_TOP, ((variant * 7) % 12 - 3, 0, 12, 7))
+    pygame.draw.rect(surface, CLOUD_SHADE, (0, 8, 16, 8))
+    pygame.draw.ellipse(surface, CLOUD_DEEP, (-3, 9, 12, 7))
+    pygame.draw.ellipse(surface, CLOUD_DEEP, (6, 10, 13, 6))
+    if variant % 2:
+        pygame.draw.ellipse(surface, CLOUD_SHADE, (2, 10, 9, 4))
+
+
 def interior(surface, variant, _frame):
     """Unlit depth inside the tower's central shaft."""
     surface.fill((7, 8, 14))
@@ -68,6 +111,8 @@ DRAW = {
     "tower_stone": stone,
     "tower_edge": edge,
     "tower_interior": interior,
+    "tower_cloud": cloud,
+    "tower_cloud_edge": cloud_edge,
 }
 
 

@@ -16,7 +16,7 @@ from src.entities.prop import PROP_DIALOGUE
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.systems.dialogue import DialogueSystem
 from src.world import collision
-from src.world.tilemap import TileMap
+from src.world.tilemap import TILE_DEFS, TileMap
 from src.world.tileset_layout import MAP_TILESET, tileset_for
 from src.world.transitions import AREA_MUSIC, AREA_WALK_EXITS
 
@@ -105,27 +105,40 @@ def test_tea_table_is_a_large_enemy_free_scale_respite() -> None:
     ) > 600
 
 
-def test_the_shadow_is_the_whole_of_the_table_edge() -> None:
-    """One unbroken field of shade, with nothing framing it.
+def test_chuck_walks_under_the_table_and_it_thins_over_him() -> None:
+    """One unbroken field of boards, drawn over him rather than round him.
 
-    There was a wooden lip drawn round the ring of the shadow, and from
-    above at this distance a thin border round a dark rectangle is a
-    picture frame rather than the edge of a table. Taking it off costs
-    nothing, which is the point of asserting it here: the shadow itself
-    was always the tile too low for anything bigger than Chuck, so the
-    scale gate this whole map is built on is where it always was.
+    The under-table run used to be shaded ground and nothing else: it
+    said "under the table" without a table over it. The boards are an
+    overhead now -- the same rule the market's awning uses -- so walking
+    beneath them puts them between Chuck and the camera, and they thin
+    out while he is under them so he can still be seen.
+
+    What has not changed is the scale gate the whole map is built on:
+    this is still the tile Chuck fits through and nothing bigger does.
     """
     tilemap = TileMap(config.MAPS_DIR / f"{MAP_NAME}.txt")
     for row in range(29, 39):
         for col in range(18, 56):
             char = tilemap.terrain_at(col, row)
-            assert char in {"░", "♜"}, (col, row, char)
+            assert char in {"▒", "♜"}, (col, row, char)
             # Chuck walks it; nothing larger does; and the legs
             # standing in it are the only solid thing under there.
             assert tilemap.is_solid(col, row) == (char == "♜")
-    assert "░" in collision.LARGE_ACTOR_PASSAGE_TERRAIN
+    assert "▒" in collision.LARGE_ACTOR_PASSAGE_TERRAIN
     assert not any(name.startswith("fey_table_apron")
                    for name in tileset_for(MAP_NAME).info())
+
+    # The boards themselves: drawn above everybody, over the same shaded
+    # ground that used to be all there was, and all one piece so the
+    # table fades as a table rather than in a rat-shaped hole.
+    assert TILE_DEFS["▒"].overhead == "fey_table_under"
+    assert TILE_DEFS["▒"].under == "░"
+    assert not TILE_DEFS["▒"].solid
+    assert "fey_table_under" in tileset_for(MAP_NAME).info()
+    regions = {label for (col, row), label in tilemap.overhead_regions().items()
+               if 29 <= row < 39 and 18 <= col < 56}
+    assert len(regions) == 1, regions
 
 
 def test_the_legs_hold_the_table_up() -> None:

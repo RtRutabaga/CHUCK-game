@@ -81,7 +81,9 @@ def build() -> list[list[str]]:
     # The tabletop is an enormous solid field. Its place settings are authored
     # directly on it, while the cool shadow below is traversable architecture.
     _room(grid, 18, 12, 55, 28, "▤")
-    _room(grid, 18, 29, 55, 38, "░")
+    # Walkable shaded ground with the table's underside drawn over it:
+    # Chuck goes UNDER the boards here, and they thin out while he does.
+    _room(grid, 18, 29, 55, 38, "▒")
 
     # Heavy overhead aprons frame every way into or out of the under-table
     # route. Large actors treat both apron and shadow as solid terrain.
@@ -218,7 +220,7 @@ def _dress_with_vegetation(grid: list[list[str]]) -> None:
 def _under(char: str) -> str:
     return {
         "Պ": ".", "Ջ": ".", "Ռ": "⇩", "Ս": ".",
-        "<": ".", "♜": "░",
+        "<": ".", "♜": "▒",
         "◉": "▤", "☕": "▤", "⌁": "▤", "⁙": "▤",
     }.get(char, char)
 
@@ -245,7 +247,7 @@ def _reachable(
             terrain = _under(grid[y][x])
             if terrain in blocked:
                 continue
-            if large_actor and terrain in {"≀", "░"}:
+            if large_actor and terrain in {"≀", "▒"}:
                 continue
             reached.add(point)
             frontier.append(point)
@@ -267,9 +269,10 @@ def validate(grid: list[list[str]]) -> None:
     assert text.count("<") == 4
     assert text.count("♜") == 2
     assert "♧" not in text
-    # The shadow is one unbroken field with nothing framing it.
+    # The under-table field is unbroken, so the boards over it fade as
+    # one table rather than in patches.
     assert all(
-        grid[row][col] in {"░", "♜"}
+        grid[row][col] in {"▒", "♜"}
         for row in range(29, 39) for col in range(18, 56)
     )
     # The wood, at the counts the region's own suite asks of every

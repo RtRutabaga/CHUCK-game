@@ -86,9 +86,10 @@ BOATS = ((3, 22),)
 # beside Bobert's barrel. It is the boat the opening cutscene shows lying
 # parallel to the quay by the posts where Chuck wakes.
 BOATS_WEST = ((6, 12),)
-# (20, 10) rather than (21, 11): one tile further north-west, beside the
-# west gate's pillar instead of standing in the mouth of it.
-LAMPS = ((19, 7), (24, 7), (20, 10), (38, 18), (50, 18))
+# The three that used to stand around the north-west corner -- (19, 7),
+# (24, 7) and (20, 10) -- are gone: three lamp posts in one corner of
+# one screen read as a lamp yard rather than as a lit street.
+LAMPS = ((38, 18), (50, 18))
 SIGNS = ((13, 4, SIGN_BREAD), (27, 4, SIGN_FISH), (40, 4, SIGN_BARREL))
 WINDOW_BOXES = ((11, 4), (16, 4), (25, 4), (30, 4), (37, 4), (42, 4),
                 (40, 16), (48, 16))

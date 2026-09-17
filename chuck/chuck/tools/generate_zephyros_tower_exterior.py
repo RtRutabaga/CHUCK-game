@@ -4,6 +4,10 @@ from collections import deque
 from pathlib import Path
 
 
+# The platform is standing cloud rather than the aerie's pale stone.
+CLOUD = "ᚡ"        # walkable cloud floor
+CLOUD_EDGE = "ᚣ"   # the rim, where the cloud stops and the drop begins
+
 W, H = 44, 34
 OUT = Path(__file__).resolve().parents[1] / "assets/maps/zephyros_tower_exterior.txt"
 ARRIVAL = (22, 27)
@@ -14,7 +18,8 @@ FUTURE_RETURN = (22, 11)
 
 HEADER = [
     "; PHASE 10 - ZEPHYROS TOWER EXTERIOR (44x34 tiles).",
-    "; A compact circular pale-stone platform at an immense tower facade.",
+    "; A compact circular platform of standing cloud at an immense tower",
+    "; facade.",
     "; Chuck arrives on the southern tongue; the giant north arch enters",
     "; Zephyros' Aerie.",
 ]
@@ -28,25 +33,25 @@ def build():
             dx = (col - cx) / 10.0
             dy = (row - cy) / 10.0
             if dx * dx + dy * dy <= 1.0:
-                grid[row][col] = "."
+                grid[row][col] = CLOUD
 
-    # Turn the outer ring into a solid, readable stone lip above the clouds.
-    stone = {(col, row) for row in range(H) for col in range(W)
-             if grid[row][col] == "."}
-    for col, row in stone:
-        if any((col + dc, row + dr) not in stone
+    # Turn the outer ring into a solid, readable lip above the sky.
+    floor = {(col, row) for row in range(H) for col in range(W)
+             if grid[row][col] == CLOUD}
+    for col, row in floor:
+        if any((col + dc, row + dr) not in floor
                for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-            grid[row][col] = "#"
+            grid[row][col] = CLOUD_EDGE
 
     # Southern landing tongue and a short approach. The surrounding sky now
     # presses close, keeping the platform subordinate to the tower facade.
     for row in range(24, 30):
         for col in range(19, 26):
-            grid[row][col] = "."
+            grid[row][col] = CLOUD
     for row in range(9, 26):
         for col in range(19, 26):
             if grid[row][col] != "~":
-                grid[row][col] = "."
+                grid[row][col] = CLOUD
     grid[ARCH_PROP[1]][ARCH_PROP[0]] = "Ƶ"
     grid[ARCH[1]][ARCH[0]] = "ህ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ሆ"
@@ -56,13 +61,14 @@ def build():
 
 
 def _base(char):
-    return {"ሃ": ".", "ሄ": ".", "ህ": "Ƶ", "ሆ": "."}.get(char, char)
+    return {"ሃ": CLOUD, "ሄ": CLOUD, "ህ": "Ƶ",
+            "ሆ": CLOUD}.get(char, char)
 
 
 def validate(grid):
     assert len(grid) == H and all(len(row) == W for row in grid)
     walkable = {(col, row) for row in range(H) for col in range(W)
-                if _base(grid[row][col]) in {".", "'", "Ƶ"}}
+                if _base(grid[row][col]) in {CLOUD, "Ƶ"}}
     reached = {ARRIVAL}
     frontier = deque([ARRIVAL])
     while frontier:
@@ -76,7 +82,8 @@ def validate(grid):
     text = "".join("".join(row) for row in grid)
     assert text.count("ሄ") == 1 and text.count("ህ") == 1
     assert text.count("Ƶ") == 1
-    assert text.count("~") > text.count("."), "open sky no longer dominates"
+    assert text.count("~") > text.count(CLOUD), (
+        "open sky no longer dominates")
 
 
 def main():

@@ -219,3 +219,39 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_the_tower_stands_on_cloud_and_the_aerie_still_on_stone() -> None:
+    """The way up to Zephyros is sky all the way to his door.
+
+    The approach platform was pale masonry hanging in mid-air, which
+    reads as a piece of ground that fell off something. It is standing
+    cloud now -- its own tiles, so only the approach changes and the
+    Aerie inside the tower keeps the stone it is built of.
+    """
+    from src.world.tilemap import TILE_DEFS
+    from src.world.tileset_layout import TOWER
+
+    exterior = TileMap(config.MAPS_DIR / "zephyros_tower_exterior.txt")
+    floors = {exterior.terrain_at(col, row)
+              for row in range(exterior.height_tiles)
+              for col in range(exterior.width_tiles)
+              if not exterior.is_solid(col, row)}
+    assert "ᚡ" in floors                      # the cloud he walks on
+    assert "." not in floors                   # and not a tile of stone
+    assert TOWER.char_to_terrain["ᚡ"] == "tower_cloud"
+    assert TOWER.char_to_terrain["ᚣ"] == "tower_cloud_edge"
+    assert not TILE_DEFS["ᚡ"].solid and TILE_DEFS["ᚣ"].solid
+    # The rim is solid, so the platform still ends where it always did.
+    walkable = sum(not exterior.is_solid(col, row)
+                   for row in range(exterior.height_tiles)
+                   for col in range(exterior.width_tiles))
+    assert 150 < walkable < 400, walkable
+
+    aerie = TileMap(config.MAPS_DIR / "zephyros_aerie.txt")
+    assert any(aerie.terrain_at(col, row) == "."
+               for row in range(aerie.height_tiles)
+               for col in range(aerie.width_tiles))
+    assert not any(aerie.terrain_at(col, row) in ("ᚡ", "ᚣ")
+                   for row in range(aerie.height_tiles)
+                   for col in range(aerie.width_tiles))

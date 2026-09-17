@@ -27,6 +27,37 @@ and updated every session.
 
 ## Latest implementation
 
+### Five fixes: lamps, chairs, the table, the platform and the pool
+
+- **Three lamp posts off the docks.** The north-west corner carried three of
+  them inside one screen, which reads as a lamp yard rather than a lit street.
+  The two on the south quay stay; `waterdeep_harbour_dressing.py` places only
+  those now.
+- **The chairs are furniture, not footstools.** At 12x14 a tavern chair stood
+  shorter than the table it is pulled up to and barely taller than Chuck. It is
+  15x18 now, and its examine line no longer says "tavern" -- the same chair
+  stands in the ship's galley and the captain's cabin, where it never was one.
+- **Chuck walks under the giant tea table.** The under-table run was shaded
+  ground and nothing else: it said "under the table" with no table over it. The
+  boards are an overhead now -- the market awning's own rule -- so crossing puts
+  them between Chuck and the camera, and they thin out while he is under them.
+  The legs, the scale gate and the route are all where they were: nothing bigger
+  than Chuck fits under there, and that is still what the map is built on.
+- **Zephyros's approach is a cloud platform.** It was pale masonry hanging in
+  mid-air, which reads as a piece of ground that fell off something. Two new
+  tileset rows, its own terrain chars, and the map regenerated onto them, so
+  only the approach changes and the Aerie inside keeps the stone it is built of.
+- **A plunge pool rather than a lake.** The pool under Chult's falls held 145
+  tiles of water and pushed the nearest shore so far south that the fall was
+  most of a screen off the top of it. It holds 81 now and the shore comes up
+  beside it; the best view of the fall from ground he can walk to is unchanged
+  at about two thirds of its height, and there is a test holding it there.
+- **Tests:** no screen holds three lamps; the chair is taller than the table and
+  says nothing about taverns; the table's underside is an overhead over the same
+  shaded ground, in one piece, still impassable to anything large; the tower
+  platform is cloud and the Aerie is not; the pool is small and the fall is
+  still visible from somewhere Chuck can stand.
+
 ### The realm's theme, played as a fight, when the seal shuts
 
 - **A new arrangement rather than a new track.** `data/music/phlegethos_fortress.py`

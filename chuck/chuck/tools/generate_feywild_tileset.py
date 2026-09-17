@@ -661,6 +661,38 @@ def table_shadow(surface, variant: int, _frame: int) -> None:
         pygame.draw.rect(surface, _shade(colour), (x, y, 2, 2))
 
 
+# How much of the ground still shows through the boards from under the
+# table. Not opaque: from under a table you see the boards over you and
+# the floor past them, and a solid ceiling here would black out a ten
+# tile band of the map until Chuck was already standing in it.
+TABLE_UNDER_ALPHA = 182
+
+
+def table_under(surface, variant: int, _frame: int) -> None:
+    """The table's underside, drawn OVER Chuck while he walks below it.
+
+    The same boards as the top, turned away from the light: no lit edge
+    catching the sun, the grain in shadow, and the seams between planks
+    running across rather than being polished out. It is drawn over the
+    shaded ground rather than instead of it, so the floor he is walking
+    on stays faintly visible through it -- and it thins out the rest of
+    the way while he is under it, like the market's awning.
+    """
+    surface.fill((*_shade(TABLE, 0.66), TABLE_UNDER_ALPHA))
+    seam = (*_shade(TABLE_DARK, 0.8), TABLE_UNDER_ALPHA)
+    grain = (*_shade(TABLE, 0.82), TABLE_UNDER_ALPHA)
+    # A plank seam on one tile in four, not one in two: a line every
+    # other row across a field ten tiles deep is brickwork, and a table
+    # is not made of bricks. The grain runs the length of the plank.
+    if variant == 0:
+        pygame.draw.line(surface, seam, (0, 15), (15, 15))
+    for index in range(2):
+        y = (variant * 5 + index * 6 + 3) % 14
+        start = (variant * 7 + index * 9) % 16 - 6
+        pygame.draw.line(surface, grain,
+                         (max(0, start), y), (min(15, start + 11), y))
+
+
 def tea_spill(surface, variant: int, _frame: int) -> None:
     tabletop(surface, variant, 0)
     points = (
@@ -744,6 +776,7 @@ DRAW = {
     "fey_mushroom_passage": mushroom_passage,
     "fey_tabletop": tabletop,
     "fey_table_shadow": table_shadow,
+    "fey_table_under": table_under,
     "fey_tea_spill": tea_spill,
     "fey_needle_bed": needle_bed,
 }

@@ -8,6 +8,8 @@ import tempfile
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+from PIL import Image
+
 from src.core import config
 from src.core.game import Game
 from src.entities.captain_chest import CaptainChest
@@ -247,3 +249,46 @@ def test_a_tortle_minds_the_chest_and_wants_chuck_gone() -> None:
     finally:
         game._shutdown()
         directory.cleanup()
+
+
+def test_the_pool_is_a_plunge_pool_and_the_fall_can_be_seen_from_it() -> None:
+    """Small water, and the thing the map is named for still on screen.
+
+    A wide pool pushes the only shore you can stand on so far south that
+    the fall is off the top of the screen from everywhere you can get
+    to, which leaves the map named after something the player never
+    sees. This holds both halves of that: the water stays small, and
+    from somewhere he can actually walk to, most of the fall is in view.
+    """
+    falls = _map("chult_falls")
+    water = _find(falls, "≈") + _find(falls, "Ꝝ")
+    pool = [(col, row) for col, row in water if row < 17]
+    assert len(pool) < 70, len(pool)
+    # ...and still a pool rather than a puddle: wider than the river.
+    assert max(col for col, _ in pool) - min(col for col, _ in pool) >= 10
+
+    art = Image.open(config.SPRITES_DIR / "objects" / "chult_falls_1.png")
+    (fall_col, fall_row), = _find(falls, "Ꝙ")
+    top = (fall_row + 1) * config.TILE_SIZE - art.height
+    height = falls.height_tiles * config.TILE_SIZE
+
+    arrival = _arrival(falls, "from_chult_respite")
+    standing = {arrival}
+    frontier = deque(standing)
+    while frontier:
+        col, row = frontier.popleft()
+        for point in ((col - 1, row), (col + 1, row),
+                      (col, row - 1), (col, row + 1)):
+            if point in standing or falls.is_solid(*point):
+                continue
+            standing.add(point)
+            frontier.append(point)
+
+    def in_view(row: int) -> int:
+        """Pixels of the fall on screen with Chuck standing on that row."""
+        camera = min(max(row * config.TILE_SIZE + 8 - config.NATIVE_HEIGHT // 2,
+                         0), max(0, height - config.NATIVE_HEIGHT))
+        return min(camera + config.NATIVE_HEIGHT, top + art.height) \
+            - max(camera, top)
+
+    assert max(in_view(row) for _col, row in standing) >= art.height * 0.6
