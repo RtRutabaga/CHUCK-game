@@ -461,7 +461,30 @@ def _is_corner(grid, col: int, row: int) -> bool:
     return horizontal and vertical
 
 
-def dress_street(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
+def sidewalk_approaches(grid: list[list[str]]) -> set[tuple[int, int]]:
+    """Keep the full width of daytime exit mouths free of furniture."""
+    directions = {"⮝": (0, 1), "⮟": (0, -1), "⮞": (-1, 0), "⮜": (1, 0)}
+    from src.world.tilemap import MARKER_DEFS
+
+    protected = set()
+    height, width = len(grid), len(grid[0])
+    for row in range(height):
+        for col in range(width):
+            char = grid[row][col]
+            if char in MARKER_DEFS:
+                char = MARKER_DEFS[char].under
+            if char not in directions:
+                continue
+            dx, dy = directions[char]
+            for depth in range(7):
+                x, y = col + dx * depth, row + dy * depth
+                if 0 <= x < width and 0 <= y < height:
+                    protected.add((x, y))
+    return protected
+
+
+def dress_street(grid: list[list[str]], *, seed: int = 0,
+                 protected=frozenset()) -> dict[str, int]:
     """Stand lamps, hydrants and signs along this map's kerbs.
 
     Deterministic: the same grid dresses the same way every time, which
@@ -477,7 +500,8 @@ def dress_street(grid: list[list[str]], *, seed: int = 0) -> dict[str, int]:
 
     candidates = [
         spot for spot in _kerbside(grid)
-        if _clear_of_everything(grid, spot[0], spot[1])
+        if (spot[0], spot[1]) not in protected
+        and _clear_of_everything(grid, spot[0], spot[1])
     ]
     candidates.sort(key=lambda spot: (spot[1], spot[0]))
 
@@ -567,7 +591,7 @@ def _spot_order(cells, seed: int):
 
 
 def furnish_street(grid: list[list[str]], *, seed: int = 0,
-                   night: bool = False) -> dict[str, int]:
+                   night: bool = False, protected=frozenset()) -> dict[str, int]:
     """A bench and a bin; at night, two neon signs and a steam grate."""
     open_set = _open_chars(grid)
     before = _reachable(grid, open_set)
@@ -577,7 +601,8 @@ def furnish_street(grid: list[list[str]], *, seed: int = 0,
                    for c, r in others)
 
     kerbside = [(col, row) for col, row, _dc, _dr in _kerbside(grid)
-                if _clear_of_everything(grid, col, row)]
+                if (col, row) not in protected
+                and _clear_of_everything(grid, col, row)]
     placed: dict[str, list[tuple[int, int]]] = {}
     solid: list[tuple[int, int]] = []
     for char in (BENCH, LITTER_BIN):

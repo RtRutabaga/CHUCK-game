@@ -1,5 +1,31 @@
 # Agent Handoff
 
+## Latest Pass — Day-City Sidewalk Connections (2026-09-17)
+
+- Branch: `save-codes`; base commit: `dcabdfe`.
+- Removed Day 1's one-column building seam between the plaza and the north
+  side street (column 53, rows 14–28), replacing it with continuous sidewalk.
+- Day 1's east connection now occupies the northern sidewalk's full width.
+  Day 2's south connection moves to the eastern sidewalk. Day 3's northern
+  entrance has a three-column footway beside a slightly narrower building;
+  its southern exit moves to the western sidewalk. Day 5's two connections
+  move from traffic lanes to widened ends of the western footway.
+- Day 4's already-paved north/east connections now cover their whole footway
+  widths; Day 6's northern pavement entrance is five tiles wide. The roads
+  beside relocated exits in Days 1–3 visibly end in Astral terrain.
+- Shared furnishing helpers accept protected approach cells, used only by
+  these six day-map generators, so lamps, bins, benches and signs cannot
+  obstruct the exit mouths. All six shipped maps were regenerated and
+  validated; named arrivals and stable checkpoint IDs are preserved.
+- Corrected Day 4 → 5 arrival facing to south and Day 5 → 4 to west, matching
+  the destination footways (including the Day 4 return checkpoint).
+- New regression coverage checks clear pavement behind every threshold
+  cell, actual travel through every cell, safe pavement arrivals, facing,
+  no immediate bounce, and removal of the Day 1 seam. Also ran all six day
+  map suites, city furnishing/edge checks, transitions, checkpoints and
+  save registry checks. Native views of all ten connection mouths and the
+  repaired plaza were rendered and inspected.
+
 ## Latest Pass — Sewer Jump Mercy (2026-09-17)
 
 - Branch: `save-codes`; base commit: `98ab2fe`.

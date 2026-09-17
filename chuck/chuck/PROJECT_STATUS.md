@@ -27,6 +27,17 @@ and updated every session.
 
 ## Latest implementation
 
+### Daytime city connections follow the sidewalks
+
+The thin building seam between Day 1's plaza and side street is now open
+pavement. Daytime map connections use clear sidewalk mouths, with Days 2,
+3 and 5's road-centered exits moved onto the footways and all corresponding
+arrivals kept on safe pavement. Wider approaches in Days 3–6 and furniture
+exclusion around the mouths make the onward routes readable. Day 4/5's
+arrival facing now follows the destination sidewalk. Map order, checkpoint
+IDs, saves, encounters and the overpass's mandatory jumps are preserved.
+Every threshold cell is covered by live transition and approach checks.
+
 ### A local retry for the sewer's difficult Astral jumps
 
 Deaths in the winding jump course in `modern_city_sewer_2` now return Chuck

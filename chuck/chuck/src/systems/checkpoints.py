@@ -856,7 +856,7 @@ CHECKPOINTS = (
     ),
     CheckpointDefinition(
         "modern_city_day_4_return", "City Day 4 Return",
-        "modern_city_day_4", arrival="from_city_day_5", facing="right",
+        "modern_city_day_4", arrival="from_city_day_5", facing="left",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
             "modern_city_reached",

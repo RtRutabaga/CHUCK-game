@@ -17,7 +17,7 @@ import sys
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass
+from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass, sidewalk_approaches
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 58
@@ -29,7 +29,7 @@ HEIGHT = 58
 ARRIVAL = (2, 38)
 RETURN_EXIT = (0, 38)
 WAYPOINT = (12, 38)
-FUTURE_EXIT = (38, 57)
+FUTURE_EXIT = (42, 57)  # the eastern sidewalk, beyond the curb at 40
 
 # Traffic runs on both streets, so the crossing has to be timed twice.
 TRAFFIC = (
@@ -110,6 +110,10 @@ def build_map() -> list[str]:
         for col in range(0, 18):
             grid[row][col] = "V"
 
+    # No strip of facade across the end of the street: the road breaks
+    # off while the eastern pavement alone continues to the next map.
+    for col in range(30, 44):
+        grid[HEIGHT - 1][col] = "V"
     for row in range(RETURN_EXIT[1] - 1, RETURN_EXIT[1] + 2):
         grid[row][0] = "⮜"
     for col in range(FUTURE_EXIT[0] - 1, FUTURE_EXIT[0] + 2):
@@ -138,8 +142,9 @@ def build_map() -> list[str]:
     terrace_mass(grid)
     # Street furniture last, so it can see the finished pavement
     # and refuse to stand anywhere that would close a route.
-    dress_street(grid, seed=SEED)
-    furnish_street(grid, seed=SEED, night=False)
+    protected = sidewalk_approaches(grid)
+    dress_street(grid, seed=SEED, protected=protected)
+    furnish_street(grid, seed=SEED, night=False, protected=protected)
     mark_roads(grid)
     seal_open_edges(grid, "modern_city_day_2")
     return ["".join(row) for row in grid]

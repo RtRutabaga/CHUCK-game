@@ -19,7 +19,7 @@ import sys
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass
+from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass, sidewalk_approaches
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 60
@@ -101,9 +101,11 @@ def build_map() -> list[str]:
         assert grid[row][col] in {".", "="}, (col, row, grid[row][col])
         grid[row][col] = "ꞏ"
 
-    for col in range(RETURN_EXIT[0] - 1, RETURN_EXIT[0] + 2):
+    # The whole surviving footway is the way through, rather than a
+    # hidden three-tile patch somewhere across its width.
+    for col in range(1, 9):
         grid[0][col] = "⮝"
-    for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
+    for row in range(42, 46):
         grid[row][WIDTH - 1] = "⮞"
     grid[RETURN_EXIT[1]][RETURN_EXIT[0]] = "ቨ"
     grid[FUTURE_EXIT[1]][FUTURE_EXIT[0]] = "ቩ"
@@ -126,8 +128,9 @@ def build_map() -> list[str]:
     terrace_mass(grid)
     # Street furniture last, so it can see the finished pavement
     # and refuse to stand anywhere that would close a route.
-    dress_street(grid, seed=SEED)
-    furnish_street(grid, seed=SEED, night=False)
+    protected = sidewalk_approaches(grid)
+    dress_street(grid, seed=SEED, protected=protected)
+    furnish_street(grid, seed=SEED, night=False, protected=protected)
     mark_roads(grid)
     seal_open_edges(grid, "modern_city_day_4")
     return ["".join(row) for row in grid]

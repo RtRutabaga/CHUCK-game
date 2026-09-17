@@ -167,10 +167,10 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
         "modern_city_day_3", "from_city_day_4", "up"
     ),
     ("modern_city_day_4", "⮞"): AreaExit(
-        "modern_city_day_5", "from_city_day_4", "right"
+        "modern_city_day_5", "from_city_day_4", "down"
     ),
     ("modern_city_day_5", "⮝"): AreaExit(
-        "modern_city_day_4", "from_city_day_5", "up"
+        "modern_city_day_4", "from_city_day_5", "left"
     ),
     ("modern_city_day_5", "⮟"): AreaExit(
         "modern_city_day_6", "from_city_day_5", "down"

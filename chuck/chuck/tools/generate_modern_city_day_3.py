@@ -20,17 +20,17 @@ import sys
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass
+from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass, sidewalk_approaches
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 59
 WIDTH = 58
 HEIGHT = 64
 
-ARRIVAL = (13, 3)
-RETURN_EXIT = (13, 0)
+ARRIVAL = (12, 3)
+RETURN_EXIT = (12, 0)
 WAYPOINT = (13, 12)
-FUTURE_EXIT = (20, 63)
+FUTURE_EXIT = (12, 63)
 
 # config.UNDEAD_NOTICE_RANGE is 112px; at 16px tiles that is seven.
 NOTICE_TILES = 7.0
@@ -80,7 +80,9 @@ def build_map() -> list[str]:
     _room(grid, 1, 40, 8, 46)
     _room(grid, 6, 52, 34, 60)
 
-    _building(grid, 1, 1, 12, 16)
+    # Three clear sidewalk columns beside the first building, not a
+    # one-tile slot squeezed between the facade and the road curb.
+    _building(grid, 1, 1, 10, 16)
     _building(grid, 1, 26, 12, 38)
     _building(grid, 1, 48, 12, 50)
     _building(grid, 26, 1, 34, 20)
@@ -100,6 +102,8 @@ def build_map() -> list[str]:
         if grid[row][35] != "V":
             grid[row][35] = ","
 
+    for col in range(14, 25):
+        grid[HEIGHT - 1][col] = "V"
     for col in range(RETURN_EXIT[0] - 1, RETURN_EXIT[0] + 2):
         grid[0][col] = "⮝"
     for col in range(FUTURE_EXIT[0] - 1, FUTURE_EXIT[0] + 2):
@@ -125,8 +129,9 @@ def build_map() -> list[str]:
     terrace_mass(grid)
     # Street furniture last, so it can see the finished pavement
     # and refuse to stand anywhere that would close a route.
-    dress_street(grid, seed=SEED)
-    furnish_street(grid, seed=SEED, night=False)
+    protected = sidewalk_approaches(grid)
+    dress_street(grid, seed=SEED, protected=protected)
+    furnish_street(grid, seed=SEED, night=False, protected=protected)
     mark_roads(grid)
     seal_open_edges(grid, "modern_city_day_3")
     return ["".join(row) for row in grid]

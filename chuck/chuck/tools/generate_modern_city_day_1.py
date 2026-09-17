@@ -16,7 +16,7 @@ import sys
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass
+from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass, sidewalk_approaches
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 57
@@ -25,7 +25,7 @@ HEIGHT = 44
 
 ARRIVAL = (10, 30)
 WAYPOINT = (16, 31)
-FUTURE_EXIT = (87, 30)
+FUTURE_EXIT = (87, 29)
 
 # Businesspeople keep their short patrols; the woman in the red dress
 # walks the whole southern pavement, which is what makes her a landmark.
@@ -70,6 +70,9 @@ def build_map() -> list[str]:
 
     # A plaza off the avenue, and a side street climbing north from it.
     _room(grid, 30, 14, 52, 28)
+    # Join the plaza to the side-street pavement. Leaving column 53
+    # solid made a one-tile-wide tower out of the seam between them.
+    _room(grid, 53, 14, 53, 28)
     _room(grid, 54, 4, 64, 28)
     _room(grid, 56, 8, 62, 26, "=")
     _room(grid, 55, 8, 55, 26, ",")
@@ -95,6 +98,9 @@ def build_map() -> list[str]:
         grid[0][col] = "V"
         grid[1][col] = "V"
 
+    # The sidewalk continues; the carriageway visibly ends in the Sea.
+    for row in range(31, 38):
+        grid[row][WIDTH - 1] = "V"
     for row in range(FUTURE_EXIT[1] - 1, FUTURE_EXIT[1] + 2):
         grid[row][WIDTH - 1] = "⮞"
     grid[FUTURE_EXIT[1]][WIDTH - 1] = "ቑ"
@@ -112,8 +118,9 @@ def build_map() -> list[str]:
     terrace_mass(grid)
     # Street furniture last, so it can see the finished pavement
     # and refuse to stand anywhere that would close a route.
-    dress_street(grid, seed=SEED)
-    furnish_street(grid, seed=SEED, night=False)
+    protected = sidewalk_approaches(grid)
+    dress_street(grid, seed=SEED, protected=protected)
+    furnish_street(grid, seed=SEED, night=False, protected=protected)
     mark_roads(grid)
     seal_open_edges(grid, "modern_city_day_1")
     return ["".join(row) for row in grid]

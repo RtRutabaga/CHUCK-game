@@ -18,17 +18,17 @@ import sys
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass
+from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass, sidewalk_approaches
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 61
 WIDTH = 46
 HEIGHT = 68
 
-ARRIVAL = (22, 3)
-RETURN_EXIT = (22, 0)
+ARRIVAL = (18, 3)
+RETURN_EXIT = (18, 0)
 WAYPOINT = (18, 8)
-FUTURE_EXIT = (22, 67)
+FUTURE_EXIT = (18, 67)
 
 # The deck: pavement, kerb, two lanes, kerb, pavement.
 DECK = (17, 1, 28, 66)
@@ -69,6 +69,12 @@ def build_map() -> list[str]:
         for col in range(DECK[0] + 2, DECK[2] - 1):
             grid[row][col] = "▦"
 
+    # Broaden the western sidewalk at each end, joining three-tile
+    # pedestrian mouths to the continuous footway beside the traffic.
+    # Neither broken span is changed or bypassed.
+    _room(grid, 17, 1, 19, 7)
+    _room(grid, 17, 60, 19, 66)
+
     # The two dropped spans.
     for row in BROKEN_SPANS:
         for col in range(DECK[0], DECK[2] + 1):
@@ -103,8 +109,9 @@ def build_map() -> list[str]:
         grid[row][col] = "ል"
     # Street furniture last, so it can see the finished pavement
     # and refuse to stand anywhere that would close a route.
-    dress_street(grid, seed=SEED)
-    furnish_street(grid, seed=SEED, night=False)
+    protected = sidewalk_approaches(grid)
+    dress_street(grid, seed=SEED, protected=protected)
+    furnish_street(grid, seed=SEED, night=False, protected=protected)
     mark_roads(grid)
     seal_open_edges(grid, "modern_city_day_5")
     return ["".join(row) for row in grid]
