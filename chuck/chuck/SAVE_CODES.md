@@ -17,9 +17,10 @@ the game. The resume point is the door Chuck last walked in by, not an
 Ashtray.
 
 **Does not change.** Death still returns him to a nearby point in the
-same map, at the same distances as today, with the same peaceful
-transition. The Ashtray *object* goes; the respawn behaviour it provided
-stays, as invisible waypoints (§5).
+same map, with the same peaceful transition. The Ashtray goes entirely
+-- object, interaction and writing -- and the door he came in by becomes
+both the save point and the respawn point. Measured, that costs a median
+of 1.7 tiles of extra walking against today (§5).
 
 **Not doing.** Save-anywhere. The code names an entrance, not a
 position, which keeps the record tiny and means a save can never be
@@ -134,46 +135,66 @@ glob. Explicit tuples, written down.
 
 ---
 
-## 5. Ashtrays become invisible waypoints
+## 5. The map entrance is the save point AND the respawn point
 
-The Ashtray does two jobs today: it is the save point *and* the respawn
-point. Only the first is being replaced.
+One rule, for the player and in the code: **die, and reappear at the
+door you came in by.** No object, no interaction, no waypoints, nothing
+to learn, nothing extra in the save code.
 
-Measured, over all 76 of them, the distance from each to the nearest
-entrance on its map (the screen is 20x11 tiles):
+An earlier draft of this spec split the two apart and kept the Ashtray
+positions as invisible respawn waypoints, on the strength of a
+measurement that turned out to be the wrong measurement. It is recorded
+here because the wrong number is persuasive and somebody will find it
+again.
 
-* median **5.2** tiles, mean 8.7
-* 45 of 74 within 6 tiles — for most of the game, respawning at the
-  entrance instead is a difference of a few steps
-* but 15 are both more than 10 tiles away **and** on a map with
-  something that can kill him:
+**The wrong measurement.** Distance from each Ashtray to the nearest
+entrance on its map: median 5.2 tiles, but a tail out to 40, and 15 of
+them more than 10 tiles out on maps with something that can kill him.
+From which it looks as though moving the respawn to the door adds up to
+40 tiles of walking back, through whatever has respawned.
 
-| ashtray | map | tiles | hostiles | hazard tiles |
-| --- | --- | ---: | ---: | ---: |
-| desert_ruins_anchor | desert_undead_ruins | 40.0 | 10 | 426 |
-| modern_city_day_6_anchor | modern_city_day_6 | 28.2 | 9 | 2071 |
-| temple_7_anchor | temple_shrine | 21.8 | 12 | 0 |
-| ship_lower_hold_anchor | ship_lower_hold | 17.0 | 16 | 0 |
-| modern_city_sewer_2_anchor | modern_city_sewer_2 | 17.2 | 6 | 39 |
+**The right one.** That is not what it adds, because the *fights* are
+deep in the maps too. The walk back from an Ashtray to the furthest
+enemy on its map is already long — median 19 tiles for a combat map. The
+question is only how much longer the door makes it:
 
-Dying in the undead ruins under a pure entrance-respawn rule means two
-screens of walking back through ten undead. That is a fighting retreat,
-not a few steps.
+| | tiles |
+| --- | ---: |
+| median extra walk, all 36 combat maps | **1.7** |
+| mean | 3.1 |
+| maps where it changes nothing at all | 16 of 36 |
+| worst case (temple_shrine) | 15.8 |
 
-**So:** keep the positions, drop the object. `AstralAnchorSystem`
-already tracks a respawn point that is set on map entry and advanced
-when Chuck touches an anchor. It keeps doing exactly that; the anchor
-positions become invisible waypoints that arm when he walks over them.
-Runtime only — never written to the code, so they cost nothing in the
-format and change nothing about the tuning that is already there.
+A median of under two tiles. The Ashtrays sit near the entrances
+already, so respawning at the entrance instead of the Ashtray is, for
+most of the game, the same spot.
 
-**Open question for Sean:** the Ashtray is also fiction — its examine
-lines, the cigarette theme, a beat in the credits. "Gone as a save
-mechanic" and "gone from the world" are separable. This plan assumes the
-first. If the object should disappear visually too, that is a separate
-pass over the sprites, the examine lines and the credits.
+Two maps are worth remembering if deaths there start to grate:
+`temple_shrine` (+15.8 tiles) and `desert_undead_ruins` (+14.0). The fix
+if it ever matters is to move that map's arrival, which is one
+coordinate — not to bring back a second mechanic.
 
----
+### The Ashtray goes completely
+
+Not just as a save mechanic: out of the world, out of the writing.
+
+* the `AstralAnchor` entity and its sprite, and the attunement interact
+* the `anchor:` markers in the maps, and the checkpoint definitions
+  behind them
+* `config.HINT_ANCHOR` — the tutorial hint "Ashtrays save your progress"
+* `pause_scene.CONTROLS_NOTE` — the same line on the controls page
+* the pause menu's quit warning, "Anything since your last Ashtray..."
+* `AstralAnchorSystem` keeps its job (it already tracks a respawn point
+  set on map entry) and loses the half that advances it
+
+The end credits mention no Ashtray, so there is nothing to remove there.
+
+**Left alone unless Sean says otherwise:** Zephyros's lines in
+`data/dialogue/zephyros.json` — "...or whether they've already been
+smashed together in the ashtray. But you, Chuck... You're part of the
+ashtray." That is the cigarette metaphor the whole game is named after,
+not a reference to the save object, and the save rework is no reason to
+lose it.
 
 ## 6. What the player sees
 
@@ -266,11 +287,12 @@ Small enough to revert one at a time, in this order:
    no game state.
 3. `SaveRecord` v2: drop `spoken` from the code path, bump the version,
    new filename.
-4. Waypoints: Ashtray positions become runtime-only respawn arming;
-   the save no longer depends on them.
+4. Respawn moves to the map entrance; the save no longer depends on
+   Ashtrays.
 5. `CodeEntry` widget.
 6. Menu wiring: SAVE GAME, LOAD CODE.
-7. Remove the Ashtray as a save object.
+7. Remove the Ashtray: entity, sprite, map markers, checkpoint
+   definitions, tutorial hint, controls note, quit warning.
 
 Branch `save-codes`, off the tag `pre-save-rework`. Change course before
 it merges and the branch is deleted; merge it and regret it and
