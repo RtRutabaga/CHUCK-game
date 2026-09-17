@@ -97,10 +97,10 @@ def test_the_menu_does_what_it_says() -> None:
         world = game.checkpoints.load_checkpoint("waterdeep_start")
         assert game.pause()
         pause = game.scenes.current
-        assert list(MAIN) == ["RESUME", "CONTROLS", "VOLUME", "FULLSCREEN",
-                              "QUIT TO TITLE"]
+        assert list(MAIN) == ["RESUME", "CONTROLS", "VOLUME", "SAVE GAME",
+                              "FULLSCREEN", "QUIT TO TITLE"]
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
-        for page in ("main", "controls", "volume", "confirm"):
+        for page in ("main", "controls", "volume", "confirm", "save", "load"):
             pause._goto(page)
             pause.draw(surface)       # every page draws in the pixel font
 

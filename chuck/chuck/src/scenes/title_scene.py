@@ -131,7 +131,7 @@ class TitleScene(Scene):
     # ------------------------------------------------------------------
     @property
     def options(self) -> tuple[str, ...]:
-        options = ["NEW GAME", "CONTINUE", "CONTROLS"]
+        options = ["NEW GAME", "CONTINUE", "LOAD CODE", "CONTROLS"]
         if config.ENABLE_DEV_CHECKPOINT_SELECTOR:
             options.append("DEV CHECKPOINTS")
         return tuple(options)
@@ -182,6 +182,12 @@ class TitleScene(Scene):
             self.game.scenes.replace(OpeningCutsceneScene(self.game))
         elif choice == "CONTINUE":
             self.game.checkpoints.continue_game()
+        elif choice == "LOAD CODE":
+            # The pause menu's code field, opened on its own, so there
+            # is one of them in the game rather than two.
+            from src.scenes.pause_scene import PauseScene
+            self.game.scenes.push(
+                PauseScene(self.game, page="load", standalone=True))
         elif choice == "CONTROLS":
             # The pause menu's own controls page, opened on its own.
             from src.scenes.pause_scene import PauseScene
@@ -359,8 +365,11 @@ class TitleScene(Scene):
 
     def _draw_menu(self, canvas: pygame.Surface) -> None:
         scale = 2
-        top = 216 - TITLE_LIFT
+        top = 210 - TITLE_LIFT
         left = 262
+        # Five rows at the old 24px step ran into the prompt beneath
+        # them once LOAD CODE joined the list.
+        step = 20
         for index, label in enumerate(self.options):
             caret = ">" if index == self._selected else " "
             rendered = self._font.render(f"{caret} {label}")
@@ -371,7 +380,7 @@ class TitleScene(Scene):
                 rendered.set_alpha(70)
             elif index != self._selected:
                 rendered.set_alpha(215)
-            canvas.blit(rendered, (left, top + index * 24))
+            canvas.blit(rendered, (left, top + index * step))
 
         from src.ui import prompts
 

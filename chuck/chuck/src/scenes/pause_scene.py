@@ -7,12 +7,21 @@ under the menu moves while it is open, and the music is paused with it.
     RESUME
     CONTROLS         the keys, on their own page
     VOLUME           music and sound, as two sliders
+    SAVE GAME        writes the slot, and shows the code for it
     FULLSCREEN: ON/OFF   (F11 does the same thing anywhere)
     QUIT TO TITLE    asks first -- anything since the last Ashtray is lost
 
-The title screen opens the controls page on its own through the same
-scene (`PauseScene(game, page="controls", standalone=True)`), so there is
-one list of controls in the game rather than two that drift apart.
+The title screen opens two of these pages on their own through the same
+scene -- controls (`page="controls"`) and the code field
+(`page="load"`), both `standalone=True` -- so there is one list of
+controls and one code field in the game rather than two of each that
+drift apart.
+
+The two code pages are the whole of the save UI:
+
+    save    the code for the game as it stands, with COPY
+    load    a field to type or paste one into, and nothing else on the
+            page -- see the note on `update` about why it has no menu
 """
 
 from __future__ import annotations
@@ -21,8 +30,11 @@ import pygame
 
 from src.core import config
 from src.scenes.scene import Scene
+from src.systems import clipboard, save_code
+from src.systems.checkpoints import is_save_point
 from src.systems.settings import LEVELS
 from src.ui import prompts
+from src.ui.code_entry import CodeEntry
 
 # What the controls page says. One row per action, in the order a player
 # needs them.
@@ -51,9 +63,18 @@ def controls_rows(input_manager) -> tuple[tuple[str, str], ...]:
         ("FULLSCREEN", "F11 (KEYBOARD)"),
     )
 
-MAIN = ("RESUME", "CONTROLS", "VOLUME", "FULLSCREEN", "QUIT TO TITLE")
+MAIN = ("RESUME", "CONTROLS", "VOLUME", "SAVE GAME", "FULLSCREEN",
+        "QUIT TO TITLE")
 VOLUME = ("MUSIC", "SOUND", "BACK")
 CONFIRM = ("NO", "YES")
+SAVED = ("COPY", "BACK")
+NOT_HERE = ("BACK",)
+
+# Why a save can be refused. Only reachable by pausing somewhere that
+# is not a room -- mid-cutscene, mid-fall -- because ordinary play
+# always stands on the door it came in by.
+NO_SAVE_HERE = ("There is nowhere to save from here.",
+                "Walk into a room and try again.")
 
 PANEL = (24, 22, 30)
 BORDER = (120, 116, 130)
@@ -61,6 +82,7 @@ DIM = 150
 TITLE_TINT = (246, 214, 140)
 BAR = (70, 66, 80)
 BAR_FILL = (232, 196, 120)
+WRONG_TINT = (230, 120, 110)
 
 
 class PauseScene(Scene):
@@ -76,6 +98,11 @@ class PauseScene(Scene):
         self.selected = 0
         self._font = game.assets.bitmap_font()
         self._music_paused = False
+        # The save page: the code for this game, and a word about where
+        # it went. The load page: the field. Built when the page opens.
+        self._code: str | None = None
+        self._note = ""
+        self._entry: CodeEntry | None = None
 
     @property
     def canvas_size(self):
@@ -110,6 +137,9 @@ class PauseScene(Scene):
             return VOLUME
         if self.page == "confirm":
             return CONFIRM
+        if self.page == "save":
+            return SAVED if self._code else NOT_HERE
+        # The load page has no option list at all; see `update`.
         return ()
 
     def label(self, option: str) -> str:
@@ -122,6 +152,15 @@ class PauseScene(Scene):
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.back()
+            return
+        if self.page == "load":
+            if event.type == pygame.KEYDOWN and event.key in (
+                    pygame.K_RETURN, pygame.K_KP_ENTER):
+                self._try_code()
+                return
+            # Everything else is a character. E is a letter here, not
+            # the interact key.
+            self._field().handle_event(event)
 
     def back(self) -> None:
         """Esc: one page up, or close the menu from the top page."""
@@ -131,6 +170,7 @@ class PauseScene(Scene):
         else:
             self._goto("main", MAIN.index(
                 {"controls": "CONTROLS", "volume": "VOLUME",
+                 "save": "SAVE GAME",
                  "confirm": "QUIT TO TITLE"}.get(self.page, "RESUME")))
 
     def close(self) -> None:
@@ -142,7 +182,6 @@ class PauseScene(Scene):
         self.selected = selected
 
     def update(self, dt: float) -> None:
-        del dt
         pressed = self.game.input.was_pressed
         if pressed("back"):
             # A controller's back button (Esc arrives through handle_event).
@@ -151,6 +190,9 @@ class PauseScene(Scene):
         if self.page == "controls":
             if pressed("interact"):
                 self.back()
+            return
+        if self.page == "load":
+            self._update_load(pressed, dt)
             return
         options = self.options
         if pressed("move_up"):
@@ -174,6 +216,8 @@ class PauseScene(Scene):
                 self._goto("controls")
             elif option == "VOLUME":
                 self._goto("volume")
+            elif option == "SAVE GAME":
+                self._save_now()
             elif option == "FULLSCREEN":
                 self.game.set_fullscreen(not self.game.settings.fullscreen)
             elif option == "QUIT TO TITLE":
@@ -189,6 +233,95 @@ class PauseScene(Scene):
                 self.quit_to_title()
             else:
                 self.back()
+        elif self.page == "save":
+            if option == "COPY":
+                self._note = ("Copied." if clipboard.copy(self._code or "")
+                              else "No clipboard here. Write it down.")
+            else:
+                self.back()
+
+    # ------------------------------------------------------------------
+    # Saving, and the code that comes of it
+    # ------------------------------------------------------------------
+    def _save_now(self) -> None:
+        """Write the slot and work out the code, then show the page.
+
+        Both come off one record, so the code on screen and the save on
+        disk cannot be two different games.
+        """
+        self._code, self._note = None, ""
+        checkpoint_id = self.game.active_checkpoint_id
+        if not is_save_point(checkpoint_id):
+            self._goto("save")
+            return
+        checkpoints = self.game.checkpoints
+        record = checkpoints.current_record(checkpoint_id, self._sanity())
+        self._code = save_code.for_display(record)
+        self._note = ("Saved on this machine too."
+                      if checkpoints.write_save(checkpoint_id, self._sanity())
+                      else "Nowhere to write it here. Keep the code.")
+        self._goto("save")
+
+    def _sanity(self) -> int:
+        """Chuck's sanity in the scene underneath, or a starting figure.
+
+        A code does not carry sanity at all; the slot on disk does, and
+        it is the scene below that knows the number.
+        """
+        stack = self.game.scenes._stack
+        below = stack[:stack.index(self)] if self in stack else []
+        for scene in reversed(below):
+            sanity = getattr(scene, "sanity", None)
+            if sanity is not None:
+                return sanity.current
+        return config.SANITY_START
+
+    # ------------------------------------------------------------------
+    # Loading a code
+    # ------------------------------------------------------------------
+    def _field(self) -> CodeEntry:
+        if self._entry is None:
+            self._entry = CodeEntry()
+        return self._entry
+
+    def _update_load(self, pressed, dt: float) -> None:
+        """The one page with no menu on it.
+
+        A list of options would need somewhere to put the focus, and
+        every key that moved it is a key the player might be trying to
+        type. So the field is the page: keys go into it, Enter loads,
+        and Esc leaves. A controller has no keys to conflict with, so
+        there the stick dials a character and the interact button loads.
+        """
+        field = self._field()
+        field.update(dt)
+        if not self.game.input.using_controller:
+            return
+        if pressed("interact"):
+            self._try_code()
+        else:
+            field.handle_pad(self.game.input)
+
+    def _try_code(self) -> None:
+        """Read the field, and load it if it names a game we have.
+
+        Everything is checked before anything is torn down: a code for a
+        door this build does not have is refused on the menu, not
+        halfway into a load.
+        """
+        field = self._field()
+        record = field.decode()
+        if record is None:
+            self.game.audio.play_sfx("interact")
+            return
+        checkpoints = self.game.checkpoints
+        if not checkpoints.can_resume(record):
+            field.error = "That code is not one this game knows."
+            self.game.audio.play_sfx("interact")
+            return
+        self.game.audio.play_sfx("interact")
+        self.close()
+        checkpoints.resume_from(record)
 
     def _nudge(self, step: int, wrap: bool = False) -> None:
         option = VOLUME[self.selected]
@@ -265,7 +398,7 @@ class PauseScene(Scene):
                            rect.bottom - hint.get_height() - 6))
 
     def _draw_main(self, canvas) -> None:
-        rect = self._panel(canvas, 150, 104, "PAUSED")
+        rect = self._panel(canvas, 150, 117, "PAUSED")
         self._menu(canvas, rect, [self.label(o) for o in MAIN], rect.y + 26)
 
     def _draw_controls(self, canvas) -> None:
@@ -309,6 +442,56 @@ class PauseScene(Scene):
                                   LEVELS * (cell_w + gap) - gap + 4,
                                   height + 4)
             pygame.draw.rect(canvas, BORDER, outline, 1)
+
+    def _draw_save(self, canvas) -> None:
+        rect = self._panel(canvas, 250, 108, "SAVE GAME")
+        if not self._code:
+            for index, line in enumerate(NO_SAVE_HERE):
+                text = self._text(line, alpha=200)
+                canvas.blit(text, (rect.centerx - text.get_width() // 2,
+                                   rect.y + 26 + index * 11))
+        else:
+            label = self._text("Write this down, or copy it:", alpha=180)
+            canvas.blit(label, (rect.centerx - label.get_width() // 2,
+                                rect.y + 24))
+            # The one thing on screen the player has to transcribe, so
+            # it is drawn at twice the size of everything round it.
+            code = self._big(self._code, TITLE_TINT)
+            canvas.blit(code, (rect.centerx - code.get_width() // 2,
+                               rect.y + 38))
+        self._menu(canvas, rect, self.options, rect.y + 62)
+        self._footer(canvas, rect, self._note or prompts.back_footer(
+            self.game.input))
+
+    def _draw_load(self, canvas) -> None:
+        rect = self._panel(canvas, 250, 100, "LOAD CODE")
+        field = self._field()
+        label = self._text("Enter your save code:", alpha=180)
+        canvas.blit(label, (rect.centerx - label.get_width() // 2,
+                            rect.y + 24))
+        strip = pygame.Surface((field.width(), field.height(self._font)),
+                               pygame.SRCALPHA)
+        field.draw(strip, self._font, 0, 0, tint=TITLE_TINT)
+        strip = pygame.transform.scale(
+            strip, (strip.get_width() * 2, strip.get_height() * 2))
+        canvas.blit(strip, (rect.centerx - strip.get_width() // 2,
+                            rect.y + 40))
+        if field.error:
+            wrong = self._text(field.error, WRONG_TINT)
+            canvas.blit(wrong, (rect.centerx - wrong.get_width() // 2,
+                                rect.y + 66))
+        self._footer(canvas, rect, self._load_footer())
+
+    def _load_footer(self) -> str:
+        if self.game.input.using_controller:
+            return (f"{prompts.PAD_MOVE}: SPELL   "
+                    f"{prompts.label(self.game.input, 'interact')}: LOAD")
+        return "CTRL-V PASTES.  ENTER LOADS.  ESC: BACK."
+
+    def _big(self, text: str, tint=None):
+        image = self._text(text, tint)
+        return pygame.transform.scale(
+            image, (image.get_width() * 2, image.get_height() * 2))
 
     def _draw_confirm(self, canvas) -> None:
         rect = self._panel(canvas, 236, 84, "QUIT TO TITLE?")

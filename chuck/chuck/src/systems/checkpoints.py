@@ -1861,14 +1861,22 @@ class CheckpointLoader:
         return self.load_checkpoint(OPENING_CHECKPOINT_ID, cigarettes=0,
                                     deaths=0)
 
+    @staticmethod
+    def can_resume(record: SaveRecord) -> bool:
+        """Whether this record names a game this build can actually load.
+
+        Asked of a pasted code before anything is torn down, so a code
+        for a door that no longer exists is refused on the menu rather
+        than halfway into a load.
+        """
+        checkpoint = CHECKPOINT_BY_ID.get(record.checkpoint_id)
+        return (checkpoint is not None
+                and is_save_point(record.checkpoint_id)
+                and set(record.progress_flags) <= KNOWN_PROGRESS_FLAGS)
+
     def valid_save(self) -> SaveRecord | None:
         record = self.saves.load()
-        if record is None:
-            return None
-        checkpoint = CHECKPOINT_BY_ID.get(record.checkpoint_id)
-        if checkpoint is None or not is_save_point(record.checkpoint_id):
-            return None
-        if not set(record.progress_flags) <= KNOWN_PROGRESS_FLAGS:
+        if record is None or not self.can_resume(record):
             return None
         return record
 
@@ -1876,11 +1884,18 @@ class CheckpointLoader:
     def can_continue(self) -> bool:
         return self.valid_save() is not None
 
-    def continue_game(self):
-        record = self.valid_save()
-        if record is None:
+    def resume_from(self, record: SaveRecord, *, remember: bool = True):
+        """Start playing from a record, wherever it came from.
+
+        `remember` writes it to the local slot, which is what a pasted
+        code wants: having loaded it, CONTINUE should come back here and
+        not to whatever was on this machine before.
+        """
+        if not self.can_resume(record):
             return None
         self.game.spoken_to = set(record.spoken)
+        if remember:
+            self.saves.write(record)
         return self.load_checkpoint(
             record.checkpoint_id,
             progress_flags=record.progress_flags,
@@ -1888,6 +1903,13 @@ class CheckpointLoader:
             cigarettes=record.cigarettes,
             deaths=record.deaths,
         )
+
+    def continue_game(self):
+        record = self.valid_save()
+        if record is None:
+            return None
+        # Already on disk, and already the record we are loading.
+        return self.resume_from(record, remember=False)
 
     def write_save(self, checkpoint_id: str, sanity: int) -> bool:
         """Persist durable resume state at a door Chuck has walked in by.
@@ -1897,12 +1919,21 @@ class CheckpointLoader:
         is not in the save registry, because a record it cannot write as
         a code is a record that cannot leave the machine it is on.
         """
-        checkpoint = self.definition(checkpoint_id)
+        self.definition(checkpoint_id)
         if not is_save_point(checkpoint_id):
             raise ValueError(
                 f"Checkpoint {checkpoint_id!r} is not a save point")
         self.set_runtime_checkpoint(checkpoint_id)
-        record = SaveRecord(
+        return self.saves.write(self.current_record(checkpoint_id, sanity))
+
+    def current_record(self, checkpoint_id: str, sanity: int) -> SaveRecord:
+        """The game as it stands, whether or not it is being written down.
+
+        The menu needs this twice over: once for the slot on disk and
+        once for the code it puts on screen, and the two must be the
+        same game or the code is a lie.
+        """
+        return SaveRecord(
             checkpoint_id=checkpoint_id,
             sanity=sanity,
             progress_flags=tuple(sorted(self.game.progress.flags)),
@@ -1912,7 +1943,6 @@ class CheckpointLoader:
                 (str(map_name), int(x), int(y), str(line))
                 for map_name, x, y, line in self.game.spoken_to)),
         )
-        return self.saves.write(record)
 
     def activate_checkpoint(self, checkpoint_id: str, sanity: int) -> bool:
         """The Ashtray's old name for it. Goes when the Ashtray does."""
