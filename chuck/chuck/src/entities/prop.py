@@ -531,6 +531,11 @@ PROP_DIALOGUE = {
     "bobert_barrel_awake": "bobert_awake",
     "herod_sign": "herod_sign",
     "house_door": "closed_door",
+    # The neon signs now belong to complete street-level shop fronts.
+    # Their glass doors are shut, even when the sign promises otherwise.
+    "city_neon_bar": "closed_door",
+    "city_neon_open": "closed_door",
+    "city_neon_24h": "closed_door",
     "cabin_closed_door_west": "closed_door",
     "cabin_closed_door_north": "closed_door",
     "cabin_goose_mount": "cabin_goose_mount",

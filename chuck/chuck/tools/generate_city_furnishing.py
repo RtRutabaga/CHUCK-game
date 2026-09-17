@@ -128,6 +128,73 @@ def neon_sign(index: int, frame: int) -> Image.Image:
     return image
 
 
+def storefront(index: int, frame: int) -> Image.Image:
+    """Three tiles of ground-floor frontage beneath the existing neon.
+
+    Bottom aligned with the facade tile, entirely inside the building's
+    solid footprint. The sign still flickers; the closed shop never does.
+    """
+    image = Image.new("RGBA", (48, 48), CLEAR)
+    draw = ImageDraw.Draw(image)
+    trim = ((87, 48, 65), (47, 75, 91), (99, 79, 48))[index]
+    light = ((154, 97, 119), (99, 141, 154), (167, 144, 97))[index]
+    glass = (24, 34, 43)
+    # Shallow projecting lintel, stone jambs and a wet stone sill.
+    draw.rectangle((0, 0, 47, 47), fill=OUTLINE)
+    draw.rectangle((1, 1, 46, 45), fill=(62, 65, 72))
+    draw.rectangle((2, 2, 45, 12), fill=trim)
+    draw.line((1, 0, 46, 0), fill=METAL)
+    draw.line((2, 12, 45, 12), fill=light)
+    draw.rectangle((3, 15, 26, 39), fill=OUTLINE)
+    draw.rectangle((5, 17, 24, 36), fill=glass)
+    # Each window tells the same story as its sign: bottles, a cafe
+    # counter, or shelves of convenience-store packages.
+    if index == 0:
+        for y in (25, 34):
+            draw.line((5, y, 24, y), fill=(100, 74, 63))
+            for x, colour in ((7, (69, 104, 88)), (13, (135, 95, 61)),
+                              (20, (84, 117, 103))):
+                draw.rectangle((x, y - 5, x + 2, y - 1), fill=colour)
+                draw.point((x + 1, y - 6), fill=colour)
+        draw.rectangle((4, 40, 26, 44), fill=trim)
+    elif index == 1:
+        draw.rectangle((5, 30, 24, 33), fill=(131, 103, 79))
+        for x in (8, 18):
+            draw.rectangle((x, 26, x + 3, 29), fill=(170, 180, 178))
+            draw.point((x + 4, 27), fill=(170, 180, 178))
+            draw.line((x, 34, x, 36), fill=METAL_DARK)
+        # A folded blind, not an opening in the facade.
+        for y in (17, 19, 21):
+            draw.line((5, y, 24, y), fill=(77, 93, 100))
+    else:
+        for y in (24, 33):
+            draw.line((5, y, 24, y), fill=METAL)
+            for x, colour in ((6, (158, 118, 69)), (12, (82, 120, 116)),
+                              (19, (145, 86, 82))):
+                draw.rectangle((x, y - 5, x + 3, y - 1), fill=colour)
+                draw.line((x, y - 4, x + 3, y - 4), fill=(183, 183, 167))
+        draw.line((15, 17, 15, 36), fill=METAL_DARK)
+    # Glazing reflections stay sparse at native resolution.
+    draw.line((6, 18, 10, 22), fill=(84, 108, 123))
+    draw.line((20, 28, 23, 31), fill=(71, 89, 103))
+    draw.line((4, 38, 26, 38), fill=METAL)
+    # Human-height closed door: inset glass, a continuous lower panel,
+    # latch, and a threshold flush with the existing pavement edge.
+    draw.rectangle((29, 14, 44, 45), fill=OUTLINE)
+    draw.rectangle((31, 16, 42, 43), fill=trim)
+    draw.rectangle((33, 18, 40, 33), fill=glass)
+    draw.line((34, 19, 38, 23), fill=(80, 103, 117))
+    draw.rectangle((34, 26, 39, 29), fill=(149, 144, 129))
+    draw.line((35, 27, 38, 27), fill=(57, 60, 65))
+    draw.line((40, 35, 40, 38), fill=METAL_LIT)
+    draw.line((33, 41, 40, 41), fill=light)
+    draw.line((30, 45, 44, 45), fill=METAL_LIT)
+    draw.line((1, 46, 46, 46), fill=(84, 91, 102))
+    sign = neon_sign(index, frame)
+    image.alpha_composite(sign, ((48 - sign.width) // 2, 0))
+    return image
+
+
 def steam_grate(frame: int) -> Image.Image:
     width, height = 20, 40
     image = Image.new("RGBA", (width, height), CLEAR)
@@ -219,7 +286,7 @@ def main() -> None:
     litter_bin().save(OUT / "city_litter_bin.png")
     for index in range(len(SIGNS)):
         for frame in range(NEON_FRAMES):
-            neon_sign(index, frame).save(
+            storefront(index, frame).save(
                 OUT / f"city_neon_{index + 1}_{frame + 1}.png")
     for frame in range(STEAM_FRAMES):
         steam_grate(frame).save(OUT / f"city_steam_grate_{frame + 1}.png")

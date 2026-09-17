@@ -1,5 +1,29 @@
 # Agent Handoff
 
+## Latest Pass — City Storefronts (2026-09-17)
+
+- Branch: `save-codes`; base commit: `ac5fa4d`.
+- Sean requested ground-level shop graphics matching the existing city neon,
+  with every door closed and answering exactly `it's closed` on Examine.
+- All twelve signed locations across the six night-city maps now have a
+  three-tile-wide frontage: a bottle-window bar, a cafe under OPEN, or a
+  stocked convenience store under 24H. Each has inset glazing, a closed
+  human-scale door, a latch, and a flush pavement threshold. Only the neon
+  animates; the frontage stays still.
+- Uses the existing neon prop anchors and animation registry. The generator
+  now renders complete fronts into those assets, and the props reuse the
+  existing `closed_door` dialogue. No map regeneration, collision, route,
+  progression, save-system, or daytime-city changes.
+- Validation: 98 checks across 12 focused modules passed (storefronts,
+  furnishing, Examine, props, dialogue, tilemap, and all six night-city maps).
+  The storefront checks exercise the actual Examine action at all twelve
+  doors and verify the sprite footprint remains within solid building tiles.
+  All twelve locations were rendered and visually inspected at 320x180.
+- Work boundary remains scenery polish within existing maps. Phase 15 has
+  no contract. Older notes below predate Claude's save-code work; consult
+  `chuck/chuck/PROJECT_STATUS.md` and `SAVE_CODES.md` for the current save
+  system. Ashtrays no longer exist.
+
 ## Repository State
 
 - Branch: main

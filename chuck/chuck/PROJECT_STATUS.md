@@ -27,6 +27,20 @@ and updated every session.
 
 ## Latest implementation
 
+### Ground-floor shops beneath the city neon
+
+- All twelve neon signs across the six night-city maps now belong to a
+  complete storefront: a bar with bottles, a cafe counter beneath OPEN, or
+  convenience-store shelves beneath 24H. Recessed closed doors, window
+  frames, colored trim, and stone thresholds connect them to the street.
+- The three-tile fronts fit entirely inside existing solid building faces.
+  Maps, sidewalk clearance, transitions, and saves are unchanged. Neon keeps
+  its existing flicker; doors and windows remain static.
+- Every storefront door answers Examine with the existing exact line,
+  `it's closed`. All twelve actual interactions and collision footprints
+  are covered, alongside city furnishing and night-map regressions. Native
+  views of every storefront were inspected.
+
 ### The save is a twelve-character code, and the Ashtrays are gone
 
 The whole save system, rebuilt for a game that has to run in a browser
