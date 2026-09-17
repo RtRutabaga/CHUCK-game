@@ -28,6 +28,7 @@ from src.core import config
 from src.scenes.opening_cutscene_scene import (
     _BARREL_BASE, _BARREL_X, _CHUCK_X, _CHUCK_Y, DRAG, OpeningCutsceneScene)
 from src.scenes.scene import Scene
+from src.systems import tally
 
 
 class Sprite(NamedTuple):
@@ -228,19 +229,30 @@ def _clamp01(value: float) -> float:
 
 def stats_lines(deaths: int, cigarettes: int, cartons: int,
                 total: int) -> list[tuple[str, str]]:
-    """The numbers, and a word on each."""
-    if deaths == 0:
+    """The numbers, and a word on each.
+
+    Two of them stop being numbers at the top of the scale and become
+    "a lot", which is the only honest thing to say about a count nobody
+    was keeping any more. See src.systems.tally.
+    """
+    if tally.a_lot(deaths, tally.DEATH_LIMIT):
+        died = "We stopped counting."
+    elif deaths == 0:
         died = "Not once. Remarkable."
     elif deaths == 1:
         died = "Just the once."
     else:
         died = "Rats have short lives."
-    smoked = "Not one." if cigarettes == 0 else "Worth it."
+    if tally.a_lot(cigarettes, tally.CIGARETTE_LIMIT):
+        smoked = "Past counting. Worth it."
+    else:
+        smoked = "Not one." if cigarettes == 0 else "Worth it."
     carried = ("Bobert is thrilled." if cartons >= total
                else "Bobert noticed.")
     return [
-        (f"Deaths: {deaths}", died),
-        (f"Cigarettes: {cigarettes}", smoked),
+        (f"Deaths: {tally.figure(deaths, tally.DEATH_LIMIT)}", died),
+        (f"Cigarettes: "
+         f"{tally.figure(cigarettes, tally.CIGARETTE_LIMIT)}", smoked),
         (f"Premium cartons: {cartons}/{total}", carried),
     ]
 

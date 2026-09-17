@@ -115,9 +115,27 @@ cut to reach twelve characters:
 | deaths 10 → 9 | caps at 511 instead of 1023 |
 | parity 2 chars → 1 | see below |
 
-Both counters still clamp on write rather than overflow, because loose
-cigarettes respawn with their map and the total has no real ceiling.
-A wrap to nothing would be worse than a stop.
+### The ceiling says "a lot"
+
+Both counters have to stop somewhere, and every way of stopping is a lie
+except one. Wrapping to nothing is a lie. Sitting at 8191 as though
+Chuck had put away exactly that many is a lie. So past the ceiling the
+game stops giving a figure:
+
+    Cigarettes: a lot          Past counting. Worth it.
+    Deaths: a lot              We stopped counting.
+
+It reads in the HUD and on the credits roll, and the code carries the
+same thing, so a farmed save that goes out as "a lot" comes back as "a
+lot". The clamp is no longer a wart to apologise for — it is the top of
+the scale, and the scale ends in a shrug. `src/systems/tally.py` owns
+the rule and both limits; the code's field widths are sized to them and
+a test holds the two together.
+
+Neither ceiling is reachable by playing. There are about 193 cigarettes
+authored in the world, so 8191 takes deliberate farming, and 511 deaths
+takes some doing. That is the joke: "a lot" is the game noticing that
+somebody has gone well past what it was counting for.
 
 ### Why Crockford base32
 

@@ -15,6 +15,7 @@ A faint ash line marks the full extent, so the player can read
 from __future__ import annotations
 
 from src.core import config
+from src.systems import tally
 
 # Layout in native-resolution pixels.
 _MARGIN_X, _MARGIN_Y = 4, 4
@@ -115,8 +116,10 @@ class HUD:
 
         # The overall-game cigarette count (session 128), top-right and
         # quiet: a tiny unlit cigarette pictogram beside the total.
+        # Past the ceiling it stops being a number -- see src.systems.tally.
         if self.cigarettes is not None and self._font is not None:
-            label = self._font.render(f"x{self.cigarettes.total}")
+            label = self._font.render(tally.figure(
+                self.cigarettes.total, tally.CIGARETTE_LIMIT, "x"))
             label.set_alpha(200)
             x = config.NATIVE_WIDTH - _MARGIN_X - label.get_width()
             surface.blit(label, (x, _MARGIN_Y))
@@ -134,7 +137,8 @@ class HUD:
             if self.deaths is not None:
                 if self._death_icon is None:
                     self._death_icon = death_icon()
-                deaths = self._font.render(f"x{self.deaths.total}")
+                deaths = self._font.render(tally.figure(
+                    self.deaths.total, tally.DEATH_LIMIT, "x"))
                 deaths.set_alpha(200)
                 deaths_x = icon_x - _GROUP_GAP - deaths.get_width()
                 surface.blit(deaths, (deaths_x, _MARGIN_Y))

@@ -10,8 +10,8 @@ thirty-two of its characters are already in the bitmap font.
 
     entry     8   a slot in SAVE_ENTRIES: the door he came in by
     flags    25   one bit per SAVE_FLAGS entry
-    cigs     13   clamped, see below
-    deaths    9   clamped
+    cigs     13   past 8191 it is "a lot", see below
+    deaths    9   past 511 the same
                   -- fifty-five bits, exactly eleven characters --
     check     1 character
 
@@ -78,6 +78,7 @@ from dataclasses import replace
 
 from src.core import config
 from src.systems import save_registry as registry
+from src.systems import tally
 from src.systems.save import SaveRecord
 
 
@@ -105,8 +106,11 @@ PARITY_SYMBOLS = 1
 CODE_LENGTH = MESSAGE_SYMBOLS + PARITY_SYMBOLS         # 12
 GROUP = 4
 
-MAX_CIGARETTES = (1 << 13) - 1
-MAX_DEATHS = (1 << 9) - 1
+# The top of each scale, which is also where the game stops giving a
+# figure and says "a lot" instead. The fields are sized to them, not
+# the other way round; `tests/test_a_lot.py` holds the two together.
+MAX_CIGARETTES = tally.CIGARETTE_LIMIT
+MAX_DEATHS = tally.DEATH_LIMIT
 
 
 class SaveCodeError(ValueError):
@@ -208,12 +212,15 @@ def _pack(record: SaveRecord) -> int:
 
 
 def encode(record: SaveRecord) -> str:
-    """Pack a save into its code. Counters clamp rather than overflow.
+    """Pack a save into its code. A count past its ceiling is "a lot".
 
-    Clamping matters because cigarettes are farmable: loose ones respawn
-    with the map, so a long enough session can push the total past what
-    thirteen bits hold. Wrapping round to nothing would be worse than
-    stopping. `record.sanity` is not written; see the module docstring.
+    Cigarettes are farmable -- loose ones respawn with their map -- so a
+    long enough session pushes the total past what thirteen bits hold.
+    At that point the game has already stopped putting a number to it
+    (`src.systems.tally`), so the ceiling in the code is not a clamp
+    that loses something: it is the same "a lot" the player is being
+    shown, written down. Save at eight thousand, load, and the answer is
+    still a lot. `record.sanity` is not written; see the docstring above.
     """
     payload = _pack(record)
     message = [(payload >> (BITS_PER_SYMBOL * (MESSAGE_SYMBOLS - 1 - index)))
