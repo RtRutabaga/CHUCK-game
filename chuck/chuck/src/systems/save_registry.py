@@ -2,7 +2,7 @@
 
 A code stores *positions* in these tuples, not names: one 8-bit number
 for where Chuck is, 25 bits for what has happened to him. That is what
-makes a code 21 characters instead of a paragraph, and it is also what
+makes a code 16 characters instead of a paragraph, and it is also what
 makes these two tuples part of the wire format.
 
     Append only. Never reorder. Never remove.

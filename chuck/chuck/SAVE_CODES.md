@@ -12,7 +12,7 @@ re-open settled ground.
 ## 1. What changes, and what does not
 
 **Changes.** The save is written from a menu, not by touching an object.
-It is a short text code the player copies, and pasting it back resumes
+It is a sixteen-character code the player copies, and pasting it back resumes
 the game. The resume point is the door Chuck last walked in by, not an
 Ashtray.
 
@@ -82,11 +82,16 @@ code length), not anything about saves.
 | progress flags | 25 | one bit each |
 | cigarettes | 16 | 0..65535 |
 | deaths | 10 | 0..1023 |
-| checksum | 32 | truncated HMAC |
-| **total** | **102** | 13 bytes |
+| **payload** | **70** | exactly 14 base32 characters |
+| parity | 10 | 2 characters, Reed–Solomon over GF(32) |
+| **total** | **80** | **16 characters** |
 
-13 bytes is **21 characters** of Crockford base32, written in groups of
-five: `X7B3K-9QW2M-4XH8V-NP2RT-C`.
+Written in groups of four: `X7B3-K9QW-2M4X-H8VN`.
+
+Seventy bits is the happy accident that sets the length: the payload
+divides into fourteen whole characters with nothing spare, so no field
+can be widened and no character saved without changing what a code
+carries.
 
 Sizing notes: the 16-bit cigarette field caps at 65535, which the farm
 above could exceed in a long session — clamp on write rather than
@@ -102,14 +107,44 @@ glyphs to print one.
 Not base64: it is case-sensitive and uses `+`, `/` and `=`, all of which
 are miserable to retype.
 
-### Why sign it at all
+### Why parity and not a hash
 
-A 32-bit truncated HMAC catches typos and stops a casual edit. It is not
-security: the key ships inside the game, and in a browser build it sits
-in readable JavaScript. A single-player game with a player-held save
-cannot be made tamper-proof, and the effort spent pretending otherwise
-is better spent elsewhere. The point of the checksum is that a mistyped
-code says "that is not a code" instead of loading a corrupted game.
+The point of the check is that a mistyped code says "that is not a code"
+instead of loading a corrupted game. That is an error-detection job, and
+an error-detecting code does it far better per bit than a truncated
+hash does.
+
+Two Reed–Solomon check symbols over GF(32) give the sixteen-character
+word a minimum distance of three. So:
+
+| what the player did | what happens |
+| --- | --- |
+| one character wrong | always caught |
+| two characters wrong | always caught |
+| two characters swapped | always caught |
+| three or more wrong | ~1 in 40,000 gets through |
+
+The first three are guarantees, not probabilities — a word one or two
+symbols from a valid word cannot itself be valid. A truncated hash only
+ever offers a probability, however many bits it is given; the previous
+32-bit HMAC caught every single-character error *by luck*, and cost
+five characters for the privilege.
+
+The last row is the price. Three or more wrong characters fall back to
+chance: one in 1024 to pass parity, then the version has to read as ours
+and the entry has to name a door that exists, which measures at about
+one in forty thousand over four hundred thousand random strings. For a
+single-player save code that is the right trade, and
+`tests/test_save_code.py` holds all four rows.
+
+The word is masked with a fixed keystream before it is written out. That
+is not security and cannot be: the mask ships inside the game, and in a
+browser build it sits in readable JavaScript. It is there so a code
+looks like a code rather than like its own field layout. Masking is
+symbol-wise, so it cannot turn one wrong character into two and every
+guarantee above survives it. A single-player game with a player-held
+save cannot be made tamper-proof, and the effort spent pretending
+otherwise is better spent elsewhere.
 
 ---
 

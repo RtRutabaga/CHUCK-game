@@ -20,7 +20,7 @@ from src.ui.bitmap_font import ADVANCE, GLYPH_ORDER
 from src.ui.code_entry import BLANK, SEPARATOR, CodeEntry
 
 # The golden code from tests/test_save_code.py, typed rather than decoded.
-GOLDEN_CODE = "08NAE-008G0-4T80Z-NY02X-F"
+GOLDEN_CODE = "K6PT-6EX1-BV41-7S96"
 
 
 def _key(key: int, unicode: str = "", mod: int = 0):
@@ -49,8 +49,8 @@ def test_a_new_field_is_empty_and_shows_its_shape() -> None:
     assert field.text == ""
     # Every slot a blank, and the groups already marked out, so the
     # player can see how long a code is before typing one.
-    assert field.display() == SEPARATOR.join([BLANK * 5] * 4 + [BLANK])
-    assert len(field.display()) == CODE_LENGTH + 4
+    assert field.display() == SEPARATOR.join([BLANK * 4] * 4)
+    assert len(field.display()) == CODE_LENGTH + 3
 
 
 def test_typing_a_code_fills_it_and_it_decodes() -> None:
@@ -66,7 +66,7 @@ def test_typing_a_code_fills_it_and_it_decodes() -> None:
 def test_the_field_is_as_forgiving_as_the_codec() -> None:
     """Lower case, dashes, and an O for a zero all land as the same code."""
     field = CodeEntry()
-    _type(field, "o8nae-oo8go-4t8oz-nyo2x-f")
+    _type(field, "k6pt-6ex1-bv41-7s96")
     assert field.display() == GOLDEN_CODE
     assert field.decode() is not None
 
@@ -98,7 +98,7 @@ def test_backspace_walks_back_from_the_end() -> None:
     assert not field.complete
     assert field.display().endswith(BLANK)
     # And it can be retyped into the hole it left.
-    _type(field, "F")
+    _type(field, GOLDEN_CODE[-1])
     assert field.display() == GOLDEN_CODE
 
 
@@ -111,12 +111,12 @@ def test_backspace_on_an_empty_field_is_harmless() -> None:
 
 def test_arrows_move_the_caret_and_stay_inside_the_field() -> None:
     field = CodeEntry()
-    _type(field, "08NAE")
+    _type(field, "K6PT6")
     field.handle_event(_key(pygame.K_LEFT))
     field.handle_event(_key(pygame.K_LEFT))
     assert field.cursor == 3
     _type(field, "X")
-    assert field.display().startswith("08NXE")
+    assert field.display().startswith("K6PX")
     for _ in range(CODE_LENGTH * 2):
         field.handle_event(_key(pygame.K_RIGHT))
     assert field.cursor == CODE_LENGTH - 1
@@ -127,7 +127,7 @@ def test_arrows_move_the_caret_and_stay_inside_the_field() -> None:
 
 def test_end_goes_to_the_first_slot_still_waiting() -> None:
     field = CodeEntry()
-    _type(field, "08NAE")
+    _type(field, "K6PT6")
     field.handle_event(_key(pygame.K_HOME))
     assert field.cursor == 0
     field.handle_event(_key(pygame.K_END))
@@ -167,12 +167,13 @@ def test_a_paste_replaces_the_field_in_one_go() -> None:
     assert field.display() == GOLDEN_CODE
     assert field.cursor == CODE_LENGTH
     # Short paste: the rest stays blank rather than keeping old characters.
-    assert field.set_text("08NAE")
-    assert field.display().startswith("08NAE" + SEPARATOR + BLANK)
+    assert field.set_text("K6PT")
+    assert field.display() == "K6PT" + SEPARATOR + SEPARATOR.join(
+        [BLANK * 4] * 3)
     assert not field.complete
     # Nothing usable in it at all.
     assert not field.set_text("!!! ???")
-    assert field.display().startswith("08NAE")
+    assert field.display().startswith("K6PT")
 
 
 def test_ctrl_v_takes_the_clipboard_and_says_so_when_it_is_empty() -> None:
@@ -206,9 +207,9 @@ def test_a_plain_v_is_a_character_and_not_a_paste() -> None:
 
 def test_a_half_typed_code_complains_about_its_length() -> None:
     field = CodeEntry()
-    _type(field, "08NAE")
+    _type(field, "K6PT6")
     assert field.decode() is None
-    assert "21 characters" in field.error
+    assert "16 characters" in field.error
     # And the complaint goes as soon as the player types again.
     _type(field, "0")
     assert field.error is None
@@ -234,10 +235,10 @@ def test_clearing_puts_it_back_to_new() -> None:
 def test_the_caret_sits_under_the_slot_it_is_filling() -> None:
     field = CodeEntry()
     assert field.caret_x() == 0
-    _type(field, "08NAE")
+    _type(field, "K6PT")
     # Past a group separator, so the caret has to count the dash too.
-    assert field.caret_x() == 6 * ADVANCE
-    _type(field, "08NAE")
+    assert field.caret_x() == 5 * ADVANCE
+    _type(field, "6EX1BV")
     assert field.caret_x() == 12 * ADVANCE
     assert field.width() == len(field.display()) * ADVANCE - 1
 
@@ -280,7 +281,7 @@ def test_the_clipboard_answers_instead_of_raising() -> None:
     never happen is an exception out of a key press.
     """
     assert clipboard.available() in (True, False)
-    assert clipboard.copy("08NAE-008G0-4T80Z-NY02X-F") in (True, False)
+    assert clipboard.copy(GOLDEN_CODE) in (True, False)
     taken = clipboard.paste()
     assert taken is None or isinstance(taken, str)
 
