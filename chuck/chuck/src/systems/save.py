@@ -14,7 +14,13 @@ from pathlib import Path
 from src.core import config
 
 
-SAVE_VERSION = 1
+# 2: the save point is the door Chuck came in by rather than an Ashtray,
+# and the file moved with it. The loader refuses any version but this
+# one, so an older build reading a newer file sees "no save" instead of
+# choking -- and because the name changed too, an older build finds its
+# own save.json exactly where it left it.
+SAVE_VERSION = 2
+SAVE_FILENAME = "save2.json"
 
 
 def default_save_path() -> Path:
@@ -23,7 +29,7 @@ def default_save_path() -> Path:
         base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData/Local"))
     else:
         base = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
-    return base / "CHUCK" / "save.json"
+    return base / "CHUCK" / SAVE_FILENAME
 
 
 @dataclass(frozen=True)

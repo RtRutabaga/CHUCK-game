@@ -194,10 +194,18 @@ def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
         directory.cleanup()
 
 
-def test_continue_rejects_non_saveable_or_unknown_checkpoint_ids() -> None:
+def test_continue_rejects_ids_that_are_not_save_points() -> None:
+    """A save names a door Chuck walked in by, or it is not a save.
+
+    `pantry_entry` used to be listed here as something to refuse, back
+    when only an Ashtray could be saved at. It is a door, so it is a
+    save point now. What stays refused is a checkpoint that is neither
+    -- `waterdeep_finale` is reached by a cutscene, not walked into --
+    and an id that is not a checkpoint at all.
+    """
     directory, path = _temp_save()
     try:
-        for checkpoint_id in ("pantry_entry", "not_a_checkpoint"):
+        for checkpoint_id in ("waterdeep_finale", "not_a_checkpoint"):
             SaveSystem(path).write(SaveRecord(checkpoint_id, 60, ()))
             game = Game(save_path=path)
             try:
@@ -406,3 +414,91 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_the_new_save_format_leaves_the_old_file_where_it_was() -> None:
+    """Rolling the code back has to find the player's save intact.
+
+    Git can revert a commit; it cannot un-overwrite a file on disk. The
+    version moved to 2 *and* the file moved to a new name, so an older
+    build reads its own save.json exactly as it left it, and a newer
+    file it cannot understand is simply not its file.
+    """
+    import json
+    from src.systems.save import SAVE_FILENAME, SAVE_VERSION, default_save_path
+
+    assert SAVE_VERSION == 2
+    assert SAVE_FILENAME == "save2.json"
+    assert default_save_path().name == SAVE_FILENAME
+
+    directory = tempfile.TemporaryDirectory()
+    try:
+        old = Path(directory.name) / "save.json"
+        old.write_text(json.dumps({
+            "version": 1, "checkpoint_id": "waterdeep_anchor", "sanity": 60,
+            "progress_flags": [], "cigarettes": 3, "deaths": 1, "spoken": [],
+        }), encoding="utf-8")
+        before = old.read_text(encoding="utf-8")
+
+        path = Path(directory.name) / "save2.json"
+        game = Game(save_path=path)
+        try:
+            assert game.checkpoints.write_save("temple_1", 55)
+        finally:
+            game._shutdown()
+
+        assert path.exists(), "the new save went somewhere else"
+        assert old.read_text(encoding="utf-8") == before, "it ate the old save"
+        # ...and a version-1 file is refused rather than misread.
+        assert SaveSystem(old).load() is None
+    finally:
+        directory.cleanup()
+
+
+def test_a_door_is_a_save_point_and_a_cutscene_handoff_is_not() -> None:
+    from src.systems.checkpoints import is_save_point
+    from src.systems import save_registry
+
+    assert is_save_point("pantry_entry")          # walked in by
+    assert is_save_point("temple_1")
+    assert not is_save_point("waterdeep_finale")  # arrived at by cutscene
+    assert not is_save_point("not_a_checkpoint")
+    # Every door in the registry is one, which is what makes a record
+    # writable as a code.
+    for entry in save_registry.SAVE_ENTRIES:
+        if entry:
+            assert is_save_point(entry), entry
+
+    directory, path = _temp_save()
+    game = Game(save_path=path)
+    try:
+        try:
+            game.checkpoints.write_save("waterdeep_finale", 60)
+        except ValueError as exc:
+            assert "not a save point" in str(exc)
+        else:
+            raise AssertionError("a cutscene handoff should not be saveable")
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_a_save_written_at_a_door_survives_the_round_trip() -> None:
+    directory, path = _temp_save()
+    game = Game(save_path=path)
+    try:
+        game.progress.enable("sewer_completed")
+        game.cigarettes.replace(42)
+        game.deaths.replace(3)
+        assert game.checkpoints.write_save("chult_2", 77)
+    finally:
+        game._shutdown()
+    try:
+        record = SaveSystem(path).load()
+        assert record is not None
+        assert record.checkpoint_id == "chult_2"
+        assert record.sanity == 77
+        assert "sewer_completed" in record.progress_flags
+        assert record.cigarettes == 42 and record.deaths == 3
+    finally:
+        directory.cleanup()

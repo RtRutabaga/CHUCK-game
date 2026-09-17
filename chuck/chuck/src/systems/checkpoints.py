@@ -15,6 +15,7 @@ from src.systems.cabin_progress import (
     CABIN_ENTITY_FLAGS, COUNTER_MAP_AWAKENED_FLAG, DESERT_TRANSITION_FLAG,
 )
 from src.systems.captain_confrontation import CAPTAIN_REQUIRED_FLAGS
+from src.systems import save_registry
 from src.systems.save import SaveRecord, SaveSystem
 
 if TYPE_CHECKING:
@@ -1753,6 +1754,25 @@ class ProgressState:
         return flag in self.flags
 
 
+def is_save_point(checkpoint_id: str) -> bool:
+    """Is this somewhere a save may be written?
+
+    A door Chuck walked in by: those are the places the save code can
+    name, and the door is the respawn point too.
+
+    Ashtrays still count while they exist. They are on their way out --
+    the save moved to the menu and the respawn moved to the door -- and
+    the second half of this goes with them, along with every Ashtray
+    checkpoint in the table above. Until then both are accepted, so the
+    change lands in one piece rather than breaking every Ashtray test on
+    the way past.
+    """
+    if checkpoint_id in save_registry.ENTRY_INDEX:
+        return True
+    checkpoint = CHECKPOINT_BY_ID.get(checkpoint_id)
+    return checkpoint is not None and checkpoint.saveable
+
+
 class CheckpointLoader:
     """Owns checkpoint selection, initialization, and save restoration."""
 
@@ -1846,7 +1866,7 @@ class CheckpointLoader:
         if record is None:
             return None
         checkpoint = CHECKPOINT_BY_ID.get(record.checkpoint_id)
-        if checkpoint is None or not checkpoint.saveable:
+        if checkpoint is None or not is_save_point(record.checkpoint_id):
             return None
         if not set(record.progress_flags) <= KNOWN_PROGRESS_FLAGS:
             return None
@@ -1869,11 +1889,18 @@ class CheckpointLoader:
             deaths=record.deaths,
         )
 
-    def activate_checkpoint(self, checkpoint_id: str, sanity: int) -> bool:
-        """Attune an authored Anchor and persist only durable resume state."""
+    def write_save(self, checkpoint_id: str, sanity: int) -> bool:
+        """Persist durable resume state at a door Chuck has walked in by.
+
+        The door is the save point and the respawn point both, so this
+        is the only thing that writes the slot. It refuses anything that
+        is not in the save registry, because a record it cannot write as
+        a code is a record that cannot leave the machine it is on.
+        """
         checkpoint = self.definition(checkpoint_id)
-        if not checkpoint.saveable:
-            raise ValueError(f"Checkpoint {checkpoint_id!r} is not an Ashtray")
+        if not is_save_point(checkpoint_id):
+            raise ValueError(
+                f"Checkpoint {checkpoint_id!r} is not a save point")
         self.set_runtime_checkpoint(checkpoint_id)
         record = SaveRecord(
             checkpoint_id=checkpoint_id,
@@ -1886,3 +1913,7 @@ class CheckpointLoader:
                 for map_name, x, y, line in self.game.spoken_to)),
         )
         return self.saves.write(record)
+
+    def activate_checkpoint(self, checkpoint_id: str, sanity: int) -> bool:
+        """The Ashtray's old name for it. Goes when the Ashtray does."""
+        return self.write_save(checkpoint_id, sanity)
