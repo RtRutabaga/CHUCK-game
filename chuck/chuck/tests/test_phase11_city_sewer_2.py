@@ -342,7 +342,7 @@ def test_the_astral_course_must_be_jumped_and_cannot_be_walked() -> None:
     # The door sits above the course, never inside it.
 
 
-def test_a_missed_jump_falls_and_returns_to_this_maps_door() -> None:
+def test_a_missed_jump_falls_and_returns_to_the_mercy_approach() -> None:
     from src.systems.fall import fall_zone_kind
 
     directory, game, world = _game_and_world("modern_city_sewer_2")
@@ -363,6 +363,8 @@ def test_a_missed_jump_falls_and_returns_to_this_maps_door() -> None:
         world.sanity.deplete()
         world.update(config.RESPAWN_FADE_OUT + 0.01)
         world.update(config.RESPAWN_HOLD + 0.01)
+        assert int((world.player.x + world.player.width / 2) // config.TILE_SIZE) == 12
+        assert int((world.player.y + world.player.height / 2) // config.TILE_SIZE) == 42
     finally:
         game._shutdown()
         directory.cleanup()

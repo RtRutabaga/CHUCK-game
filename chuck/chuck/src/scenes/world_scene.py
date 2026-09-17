@@ -3087,6 +3087,20 @@ class WorldScene(Scene):
         # gone -- a hit landing during the fade -- is the same death.
         if self._respawn_phase is None:
             self.game.deaths.record()
+            from src.systems.respawn import mercy_retry_tile
+
+            ts = config.TILE_SIZE
+            retry = mercy_retry_tile(
+                self.map_name,
+                int((self.player.x + self.player.width / 2) // ts),
+                int((self.player.y + self.player.height / 2) // ts),
+            )
+            self._respawn_position = self.respawn.position_for_chuck()
+            if retry is not None:
+                self._respawn_position = (
+                    (retry[0] + 0.5) * ts - self.player.width / 2,
+                    (retry[1] + 0.5) * ts - self.player.height / 2,
+                )
         self.player.visible = False
         self.player.hurt_blink = 0.0
         self._respawn_phase = "out"
@@ -3099,10 +3113,9 @@ class WorldScene(Scene):
         if self._respawn_phase == "out" and self._respawn_t >= config.RESPAWN_FADE_OUT:
             self._respawn_phase, self._respawn_t = "hold", 0.0
         elif self._respawn_phase == "hold" and self._respawn_t >= config.RESPAWN_HOLD:
-            # The return: the door he came in by.
-            self.player.x, self.player.y = (
-                self.respawn.position_for_chuck()
-            )
+            # Usually the entrance; a mercy region overrides this death
+            # only, leaving the entrance and portable save record intact.
+            self.player.x, self.player.y = self._respawn_position
             self._reset_enemies()
             self.sanity.refill()
             # Death rewinds the cigarette count to the respawn point's

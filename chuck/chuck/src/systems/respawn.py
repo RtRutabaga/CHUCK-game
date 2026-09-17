@@ -1,7 +1,8 @@
 """Where Chuck comes back to.
 
 One respawn point per visit to a map: the door he walked in by. It is
-set when he arrives and nothing moves it while he is in there.
+set when he arrives. Authored mercy regions may override an individual
+death's destination without moving that entrance or changing saved games.
 
 It used to move. Touching an Ashtray made that spot the respawn point
 for the rest of the map, and the Ashtrays are gone -- the save is a
@@ -20,6 +21,22 @@ Tone rules (Game Bible), which have not changed with any of it:
 """
 
 from __future__ import annotations
+
+
+# Map -> (inclusive death region, safe retry tile). Only the difficult
+# sewer jump course gets this exception; the landing chamber and the
+# Astral damage beyond it retain ordinary entrance respawns.
+MERCY_REGIONS = {
+    "modern_city_sewer_2": (((10, 45, 24, 54), (12, 42)),),
+}
+
+
+def mercy_retry_tile(map_name: str, col: int, row: int) -> tuple[int, int] | None:
+    """Return a local retry tile for this death, or use the map entrance."""
+    for (left, top, right, bottom), retry in MERCY_REGIONS.get(map_name, ()):
+        if left <= col <= right and top <= row <= bottom:
+            return retry
+    return None
 
 
 class RespawnPoint:

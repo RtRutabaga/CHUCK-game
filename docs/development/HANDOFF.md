@@ -1,5 +1,25 @@
 # Agent Handoff
 
+## Latest Pass — Sewer Jump Mercy (2026-09-17)
+
+- Branch: `save-codes`; base commit: `98ab2fe`.
+- Sean requested a nearby retry for the difficult Astral jump course shown
+  in his screenshot. That course is `modern_city_sewer_2` in the repository
+  (not the crocodile hall named `modern_city_sewer_3`).
+- Deaths within course columns 10–24, rows 45–54 now return Chuck to the
+  center of dry tile (12, 42), below the green sludge and before the first
+  jump. The normal fall, quiet fade, enemy reset, Sanity refill, cigarette
+  rollback, and death count continue unchanged.
+- Mercy destinations are authored in `src/systems/respawn.py`. WorldScene
+  selects a destination per death; it never moves the entrance checkpoint
+  or changes a save record, registry, code, or progression flag. Deaths
+  elsewhere still return to the entrance, even after a local retry.
+- Regression coverage drives actual falls at every gap in the course,
+  repeated retries, safe footing, unchanged entrance identity, and a later
+  non-course death. The neighboring sewer, checkpoint, menu/save, hazard,
+  and death-count checks were also run. The actual retry frame was rendered
+  and visually inspected at native resolution.
+
 ## Latest Pass — City Storefronts (2026-09-17)
 
 - Branch: `save-codes`; base commit: `ac5fa4d`.

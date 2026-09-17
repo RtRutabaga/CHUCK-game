@@ -27,6 +27,15 @@ and updated every session.
 
 ## Latest implementation
 
+### A local retry for the sewer's difficult Astral jumps
+
+Deaths in the winding jump course in `modern_city_sewer_2` now return Chuck
+to dry pavement beside the green sludge, before the first jump. This is a
+per-death mercy exception: other deaths still use the map entrance, and save
+codes continue to describe that entrance. The normal fall, death count,
+Sanity refill and enemy reset remain in place. Every course gap is exercised
+through the actual fall and respawn sequence by `test_sewer_jump_mercy.py`.
+
 ### Ground-floor shops beneath the city neon
 
 - All twelve neon signs across the six night-city maps now belong to a
