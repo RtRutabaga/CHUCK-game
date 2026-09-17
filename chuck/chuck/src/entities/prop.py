@@ -630,6 +630,15 @@ EXAMINE_ALIAS = {
 }
 
 
+# Two props of the same kind with different things to say, told apart
+# by where they stand. Only for the case where the difference is about
+# the place and not the object: both of the deck's masts are the same
+# mast, but one of them is the one forward of the other.
+PROP_DIALOGUE_AT: dict[tuple[str, int, int], str] = {
+    ("ship_mast_sail", 21, 22): "examine_ship_foremast",
+}
+
+
 def examine_line_id(kind: str) -> str:
     """The id of a prop's plain description in data/dialogue/examine.json.
 
@@ -740,9 +749,11 @@ class Prop:
         self.veil = 0.0
         self._thinned: dict[int, object] = {}
         self.choice_id = PROP_CHOICE.get(kind)
-        self.dialogue_id = PROP_DIALOGUE.get(kind) or (
-            None if self.choice_id or kind in MUTE_PROPS
-            else examine_line_id(kind)
+        self.dialogue_id = PROP_DIALOGUE_AT.get((kind, col, row)) or (
+            PROP_DIALOGUE.get(kind) or (
+                None if self.choice_id or kind in MUTE_PROPS
+                else examine_line_id(kind)
+            )
         )
         if self.dialogue_id and self.choice_id:
             raise ValueError(f"{kind}: a prop has a line OR a choice, not both")

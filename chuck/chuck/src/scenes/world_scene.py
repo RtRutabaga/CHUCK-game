@@ -113,6 +113,26 @@ from src.ui.hud import HUD
 
 BOBERT_AWAKE_LINE = "bobert_awake"
 PANTRY_CHEESE_HINT = "pantry_cheese_hint"
+
+# Ground with a line of its own, keyed by map character the way the fall
+# zones are. The Astral Sea is terrain and not a prop -- seventeen
+# thousand tiles of it across thirty-nine maps -- so it has nowhere to
+# keep a line except here.
+TERRAIN_DIALOGUE = {"V": "examine_astral_void"}
+
+
+class _TerrainTarget:
+    """A stand-in, so ground can be examined like anything else.
+
+    It carries the one attribute the interact path reads off a prop and
+    nothing else: no choice, no interact(), no hitbox, no place in any
+    of the scene's lists. It never outlives the key press that made it.
+    """
+
+    __slots__ = ("dialogue_id",)
+
+    def __init__(self, dialogue_id: str) -> None:
+        self.dialogue_id = dialogue_id
 BOBERT_CARTONS_LINE = "bobert_awake_cartons"
 from src.world.camera import Camera
 from src.world.collision import overlaps
@@ -2505,12 +2525,12 @@ class WorldScene(Scene):
         return dialogue_id
 
     def _interactable_in_range(self):
-        """The NPC or prop Chuck could talk to right now, or None.
+        """The NPC, prop or ground Chuck could talk to right now, or None.
 
         The interact key and the tutorial hint both read this, so the
         hint can never promise something E won't deliver.
         """
-        return find_target(
+        target = find_target(
             self.player.interaction_probe(),
             self.player.hitbox,
             self.npcs,
@@ -2519,6 +2539,27 @@ class WorldScene(Scene):
              *self.reactive_flowers.flowers,
              *(t for t in self.choice_triggers if not t.walk_triggered)],
         )
+        if target is not None:
+            return target
+        return self._terrain_in_range()
+
+    def _terrain_in_range(self):
+        """Ground with something to say, one tile ahead of Chuck.
+
+        The Astral Sea is terrain rather than a prop -- seventeen
+        thousand tiles of it across thirty-nine maps -- so it cannot
+        answer the way a barrel does. Anything else in reach answers
+        first; this is what is left when Chuck is looking at nothing but
+        the gap in the world.
+        """
+        probe = self.player.interaction_probe()
+        ts = config.TILE_SIZE
+        for col in range(probe.left // ts, probe.right // ts + 1):
+            for row in range(probe.top // ts, probe.bottom // ts + 1):
+                line = TERRAIN_DIALOGUE.get(self.tilemap.terrain_at(col, row))
+                if line is not None:
+                    return _TerrainTarget(line)
+        return None
 
     def _collect_pending_drops(self) -> None:
         """Materialize one-shot physical rewards requested by world objects."""

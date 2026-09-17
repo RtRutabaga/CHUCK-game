@@ -1,175 +1,499 @@
 {
-  "examine_breakable_grass": ["A tuft of grass. Maybe there's a cigarette somewhere in there?"],
-  "examine_reactive_flower": ["A strange flower. It looks like it could use a good scratch."],
-  "examine_breakable_urn": ["A clay urn. Something rattles inside. One good scratch would crack it."],
-  "examine_pantry_jar": ["A squat clay jar. Something shifts inside. A scratch would crack it."],
-  "examine_jar_shelf": ["A shelf of jars. The jars look breakable. The shelf does not."],
-  "examine_jar_shelf_empty": ["An empty shelf. Whatever was in the jars is on the floor now."],
-  "examine_ship_captain_chest": ["The captain's chest. Locked, but the lid is old wood. A good scratch might do it."],
-  "examine_ship_captain_chest_open": ["The captain's chest. Empty now."],
-  "examine_desert_ruin_chest": ["A heavy old chest, sitting in the courtyard like it's waiting. The lid looks like it would give to a good scratch."],
-  "examine_desert_ruin_chest_open": ["An open chest. Sand is already getting in."],
-  "examine_chult_falls_chest": ["A chest, out here, where nobody comes. The lid's gone soft in the damp. One good scratch."],
-  "examine_chult_falls_chest_open": ["An open chest. Moss is already moving in."],
-
-  "examine_barrel": ["A barrel. Far too sturdy to break with a scratch."],
-  "examine_crate": ["A shipping crate, nailed shut. Too big to break with a scratch."],
-  "examine_crate_green": ["A crate painted green. Too big to break with a scratch."],
-  "examine_crate_orange": ["A crate painted orange. Too big to break with a scratch."],
-  "examine_crate_red": ["A crate painted red. Too big to break with a scratch."],
-  "examine_bar_counter": ["The bar. Scratched plenty already, and none of it by rats."],
-  "examine_tavern_table": ["A tavern table. Solid oak. A scratch won't do anything to it."],
-  "examine_tavern_chair": ["A chair. Much too big to break with a scratch."],
-  "examine_tavern_hearth": ["A stone hearth. Warm."],
-  "examine_tavern_door": ["The tavern door."],
-  "examine_tavern_open": ["The tavern door, open."],
-  "examine_chimney": ["A chimney. It is smoking more than Chuck is."],
-  "examine_stall_post": ["A stall post holding up the awning."],
-  "examine_stall_table": ["A market table. Too heavy to break with a scratch."],
-  "examine_pantry_open": ["The pantry door. Open."],
-  "examine_pantry_door": ["The pantry door. Closed."],
-  "examine_sailing_cog": ["A whole ship, sitting in the jungle. Nobody here seems to think that's strange."],
-  "examine_waterdeep_docked_ship": ["A ship at the dock."],
-  "examine_waterdeep_fountain": ["A fountain. The water's clean, which is more than can be said for the harbour."],
-  "examine_waterdeep_forge": ["The smith's forge. Hot enough to feel from here."],
-  "examine_waterdeep_anvil": ["An anvil. Much too heavy to do anything to with a scratch."],
-  "examine_waterdeep_alchemist_display": ["Bottles of things with labels written by someone in a hurry."],
-
-  "examine_desert_column": ["A broken column. Stone. A scratch won't move it."],
-  "examine_desert_column_fallen": ["A fallen column, lying where it came down. Too heavy to break with a scratch."],
-  "examine_desert_rubble": ["A pile of fallen blocks. Too big to break with a scratch."],
-  "examine_desert_great_pillar": ["A great pillar, still standing. The building it held up isn't."],
-  "examine_desert_ruin_arch": ["The gate arch. The one part of the building that didn't fall down."],
-  "examine_desert_palm": ["A palm tree. Shade, mostly."],
-  "examine_desert_fire_pit": ["An orc cookfire. Recently used."],
-  "examine_castle_banner": ["A red and gold banner. Somebody's colours. Nobody's around to say whose."],
-  "examine_castle_turret": ["A turret on the corner of the wall."],
-  "examine_phlegethos_rubble": ["Basalt rubble, still warm. Too heavy to break with a scratch."],
-  "examine_phlegethos_lava_fall": ["A waterfall, but it's lava. Best not."],
-  "examine_phlegethos_statue": ["A statue of something with too many horns."],
-
-  "examine_temple_column": ["A temple column. Solid stone. A scratch won't do anything."],
-  "examine_temple_arch_ew": ["A stone arch, carved with serpents."],
-  "examine_temple_arch_ns": ["A stone arch, carved with serpents."],
-  "examine_phlegethos_arch_ew": ["An iron-banded gate. The stone is cracked, and the cracks are lit."],
-  "examine_phlegethos_arch_ns": ["An iron-banded gate. The stone is cracked, and the cracks are lit."],
-  "examine_temple_gate": ["The temple gate."],
-  "examine_temple_idol": ["An idol with a very fixed stare."],
-  "examine_temple_monument": ["A carved monument. The carvings are of people running."],
-  "examine_temple_serpent_monument": ["A monument shaped like a coiled serpent."],
-  "examine_temple_skull": ["A skull. Not recent."],
-  "examine_temple_serpent_head": ["A stone snake's head, big enough to walk into. Its mouth is open."],
-  "examine_temple_roof_comb": ["Carved stone standing off the roof, pierced right through. It is up there to be seen from down here."],
-  "examine_temple_stela": ["A stone slab covered in writing nobody reads any more."],
-  "examine_temple_rubble_block": ["A fallen block of temple wall. Too big to break with a scratch."],
-  "examine_skull_stake": ["A skull on a stake. A warning, probably."],
-  "examine_jungle_tree": ["A jungle tree."],
-  "examine_jungle_shrub": ["A jungle shrub. Dense."],
-
-  "examine_feywild_tree": ["A tree with leaves that glow faintly."],
-  "examine_feywild_grove_tree": ["A tree, with a violet sheen on its leaves."],
-  "examine_feywild_oak": ["An oak. A completely ordinary oak. It stands out here."],
-  "examine_feywild_shrub": ["A shrub."],
-  "examine_feywild_spiral": ["A very large flower. Doesn't seem like it does anything, unlike those other flowers"],
-  "examine_feywild_mushroom": ["A mushroom the size of a table."],
-  "examine_feywild_great_tree": ["A tree older than anything else in the Feywild."],
-  "examine_fey_root_knot": ["A knot of roots, grown round each other."],
-  "examine_fey_table_leg": ["A table leg, the size of a tree."],
-  "examine_fey_napkin": ["A napkin the size of a bedsheet."],
-  "examine_fey_crumbs": ["Crumbs. Each one is about the size of Chuck's head."],
-  "examine_cloud_staircase": ["A staircase made of cloud. It holds."],
-  "examine_cloud_tower_arch": ["The archway into the tower. It's big enough for a giant, because it is for one."],
-  "examine_griffon_nest": ["A griffon's nest. Best not be in it."],
-  "examine_aerie_rope": ["A rope as thick as a tree trunk."],
-
-  "examine_redcap_shelter": ["A redcap shelter. It smells like old boots."],
-  "examine_redcap_cauldron": ["A cauldron. Whatever's in it is still bubbling. Too heavy to tip with a scratch."],
-  "examine_redcap_boot": ["An iron boot, sized for a redcap. Too heavy to budge with a scratch."],
-  "examine_redcap_sickle": ["A rusty sickle, stuck in the ground."],
-
-  "examine_ship_helm": ["The ship's wheel."],
-  "examine_ship_mast_sail": ["The mast. The sail is up and full."],
-  "examine_ship_bowsprit": ["The bowsprit, pointing out to sea."],
-  "examine_ship_hammock": ["A crew hammock. Somebody's sleeping in it, or was."],
-  "examine_ship_round_table": ["A round table, bolted to the floor. A scratch won't budge it."],
-  "examine_ship_captain_bed": ["The captain's bed. Nicer than anything else on this ship."],
-  "examine_ship_captain_rug": ["A thick rug."],
-
-  "examine_city_fire_hydrant": ["A fire hydrant."],
-  "examine_city_stop_sign": ["A stop sign."],
-  "examine_city_streetlight": ["A streetlight."],
-  "examine_city_bus_stop": ["A bus stop. The timetable has given up."],
-  "examine_city_bottles": ["Empty bottles. Somebody had a night."],
-  "examine_city_planar_portal": ["A hole in the world, shimmering."],
-  "examine_city_sewer_entrance": ["A way down into the sewer."],
-
-  "examine_tahuya_cabin": ["A cabin in the woods. Maybe someone inside knows the way forward"],
-  "examine_tahuya_fir": ["A Douglas fir. Tall."],
-  "examine_tahuya_firewood_shed": ["A firewood shed, stacked neatly. Too much wood to do anything with a scratch."],
-  "examine_tahuya_huckleberry": ["A huckleberry bush."],
-  "examine_tahuya_salal": ["Salal. It's everywhere around here."],
-  "examine_tahuya_mushroom_light": ["A mushroom-shaped path light. It changes colour."],
-  "examine_cabin_big_couch": ["A big couch."],
-  "examine_cabin_couch": ["A couch."],
-  "examine_cabin_chair": ["A chair."],
-  "examine_cabin_side_table": ["A side table."],
-  "examine_cabin_connector_shelf": ["A shelf of odds and ends."],
-  "examine_cabin_curtain_window": ["A window with curtains. Dark outside."],
-  "examine_cabin_kitchen": ["The kitchen counter."],
-  "examine_cabin_wood_storage": ["Firewood, stacked for the stove."],
-
-  "examine_ship_bookshelf": ["The captain's books. Charts, logs, and one about knots that has been read to pieces."],
-  "examine_ship_writing_desk": ["The captain's desk, a chart held down by an inkpot. Much too solid to scratch at."],
-  "examine_ship_butcher_block": ["A butcher block with a cleaver stuck in it. Best not to ask what was on it last."],
-  "examine_ship_stew_pot": ["A pot of stew. It has been simmering since before anyone can remember."],
-  "examine_ship_rope_coil": ["A coil of rope."],
-  "examine_ship_cargo_stack": ["Crates and a sack, lashed down tight. Far too big to break with a scratch."],
-  "examine_waterdeep_gate_tower": ["A tower of the district wall. The watch is up there somewhere, watching."],
-  "examine_waterdeep_banner": ["A blue and silver banner. The City Watch's colours."],
-  "examine_tavern_keg_rack": ["Kegs of ale on a rack. Too sturdy to scratch open, sadly."],
-  "examine_tavern_notice_board": ["Notices: a lost dog, a room to let, and a reward for a rat. Hopefully a different rat."],
-  "examine_tavern_rug": ["A worn rug. It has soaked up a lot of ale."],
-  "examine_pantry_sack_pile": ["A pile of flour sacks, stitched tight. Too heavy to tear with a scratch."],
-  "examine_pantry_produce_basket": ["A basket of onions and apples. No cheese."],
-  "examine_chult_fallen_log": ["A fallen trunk, going soft with moss. Still too big to break with a scratch."],
-  "examine_chult_ruin_fragment": ["A carved block, half swallowed by the jungle. Something stood here once. Too heavy to scratch at."],
-  "examine_chult_great_tree": ["An enormous jungle tree. The rest of the jungle grew up around it."],
-  "examine_chult_falls": ["A waterfall. Cold spray all the way over here."],
-  "examine_chult_boulder": ["A big wet rock. Not going anywhere."],
-  "examine_chult_boulder_water": ["A rock sitting in the pool."],
-  "examine_temple_wall_carving": ["A carving set into the wall. Serpents, suns and faces, mostly."],
-  "examine_temple_toppled_pillar": ["A pillar lying in pieces. Too heavy to break with a scratch."],
-  "examine_temple_pillar_stump": ["The stump of a broken pillar. Solid stone."],
-  "examine_temple_grand_arch": ["A grand stone arch. It doesn't lead anywhere. It just stands there being grand."],
-  "examine_phlegethos_vent": ["A vent in the rock, breathing smoke. It smells like burnt hair."],
-  "examine_phlegethos_bone_heap": ["A heap of old bones. Several somebodies, a long time ago."],
-  "examine_phlegethos_iron_spikes": ["Rusted iron spikes driven into the rock. Best not to scratch at those."],
-  "examine_phlegethos_fortress_tower": ["A tower of the fortress wall. Something up there is glowing."],
-  "examine_phlegethos_banner": ["A black banner with an ember on it. Whoever's colours they are, they're winning down here."],
-  "examine_fey_lantern": ["A lantern on a crooked post. Nobody lit it. It just glows."],
-  "examine_fen_reeds": ["Reeds standing in the water."],
-  "examine_desert_ribcage": ["The bones of something enormous. The skull alone is bigger than a cart."],
-  "examine_orc_tent": ["An orc tent of stitched hides. It smells exactly how it looks."],
-  "examine_orc_weapon_rack": ["A rack of orc axes and spears. Too heavy to budge with a scratch."],
-  "examine_orc_war_drum": ["An orc war drum. A rat-sized tap wouldn't make a sound."],
-  "examine_city_bench": ["A bench."],
-  "examine_city_litter_bin": ["A litter bin. It smells promising."],
-  "examine_city_neon_bar": ["A neon sign that says BAR. One letter keeps flickering."],
-  "examine_city_neon_open": ["A neon sign that says OPEN. It's lying."],
-  "examine_city_neon_24h": ["A neon sign that says 24H."],
-  "examine_city_steam_grate": ["A grate breathing steam. Warm, at least."],
-  "examine_sewer_pipe": ["An outflow pipe, dribbling something grey-green."],
-  "examine_sewer_graffiti": ["A tag nobody else can read."],
-  "examine_ship_deck_grating": ["A deck grating. Down through the gaps, the hold smells of bilge and rope."],
-
-  "examine_harbour_bollard": ["A mooring post, rope worn into it. Too solid to scratch at."],
-  "examine_harbour_rowboat": ["A rowboat, tied up. Somebody's going fishing later, or wishes they were."],
-  "examine_waterdeep_lamp": ["A street lamp."],
-  "examine_shop_sign_bread": ["A baker's sign. The smell got here first."],
-  "examine_shop_sign_fish": ["A fishmonger's sign. The smell got here first."],
-  "examine_shop_sign_barrel": ["A cooper's sign. Barrels made while you wait. Not while a rat waits."],
-  "examine_shop_sign_anvil": ["The smith's sign."],
-  "examine_shop_sign_potion": ["The alchemist's sign. The bottle on it is a colour nothing should be."],
-  "examine_window_box": ["A window box. Somebody waters these."],
-  "examine_washing_line": ["Washing on a line. It's never going to dry in this harbour air."]
+  "examine_breakable_grass": [
+    "A tuft of grass. Maybe there's a cigarette somewhere in there?"
+  ],
+  "examine_reactive_flower": [
+    "A strange flower. It looks like it could use a good scratch."
+  ],
+  "examine_breakable_urn": [
+    "A clay urn. Something rattles inside. One good scratch would crack it."
+  ],
+  "examine_pantry_jar": [
+    "A squat clay jar. Something shifts inside. A scratch would crack it."
+  ],
+  "examine_jar_shelf": [
+    "A shelf of jars. The jars look breakable. The shelf does not."
+  ],
+  "examine_jar_shelf_empty": [
+    "An empty shelf. Whatever was in the jars is on the floor now."
+  ],
+  "examine_ship_captain_chest": [
+    "The captain's chest. Locked, but the lid is old wood. A good scratch might do it."
+  ],
+  "examine_ship_captain_chest_open": [
+    "The captain's chest. Empty now."
+  ],
+  "examine_desert_ruin_chest": [
+    "A heavy old chest, sitting in the courtyard like it's waiting. The lid looks like it would give to a good scratch."
+  ],
+  "examine_desert_ruin_chest_open": [
+    "An open chest. Sand is already getting in."
+  ],
+  "examine_chult_falls_chest": [
+    "A chest, out here, where nobody comes. The lid's gone soft in the damp. One good scratch."
+  ],
+  "examine_chult_falls_chest_open": [
+    "An open chest. Moss is already moving in."
+  ],
+  "examine_barrel": [
+    "A barrel. Far too sturdy to break with a scratch."
+  ],
+  "examine_crate": [
+    "A shipping crate, nailed shut. Too big to break with a scratch."
+  ],
+  "examine_crate_green": [
+    "A crate painted green. Too big to break with a scratch."
+  ],
+  "examine_crate_orange": [
+    "A crate painted orange. Too big to break with a scratch."
+  ],
+  "examine_crate_red": [
+    "A crate painted red. Too big to break with a scratch."
+  ],
+  "examine_bar_counter": [
+    "The bar. Scratched plenty already, and none of it by rats."
+  ],
+  "examine_tavern_table": [
+    "A tavern table. Solid oak. A scratch won't do anything to it."
+  ],
+  "examine_tavern_chair": [
+    "A chair. Much too big to break with a scratch."
+  ],
+  "examine_tavern_hearth": [
+    "A stone hearth. Warm."
+  ],
+  "examine_tavern_door": [
+    "The tavern door."
+  ],
+  "examine_tavern_open": [
+    "The tavern door, open."
+  ],
+  "examine_chimney": [
+    "A chimney. It is smoking more than Chuck is."
+  ],
+  "examine_stall_post": [
+    "A stall post holding up the awning."
+  ],
+  "examine_stall_table": [
+    "A market table. Too heavy to break with a scratch."
+  ],
+  "examine_pantry_open": [
+    "The pantry door. Open."
+  ],
+  "examine_pantry_door": [
+    "The pantry door. Closed."
+  ],
+  "examine_sailing_cog": [
+    "A whole ship, sitting in the jungle. Nobody here seems to think that's strange."
+  ],
+  "examine_waterdeep_docked_ship": [
+    "A ship at the dock."
+  ],
+  "examine_waterdeep_fountain": [
+    "A fountain. The water's clean, which is more than can be said for the harbour."
+  ],
+  "examine_waterdeep_forge": [
+    "The smith's forge. Hot enough to feel from here."
+  ],
+  "examine_waterdeep_anvil": [
+    "An anvil. Much too heavy to do anything to with a scratch."
+  ],
+  "examine_waterdeep_alchemist_display": [
+    "Bottles of things with labels written by someone in a hurry."
+  ],
+  "examine_desert_column": [
+    "A broken column. Stone. A scratch won't move it."
+  ],
+  "examine_desert_column_fallen": [
+    "A fallen column, lying where it came down. Too heavy to break with a scratch."
+  ],
+  "examine_desert_rubble": [
+    "A pile of fallen blocks. Too big to break with a scratch."
+  ],
+  "examine_desert_great_pillar": [
+    "A great pillar, still standing. The building it held up isn't."
+  ],
+  "examine_desert_ruin_arch": [
+    "The gate arch. The one part of the building that didn't fall down."
+  ],
+  "examine_desert_palm": [
+    "A palm tree. Shade, mostly."
+  ],
+  "examine_desert_fire_pit": [
+    "An orc cookfire. Recently used."
+  ],
+  "examine_castle_banner": [
+    "A red and gold banner. Somebody's colours. Nobody's around to say whose."
+  ],
+  "examine_castle_turret": [
+    "A turret on the corner of the wall."
+  ],
+  "examine_phlegethos_rubble": [
+    "Basalt rubble, still warm. Too heavy to break with a scratch."
+  ],
+  "examine_phlegethos_lava_fall": [
+    "A waterfall, but it's lava. Best not."
+  ],
+  "examine_phlegethos_statue": [
+    "A statue of something with too many horns."
+  ],
+  "examine_temple_column": [
+    "A temple column. Solid stone. A scratch won't do anything."
+  ],
+  "examine_temple_arch_ew": [
+    "A stone arch, carved with serpents."
+  ],
+  "examine_temple_arch_ns": [
+    "A stone arch, carved with serpents."
+  ],
+  "examine_phlegethos_arch_ew": [
+    "An iron-banded gate. The stone is cracked, and the cracks are lit."
+  ],
+  "examine_phlegethos_arch_ns": [
+    "An iron-banded gate. The stone is cracked, and the cracks are lit."
+  ],
+  "examine_temple_gate": [
+    "The temple gate."
+  ],
+  "examine_temple_idol": [
+    "An idol with a very fixed stare."
+  ],
+  "examine_temple_monument": [
+    "A carved monument. The carvings are of people running."
+  ],
+  "examine_temple_serpent_monument": [
+    "A monument shaped like a coiled serpent."
+  ],
+  "examine_temple_skull": [
+    "A skull. Not recent."
+  ],
+  "examine_temple_serpent_head": [
+    "A stone snake's head, big enough to walk into. Its mouth is open."
+  ],
+  "examine_temple_roof_comb": [
+    "Carved stone standing off the roof, pierced right through. It is up there to be seen from down here."
+  ],
+  "examine_temple_stela": [
+    "A stone slab covered in writing nobody reads any more."
+  ],
+  "examine_temple_rubble_block": [
+    "A fallen block of temple wall. Too big to break with a scratch."
+  ],
+  "examine_skull_stake": [
+    "A skull on a stake. A warning, probably."
+  ],
+  "examine_jungle_tree": [
+    "A jungle tree."
+  ],
+  "examine_jungle_shrub": [
+    "A jungle shrub. Dense."
+  ],
+  "examine_feywild_tree": [
+    "A tree with leaves that glow faintly."
+  ],
+  "examine_feywild_grove_tree": [
+    "A tree, with a violet sheen on its leaves."
+  ],
+  "examine_feywild_oak": [
+    "An oak. A completely ordinary oak. It stands out here."
+  ],
+  "examine_feywild_shrub": [
+    "A shrub."
+  ],
+  "examine_feywild_spiral": [
+    "A very large flower. Doesn't seem like it does anything, unlike those other flowers"
+  ],
+  "examine_feywild_mushroom": [
+    "A mushroom the size of a table."
+  ],
+  "examine_feywild_great_tree": [
+    "A tree older than anything else in the Feywild."
+  ],
+  "examine_fey_root_knot": [
+    "A knot of roots, grown round each other."
+  ],
+  "examine_fey_table_leg": [
+    "A table leg, the size of a tree."
+  ],
+  "examine_fey_napkin": [
+    "A napkin the size of a bedsheet."
+  ],
+  "examine_fey_crumbs": [
+    "Crumbs. Each one is about the size of Chuck's head."
+  ],
+  "examine_cloud_staircase": [
+    "A staircase made of cloud. It holds."
+  ],
+  "examine_cloud_tower_arch": [
+    "The archway into the tower. It's big enough for a giant, because it is for one."
+  ],
+  "examine_griffon_nest": [
+    "A griffon's nest. Best not be in it."
+  ],
+  "examine_aerie_rope": [
+    "A rope as thick as a tree trunk."
+  ],
+  "examine_redcap_shelter": [
+    "A redcap shelter. It smells like old boots."
+  ],
+  "examine_redcap_cauldron": [
+    "A cauldron. Whatever's in it is still bubbling. Too heavy to tip with a scratch."
+  ],
+  "examine_redcap_boot": [
+    "An iron boot, sized for a redcap. Too heavy to budge with a scratch."
+  ],
+  "examine_redcap_sickle": [
+    "A rusty sickle, stuck in the ground."
+  ],
+  "examine_ship_helm": [
+    "The ship's wheel."
+  ],
+  "examine_ship_mast_sail": [
+    "The mast. The sail is up and full."
+  ],
+  "examine_ship_bowsprit": [
+    "The bowsprit, pointing out to sea."
+  ],
+  "examine_ship_hammock": [
+    "A crew hammock. Somebody's sleeping in it, or was."
+  ],
+  "examine_ship_round_table": [
+    "A round table, bolted to the floor. A scratch won't budge it."
+  ],
+  "examine_ship_captain_bed": [
+    "The captain's bed. Nicer than anything else on this ship."
+  ],
+  "examine_ship_captain_rug": [
+    "A thick rug."
+  ],
+  "examine_city_fire_hydrant": [
+    "A fire hydrant."
+  ],
+  "examine_city_stop_sign": [
+    "A stop sign."
+  ],
+  "examine_city_streetlight": [
+    "A streetlight."
+  ],
+  "examine_city_bus_stop": [
+    "A bus stop. The timetable has given up."
+  ],
+  "examine_city_bottles": [
+    "Empty bottles. Somebody had a night."
+  ],
+  "examine_city_planar_portal": [
+    "A hole in the world, shimmering."
+  ],
+  "examine_city_sewer_entrance": [
+    "A way down into the sewer."
+  ],
+  "examine_tahuya_cabin": [
+    "A cabin in the woods. Maybe someone inside knows the way forward"
+  ],
+  "examine_tahuya_fir": [
+    "A Douglas fir. Tall."
+  ],
+  "examine_tahuya_firewood_shed": [
+    "A firewood shed, stacked neatly. Too much wood to do anything with a scratch."
+  ],
+  "examine_tahuya_huckleberry": [
+    "A huckleberry bush."
+  ],
+  "examine_tahuya_salal": [
+    "Salal. It's everywhere around here."
+  ],
+  "examine_tahuya_mushroom_light": [
+    "A mushroom-shaped path light. It changes colour."
+  ],
+  "examine_cabin_big_couch": [
+    "A big couch."
+  ],
+  "examine_cabin_couch": [
+    "A couch."
+  ],
+  "examine_cabin_chair": [
+    "A chair."
+  ],
+  "examine_cabin_side_table": [
+    "A side table."
+  ],
+  "examine_cabin_connector_shelf": [
+    "A shelf of odds and ends."
+  ],
+  "examine_cabin_curtain_window": [
+    "A window with curtains. Dark outside."
+  ],
+  "examine_cabin_kitchen": [
+    "The kitchen counter."
+  ],
+  "examine_cabin_wood_storage": [
+    "Firewood, stacked for the stove."
+  ],
+  "examine_ship_bookshelf": [
+    "The captain's books. Charts, logs, and one about knots that has been read to pieces."
+  ],
+  "examine_ship_writing_desk": [
+    "The captain's desk, a chart held down by an inkpot. Much too solid to scratch at."
+  ],
+  "examine_ship_butcher_block": [
+    "A butcher block with a cleaver stuck in it. Best not to ask what was on it last."
+  ],
+  "examine_ship_stew_pot": [
+    "A pot of stew. It has been simmering since before anyone can remember."
+  ],
+  "examine_ship_rope_coil": [
+    "A coil of rope."
+  ],
+  "examine_ship_cargo_stack": [
+    "Crates and a sack, lashed down tight. Far too big to break with a scratch."
+  ],
+  "examine_waterdeep_gate_tower": [
+    "A tower of the district wall. The watch is up there somewhere, watching."
+  ],
+  "examine_waterdeep_banner": [
+    "A blue and silver banner. The City Watch's colours."
+  ],
+  "examine_tavern_keg_rack": [
+    "Kegs of ale on a rack. Too sturdy to scratch open, sadly."
+  ],
+  "examine_tavern_notice_board": [
+    "Notices: a lost dog, a room to let, and a reward for a rat. Hopefully a different rat."
+  ],
+  "examine_tavern_rug": [
+    "A worn rug. It has soaked up a lot of ale."
+  ],
+  "examine_pantry_sack_pile": [
+    "A pile of flour sacks, stitched tight. Too heavy to tear with a scratch."
+  ],
+  "examine_pantry_produce_basket": [
+    "A basket of onions and apples. No cheese."
+  ],
+  "examine_chult_fallen_log": [
+    "A fallen trunk, going soft with moss. Still too big to break with a scratch."
+  ],
+  "examine_chult_ruin_fragment": [
+    "A carved block, half swallowed by the jungle. Something stood here once. Too heavy to scratch at."
+  ],
+  "examine_chult_great_tree": [
+    "An enormous jungle tree. The rest of the jungle grew up around it."
+  ],
+  "examine_chult_falls": [
+    "A waterfall. Cold spray all the way over here."
+  ],
+  "examine_chult_boulder": [
+    "A big wet rock. Not going anywhere."
+  ],
+  "examine_chult_boulder_water": [
+    "A rock sitting in the pool."
+  ],
+  "examine_temple_wall_carving": [
+    "A carving set into the wall. Serpents, suns and faces, mostly."
+  ],
+  "examine_temple_toppled_pillar": [
+    "A pillar lying in pieces. Too heavy to break with a scratch."
+  ],
+  "examine_temple_pillar_stump": [
+    "The stump of a broken pillar. Solid stone."
+  ],
+  "examine_temple_grand_arch": [
+    "A grand stone arch. It doesn't lead anywhere. It just stands there being grand."
+  ],
+  "examine_phlegethos_vent": [
+    "A vent in the rock, breathing smoke. It smells like burnt hair."
+  ],
+  "examine_phlegethos_bone_heap": [
+    "A heap of old bones. Several somebodies, a long time ago."
+  ],
+  "examine_phlegethos_iron_spikes": [
+    "Rusted iron spikes driven into the rock. Best not to scratch at those."
+  ],
+  "examine_phlegethos_fortress_tower": [
+    "A tower of the fortress wall. Something up there is glowing."
+  ],
+  "examine_phlegethos_banner": [
+    "A black banner with an ember on it. Whoever's colours they are, they're winning down here."
+  ],
+  "examine_fey_lantern": [
+    "A lantern on a crooked post. Nobody lit it. It just glows."
+  ],
+  "examine_fen_reeds": [
+    "Reeds standing in the water."
+  ],
+  "examine_desert_ribcage": [
+    "The bones of something enormous. The skull alone is bigger than a cart."
+  ],
+  "examine_orc_tent": [
+    "An orc tent of stitched hides. It smells exactly how it looks."
+  ],
+  "examine_orc_weapon_rack": [
+    "A rack of orc axes and spears. Too heavy to budge with a scratch."
+  ],
+  "examine_orc_war_drum": [
+    "An orc war drum. A rat-sized tap wouldn't make a sound."
+  ],
+  "examine_city_bench": [
+    "A bench."
+  ],
+  "examine_city_litter_bin": [
+    "A litter bin. It smells promising."
+  ],
+  "examine_city_neon_bar": [
+    "A neon sign that says BAR. One letter keeps flickering."
+  ],
+  "examine_city_neon_open": [
+    "A neon sign that says OPEN. It's lying."
+  ],
+  "examine_city_neon_24h": [
+    "A neon sign that says 24H."
+  ],
+  "examine_city_steam_grate": [
+    "A grate breathing steam. Warm, at least."
+  ],
+  "examine_sewer_pipe": [
+    "An outflow pipe, dribbling something grey-green."
+  ],
+  "examine_sewer_graffiti": [
+    "A tag nobody else can read."
+  ],
+  "examine_ship_deck_grating": [
+    "A deck grating. Down through the gaps, the hold smells of bilge and rope."
+  ],
+  "examine_harbour_bollard": [
+    "A mooring post, rope worn into it. Too solid to scratch at."
+  ],
+  "examine_harbour_rowboat": [
+    "A rowboat, tied up. Somebody's going fishing later, or wishes they were."
+  ],
+  "examine_waterdeep_lamp": [
+    "A street lamp."
+  ],
+  "examine_shop_sign_bread": [
+    "A baker's sign. The smell got here first."
+  ],
+  "examine_shop_sign_fish": [
+    "A fishmonger's sign. The smell got here first."
+  ],
+  "examine_shop_sign_barrel": [
+    "A cooper's sign. Barrels made while you wait. Not while a rat waits."
+  ],
+  "examine_shop_sign_anvil": [
+    "The smith's sign."
+  ],
+  "examine_shop_sign_potion": [
+    "The alchemist's sign. The bottle on it is a colour nothing should be."
+  ],
+  "examine_window_box": [
+    "A window box. Somebody waters these."
+  ],
+  "examine_washing_line": [
+    "Washing on a line. It's never going to dry in this harbour air."
+  ],
+  "examine_ship_foremast": [
+    "The foremast, so called because it stands forward of the mainmast.",
+    "It could be called the mainmast if the mast abaft it were a mizzen, as on a ketch or yawl; but that would make this a different rig altogether.",
+    "This is a brig, so her masts are fore and main."
+  ],
+  "examine_astral_void": [
+    "The astral sea, the space between worlds ... what's it doing here?"
+  ]
 }

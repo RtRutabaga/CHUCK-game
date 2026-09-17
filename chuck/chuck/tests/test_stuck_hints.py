@@ -21,7 +21,8 @@ def test_a_deck_pirate_asks_about_the_captains_cigarettes() -> None:
     # The captain's chest gates the captain too.
     assert "captain_chest_opened" in CAPTAIN_REQUIRED_FLAGS
     assert DialogueSystem().get("cheering_pirate_repeat") == [
-        "You're not smoking the captain's cigarettes, are you!?"]
+        "You're not smoking the captain's cigarettes, are you!?",
+        "Don't let the captain catch you sniffing around in his quarters!"]
 
 
 def test_the_cabin_suggests_going_inside() -> None:

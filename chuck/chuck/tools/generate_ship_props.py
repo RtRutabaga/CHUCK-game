@@ -306,8 +306,15 @@ wwLLwbbbLLWWLLLWLGGggggGGGWWLLwWLLwWLLLLLGLLLd
 """
 
 
-def helm() -> Image.Image:
-    """The ship's wheel: 46x66, from the reference grid above."""
+# The traced grid is 46x66, which stood a little tall against the rail
+# and the captain beside it. The trace stays the source of truth and the
+# wheel is brought down from it, rather than being redrawn smaller and
+# losing the angle that was the point of tracing it.
+HELM_SCALE = 0.85
+
+
+def helm_grid() -> Image.Image:
+    """The wheel exactly as traced: 46x66, one pixel per character."""
     rows = HELM.strip().splitlines()
     image = Image.new("RGBA", (len(rows[0]), len(rows)), TRANSPARENT)
     pixels = image.load()
@@ -317,6 +324,37 @@ def helm() -> Image.Image:
             if colour is not None:
                 pixels[x, y] = colour
     return image
+
+
+def _snap_to_palette(image: Image.Image) -> Image.Image:
+    """Put every pixel back on the palette after a resample.
+
+    A smooth resize is what keeps the spokes and the handles readable at
+    a smaller size -- nearest-neighbour drops whole one-pixel spokes --
+    but it invents colours between the nine the wheel is made of. So the
+    shape comes from the resample and the colours come back from the
+    grid, which is what keeps it pixel art rather than a shrunk photo.
+    """
+    palette = list(HELM_PALETTE.values())
+    out = Image.new("RGBA", image.size, TRANSPARENT)
+    source, target = image.load(), out.load()
+    for y in range(image.height):
+        for x in range(image.width):
+            red, green, blue, alpha = source[x, y]
+            if alpha < 128:
+                continue
+            target[x, y] = min(
+                palette,
+                key=lambda c: (c[0] - red) ** 2 + (c[1] - green) ** 2
+                + (c[2] - blue) ** 2)
+    return out
+
+
+def helm() -> Image.Image:
+    """The ship's wheel, traced and then brought down to size."""
+    grid = helm_grid()
+    size = (round(grid.width * HELM_SCALE), round(grid.height * HELM_SCALE))
+    return _snap_to_palette(grid.resize(size, Image.LANCZOS))
 
 
 def bowsprit() -> Image.Image:

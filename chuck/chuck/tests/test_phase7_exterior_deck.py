@@ -66,7 +66,7 @@ def test_deck_has_one_checkpoint_and_uses_the_shared_loader() -> None:
                       if prop.kind == "ship_mast_sail"]
         assert mast_sizes == [(224, 240), (224, 240)]
         helm = next(prop for prop in scene.props if prop.kind == "ship_helm")
-        assert helm._size == (46, 66)
+        assert helm._size == (39, 56)
         bowsprit = next(prop for prop in scene.props
                         if prop.kind == "ship_bowsprit")
         assert bowsprit._size == (400, 96)
@@ -269,13 +269,15 @@ def test_the_lowest_yard_hangs_clear_of_the_crews_heads() -> None:
 
 
 def test_the_helm_is_the_traced_wheel_rather_than_a_drawn_circle() -> None:
-    """The wheel at its own angle, pixel for pixel.
+    """The wheel at its own angle, brought down from the trace.
 
     It is seen from above and a little to starboard: an upright ellipse
     taller than it is wide, the handles swung round it, and the pedestal
     standing behind and to one side. A circle-and-spokes routine does
-    not arrive at that, so the art is a traced grid and this holds the
-    render to it.
+    not arrive at that, so the art is a traced grid, resampled down from
+    it and put back on its own nine colours. This holds the render to
+    the trace it came from; `tests/test_deck_and_void_lines.py` holds
+    the shrink itself.
     """
     import sys
 
@@ -286,16 +288,20 @@ def test_the_helm_is_the_traced_wheel_rather_than_a_drawn_circle() -> None:
 
     rows = props.HELM.strip().splitlines()
     assert len(rows) == 66 and {len(row) for row in rows} == {46}
-
-    art = Image.open(
-        config.SPRITES_DIR / "objects" / "ship_helm.png").convert("RGBA")
-    assert art.size == (46, 66)
-    # Taller than wide: that is the angle, not a decoration of it.
-    assert art.height > art.width * 1.4
+    # The grid is still the whole of the art: rendered at full size it
+    # is the trace, pixel for pixel.
+    full = props.helm_grid()
+    assert full.size == (46, 66)
     for y, row in enumerate(rows):
         for x, char in enumerate(row):
             want = props.HELM_PALETTE.get(char, props.TRANSPARENT)
-            assert art.getpixel((x, y)) == want, (x, y, char)
+            assert full.getpixel((x, y)) == want, (x, y, char)
+
+    art = Image.open(
+        config.SPRITES_DIR / "objects" / "ship_helm.png").convert("RGBA")
+    assert art.size == (39, 56)
+    # Taller than wide: that is the angle, not a decoration of it.
+    assert art.height > art.width * 1.4
 
     # The brass hub sits in the wheel, well above the sprite's middle --
     # the bottom third is pedestal.
