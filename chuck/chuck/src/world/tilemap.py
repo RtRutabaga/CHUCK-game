@@ -844,8 +844,18 @@ TILE_DEFS: dict[str, TileDef] = {
     # the tower is a thing in the sky and the ground Chuck walks up to it
     # on says so before he gets there. Its own chars rather than the
     # aerie's stone, so only the approach changes.
-    "ᚡ": TileDef(solid=False, color=(222, 232, 243)),
-    "ᚣ": TileDef(solid=True, color=(189, 206, 226)),
+    "ᚡ": TileDef(solid=False, color=(219, 231, 243)),
+    # The same body, one step down, laid in a band just inside the rim.
+    # A bank lit evenly corner to corner is a disc; shading it as it
+    # turns away from the top of the dome gives it a middle and a side.
+    "ᚫ": TileDef(solid=False, color=(205, 220, 236)),
+    # Its four rims, one per side it is open on: the far edge catches the
+    # light, the near one is the underside in shadow, and the flanks are
+    # turned away. They are the edge of the platform, so they are solid.
+    "ᚤ": TileDef(solid=True, color=(238, 245, 251)),
+    "ᚥ": TileDef(solid=True, color=(150, 176, 206)),
+    "ᚩ": TileDef(solid=True, color=(190, 209, 229)),
+    "ᚪ": TileDef(solid=True, color=(190, 209, 229)),
     "♘": TileDef(solid=True, color=(154, 160, 169),
                  prop="griffon_nest", under="#"),
     "℞": TileDef(solid=True, color=(154, 160, 169),

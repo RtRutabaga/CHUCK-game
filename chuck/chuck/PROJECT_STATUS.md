@@ -27,6 +27,33 @@ and updated every session.
 
 ## Latest implementation
 
+### One bank of cloud, not a field of cloud tiles
+
+The platform outside Zephyros' tower was cloud, but it read as wallpaper
+printed with clouds: every tile drew its own billow, and the whole ring was
+edged with a single rim tile, so the far edge, the near edge and both flanks
+were lit identically. A shape lit the same on every side has no form.
+
+- **The body is nearly flat now.** Two soft wisps a single step either side of
+  the base colour, short and never twice in the same place. No tile has an edge
+  of its own, so the field joins up into one mass.
+- **Four rims instead of one**, chosen per tile by which side it is open on:
+  a lit crest along the far edge, the underside in shadow along the near one,
+  and the flanks turned away. The rim is derived after the tongue and the
+  approach are cut, so it follows the shape that is actually there -- including
+  the tongue's sides and its tip, which the old ring pass painted over and left
+  bare.
+- **The outline bulges.** Rim tiles paint sky in the part of themselves the
+  cloud does not fill, and the boundary between the two is billowed. Without
+  that the platform's silhouette is the staircase of square tiles it is made
+  of, which is the single loudest thing saying "floor tiles that happen to be
+  white".
+- **A shaded band inside the rim**, so the bank has a middle that faces the
+  light and a side that turns away from it -- the difference between a cloud
+  and a plate.
+- **Tests:** every rim tile matches the side it is open on, and every tile of
+  the platform that touches sky wears one.
+
 ### Five fixes: lamps, chairs, the table, the platform and the pool
 
 - **Three lamp posts off the docks.** The north-west corner carried three of

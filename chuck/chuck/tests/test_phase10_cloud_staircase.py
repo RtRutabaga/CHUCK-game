@@ -240,8 +240,39 @@ def test_the_tower_stands_on_cloud_and_the_aerie_still_on_stone() -> None:
     assert "ᚡ" in floors                      # the cloud he walks on
     assert "." not in floors                   # and not a tile of stone
     assert TOWER.char_to_terrain["ᚡ"] == "tower_cloud"
-    assert TOWER.char_to_terrain["ᚣ"] == "tower_cloud_edge"
-    assert not TILE_DEFS["ᚡ"].solid and TILE_DEFS["ᚣ"].solid
+    assert TOWER.char_to_terrain["ᚫ"] == "tower_cloud_soft"
+    assert not TILE_DEFS["ᚡ"].solid and not TILE_DEFS["ᚫ"].solid
+
+    # The rim is one tile per side it is open on, not one tile used all
+    # the way round: a shape lit the same on its far edge, its near edge
+    # and both flanks has no form, and reads as a patch of cloud tiles
+    # rather than as one bank with a top and an underside.
+    rims = {"ᚤ": "tower_cloud_top", "ᚥ": "tower_cloud_base",
+            "ᚩ": "tower_cloud_west", "ᚪ": "tower_cloud_east"}
+    for char, art in rims.items():
+        assert TOWER.char_to_terrain[char] == art
+        assert TILE_DEFS[char].solid, char
+    grid = [line for line in
+            (config.MAPS_DIR / "zephyros_tower_exterior.txt")
+            .read_text(encoding="utf-8").splitlines()
+            if not line.startswith(";")]
+    for row, line in enumerate(grid):
+        for col, char in enumerate(line):
+            if char not in rims:
+                continue
+            sky = {(0, -1): "ᚤ", (0, 1): "ᚥ",
+                   (-1, 0): "ᚩ", (1, 0): "ᚪ"}
+            open_sides = [want for (dcol, drow), want in sky.items()
+                          if grid[row + drow][col + dcol] == "~"]
+            assert open_sides, (col, row, char)
+            assert char == open_sides[0], (col, row, char, open_sides)
+    # ...and every tile of the platform that touches sky wears one.
+    for row, line in enumerate(grid):
+        for col, char in enumerate(line):
+            if char not in ("ᚡ", "ᚫ"):
+                continue
+            assert not any(grid[row + drow][col + dcol] == "~"
+                           for dcol, drow in ((0, -1), (0, 1), (-1, 0), (1, 0))),                 (col, row)
     # The rim is solid, so the platform still ends where it always did.
     walkable = sum(not exterior.is_solid(col, row)
                    for row in range(exterior.height_tiles)

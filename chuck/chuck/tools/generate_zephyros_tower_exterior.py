@@ -6,7 +6,19 @@ from pathlib import Path
 
 # The platform is standing cloud rather than the aerie's pale stone.
 CLOUD = "ᚡ"        # walkable cloud floor
-CLOUD_EDGE = "ᚣ"   # the rim, where the cloud stops and the drop begins
+# The rim, one char per side it is open on. A single edge tile used all
+# the way round gave the platform the same shading on its far edge, its
+# near edge and both flanks, and a shape lit the same on every side has
+# no form: it reads as a patch of cloud tiles rather than as one bank
+# with a top and an underside.
+RIM_TOP = "ᚤ"      # the far edge, where the light lands
+RIM_BASE = "ᚥ"     # the near edge: the underside, in shadow
+RIM_WEST = "ᚩ"
+RIM_EAST = "ᚪ"
+RIMS = (RIM_TOP, RIM_BASE, RIM_WEST, RIM_EAST)
+# ...and one band of shaded body just inside it, so the bank has a
+# middle that faces the light and a side that turns away from it.
+CLOUD_SOFT = "ᚫ"
 
 W, H = 44, 34
 OUT = Path(__file__).resolve().parents[1] / "assets/maps/zephyros_tower_exterior.txt"
@@ -35,13 +47,7 @@ def build():
             if dx * dx + dy * dy <= 1.0:
                 grid[row][col] = CLOUD
 
-    # Turn the outer ring into a solid, readable lip above the sky.
-    floor = {(col, row) for row in range(H) for col in range(W)
-             if grid[row][col] == CLOUD}
-    for col, row in floor:
-        if any((col + dc, row + dr) not in floor
-               for dc, dr in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-            grid[row][col] = CLOUD_EDGE
+
 
     # Southern landing tongue and a short approach. The surrounding sky now
     # presses close, keeping the platform subordinate to the tower facade.
@@ -52,12 +58,43 @@ def build():
         for col in range(19, 26):
             if grid[row][col] != "~":
                 grid[row][col] = CLOUD
+    _rim(grid)
     grid[ARCH_PROP[1]][ARCH_PROP[0]] = "Ƶ"
     grid[ARCH[1]][ARCH[0]] = "ህ"
     grid[FUTURE_RETURN[1]][FUTURE_RETURN[0]] = "ሆ"
     grid[ARRIVAL[1]][ARRIVAL[0]] = "ሃ"
     grid[ANCHOR[1]][ANCHOR[0]] = "ሄ"
     return grid
+
+
+def _rim(grid) -> None:
+    """Edge every tile of the platform that touches open sky.
+
+    Done once, after the tongue and the approach are cut, so the rim
+    follows the shape that is actually there rather than the ellipse it
+    started as -- including the tongue's sides and its tip, which the
+    ring pass used to paint over and leave bare.
+    """
+    floor = {(col, row) for row in range(H) for col in range(W)
+             if grid[row][col] == CLOUD}
+    for col, row in floor:
+        def open_sky(dcol: int, drow: int) -> bool:
+            return (col + dcol, row + drow) not in floor
+
+        if open_sky(0, -1):
+            grid[row][col] = RIM_TOP
+        elif open_sky(0, 1):
+            grid[row][col] = RIM_BASE
+        elif open_sky(-1, 0):
+            grid[row][col] = RIM_WEST
+        elif open_sky(1, 0):
+            grid[row][col] = RIM_EAST
+
+    rim = {(col, row) for col, row in floor if grid[row][col] in RIMS}
+    for col, row in floor - rim:
+        if any((col + dcol, row + drow) in rim
+               for dcol in (-1, 0, 1) for drow in (-1, 0, 1)):
+            grid[row][col] = CLOUD_SOFT
 
 
 def _base(char):

@@ -459,9 +459,16 @@ TOWER = Tileset(
         ("tower_interior", 4, 1),
         # The platform outside the tower is standing cloud rather than
         # masonry: the tower is a thing in the sky, and the ground Chuck
-        # walks up to it on should say so before he gets there.
+        # walks up to it on should say so before he gets there. The body
+        # is near flat and the four rims carry the form -- lit along the
+        # far edge, shadowed underneath -- so the field reads as one
+        # bank of cloud rather than as a tiled field of separate puffs.
         ("tower_cloud", 8, 1),
-        ("tower_cloud_edge", 4, 1),
+        ("tower_cloud_soft", 8, 1),
+        ("tower_cloud_top", 4, 1),
+        ("tower_cloud_base", 4, 1),
+        ("tower_cloud_west", 4, 1),
+        ("tower_cloud_east", 4, 1),
     ],
     char_to_terrain={
         "~": "tower_sky",
@@ -471,7 +478,11 @@ TOWER = Tileset(
         "●": "tower_interior",
         "⇓": "tower_stone",
         "ᚡ": "tower_cloud",
-        "ᚣ": "tower_cloud_edge",
+        "ᚫ": "tower_cloud_soft",
+        "ᚤ": "tower_cloud_top",
+        "ᚥ": "tower_cloud_base",
+        "ᚩ": "tower_cloud_west",
+        "ᚪ": "tower_cloud_east",
     },
     overhead_char_to_terrain={},
 )

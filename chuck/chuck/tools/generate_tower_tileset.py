@@ -53,47 +53,115 @@ def edge(surface, variant, _frame):
         pygame.draw.line(surface, GOLD, (4, 4), (11, 4))
 
 
-CLOUD_TOP = (247, 250, 253)
-CLOUD_BODY = (206, 221, 238)
-CLOUD_SHADE = (176, 198, 222)
-CLOUD_DEEP = (128, 158, 194)
+# One bank of cloud, lit from the far side. The body is nearly flat and
+# the rims carry all of the form: a field whose every tile draws its own
+# billow reads as wallpaper printed with clouds, not as a cloud.
+CLOUD_LIT = (252, 253, 255)
+CLOUD_TOP = (238, 245, 251)
+CLOUD_BODY = (219, 231, 243)
+CLOUD_SHADE = (190, 209, 229)
+CLOUD_DEEP = (162, 185, 212)
+CLOUD_UNDER = (134, 162, 195)
+
+
+CLOUD_SOFT = (205, 220, 236)
+CLOUD_SOFT_LIT = (223, 234, 245)
+CLOUD_SOFT_DIM = (180, 200, 222)
+
+
+def _cloud_body(surface, variant, base, lit, dim) -> None:
+    """The body of the platform: as near flat as pixel art gets.
+
+    Two soft wisps a single step either side of the base colour, short
+    and never in the same place twice. Anything stronger than this and
+    the tile becomes a puff with a visible edge, and forty of those in a
+    grid is what the platform is not supposed to look like.
+    """
+    surface.fill(base)
+    light = (variant * 7 + 3) % 16
+    dark = (variant * 11 + 9) % 16
+    y_light = (variant * 5 + 2) % 15
+    y_dark = (variant * 9 + 8) % 15
+    pygame.draw.line(surface, lit,
+                     (max(0, light - 5), y_light), (min(15, light + 5), y_light))
+    if variant % 3:
+        pygame.draw.line(surface, dim,
+                         (max(0, dark - 4), y_dark), (min(15, dark + 4), y_dark))
 
 
 def cloud(surface, variant, _frame):
-    """Standing cloud: the platform outside the tower.
+    """The top of the bank, where it faces the light square on."""
+    _cloud_body(surface, variant, CLOUD_BODY, CLOUD_TOP, CLOUD_SHADE)
 
-    No lit top edge and no shaded base -- those are what make masonry
-    read as courses, and drawn on every tile of a field they would band
-    the whole platform. Billows offset by variant instead, so the floor
-    reads as one mass of cloud rather than a grid of cells.
+
+def cloud_soft(surface, variant, _frame):
+    """The same body a step down, in the band where the bank turns away.
+
+    A field lit evenly corner to corner is a disc. One band of this
+    inside the rim gives the platform a middle and a side, which is the
+    difference between a cloud and a plate.
     """
-    surface.fill(CLOUD_BODY)
-    # Eight variants rather than four, each a differently sized billow in
-    # a different place: with fewer, the neighbouring tiles line their
-    # puffs up and the bank reads as wallpaper.
-    high = (variant * 5 + variant * variant * 3) % 16
-    drop = (variant * 7) % 6
-    wide = 11 + (variant % 3) * 3
-    pygame.draw.ellipse(surface, CLOUD_TOP,
-                        (high - 5, drop - 1, wide, 8 + variant % 3))
-    pygame.draw.ellipse(surface, CLOUD_SHADE,
-                        ((high + 9) % 16 - 4, (drop + 9) % 13, 8, 4))
+    _cloud_body(surface, variant, CLOUD_SOFT, CLOUD_SOFT_LIT, CLOUD_SOFT_DIM)
 
 
-def cloud_edge(surface, variant, _frame):
-    """The rim, where the cloud stops and the drop begins.
+def cloud_top(surface, variant, _frame):
+    """The far edge, where the light lands: the bank's lit crest.
 
-    The top half is the same bank as the floor behind it; the bottom is
-    its underside, turned away from the light. That, rather than a lip,
-    is what tells Chuck where the platform ends.
+    The rim tiles paint sky in the part of themselves the cloud does not
+    fill, and the boundary between the two bulges. Without that the
+    platform's outline is the staircase of square tiles it is made of,
+    and a cloud with a stepped outline is a floor tile that happens to
+    be white.
     """
-    surface.fill(CLOUD_BODY)
-    pygame.draw.ellipse(surface, CLOUD_TOP, ((variant * 7) % 12 - 3, 0, 12, 7))
-    pygame.draw.rect(surface, CLOUD_SHADE, (0, 8, 16, 8))
-    pygame.draw.ellipse(surface, CLOUD_DEEP, (-3, 9, 12, 7))
-    pygame.draw.ellipse(surface, CLOUD_DEEP, (6, 10, 13, 6))
-    if variant % 2:
-        pygame.draw.ellipse(surface, CLOUD_SHADE, (2, 10, 9, 4))
+    surface.fill(SKY)
+    pygame.draw.rect(surface, CLOUD_BODY, (0, 6, 16, 10))
+    for index in range(2):
+        x = (variant * 7 + index * 8) % 16 - 4
+        pygame.draw.ellipse(surface, CLOUD_BODY, (x, 1, 12, 11))
+        pygame.draw.ellipse(surface, CLOUD_LIT, (x + 1, 2, 10, 6))
+    pygame.draw.rect(surface, CLOUD_TOP, (0, 8, 16, 3))
+
+
+def cloud_base(surface, variant, _frame):
+    """The near edge: the underside, turned away from the light.
+
+    This is what tells you the platform has a thickness and that it
+    stops here, so it is the darkest cloud on the map and it hangs in
+    billows rather than ending on a straight lip.
+    """
+    surface.fill(SKY)
+    pygame.draw.rect(surface, CLOUD_BODY, (0, 0, 16, 4))
+    pygame.draw.rect(surface, CLOUD_SHADE, (0, 3, 16, 5))
+    # One soft billow per tile with a slightly deeper core, overlapping
+    # its neighbours. Two hard tones stacked read as cobbles hung under
+    # the platform; vapour has no edge that sharp.
+    for index in range(2):
+        x = (variant * 5 + index * 9) % 16 - 5
+        pygame.draw.ellipse(surface, CLOUD_SHADE, (x, 1, 15, 13))
+        pygame.draw.ellipse(surface, CLOUD_DEEP, (x + 2, 6, 11, 7))
+
+
+def _cloud_flank(surface, variant, west: bool) -> None:
+    """A side rim: the bank turning away from the light, left or right."""
+    surface.fill(SKY)
+    inner = (4, 0, 12, 16) if west else (0, 0, 12, 16)
+    shade = (4, 0, 6, 16) if west else (6, 0, 6, 16)
+    pygame.draw.rect(surface, CLOUD_BODY, inner)
+    pygame.draw.rect(surface, CLOUD_SHADE, shade)
+    for index in range(2):
+        y = (variant * 6 + index * 8) % 16 - 4
+        x = -3 if west else 8
+        pygame.draw.ellipse(surface, CLOUD_SHADE, (x, y, 12, 13))
+        pygame.draw.ellipse(surface, CLOUD_DEEP,
+                            (x + 1 if west else x + 3, y + 3, 8, 7))
+
+
+def cloud_west(surface, variant, _frame):
+    _cloud_flank(surface, variant, west=True)
+
+
+def cloud_east(surface, variant, _frame):
+    _cloud_flank(surface, variant, west=False)
 
 
 def interior(surface, variant, _frame):
@@ -112,7 +180,11 @@ DRAW = {
     "tower_edge": edge,
     "tower_interior": interior,
     "tower_cloud": cloud,
-    "tower_cloud_edge": cloud_edge,
+    "tower_cloud_soft": cloud_soft,
+    "tower_cloud_top": cloud_top,
+    "tower_cloud_base": cloud_base,
+    "tower_cloud_west": cloud_west,
+    "tower_cloud_east": cloud_east,
 }
 
 
