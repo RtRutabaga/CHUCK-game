@@ -1,9 +1,9 @@
 """A field for typing a save code into.
 
-    K6PT-6EX1-BV..-....
-                ^
+    KMW9-J6ZP-2T..
+            ^
 
-Sixteen slots in groups of four, a caret under the one being filled,
+Twelve slots in groups of four, a caret under the one being filled,
 and a dot for every slot still waiting, so the player can see how much
 is left. The game had no text input at all before this -- the pause and
 title menus are fixed lists of options -- so this is the whole of it,
@@ -17,7 +17,7 @@ Three ways in, because the field has to work wherever the game is:
 
 The pad is the slow one and it is meant to be. It is there so that a
 player on a controller is not locked out of loading a game, not because
-anybody should want to enter sixteen characters that way.
+anybody should want to enter twelve characters that way.
 
 The field is forgiving on the way in: lower case, missing dashes, a
 letter O where a zero belongs -- `save_code.normalise` settles all of
@@ -46,7 +46,7 @@ CARET_BLINK = 0.53
 
 
 class CodeEntry:
-    """Sixteen slots the player fills with a save code."""
+    """Twelve slots the player fills with a save code."""
 
     def __init__(self, length: int = CODE_LENGTH, group: int = GROUP) -> None:
         self.length = length

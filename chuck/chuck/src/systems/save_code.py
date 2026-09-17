@@ -1,65 +1,82 @@
-"""A whole save, as sixteen characters the player can carry.
+"""A whole save, as twelve characters the player can carry.
 
-    X7B3-K9QW-2M4X-H8VN
+    K6PT-6EX1-BV41
 
-Seventy bits of game and two check characters, written in Crockford
+Fifty-five bits of game and one check character, written in Crockford
 base32. That alphabet drops I, L, O and U, so there is no squinting at a
 screenshot wondering whether a character is a one or an ell, and it is
 case-insensitive, so it does not matter how it comes back. All
 thirty-two of its characters are already in the bitmap font.
 
-    version   4   which layout this is
     entry     8   a slot in SAVE_ENTRIES: the door he came in by
-    sanity    7   0..100
     flags    25   one bit per SAVE_FLAGS entry
-    cigs     16   clamped, see below
-    deaths   10   clamped
-                  -- seventy bits, exactly fourteen characters --
-    check     2 characters
+    cigs     13   clamped, see below
+    deaths    9   clamped
+                  -- fifty-five bits, exactly eleven characters --
+    check     1 character
+
+Eleven and twenty-five are the floor. A hundred and forty-seven doors
+need eight bits however they are written, and the twenty-five progress
+flags are independent of each other -- they gate the captain, the cabin
+and the cartons, and none of them can be derived from where Chuck is
+standing. Everything else has been cut to the bone to get here:
+
+    sanity     dropped. A code resumes at a door with a fresh
+               sixty, the same as walking in. The local save still
+               carries the exact figure; see below.
+    version    dropped. It lives in the check constant instead, so a
+               later format refuses most of today's codes as mistyped
+               rather than naming the version they came from.
+    check      one character instead of two.
 
 The two registries this is written against are frozen -- see
 `save_registry`. A code is positions in those tuples, so reordering one
 silently changes what every code in the wild means.
 
-On the two check characters
----------------------------
+On the one check character
+--------------------------
 
-They are Reed-Solomon parity over GF(32), computed so that both
-syndromes of the sixteen-character word come out zero. Ten bits, where a
-truncated hash would need thirty-two to feel as safe, because this is
-not a hash and does not fail like one:
+Reed-Solomon parity over GF(32), weighted by position, so that the
+weighted sum of the twelve characters comes out zero:
 
     any one wrong character          always caught
-    any two wrong characters         always caught
-    any two characters swapped       always caught  (two wrong characters)
+    any two characters swapped       always caught
+    two or more wrong characters     one in 32 gets through
 
-Not "almost always" -- the minimum distance of the code is three, so a
-word with one or two symbols altered cannot be another valid word. A
-truncated hash only ever gives a probability, however many bits it is
-given. For the errors a player actually makes, ten designed bits beat
-thirty-two undesigned ones and cost five characters less.
+The first two are guarantees -- one wrong symbol leaves the syndrome
+equal to that symbol's error times a non-zero weight, and a swap leaves
+it equal to the difference times the difference of two distinct weights.
+They are the mistakes a player actually makes when retyping. Everything
+worse falls back to one chance in thirty-two, which is the price of the
+character that would otherwise be spent on it.
 
-Three or more wrong characters fall back to chance: one in 1024 to pass
-parity, and then the version has to read as ours and the entry has to
-name a door that exists, which together leave roughly one in thirty
-thousand. That is the cost, and it buys a code short enough to read down
-a phone line.
+This is not security and does not pretend to be. Fifty-five bits with a
+five-bit check, and the mask below shipping inside the game, means a
+determined player can work out how to edit a code. That is a deliberate
+trade for a code short enough to write on the back of a hand: CHUCK is
+single-player, the save is the player's own, and a save the player can
+edit is a save the player can carry.
 
-The word is masked with a fixed keystream before it is written out. That
-is not security and cannot be -- the mask ships inside the game, and in
-a browser build it sits in readable JavaScript. It is there so a code
-looks like a code rather than like its own field layout, and so editing
-one by hand takes more than a moment's thought. Masking is symbol-wise,
-so it cannot turn one wrong character into two: every guarantee above
-survives it. A single-player game whose save the player holds cannot be
-made tamper-proof, and pretending otherwise only costs effort that could
-go somewhere useful.
+The word is masked with a fixed keystream before it is written out, so a
+code looks like a code rather than like its own field layout. Masking is
+symbol-wise, so it cannot turn one wrong character into two: both
+guarantees above survive it.
+
+What a code does not carry
+--------------------------
+
+`spoken` -- who has already introduced themselves -- and now `sanity`
+as well. Both are in the local save file, which stays the primary way a
+game resumes on a machine that has one. A code is the portable form, and
+it carries the things that would be a loss to redo: where Chuck is, what
+he has done, what he has collected, and how many times he has died.
 """
 
 from __future__ import annotations
 
 from dataclasses import replace
 
+from src.core import config
 from src.systems import save_registry as registry
 from src.systems.save import SaveRecord
 
@@ -68,12 +85,10 @@ CODE_VERSION = 1
 
 # (name, bits), most significant first. The order is part of the format.
 LAYOUT: tuple[tuple[str, int], ...] = (
-    ("version", 4),
     ("entry", 8),
-    ("sanity", 7),
     ("flags", 25),
-    ("cigarettes", 16),
-    ("deaths", 10),
+    ("cigarettes", 13),
+    ("deaths", 9),
 )
 PAYLOAD_BITS = sum(width for _name, width in LAYOUT)
 
@@ -85,13 +100,13 @@ ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 ALIASES = {"I": "1", "L": "1", "O": "0"}
 
 BITS_PER_SYMBOL = 5
-MESSAGE_SYMBOLS = PAYLOAD_BITS // BITS_PER_SYMBOL      # 14, exactly
-PARITY_SYMBOLS = 2
-CODE_LENGTH = MESSAGE_SYMBOLS + PARITY_SYMBOLS         # 16
+MESSAGE_SYMBOLS = PAYLOAD_BITS // BITS_PER_SYMBOL      # 11, exactly
+PARITY_SYMBOLS = 1
+CODE_LENGTH = MESSAGE_SYMBOLS + PARITY_SYMBOLS         # 12
 GROUP = 4
 
-MAX_CIGARETTES = (1 << 16) - 1
-MAX_DEATHS = (1 << 10) - 1
+MAX_CIGARETTES = (1 << 13) - 1
+MAX_DEATHS = (1 << 9) - 1
 
 
 class SaveCodeError(ValueError):
@@ -99,21 +114,25 @@ class SaveCodeError(ValueError):
 
 
 # ----------------------------------------------------------------------
-# GF(32), for the parity symbols
+# GF(32), for the check character
 # ----------------------------------------------------------------------
 # x^5 + x^2 + 1. Addition is XOR; multiplication goes round the log
-# tables, which is quite fast enough for two symbols once a menu.
+# tables, which is quite fast enough for twelve symbols once a menu.
 _MODULUS = 0b100101
-_EXP: list[int] = [0] * 62
-_LOG: list[int] = [0] * 32
-_value = 1
-for _power in range(31):
-    _EXP[_power] = _value
-    _EXP[_power + 31] = _value
-    _LOG[_value] = _power
-    _value <<= 1
-    if _value & 0b100000:
-        _value ^= _MODULUS
+
+
+def _tables() -> tuple[list[int], list[int]]:
+    exp, log, value = [0] * 62, [0] * 32, 1
+    for power in range(31):
+        exp[power] = exp[power + 31] = value
+        log[value] = power
+        value <<= 1
+        if value & 0b100000:
+            value ^= _MODULUS
+    return exp, log
+
+
+_EXP, _LOG = _tables()
 
 
 def _multiply(a: int, b: int) -> int:
@@ -130,29 +149,33 @@ def _divide(a: int, b: int) -> int:
     return _EXP[(_LOG[a] - _LOG[b]) % 31]
 
 
-def _syndromes(word: list[int]) -> tuple[int, int]:
-    """The two sums a valid word drives to zero."""
-    plain = even = 0
+# The format's version, spent here instead of in the code. Change it and
+# yesterday's codes stop checking out, which is the whole of the version
+# handling a twelve-character code can afford.
+_SEED = CODE_VERSION
+
+
+def _syndrome(word: list[int]) -> int:
+    """The weighted sum a valid word drives to zero.
+
+    Weighted, not plain: a plain sum is blind to two characters swapped
+    round, which is exactly the mistake a player retyping makes.
+    """
+    total = _SEED
     for power, symbol in enumerate(word):
-        plain ^= symbol
-        even ^= _multiply(symbol, _EXP[power % 31])
-    return plain, even
+        total ^= _multiply(symbol, _EXP[(power + 1) % 31])
+    return total
 
 
-def _parity(message: list[int]) -> tuple[int, int]:
-    """The two symbols that take both syndromes of message+parity to zero."""
-    plain, even = _syndromes(message)
-    k = len(message)
-    # p0 + p1 = plain ; p0*a^k + p1*a^(k+1) = even
-    first = _divide(even ^ _multiply(plain, _EXP[(k + 1) % 31]),
-                    _multiply(_EXP[k % 31], 1 ^ _EXP[1]))
-    return first, first ^ plain
+def _parity(message: list[int]) -> int:
+    """The symbol that takes the syndrome of message+parity to zero."""
+    return _divide(_syndrome(message), _EXP[(len(message) + 1) % 31])
 
 
 # A fixed keystream, one symbol per position. See the module docstring:
 # obscurity, not security. Any fixed sequence does the job; this one is
 # written down so it can never quietly change.
-_MASK = (17, 3, 28, 9, 22, 14, 31, 5, 11, 26, 2, 19, 7, 30, 13, 24)
+_MASK = (17, 3, 28, 9, 22, 14, 31, 5, 11, 26, 2, 19)
 
 
 def _mask(word: list[int]) -> list[int]:
@@ -170,9 +193,7 @@ def _pack(record: SaveRecord) -> int:
         raise SaveCodeError(str(exc)) from exc
 
     values = {
-        "version": CODE_VERSION,
         "entry": entry,
-        "sanity": max(0, min(record.sanity, (1 << 7) - 1)),
         "flags": registry.flags_to_bits(record.progress_flags),
         "cigarettes": max(0, min(record.cigarettes, MAX_CIGARETTES)),
         "deaths": max(0, min(record.deaths, MAX_DEATHS)),
@@ -191,13 +212,13 @@ def encode(record: SaveRecord) -> str:
 
     Clamping matters because cigarettes are farmable: loose ones respawn
     with the map, so a long enough session can push the total past what
-    sixteen bits hold. Wrapping round to nothing would be worse than
-    stopping.
+    thirteen bits hold. Wrapping round to nothing would be worse than
+    stopping. `record.sanity` is not written; see the module docstring.
     """
     payload = _pack(record)
     message = [(payload >> (BITS_PER_SYMBOL * (MESSAGE_SYMBOLS - 1 - index)))
                & 31 for index in range(MESSAGE_SYMBOLS)]
-    word = _mask(message + list(_parity(message)))
+    word = _mask(message + [_parity(message)])
     text = "".join(ALPHABET[symbol] for symbol in word)
     return "-".join(text[i:i + GROUP] for i in range(0, len(text), GROUP))
 
@@ -233,7 +254,7 @@ def decode(text: str) -> SaveRecord:
         word.append(position)
 
     word = _mask(word)
-    if any(_syndromes(word)):
+    if _syndrome(word):
         raise SaveCodeError("That code has a character wrong in it.")
 
     payload = 0
@@ -244,9 +265,6 @@ def decode(text: str) -> SaveRecord:
     for name, width in reversed(LAYOUT):
         values[name] = rest & (1 << width) - 1
         rest >>= width
-    if values["version"] != CODE_VERSION:
-        raise SaveCodeError(
-            "That code is from a different version of the game.")
     try:
         checkpoint_id = registry.entry_id(values["entry"])
     except ValueError as exc:
@@ -255,7 +273,8 @@ def decode(text: str) -> SaveRecord:
 
     return SaveRecord(
         checkpoint_id=checkpoint_id,
-        sanity=values["sanity"],
+        # Not carried. A code resumes at the door on a fresh sixty.
+        sanity=config.SANITY_START,
         progress_flags=registry.bits_to_flags(values["flags"]),
         cigarettes=values["cigarettes"],
         deaths=values["deaths"],

@@ -1,8 +1,9 @@
 """The two ordered lists a save code is written against.
 
 A code stores *positions* in these tuples, not names: one 8-bit number
-for where Chuck is, 25 bits for what has happened to him. That is what
-makes a code 16 characters instead of a paragraph, and it is also what
+for where Chuck is, 25 bits for what has happened to him -- which is
+thirty-three of the code's fifty-five bits, and its floor. That is what
+makes a code 12 characters instead of a paragraph, and it is also what
 makes these two tuples part of the wire format.
 
     Append only. Never reorder. Never remove.

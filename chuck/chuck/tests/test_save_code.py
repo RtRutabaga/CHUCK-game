@@ -1,4 +1,4 @@
-"""The save code: sixteen characters, and what has to stay true of them.
+"""The save code: twelve characters, and what has to stay true of them.
 
 The codec is pure -- a record in, a string out -- so it can be held to
 the bit. The test that matters most is the golden one: a code written
@@ -7,13 +7,13 @@ layout, the alphabet, the mask, or the order of either registry, and
 that test fails instead of every code in the wild quietly meaning
 something else.
 
-After it come the parity tests, which are the reason a code is sixteen
-characters and not twenty-one. Reed-Solomon over GF(32) with two check
-symbols has minimum distance three, so one or two wrong characters
-*cannot* form another valid code. These tests do not sample that: they
-try every single substitution and every transposition across a spread
-of codes, and every double substitution on some of them. A run of
-those that passes by luck is not a thing that can happen.
+After it come the parity tests. One check character buys two
+guarantees and nothing else: a single wrong character and a single
+transposition are always caught, and these tests try every one of
+both across a spread of codes rather than sampling them. Anything
+worse is a one-in-thirty-two coin, and there is a test that measures
+that coin too, so the cost of a twelve-character code stays written
+down where the next person will read it.
 """
 
 import itertools
@@ -23,15 +23,18 @@ import random
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+from src.core import config
 from src.systems import save_code as codec
 from src.systems import save_registry as registry
 from src.systems.save import SaveRecord
 
 
 # Written down, not computed. If this changes, codes people hold break.
-GOLDEN_CODE = "K6PT-6EX1-BV41-7S96"
+GOLDEN_CODE = "KMW9-J6ZP-2T5D"
 GOLDEN = SaveRecord(
     checkpoint_id="temple_9",
+    # Not carried by a code. Written here as something other than
+    # SANITY_START so the test below proves it is dropped.
     sanity=41,
     progress_flags=("captain_chest_opened", "chult_reached",
                     "sewer_completed", "waterdeep_returned"),
@@ -52,23 +55,41 @@ def test_the_golden_code_still_means_what_it_meant() -> None:
     assert codec.encode(GOLDEN) == GOLDEN_CODE
     decoded = codec.decode(GOLDEN_CODE)
     assert decoded.checkpoint_id == GOLDEN.checkpoint_id
-    assert decoded.sanity == GOLDEN.sanity
+    assert decoded.sanity == config.SANITY_START != GOLDEN.sanity
     assert set(decoded.progress_flags) == set(GOLDEN.progress_flags)
     assert decoded.cigarettes == GOLDEN.cigarettes
     assert decoded.deaths == GOLDEN.deaths
 
 
-def test_a_code_is_sixteen_characters() -> None:
-    assert codec.CODE_LENGTH == 16
-    assert len(codec.normalise(GOLDEN_CODE)) == 16
+def test_a_code_is_twelve_characters() -> None:
+    assert codec.CODE_LENGTH == 12
+    assert len(codec.normalise(GOLDEN_CODE)) == 12
     # Grouped for reading, and the grouping is not part of the code.
-    assert GOLDEN_CODE.count("-") == 3
-    # Fourteen characters of save and two of parity. The payload
-    # divides into whole characters with nothing spare, which is why
-    # there is no shaving another one off without losing a field.
-    assert codec.PAYLOAD_BITS == 70
+    assert GOLDEN_CODE.count("-") == 2
+    # Eleven characters of save and one of parity, with nothing
+    # spare in the fifty-five bits.
+    assert codec.PAYLOAD_BITS == 55
     assert codec.MESSAGE_SYMBOLS * codec.BITS_PER_SYMBOL == codec.PAYLOAD_BITS
-    assert codec.PARITY_SYMBOLS == 2
+    assert codec.PARITY_SYMBOLS == 1
+
+
+def test_nothing_further_can_come_out_without_losing_a_field() -> None:
+    """The floor, asserted, so a later shortening has to face it.
+
+    A hundred and forty-seven doors need eight bits however they are
+    written. The twenty-five progress flags are independent -- they
+    gate the captain, the cabin and the cartons -- and not one of
+    them follows from where Chuck is standing, so they cannot be
+    packed against the entry. That is thirty-three bits before a
+    single cigarette, a death, or a check character is written.
+    """
+    widths = dict(codec.LAYOUT)
+    assert widths["entry"] == 8
+    assert len([e for e in registry.SAVE_ENTRIES if e]) > 128
+    assert widths["flags"] == len(registry.SAVE_FLAGS) == 25
+    assert widths["entry"] + widths["flags"] == 33
+    # And sanity is not among them at all.
+    assert "sanity" not in widths
 
 
 def test_every_door_and_every_extreme_survives_a_round_trip() -> None:
@@ -88,7 +109,7 @@ def test_every_door_and_every_extreme_survives_a_round_trip() -> None:
     for record in extremes:
         back = codec.decode(codec.encode(record))
         assert back.checkpoint_id == record.checkpoint_id
-        assert back.sanity == record.sanity
+        assert back.sanity == config.SANITY_START
         assert set(back.progress_flags) == set(record.progress_flags)
         assert back.cigarettes == record.cigarettes
         assert back.deaths == record.deaths
@@ -138,19 +159,19 @@ def test_no_single_wrong_character_gets_past_the_parity() -> None:
                     continue
                 tried += 1
                 _raises(clean[:index] + other + clean[index + 1:])
-    assert tried == 25 * codec.CODE_LENGTH * (len(codec.ALPHABET) - 1) == 12400
+    assert tried == 25 * codec.CODE_LENGTH * (len(codec.ALPHABET) - 1) == 9300
 
 
-def test_no_two_wrong_characters_get_past_it_either() -> None:
-    """Every pair of positions, every pair of wrong characters.
+def test_two_wrong_characters_are_a_coin_and_that_is_the_deal() -> None:
+    """One check character cannot promise what two could.
 
-    This is the property that lets ten bits of parity replace thirty-two
-    bits of hash. A hash of any width would only make two wrong
-    characters unlikely; a minimum distance of three makes them
-    impossible.
+    Two wrong characters are caught about thirty-one times in
+    thirty-two, and that last time loads a different save instead of
+    refusing. It is the price of the character, measured here rather
+    than assumed, so nobody has to rediscover it.
     """
-    tried = 0
-    for record in _spread(3):
+    caught = tried = 0
+    for record in _spread(2):
         clean = codec.normalise(codec.encode(record))
         for first, second in itertools.combinations(range(len(clean)), 2):
             for one in codec.ALPHABET:
@@ -160,9 +181,14 @@ def test_no_two_wrong_characters_get_past_it_either() -> None:
                     if two == clean[second]:
                         continue
                     tried += 1
-                    _raises(clean[:first] + one + clean[first + 1:second]
-                            + two + clean[second + 1:])
-    assert tried == 3 * 120 * 31 * 31 == 345_960
+                    try:
+                        codec.decode(clean[:first] + one
+                                     + clean[first + 1:second] + two
+                                     + clean[second + 1:])
+                    except codec.SaveCodeError:
+                        caught += 1
+    assert tried == 2 * 66 * 31 * 31 == 126_852
+    assert 0.95 < caught / tried < 0.98, caught / tried
 
 
 def test_two_characters_the_wrong_way_round_are_caught() -> None:
@@ -177,17 +203,17 @@ def test_two_characters_the_wrong_way_round_are_caught() -> None:
             swapped[first], swapped[second] = swapped[second], swapped[first]
             tried += 1
             _raises("".join(swapped))
-    assert tried > 4000
+    assert tried > 2000
 
 
 def test_a_code_made_of_nothing_in_particular_is_almost_never_taken() -> None:
     """The one place parity is weaker than the hash it replaced.
 
-    Three or more wrong characters fall back to chance: one in 1024 to
-    pass parity, and then the version has to read as ours and the entry
-    has to name a door that exists. Measured over four hundred thousand
-    strings, that is about one in forty thousand. Written down here so
-    it stays a decision and does not become a surprise.
+    One chance in thirty-two to pass parity, and then the entry has to
+    name one of the hundred and forty-seven doors that exist: about
+    one string in fifty-six. A player who invents a code will
+    occasionally be handed a real game, which is the acknowledged
+    cost of twelve characters and not a defect.
     """
     rng = random.Random(4)
     taken = 0
@@ -199,7 +225,8 @@ def test_a_code_made_of_nothing_in_particular_is_almost_never_taken() -> None:
         except codec.SaveCodeError:
             continue
         taken += 1
-    assert taken <= attempts // 2000, f"{taken} of {attempts} random strings"
+    assert attempts // 80 < taken < attempts // 30, (
+        f"{taken} of {attempts} random strings")
 
 
 def test_it_reads_a_code_however_it_comes_back() -> None:
@@ -221,39 +248,46 @@ def test_it_reads_a_code_however_it_comes_back() -> None:
 
 def test_a_code_that_is_not_one_says_so() -> None:
     assert "Enter" in _raises("")
-    assert "16 characters" in _raises("ABC")
-    assert "16 characters" in _raises(GOLDEN_CODE + "XXXX")
+    assert "12 characters" in _raises("ABC")
+    assert "12 characters" in _raises(GOLDEN_CODE + "XXXX")
     # U is not in the alphabet, and is not an alias for anything...
-    assert "not part of" in _raises("U" * 16)
+    assert "not part of" in _raises("U" * 12)
     # ...and neither is punctuation.
     assert "not part of" in _raises("!" + codec.normalise(GOLDEN_CODE)[1:])
 
 
-def test_a_code_from_another_version_is_refused_not_misread() -> None:
-    """Built the way a later build would build it, and still refused.
+def test_a_code_from_another_version_mostly_fails_the_check() -> None:
+    """There is no version field left; the check constant carries it.
 
-    The parity and the mask are this build's, so the code passes every
-    check except the one that matters, and is turned away on its version
-    alone rather than being read as some other save.
+    A code built by a later format checks out against that format's
+    seed and not against this one, so it is refused as mistyped rather
+    than named. Thirty-one times in thirty-two -- the other time it
+    decodes as some other save. That is the whole of the version
+    handling a twelve-character code can afford, and it is why the seed
+    must change whenever the layout does.
     """
-    payload = 0
-    values = {"version": codec.CODE_VERSION + 1, "entry": 3, "sanity": 60,
-              "flags": 0, "cigarettes": 0, "deaths": 0}
-    for name, width in codec.LAYOUT:
-        payload = payload << width | values[name]
-    message = [(payload >> (5 * (codec.MESSAGE_SYMBOLS - 1 - index))) & 31
-               for index in range(codec.MESSAGE_SYMBOLS)]
-    word = codec._mask(message + list(codec._parity(message)))
-    assert "different version" in _raises(
-        "".join(codec.ALPHABET[symbol] for symbol in word))
+    original = codec._SEED
+    refused = 0
+    try:
+        for record in _spread(40):
+            codec._SEED = original + 1
+            later = codec.encode(record)
+            codec._SEED = original
+            try:
+                codec.decode(later)
+            except codec.SaveCodeError:
+                refused += 1
+    finally:
+        codec._SEED = original
+    assert refused >= 36, refused
 
 
 def test_the_parity_is_the_arithmetic_it_claims_to_be() -> None:
-    """Both syndromes of a real code are zero, and GF(32) is a field."""
+    """The syndrome of a real code is zero, and GF(32) is a field."""
     for record in [GOLDEN] + _spread(8):
         word = codec._mask([codec.ALPHABET.index(char) for char
                             in codec.normalise(codec.encode(record))])
-        assert codec._syndromes(word) == (0, 0)
+        assert codec._syndrome(word) == 0
     for value in range(1, 32):
         assert codec._divide(codec._multiply(value, 7), 7) == value
         assert codec._multiply(value, 1) == value
@@ -278,8 +312,17 @@ def test_the_mask_hides_the_layout_without_hiding_an_error() -> None:
     assert differing == [5]
 
 
-def test_a_code_never_carries_who_has_said_hello() -> None:
-    """`spoken` is the one field a code drops, on purpose."""
+def test_a_code_carries_neither_hellos_nor_sanity() -> None:
+    """The two fields a code drops, on purpose.
+
+    `spoken` would need a positional key and is cosmetic. Sanity went
+    with it to buy a character and a half: a code resumes at a door on a
+    fresh sixty, the way walking in does. The local save keeps both.
+    """
+    assert codec.decode(codec.encode(
+        SaveRecord("temple_1", 100, (), 0, 0))).sanity == config.SANITY_START
+    assert codec.encode(SaveRecord("temple_1", 3, (), 0, 0)) == codec.encode(
+        SaveRecord("temple_1", 99, (), 0, 0))
     record = SaveRecord("temple_1", 60, (), 0, 0,
                         spoken=(("waterdeep_docks", 10, 20, "dock_worker"),))
     assert codec.for_display(record) == codec.encode(

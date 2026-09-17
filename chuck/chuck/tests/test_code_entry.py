@@ -20,7 +20,7 @@ from src.ui.bitmap_font import ADVANCE, GLYPH_ORDER
 from src.ui.code_entry import BLANK, SEPARATOR, CodeEntry
 
 # The golden code from tests/test_save_code.py, typed rather than decoded.
-GOLDEN_CODE = "K6PT-6EX1-BV41-7S96"
+GOLDEN_CODE = "KMW9-J6ZP-2T5D"
 
 
 def _key(key: int, unicode: str = "", mod: int = 0):
@@ -49,8 +49,8 @@ def test_a_new_field_is_empty_and_shows_its_shape() -> None:
     assert field.text == ""
     # Every slot a blank, and the groups already marked out, so the
     # player can see how long a code is before typing one.
-    assert field.display() == SEPARATOR.join([BLANK * 4] * 4)
-    assert len(field.display()) == CODE_LENGTH + 3
+    assert field.display() == SEPARATOR.join([BLANK * 4] * 3)
+    assert len(field.display()) == CODE_LENGTH + 2
 
 
 def test_typing_a_code_fills_it_and_it_decodes() -> None:
@@ -66,7 +66,7 @@ def test_typing_a_code_fills_it_and_it_decodes() -> None:
 def test_the_field_is_as_forgiving_as_the_codec() -> None:
     """Lower case, dashes, and an O for a zero all land as the same code."""
     field = CodeEntry()
-    _type(field, "k6pt-6ex1-bv41-7s96")
+    _type(field, "kmw9-j6zp-2t5d")
     assert field.display() == GOLDEN_CODE
     assert field.decode() is not None
 
@@ -111,12 +111,12 @@ def test_backspace_on_an_empty_field_is_harmless() -> None:
 
 def test_arrows_move_the_caret_and_stay_inside_the_field() -> None:
     field = CodeEntry()
-    _type(field, "K6PT6")
+    _type(field, "KMW9J")
     field.handle_event(_key(pygame.K_LEFT))
     field.handle_event(_key(pygame.K_LEFT))
     assert field.cursor == 3
     _type(field, "X")
-    assert field.display().startswith("K6PX")
+    assert field.display().startswith("KMWX")
     for _ in range(CODE_LENGTH * 2):
         field.handle_event(_key(pygame.K_RIGHT))
     assert field.cursor == CODE_LENGTH - 1
@@ -127,7 +127,7 @@ def test_arrows_move_the_caret_and_stay_inside_the_field() -> None:
 
 def test_end_goes_to_the_first_slot_still_waiting() -> None:
     field = CodeEntry()
-    _type(field, "K6PT6")
+    _type(field, "KMW9J")
     field.handle_event(_key(pygame.K_HOME))
     assert field.cursor == 0
     field.handle_event(_key(pygame.K_END))
@@ -167,13 +167,13 @@ def test_a_paste_replaces_the_field_in_one_go() -> None:
     assert field.display() == GOLDEN_CODE
     assert field.cursor == CODE_LENGTH
     # Short paste: the rest stays blank rather than keeping old characters.
-    assert field.set_text("K6PT")
-    assert field.display() == "K6PT" + SEPARATOR + SEPARATOR.join(
-        [BLANK * 4] * 3)
+    assert field.set_text("KMW9")
+    assert field.display() == "KMW9" + SEPARATOR + SEPARATOR.join(
+        [BLANK * 4] * 2)
     assert not field.complete
     # Nothing usable in it at all.
     assert not field.set_text("!!! ???")
-    assert field.display().startswith("K6PT")
+    assert field.display().startswith("KMW9")
 
 
 def test_ctrl_v_takes_the_clipboard_and_says_so_when_it_is_empty() -> None:
@@ -207,9 +207,9 @@ def test_a_plain_v_is_a_character_and_not_a_paste() -> None:
 
 def test_a_half_typed_code_complains_about_its_length() -> None:
     field = CodeEntry()
-    _type(field, "K6PT6")
+    _type(field, "KMW9J")
     assert field.decode() is None
-    assert "16 characters" in field.error
+    assert "12 characters" in field.error
     # And the complaint goes as soon as the player types again.
     _type(field, "0")
     assert field.error is None
@@ -235,11 +235,11 @@ def test_clearing_puts_it_back_to_new() -> None:
 def test_the_caret_sits_under_the_slot_it_is_filling() -> None:
     field = CodeEntry()
     assert field.caret_x() == 0
-    _type(field, "K6PT")
+    _type(field, "KMW9")
     # Past a group separator, so the caret has to count the dash too.
     assert field.caret_x() == 5 * ADVANCE
-    _type(field, "6EX1BV")
-    assert field.caret_x() == 12 * ADVANCE
+    _type(field, "J6ZP")
+    assert field.caret_x() == 10 * ADVANCE
     assert field.width() == len(field.display()) * ADVANCE - 1
 
 

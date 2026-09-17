@@ -12,7 +12,7 @@ re-open settled ground.
 ## 1. What changes, and what does not
 
 **Changes.** The save is written from a menu, not by touching an object.
-It is a sixteen-character code the player copies, and pasting it back resumes
+It is a twelve-character code the player copies, and pasting it back resumes
 the game. The resume point is the door Chuck last walked in by, not an
 Ashtray.
 
@@ -32,16 +32,19 @@ conversation has got to.
 
 ## 2. What has to survive a save
 
-Everything the current `SaveRecord` carries, minus one field:
+Everything the current `SaveRecord` carries, minus two fields:
 
 | what | today | in the code |
 | --- | --- | --- |
 | where he is | `checkpoint_id` (76 Ashtrays) | entry index (147 runtime entries) |
-| sanity | `sanity` 1..100 | same |
 | what has happened | `progress_flags`, 25 of them | the same 25, as a bitfield |
 | cigarettes | `cigarettes` | same |
 | deaths | `deaths` | same |
 | who has introduced themselves | `spoken`, positional tuples | **dropped**, see below |
+| sanity | `sanity` 1..100 | **dropped**, resumes on a fresh 60 |
+
+Sanity went for length, and is the one deliberate loss: see §3. A code
+resumes at a door on a fresh 60, which is what walking in gives.
 
 `spoken` is `(map, x, y, line)` per NPC who has said their first words.
 It is the one unbounded field and the only one that needs a positional
@@ -76,26 +79,45 @@ code length), not anything about saves.
 
 | field | bits | range |
 | --- | --- | --- |
-| format version | 4 | 0..15 |
 | entry | 8 | one of 147 runtime entries |
-| sanity | 7 | 0..100 |
 | progress flags | 25 | one bit each |
-| cigarettes | 16 | 0..65535 |
-| deaths | 10 | 0..1023 |
-| **payload** | **70** | exactly 14 base32 characters |
-| parity | 10 | 2 characters, Reed–Solomon over GF(32) |
-| **total** | **80** | **16 characters** |
+| cigarettes | 13 | 0..8191 |
+| deaths | 9 | 0..511 |
+| **payload** | **55** | exactly 11 base32 characters |
+| parity | 5 | 1 character, weighted Reed–Solomon over GF(32) |
+| **total** | **60** | **12 characters** |
 
-Written in groups of four: `X7B3-K9QW-2M4X-H8VN`.
+Written in groups of four: `KMW9-J6ZP-2T5D`.
 
-Seventy bits is the happy accident that sets the length: the payload
-divides into fourteen whole characters with nothing spare, so no field
-can be widened and no character saved without changing what a code
-carries.
+### The floor, and what was spent getting to it
 
-Sizing notes: the 16-bit cigarette field caps at 65535, which the farm
-above could exceed in a long session — clamp on write rather than
-overflow. Deaths clamp at 1023 for the same reason.
+Thirty-three of those bits cannot be removed by any encoding:
+
+- **entry, 8 bits.** 147 doors. Seven bits hold 128 and eight hold 256;
+  the spare slots are the append room the registry needs anyway.
+- **flags, 25 bits.** The 25 progress flags are genuinely independent.
+  Ten of them look cosmetic — `deck_jeffries_met`, the four
+  `cabin_entity_*_spoken` — and are not: seven gate the captain
+  confrontation and four gate the counter map, which gates the desert
+  transition. Three pairs are the premium cartons. Nor can they be
+  derived from the entry: the authored `required_flags` on a checkpoint
+  are minimal gates, not full prerequisites, and measured across all
+  147 doors they pin down at most 6 of the 25.
+
+So 33 bits before a single cigarette. Everything above that floor was
+cut to reach twelve characters:
+
+| cut | cost |
+| --- | --- |
+| sanity, 7 bits | a code resumes on a fresh 60, as walking in does |
+| format version, 4 bits | moved into the parity constant (below) |
+| cigarettes 16 → 13 | caps at 8191 instead of 65535 |
+| deaths 10 → 9 | caps at 511 instead of 1023 |
+| parity 2 chars → 1 | see below |
+
+Both counters still clamp on write rather than overflow, because loose
+cigarettes respawn with their map and the total has no real ceiling.
+A wrap to nothing would be worse than a stop.
 
 ### Why Crockford base32
 
@@ -107,44 +129,55 @@ glyphs to print one.
 Not base64: it is case-sensitive and uses `+`, `/` and `=`, all of which
 are miserable to retype.
 
-### Why parity and not a hash
+### Why one check character
 
 The point of the check is that a mistyped code says "that is not a code"
-instead of loading a corrupted game. That is an error-detection job, and
-an error-detecting code does it far better per bit than a truncated
-hash does.
-
-Two Reed–Solomon check symbols over GF(32) give the sixteen-character
-word a minimum distance of three. So:
+instead of loading a corrupted game. One Reed–Solomon check symbol over
+GF(32), weighted by position, buys exactly two guarantees:
 
 | what the player did | what happens |
 | --- | --- |
 | one character wrong | always caught |
-| two characters wrong | always caught |
 | two characters swapped | always caught |
-| three or more wrong | ~1 in 40,000 gets through |
+| two or more characters wrong | ~1 in 32 gets through |
+| a code made up from nothing | ~1 in 56 is a real save |
 
-The first three are guarantees, not probabilities — a word one or two
-symbols from a valid word cannot itself be valid. A truncated hash only
-ever offers a probability, however many bits it is given; the previous
-32-bit HMAC caught every single-character error *by luck*, and cost
-five characters for the privilege.
+The first two are the mistakes a player actually makes when retyping,
+and they are guarantees rather than probabilities: a single wrong symbol
+leaves the syndrome equal to that error times a non-zero weight, and a
+swap leaves it equal to the difference of the two symbols times the
+difference of their weights. The weighting is what catches the swap; a
+plain sum would be blind to it.
 
-The last row is the price. Three or more wrong characters fall back to
-chance: one in 1024 to pass parity, then the version has to read as ours
-and the entry has to name a door that exists, which measures at about
-one in forty thousand over four hundred thousand random strings. For a
-single-player save code that is the right trade, and
-`tests/test_save_code.py` holds all four rows.
+The rest is the price of the character. Both figures are measured in
+`tests/test_save_code.py` rather than assumed, so they stay decisions.
 
-The word is masked with a fixed keystream before it is written out. That
-is not security and cannot be: the mask ships inside the game, and in a
-browser build it sits in readable JavaScript. It is there so a code
-looks like a code rather than like its own field layout. Masking is
-symbol-wise, so it cannot turn one wrong character into two and every
-guarantee above survives it. A single-player game with a player-held
-save cannot be made tamper-proof, and the effort spent pretending
-otherwise is better spent elsewhere.
+### This is not tamper-proof, deliberately
+
+Fifty-five bits with a five-bit check, and the mask shipping inside the
+game, means a determined player can work out how to edit a code. That
+was chosen: **a code short enough to write on the back of a hand is
+worth more than a code nobody can edit.** CHUCK is single-player, the
+save is the player's own, and a save the player can carry is the point
+of the exercise. No amount of checksum would have changed this anyway —
+in a browser build the whole codec sits in readable JavaScript.
+
+The mask is there so a code looks like a code rather than like its own
+field layout. It is symbol-wise, so it cannot turn one wrong character
+into two, and both guarantees above survive it.
+
+### Versions, without a version field
+
+There is no version field. The format's version is the constant the
+parity is seeded with, so a code from a later format fails this build's
+check and is refused as mistyped — 31 times in 32, with the last one
+decoding as some other save. That is weaker than naming the version, and
+it is what twelve characters can afford.
+
+**So: change the seed whenever the layout changes.** A layout change
+without a seed change would have yesterday's codes read as today's, in
+silence. `tests/test_save_code.py` holds the golden code, which fails the
+moment either one moves.
 
 ---
 
