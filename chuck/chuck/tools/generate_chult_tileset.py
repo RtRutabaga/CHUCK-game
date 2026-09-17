@@ -35,6 +35,11 @@ TEMPLE = (73, 83, 65)
 TEMPLE_LIGHT = (112, 119, 84)
 TEMPLE_DARK = (45, 57, 49)
 TEMPLE_MOSS = (39, 82, 48)
+# What is left of the paint. A Mesoamerican temple was stuccoed and
+# painted red, and a few centuries of jungle leaves exactly this: ochre
+# in the recesses of the carving and bare stone everywhere else.
+TEMPLE_OCHRE = (122, 74, 52)
+TEMPLE_OCHRE_DARK = (88, 52, 40)
 TRAIL = (47, 46, 29)
 TRAIL_LIGHT = (68, 62, 35)
 TRAIL_DARK = (30, 35, 24)
@@ -170,6 +175,52 @@ def draw_temple_stone(surface, variant: int, _frame: int) -> None:
         pygame.draw.line(surface, TEMPLE_DARK, (11, 8), (7, 13), 1)
 
 
+def draw_temple_tablero(surface, variant: int, _frame: int) -> None:
+    """The framed panel course that caps a terrace.
+
+    Talud-tablero: each terrace is a plain sloping face with a recessed,
+    framed and decorated panel sitting on top of it. The panel carries a
+    step-fret -- the greca -- because that single motif does more to say
+    where a building is from than any amount of extra blockwork.
+    """
+    surface.fill(TEMPLE)
+    # The frame: a cornice proud of the wall above and below the panel.
+    pygame.draw.rect(surface, TEMPLE_LIGHT, (0, 0, 16, 3))
+    pygame.draw.rect(surface, TEMPLE_LIGHT, (0, 13, 16, 3))
+    pygame.draw.line(surface, TEMPLE_DARK, (0, 3), (15, 3), 1)
+    pygame.draw.line(surface, TEMPLE_DARK, (0, 12), (15, 12), 1)
+    # The recessed panel, and what is left of its paint.
+    pygame.draw.rect(surface, TEMPLE_OCHRE_DARK, (0, 4, 16, 8))
+    pygame.draw.rect(surface, TEMPLE_OCHRE, (0, 5, 16, 6))
+    # The greca: a step fret, carried in relief across the panel. Its
+    # phase walks with the variant so a long band never repeats on the
+    # same beat twice.
+    start = (variant * 4) % 8
+    for base in (start - 8, start, start + 8):
+        pygame.draw.line(surface, TEMPLE_LIGHT, (base, 5), (base + 5, 5), 1)
+        pygame.draw.line(surface, TEMPLE_LIGHT, (base, 5), (base, 10), 1)
+        pygame.draw.line(surface, TEMPLE_LIGHT, (base, 10), (base + 3, 10), 1)
+        pygame.draw.line(surface, TEMPLE_LIGHT, (base + 3, 8), (base + 3, 10), 1)
+    if variant == 2:
+        pygame.draw.rect(surface, TEMPLE_MOSS, (10, 13, 5, 2))
+
+
+def draw_temple_balustrade(surface, variant: int, _frame: int) -> None:
+    """The alfarda: the sloping ramp that walls in the stairway.
+
+    Unstepped on purpose. A stair reads as a stair because something
+    beside it does not, and the pair of ramps running the full height of
+    the pyramid is the shape the eye recognises from a mile off.
+    """
+    surface.fill(TEMPLE_DARK)
+    pygame.draw.rect(surface, TEMPLE, (1, 0, 14, 16))
+    pygame.draw.rect(surface, TEMPLE_LIGHT, (5, 0, 6, 16))
+    pygame.draw.line(surface, TEMPLE_DARK, (3, 0), (3, 15), 1)
+    pygame.draw.line(surface, TEMPLE_DARK, (12, 0), (12, 15), 1)
+    if variant:
+        pygame.draw.rect(surface, TEMPLE_MOSS, (1 + variant * 9, 4, 3, 5))
+
+
 def draw_temple_stairs(surface, variant: int, _frame: int) -> None:
     surface.fill(TEMPLE)
     for y in (3, 7, 11, 15):
@@ -198,6 +249,8 @@ DRAW = {
     "jungle_trail": draw_jungle_trail,
     "jungle_exit": draw_jungle_exit,
     "temple_stone": draw_temple_stone,
+    "temple_tablero": draw_temple_tablero,
+    "temple_balustrade": draw_temple_balustrade,
     "temple_stairs": draw_temple_stairs,
     "temple_entrance": draw_temple_entrance,
     "astral_void": draw_astral_void,

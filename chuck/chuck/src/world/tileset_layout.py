@@ -225,6 +225,13 @@ CHULT = Tileset(
         ("jungle_trail", 3, 1),
         ("jungle_exit", 3, 1),
         ("temple_stone", 4, 1),
+        # Talud-tablero: the framed, decorated panel course that caps
+        # each terrace, and the sloping balustrade running down either
+        # side of the stair. Between them they are most of what makes a
+        # stepped pyramid read as a Mesoamerican one rather than as a
+        # generic ziggurat.
+        ("temple_tablero", 4, 1),
+        ("temple_balustrade", 3, 1),
         ("temple_stairs", 3, 1),
         ("temple_entrance", 2, 1),
         ("astral_void", 2, 3),
@@ -236,6 +243,8 @@ CHULT = Tileset(
         "≈": "jungle_stream",
         "'": "jungle_trail",
         "π": "temple_stone",
+        "ι": "temple_tablero",
+        "μ": "temple_balustrade",
         "τ": "temple_stairs",
         "Ω": "temple_entrance",
         "V": "astral_void",

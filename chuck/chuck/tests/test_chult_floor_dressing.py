@@ -103,6 +103,10 @@ def test_nothing_in_chult_mentions_a_temple_chuck_has_not_reached() -> None:
     kinds = {
         kind
         for path in sorted(config.MAPS_DIR.glob("chult_*.txt"))
+        # ...except the map the temple is on. Standing in its plaza,
+        # looking up at it, is the one place out here where naming the
+        # thing tells the player nothing they cannot already see.
+        if path.stem != "chult_temple"
         for kind, _, _ in TileMap(path).prop_tiles
     }
     for kind in sorted(kinds):

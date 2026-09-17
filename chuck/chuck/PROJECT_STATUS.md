@@ -27,6 +27,31 @@ and updated every session.
 
 ## Latest implementation
 
+### The temple exterior reads as Mesoamerican, not as a ziggurat
+
+A stepped pyramid on its own is Mesopotamian as easily as Maya. Five things
+decide it, and the map had none of them.
+
+- **Talud-tablero.** Each terrace now ends in a framed, recessed panel course
+  carrying a step-fret -- the greca -- with the plain sloping face below it. One
+  motif does more to say where a building is from than any amount of extra
+  blockwork, and the ochre in the cut of it is what a painted stucco temple
+  leaves behind after a few centuries of jungle.
+- **Balustrades.** The stair is walled in by a pair of unstepped ramps running
+  its whole height. A stair reads as a stair because the thing beside it does
+  not, and that pair of ramps is the silhouette the eye recognises from a mile
+  off.
+- **Serpent heads.** Each ramp ends in one at plaza level, jaws open, facing
+  whoever is walking up -- the single most recognisable piece of the whole form.
+- **A roof comb.** The summit doorway now has a house over it with a frieze, a
+  corbelled roofline, and a pierced crest standing on the ridge, rising out of
+  the canopy above the pyramid.
+- **A drum altar** out in the plaza on the stair's axis, where one goes.
+- **Tests:** a tablero course caps every terrace and plain stone sits below it,
+  the balustrades run the stair's full height unbroken and end in a head each,
+  and the approach avenue is still open the whole way up apart from those three
+  pieces of furniture -- never narrowing below six of its eight columns.
+
 ### One bank of cloud, not a field of cloud tiles
 
 The platform outside Zephyros' tower was cloud, but it read as wallpaper

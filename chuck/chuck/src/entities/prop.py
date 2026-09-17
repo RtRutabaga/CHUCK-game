@@ -178,6 +178,9 @@ _SPRITES = {
         "objects/waterdeep_alchemist_display.png"
     ),
     "skull_stake": "objects/skull_stake.png",
+    "temple_serpent_head": "objects/temple_serpent_head.png",
+    "temple_altar": "objects/temple_altar.png",
+    "temple_roof_comb": "objects/temple_roof_comb.png",
     "temple_arch_ns": "objects/temple_arch_ns.png",
     "temple_arch_ew": "objects/temple_arch_ew.png",
     # The same doorway at the same scale, in Phlegethos's own stone:
