@@ -122,6 +122,7 @@ def test_rootways_uses_shared_checkpoint_save_and_enemy_reset() -> None:
             assert len(scene.redcaps) == 2
 
             anchor = scene.anchors[0]
+            came_in = scene.anchors_system.respawn_position_for_chuck()
             scene.player.x, scene.player.y = anchor.x, anchor.y
             scene.update(0.0)
             assert anchor.lit
@@ -133,7 +134,8 @@ def test_rootways_uses_shared_checkpoint_save_and_enemy_reset() -> None:
             scene.update(config.RESPAWN_FADE_OUT)
             scene.update(config.RESPAWN_HOLD)
             assert len(scene.redcaps) == 2
-            assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+            # The door he came in by, not the Ashtray he touched.
+            assert (scene.player.x, scene.player.y) == came_in
 
             resumed = game.checkpoints.continue_game()
             assert resumed is not None

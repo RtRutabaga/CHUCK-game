@@ -149,6 +149,7 @@ def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
         scene = game.scenes.current
         anchor = scene.anchors[0]
         scene.sanity.current = 47
+        came_in = scene.anchors_system.respawn_position_for_chuck()
         scene.player.x, scene.player.y = anchor.x, anchor.y
         scene.update(0.01)
 
@@ -162,7 +163,8 @@ def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT)
         scene.update(config.RESPAWN_HOLD)
-        assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+        # The door he came in by, not the Ashtray he touched.
+        assert (scene.player.x, scene.player.y) == came_in
         assert scene.sanity.current == config.SANITY_MAX
     finally:
         game._shutdown()
@@ -501,4 +503,33 @@ def test_a_save_written_at_a_door_survives_the_round_trip() -> None:
         assert "sewer_completed" in record.progress_flags
         assert record.cigarettes == 42 and record.deaths == 3
     finally:
+        directory.cleanup()
+
+
+def test_every_door_is_somewhere_chuck_can_stand() -> None:
+    """The door is the respawn point now, so every door has to be one.
+
+    Loads all of them and checks the spot he would come back to is not
+    inside a wall. One was: the climb out of the sewer outflow starts a
+    tile lower than it finishes, with the animation running, so the
+    arrival position is in the harbour. Dying on those docks would have
+    dropped him in the water.
+    """
+    from src.systems import save_registry
+
+    directory, path = _temp_save()
+    game = Game(save_path=path)
+    size = config.TILE_SIZE
+    try:
+        doors = [entry for entry in save_registry.SAVE_ENTRIES if entry]
+        assert len(doors) >= 100
+        for entry in doors:
+            scene = game.checkpoints.load_checkpoint(entry)
+            x, y = scene.anchors_system.respawn_position_for_chuck()
+            col = int((x + scene.player.width / 2) // size)
+            row = int((y + scene.player.height / 2) // size)
+            assert not scene.tilemap.is_solid(col, row), (
+                entry, scene.map_name, col, row)
+    finally:
+        game._shutdown()
         directory.cleanup()

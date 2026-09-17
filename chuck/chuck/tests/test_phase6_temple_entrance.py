@@ -92,6 +92,7 @@ def test_temple_1_ashtray_saves_continues_and_respawns() -> None:
     try:
         scene = game.checkpoints.load_checkpoint("temple_1")
         anchor, = scene.anchors
+        came_in = scene.anchors_system.respawn_position_for_chuck()
         scene.player.x, scene.player.y = anchor.x, anchor.y
         scene.sanity.current = 61
         scene.update(0.01)
@@ -99,7 +100,8 @@ def test_temple_1_ashtray_saves_continues_and_respawns() -> None:
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+        # The door he came in by, not the Ashtray he touched.
+        assert (scene.player.x, scene.player.y) == came_in
     finally:
         game._shutdown()
 

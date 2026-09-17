@@ -195,6 +195,7 @@ def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:
             assert game.active_checkpoint_id == "feywild_13"
 
             anchor = scene.anchors[0]
+            came_in = scene.anchors_system.respawn_position_for_chuck()
             scene.player.x, scene.player.y = anchor.x, anchor.y
             scene.update(0.0)
             assert anchor.lit
@@ -208,7 +209,8 @@ def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:
             assert len(scene.rats) == 5
             assert all(rat.variant == "thorn_mite" for rat in scene.rats)
             assert all(rat.attack_chase_enabled for rat in scene.rats)
-            assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+            # The door he came in by, not the Ashtray he touched.
+            assert (scene.player.x, scene.player.y) == came_in
 
             south = next((col, row)
                          for row in range(scene.tilemap.height_tiles)

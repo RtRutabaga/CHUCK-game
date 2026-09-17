@@ -115,6 +115,7 @@ def test_temple_9_checkpoint_saves_continues_and_respawns() -> None:
         # The entrance lines are the tableau suite's concern.
         scene._pending_entrance_dialogue = None
         anchor, = scene.anchors
+        came_in = scene.anchors_system.respawn_position_for_chuck()
         scene.player.x, scene.player.y = anchor.x, anchor.y
         scene.sanity.current = 52
         scene.update(0.01)
@@ -122,7 +123,8 @@ def test_temple_9_checkpoint_saves_continues_and_respawns() -> None:
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+        # The door he came in by, not the Ashtray he touched.
+        assert (scene.player.x, scene.player.y) == came_in
     finally:
         game._shutdown()
 

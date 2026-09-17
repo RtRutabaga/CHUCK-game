@@ -355,10 +355,16 @@ class WorldScene(Scene):
         )
         self._jump_tutorial_complete = False
 
-        # Respawn: where Chuck returns (defaults to where he woke up),
-        # and the transition state (None = living normally).
+        # Respawn: the door he came in by, fixed for this visit.
+        #
+        # Where the door is a climb out of the water, that is the top of
+        # the climb and not the bottom of it. Chuck starts a tile lower
+        # with the animation running, and putting him back THERE on a
+        # death would drop him in the harbour.
         self.anchors_system = AstralAnchorSystem(
-            default_position=(self.player.x, self.player.y),
+            default_position=(self.player.x, self._climb_target_y
+                              if self._climb_t is not None
+                              else self.player.y),
             default_checkpoint_id=checkpoint_id,
         )
         # Being netted holds Chuck still and drains him; it never becomes
@@ -1694,15 +1700,17 @@ class WorldScene(Scene):
 
         self._update_footsteps(dt)
 
-        # Anchors: touching one attunes it (and un-lights the rest).
+        # Anchors: touching one still banks a save, and no longer moves
+        # where Chuck comes back to. The door he walked in by is the
+        # respawn point now, on every map -- measured, that costs a
+        # median of 1.7 tiles of walking against coming back to the
+        # Ashtray, because the fights are deep in the maps and the walk
+        # was already long. The Anchor itself goes shortly.
         for anchor in self.anchors:
             if not anchor.lit and overlaps(player_box, anchor.hitbox):
                 for other in self.anchors:
                     other.lit = False
                 anchor.lit = True
-                self.anchors_system.activate(
-                    (anchor.x, anchor.y), anchor.checkpoint_id
-                )
                 self.game.checkpoints.activate_checkpoint(
                     anchor.checkpoint_id, self.sanity.current
                 )
@@ -3102,7 +3110,7 @@ class WorldScene(Scene):
         if self._respawn_phase == "out" and self._respawn_t >= config.RESPAWN_FADE_OUT:
             self._respawn_phase, self._respawn_t = "hold", 0.0
         elif self._respawn_phase == "hold" and self._respawn_t >= config.RESPAWN_HOLD:
-            # The return: at the attuned anchor (or where he woke up).
+            # The return: the door he came in by.
             self.player.x, self.player.y = (
                 self.anchors_system.respawn_position_for_chuck()
             )

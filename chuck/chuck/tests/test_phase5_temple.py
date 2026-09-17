@@ -165,6 +165,7 @@ def test_chult_5_ashtray_saves_continue_and_respawns_through_shared_loader() -> 
     try:
         scene = game.checkpoints.load_checkpoint("chult_5")
         anchor, = scene.anchors
+        came_in = scene.anchors_system.respawn_position_for_chuck()
         scene.player.x, scene.player.y = anchor.x, anchor.y
         scene.sanity.current = 53
         scene.update(0.01)
@@ -172,7 +173,8 @@ def test_chult_5_ashtray_saves_continue_and_respawns_through_shared_loader() -> 
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+        # The door he came in by, not the Ashtray he touched.
+        assert (scene.player.x, scene.player.y) == came_in
     finally:
         game._shutdown()
 

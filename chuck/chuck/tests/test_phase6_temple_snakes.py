@@ -113,6 +113,7 @@ def test_temple_5_checkpoint_saves_continues_and_resets_snakes() -> None:
         scene = game.checkpoints.load_checkpoint("temple_5")
         scene._arrival_fade_t = None
         anchor, = scene.anchors
+        came_in = scene.anchors_system.respawn_position_for_chuck()
         scene.player.x, scene.player.y = anchor.x, anchor.y
         scene.sanity.current = 67
         scene.update(0.01)
@@ -122,7 +123,8 @@ def test_temple_5_checkpoint_saves_continues_and_resets_snakes() -> None:
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
         scene.update(config.RESPAWN_HOLD + 0.01)
-        assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+        # The door he came in by, not the Ashtray he touched.
+        assert (scene.player.x, scene.player.y) == came_in
         assert len(scene.snakes) == 20
     finally:
         game._shutdown()

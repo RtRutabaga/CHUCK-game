@@ -62,11 +62,16 @@ def test_cat_stays_on_its_row() -> None:
     assert cat.y == y0
 
 
-def test_anchor_system_defaults_then_updates() -> None:
+def test_the_respawn_point_is_where_he_came_in_and_stays_there() -> None:
+    """It used to move when he touched an Ashtray. It does not now.
+
+    One respawn point per visit to a map, set on arrival, unchanged for
+    as long as he is in there.
+    """
     system = AstralAnchorSystem(default_position=(10.0, 20.0))
     assert system.respawn_position_for_chuck() == (10.0, 20.0)
-    system.activate((300.0, 140.0))
-    assert system.respawn_position_for_chuck() == (300.0, 140.0)
+    assert not hasattr(system, "activate"), (
+        "nothing may move the respawn point away from the door")
 
 
 def _run_all() -> None:

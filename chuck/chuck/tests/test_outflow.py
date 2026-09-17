@@ -96,6 +96,7 @@ def test_maze_ashtray_attunes_and_becomes_respawn_point() -> None:
             scene = game.scenes.current
             assert len(scene.anchors) == 1
             anchor = scene.anchors[0]
+            came_in = scene.anchors_system.respawn_position_for_chuck()
             scene.player.x, scene.player.y = anchor.x, anchor.y
 
             assert scene._anchor_hint_visible()
@@ -103,14 +104,13 @@ def test_maze_ashtray_attunes_and_becomes_respawn_point() -> None:
             assert anchor.lit
             assert game.active_checkpoint_id == "sewer_anchor"
             assert game.saves.load().checkpoint_id == "sewer_anchor"
-            assert scene.anchors_system.respawn_position_for_chuck() == (
-                anchor.x, anchor.y
-            )
+            assert scene.anchors_system.respawn_position_for_chuck() == came_in
 
             scene.sanity.deplete()
             scene.update(config.RESPAWN_FADE_OUT)
             scene.update(config.RESPAWN_HOLD)
-            assert (scene.player.x, scene.player.y) == (anchor.x, anchor.y)
+            # The door he came in by, not the Ashtray he touched.
+            assert (scene.player.x, scene.player.y) == came_in
             assert scene.player.visible
         finally:
             game._shutdown()
