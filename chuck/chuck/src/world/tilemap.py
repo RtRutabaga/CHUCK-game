@@ -625,13 +625,11 @@ TILE_DEFS: dict[str, TileDef] = {
     "ι": TileDef(solid=True, color=(122, 74, 52)),
     "μ": TileDef(solid=True, color=(112, 119, 84)),
     # ...and its furniture: a serpent head at the foot of each
-    # balustrade, the drum altar out on the stair's axis, and the house
-    # and roof comb standing on the summit, which is drawn out of the
-    # jungle row above the pyramid because that is where it rises to.
+    # balustrade, and the house and roof comb standing on the summit,
+    # which is drawn out of the jungle row above the pyramid because
+    # that is where it rises to.
     "ο": TileDef(solid=True, color=(73, 83, 65),
                  prop="temple_serpent_head", under="."),
-    "ϕ": TileDef(solid=True, color=(112, 119, 84),
-                 prop="temple_altar", under="."),
     "ϐ": TileDef(solid=True, color=(73, 83, 65),
                  prop="temple_roof_comb", under="#"),
     "Ω": TileDef(solid=False, color=(12, 20, 18)),

@@ -290,27 +290,6 @@ def temple_serpent_head() -> Image.Image:
     return image
 
 
-def temple_altar() -> Image.Image:
-    """The round drum altar, out in the plaza on the stair's axis."""
-    image = Image.new("RGBA", (26, 20), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(image)
-    # The drum's side, then its top face sitting on it.
-    draw.rectangle((0, 7, 25, 16), fill=T_DARK)
-    draw.ellipse((0, 10, 25, 19), fill=T_DARK)
-    draw.ellipse((1, 9, 24, 18), fill=T_STONE)
-    draw.rectangle((1, 7, 24, 14), fill=T_STONE)
-    # One recessed groove round it, which is where the paint survives.
-    draw.line((1, 12, 24, 12), fill=T_OCHRE)
-    draw.line((1, 13, 24, 13), fill=T_OCHRE_LIGHT)
-    # The top face.
-    draw.ellipse((0, 0, 25, 13), fill=T_DARK)
-    draw.ellipse((1, 1, 24, 12), fill=T_LIGHT)
-    draw.ellipse((4, 3, 21, 10), fill=T_PALE)
-    draw.ellipse((9, 5, 16, 8), fill=T_LIGHT)
-    draw.rectangle((5, 2, 8, 3), fill=T_MOSS)
-    return image
-
-
 def temple_roof_comb() -> Image.Image:
     """The house on the summit, and the crest standing on top of it.
 
@@ -376,7 +355,6 @@ def main() -> None:
         ("waterdeep_docked_ship", sailing_cog(overgrown=False)),
         ("skull_stake", skull_stake()),
         ("temple_serpent_head", temple_serpent_head()),
-        ("temple_altar", temple_altar()),
         ("temple_roof_comb", temple_roof_comb()),
     ):
         path = OUT / f"{name}.png"

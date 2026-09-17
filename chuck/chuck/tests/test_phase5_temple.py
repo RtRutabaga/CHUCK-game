@@ -47,11 +47,10 @@ def test_temple_map_is_a_connected_enemy_free_exterior() -> None:
     assert kinds.count("anchor:chult_5_anchor") == 1
     assert kinds.count("arrival:from_chult_4") == 1
     assert kinds.count("boundary:temple_interior") == 1
-    # Two serpent heads at the foot of the stair, the drum altar out on
-    # its axis, and the roof comb over the summit doorway.
+    # Two serpent heads at the foot of the stair, and the roof comb over
+    # the summit doorway.
     placed = Counter(kind for kind, _col, _row in tilemap.prop_tiles)
     assert placed["temple_serpent_head"] == 2
-    assert placed["temple_altar"] == 1
     assert placed["temple_roof_comb"] == 1
     stakes = {(col, row) for kind, col, row in tilemap.prop_tiles
               if kind == "skull_stake"}
@@ -59,13 +58,13 @@ def test_temple_map_is_a_connected_enemy_free_exterior() -> None:
         (27, 24), (36, 24), (27, 27), (36, 27),
         (27, 30), (36, 30), (27, 33), (36, 33),
     }
-    # The approach avenue is open the whole way up, apart from the three
-    # pieces of the temple's own furniture standing in it.
+    # The approach avenue is open the whole way up, apart from the two
+    # serpent heads at the top of it.
     avenue = {(col, row) for row in range(23, 34) for col in range(28, 36)}
     standing = {(col, row) for kind, col, row in tilemap.prop_tiles
-                if kind in {"temple_serpent_head", "temple_altar"}}
+                if kind == "temple_serpent_head"}
     assert avenue - reached == standing, avenue - reached - standing
-    assert len(standing) == 3
+    assert len(standing) == 2
     # ...and nothing narrows it: every row of it keeps most of its width.
     for row in range(23, 34):
         open_cols = sum((col, row) in reached for col in range(28, 36))

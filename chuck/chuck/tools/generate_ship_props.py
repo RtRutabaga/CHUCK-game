@@ -150,21 +150,59 @@ def captain_chest(stage: int) -> Image.Image:
 
 
 def mast_sail() -> Image.Image:
-    """A ship-scale hybrid-top-down mast and broad, fully visible sail."""
+    """A mast under square rig: three yards of sail, stacked up the spar.
+
+    One enormous sheet of canvas per mast reads as a sail, but not as a
+    sailing ship. A square rigger carries a course, a topsail and a
+    topgallant on separate yards up the same mast, each smaller than
+    the one below it, and from above that stack of three shrinking
+    rectangles is the whole silhouette of the thing.
+
+    They are drawn square on the mast and tilted a few pixels, the way
+    a set of yards braced round to the same wind reads from overhead.
+    """
     image = Image.new("RGBA", (224, 192), TRANSPARENT)
     draw = ImageDraw.Draw(image)
-    # The sail is enormous beside Chuck and deliberately overlaps the deck.
-    sail = [(9, 18), (197, 31), (214, 137), (30, 124)]
-    draw.polygon(sail, fill=DARK)
-    inner = [(14, 23), (191, 36), (207, 131), (35, 119)]
-    draw.polygon(inner, fill=SAIL)
-    draw.line((16, 25, 190, 38), fill=SAIL_LIGHT, width=4)
-    draw.line((35, 113, 206, 127), fill=SAIL_DARK, width=4)
-    draw.line((109, 33, 117, 123), fill=SAIL_DARK, width=3)
-    draw.line((20, 68, 202, 81), fill=SAIL_DARK, width=3)
-    # Mast remains visibly planted into the deck beneath the complete sail.
-    draw.rectangle((107, 2, 119, 181), fill=WOOD_DARK)
-    draw.rectangle((108, 2, 113, 181), fill=WOOD_LIGHT)
+
+    # The mast first, so the canvas covers it and it shows in the gaps
+    # between the yards and below the lowest of them.
+    draw.rectangle((105, 0, 119, 182), fill=WOOD_DARK)
+    draw.rectangle((107, 0, 113, 182), fill=WOOD)
+    draw.line((108, 0, 108, 182), fill=WOOD_LIGHT, width=2)
+
+    # (centre y of the yard, half-width, depth). Biggest at the foot of
+    # the mast, smallest at the head.
+    yards = ((150, 98, 50), (92, 78, 42), (42, 60, 34))
+    for centre_y, half, depth in yards:
+        lift = half // 8          # the tilt, proportional to the spread
+        left, right = 112 - half, 112 + half
+        top, bottom = centre_y - depth // 2, centre_y + depth // 2
+        canvas = [(left, top + lift), (right, top),
+                  (right, bottom), (left, bottom + lift)]
+        draw.polygon(canvas, fill=DARK)
+        inset = [(left + 4, top + lift + 4), (right - 4, top + 4),
+                 (right - 4, bottom - 4), (left + 4, bottom + lift - 4)]
+        draw.polygon(inset, fill=SAIL)
+        # The belly of it catches the light along the top and falls into
+        # shadow at the foot, so the canvas is not a flat card.
+        draw.line((left + 6, top + lift + 7, right - 6, top + 7),
+                  fill=SAIL_LIGHT, width=5)
+        draw.line((left + 6, bottom + lift - 7, right - 6, bottom - 7),
+                  fill=SAIL_DARK, width=4)
+        # Two seams down the cloth, following its tilt.
+        for fraction in (0.34, 0.67):
+            x = round(left + (right - left) * fraction)
+            drop = round(lift * (1 - fraction))
+            draw.line((x, top + drop + 5, x, bottom + drop - 5),
+                      fill=SAIL_DARK, width=2)
+        # The yard itself: a spar across the head of the sail, out past
+        # the cloth at both ends.
+        draw.line((left - 7, top + lift + 1, right + 7, top - 1),
+                  fill=WOOD_DARK, width=5)
+        draw.line((left - 7, top + lift, right + 7, top - 2),
+                  fill=WOOD, width=2)
+
+    # The mast's foot, planted in the deck below the rig.
     draw.rectangle((95, 178, 132, 189), fill=DARK)
     draw.rectangle((100, 175, 127, 184), fill=WOOD)
     draw.line((100, 176, 127, 176), fill=WOOD_LIGHT, width=2)

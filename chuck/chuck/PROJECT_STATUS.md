@@ -27,6 +27,24 @@ and updated every session.
 
 ## Latest implementation
 
+### The altar is gone, and the ship is square-rigged
+
+- **The drum altar is out.** At the size it is drawn from above, a round stone
+  with a groove round its side reads as a bowl sitting in the plaza rather than
+  as a thing anybody ever stood at. Taken out entirely -- map tile, tile
+  definition, sprite, examine line and the generator that drew it -- rather than
+  left in the tree unused. The serpent heads and the tablero courses were
+  carrying the Mesoamerican read anyway.
+- **Three yards of sail per mast.** Each mast used to carry one enormous sheet
+  of canvas, which reads as a sail but not as a sailing ship. It carries a
+  course, a topsail and a topgallant now, on separate yards up the same spar,
+  each smaller than the one below it, tilted the way a set of yards braced round
+  to one wind reads from overhead. The mast shows between them and is planted in
+  the deck below the lowest. Same 224x192 sprite, so nothing about the map, the
+  anchors or the see-through band moved.
+- **Tests:** the sail art has three separate runs of canvas up the mast, each
+  wider than the one above it, with the mast running on below the lowest.
+
 ### The temple exterior reads as Mesoamerican, not as a ziggurat
 
 A stepped pyramid on its own is Mesopotamian as easily as Maya. Five things

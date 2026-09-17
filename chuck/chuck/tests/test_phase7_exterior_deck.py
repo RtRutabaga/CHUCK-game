@@ -172,3 +172,50 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_each_mast_carries_three_yards_of_sail() -> None:
+    """A square rig, not one sheet of canvas.
+
+    One enormous sail per mast reads as a sail but not as a sailing
+    ship. A square rigger carries a course, a topsail and a topgallant
+    on separate yards up the same mast, each smaller than the one below
+    it, and from above that stack of three shrinking rectangles is the
+    whole silhouette of the thing.
+    """
+    from PIL import Image
+
+    from src.entities.prop import _SPRITES
+
+    art = Image.open(config.SPRITES_DIR / _SPRITES["ship_mast_sail"])
+    art = art.convert("RGBA")
+    canvas = {(218, 202, 151), (239, 225, 174), (161, 145, 102)}
+    # Rows of the sprite that have canvas in them, grouped into the runs
+    # they fall into: three runs, with clear mast between them.
+    lit = [row for row in range(art.height)
+           if any(art.getpixel((col, row))[:3] in canvas
+                  for col in range(art.width))]
+    runs = []
+    for row in lit:
+        if runs and row == runs[-1][-1] + 1:
+            runs[-1].append(row)
+        else:
+            runs.append([row])
+    assert len(runs) == 3, [(r[0], r[-1]) for r in runs]
+
+    # ...and each one is wider than the one above it.
+    widths = []
+    for run in runs:
+        middle = run[len(run) // 2]
+        cols = [col for col in range(art.width)
+                if art.getpixel((col, middle))[:3] in canvas]
+        widths.append(max(cols) - min(cols))
+    assert widths[0] < widths[1] < widths[2], widths
+
+    # The mast runs the height of the rig and is planted in the deck
+    # below the lowest yard.
+    wood = {(63, 42, 29), (112, 74, 43), (151, 102, 57)}
+    foot = max(row for row in range(art.height)
+               if any(art.getpixel((col, row))[:3] in wood
+                      for col in range(art.width)))
+    assert foot > runs[-1][-1], (foot, runs[-1][-1])
