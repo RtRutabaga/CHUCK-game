@@ -209,3 +209,44 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_jeffries_reads_as_tied_to_the_mast() -> None:
+    """Roped, in front of the spar, with the line coiled at his feet.
+
+    He is not a pirate having a bad time on his own: he is lashed to the
+    mast, and the sprite has to carry that on its own because nothing
+    else on the deck says so. Three turns of rope, each running out past
+    his shoulders to the edge of the frame -- he stands in front of the
+    mast, so the rope that leaves him carries on round it.
+    """
+    from PIL import Image
+
+    from src.core import config
+    from src.world.tilemap import TileMap
+
+    rope = {(184, 149, 91), (124, 96, 54), (214, 185, 128)}
+    sheet = Image.open(
+        config.SPRITES_DIR / "npcs" / "jeffries.png").convert("RGBA")
+    frame = sheet.crop((0, 0, 16, 30))
+    bands = [row for row in range(frame.height)
+             if sum(frame.getpixel((col, row))[:3] in rope
+                    for col in range(frame.width)) >= 12]
+    assert len(bands) == 3, bands
+    # Every one of them reaches both edges of the frame.
+    for row in bands:
+        assert frame.getpixel((1, row))[:3] in rope, row
+        assert frame.getpixel((frame.width - 2, row))[:3] in rope, row
+    # ...and they are turns of rope over a man, not a wall of it: most
+    # of his front is still coat and shirt.
+    roped = sum(frame.getpixel((col, row))[:3] in rope
+                for row in range(13, 24) for col in range(4, 12))
+    assert roped < 8 * 11 * 0.45, roped
+
+    # The line that tied him, coiled on the deck either side of him.
+    tilemap = TileMap(config.MAPS_DIR / "ship_exterior_deck.txt")
+    coils = {(col, row) for kind, col, row in tilemap.prop_tiles
+             if kind == "ship_rope_coil"}
+    near = {spot for spot in coils
+            if abs(spot[0] - 21) <= 3 and abs(spot[1] - 23) <= 2}
+    assert len(near) >= 2, sorted(coils)

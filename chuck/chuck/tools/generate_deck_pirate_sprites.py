@@ -14,6 +14,8 @@ WHITE = (205, 198, 166, 255)
 BOOT = (43, 31, 27, 255)
 TROUSER = (61, 53, 49, 255)
 ROPE = (184, 149, 91, 255)
+ROPE_DARK = (124, 96, 54, 255)
+ROPE_LIGHT = (214, 185, 128, 255)
 PEWTER = (151, 157, 154, 255)
 ALE = (190, 128, 49, 255)
 WOOD = (109, 70, 39, 255)
@@ -126,13 +128,31 @@ def _person(facing: str, phase: int, coat, action: str) -> Image.Image:
         rect(draw, (cx - 7, arm_y, cx - 5, arm_y + 5), SKIN)
         rect(draw, (cx + 5, 22 - arm_y // 2, cx + 7, 27 - arm_y // 2), SKIN)
     elif action == "struggle":
-        # Jeffries: elbows strain against three visible rope bands.
-        tug = (-1, 1, -1, 1)[phase]
-        rect(draw, (cx - 7 + tug, 14, cx - 5 + tug, 22), SKIN)
-        rect(draw, (cx + 5 - tug, 14, cx + 7 - tug, 22), SKIN)
-        for y in (15, 18, 21):
-            rect(draw, (cx - 7, y, cx + 7, y), ROPE)
-        rect(draw, (cx - 1, 12, cx, 25), ROPE)
+        # Jeffries, lashed to the mast. His arms are pinned to his sides
+        # rather than held out -- a man waving his elbows about is not
+        # tied to anything -- and the turns of rope run out past his
+        # shoulders to the edge of the frame, because he stands in front
+        # of the spar and the rope carries on round it.
+        #
+        # Three turns, one pixel each. A fourth, or a second pixel on
+        # any of them, buries the coat and the shirt under it and stops
+        # reading as a man tied up at all: it becomes a length of fence.
+        tug = (-1, 0, -1, 0)[phase]
+        rect(draw, (cx - 6 + tug, 14, cx - 5 + tug, 22), SKIN)
+        rect(draw, (cx + 5 - tug, 14, cx + 6 - tug, 22), SKIN)
+        rect(draw, (cx - 6 + tug, 21, cx - 5 + tug, 22), SKIN_DARK)
+        rect(draw, (cx + 5 - tug, 21, cx + 6 - tug, 22), SKIN_DARK)
+        for y in (14, 18, 22):
+            rect(draw, (1, y, W - 2, y), ROPE)
+            for x in range(2, W - 2, 3):
+                rect(draw, (x, y, x, y), ROPE_DARK)
+            rect(draw, (1, y, 1, y), ROPE_LIGHT)
+            rect(draw, (W - 2, y, W - 2, y), ROPE_LIGHT)
+        # The knot pulled tight over his chest, and the tail of the line
+        # hanging off it.
+        rect(draw, (cx - 1, 16, cx + 1, 18), ROPE_DARK)
+        rect(draw, (cx, 17, cx, 17), ROPE_LIGHT)
+        rect(draw, (cx + 2, 23, cx + 2, 25 + tug), ROPE)
     elif action == "captain_walk":
         # A restrained opposite arm swing, distinct from his later pointing
         # performance so the entrance reads as a walk rather than a slide.

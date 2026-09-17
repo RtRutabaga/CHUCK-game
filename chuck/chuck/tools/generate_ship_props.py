@@ -161,7 +161,7 @@ def mast_sail() -> Image.Image:
     They are drawn square on the mast and tilted a few pixels, the way
     a set of yards braced round to the same wind reads from overhead.
     """
-    image = Image.new("RGBA", (224, 192), TRANSPARENT)
+    image = Image.new("RGBA", (224, 240), TRANSPARENT)
     draw = ImageDraw.Draw(image)
 
     # The canvas first: the mast stands in front of its own sails, and
@@ -171,8 +171,13 @@ def mast_sail() -> Image.Image:
     # rather than as one pole with sails hung off it.
 
     # (centre y of the yard, half-width, depth). Biggest at the foot of
-    # the mast, smallest at the head.
-    yards = ((150, 98, 50), (92, 78, 42), (42, 60, 34))
+    # the mast, smallest at the head. The whole rig sits high enough
+    # that its lowest yard clears both the crew working at the mast's
+    # foot and the helm standing forward of it: a course whose foot
+    # comes down level with a man's head is canvas lying on the deck
+    # party, and the bare stretch of mast under it is most of what makes
+    # the rig read as tall rather than as bunting.
+    yards = ((142, 98, 50), (84, 78, 42), (34, 60, 34))
     for centre_y, half, depth in yards:
         lift = half // 8          # the tilt, proportional to the spread
         left, right = 112 - half, 112 + half
@@ -203,14 +208,14 @@ def mast_sail() -> Image.Image:
                   fill=WOOD, width=2)
 
     # ...and the mast over all of it, head to deck.
-    draw.rectangle((105, 0, 119, 182), fill=WOOD_DARK)
-    draw.rectangle((107, 0, 113, 182), fill=WOOD)
-    draw.line((108, 0, 108, 182), fill=WOOD_LIGHT, width=2)
+    draw.rectangle((105, 0, 119, 230), fill=WOOD_DARK)
+    draw.rectangle((107, 0, 113, 230), fill=WOOD)
+    draw.line((108, 0, 108, 230), fill=WOOD_LIGHT, width=2)
 
     # The mast's foot, planted in the deck below the rig.
-    draw.rectangle((95, 178, 132, 189), fill=DARK)
-    draw.rectangle((100, 175, 127, 184), fill=WOOD)
-    draw.line((100, 176, 127, 176), fill=WOOD_LIGHT, width=2)
+    draw.rectangle((95, 226, 132, 237), fill=DARK)
+    draw.rectangle((100, 223, 127, 232), fill=WOOD)
+    draw.line((100, 224, 127, 224), fill=WOOD_LIGHT, width=2)
     return image
 
 

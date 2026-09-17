@@ -27,6 +27,32 @@ and updated every session.
 
 ## Latest implementation
 
+### The rig sits high, and Jeffries is visibly tied to the mast
+
+- **The yards are up where a rig belongs.** The lowest course came down level
+  with the heads of the crew working at the mast's foot, and across the top of
+  the helm, which is a wheel with spokes -- half of one is a broken wheel. The
+  sprite is 240 tall now instead of 192 and the whole stack sits higher on it,
+  so the lowest yard clears Jeffries' head by nearly three tiles and the wheel
+  entirely. The bare stretch of mast under it is most of what makes the rig
+  read as tall rather than as bunting.
+- **Jeffries is lashed to the mast.** He stands in front of the forward spar
+  and nothing said so. His arms are pinned to his sides now rather than waving
+  -- a man swinging his elbows about is not tied to anything -- and three turns
+  of rope run across him and out past his shoulders to the edge of the frame,
+  carrying on round the mast standing behind him, with the knot pulled tight
+  over his chest and the tail of the line hanging off it. A second coil of rope
+  on the deck beside the one already there puts the rest of the line at his
+  feet.
+  - Three turns, one pixel each, and no more: a fourth band, or a second pixel
+    on any of them, buries the coat and the shirt and stops reading as a man
+    tied up at all. It becomes a length of fence, which is what the first
+    attempt looked like.
+- **Tests:** the lowest canvas on the mast sits above both Jeffries' head and
+  the top of the helm; his sprite carries exactly three full-width bands of
+  rope, each reaching both edges of the frame, over a front that is still
+  mostly coat; and the line is coiled on the deck either side of him.
+
 ### The altar is gone, and the ship is square-rigged
 
 - **The drum altar is out.** At the size it is drawn from above, a round stone

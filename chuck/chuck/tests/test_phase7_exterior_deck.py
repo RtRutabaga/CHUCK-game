@@ -64,7 +64,7 @@ def test_deck_has_one_checkpoint_and_uses_the_shared_loader() -> None:
         assert len(scene.anchors) == 1
         mast_sizes = [prop._size for prop in scene.props
                       if prop.kind == "ship_mast_sail"]
-        assert mast_sizes == [(224, 192), (224, 192)]
+        assert mast_sizes == [(224, 240), (224, 240)]
         helm = next(prop for prop in scene.props if prop.kind == "ship_helm")
         assert helm._size == (56, 54)
         bowsprit = next(prop for prop in scene.props
@@ -227,3 +227,42 @@ def test_each_mast_carries_three_yards_of_sail() -> None:
     for run in runs:
         middle = run[len(run) // 2]
         assert art.getpixel((110, middle))[:3] in wood, middle
+
+
+def test_the_lowest_yard_hangs_clear_of_the_crews_heads() -> None:
+    """Canvas over the deck, not resting on the people standing on it.
+
+    Jeffries works at the foot of the forward mast. A course whose foot
+    comes down level with his head is a sail lying on the crew, and the
+    bare stretch of mast under it is most of what makes the rig read as
+    tall rather than as bunting.
+    """
+    from PIL import Image
+
+    from src.core import config
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("ship_exterior_deck")
+        jeffries = next(npc for npc in scene.npcs
+                        if "jeffries" in str(getattr(npc, "dialogue_id", "")))
+        head = jeffries.hitbox.bottom - config.NPC_FRAME_H
+        mast = min((prop for prop in scene.props
+                    if prop.kind == "ship_mast_sail"),
+                   key=lambda prop: prop._draw_x)
+        art = Image.open(
+            config.SPRITES_DIR / "objects" / "ship_mast_sail.png").convert("RGBA")
+        canvas = {(218, 202, 151), (239, 225, 174), (161, 145, 102)}
+        lowest = max(row for row in range(art.height)
+                     if any(art.getpixel((col, row))[:3] in canvas
+                            for col in range(art.width)))
+        assert mast._draw_y + lowest < head - 12, (
+            mast._draw_y + lowest, head)
+        # ...and clear of the helm standing forward of the mast, which
+        # is a wheel with spokes: half of one is a broken wheel.
+        helm = next(prop for prop in scene.props
+                    if prop.kind == "ship_helm")
+        assert mast._draw_y + lowest < helm._draw_y, (
+            mast._draw_y + lowest, helm._draw_y)
+    finally:
+        game._shutdown()
