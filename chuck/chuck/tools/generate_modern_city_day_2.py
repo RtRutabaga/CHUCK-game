@@ -17,7 +17,7 @@ import sys
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass, sidewalk_approaches, dress_day_storefronts
+from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, finish_day_buildings, sidewalk_approaches, dress_day_storefronts
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 58
@@ -139,7 +139,7 @@ def build_map() -> list[str]:
         grid[row][col] = "ል"
     # Dress the whole map: undifferentiated mass becomes buildings, and
     # every carriageway gets its centre line.
-    terrace_mass(grid)
+    finish_day_buildings(grid)
     # Street furniture last, so it can see the finished pavement
     # and refuse to stand anywhere that would close a route.
     protected = sidewalk_approaches(grid)

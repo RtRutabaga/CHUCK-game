@@ -27,6 +27,15 @@ and updated every session.
 
 ## Latest implementation
 
+### Unfinished daytime streets break into the Astral Sea
+
+Thin wall caps no longer terminate the roads and sidewalks in Days 1–3.
+The unbuilt ends now show the Astral Sea, while actual buildings remain
+barriers. Day 4's isolated southern road and crossings have been removed;
+a shorter surviving pedestrian edge still connects its routes. All six
+day-map generators validate, and 49 focused checks pass, including the
+sidewalk connections and the recently added shops and park.
+
 ### Daytime storefronts and a small municipal plaza
 
 Twelve signless shop fronts now ground the buildings in Days 1–4 and 6:

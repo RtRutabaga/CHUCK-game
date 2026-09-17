@@ -19,7 +19,7 @@ import sys
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass, sidewalk_approaches, dress_day_storefronts
+from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, finish_day_buildings, sidewalk_approaches, dress_day_storefronts
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 60
@@ -40,7 +40,7 @@ OFFICERS = ((6, 30), (66, 22))
 POLICE = (((24, 43), "ቜ"),)
 BUSINESSPEOPLE = (((6, 20), "v"), ((50, 9), "h"))
 CIGARETTES = ((26, 25), (41, 25), (34, 33), (20, 17))
-PUDDLES = ((6, 14), (26, 33), (50, 17), (20, 47), (66, 33))
+PUDDLES = ((6, 14), (26, 33), (50, 17), (20, 44), (66, 33))
 
 HEADER = [
     "; PHASE 11 - CITY DAY 4, THE BROKEN SQUARE (70x52 tiles).",
@@ -71,14 +71,10 @@ def build_map() -> list[str]:
 
     # The street in from the north-west, still intact.
     _room(grid, 1, 1, 8, 41)
-    _room(grid, 1, 42, 26, 50)
-    _room(grid, 1, 44, 26, 44, ",")
-    _room(grid, 1, 45, 26, 47, "=")
-    _room(grid, 1, 48, 26, 48, ",")
-    for col in range(10, 26, 8):
-        for row in range(44, 49):
-            grid[row][col] = "▦"
-            grid[row][col + 1] = "▦"
+    # The surviving southern footway joins the east exit. The isolated
+    # road/curb/crosswalk stub below it served no street or destination.
+    _room(grid, 1, 42, 26, 46)
+    _room(grid, 1, 46, 25, 46, ",")  # surviving concrete edge above the Sea
     # A ridge of surviving pavement runs north and east around the square.
     # Reaches to row 13 so the drop onto the square is one tile, not two.
     _room(grid, 8, 8, 68, 13)
@@ -125,7 +121,7 @@ def build_map() -> list[str]:
         grid[row][col] = "ል"
     # Dress the whole map: undifferentiated mass becomes buildings, and
     # every carriageway gets its centre line.
-    terrace_mass(grid)
+    finish_day_buildings(grid)
     # Street furniture last, so it can see the finished pavement
     # and refuse to stand anywhere that would close a route.
     protected = sidewalk_approaches(grid)
@@ -212,8 +208,9 @@ def validate(rows: list[str]) -> None:
     assert text.count("ል") == len(CIGARETTES)
     assert "ም" not in text, "no homeless man in the daytime city"
     # No side facades here: there are no side streets left to face onto.
-    for material in ("#", "▱", "▤", "w", ".", ",", "=", "▦", "ꞏ", "V"):
+    for material in ("#", "▱", "▤", "w", ".", ",", "ꞏ", "V"):
         assert material in text, material
+    assert not ({"=", "≡", "‖", "▦"} & set(text)), "no isolated roadway remains"
 
 
 def main() -> None:

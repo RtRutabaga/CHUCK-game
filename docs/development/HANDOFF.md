@@ -1,5 +1,25 @@
 # Agent Handoff
 
+## Latest Pass — Broken Daytime Street Ends (2026-09-17)
+
+- Branch: `save-codes`; base commit: `9edf766`.
+- Replaced thin unbuilt wall caps at daytime street ends with Astral Sea:
+  Day 1's north side street, Day 2's north/east streets (including Sean's
+  screenshot), and Day 3's capped street/sidewalk/alley edges. Genuine
+  authored building masses and the sidewalk exits remain intact.
+- `finish_day_buildings` finds shallow boundary caps using the generators'
+  original unbuilt-wall vocabulary, runs the existing terrace pass, then
+  removes only those caps. This preserves surrounding building art seeds
+  and never treats an authored building as an unfinished street end.
+- Removed Day 4's isolated southern road, crossings and lower protrusion.
+  A shorter paved footway with concrete edging still joins the west/east
+  routes; its puddle and street furniture remain on surviving pavement.
+  Updated its material validator to require the absence of stray roadway.
+- All six day generators validate. All 49 checks across 11 focused modules
+  pass: street ends, furnishing/parity, street furniture, sidewalk travel,
+  park/Examine, and each daytime map. Native views of the road ends and the
+  former southern stub were inspected. Days 5/6's shipped maps are unchanged.
+
 ## Latest Pass — Daytime Shops and Municipal Plaza (2026-09-17)
 
 - Branch: `save-codes`; base commit: `634ede6`.

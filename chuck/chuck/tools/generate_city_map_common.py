@@ -461,6 +461,38 @@ def _is_corner(grid, col: int, row: int) -> bool:
     return horizontal and vertical
 
 
+def finish_day_buildings(grid: list[list[str]]) -> None:
+    """Dress real buildings, but let unfinished street ends break into Sea.
+
+    The day generators start with unbuilt side-wall fill (▥), whereas
+    authored buildings are #. Find thin edge caps in that original vocabulary
+    before the terrace pass makes them look like buildings too. Applying the
+    cuts afterwards preserves the surrounding buildings' existing art seeds.
+    """
+    height, width = len(grid), len(grid[0])
+    caps = set()
+    rays = ([(x, 0, 0, 1) for x in range(width)]
+            + [(x, height-1, 0, -1) for x in range(width)]
+            + [(0, y, 1, 0) for y in range(height)]
+            + [(width-1, y, -1, 0) for y in range(height)])
+    for x, y, dx, dy in rays:
+        pending = []
+        for depth in range(5):
+            col, row = x + dx * depth, y + dy * depth
+            if not (0 <= col < width and 0 <= row < height):
+                break
+            char = grid[row][col]
+            if char == "▥":
+                pending.append((col, row))
+            else:
+                if char in {".", ",", "=", "▦"}:
+                    caps.update(pending)
+                break
+    terrace_mass(grid)
+    for col, row in caps:
+        grid[row][col] = "V"
+
+
 def dress_day_storefronts(grid: list[list[str]], *, seed: int = 0) -> int:
     """Signless shops on sound three-tile building fronts above pavement."""
     from src.world.tilemap import TILE_DEFS

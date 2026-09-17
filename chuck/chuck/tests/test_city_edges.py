@@ -70,3 +70,32 @@ def test_the_seal_pass_is_what_the_generators_run() -> None:
         source = (Path(common.__file__).parent / f"{stem}.py").read_text(
             encoding="utf-8")
         assert f'seal_open_edges(grid, "{name}")' in source, name
+
+
+def test_day_street_end_caps_are_sea_not_facades():
+    from src.world.tilemap import TileMap
+
+    expected = {
+        1: [(x, y) for x in range(54, 65) for y in range(4)],
+        2: ([(75, y) for y in range(26, 40)]
+            + [(x, 0) for x in range(30, 44)]),
+        3: ([(x, 0) for x in range(14, 26)]
+            + [(x, 63) for x in range(4, 35) if x not in (11, 12, 13)]
+            + [(0, y) for y in (*range(18, 25), *range(40, 47))]),
+    }
+    for i, cells in expected.items():
+        tilemap = TileMap(config.MAPS_DIR / f"modern_city_day_{i}.txt")
+        for col, row in cells:
+            assert tilemap.terrain_at(col, row) == "V", (i, col, row)
+
+
+def test_day_four_has_no_southern_road_stub():
+    from src.world.tilemap import TileMap
+
+    tilemap = TileMap(config.MAPS_DIR / "modern_city_day_4.txt")
+    assert not any(char in {"=", "≡", "‖", "▦"}
+                   for row in tilemap._grid for char in row)
+    for row in range(47, 51):
+        assert all(tilemap.terrain_at(col, row) == "V" for col in range(1, 27))
+    # The short surviving footway still connects the west and east paths.
+    assert all(not tilemap.is_solid(col, 42) for col in range(1, 69))
