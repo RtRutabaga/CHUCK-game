@@ -27,6 +27,34 @@ and updated every session.
 
 ## Latest implementation
 
+### The realm's theme, played as a fight, when the seal shuts
+
+- **A new arrangement rather than a new track.** `data/music/phlegethos_fortress.py`
+  is built from the Phlegethos theme's own material -- its E Phrygian dominant
+  mode, its four-bar i-bII-i-bVII cycle and both of its lead phrases, imported
+  from `phlegethos` rather than copied, so the fight cannot drift into being a
+  different tune. What changes is everything around the melody: 152 BPM against
+  the realm's 132, a bass driving in eighths from the first bar with the walking
+  version gone entirely, a snare that never sits out, the toms churning rather
+  than rolling, and a brass section and timpani the wandering theme has no use
+  for -- brass stabbing the cycle on the off-beats for three sections, then
+  taking the tune itself an octave down for the last full statement.
+- **It arrives when the fight does.** Walking up to the wall is still exploring,
+  so the approach keeps the realm's own theme; the handover happens at the
+  moment the Astral seal slams shut behind Chuck, which is when the map stops
+  being a walk. Like the desert's dragon cue, this one belongs to a moment
+  rather than to a map, so it lives beside `DRAGON_MUSIC` in `transitions.py`
+  instead of in `AREA_MUSIC`.
+- **Death puts it back.** Respawning rebuilds the approach in place rather than
+  reloading the scene, so `_reset_enemies` returns the music to the walk it
+  belongs to -- otherwise a player who died in the fight would begin it again
+  with the fight's own music already playing.
+- **Tests:** the arrangement is checked to be the realm's melody note for note
+  with no bar of bass, snare or toms left out (where the wandering theme
+  deliberately leaves bars empty), the render is held to the loop-seam and peak
+  gates and to being no quieter than the theme it takes over from, and the
+  handover is checked at the seal and back again on reset.
+
 ### Banners on their walls, and both cutscene boats facing the same way
 
 - **The cabin's table wins.** The mini-fridge stands at the long table's east

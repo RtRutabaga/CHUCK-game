@@ -216,3 +216,11 @@ def build_tracks() -> list[Track]:
         Track("wood", ins.woodblock, 0.66, _bars(wood)),
         Track("hats", ins.hat, 0.7, _bars(hats)),
     ]
+
+
+# --- What the fortress-approach battle arrangement is built from ----------
+# The pit fiend's fight uses this theme's own mode, its four-bar cycle and
+# both of its lead phrases, played hot. Exported rather than copied, so
+# the fight cannot drift into being a different tune.
+ROOTS, FIFTH, OCTAVE = _ROOTS, _FIFTH, _OCTAVE
+LEAD_A, LEAD_B = _LEAD_A, _LEAD_B

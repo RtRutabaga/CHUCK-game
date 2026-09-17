@@ -695,3 +695,12 @@ AREA_MUSIC: dict[str, str | None] = {
 # not belong to a map -- it belongs to a moment, and the world scene
 # asks for it when the moment arrives.
 DRAGON_MUSIC = "desert_dragon.wav"
+
+# The pit fiend's fortress approach does the same thing a map earlier in
+# the run. Walking up to the wall is still exploring the realm, and the
+# realm's own theme carries it; the moment the Astral seal slams shut
+# behind Chuck it stops being a walk. This is the realm's theme played
+# as a fight -- the same mode, the same cycle, the same two lead phrases
+# at a faster tempo over a driving bass and a brass section -- so the
+# handover reads as the music rising rather than as a different track.
+FORTRESS_BATTLE_MUSIC = "phlegethos_fortress.wav"

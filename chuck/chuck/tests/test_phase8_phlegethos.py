@@ -867,3 +867,39 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_the_seal_hands_the_realms_theme_over_to_its_fight_version() -> None:
+    """Walking up to the wall is exploring; the seal is the fight.
+
+    The approach keeps the realm's own theme while Chuck is still
+    walking it, and swaps to the fight arrangement at the moment the
+    Astral closes behind him. Dying puts it back, because the respawn
+    rebuilds the approach in place rather than reloading the scene.
+    """
+    from src.world.transitions import AREA_MUSIC, FORTRESS_BATTLE_MUSIC
+
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint(APPROACH)
+        scene._pending_entrance_dialogue = None
+        played = []
+        game.audio.play_music = lambda name, loop=True: played.append(name)
+
+        scene.player.x = 24 * config.TILE_SIZE
+        scene.player.y = (
+            config.INFERNAL_CORRUPTION_TRIGGER_ROW + 1
+        ) * config.TILE_SIZE
+        scene.update(0.01)
+        assert played == []
+
+        scene.player.y = (
+            config.INFERNAL_CORRUPTION_TRIGGER_ROW
+        ) * config.TILE_SIZE
+        scene.update(0.01)
+        assert played == [FORTRESS_BATTLE_MUSIC]
+
+        scene._reset_enemies()
+        assert played[-1] == AREA_MUSIC[APPROACH]
+    finally:
+        game._shutdown()

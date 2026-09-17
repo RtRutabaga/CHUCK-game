@@ -14,6 +14,7 @@ import wave
 
 from data.music import boss_battle as boss_song
 from data.music import phlegethos as phlegethos_song
+from data.music import phlegethos_fortress as fortress_song
 from data.music import feywild as feywild_song
 from data.music import ship_shanty as shanty_song
 from data.music import fall_to_chult as fall_song
@@ -678,3 +679,66 @@ def _run_all() -> None:
 
 if __name__ == "__main__":
     _run_all()
+
+
+def test_the_fortress_battle_is_the_realms_own_theme_played_as_a_fight() -> None:
+    """Same tune, hurrying, with a section it did not have.
+
+    The pit fiend's arrangement has to read as Phlegethos rather than as
+    a different track, so it takes the realm's mode, its four-bar cycle
+    and both of its lead phrases from the theme itself rather than
+    copying them. What makes it a fight is everything around them: a
+    faster tempo, a bass that drives in every bar, a snare that never
+    sits out, and brass and timpani the wandering theme has no use for.
+    """
+    assert fortress_song.LEAD_A is phlegethos_song.LEAD_A
+    assert fortress_song.LEAD_B is phlegethos_song.LEAD_B
+    assert fortress_song.ROOTS == phlegethos_song.ROOTS
+
+    tracks = fortress_song.build_tracks()
+    named = {track.name: track for track in tracks}
+    bars = fortress_song.TOTAL_BARS
+    duration = fortress_song.TOTAL_BEATS * 60.0 / fortress_song.TEMPO_BPM
+    assert duration >= 60.0
+    assert fortress_song.TEMPO_BPM > phlegethos_song.TEMPO_BPM
+    for track in tracks:
+        for note in track.notes:
+            note_to_freq(note.pitch)
+            assert 0 <= note.beat < fortress_song.TOTAL_BEATS, (
+                track.name, note)
+
+    # The realm's own melody is actually in here, note for note.
+    walk = {track.name: track for track in phlegethos_song.build_tracks()}
+    fight_lead = {n.pitch for n in named["lead"].notes}
+    assert fight_lead <= {n.pitch for n in walk["lead"].notes}
+
+    # No walking bed anywhere: bass, snare and toms carry every bar.
+    for name, per_bar in (("bass", 8), ("snare", 2), ("toms", 6)):
+        assert len(named[name].notes) >= bars * per_bar, name
+        assert len({int(n.beat // 4) for n in named[name].notes}) == bars, name
+    # ...where the theme it comes from deliberately leaves bars empty.
+    assert len({int(n.beat // 4) for n in walk["snare"].notes}) \
+        < phlegethos_song.TOTAL_BARS
+
+    # The fight's own voices, which the wandering theme does not have.
+    assert named["brass"].notes and named["timpani"].notes
+    assert "brass" not in walk and "timpani" not in walk
+
+
+def test_rendered_fortress_battle_respects_loop_and_lifts_the_realm() -> None:
+    with wave.open(str(config.MUSIC_DIR / "phlegethos_fortress.wav")) as f:
+        assert f.getframerate() == SAMPLE_RATE and f.getnchannels() == 1
+        raw = f.readframes(f.getnframes())
+    samples = [x / 32767 for (x,) in struct.iter_unpack("<h", raw)]
+    assert len(samples) >= 60 * SAMPLE_RATE
+    peak = max(abs(s) for s in samples)
+    assert peak <= 0.96, f"clipping risk: peak {peak:.2f}"
+    assert abs(samples[-1] - samples[0]) < 0.15, "audible loop seam"
+    # It has to sound like the realm's theme ramping up, so it may not be
+    # quieter than the theme it takes over from.
+    with wave.open(str(config.MUSIC_DIR / "phlegethos.wav")) as f:
+        walk = [x / 32767 for (x,) in
+                struct.iter_unpack("<h", f.readframes(f.getnframes()))]
+    rms = (sum(s * s for s in samples) / len(samples)) ** 0.5
+    walk_rms = (sum(s * s for s in walk) / len(walk)) ** 0.5
+    assert rms >= walk_rms, (rms, walk_rms)

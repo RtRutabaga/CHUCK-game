@@ -119,7 +119,7 @@ from src.world.collision import overlaps
 from src.world.tilemap import TileMap
 from src.world.tileset_layout import MAP_TILESET, tileset_for
 from src.world.transitions import (
-    AREA_MUSIC, AREA_WALK_EXITS, DRAGON_MUSIC,
+    AREA_MUSIC, AREA_WALK_EXITS, DRAGON_MUSIC, FORTRESS_BATTLE_MUSIC,
 )
 
 
@@ -1227,6 +1227,10 @@ class WorldScene(Scene):
             ):
                 self.infernal_corruption.trigger(self._player_tile())
                 self.game.audio.play_sfx("vanish")
+                # The seal is the moment the approach stops being a walk,
+                # so the realm's theme hands over to its own fight
+                # arrangement here rather than at the map's edge.
+                self.game.audio.play_music(FORTRESS_BATTLE_MUSIC)
             self.infernal_corruption.update(dt, self.player.hitbox)
             if (
                 self.infernal_corruption.triggered
@@ -2765,6 +2769,13 @@ class WorldScene(Scene):
             InfernalAstralCorruption(self.tilemap)
             if self.map_name == "phlegethos_fortress_approach" else None
         )
+        if self.infernal_corruption is not None:
+            # Respawning rebuilds the approach in place rather than
+            # reloading the scene, so the seal is open again and the
+            # music has to go back to the walk it belongs to. Without
+            # this a player who died in the fight would start it over
+            # with the fight's own music already playing.
+            self.game.audio.play_music(AREA_MUSIC[self.map_name])
         if getattr(self, "feywild_river", None) is not None:
             self.feywild_river.reset()
         self.feywild_river = FeywildRiverField(
