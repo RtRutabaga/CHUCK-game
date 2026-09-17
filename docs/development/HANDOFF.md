@@ -1,5 +1,28 @@
 # Agent Handoff
 
+## Latest Pass — Daytime Shops and Municipal Plaza (2026-09-17)
+
+- Branch: `save-codes`; base commit: `634ede6`.
+- Added twelve signless storefronts to suitable building fronts in Days
+  1, 2, 3, 4 and 6 (3/2/3/3/1). Day 5 remains a building-free overpass.
+  They reuse the night shops' dimensions and window vocabulary with an
+  overcast daytime palette and unlettered canvas valances. Doors answer
+  exactly `it's closed`; existing night signs/assets are unchanged.
+- Day 1's open plaza beside the avenue now has one animated low concrete
+  fountain, four park benches, four planted tubs, and a newspaper box.
+  The fountain's five-by-two-tile collision follows the bowl; a clear
+  pedestrian ring surrounds it. The plaza/side-street connection, pickups,
+  puddles, patrol routes, and onward sidewalk exit remain accessible.
+- New props have restrained Examine lines in `data/dialogue/examine.json`.
+  Sprites come from `generate_city_furnishing.py`; placement is generated
+  by `dress_day_storefronts` and `dress_day_park` in the shared city helpers.
+  Map glyphs U+E180–U+E187 identify these props and the fountain's solid base.
+- All 101 checks across 14 relevant modules pass, including actual Examine
+  actions at every new object, storefront wall footprints, fountain
+  collision/walkability, sidewalk exits, generator parity, the six day-map
+  suites, and existing night storefronts. Native park and shop views were
+  rendered and inspected. No save, progression, or transition changes.
+
 ## Latest Pass — Day-City Sidewalk Connections (2026-09-17)
 
 - Branch: `save-codes`; base commit: `dcabdfe`.

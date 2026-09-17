@@ -363,6 +363,13 @@ _SPRITES = {
     "city_bench": "objects/city_bench.png",
     "city_litter_bin": "objects/city_litter_bin.png",
     "city_neon_bar": "objects/city_neon_1_1.png",
+    "city_shop_bar": "objects/city_shop_1.png",
+    "city_shop_cafe": "objects/city_shop_2.png",
+    "city_shop_market": "objects/city_shop_3.png",
+    "city_park_fountain": "objects/city_park_fountain_1.png",
+    "city_park_bench": "objects/city_bench.png",
+    "city_park_planter": "objects/city_park_planter.png",
+    "city_newspaper_box": "objects/city_newspaper_box.png",
     "city_neon_open": "objects/city_neon_2_1.png",
     "city_neon_24h": "objects/city_neon_3_1.png",
     "city_steam_grate": "objects/city_steam_grate_1.png",
@@ -492,6 +499,9 @@ _ANIMATED_SPRITES = {
     "city_neon_bar": tuple(
         f"objects/city_neon_1_{index + 1}.png" for index in range(4)
     ),
+    "city_park_fountain": tuple(
+        f"objects/city_park_fountain_{index + 1}.png" for index in range(4)
+    ),
     "city_neon_open": tuple(
         f"objects/city_neon_2_{index + 1}.png" for index in range(4)
     ),
@@ -516,6 +526,7 @@ _PROP_FRAME_TIMES = {
     "fey_lantern_violet": 0.45,
     # Mostly lit, with the odd stutter.
     "city_neon_bar": 0.5,
+    "city_park_fountain": 0.24,
     "city_neon_open": 0.61,
     "city_neon_24h": 0.55,
     "city_steam_grate": 0.2,
@@ -536,6 +547,9 @@ PROP_DIALOGUE = {
     "city_neon_bar": "closed_door",
     "city_neon_open": "closed_door",
     "city_neon_24h": "closed_door",
+    "city_shop_bar": "closed_door",
+    "city_shop_cafe": "closed_door",
+    "city_shop_market": "closed_door",
     "cabin_closed_door_west": "closed_door",
     "cabin_closed_door_north": "closed_door",
     "cabin_goose_mount": "cabin_goose_mount",

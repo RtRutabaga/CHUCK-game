@@ -128,7 +128,7 @@ def neon_sign(index: int, frame: int) -> Image.Image:
     return image
 
 
-def storefront(index: int, frame: int) -> Image.Image:
+def storefront(index: int, frame: int, *, signed: bool = True) -> Image.Image:
     """Three tiles of ground-floor frontage beneath the existing neon.
 
     Bottom aligned with the facade tile, entirely inside the building's
@@ -190,8 +190,75 @@ def storefront(index: int, frame: int) -> Image.Image:
     draw.line((33, 41, 40, 41), fill=light)
     draw.line((30, 45, 44, 45), fill=METAL_LIT)
     draw.line((1, 46, 46, 46), fill=(84, 91, 102))
-    sign = neon_sign(index, frame)
-    image.alpha_composite(sign, ((48 - sign.width) // 2, 0))
+    if signed:
+        sign = neon_sign(index, frame)
+        image.alpha_composite(sign, ((48 - sign.width) // 2, 0))
+    else:
+        # Unlettered canvas valance and a brighter overcast palette.
+        for x in range(4, 45, 8):
+            draw.rectangle((x, 3, x + 3, 10), fill=light)
+        pixels = image.load()
+        for y in range(48):
+            for x in range(48):
+                r, g, b, a = pixels[x, y]
+                pixels[x, y] = (min(255, int(r * 1.15 + 12)),
+                               min(255, int(g * 1.15 + 12)),
+                               min(255, int(b * 1.15 + 12)), a)
+    return image
+
+
+def city_fountain(frame: int) -> Image.Image:
+    """Low concrete basin, steel central jet, restrained rainy-day water."""
+    image = Image.new("RGBA", (80, 48), CLEAR)
+    d = ImageDraw.Draw(image)
+    d.ellipse((0, 22, 79, 47), fill=OUTLINE)
+    d.rectangle((2, 29, 77, 35), fill=(99, 108, 109))
+    d.ellipse((2, 25, 77, 45), fill=(112, 121, 120))
+    d.arc((3, 26, 76, 44), 0, 180, fill=(75, 87, 90), width=2)
+    d.ellipse((1, 18, 78, 38), fill=(160, 168, 160), outline=OUTLINE)
+    d.ellipse((7, 21, 72, 34), fill=(65, 105, 115))
+    d.ellipse((10, 23, 69, 32), fill=(95, 139, 145))
+    for x, y in ((18, 26), (52, 27), (32, 30)):
+        d.arc((x-frame%2, y-2, x+10+frame%2, y+2), 0, 170,
+              fill=(163, 190, 187))
+    d.ellipse((34, 24, 45, 30), fill=METAL_DARK)
+    d.rectangle((37, 17, 42, 27), fill=METAL)
+    d.line((38, 17, 38, 25), fill=METAL_LIT)
+    d.line((40, 20, 40, 3 + frame % 2), fill=(194, 220, 217), width=2)
+    for direction in (-1, 1):
+        points = [(40, 5), (40+direction*5, 3), (40+direction*10, 7),
+                  (40+direction*14, 18)]
+        d.line(points, fill=(153, 193, 194))
+        d.point((40+direction*14, 20+frame), fill=(219, 230, 224))
+    return image
+
+
+def park_planter() -> Image.Image:
+    image = Image.new("RGBA", (28, 32), CLEAR)
+    d = ImageDraw.Draw(image)
+    d.polygon(((2, 18), (25, 18), (23, 30), (5, 30)), fill=OUTLINE)
+    d.polygon(((4, 20), (23, 20), (21, 28), (6, 28)), fill=(126, 138, 132))
+    d.line((6, 28, 21, 28), fill=(79, 96, 92))
+    d.ellipse((1, 15, 26, 22), fill=(160, 166, 151), outline=OUTLINE)
+    d.ellipse((4, 16, 23, 20), fill=(59, 61, 46))
+    for x, y, r in ((8, 11, 7), (18, 12, 8), (13, 7, 7)):
+        d.ellipse((x-r,y-r,x+r,y+r), fill=(46, 77, 63), outline=OUTLINE)
+        d.arc((x-r+2,y-r+2,x+r-2,y+r-2), 190, 310, fill=(105, 132, 94), width=2)
+    return image
+
+
+def newspaper_box() -> Image.Image:
+    image = Image.new("RGBA", (20, 28), CLEAR)
+    d = ImageDraw.Draw(image)
+    d.rectangle((3, 3, 17, 26), fill=OUTLINE)
+    d.rectangle((4, 5, 16, 24), fill=(58, 104, 120))
+    d.polygon(((2, 3), (5, 0), (17, 0), (19, 3)), fill=(121, 155, 158))
+    d.rectangle((6, 8, 14, 17), fill=(182, 188, 166))
+    d.line((7, 10, 13, 10), fill=(55, 67, 72))
+    for y in (12, 14, 16):
+        d.line((7, y, 12, y), fill=(98, 112, 112))
+    d.line((6, 21, 13, 21), fill=OUTLINE)
+    d.point((15, 20), fill=METAL_LIT)
     return image
 
 
@@ -284,6 +351,12 @@ def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     bench().save(OUT / "city_bench.png")
     litter_bin().save(OUT / "city_litter_bin.png")
+    for index in range(3):
+        storefront(index, 0, signed=False).save(OUT / f"city_shop_{index + 1}.png")
+    for frame in range(4):
+        city_fountain(frame).save(OUT / f"city_park_fountain_{frame + 1}.png")
+    park_planter().save(OUT / "city_park_planter.png")
+    newspaper_box().save(OUT / "city_newspaper_box.png")
     for index in range(len(SIGNS)):
         for frame in range(NEON_FRAMES):
             storefront(index, frame).save(

@@ -763,6 +763,16 @@ TILE_DEFS: dict[str, TileDef] = {
     # pipes and tags on sewer brick.
     "ꟓ": TileDef(solid=True, color=(104, 76, 50), prop="city_bench",
                  under="."),
+    # Daytime shops and municipal plaza (private-use authored map glyphs).
+    # E184 extends the fountain bowl's collision over ordinary paving.
+    "\ue180": TileDef(solid=True, color=(80, 80, 82), prop="city_shop_bar", under="▤"),
+    "\ue181": TileDef(solid=True, color=(80, 80, 82), prop="city_shop_cafe", under="▤"),
+    "\ue182": TileDef(solid=True, color=(80, 80, 82), prop="city_shop_market", under="▤"),
+    "\ue183": TileDef(solid=True, color=(126, 132, 128), prop="city_park_fountain", under="."),
+    "\ue184": TileDef(solid=True, color=(126, 132, 128), under="."),
+    "\ue185": TileDef(solid=True, color=(104, 76, 50), prop="city_park_bench", under="."),
+    "\ue186": TileDef(solid=True, color=(90, 110, 85), prop="city_park_planter", under="."),
+    "\ue187": TileDef(solid=True, color=(58, 104, 120), prop="city_newspaper_box", under="."),
     "ꟕ": TileDef(solid=True, color=(46, 92, 64), prop="city_litter_bin",
                  under="."),
     "ꟗ": TileDef(solid=True, color=(49, 52, 61), prop="city_neon_bar",

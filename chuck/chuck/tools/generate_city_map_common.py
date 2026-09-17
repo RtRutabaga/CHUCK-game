@@ -461,6 +461,52 @@ def _is_corner(grid, col: int, row: int) -> bool:
     return horizontal and vertical
 
 
+def dress_day_storefronts(grid: list[list[str]], *, seed: int = 0) -> int:
+    """Signless shops on sound three-tile building fronts above pavement."""
+    from src.world.tilemap import TILE_DEFS
+
+    height, width = len(grid), len(grid[0])
+    fronts = []
+    for row in range(2, height - 2):
+        for col in range(1, width - 1):
+            if not all(grid[row][x] == "▤" for x in range(col - 1, col + 2)):
+                continue
+            if not all(TILE_DEFS.get(grid[y][x]) and TILE_DEFS[grid[y][x]].solid
+                       for y in range(row - 2, row + 1)
+                       for x in range(col - 1, col + 2)):
+                continue
+            if all(grid[y][x] == "." for y in (row + 1, row + 2)
+                   for x in range(col - 1, col + 2)):
+                fronts.append((col, row))
+    placed = []
+    for col, row in _spot_order(fronts, seed):
+        if all(max(abs(col-x), abs(row-y)) >= 10 for x, y in placed):
+            grid[row][col] = ("\ue180", "\ue181", "\ue182")[(seed + len(placed)) % 3]
+            placed.append((col, row))
+            if len(placed) == 3:
+                break
+    return len(placed)
+
+
+def dress_day_park(grid: list[list[str]]) -> None:
+    """Day One's municipal pocket plaza, away from the avenue and exits."""
+    # The bowl is five tiles wide and two deep. Its sprite rises above
+    # this footprint; the water jet never blocks the paving behind it.
+    for row in (22, 23):
+        for col in range(40, 45):
+            assert grid[row][col] == ".", (col, row)
+            grid[row][col] = "\ue184"
+    grid[23][42] = "\ue183"
+    for char, spots in (
+        ("\ue185", ((36, 22), (48, 22), (38, 27), (46, 27))),
+        ("\ue186", ((34, 18), (49, 18), (34, 26), (50, 26))),
+        ("\ue187", ((32, 27),)),
+    ):
+        for col, row in spots:
+            assert grid[row][col] == ".", (col, row)
+            grid[row][col] = char
+
+
 def sidewalk_approaches(grid: list[list[str]]) -> set[tuple[int, int]]:
     """Keep the full width of daytime exit mouths free of furniture."""
     directions = {"⮝": (0, 1), "⮟": (0, -1), "⮞": (-1, 0), "⮜": (1, 0)}

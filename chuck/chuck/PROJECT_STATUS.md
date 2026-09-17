@@ -27,6 +27,16 @@ and updated every session.
 
 ## Latest implementation
 
+### Daytime storefronts and a small municipal plaza
+
+Twelve signless shop fronts now ground the buildings in Days 1–4 and 6:
+unlettered awnings, glazed displays, and closed human-scale doors. Day 1's
+open plaza beside the avenue contains a low animated concrete fountain,
+four benches, four planted tubs, and a newspaper box. Every new object
+answers Examine; shop doors retain `it's closed`. The fountain has a broad
+solid bowl and a walkable ring, with the existing sidewalks kept clear.
+All 101 focused checks pass and native rendered views were inspected.
+
 ### Daytime city connections follow the sidewalks
 
 The thin building seam between Day 1's plaza and side street is now open

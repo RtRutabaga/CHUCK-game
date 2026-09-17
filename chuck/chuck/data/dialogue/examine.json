@@ -495,5 +495,26 @@
   ],
   "examine_astral_void": [
     "The astral sea, the space between worlds ... what's it doing here?"
+  ],
+  "examine_city_shop_bar": [
+    "it's closed"
+  ],
+  "examine_city_shop_cafe": [
+    "it's closed"
+  ],
+  "examine_city_shop_market": [
+    "it's closed"
+  ],
+  "examine_city_park_fountain": [
+    "A concrete fountain. The rain seems redundant."
+  ],
+  "examine_city_park_bench": [
+    "A park bench. Every seat is wet."
+  ],
+  "examine_city_park_planter": [
+    "A shrub in a concrete tub. Someone still trims it."
+  ],
+  "examine_city_newspaper_box": [
+    "A newspaper behind glass. The paper has stayed dry."
   ]
 }

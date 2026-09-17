@@ -18,7 +18,7 @@ import sys
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass, sidewalk_approaches
+from generate_city_map_common import dress_street, furnish_street, mark_roads, seal_open_edges, terrace_mass, sidewalk_approaches, dress_day_storefronts
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED = 61
@@ -112,6 +112,7 @@ def build_map() -> list[str]:
     protected = sidewalk_approaches(grid)
     dress_street(grid, seed=SEED, protected=protected)
     furnish_street(grid, seed=SEED, night=False, protected=protected)
+    dress_day_storefronts(grid, seed=SEED)
     mark_roads(grid)
     seal_open_edges(grid, "modern_city_day_5")
     return ["".join(row) for row in grid]
