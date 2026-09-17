@@ -633,10 +633,21 @@ EXAMINE_ALIAS = {
 # Two props of the same kind with different things to say, told apart
 # by where they stand. Only for the case where the difference is about
 # the place and not the object: both of the deck's masts are the same
-# mast, but one of them is the one forward of the other.
+# mast, but the east one is the one forward of the other. (The bowsprit
+# runs east off the deck's bow and the helm stands at the far west, so
+# forward is east and the east mast is the fore.)
 PROP_DIALOGUE_AT: dict[tuple[str, int, int], str] = {
-    ("ship_mast_sail", 21, 22): "examine_ship_foremast",
+    ("ship_mast_sail", 42, 22): "examine_ship_foremast",
 }
+
+# ...and the same idea for silence. The west mast is Jeffries': he is
+# roped to it, and that patch of deck is his conversation rather than a
+# note about spars. A mast sprite is fourteen tiles wide, so left with a
+# line of its own it would answer from well outside the reach of the man
+# tied to it.
+MUTE_PROPS_AT: frozenset[tuple[str, int, int]] = frozenset({
+    ("ship_mast_sail", 21, 22),
+})
 
 
 def examine_line_id(kind: str) -> str:
@@ -749,10 +760,13 @@ class Prop:
         self.veil = 0.0
         self._thinned: dict[int, object] = {}
         self.choice_id = PROP_CHOICE.get(kind)
-        self.dialogue_id = PROP_DIALOGUE_AT.get((kind, col, row)) or (
-            PROP_DIALOGUE.get(kind) or (
-                None if self.choice_id or kind in MUTE_PROPS
-                else examine_line_id(kind)
+        standing = (kind, col, row)
+        self.dialogue_id = None if standing in MUTE_PROPS_AT else (
+            PROP_DIALOGUE_AT.get(standing) or (
+                PROP_DIALOGUE.get(kind) or (
+                    None if self.choice_id or kind in MUTE_PROPS
+                    else examine_line_id(kind)
+                )
             )
         )
         if self.dialogue_id and self.choice_id:

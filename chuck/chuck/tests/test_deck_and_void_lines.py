@@ -17,7 +17,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
 from src.core.game import Game
-from src.entities.prop import PROP_DIALOGUE_AT
+from src.entities.prop import MUTE_PROPS_AT, PROP_DIALOGUE_AT
 from src.scenes.world_scene import TERRAIN_DIALOGUE, WorldScene
 from src.ui.bitmap_font import ADVANCE, GLYPH_ORDER
 from src.ui.dialogue_box import MARGIN, PAD
@@ -128,7 +128,13 @@ def test_that_pirate_is_really_on_the_deck_to_say_it() -> None:
 # ----------------------------------------------------------------------
 # The mast
 # ----------------------------------------------------------------------
-def test_the_west_mast_has_its_own_line_and_the_east_one_does_not() -> None:
+def test_the_east_mast_explains_the_rig_and_the_west_one_says_nothing() -> None:
+    """Forward is east here, and the fore is the mast that stands there.
+
+    The bowsprit runs east off the bow and the helm stands at the far
+    west, so the east mast is the one forward of the other. The west
+    mast is Jeffries' -- see the test below.
+    """
     game = Game()
     try:
         scene = game.checkpoints.load_checkpoint("ship_exterior_deck")
@@ -137,9 +143,53 @@ def test_the_west_mast_has_its_own_line_and_the_east_one_does_not() -> None:
                        key=lambda p: p._draw_x)
         assert len(masts) == 2
         west, east = masts
-        assert west.dialogue_id == "examine_ship_foremast"
-        assert east.dialogue_id == "examine_ship_mast_sail"
-        assert PROP_DIALOGUE_AT[("ship_mast_sail", 21, 22)] == west.dialogue_id
+        assert east.dialogue_id == "examine_ship_foremast"
+        assert west.dialogue_id is None
+        assert PROP_DIALOGUE_AT[("ship_mast_sail", 42, 22)] == east.dialogue_id
+        assert ("ship_mast_sail", 21, 22) in MUTE_PROPS_AT
+
+        # The ship agrees. Compared by the tile each prop is anchored
+        # to, not by where its art starts: a mast sprite is fourteen
+        # tiles wide and a helm is three, so their left edges say
+        # nothing about which is further forward.
+        columns = {kind: col for kind, col, _row in scene.tilemap.prop_tiles
+                   if kind in ("ship_helm", "ship_bowsprit")}
+        masts = sorted(col for kind, col, _row in scene.tilemap.prop_tiles
+                       if kind == "ship_mast_sail")
+        assert columns["ship_helm"] < masts[0] < masts[1]             < columns["ship_bowsprit"]
+        assert masts == [21, 42]
+    finally:
+        game._shutdown()
+
+
+def test_the_west_mast_is_jeffries_and_nothing_else() -> None:
+    """He is roped to it, so that patch of deck is his conversation.
+
+    A mast sprite is fourteen tiles wide. Left with a line of its own,
+    the west mast answered from well outside the reach of the man tied
+    to it, and the note about spars talked over him.
+    """
+    game = Game()
+    try:
+        scene = game.checkpoints.load_checkpoint("ship_exterior_deck")
+        west = min((p for p in scene.props if p.kind == "ship_mast_sail"),
+                   key=lambda p: p._draw_x)
+        ts = config.TILE_SIZE
+        answers, jeffries = set(), set()
+        for row in range(14, 30):
+            for col in range(15, 29):
+                if scene.tilemap.is_solid(col, row):
+                    continue
+                for facing in ("up", "down", "left", "right"):
+                    _stand(scene, col, row, facing)
+                    target = scene._interactable_in_range()
+                    if target is west:
+                        answers.add((col, row))
+                    if getattr(target, "dialogue_id", "") == "jeffries_first":
+                        jeffries.add((col, row))
+        assert answers == set(), sorted(answers)
+        # And he is still reachable all round the mast he is tied to.
+        assert len(jeffries) > 10
     finally:
         game._shutdown()
 
@@ -155,8 +205,9 @@ def test_the_mast_line_is_the_rig_explained_and_it_fits_the_panel() -> None:
 
 
 def test_a_prop_position_override_only_touches_that_one_prop() -> None:
-    """The mechanism, not the mast: every other mast keeps the old line."""
-    from src.entities.prop import PROP_DIALOGUE, examine_line_id
+    """The mechanism, not the mast: the same kind elsewhere is unchanged."""
+    from src.entities.prop import (
+        MUTE_PROPS, PROP_DIALOGUE, examine_line_id)
 
     for (kind, _col, _row), line in PROP_DIALOGUE_AT.items():
         # An override is for two of the same thing with different things
@@ -164,6 +215,9 @@ def test_a_prop_position_override_only_touches_that_one_prop() -> None:
         # back to everywhere else.
         assert PROP_DIALOGUE.get(kind) or examine_line_id(kind)
         assert line in _dialogue("examine") or line in PROP_DIALOGUE.values()
+    for kind, _col, _row in MUTE_PROPS_AT:
+        assert kind not in MUTE_PROPS, (
+            f"{kind} is already silent everywhere; the position is noise")
 
 
 # ----------------------------------------------------------------------
