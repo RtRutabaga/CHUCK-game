@@ -261,7 +261,7 @@ def test_map_6_uses_temple_art_music_and_enters_map_7_east() -> None:
     assert AREA_MUSIC[MAP_NAME] == AREA_MUSIC["temple_snakes"]
     # Session 121: the former inert east boundary now enters Map 7.
     assert AREA_WALK_EXITS[(MAP_NAME, "∇")].destination == "temple_shrine"
-    assert AREA_WALK_EXITS[(MAP_NAME, "«")].destination == "temple_shrine"
+    assert AREA_WALK_EXITS[(MAP_NAME, "»")].destination == "temple_shrine"
     assert AREA_WALK_EXITS[(MAP_NAME, "Δ")].destination == "temple_snakes"
     assert AREA_WALK_EXITS[(MAP_NAME, "⌄")].destination == "temple_snakes"
 

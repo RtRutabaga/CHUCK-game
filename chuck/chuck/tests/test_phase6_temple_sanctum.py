@@ -48,7 +48,7 @@ def test_sanctum_is_the_widest_hall_with_one_threshold_and_no_exit() -> None:
     } for kind in kinds)
     arches = [kind for kind, _c, _r in tilemap.prop_tiles
               if kind.startswith("temple_arch_")]
-    assert arches == ["temple_arch_ew"]  # the single east door
+    assert arches == ["temple_arch_ew_east"]  # the single east door
     assert sum(row.count("i") for row in tilemap._grid) == 14
     assert sum(row.count("ø") for row in tilemap._grid) == 6
     assert sum(row.count("≡") for row in tilemap._grid) == 138

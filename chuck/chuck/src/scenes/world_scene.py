@@ -1920,20 +1920,27 @@ class WorldScene(Scene):
         return fallback_y
 
     def _update_see_through_props(self, dt: float) -> None:
-        """Thin anything big enough to hide somebody while they are under it.
+        """Thin anything big enough to hide Chuck while he is under it.
 
         The great trees, the ship's sails, the arches and the cabin as
         props, and every canopy drawn over the world as overhead tiles --
         market awnings, the city gate, palm crowns, the jungle's exit
-        canopy, the Feywild's hedge openings. Anybody counts, not just
-        Chuck: an enemy that disappears under an awning is a hit the
-        player had no way to see coming.
+        canopy, the Feywild's hedge openings.
+
+        Chuck and nobody else. This used to fade for anyone with feet, on
+        the grounds that an enemy vanishing under an awning is a hit the
+        player cannot see coming -- but in practice what it mostly did
+        was flicker: the sails over the ship went half transparent every
+        time a fencer walked his loop behind them, and Chult's dinosaur
+        thinned out a tree from across the map with Chuck nowhere near
+        it. A canopy that fades for things the player is not doing reads
+        as a bug in the canopy. The cases it was guarding against are
+        rare, and the pursuers big enough to matter are bigger than
+        anything they could hide behind anyway.
         """
         from src.entities.prop import SEE_THROUGH_RATE
 
-        walkers = [drawable for drawable in self._sorted_drawables()
-                   if hasattr(drawable, "hitbox")
-                   and not hasattr(drawable, "see_through")]
+        walkers = [self.player]
         for prop in self.props:
             if getattr(prop, "see_through", False):
                 prop.update_veil(walkers, dt)

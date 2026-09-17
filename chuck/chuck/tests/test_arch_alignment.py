@@ -70,8 +70,10 @@ def _run(tilemap, fixed: int, start: int, vertical: bool):
 def test_the_art_puts_the_opening_where_the_rule_says() -> None:
     """The premise the alignment rule rests on, read off the sprites."""
     for name, axis in (("temple_arch_ns", "ns"), ("temple_arch_ew", "ew"),
+                       ("temple_arch_ew_east", "ew"),
                        ("phlegethos_arch_ns", "ns"),
-                       ("phlegethos_arch_ew", "ew")):
+                       ("phlegethos_arch_ew", "ew"),
+                       ("phlegethos_arch_ew_east", "ew")):
         art = Image.open(
             config.SPRITES_DIR / "objects" / f"{name}.png").convert("RGBA")
         width, height = art.size
@@ -155,3 +157,42 @@ def test_no_doorway_has_a_second_little_doorway_beside_it() -> None:
                         run.add(step)
                         frontier.append(step)
             assert len(run) > 2, (name, sorted(run))
+
+
+def test_a_side_doors_reveal_is_on_the_far_side_of_its_passage() -> None:
+    """The arch is handed, and its hand follows the wall it stands in.
+
+    What you see through a side door is the thickness of the wall --
+    the reveal -- and that is on the FAR side of the passage: to the
+    west of a door that leads west, to the east of one that leads east.
+    Both used to draw the same way round, so every east door had its
+    reveal on the near side, which reads as a doorway cut backwards.
+
+    Which way a door leads is taken from the map rather than from the
+    character on it: a side door in the western half of a hall is the
+    hall's west door, and vice versa. A future door that disagrees with
+    its own art fails here.
+    """
+    from PIL import ImageChops
+
+    west = Image.open(
+        config.SPRITES_DIR / "objects" / "temple_arch_ew.png").convert("RGBA")
+    east = Image.open(
+        config.SPRITES_DIR / "objects"
+        / "temple_arch_ew_east.png").convert("RGBA")
+    assert not ImageChops.difference(
+        east, west.transpose(Image.FLIP_LEFT_RIGHT)).getbbox()
+
+    from src.world.tilemap import TILE_DEFS
+
+    found = 0
+    for name, tilemap, arches in _maps():
+        for col, row, char in arches:
+            if ARCHES[char] != "ew":
+                continue
+            found += 1
+            leads_east = col > tilemap.width_tiles / 2
+            kind = TILE_DEFS[char].prop
+            assert kind.endswith("_east") == leads_east, (
+                name, char, (col, row), kind)
+    assert found >= 8, found

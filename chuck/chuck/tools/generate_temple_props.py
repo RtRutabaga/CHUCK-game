@@ -437,6 +437,12 @@ def main() -> None:
     images = {
         "temple_arch_ns": north_south_arch(),
         "temple_arch_ew": east_west_arch(),
+        # The same arch mirrored, for a door in an east wall. The reveal
+        # -- the thickness of the wall you see through the opening -- is
+        # on the far side of the passage, so it swaps sides with the
+        # direction the doorway leads.
+        "temple_arch_ew_east": east_west_arch().transpose(
+            Image.FLIP_LEFT_RIGHT),
         "temple_gate": temple_gate(),
         "temple_skull": temple_skull(),
         "temple_monument_1": temple_monument(0),

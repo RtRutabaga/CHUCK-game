@@ -182,12 +182,14 @@ _SPRITES = {
     "temple_roof_comb": "objects/temple_roof_comb.png",
     "temple_arch_ns": "objects/temple_arch_ns.png",
     "temple_arch_ew": "objects/temple_arch_ew.png",
+    "temple_arch_ew_east": "objects/temple_arch_ew_east.png",
     # The same doorway at the same scale, in Phlegethos's own stone:
     # iron-strapped basalt with the heat showing through it, rather
     # than the temple's mossy green blocks. The WorldScene swaps them
     # in by map (see _infernal_variant).
     "phlegethos_arch_ns": "objects/phlegethos_arch_ns.png",
     "phlegethos_arch_ew": "objects/phlegethos_arch_ew.png",
+    "phlegethos_arch_ew_east": "objects/phlegethos_arch_ew_east.png",
     "temple_gate": "objects/temple_gate.png",
     "temple_skull": "objects/temple_skull.png",
     "temple_monument": (
@@ -604,6 +606,10 @@ FLOOR_PROPS: frozenset[str] = frozenset({
 # Kinds that share another kind's examine line rather than having their
 # own: the same object in a different state.
 EXAMINE_ALIAS = {
+    # A door in an east wall is the same arch as one in a west wall,
+    # drawn the other way round. It has nothing else to say about it.
+    "temple_arch_ew_east": "temple_arch_ew",
+    "phlegethos_arch_ew_east": "phlegethos_arch_ew",
     "city_streetlight_lit": "city_streetlight",
     # Authored as props, but the world turns every one of these into the
     # breakable they are; the line has to be the breakable's.

@@ -293,7 +293,7 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_astral_wind", "∇"): AreaExit(
         "temple_shrine", "from_temple_6", "right"
     ),
-    ("temple_astral_wind", "«"): AreaExit(
+    ("temple_astral_wind", "»"): AreaExit(
         "temple_shrine", "from_temple_6", "right"
     ),
     # The shrine hall's north boundary is live now: the gauntlet.
@@ -410,7 +410,7 @@ AREA_WALK_EXITS: dict[tuple[str, str], AreaExit] = {
     ("temple_shrine", "Δ"): AreaExit(
         "temple_astral_wind", "from_temple_7", "left"
     ),
-    ("temple_shrine", "»"): AreaExit(
+    ("temple_shrine", "«"): AreaExit(
         "temple_astral_wind", "from_temple_7", "left"
     ),
     ("temple_astral_wind", "⌄"): AreaExit(

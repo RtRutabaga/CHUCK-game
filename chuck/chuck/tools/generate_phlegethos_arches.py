@@ -132,7 +132,12 @@ def east_west_arch() -> Image.Image:
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for name, image in (("phlegethos_arch_ns", north_south_arch()),
-                        ("phlegethos_arch_ew", east_west_arch())):
+                        ("phlegethos_arch_ew", east_west_arch()),
+                        # Mirrored, for a door in an east wall: the
+                        # reveal is on the far side of the passage.
+                        ("phlegethos_arch_ew_east",
+                         east_west_arch().transpose(
+                             Image.FLIP_LEFT_RIGHT))):
         path = OUT / f"{name}.png"
         image.save(path)
         print(f"Wrote {path}")

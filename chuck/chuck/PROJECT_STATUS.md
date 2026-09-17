@@ -27,6 +27,33 @@ and updated every session.
 
 ## Latest implementation
 
+### Canopies fade for Chuck only, and side doors are handed
+
+- **Only the player thins a canopy.** It used to fade for anyone with feet, on
+  the grounds that an enemy vanishing under an awning is a hit the player cannot
+  see coming. In practice it mostly flickered: the ship's sails went half
+  transparent every time a fencer walked his loop behind them, and Chult's
+  dinosaur thinned a tree out from across the map with Chuck nowhere near it. A
+  canopy that fades for things the player is not doing reads as a bug in the
+  canopy, and the pursuers big enough to matter are bigger than anything they
+  could hide behind anyway.
+- **A side door's reveal is on the far side of its passage.** What you see
+  through one is the thickness of the wall, and that sits west of a door leading
+  west and east of one leading east. Every east-facing door in the game was
+  drawing the west-facing art, so its reveal was on the near side -- a doorway
+  cut backwards. The arch is handed now: `»` carries the mirrored sprite.
+  - Checking the rest turned up two doors whose character disagreed with the
+    wall it stood in -- the astral wind hall's east door was written `«` and the
+    shrine's west door `»`, because the characters had been picked to key a
+    transition rather than to say which way the door faced. Both are the right
+    way round now, with their transitions moved to match, so the vocabulary
+    means what it says: `«` is a west door, `»` an east one.
+- **Tests:** a canopy stays solid for an NPC standing under it and still thins
+  for Chuck; the sails stay solid with the deck's fencers behind them; the east
+  arch is pixel-for-pixel the mirror of the west one; and every side door in the
+  game is checked against the half of its hall it stands in, so a future door
+  that disagrees with its own art fails.
+
 ### The helm is traced off the reference, not drawn from a circle
 
 - **A grid, not a routine.** The wheel is seen from above and a little to

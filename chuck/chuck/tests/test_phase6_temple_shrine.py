@@ -157,7 +157,7 @@ def test_shrine_uses_temple_art_music_and_enters_map_8_north() -> None:
     assert AREA_WALK_EXITS[(MAP_NAME, "Δ")].destination == (
         "temple_astral_wind"
     )
-    assert AREA_WALK_EXITS[(MAP_NAME, "»")].destination == (
+    assert AREA_WALK_EXITS[(MAP_NAME, "«")].destination == (
         "temple_astral_wind"
     )
     # Session 122: the north boundary now enters the gauntlet.

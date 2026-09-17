@@ -77,7 +77,17 @@ def test_standing_under_an_awning_thins_all_of_it_and_leaving_restores_it():
         directory.cleanup()
 
 
-def test_an_enemy_under_a_canopy_counts_too() -> None:
+def test_nobody_but_chuck_fades_a_canopy() -> None:
+    """It thins for the player and for nothing else.
+
+    This used to fade for anyone with feet, on the grounds that an enemy
+    vanishing under an awning is a hit the player cannot see coming. In
+    practice what it mostly did was flicker: the ship's sails went half
+    transparent every time a fencer walked his loop behind them, and
+    Chult's dinosaur thinned a tree out from across the map with Chuck
+    nowhere near it. A canopy that fades for things the player is not
+    doing reads as a bug in the canopy.
+    """
     directory, game = _game()
     try:
         scene = game.checkpoints.load_checkpoint("waterdeep_start")
@@ -92,7 +102,29 @@ def test_an_enemy_under_a_canopy_counts_too() -> None:
         real = scene._sorted_drawables
         scene._sorted_drawables = lambda: [*real(), Walker()]
         scene._update_see_through_props(1.0)
+        assert scene._overhead_veils.get(awning) is None
+
+        # ...and it still thins the moment Chuck walks under it himself.
+        _hold(scene, 44, 29, 0.6)
         assert scene._overhead_veils.get(awning) == 1.0
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_a_prop_does_not_thin_for_an_npc_walking_behind_it() -> None:
+    """The ship's sails, with a fencer at his loop and Chuck elsewhere."""
+    directory, game = _game()
+    try:
+        scene = game.checkpoints.load_checkpoint("ship_exterior_deck")
+        sail = next(prop for prop in scene.props
+                    if prop.kind == "ship_mast_sail")
+        col = (sail._draw_x + sail._size[0] // 2) // TS
+        row = int(sail.sort_y // TS) - 3
+        crew = [npc for npc in scene.npcs
+                if sail.cover_rect().colliderect(npc.hitbox)]
+        _hold(scene, col, row + 12, 0.6)   # Chuck well clear of the rig
+        assert sail.veil == 0.0, [npc.hitbox for npc in crew]
     finally:
         game._shutdown()
         directory.cleanup()

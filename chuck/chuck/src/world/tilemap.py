@@ -645,10 +645,15 @@ TILE_DEFS: dict[str, TileDef] = {
                  prop="temple_arch_ns", under="∇"),
     "⌄": TileDef(solid=False, color=(10, 16, 15),
                  prop="temple_arch_ns", under="Δ"),
+    # A side door's reveal -- the thickness of the wall you see through
+    # the opening -- is on the FAR side of the passage, so the arch is
+    # handed: one art for a door in a west wall, its mirror for a door
+    # in an east one. Both used to draw the same way round, which left
+    # every east door with its reveal on the wrong side.
     "«": TileDef(solid=False, color=(10, 16, 15),
                  prop="temple_arch_ew", under="∇"),
     "»": TileDef(solid=False, color=(10, 16, 15),
-                 prop="temple_arch_ew", under="Δ"),
+                 prop="temple_arch_ew_east", under="Δ"),
     # Rubble Pass's east-facing infernal cleft: unlike the temple arches this
     # is terrain art, allowing its three visible cells to exactly match the
     # walk-transition footprint.
