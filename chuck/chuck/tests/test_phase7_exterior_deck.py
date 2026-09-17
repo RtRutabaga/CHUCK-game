@@ -66,7 +66,7 @@ def test_deck_has_one_checkpoint_and_uses_the_shared_loader() -> None:
                       if prop.kind == "ship_mast_sail"]
         assert mast_sizes == [(224, 240), (224, 240)]
         helm = next(prop for prop in scene.props if prop.kind == "ship_helm")
-        assert helm._size == (56, 54)
+        assert helm._size == (46, 66)
         bowsprit = next(prop for prop in scene.props
                         if prop.kind == "ship_bowsprit")
         assert bowsprit._size == (400, 96)
@@ -266,3 +266,55 @@ def test_the_lowest_yard_hangs_clear_of_the_crews_heads() -> None:
             mast._draw_y + lowest, helm._draw_y)
     finally:
         game._shutdown()
+
+
+def test_the_helm_is_the_traced_wheel_rather_than_a_drawn_circle() -> None:
+    """The wheel at its own angle, pixel for pixel.
+
+    It is seen from above and a little to starboard: an upright ellipse
+    taller than it is wide, the handles swung round it, and the pedestal
+    standing behind and to one side. A circle-and-spokes routine does
+    not arrive at that, so the art is a traced grid and this holds the
+    render to it.
+    """
+    import sys
+
+    from PIL import Image
+
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+    import generate_ship_props as props
+
+    rows = props.HELM.strip().splitlines()
+    assert len(rows) == 66 and {len(row) for row in rows} == {46}
+
+    art = Image.open(
+        config.SPRITES_DIR / "objects" / "ship_helm.png").convert("RGBA")
+    assert art.size == (46, 66)
+    # Taller than wide: that is the angle, not a decoration of it.
+    assert art.height > art.width * 1.4
+    for y, row in enumerate(rows):
+        for x, char in enumerate(row):
+            want = props.HELM_PALETTE.get(char, props.TRANSPARENT)
+            assert art.getpixel((x, y)) == want, (x, y, char)
+
+    # The brass hub sits in the wheel, well above the sprite's middle --
+    # the bottom third is pedestal.
+    brass = {props.HELM_PALETTE["G"][:3], props.HELM_PALETTE["g"][:3]}
+    hub = [(x, y) for y in range(art.height) for x in range(art.width)
+           if art.getpixel((x, y))[:3] in brass]
+    assert len(hub) > 30, len(hub)
+    # The bulk of the brass is the hub, and the hub is up in the wheel:
+    # the bottom third of the sprite is pedestal. A few stray bright
+    # pixels elsewhere are the light on the rim, so this weighs the
+    # whole of it rather than taking the lowest one.
+    assert sum(y for _x, y in hub) / len(hub) < art.height * 0.5
+    # ...and the handles reach further out than anything below them, so
+    # the widest part of the silhouette is the wheel and not the base.
+    def width_at(row: int) -> int:
+        cols = [x for x in range(art.width) if art.getpixel((x, row))[3]]
+        return max(cols) - min(cols) + 1 if cols else 0
+
+    wheel = max(width_at(row) for row in range(0, int(art.height * 0.62)))
+    base = max(width_at(row) for row in range(int(art.height * 0.75),
+                                              art.height))
+    assert wheel > base, (wheel, base)

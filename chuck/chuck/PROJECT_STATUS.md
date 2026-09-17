@@ -27,6 +27,29 @@ and updated every session.
 
 ## Latest implementation
 
+### The helm is traced off the reference, not drawn from a circle
+
+- **A grid, not a routine.** The wheel is seen from above and a little to
+  starboard: an upright ellipse taller than it is wide, the handles swung round
+  it, the spokes foreshortened across it, and the pedestal standing behind and
+  to one side. That angle is the whole character of the thing and it is not
+  where ellipses and radial spokes land, so the art is now a 46x66 traced grid
+  with its own nine-colour palette, authored the way the barrels and crates in
+  `generate_prop_sprites.py` are.
+  - Pulled off the reference at native resolution: the screenshot's own pixel
+    grid was recovered from the spacing of its edges, the plank background
+    subtracted row by row (the deck is horizontal courses, so each row's
+    background is the median of the part of that row with nothing on it), the
+    helm taken as the largest connected blob, and the pin-holes the threshold
+    punched in the wood closed back up. Then quantised to nine colours.
+- **The rig moved up again with it.** The new helm is twelve pixels taller than
+  the old one, which put its crown back under the lowest yard. The yards are up
+  another eight pixels, so the wheel is whole again.
+- **Tests:** the rendered PNG matches the traced grid pixel for pixel, so the
+  art cannot drift without saying so; it is taller than it is wide by the angle's
+  own margin; the brass is up in the wheel rather than down in the pedestal; and
+  the handles are still the widest part of the silhouette.
+
 ### The rig sits high, and Jeffries is visibly tied to the mast
 
 - **The yards are up where a rig belongs.** The lowest course came down level
