@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pygame
 
-from src.core import config
 from src.scenes.scene import Scene
 
 
@@ -21,8 +20,6 @@ class CheckpointSelectScene(Scene):
 
     def __init__(self, game) -> None:
         super().__init__(game)
-        if not config.ENABLE_DEV_CHECKPOINT_SELECTOR:
-            raise RuntimeError("Development checkpoint selector is disabled")
         self._font = game.assets.bitmap_font()
         self.checkpoints = game.checkpoints.development_checkpoints
         self._selected = 0

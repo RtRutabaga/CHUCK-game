@@ -103,7 +103,7 @@ class _Smoke:
 
 
 class TitleScene(Scene):
-    """Title menu over Chuck's portrait: two real options, one dev option."""
+    """Title menu over Chuck's portrait."""
 
     canvas_size = (config.NATIVE_WIDTH * 2, config.NATIVE_HEIGHT * 2)
 
@@ -130,10 +130,7 @@ class TitleScene(Scene):
     # ------------------------------------------------------------------
     @property
     def options(self) -> tuple[str, ...]:
-        options = ["NEW GAME", "LOAD CODE", "CONTROLS"]
-        if config.ENABLE_DEV_CHECKPOINT_SELECTOR:
-            options.append("DEV CHECKPOINTS")
-        return tuple(options)
+        return ("NEW GAME", "LOAD CODE", "CONTROLS")
 
     def on_enter(self) -> None:
         # Very quiet space ambience under the portrait; the trim in
@@ -177,9 +174,6 @@ class TitleScene(Scene):
             from src.scenes.pause_scene import PauseScene
             self.game.scenes.push(
                 PauseScene(self.game, page="controls", standalone=True))
-        else:
-            from src.scenes.checkpoint_select_scene import CheckpointSelectScene
-            self.game.scenes.replace(CheckpointSelectScene(self.game))
 
     # ------------------------------------------------------------------
     # Chuck

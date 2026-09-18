@@ -5,11 +5,11 @@
 
 ## Baton
 
-- **Latest pass (Codex):** GitHub Pages release infrastructure on top of
-  `aeb1db4`. The Pygbag build now creates `.nojekyll`; the Pages workflow
-  builds and deploys `main`; root and browser READMEs name the future public
-  URL and the one-time Pages setting. The live repository and owner were
-  confirmed, and this checkout's `origin` now uses `RtRutabaga/CHUCK-game`.
+- **Latest pass (Codex):** release cleanup on top of `9f857ab`. No campaign
+  notes or matching blobs exist anywhere in reachable Git history; stale
+  documentation references were removed and `docs/source/campaigns/` is now
+  ignored. The player title now contains exactly NEW GAME, LOAD CODE, and
+  CONTROLS, with no development checkpoint entry.
 - **Browser verification:** rebuilt artifact opens at 16:9 and a title-screen
   load of `KMW9-J6ZP-2T5D` reaches the expected temple checkpoint. Generated
   archive: 11,401,293 bytes; static output: 22,562,567 bytes including the
@@ -18,6 +18,9 @@
 - **Suite:** 1,300 passed in one combined pytest process after correcting the
   cafe/hatch interaction overlap and an older test that deleted Chult's `$`
   transition marker from shared state. Browser runtime checks are 7/7.
+- **Release verification:** the rebuilt Pygbag artifact was opened in a fresh
+  browser tab and the three-option title was confirmed visually. The focused
+  title/checkpoint/save/browser set passes 56/56.
 - **CONTINUE and the save file are gone.** The twelve-character code is
   the whole save system, on desktop and in a browser alike. Sean's
   decision; reasoning in `DECISIONS.md`. Do not reintroduce either, and
@@ -40,10 +43,10 @@
   asserted an exact sanity after resuming it now asserts
   `config.SANITY_START`, because the old assertion described something
   the game can no longer do.
-- **Next bounded task:** remove release-only developer checkpoints, merge this
-  branch to `main`, select **Settings → Pages → Source → GitHub Actions**, and
-  run the workflow. Then cold-load the public URL and play title → docks →
-  sewer → one transition before announcing it.
+- **Next bounded task:** merge this branch to `main`, select **Settings →
+  Pages → Source → GitHub Actions**, and run the workflow. Then cold-load the
+  public URL and play title → docks → sewer → one transition before announcing
+  it.
 - **Preview:** `python -m http.server 8000 --bind 127.0.0.1 --directory
   chuck/chuck/build/browser-app/build/web`, then `http://127.0.0.1:8000/`
   in a fresh tab. Never `localhost`. Check for a server already running

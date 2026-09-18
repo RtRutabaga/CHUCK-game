@@ -28,10 +28,6 @@ DIALOGUE_DIR = DATA_DIR / "dialogue"
 # ---------------------------------------------------------------------------
 GAME_TITLE = "CHUCK"
 
-# Temporary development menu. Set False for a player-facing final build; the
-# checkpoint registry and real save system remain unchanged.
-ENABLE_DEV_CHECKPOINT_SELECTOR = True
-
 # Native (internal) resolution. All pixel art is authored at this size and
 # then integer-scaled up to the window, keeping the 16-bit look crisp.
 NATIVE_WIDTH = 320

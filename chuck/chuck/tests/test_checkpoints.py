@@ -50,7 +50,7 @@ def test_the_title_offers_no_continue_and_new_game_uses_the_loader() -> None:
     try:
         title = _boot_to_title(game)
         assert "CONTINUE" not in title.options
-        assert title.options[:2] == ("NEW GAME", "LOAD CODE")
+        assert title.options == ("NEW GAME", "LOAD CODE", "CONTROLS")
         # Every option is reachable; none is greyed out any more.
         for step in range(len(title.options)):
             title._move(1)

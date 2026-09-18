@@ -1,7 +1,7 @@
 # Local browser prototype
 
-The desktop launch remains `python main.py`. Development checkpoints are still
-enabled and must be removed before announcing a release.
+The desktop launch remains `python main.py`. The player-facing title contains
+only NEW GAME, LOAD CODE, and CONTROLS.
 
 The GitHub Pages workflow publishes `main` to
 https://rtrutabaga.github.io/CHUCK-game/. The repository owner must select
