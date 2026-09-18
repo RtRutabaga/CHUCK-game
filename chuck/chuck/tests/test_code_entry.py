@@ -91,6 +91,16 @@ def test_typing_past_the_end_does_not_overflow() -> None:
     assert len(field.text) == CODE_LENGTH
 
 
+def test_number_pad_digits_work_even_without_unicode_text() -> None:
+    field = CodeEntry()
+    for key in (pygame.K_KP1, pygame.K_KP2, pygame.K_KP3,
+                pygame.K_KP4, pygame.K_KP5, pygame.K_KP6,
+                pygame.K_KP7, pygame.K_KP8, pygame.K_KP9,
+                pygame.K_KP0):
+        assert field.handle_event(_key(key, ""))
+    assert field.text == "1234567890"
+
+
 def test_backspace_walks_back_from_the_end() -> None:
     field = CodeEntry()
     _type(field, GOLDEN_CODE.replace("-", ""))

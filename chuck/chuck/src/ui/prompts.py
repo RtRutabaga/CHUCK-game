@@ -39,6 +39,7 @@ _PAD_HINTS = {
     config.HINT_INTERACT: "Press {interact} to interact",
     config.HINT_JUMP: "Press {jump} to jump",
     config.HINT_SCRATCH: "Press {scratch} to scratch",
+    config.HINT_PAUSE: "Press {pause} to pause",
 }
 
 def label(input_manager, action: str) -> str:

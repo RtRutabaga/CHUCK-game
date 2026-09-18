@@ -157,6 +157,11 @@ def test_the_avenue_is_looser_than_the_night_blocks_and_visibly_broken() -> None
 
     kinds = Counter(kind for kind, _ in tilemap.object_spawns)
     assert kinds["cigarette"] == 4
+    hatches = [(col, row) for kind, col, row in tilemap.prop_tiles
+               if kind == "city_sewer_entrance"]
+    assert hatches == [(9, 30)]
+    assert abs(hatches[0][0]
+               - markers["arrival:from_city_sewer_4_ladder"][0][0]) == 1
 
 
 def test_one_woman_in_a_red_dress_walks_a_long_pavement() -> None:

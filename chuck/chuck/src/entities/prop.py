@@ -601,6 +601,9 @@ MUTE_PROPS: frozenset[str] = frozenset({
     "phlegethos_ember_crack",
     "fey_path_stones",
     "fen_lily_pads",
+    # Four cabin entities occupy these seats. The furniture itself stays
+    # quiet so E consistently reaches the necessary conversation.
+    "cabin_big_couch", "cabin_couch", "cabin_chair",
 })
 
 # Props that lie flat on the ground: drawn under everybody, never sorted.

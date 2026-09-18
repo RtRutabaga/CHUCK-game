@@ -115,6 +115,13 @@ def test_tavern_furniture_is_valid_and_mute() -> None:
     assert cheese.choice_id is None
 
 
+def test_cabin_entity_seating_has_no_competing_examine_target() -> None:
+    for kind in ("cabin_big_couch", "cabin_couch", "cabin_chair"):
+        prop = Prop(kind, col=8, row=6, assets=FakeAssets(24, 20))
+        assert prop.dialogue_id is None
+        assert prop.choice_id is None
+
+
 def test_pantry_storage_and_doorway_are_valid_props() -> None:
     for kind, w, h in (
         ("pantry_open", 24, 30),

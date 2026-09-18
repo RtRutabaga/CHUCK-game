@@ -123,7 +123,7 @@
     "An orc cookfire. Recently used."
   ],
   "examine_castle_banner": [
-    "A red and gold banner. Somebody's colours. Nobody's around to say whose."
+    "A red and gold banner."
   ],
   "examine_castle_turret": [
     "A turret on the corner of the wall."
@@ -304,15 +304,6 @@
   ],
   "examine_tahuya_mushroom_light": [
     "A mushroom-shaped path light. It changes colour."
-  ],
-  "examine_cabin_big_couch": [
-    "A big couch."
-  ],
-  "examine_cabin_couch": [
-    "A couch."
-  ],
-  "examine_cabin_chair": [
-    "A chair."
   ],
   "examine_cabin_side_table": [
     "A side table."

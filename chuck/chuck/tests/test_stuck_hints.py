@@ -138,17 +138,13 @@ def test_bobert_has_a_neighbour_on_the_return() -> None:
         scene = game.checkpoints.load_checkpoint(
             "waterdeep_finale",
             progress_flags=set(DESERT_ENTRY_FLAGS) | {WATERDEEP_RETURN_FLAG})
-        bobert = next(p for p in scene.props
-                      if p.kind.startswith("bobert_barrel"))
-        bx, by, bw, bh = bobert.interaction_bounds()
-        centre = (bx + bw / 2, by + bh)
-        nearest = min(scene.npcs, key=lambda n: (
-            (n.x + n.width / 2 - centre[0]) ** 2
-            + (n.y + n.height / 2 - centre[1]) ** 2))
-        assert nearest.dialogue_id == "bobert_neighbour"
-        first = nearest.interact(scene.player)
-        assert scene._second_word(nearest, first) == "bobert_neighbour"
-        assert scene._second_word(nearest, first) == \
+        worker = next(n for n in scene.npcs
+                      if n.npc_id == "dock_worker"
+                      and int(n.x // 16) == 27 and int(n.y // 16) == 12)
+        assert worker.dialogue_id == "bobert_neighbour"
+        first = worker.interact(scene.player)
+        assert scene._second_word(worker, first) == "bobert_neighbour"
+        assert scene._second_word(worker, first) == \
             "bobert_neighbour_repeat"
     finally:
         game._shutdown()

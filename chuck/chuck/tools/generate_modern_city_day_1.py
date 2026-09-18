@@ -24,6 +24,7 @@ WIDTH = 88
 HEIGHT = 44
 
 ARRIVAL = (10, 30)
+ARRIVAL_HATCH = (ARRIVAL[0] - 1, ARRIVAL[1])
 WAYPOINT = (16, 31)
 FUTURE_EXIT = (87, 29)
 
@@ -123,6 +124,9 @@ def build_map() -> list[str]:
     furnish_street(grid, seed=SEED, night=False, protected=protected)
     dress_day_storefronts(grid, seed=SEED)
     dress_day_park(grid)
+    # The ladder arrival now has the same open-manhole landmark used by
+    # the night city. Chuck is placed on the clear paving beside it.
+    grid[ARRIVAL_HATCH[1]][ARRIVAL_HATCH[0]] = "ƺ"
     mark_roads(grid)
     seal_open_edges(grid, "modern_city_day_1")
     return ["".join(row) for row in grid]
@@ -177,6 +181,7 @@ def validate(rows: list[str]) -> None:
 
     text = "".join(rows)
     assert text.count("ቒ") == 1, "exactly one woman in a red dress"
+    assert rows[ARRIVAL_HATCH[1]][ARRIVAL_HATCH[0]] == "ƺ"
     assert text.count("ል") == len(CIGARETTES)
     assert "ም" not in text, "no homeless man in the daytime city"
     # Every road that runs off the map ends in visible Astral damage.

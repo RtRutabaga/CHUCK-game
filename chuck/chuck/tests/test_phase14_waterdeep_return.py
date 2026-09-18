@@ -103,12 +103,9 @@ def test_return_state_selects_midday_art_without_duplicating_the_map() -> None:
             "waterdeep_finale", progress_flags={WATERDEEP_RETURN_FLAG}
         )
         assert finale.tilemap.map_path == opening.tilemap.map_path
-        # The long-established sewer completion opens the tavern door at
-        # runtime. Apart from that legitimate progression swap, both states
-        # still parse the same authored environment.
-        opening_after_sewer = [row.replace("D", "v")
-                               for row in opening.tilemap._grid]
-        assert finale.tilemap._grid == opening_after_sewer
+        # The finale closes the tavern again so it cannot route Chuck back
+        # through Chult. Both eras therefore use the authored closed map.
+        assert finale.tilemap._grid == opening.tilemap._grid
         assert finale.tilemap._tileset.sheet == "docks_midday.png"
     finally:
         game._shutdown()
@@ -187,7 +184,7 @@ def test_return_population_is_state_gated_and_noticeably_busier() -> None:
         assert len(fishermen) == 1
         assert len(finale.npcs) == opening_count + 1 + len(RETURN_TOWNSFOLK)
         assert sum(n.dialogue_id == "return_dock_worker"
-                   for n in finale.npcs) == 1
+                   for n in finale.npcs) == 2
         assert sum(n.dialogue_id == "bobert_neighbour"
                    for n in finale.npcs) == 1
         assert sum(n.dialogue_id == "market_browser"
@@ -197,6 +194,38 @@ def test_return_population_is_state_gated_and_noticeably_busier() -> None:
             "They don't sell anything in your size."
         ]
         assert finale.dialogue.get("fisherman") == ["They're not biting."]
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_finale_tavern_and_sewer_are_closed_and_sign_is_updated() -> None:
+    directory = tempfile.TemporaryDirectory()
+    game = Game(save_path=Path(directory.name) / "save.json")
+    try:
+        finale = game.checkpoints.load_checkpoint("waterdeep_finale")
+        props = {prop.kind: prop for prop in finale.props}
+        assert finale.tilemap.is_solid(44, 17)
+        assert props["tavern_door"].dialogue_id == "closed_door"
+        assert props["sewer_grate"].choice_id is None
+        assert props["sewer_grate"].dialogue_id == "sealed_sewer_grate"
+        assert finale.dialogue.get("sealed_sewer_grate") == [
+            "It's been sealed shut with a concreate slab"]
+        assert props["herod_sign"].dialogue_id == "herod_sign_finale"
+        assert finale.dialogue.get("herod_sign_finale") == [
+            "HELP WANTED: Armed escorts needed for caravan south to "
+            "Athkatla. Speak with the innkeeper for details"]
+
+        original_worker = next(npc for npc in finale.npcs
+                               if npc.npc_id == "dock_worker"
+                               and int(npc.x // 16) == 27
+                               and int(npc.y // 16) == 12)
+        assert original_worker.dialogue_id == "bobert_neighbour"
+        southern_worker = next(npc for npc in finale.npcs
+                               if npc.npc_id == "dock_worker"
+                               and int(npc.x // 16) == 23
+                               and int(npc.y // 16) == 18)
+        assert southern_worker.dialogue_id == "return_dock_worker"
     finally:
         game._shutdown()
         directory.cleanup()

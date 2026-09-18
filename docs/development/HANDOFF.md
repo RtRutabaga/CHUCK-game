@@ -5,6 +5,15 @@
 
 ## Baton
 
+- **Latest pass (Codex):** gameplay polish requested by Sean, based on
+  `0478e15`. Opening Waterdeep now falls back to an ESC/START pause hint;
+  the finale keeps its tavern closed, turns the sewer grate into a sealed
+  slab examination, updates the tavern sign, and assigns the return greeting
+  to the original dock worker. City Day 1 has a generator-backed manhole by
+  its sewer arrival. Cabin seating props are mute, the collided banner line
+  is shorter, and numpad digits enter save codes even without Unicode text.
+  Focused gameplay, dialogue, map, transition, and save-menu checks pass;
+  generator output matches the shipped map.
 - **CONTINUE and the save file are gone.** The twelve-character code is
   the whole save system, on desktop and in a browser alike. Sean's
   decision; reasoning in `DECISIONS.md`. Do not reintroduce either, and
@@ -44,6 +53,15 @@
 ---
 
 ## Recent Passes
+
+## Latest Pass — Requested Gameplay Polish (2026-09-18)
+
+- Added the opening Waterdeep pause-hint fallback and fixed numpad code input.
+- Closed both old routes out of final Waterdeep, updated the sign and dock
+  dialogue, and preserved the opening-era tavern/sewer behavior.
+- Added the daytime arrival manhole through its generator, muted cabin seating
+  examinations, and shortened the collided-desert banner examination.
+- Focused regression modules and map regeneration checks pass.
 
 ## Latest Pass — The Code Is The Only Save (2026-09-18)
 

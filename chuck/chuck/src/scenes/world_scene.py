@@ -228,7 +228,8 @@ class WorldScene(Scene):
         self._walk_choice_armed = True  # crevice-style walk-in prompts
         self._ladder_choice_armed = True
         self.tilemap = TileMap(config.MAPS_DIR / f"{self.map_name}.txt")
-        if self.map_name == "waterdeep_docks" and self._sewer_completed:
+        if (self.map_name == "waterdeep_docks" and self._sewer_completed
+                and not self.game.progress.has(WATERDEEP_RETURN_FLAG)):
             self.tilemap.open_tavern_entrance()
         self.tilemap.load_tileset(
             self.game.assets,
@@ -481,6 +482,13 @@ class WorldScene(Scene):
                     # and the lamps out.
                     kind = midday_variant(kind)
                 prop = Prop(kind, col, row, self.game.assets)
+                if self._waterdeep_midday and prop.kind == "sewer_grate":
+                    prop.choice_id = None
+                    prop.dialogue_id = "sealed_sewer_grate"
+                elif self._waterdeep_midday and prop.kind == "herod_sign":
+                    prop.dialogue_id = "herod_sign_finale"
+                elif self._waterdeep_midday and prop.kind == "tavern_door":
+                    prop.dialogue_id = "closed_door"
             self.props.append(prop)
         self.pickups: list[Cigarette] = []
         self.breakables: list[BreakableGrass | BreakableUrn] = []
@@ -591,7 +599,12 @@ class WorldScene(Scene):
                 continue  # rebuilt with all enemies below
             elif kind.startswith("npc:"):
                 npc_id = kind.split(":", 1)[1]
-                npc = NPC(cx, cy, npc_id=npc_id, dialogue_id=npc_id)
+                dialogue_id = (
+                    "bobert_neighbour"
+                    if (self._waterdeep_midday and npc_id == "dock_worker")
+                    else npc_id
+                )
+                npc = NPC(cx, cy, npc_id=npc_id, dialogue_id=dialogue_id)
                 npc.load_sprites(self.game.assets)
                 self.npcs.append(npc)
             elif kind.startswith("cabin_light:"):
@@ -1804,6 +1817,8 @@ class WorldScene(Scene):
                 self._hint.draw(surface, config.HINT_SCRATCH)
             elif self._interactable_in_range() is not None:
                 self._hint.draw(surface, config.HINT_INTERACT)
+            elif self.map_name == "waterdeep_docks":
+                self._hint.draw(surface, config.HINT_PAUSE)
         self._draw_net_overlay(surface, offset)
         self._draw_respawn_overlay(surface)
         self._draw_arrival_fade(surface)

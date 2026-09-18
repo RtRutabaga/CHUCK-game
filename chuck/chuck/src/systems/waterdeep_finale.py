@@ -28,8 +28,7 @@ FISHERMAN_TILE = (16, 29)
 # Two more hands on the working dock and three browsers in front of the market
 # make the return visibly busier without putting a human hitbox in Chuck's way.
 RETURN_TOWNSFOLK = (
-    # The nearest of them to Bobert's barrel has been keeping an eye on him.
-    TownspersonSpawn("dock_worker", "bobert_neighbour", (23, 18), "left"),
+    TownspersonSpawn("dock_worker", "return_dock_worker", (23, 18), "left"),
     TownspersonSpawn("dock_worker", "return_dock_worker", (31, 25), "right"),
     TownspersonSpawn("market_woman", "market_browser", (41, 32), "up"),
     TownspersonSpawn("dock_worker", "market_browser", (46, 33), "up"),

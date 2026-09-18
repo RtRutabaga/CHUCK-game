@@ -542,6 +542,7 @@ TUTORIAL_HINT_TOP = 18      # pixels from the top: below the HUD row
 HINT_INTERACT = "Press E to interact"
 HINT_JUMP = "Press SPACE to jump"
 HINT_SCRATCH = "Press F to scratch"
+HINT_PAUSE = "Press ESC to pause"
 
 # Choice options drawn inside the dialogue panel.
 CHOICE_LEFT = 8             # px indent inside the panel's text area
