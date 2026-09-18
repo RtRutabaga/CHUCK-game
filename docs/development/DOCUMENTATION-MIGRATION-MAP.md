@@ -26,15 +26,8 @@ CHUCK/
 │           ├── Campaign-Notes.txt
 │           ├── Willie's-Campaign.txt
 │           ├── CAMPAIGN-NOTES-BUHETIAN-DESERT.txt
-│           ├── Tomb-of-Annihilation-Campaign-Notes.txt
-│           ├── Augustus.txt
-│           └── pasted.txt
 ```
 
 Copy the existing supplements into `docs/design/` unchanged.
-
-Copy campaign source files into `docs/source/campaigns/` unchanged.
-
-Do not merge all campaign notes into the Game Bible.
 
 If a Game Architecture Document already exists in the live repository, keep it and place it under `docs/development/` or another clearly named architecture location. Do not rewrite its description of the current codebase from planning documents alone. Architecture documentation must match the actual repository.

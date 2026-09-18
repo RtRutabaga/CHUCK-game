@@ -11,10 +11,7 @@ When documents conflict, use this order:
 3. `docs/design/GAME-BIBLE.md` for the core game vision.
 4. Topic-specific design supplements in `docs/design/`.
 5. Architecture documentation describing the current codebase.
-6. Campaign source material in `docs/source/campaigns/`.
-7. Agent inference.
-
-Campaign notes are source material, not automatic game requirements.
+6. Agent inference.
 
 ## Core Development Rules
 

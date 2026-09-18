@@ -110,9 +110,8 @@ object. One or two objects may use very brief text such as `Empty.`,
 
 Phase 4 may use Tomb of Annihilation history as restrained environmental source
 material. Do not place the original party as active NPCs or recreate the recap
-as the main plot. Verify any specific reference against
-`Tomb-of-Annihilation-Campaign-Notes.txt`; do not invent campaign history. Use
-no more than one overt reference unless Sean approves more.
+as the main plot. Do not invent campaign history. Use no more than one overt
+reference unless Sean approves more.
 
 # 8. Chult Music and Ambience
 
