@@ -5,30 +5,51 @@
 
 ## Baton
 
-- **Branch / base commit:** `save-codes`, `8c3193f`.
-- **In progress (Codex):** reconciling and verifying the existing browser
-  prototype per `WEB-BUILD.md` step 0. Runtime/build changes are this agent's
-  earlier unfinished work, now explicitly resumed by Sean.
-- **Verified so far:** Pygbag 0.9.3 packages the game; real browser reaches
-  title (CPython 3.12.12, pygame-ce 2.5.7 / SDL 2.28.4). Audio converts from
-  87.5 MB WAV to 10.4 MB OGG; browser tar.gz is approximately 11.1 MB.
-  Async-loop (3), save-menu (17), save-code (16), code-entry (24), audio (10)
-  checks pass. Full desktop verification underway.
-- **Unresolved:** Enter at NEW GAME produced a runtime error; its traceback
-  was not captured before the browser connection became unavailable on
-  session resume. Do not call this playable or publish it yet. Docks/sewer
-  playtest, FPS, audio listening and browser save-code round trip remain.
-- **Expensive findings:** pygbag only discovered pygame after adding a direct
-  import in main.py; whole-track SoundFile Vorbis writes stack-overflow on
-  Windows, so encoding now streams 8192-frame blocks. Desktop WAVs untouched.
-- **Known issues:** stale Feywild generators (see DECISIONS.md). Browser
-  persistence/fullscreen remain later work in WEB-BUILD.md.
-- **Next bounded task:** finish step 0 verification/commit, then diagnose NEW
-  GAME with a connected browser and perform step 1. No publishing in this pass.
+- **Branch / base commit:** `save-codes`, runtime/build foundation `c54100a`.
+- **Committed and done:** reconciled the unfinished browser pass (WEB-BUILD
+  step 0). Async browser loop, OGG-only staging, pinned build tools, direct
+  pygame preload import and browser-console tracebacks. Desktop loop retained.
+- **Verified:** all 1,291 checks across 189 desktop test modules pass. Initial
+  cigarette-counter test failed because its default save folder was protected;
+  all seven checks in that module passed with LOCALAPPDATA redirected to
+  `chuck/chuck/build/test-userdata`. No game fix was needed. New async tests
+  cover yielding to the host, uncapped tick, dt clamping and shutdown on error.
+- **Browser evidence:** real title launch on Pygbag 0.9.3, CPython 3.12.12,
+  pygame-ce 2.5.7 / SDL 2.28.4. NEW GAME changed loader status to diagnostic
+  punctuation; neither gameplay nor a traceback was captured before the browser
+  connection became unavailable on resume. This is unresolved, not a diagnosed
+  feature gap. Do not claim the browser game is playable or publish yet.
+- **Build measurements:** 41 audio files (24 music, 17 SFX), 87.5 MB WAV ->
+  10.4 MB OGG. Every encoded file preserves frames/rate/channels. Final tar.gz
+  is 11,128,737 bytes; excludes WAVs, saves, tools, tests, venv and bytecode.
+  Runtime downloads are additional. Cold-load time/FPS and listening pending.
+- **Expensive findings:** pygbag needs a direct pygame import in main.py to
+  discover its dependency. Whole-track SoundFile Vorbis writes stack-overflow
+  on Windows; streaming 8192-frame blocks works. Desktop WAV masters untouched.
+- **Dirty work:** none after this handoff commit. Local build environment and
+  outputs are ignored. Build/run instructions: `chuck/chuck/WEB-README.md`.
+- **Known issues:** stale Feywild generators (DECISIONS.md); browser save/settings
+  persistence and fullscreen remain later WEB-BUILD steps. The standard Pygbag
+  loader waits for a canvas click before Game starts, but sound is not yet
+  audibly verified. Browser save-code round trip remains unverified.
+- **Next bounded task:** WEB-BUILD step 1 with a connected browser: reproduce
+  NEW GAME, inspect the JS console traceback if it fails, then play the docks,
+  sewer and one transition and record load time/FPS. Test save-code loading.
+  No Pages workflow or publishing was added in this pass.
 
 ---
 
 ## Recent Passes
+
+## Latest Pass — Local Browser Build Foundation (2026-09-17)
+
+- Reconciled Codex's interrupted prototype per Claude's WEB-BUILD contract;
+  committed runtime/build foundation as `c54100a`.
+- Browser title launch verified; gameplay verification stopped when browser
+  tooling became unavailable. Added console traceback reporting for resumption.
+- Desktop checks: 1,291 across 189 modules; isolated save-path rerun required
+  for one module. Build archive is 11.1 MB, plus separately fetched runtime.
+- No content, controls, save format, desktop audio masters or publishing changes.
 
 ## Latest Pass — Broken Daytime Street Ends (2026-09-17)
 

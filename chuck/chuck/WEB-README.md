@@ -31,8 +31,9 @@ are not shipped. Generated output and `.venv-web` are ignored by Git.
 
 - Real browser title launch verified with Pygbag 0.9.3, CPython 3.12.12,
   pygame-ce 2.5.7 and SDL 2.28.4.
-- NEW GAME produced a runtime error during the initial browser test. The
-  browser connection was lost before its traceback could be inspected.
+- NEW GAME showed diagnostic punctuation in the loader during the initial
+  browser test. The browser connection was lost before gameplay or a
+  traceback could be inspected; the cause is not yet established.
   Browser errors now also go to the JavaScript console for the next test.
 - Opening-map play, transitions, FPS, audible sound and save-code entry in
   the browser still need verification. See the Baton in
