@@ -380,6 +380,79 @@ def test_a_code_carries_a_game_from_one_machine_to_another() -> None:
 
 
 # ----------------------------------------------------------------------
+# Leaving
+# ----------------------------------------------------------------------
+def test_quitting_hands_the_code_over_before_it_asks() -> None:
+    """A code is the only thing that survives leaving, so show it.
+
+    Warning someone in the abstract that progress will be lost is no use
+    when the thing that would save them is twelve characters the game
+    already knows.
+    """
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        try:
+            game.checkpoints.load_checkpoint("temple_1")
+            game.cigarettes.replace(77)
+            pause = PauseScene(game)
+            game.scenes.push(pause)
+
+            pause.selected = MAIN.index("QUIT TO TITLE")
+            pause.choose("QUIT TO TITLE")
+            assert pause.page == "confirm"
+            assert pause._code, "quitting should show a code"
+            assert save_code.decode(pause._code).checkpoint_id == "temple_1"
+            assert save_code.decode(pause._code).cigarettes == 77
+            # NO is where the caret starts: leaving is the deliberate one.
+            assert pause.selected == 0
+        finally:
+            game._shutdown()
+
+
+def test_quitting_writes_nothing() -> None:
+    """The warning is read-only. It offers a code; it does not save."""
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        try:
+            game.checkpoints.load_checkpoint("temple_1")
+            pause = PauseScene(game)
+            game.scenes.push(pause)
+            pause.choose("QUIT TO TITLE")
+            assert pause._code
+            assert game.saves.load() is None
+        finally:
+            game._shutdown()
+
+
+def test_quitting_from_nowhere_saveable_says_so() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        try:
+            game.checkpoints.load_checkpoint("temple_1")
+            game.active_checkpoint_id = "opening_docks"
+            pause = PauseScene(game)
+            game.scenes.push(pause)
+            pause.choose("QUIT TO TITLE")
+            assert pause.page == "confirm"
+            assert pause._code is None
+            surface = pygame.Surface((config.NATIVE_WIDTH,
+                                      config.NATIVE_HEIGHT))
+            pause.draw(surface)          # the no-code wording draws
+        finally:
+            game._shutdown()
+
+
+def test_every_line_the_quit_warning_can_show_fits_its_panel() -> None:
+    from src.scenes.pause_scene import QUIT_WITHOUT_A_CODE
+    from src.ui.bitmap_font import ADVANCE
+
+    usable = 250 - 16
+    for line in QUIT_WITHOUT_A_CODE + ("Write this down before you go:",
+                                       "Anything since here will be lost."):
+        assert len(line) * ADVANCE - 1 <= usable, line
+
+
+# ----------------------------------------------------------------------
 # Drawing
 # ----------------------------------------------------------------------
 def test_both_pages_draw_without_running_off_their_panel() -> None:

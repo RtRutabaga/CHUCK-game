@@ -91,6 +91,11 @@ NOT_HERE = ("BACK",)
 NO_SAVE_HERE = ("There is nowhere to save from here.",
                 "Walk into a room and try again.")
 
+# Leaving from somewhere that cannot be written down -- mid-cutscene,
+# mid-fall. There is no code to hand over, so say so plainly.
+QUIT_WITHOUT_A_CODE = ("No code from here.",
+                       "Everything since your last is lost.")
+
 PANEL = (24, 22, 30)
 BORDER = (120, 116, 130)
 DIM = 150
@@ -236,6 +241,7 @@ class PauseScene(Scene):
             elif option == "FULLSCREEN":
                 self.game.set_fullscreen(not self.game.settings.fullscreen)
             elif option == "QUIT TO TITLE":
+                self._code = self._code_here()
                 self._goto("confirm")
         elif self.page == "volume":
             if option == "BACK":
@@ -258,6 +264,19 @@ class PauseScene(Scene):
     # ------------------------------------------------------------------
     # Saving, and the code that comes of it
     # ------------------------------------------------------------------
+    def _code_here(self) -> str | None:
+        """The code for the game as it stands, or None if not somewhere.
+
+        Read-only: it writes nothing. The quit warning uses it to show a
+        player what they are about to walk away from.
+        """
+        checkpoint_id = self.game.active_checkpoint_id
+        if not is_save_point(checkpoint_id):
+            return None
+        record = self.game.checkpoints.current_record(
+            checkpoint_id, self._sanity())
+        return save_code.for_display(record)
+
     def _save_now(self) -> None:
         """Write the slot and work out the code, then show the page.
 
@@ -509,15 +528,31 @@ class PauseScene(Scene):
             image, (image.get_width() * 2, image.get_height() * 2))
 
     def _draw_confirm(self, canvas) -> None:
-        rect = self._panel(canvas, 236, 84, "QUIT TO TITLE?")
-        for index, line in enumerate(("Anything since your last save",
-                                      "will be lost.")):
+        """The way out, with the code in the player's hands first.
+
+        A code is the only thing that survives leaving, so quitting shows
+        it rather than warning about it in the abstract. Nothing is
+        written here; the player is being given something to copy.
+        """
+        rect = self._panel(canvas, 250, 106, "QUIT TO TITLE?")
+        if self._code:
+            label = self._text("Write this down before you go:", alpha=190)
+            canvas.blit(label, (rect.centerx - label.get_width() // 2,
+                                rect.y + 22))
+            code = self._big(self._code, TITLE_TINT)
+            canvas.blit(code, (rect.centerx - code.get_width() // 2,
+                               rect.y + 34))
+            lines, top = ("Anything since here will be lost.",), 56
+        else:
+            # No code to make room for, and one line more to fit.
+            lines, top = QUIT_WITHOUT_A_CODE, 34
+        for index, line in enumerate(lines):
             text = self._text(line, alpha=200)
             canvas.blit(text, (rect.centerx - text.get_width() // 2,
-                               rect.y + 24 + index * 11))
+                               rect.y + top + index * 11))
         line_h = self._font.get_height() + 4
         for index, option in enumerate(CONFIRM):
             caret = ">" if index == self.selected else " "
             text = self._text(f"{caret} {option}",
                               alpha=255 if index == self.selected else 190)
-            canvas.blit(text, (rect.x + 90, rect.y + 50 + index * line_h))
+            canvas.blit(text, (rect.x + 96, rect.y + 74 + index * line_h))

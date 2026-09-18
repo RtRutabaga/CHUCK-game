@@ -5,38 +5,55 @@
 
 ## Baton
 
-- **Latest pass (Claude Code, 2026-09-18):** picked up Codex's uncommitted
-  diagnostics pass and committed it (`5e9fdbc`), then answered the two
-  GitHub Pages blockers that were holding up deployment planning.
-- **Branch / base:** `save-codes`, base `79a3afa`. Tree clean.
-- **Committed this pass:** `5e9fdbc` Codex's `?diagnostics=1` timing
-  reporter, verified before committing rather than taken on trust — its 3
-  checks, the 6 browser-runtime checks, and the full suite at 190 of 190,
-  since it touches `game.py` and `main.py` which desktop shares.
-- **Answered — Pages is viable.** The build runs with
-  `crossOriginIsolated === false` and `SharedArrayBuffer` undefined, so no
-  COOP/COEP headers are needed. That was the top risk in `WEB-BUILD.md`.
-  `index.html` uses only relative paths, so a `/CHUCK-game/` subpath works.
-- **New known constraint:** the published game fetches its interpreter from
-  `pygame-web.github.io/cdn/` at play time. Pages hosts our game, a third
-  party hosts CPython. If that CDN is down, the game does not start.
-  Recorded in `DECISIONS.md`.
-- **Do not measure performance in Claude's browser pane.** It runs the wasm
-  build at ~1.4 fps with multi-second frames. The one timing sample it
-  produced is an artefact of the pane, not of the build, and is not
-  comparable to Codex's ~60 fps on a real browser. Traversal, transitions
-  and the save-code round trip all need a real foreground browser.
-- **Still unverified:** full traversal, sewer/map transitions, browser
-  save-code round trip, other browsers. Browser saves and settings are
-  still temporary — `WEB-BUILD.md` §4.1 is not started.
-- **Next bounded task:** `WEB-BUILD.md` §4.1, persistent browser saves.
-  It is codeable and unit-testable without a browser; the IndexedDB
-  behaviour itself still needs Sean or a real browser to confirm.
-  No Pages deployment until traversal is verified somewhere real.
+- **Decision from Sean, 2026-09-18: the save code is the only save.**
+  CONTINUE and the local save file are being removed. Full reasoning in
+  `DECISIONS.md`; `SAVE_CODES.md` §7 and `WEB-BUILD.md` §4.1 are marked
+  reversed and cancelled. **Do not build browser save persistence.**
+  Sanity stays out of the code — codes stay twelve characters.
+- **Branch / base:** `save-codes`, base `36de03f`. Tree clean.
+- **Done this pass:** QUIT TO TITLE now shows the code instead of warning
+  in the abstract, because with no CONTINUE that is the only thing that
+  survives leaving. It is read-only and writes nothing. Four new checks;
+  full suite 190 of 190.
+- **Next bounded task — the removal itself.** Deliberately left for its
+  own session: it touches about 37 test files, over the twenty-file line
+  in `TWO-AGENT-GIT-WORKFLOW.md`. In order:
+  1. Drop CONTINUE from `TitleScene.options` and `_choose`.
+  2. Remove `SaveSystem`, `src/systems/save.py`, `save2.json`, and
+     `checkpoints.valid_save` / `can_continue` / `continue_game`.
+     `write_save` keeps `set_runtime_checkpoint` (it banks cigarettes and
+     the respawn) but stops writing a file; `new_game`'s `saves.delete()`
+     goes; `resume_from`'s `remember` flag goes.
+  3. **`settings.json` needs its own path** — `game.py:61` currently
+     derives it from `saves.path.with_name(...)`, so it disappears with
+     the save file. Volume and fullscreen would be silently lost.
+  4. Tests: round trips through `continue_game` become round trips
+     through a code, the way `test_save_menu.py` already does it.
+- **`spoken`** (who has introduced themselves) loses its only persistence
+  with the file. In-memory per session is the accepted outcome.
+- **Unchanged and still true:** Pages is viable, no cross-origin
+  isolation needed; the runtime comes from a third-party CDN; do not
+  measure performance in Claude's browser pane (~1.4 fps there).
+  Traversal and the browser code round trip still need a real browser.
+- **Preview:** `python -m http.server 8000 --bind 127.0.0.1 --directory
+  chuck/chuck/build/browser-app/build/web`, then `http://127.0.0.1:8000/`
+  in a fresh tab. Never `localhost`. Check for an existing server before
+  starting or killing one — Sean may be playing.
 
 ---
 
 ## Recent Passes
+
+## Latest Pass — Codes Become The Only Save (2026-09-18)
+
+- Sean decided to drop CONTINUE and the local save file entirely, leaving
+  the twelve-character code as the whole save system. Recorded in
+  `DECISIONS.md`, with `SAVE_CODES.md` §7 and `WEB-BUILD.md` §4.1 marked.
+- QUIT TO TITLE now shows the code before asking, since with no CONTINUE
+  it is the only thing that survives leaving. Read-only. The no-code case
+  (mid-cutscene) says so plainly. Both layouts checked by rendering them.
+- The removal itself was deliberately not started: ~37 test files touch
+  the file-save path, past the session-size line in the workflow doc.
 
 ## Latest Pass — Pages Blockers Answered (2026-09-18)
 

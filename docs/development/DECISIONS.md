@@ -113,3 +113,29 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
   that do not depend on the loop running at speed are fine. Frame rate,
   traversal and the save-code round trip need a real foreground browser.
 
+## Codes Are The Only Save (Sean, 2026-09-18)
+
+- **CONTINUE and the local save file are being removed.** The save code is
+  the whole save system. This reverses `SAVE_CODES.md` §7, which had local
+  saves staying primary.
+- **Why it costs almost nothing:** there is no autosave. `write_save` is
+  called only by the pause menu's SAVE GAME and one cutscene handoff, so
+  CONTINUE was already never better than the player's last deliberate save.
+  Removing it costs typing twelve characters, exact sanity, and `spoken`
+  (who has already introduced themselves). That is the entire difference.
+- **Why it is worth doing:** it deletes a whole second persistence system
+  and the browser half of it — `WEB-BUILD.md` §4.1, IndexedDB mounts and
+  syncs, the localStorage fallback, cross-browser flakiness — which was the
+  least certain remaining item in the web plan. It also removes the failure
+  where a file and a code disagree about which is newer.
+- **Sanity stays out of the code.** Sean: low stakes, and a hackable code is
+  fine. Codes stay at twelve characters and a resumed game starts at
+  `SANITY_START`. Do not widen the format to carry sanity.
+- **Quitting hands the code over.** With no CONTINUE, leaving without a code
+  loses the session, so QUIT TO TITLE shows the code rather than warning in
+  the abstract. It writes nothing; it is read-only. Done 2026-09-18.
+- **Still to do:** remove CONTINUE from the title, remove `SaveSystem` and
+  `save2.json`, give `settings.json` its own path (it currently derives from
+  the save file's), and rework the tests that round-trip through
+  `continue_game`. Roughly 37 test files touch it.
+

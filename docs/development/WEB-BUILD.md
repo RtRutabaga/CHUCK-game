@@ -91,7 +91,14 @@ filesystem is a browser game with no save.
 
 ## 4. What still has to be solved
 
-### 4.1 The save file has nowhere to go (not started)
+### 4.1 The save file has nowhere to go — **cancelled, 2026-09-18**
+
+Not being done. Sean's decision: the save code is the only save, and
+CONTINUE and the local file are being removed, so there is nothing to
+persist in a browser. See `DECISIONS.md`. The original plan follows for
+the record.
+
+#### Original plan (not being built)
 
 `src/systems/save.py:default_save_path()` resolves `LOCALAPPDATA` or
 `XDG_DATA_HOME`. Neither exists in wasm, and the emscripten filesystem is

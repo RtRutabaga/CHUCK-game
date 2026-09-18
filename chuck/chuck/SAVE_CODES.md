@@ -312,6 +312,14 @@ large enough to read and type.
 
 ## 7. Local saves stay, and stay primary
 
+> **Reversed, 2026-09-18.** Sean's call: the code is the only save, and
+> CONTINUE and the local file are being removed. There is no autosave, so
+> CONTINUE was never better than the last deliberate SAVE GAME — it cost
+> twelve characters of typing, exact sanity, and `spoken`. Removing it
+> deletes the browser-persistence work in `WEB-BUILD.md` §4.1 as well.
+> See `docs/development/DECISIONS.md`. The section below is kept as the
+> record of what was originally planned.
+
 The code is for *moving* a save — between devices, or back after a
 browser clears its storage. It is not the everyday path.
 
