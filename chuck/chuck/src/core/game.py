@@ -111,7 +111,7 @@ class Game:
         """Request a clean exit at the end of the current frame."""
         self.running = False
 
-    async def run_async(self) -> None:
+    async def run_async(self, report_frame=None) -> None:
         """Browser loop: the host schedules frames instead of a blocking cap."""
         self.running = True
         try:
@@ -120,6 +120,8 @@ class Game:
                 self._handle_events()
                 self._update(dt)
                 self._draw()
+                if report_frame is not None:
+                    report_frame(self)
                 await asyncio.sleep(0)
         finally:
             self._shutdown()
