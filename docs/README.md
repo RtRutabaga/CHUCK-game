@@ -30,6 +30,10 @@ Then read the topic-specific supplement relevant to the task.
 - `design/references/tahuya-cabin/`: Sean-authored layout and photographic
   references for Phase 12. The layout drawing governs spatial relationships;
   photographs govern structure, materials, palette, furniture, and scale.
+- `development/WEB-BUILD.md`: contract for running the game in a browser
+  and publishing it from GitHub Pages. A technical document, not a phase:
+  it changes no game content and does not open Phase 15. Partly built;
+  read its section 2 before touching the web work.
 - `development/HANDOFF.md`: short-lived relay notes between Claude Code and Codex.
 - `development/DECISIONS.md`: durable decisions future agents could otherwise reverse.
 - `source/campaigns/`: historical D&D source material.
