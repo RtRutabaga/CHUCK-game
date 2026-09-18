@@ -5,48 +5,61 @@
 
 ## Baton
 
-- **Latest pass (Codex):** Sean reports glitchy audio while walking in web;
-  unsure whether music or footsteps. Base `5f74abe`. Increased browser mixer
-  buffer to 2048 (~93 ms at 22050 Hz); desktop remains 512 (~23 ms).
-  This mitigates suspected callback starvation, not an audibly confirmed fix.
-  Six browser-runtime and ten audio checks pass, plus mocked startup checks
-  confirming each platform's buffer. Web preview rebuilt successfully.
-  Next: Sean's listening test; if glitches persist, measure movement/frame
-  stalls before expanding the change. Slightly increased SFX latency possible.
-
-- **Branch / base commit:** `save-codes`, this browser-fix pass starts at
-  `ac3199d`; previous build foundation is `c54100a`.
-- **Completed:** fixed Sean's narrow/stretching browser canvas and opening
-  cutscene freeze. Browser framebuffer is fixed at 1280x720, CSS fits 16:9
-  with letterboxing. Desktop fullscreen UI omitted on web; web F11 never
-  recreates SDL's surface. Desktop display behavior remains unchanged.
-- **Freeze:** title music begins a 400 ms fade; opening music loads at 200 ms.
-  Loading a replacement while that fade was pending hung the wasm renderer.
-  On web only, explicitly stopping before loading resolves it. Actual browser
-  ran the complete opening, arrived on docks, and accepted movement/jump/pause.
-- **Verified:** 71 focused checks across browser runtime, audio, opening,
-  title, pause, save menu, transitions and controller pass. Previous full
-  baseline: 1,291 checks. Web geometry: framebuffer 1280x720; displayed at
-  1280x720 in wide view and 800x450 in an 800x900 viewport. Override reset.
-- **Build:** local files rebuilt under `chuck/chuck/build/browser-app/build/web`.
-  Open `http://127.0.0.1:8000/`; close an older frozen tab and open afresh.
-  Build command and limitations are in `chuck/chuck/WEB-README.md`.
-- **Expensive findings:** do not use `localhost` with this runtime: Pygbag
-  treated it as a runtime-development host, fetching a nonexistent local
-  `/cdn/` pygame wheel. `127.0.0.1` fetched the public runtime successfully.
-  Normal reload sometimes leaves the old wasm game; use a fresh tab.
-- **Dirty work:** none after this pass is committed. No deployment or content
-  changes. Browser audio uses the same cues and original desktop WAV masters.
-- **Known limitations:** audible quality, cold-load time/FPS, full traversal,
-  browser save-code round trip and other browsers are not yet verified.
-  Browser file saves/settings remain temporary; use portable codes.
-  Stale Feywild generators remain unrelated (see DECISIONS.md).
-- **Next bounded task:** continue WEB-BUILD browser traversal/measurement,
-  then persistent saves. No Pages deployment until remaining checks pass.
+- **Latest pass (Claude Code, 2026-09-18):** picked up Codex's uncommitted
+  diagnostics pass and committed it (`5e9fdbc`), then answered the two
+  GitHub Pages blockers that were holding up deployment planning.
+- **Branch / base:** `save-codes`, base `79a3afa`. Tree clean.
+- **Committed this pass:** `5e9fdbc` Codex's `?diagnostics=1` timing
+  reporter, verified before committing rather than taken on trust — its 3
+  checks, the 6 browser-runtime checks, and the full suite at 190 of 190,
+  since it touches `game.py` and `main.py` which desktop shares.
+- **Answered — Pages is viable.** The build runs with
+  `crossOriginIsolated === false` and `SharedArrayBuffer` undefined, so no
+  COOP/COEP headers are needed. That was the top risk in `WEB-BUILD.md`.
+  `index.html` uses only relative paths, so a `/CHUCK-game/` subpath works.
+- **New known constraint:** the published game fetches its interpreter from
+  `pygame-web.github.io/cdn/` at play time. Pages hosts our game, a third
+  party hosts CPython. If that CDN is down, the game does not start.
+  Recorded in `DECISIONS.md`.
+- **Do not measure performance in Claude's browser pane.** It runs the wasm
+  build at ~1.4 fps with multi-second frames. The one timing sample it
+  produced is an artefact of the pane, not of the build, and is not
+  comparable to Codex's ~60 fps on a real browser. Traversal, transitions
+  and the save-code round trip all need a real foreground browser.
+- **Still unverified:** full traversal, sewer/map transitions, browser
+  save-code round trip, other browsers. Browser saves and settings are
+  still temporary — `WEB-BUILD.md` §4.1 is not started.
+- **Next bounded task:** `WEB-BUILD.md` §4.1, persistent browser saves.
+  It is codeable and unit-testable without a browser; the IndexedDB
+  behaviour itself still needs Sean or a real browser to confirm.
+  No Pages deployment until traversal is verified somewhere real.
 
 ---
 
 ## Recent Passes
+
+## Latest Pass — Pages Blockers Answered (2026-09-18)
+
+- Committed Codex's browser timing reporter, which its session had written
+  and described in the handoff but not committed. Verified first: 3
+  diagnostics checks, 6 browser-runtime checks, full suite 190 of 190.
+- Served the existing local build and inspected the running context. Pygbag
+  0.9.3 needs no cross-origin isolation for this game, so GitHub Pages can
+  host it; `index.html` carries no absolute asset paths, so the
+  `/CHUCK-game/` subpath is fine.
+- Recorded that the runtime comes from a third-party CDN at play time, and
+  that Claude's browser pane is unusable for timing or play-testing.
+- No game code changed in this pass beyond committing Codex's.
+
+## Latest Pass — Browser Traversal Diagnostics (2026-09-18)
+
+- Added opt-in `?diagnostics=1` console timing samples with FPS, p95 frame
+  time, and worst frame time. Hidden-tab time and scene/map changes reset the
+  sample so reports do not hide stalls.
+- Verified title, opening cutscene, and `waterdeep_docks` in the browser at
+  approximately 60 FPS; observed p95 frame times of 17.3–17.6 ms and maxima
+  below 21.5 ms in the measured samples.
+- Added focused tests for timing behavior and rebuilt the browser preview.
 
 ## Latest Pass — Browser Audio Buffer (2026-09-18)
 

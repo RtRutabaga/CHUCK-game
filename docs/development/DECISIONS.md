@@ -94,3 +94,22 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - This was established by running every generator and diffing; it cost a
   session to find. Do not rediscover it.
 
+## Browser Build Constraints (2026-09-18)
+
+- Pygbag does **not** need cross-origin isolation for this game. Verified
+  against the local build: `crossOriginIsolated === false`,
+  `SharedArrayBuffer` undefined, game running. GitHub Pages is therefore a
+  viable host and needs no COOP/COEP headers — which it cannot set.
+- The published game fetches its Python/pygame runtime from
+  `https://pygame-web.github.io/cdn/` at play time. Pages hosts the game;
+  a third party hosts the interpreter. If that CDN is unavailable the
+  published game does not start. This is a property of pygbag, not of our
+  build, and it should be understood before the game is announced anywhere.
+- Use `127.0.0.1`, never `localhost`, for the local preview. Pygbag 0.9.3
+  treats `localhost` as a runtime-development host and tries to fetch a
+  pygame wheel from a local `/cdn/` that does not exist. (Codex, 2026-09-17.)
+- Claude Code's in-app browser pane runs the wasm build at roughly 1.4 fps.
+  It cannot be used to measure frame rate or to play-test. One-shot checks
+  that do not depend on the loop running at speed are fine. Frame rate,
+  traversal and the save-code round trip need a real foreground browser.
+

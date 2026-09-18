@@ -184,11 +184,19 @@ There is no `.github/` directory in this repository.
 - The site is served from a subpath (`/CHUCK-game/`), so every asset
   reference must be relative. Check pygbag's generated HTML for absolute
   `/` paths.
-- **Verify whether cross-origin isolation is required.** If the build
-  wants `SharedArrayBuffer` it needs COOP/COEP headers, and **GitHub
-  Pages cannot set headers.** If it turns out to be required, Pages is
-  the wrong host and this needs re-planning — stop and report rather than
-  reaching for a service-worker workaround.
+- **Cross-origin isolation is not required** (checked 2026-09-18 against
+  the local build: `crossOriginIsolated === false`, `SharedArrayBuffer`
+  undefined, game running). Pages needs no COOP/COEP headers, which it
+  could not set anyway.
+- **Relative paths are already correct** for a `/CHUCK-game/` subpath:
+  `index.html` references `favicon.png` and `browser-app.apk` relatively
+  and carries no leading-slash asset paths. Re-check after any pygbag
+  upgrade.
+- **The runtime is fetched from a third-party CDN** at play time —
+  `https://pygame-web.github.io/cdn/0.9.3/…` for `pythons.js`,
+  `browserfs.min.js` and CPython 3.12. Pages hosts our game; it does not
+  host the interpreter. If that CDN is down or gone, the published game
+  does not start. Sean should know this before it is announced anywhere.
 - Pages limits: 1 GB published site (soft), 100 MB per file (hard), 100
   GB/month bandwidth (soft). §4.4 is what keeps us clear.
 
@@ -215,9 +223,26 @@ green. Do not start the next until the previous is verified.
 
 ---
 
+## 6b. Where verification can happen
+
+Claude Code's in-app browser pane **cannot** be used to judge this build.
+It runs the wasm game at roughly 1.4 fps with multi-second frames, so
+both the timing reporter's numbers and any interactive play are
+meaningless there. It is fine for one-shot checks that do not depend on
+the loop running at speed — does it load, what does `index.html`
+reference, is the context cross-origin isolated.
+
+Frame rate, traversal, transitions and the save-code round trip need a
+real foreground browser. That is Sean's machine, or an agent with one.
+Do not report a performance figure measured in the pane.
+
+---
+
 ## 7. Risks, ranked by how likely they are to sink the effort
 
-1. **Cross-origin isolation** (§5). Would rule out Pages entirely.
+1. ~~**Cross-origin isolation.**~~ **Answered 2026-09-18: not required.**
+   The local build ran with `crossOriginIsolated === false` and
+   `SharedArrayBuffer` undefined. Pages is viable.
 2. **pygame-ce feature gap** in pygbag's bundled build. Find out early:
    record pygbag's CPython and pygame-ce versions in `HANDOFF.md` on the
    first successful build.
