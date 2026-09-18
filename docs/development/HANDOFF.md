@@ -21,6 +21,9 @@
 - **Release verification:** the rebuilt Pygbag artifact was opened in a fresh
   browser tab and the three-option title was confirmed visually. The focused
   title/checkpoint/save/browser set passes 56/56.
+- **Published:** GitHub Pages workflow run #2 built and deployed successfully
+  from `main` in 44 seconds. A cold load of
+  `https://rtrutabaga.github.io/CHUCK-game/` reached the final title screen.
 - **CONTINUE and the save file are gone.** The twelve-character code is
   the whole save system, on desktop and in a browser alike. Sean's
   decision; reasoning in `DECISIONS.md`. Do not reintroduce either, and
@@ -43,10 +46,9 @@
   asserted an exact sanity after resuming it now asserts
   `config.SANITY_START`, because the old assertion described something
   the game can no longer do.
-- **Next bounded task:** merge this branch to `main`, select **Settings →
-  Pages → Source → GitHub Actions**, and run the workflow. Then cold-load the
-  public URL and play title → docks → sewer → one transition before announcing
-  it.
+- **Next bounded task:** complete the public release playtest from title →
+  docks → sewer → one transition. Save-code loading and the title are already
+  verified on the published build.
 - **Preview:** `python -m http.server 8000 --bind 127.0.0.1 --directory
   chuck/chuck/build/browser-app/build/web`, then `http://127.0.0.1:8000/`
   in a fresh tab. Never `localhost`. Check for a server already running
