@@ -8,7 +8,11 @@ This file should stay tiny forever. All real logic lives in src/.
 """
 
 import sys
+import asyncio
 from pathlib import Path
+
+# Pygbag scans the entry point to preload the pygame WebAssembly package.
+import pygame
 
 from src.core.game import Game
 
@@ -38,5 +42,24 @@ def main() -> None:
         raise
 
 
+async def browser_main() -> None:
+    """Let the browser service input, audio and rendering between frames."""
+    import platform
+
+    platform.window.canvas.style.imageRendering = "pixelated"
+    try:
+        game = Game()
+        await game.run_async()
+    except Exception:
+        # The browser's filesystem is temporary and Pygbag's Python console
+        # is normally hidden. Keep the traceback in the browser console too.
+        import traceback
+        platform.window.console.error(traceback.format_exc())
+        raise
+
+
 if __name__ == "__main__":
-    main()
+    if sys.platform == "emscripten":
+        asyncio.run(browser_main())
+    else:
+        main()

@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING
 import pygame
 
 from src.core import config
+from src.core.runtime import audio_path
 
 if TYPE_CHECKING:
     from src.core.assets import AssetManager
@@ -53,7 +54,7 @@ class AudioSystem:
             return
         if not self.enabled:
             return
-        path = config.MUSIC_DIR / filename
+        path = audio_path(config.MUSIC_DIR / filename)
         if not path.is_file():
             raise FileNotFoundError(
                 f"Missing music {path}. Run: python tools/generate_music.py"

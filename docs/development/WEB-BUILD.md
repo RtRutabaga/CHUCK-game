@@ -1,7 +1,9 @@
 # Web Build — CHUCK in a browser, hosted on GitHub Pages
 
-Status: **partly built, and the built part is uncommitted.** Read §2
-before touching anything.
+Status: **local build foundation reconciled; live gameplay verification is
+unfinished.** Read the Baton in `HANDOFF.md` for current results. The build
+instructions are in `../../chuck/chuck/WEB-README.md`. Section 2 below records
+the original incoming state, not a claim that those files remain uncommitted.
 
 This is a technical contract for running the existing game in a browser
 and publishing it from this repository. It is written to be executed by
@@ -39,9 +41,9 @@ document wins and the web work bends around it.
 
 ---
 
-## 2. What is already built — and is sitting uncommitted
+## 2. Original incoming state — the unfinished prototype
 
-As of writing, the working tree carries an unfinished web pass that is
+When this contract was written, the working tree carried a web pass that was
 **not in any commit**. Before starting, run `git status` and reconcile.
 Do not duplicate this work, and do not commit it as part of something
 else without reading it.

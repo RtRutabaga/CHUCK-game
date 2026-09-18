@@ -5,26 +5,26 @@
 
 ## Baton
 
-Overwrite this block. It is the one thing that survives a session ending
-without warning, so write it when you start and update it at each commit.
-
-- **Branch / base commit:** `save-codes`, five commits ahead of
-  `origin/save-codes` (`ac5fa4d`). Those five are local only.
-- **In progress:** an unfinished browser-build pass, **uncommitted**:
-  `run_async()` in `src/core/game.py`, the emscripten branch in
-  `main.py`, new `src/core/runtime.py`, `tools/build_web.py`,
-  `requirements-web.txt`, `tests/test_browser_runtime.py`. Whoever picks
-  this up: finish it, commit it, or set it aside, and say which.
-- **Committed and done:** the save-code rework (twelve-character codes,
-  door-based save and respawn, Ashtrays removed) through `ac5fa4d`; city
-  daytime dressing through `b5b29ed`; the web-build contract `0c88b4e`.
-- **Verified:** full suite green as of `ac5fa4d`. The uncommitted web
-  pass has not been run against the suite here.
-- **Known issues:** map generators are stale against several shipped
-  Feywild maps — re-running one destroys hand-dressed work. See
-  `DECISIONS.md`.
-- **Next bounded task:** `WEB-BUILD.md` §6 step 0, reconciling the
-  uncommitted pass above.
+- **Branch / base commit:** `save-codes`, `8c3193f`.
+- **In progress (Codex):** reconciling and verifying the existing browser
+  prototype per `WEB-BUILD.md` step 0. Runtime/build changes are this agent's
+  earlier unfinished work, now explicitly resumed by Sean.
+- **Verified so far:** Pygbag 0.9.3 packages the game; real browser reaches
+  title (CPython 3.12.12, pygame-ce 2.5.7 / SDL 2.28.4). Audio converts from
+  87.5 MB WAV to 10.4 MB OGG; browser tar.gz is approximately 11.1 MB.
+  Async-loop (3), save-menu (17), save-code (16), code-entry (24), audio (10)
+  checks pass. Full desktop verification underway.
+- **Unresolved:** Enter at NEW GAME produced a runtime error; its traceback
+  was not captured before the browser connection became unavailable on
+  session resume. Do not call this playable or publish it yet. Docks/sewer
+  playtest, FPS, audio listening and browser save-code round trip remain.
+- **Expensive findings:** pygbag only discovered pygame after adding a direct
+  import in main.py; whole-track SoundFile Vorbis writes stack-overflow on
+  Windows, so encoding now streams 8192-frame blocks. Desktop WAVs untouched.
+- **Known issues:** stale Feywild generators (see DECISIONS.md). Browser
+  persistence/fullscreen remain later work in WEB-BUILD.md.
+- **Next bounded task:** finish step 0 verification/commit, then diagnose NEW
+  GAME with a connected browser and perform step 1. No publishing in this pass.
 
 ---
 

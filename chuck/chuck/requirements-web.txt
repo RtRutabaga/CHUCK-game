@@ -1,0 +1,3 @@
+# Build tools only; no additional game runtime dependencies.
+pygbag==0.9.3
+soundfile==0.14.0

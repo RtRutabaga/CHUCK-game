@@ -40,6 +40,8 @@ Then read the topic-specific supplement relevant to the task.
 - `development/HANDOFF-ARCHIVE.md`: older passes, moved out of the read
   path. Not part of starting a task.
 - `development/DECISIONS.md`: durable decisions future agents could otherwise reverse.
+- `development/WEB-BUILD.md`: browser port contract and remaining verification;
+  `../chuck/chuck/WEB-README.md`: local prototype build instructions.
 - `source/campaigns/`: historical D&D source material.
 
 Campaign files verify history, characters, objects, locations, and references. They do not override the Game Bible or active phase.

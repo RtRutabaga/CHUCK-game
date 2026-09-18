@@ -15,6 +15,7 @@ from __future__ import annotations
 import pygame
 
 from src.core import config
+from src.core.runtime import audio_path
 from src.ui.bitmap_font import ADVANCE, GLYPH_H, GLYPH_ORDER, GLYPH_W, BitmapFont
 
 
@@ -102,7 +103,7 @@ class AssetManager:
     def sound(self, relative_path: str) -> "pygame.mixer.Sound":
         """Return a cached Sound for a file under assets/audio/sfx/."""
         if relative_path not in self._sounds:
-            path = config.SFX_DIR / relative_path
+            path = audio_path(config.SFX_DIR / relative_path)
             if not path.is_file():
                 raise FileNotFoundError(
                     f"Missing sound {path}. Run: python tools/generate_audio.py"

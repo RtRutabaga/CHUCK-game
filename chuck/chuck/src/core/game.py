@@ -12,6 +12,7 @@ system, or entity instead.
 """
 
 import os
+import asyncio
 from pathlib import Path
 
 import pygame
@@ -105,6 +106,19 @@ class Game:
     def quit(self) -> None:
         """Request a clean exit at the end of the current frame."""
         self.running = False
+
+    async def run_async(self) -> None:
+        """Browser loop: the host schedules frames instead of a blocking cap."""
+        self.running = True
+        try:
+            while self.running:
+                dt = min(self.clock.tick() / 1000.0, config.MAX_DT)
+                self._handle_events()
+                self._update(dt)
+                self._draw()
+                await asyncio.sleep(0)
+        finally:
+            self._shutdown()
 
     # ------------------------------------------------------------------
     # Window and settings
