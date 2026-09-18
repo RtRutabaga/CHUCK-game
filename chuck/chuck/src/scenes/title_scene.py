@@ -148,7 +148,13 @@ class TitleScene(Scene):
             self._move(-1)
         elif self.game.input.was_pressed("move_down"):
             self._move(1)
-        elif self.game.input.was_pressed("interact"):
+        # Some browser gamepad layers expose Xbox A as the positional
+        # controller action while others surface it as the secondary button
+        # (the same action used for jump).  Accept both here so Edge on Xbox
+        # can confirm a highlighted title option after navigating with the
+        # d-pad.
+        elif (self.game.input.was_pressed("interact")
+              or self.game.input.was_pressed("jump")):
             self._choose()
 
     def _move(self, direction: int) -> None:

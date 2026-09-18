@@ -5,58 +5,60 @@
 
 ## Baton
 
-- **Latest pass (Codex):** release cleanup on top of `9f857ab`. No campaign
-  notes or matching blobs exist anywhere in reachable Git history; stale
-  documentation references were removed and `docs/source/campaigns/` is now
-  ignored. The player title now contains exactly NEW GAME, LOAD CODE, and
-  CONTROLS, with no development checkpoint entry.
-- **Browser verification:** rebuilt artifact opens at 16:9 and a title-screen
-  load of `KMW9-J6ZP-2T5D` reaches the expected temple checkpoint. Generated
-  archive: 11,401,293 bytes; static output: 22,562,567 bytes including the
-  archive and loose template files. Full opening-to-sewer traversal remains
-  the release playtest boundary.
-- **Suite:** 1,300 passed in one combined pytest process after correcting the
-  cafe/hatch interaction overlap and an older test that deleted Chult's `$`
-  transition marker from shared state. Browser runtime checks are 7/7.
-- **Release verification:** the rebuilt Pygbag artifact was opened in a fresh
-  browser tab and the three-option title was confirmed visually. The focused
-  title/checkpoint/save/browser set passes 56/56.
-- **Published:** GitHub Pages workflow run #2 built and deployed successfully
-  from `main` in 44 seconds. A cold load of
-  `https://rtrutabaga.github.io/CHUCK-game/` reached the final title screen.
-- **CONTINUE and the save file are gone.** The twelve-character code is
-  the whole save system, on desktop and in a browser alike. Sean's
-  decision; reasoning in `DECISIONS.md`. Do not reintroduce either, and
-  **do not build browser save persistence** — `WEB-BUILD.md` §4.1 is
-  cancelled.
-- **Branch / base:** `save-codes`, base `a000690`.
-- **What changed:** `SaveSystem`, `save2.json` and `default_save_path`
-  are removed; `src/systems/save.py` keeps only `SaveRecord`, which the
-  codec is written from. `checkpoints.write_save` is now `save_here` —
-  it banks the save point and hands back the record to make a code of,
-  and writes nothing. `settings.json` has its own path in
-  `settings.default_settings_path()`, the same location as before, so a
-  player's existing volume and fullscreen survive.
-- **`spoken` is session memory now.** People Chuck has met introduce
-  themselves again after a resume. It needed a positional key and never
-  fit in twelve characters. Cosmetic, and accepted.
-- **Sanity likewise:** a resumed game starts at `SANITY_START`. Codes
-  stay twelve characters; do not widen the format to carry it.
-- **Tests:** the file round trips became code round trips. Where a test
-  asserted an exact sanity after resuming it now asserts
-  `config.SANITY_START`, because the old assertion described something
-  the game can no longer do.
-- **Next bounded task:** complete the public release playtest from title →
-  docks → sewer → one transition. Save-code loading and the title are already
-  verified on the published build.
-- **Preview:** `python -m http.server 8000 --bind 127.0.0.1 --directory
-  chuck/chuck/build/browser-app/build/web`, then `http://127.0.0.1:8000/`
-  in a fresh tab. Never `localhost`. Check for a server already running
-  before starting or killing one — Sean may be playing.
+- **Latest pass (Claude Code, 2026-09-18):** committed Codex's Xbox title
+  fix and added a gamepad diagnostic, because the fix is a guess and we
+  have no way to read what Xbox Edge actually sends.
+- **Branch / base:** `main`, base `e7e5f54`. Pushing `main` rebuilds and
+  deploys Pages automatically (`.github/workflows/pages.yml`).
+- **The Xbox report:** Sean, on Edge on Xbox, can move the title
+  selection with the d-pad but cannot confirm NEW GAME. Codex's fix
+  accepts `jump` as well as `interact` on the title. It is committed,
+  but it is a hypothesis, not a diagnosis.
+- **If the hypothesis is right, the fix is too narrow.** A confirm that
+  never arrives would also break advancing dialogue, choosing in the
+  pause menu, loading a code, and talking to anyone. Accepting `jump` in
+  the pause menu is *not* a safe copy of this fix: the east button is
+  bound to both `jump` and `back` there, so it would choose and go back
+  at once. Get the reading first.
+- **The reading:** `?diagnostics=1` now also logs the pad. It prints the
+  pad's name and button count once, then for every press
+  `button N down | reached: <actions>`. Press A on the Xbox and the
+  console says which index arrives and whether it reached anything.
+  That turns the next fix from a guess into a mapping.
+- **Verified:** full suite 191 of 191 with this pass and without the
+  dirty work below. Four focused pad checks.
+
+- **DIRTY TREE — Codex's unfinished pass, do not commit as is.**
+  `assets/maps/waterdeep_docks.txt`, `src/scenes/world_scene.py`,
+  `src/world/tilemap.py`, `tests/test_tavern.py` carry a tavern-door
+  widening and a dock-guard boundary warning. **They fail five tests:**
+  `test_bobert_ending`, `test_pause_menu` (second words),
+  `test_waterdeep_harbour`, `test_waterdeep_second_words`,
+  `test_tilemap` (tavern threshold). I set them aside to get the Xbox
+  fix out and restored them untouched. Finish or revert them; a copy is
+  in this session's scratchpad if the tree ones are lost.
+
+- **Next bounded task:** get the pad reading off the Xbox, then map the
+  confirm button properly across menus, dialogue and the world.
+- **Still open:** `origin` was repointed to `RtRutabaga`; the live game
+  is `https://rtrutabaga.github.io/CHUCK-game/`.
 
 ---
 
 ## Recent Passes
+
+## Latest Pass — Xbox Confirm, and a Way to Stop Guessing (2026-09-18)
+
+- Committed Codex's title fix: the title accepts `jump` as well as
+  `interact`, so Edge on Xbox can confirm an option after moving with
+  the d-pad.
+- Added a gamepad reader to `?diagnostics=1`. It names the pad once and
+  then reports every press as `button N down | reached: <actions>`,
+  polled rather than hooked so it changes nothing about input handling.
+  Four focused checks, including the Xbox case: a press that reaches
+  nothing at all.
+- Set aside an unfinished pass of Codex's that fails five tests, so the
+  Xbox fix could ship on its own. It is back in the working tree.
 
 ## Latest Pass — Requested Gameplay Polish (2026-09-18)
 
