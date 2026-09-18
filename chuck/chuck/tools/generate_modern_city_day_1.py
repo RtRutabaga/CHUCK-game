@@ -123,6 +123,12 @@ def build_map() -> list[str]:
     dress_street(grid, seed=SEED, protected=protected)
     furnish_street(grid, seed=SEED, night=False, protected=protected)
     dress_day_storefronts(grid, seed=SEED)
+    # Keep the cafe door clear of the broad manhole interaction zone. Both
+    # remain on the arrival sidewalk, but each can now be examined reliably.
+    cafe = grid[27][9]
+    assert cafe == "\ue181" and grid[27][14] == "▤"
+    grid[27][9] = "▤"
+    grid[27][14] = cafe
     dress_day_park(grid)
     # The ladder arrival now has the same open-manhole landmark used by
     # the night city. Chuck is placed on the clear paving beside it.

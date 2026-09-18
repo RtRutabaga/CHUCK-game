@@ -333,6 +333,7 @@ def test_marker_on_solid_under_tile_is_rejected() -> None:
     # A hypothetical marker over solid terrain must fail loudly. All
     # current markers use walkable under-tiles, so patch one in.
     import src.world.tilemap as tm
+    original = tm.MARKER_DEFS["$"]
     tm.MARKER_DEFS["$"] = tm.MarkerDef(kind="cigarette", under="#")
     try:
         TileMap(_write_map("..\n.$\n"))
@@ -341,7 +342,7 @@ def test_marker_on_solid_under_tile_is_rejected() -> None:
     else:
         raise AssertionError("expected ValueError for marker on solid tile")
     finally:
-        del tm.MARKER_DEFS["$"]
+        tm.MARKER_DEFS["$"] = original
 
 
 def test_real_docks_map_loads_and_spawn_is_walkable() -> None:

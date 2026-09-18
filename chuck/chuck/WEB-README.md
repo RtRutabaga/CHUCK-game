@@ -1,7 +1,12 @@
 # Local browser prototype
 
-This is a development build, not a published release. The desktop launch
-remains `python main.py`. Development checkpoints are still enabled.
+The desktop launch remains `python main.py`. Development checkpoints are still
+enabled and must be removed before announcing a release.
+
+The GitHub Pages workflow publishes `main` to
+https://rtrutabaga.github.io/CHUCK-game/. The repository owner must select
+**GitHub Actions** once under **Settings → Pages → Source** before the first
+deployment. The workflow can also be run manually from the Actions tab.
 
 Use Python 3.12 from this directory:
 
@@ -47,12 +52,12 @@ are not shipped. Generated output and `.venv-web` are ignored by Git.
 - After a rebuild, close the previous game tab and open the link again if
   normal reload does not replace the running game. A frozen old tab cannot
   repair itself when the files on disk change.
-- Browser local saves/settings are currently temporary. Keep the displayed
-  save code; do not rely on CONTINUE surviving a page reload.
-- Broader traversal, measured frame rate, browser save-code round trip,
-  listening verification and other browsers remain to be checked. Persistent
-  storage and Pages deployment remain separate work under
-  `../../docs/development/WEB-BUILD.md`.
+- The twelve-character save code is the complete save system. Keep it outside
+  the browser if you want to resume later.
+- A title-screen load of the known code `KMW9-J6ZP-2T5D` reaches its expected
+  temple checkpoint in the browser. Broader traversal, measured frame rate,
+  listening verification and other browsers remain to be checked. Pages
+  deployment is defined in `.github/workflows/pages.yml`.
 
 ## Build measurements
 

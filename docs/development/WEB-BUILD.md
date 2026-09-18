@@ -179,18 +179,21 @@ music.
 
 ---
 
-## 5. Publishing — entirely unstarted
+## 5. Publishing — workflow prepared, activation pending
 
-There is no `.github/` directory in this repository.
+`.github/workflows/pages.yml` builds the browser artifact on `main`, uploads it,
+and deploys it to the `github-pages` environment. The generated artifact now
+includes `.nojekyll`.
 
 - Repository Settings → Pages → Source = **GitHub Actions** (not a
   branch). Must be set by hand once; a workflow cannot enable it.
 - Workflow: build with pygbag, then `actions/upload-pages-artifact`
   followed by `actions/deploy-pages`. Needs
   `permissions: {pages: write, id-token: write}`.
-- Add **`.nojekyll`** to the published artifact. Without it Pages runs
+- ~~Add **`.nojekyll`** to the published artifact.~~ **Done 2026-09-18.**
+  Without it Pages runs
   Jekyll and silently drops files and directories beginning with `_`,
-  which pygbag emits. `tools/build_web.py` does not do this today.
+  which pygbag emits. `tools/build_web.py` creates it after each build.
 - The site is served from a subpath (`/CHUCK-game/`), so every asset
   reference must be relative. Check pygbag's generated HTML for absolute
   `/` paths.

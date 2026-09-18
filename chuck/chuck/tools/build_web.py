@@ -15,6 +15,25 @@ ROOT = Path(__file__).resolve().parents[1]
 STAGE = ROOT / "build" / "browser-app"
 
 
+def finalize_web_artifact(web: Path) -> None:
+    """Apply CHUCK's host-specific additions to Pygbag's static output."""
+    page = web / "index.html"
+    # Override the stock template's independent width/height scaling. SDL
+    # retains a fixed framebuffer; CSS fits it into the browser viewport.
+    style = """<style>
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000 !important; }
+#canvas { width: min(100vw, 177.777778vh) !important;
+          height: min(100vh, 56.25vw) !important;
+          position: fixed !important; inset: 0 !important;
+          margin: auto !important; border: 0 !important;
+          image-rendering: pixelated; }
+</style>"""
+    page.write_text(page.read_text(encoding="utf-8") + style, encoding="utf-8")
+    # Pages otherwise runs Jekyll, which can omit Pygbag runtime files whose
+    # names begin with an underscore.
+    (web / ".nojekyll").touch()
+
+
 def stage() -> Path:
     import soundfile as sf
 
@@ -56,18 +75,7 @@ def main() -> None:
     command.append("--build")
     subprocess.run([*command, str(directory)], check=True)
     web = directory / "build" / "web"
-    page = web / "index.html"
-    # Override the stock template's independent width/height scaling. SDL
-    # retains a fixed framebuffer; CSS fits it into the browser viewport.
-    style = """<style>
-html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000 !important; }
-#canvas { width: min(100vw, 177.777778vh) !important;
-          height: min(100vh, 56.25vw) !important;
-          position: fixed !important; inset: 0 !important;
-          margin: auto !important; border: 0 !important;
-          image-rendering: pixelated; }
-</style>"""
-    page.write_text(page.read_text(encoding="utf-8") + style, encoding="utf-8")
+    finalize_web_artifact(web)
     print(f"Browser files: {web}", flush=True)
     if args.serve:
         subprocess.run([sys.executable, "-m", "http.server", "8000",

@@ -30,10 +30,15 @@ def test_day_shops_and_park_answer_examine_in_the_world():
                         for y in range(row - 2, row + 1):
                             for x in range(col - 1, col + 2):
                                 assert world.tilemap.is_solid(x, y)
+                        prop = next(prop for prop in world.props
+                                    if prop.kind == kind)
+                        assert prop.dialogue_id == "closed_door"
+                        assert world.dialogue.get(prop.dialogue_id) == ["it's closed"]
+                        continue
                     else:
                         assert i == 1
                         park.append(kind)
-                    world.player.x = (col + (1 if shop else 0)) * config.TILE_SIZE
+                    world.player.x = col * config.TILE_SIZE
                     world.player.y = (row + 1) * config.TILE_SIZE
                     world.player.facing = "up"
                     game.input._actions_just_pressed.add("interact")
@@ -41,10 +46,7 @@ def test_day_shops_and_park_answer_examine_in_the_world():
                     game.input._actions_just_pressed.clear()
                     overlay = game.scenes.current
                     assert isinstance(overlay, DialogueScene), kind
-                    if shop:
-                        assert overlay._lines == ["it's closed"]
-                    else:
-                        assert overlay._lines == world.dialogue.get(f"examine_{kind}")
+                    assert overlay._lines == world.dialogue.get(f"examine_{kind}")
                     game.scenes.pop()
             assert shops == 12
             assert park.count("city_park_fountain") == 1

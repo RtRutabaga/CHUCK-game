@@ -5,15 +5,19 @@
 
 ## Baton
 
-- **Latest pass (Codex):** gameplay polish requested by Sean, based on
-  `0478e15`. Opening Waterdeep now falls back to an ESC/START pause hint;
-  the finale keeps its tavern closed, turns the sewer grate into a sealed
-  slab examination, updates the tavern sign, and assigns the return greeting
-  to the original dock worker. City Day 1 has a generator-backed manhole by
-  its sewer arrival. Cabin seating props are mute, the collided banner line
-  is shorter, and numpad digits enter save codes even without Unicode text.
-  Focused gameplay, dialogue, map, transition, and save-menu checks pass;
-  generator output matches the shipped map.
+- **Latest pass (Codex):** GitHub Pages release infrastructure on top of
+  `aeb1db4`. The Pygbag build now creates `.nojekyll`; the Pages workflow
+  builds and deploys `main`; root and browser READMEs name the future public
+  URL and the one-time Pages setting. The live repository and owner were
+  confirmed, and this checkout's `origin` now uses `RtRutabaga/CHUCK-game`.
+- **Browser verification:** rebuilt artifact opens at 16:9 and a title-screen
+  load of `KMW9-J6ZP-2T5D` reaches the expected temple checkpoint. Generated
+  archive: 11,401,293 bytes; static output: 22,562,567 bytes including the
+  archive and loose template files. Full opening-to-sewer traversal remains
+  the release playtest boundary.
+- **Suite:** 1,300 passed in one combined pytest process after correcting the
+  cafe/hatch interaction overlap and an older test that deleted Chult's `$`
+  transition marker from shared state. Browser runtime checks are 7/7.
 - **CONTINUE and the save file are gone.** The twelve-character code is
   the whole save system, on desktop and in a browser alike. Sean's
   decision; reasoning in `DECISIONS.md`. Do not reintroduce either, and
@@ -36,15 +40,10 @@
   asserted an exact sanity after resuming it now asserts
   `config.SANITY_START`, because the old assertion described something
   the game can no longer do.
-- **Verified:** full suite 190 of 190, no failures. Desktop boots to the
-  title and loads a checkpoint.
-- **Next bounded task:** browser verification on a real machine —
-  traversal, a map transition, and a save-code round trip in the
-  browser. Claude's pane cannot do it (~1.4 fps there). After that,
-  `WEB-BUILD.md` §5, the Pages workflow.
-- **Still open:** `origin` still points at `SeanKerr9876/CHUCK-game`;
-  the repository moved to `RtRutabaga`. Pushes redirect but the remote
-  wants repointing, and the Pages URL follows the new owner.
+- **Next bounded task:** remove release-only developer checkpoints, merge this
+  branch to `main`, select **Settings → Pages → Source → GitHub Actions**, and
+  run the workflow. Then cold-load the public URL and play title → docks →
+  sewer → one transition before announcing it.
 - **Preview:** `python -m http.server 8000 --bind 127.0.0.1 --directory
   chuck/chuck/build/browser-app/build/web`, then `http://127.0.0.1:8000/`
   in a fresh tab. Never `localhost`. Check for a server already running

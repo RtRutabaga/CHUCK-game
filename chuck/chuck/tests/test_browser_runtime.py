@@ -10,6 +10,19 @@ from src.core import config
 from src.core.game import Game
 from src.core.runtime import audio_path
 from src.systems.audio import AudioSystem
+from tools.build_web import finalize_web_artifact
+
+
+def test_browser_artifact_is_ready_for_github_pages():
+    with tempfile.TemporaryDirectory() as folder:
+        web = Path(folder)
+        page = web / "index.html"
+        page.write_text("<canvas id=canvas></canvas>", encoding="utf-8")
+
+        finalize_web_artifact(web)
+
+        assert (web / ".nojekyll").is_file()
+        assert "image-rendering: pixelated" in page.read_text(encoding="utf-8")
 
 
 def test_browser_music_cancels_fade_before_replacing_track():
