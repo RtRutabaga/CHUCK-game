@@ -11,6 +11,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.prop import (
     _PROP_FRAME_TIME, _PROP_FRAME_TIMES,
@@ -247,7 +248,6 @@ def test_shared_loader_and_the_interior_save_persists() -> None:
         assert world.map_name == MAP_NAME
         assert world.player.facing == "up"
         assert world.sanity.current == 73
-        assert game.checkpoints.saves.load() is None
         stove = next(prop for prop in world.props
                      if prop.kind == "cabin_woodstove")
         assert stove._size == (72, 82)
@@ -267,13 +267,14 @@ def test_shared_loader_and_the_interior_save_persists() -> None:
                            if prop.kind == "cabin_closed_door_west")
         assert closed_door.dialogue_id == "closed_door"
 
-        assert game.checkpoints.write_save(
+        code = save_code.for_display(
+            game.checkpoints.save_here(
             "tahuya_interior", sanity=world.sanity.current
-        )
-        record = game.checkpoints.saves.load()
+            ))
+        record = save_code.decode(code)
         assert record is not None
         assert record.checkpoint_id == "tahuya_interior"
-        continued = game.checkpoints.continue_game()
+        continued = game.checkpoints.resume_from(save_code.decode(code))
         assert continued.map_name == MAP_NAME
         assert game.active_checkpoint_id == "tahuya_interior"
 

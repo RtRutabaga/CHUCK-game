@@ -12,6 +12,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 from PIL import Image
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.choice_trigger import ChoiceTrigger
 from src.entities.massive_dinosaur import MassiveDinosaur
@@ -165,10 +166,11 @@ def test_aerie_checkpoint_uses_shared_save_respawn_and_development_loader() -> N
         try:
             scene = game.checkpoints.load_checkpoint("zephyros_3", sanity=21)
             assert scene.map_name == MAP_NAME and scene.sanity.current == 21
-            # The save the menu writes, at the door he came in by.
-            assert game.checkpoints.write_save("zephyros_3", scene.sanity.current)
+            # The save the menu banks, at the door he came in by.
+            code = save_code.for_display(game.checkpoints.save_here(
+                "zephyros_3", scene.sanity.current))
             assert game.active_checkpoint_id == "zephyros_3"
-            assert game.saves.load().checkpoint_id == "zephyros_3"
+            assert save_code.decode(code).checkpoint_id == "zephyros_3"
         finally:
             game._shutdown()
 

@@ -10,6 +10,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.scenes.modern_city_arrival_cutscene_scene import (
     CIGARETTE_SEATED,
@@ -109,14 +110,15 @@ def test_handoff_saves_and_loads_the_real_city_door() -> None:
         assert game.active_checkpoint_id == "modern_city_1"
         assert game.progress.has("modern_city_reached")
         assert world.sanity.current == config.SANITY_MAX
-        saved = game.saves.load()
-        assert saved is not None
+        saved = game.checkpoints.current_record(
+            game.active_checkpoint_id, world.sanity.current)
         assert saved.checkpoint_id == "modern_city_1"
         assert saved.sanity == config.SANITY_MAX
         assert "modern_city_reached" in saved.progress_flags
 
-        # CONTINUE uses the same checkpoint definition and initialization.
-        continued = game.checkpoints.continue_game()
+        # A code off that handoff loads the same checkpoint definition.
+        continued = game.checkpoints.resume_from(
+            save_code.decode(save_code.for_display(saved)))
         assert continued.map_name == "modern_city_arrival"
     finally:
         game._shutdown()

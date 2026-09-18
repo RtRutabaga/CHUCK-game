@@ -111,7 +111,6 @@ class TitleScene(Scene):
         super().__init__(game)
         self._font = game.assets.bitmap_font()
         self._selected = 0
-        self._continue_available = game.checkpoints.can_continue
         self._time = 0.0
         self._canvas = None
         self._smoke: list[_Smoke] = []
@@ -131,14 +130,10 @@ class TitleScene(Scene):
     # ------------------------------------------------------------------
     @property
     def options(self) -> tuple[str, ...]:
-        options = ["NEW GAME", "CONTINUE", "LOAD CODE", "CONTROLS"]
+        options = ["NEW GAME", "LOAD CODE", "CONTROLS"]
         if config.ENABLE_DEV_CHECKPOINT_SELECTOR:
             options.append("DEV CHECKPOINTS")
         return tuple(options)
-
-    @property
-    def continue_available(self) -> bool:
-        return self._continue_available
 
     def on_enter(self) -> None:
         # Very quiet space ambience under the portrait; the trim in
@@ -159,20 +154,11 @@ class TitleScene(Scene):
         elif self.game.input.was_pressed("interact"):
             self._choose()
 
-    def _enabled(self, index: int) -> bool:
-        return index != 1 or self._continue_available
-
     def _move(self, direction: int) -> None:
-        count = len(self.options)
-        for _ in range(count):
-            self._selected = (self._selected + direction) % count
-            if self._enabled(self._selected):
-                self.game.audio.play_sfx("interact")
-                return
+        self._selected = (self._selected + direction) % len(self.options)
+        self.game.audio.play_sfx("interact")
 
     def _choose(self) -> None:
-        if not self._enabled(self._selected):
-            return
         self.game.audio.play_sfx("interact")
         choice = self.options[self._selected]
         if choice == "NEW GAME":
@@ -180,8 +166,6 @@ class TitleScene(Scene):
             # cutscene starts the game itself when it fades out.
             from src.scenes.opening_cutscene_scene import OpeningCutsceneScene
             self.game.scenes.replace(OpeningCutsceneScene(self.game))
-        elif choice == "CONTINUE":
-            self.game.checkpoints.continue_game()
         elif choice == "LOAD CODE":
             # The pause menu's code field, opened on its own, so there
             # is one of them in the game rather than two.
@@ -376,9 +360,7 @@ class TitleScene(Scene):
             rendered = pygame.transform.scale(
                 rendered, (rendered.get_width() * scale,
                            rendered.get_height() * scale))
-            if not self._enabled(index):
-                rendered.set_alpha(70)
-            elif index != self._selected:
+            if index != self._selected:
                 rendered.set_alpha(215)
             canvas.blit(rendered, (left, top + index * step))
 

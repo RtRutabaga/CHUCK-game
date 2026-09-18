@@ -8,6 +8,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.systems.ship_motion import deck_rock_offset
@@ -127,15 +128,16 @@ def test_the_deck_save_persists_and_continues() -> None:
         game = Game(save_path=path)
         try:
             scene = game.checkpoints.load_checkpoint("ship_exterior_deck")
-            assert game.checkpoints.write_save(
+            code = save_code.for_display(
+                game.checkpoints.save_here(
                 "ship_exterior_deck", scene.sanity.current
-            )
+                ))
         finally:
             game._shutdown()
 
         resumed = Game(save_path=path)
         try:
-            scene = resumed.checkpoints.continue_game()
+            scene = resumed.checkpoints.resume_from(save_code.decode(code))
             assert scene.map_name == MAP_NAME
             assert resumed.active_checkpoint_id == "ship_exterior_deck"
         finally:

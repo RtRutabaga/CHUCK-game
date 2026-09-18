@@ -129,7 +129,7 @@ class ModernCityArrivalCutsceneScene(Scene):
             self._handed_off = True
             # The city's own door owns persistence from here: the
             # handoff writes the save at it, the way walking in would.
-            self.game.checkpoints.write_save(
+            self.game.checkpoints.save_here(
                 "modern_city_1", config.SANITY_MAX
             )
             self.game.checkpoints.load_checkpoint(

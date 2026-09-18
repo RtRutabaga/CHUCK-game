@@ -18,6 +18,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.scenes.doug_fir_cutscene_scene import (
     DOUG_FIR_FLAG, FADE_END, FADE_IN_END, HOLD_END, WALK_END, WALK_START,
@@ -129,9 +130,8 @@ def test_the_phase_hands_into_the_shared_cabin_checkpoint() -> None:
         assert game.active_checkpoint_id == "tahuya_exterior"
         assert exterior.sanity.current == 57
 
-        # The physical door on the cabin grounds owns persistence.
-        record = game.checkpoints.saves.load()
-        assert record is None
+        # The cabin's own door owns persistence: the handoff banks the
+        # checkpoint (asserted above) and nothing else.
 
         # Handing off is a one-time event, however long the scene runs.
         scene.update(30.0)

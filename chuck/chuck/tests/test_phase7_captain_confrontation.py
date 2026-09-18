@@ -8,6 +8,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.deck_pirate import DeckPirateNPC
 from src.scenes.dialogue_scene import DialogueScene
@@ -188,15 +189,16 @@ def test_completed_confrontation_saves_and_restores_without_replaying() -> None:
                 ),
             )
             assert len(_captains(scene)) == 1
-            assert game.checkpoints.write_save(
+            code = save_code.for_display(
+                game.checkpoints.save_here(
                 "ship_exterior_deck", scene.sanity.current
-            )
+                ))
         finally:
             game._shutdown()
 
         resumed = Game(save_path=path)
         try:
-            scene = resumed.checkpoints.continue_game()
+            scene = resumed.checkpoints.resume_from(save_code.decode(code))
             assert resumed.progress.has(CAPTAIN_CONFRONTED_FLAG)
             assert len(_captains(scene)) == 1
             scene.update(0.0)

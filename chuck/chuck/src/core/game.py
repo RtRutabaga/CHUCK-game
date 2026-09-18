@@ -35,8 +35,9 @@ from src.systems.checkpoints import (
 )
 from src.systems.cigarettes import CigaretteLedger
 from src.systems.deaths import DeathCounter
-from src.systems.save import SaveSystem
-from src.systems.settings import DEFAULT_LEVEL, SettingsStore
+from src.systems.settings import (
+    DEFAULT_LEVEL, SETTINGS_FILENAME, SettingsStore,
+    default_settings_path)
 from src.scenes.boot_scene import BootScene
 
 
@@ -54,11 +55,13 @@ class Game:
         use_positional_buttons()
         pygame.init()
 
-        # The player's settings live beside the save slot (not in it:
-        # NEW GAME wipes the save, and should not reset the volume).
-        self.saves = SaveSystem(save_path)
+        # Settings are the only thing kept on the machine: the save is
+        # a code the player holds. `save_path` names a file in the folder
+        # settings should live in, which is how every caller already
+        # isolates them; without one they go to the per-user location.
         self.settings_store = SettingsStore(
-            self.saves.path.with_name("settings.json"))
+            Path(save_path).with_name(SETTINGS_FILENAME)
+            if save_path is not None else default_settings_path())
         self.settings = self.settings_store.load()
 
         self.window = self._open_window(self.settings.fullscreen)
@@ -86,7 +89,7 @@ class Game:
         # People Chuck has already had a first word from this session.
         self.spoken_to: set[tuple] = set()
         self.active_checkpoint_id = OPENING_CHECKPOINT_ID
-        self.checkpoints = CheckpointLoader(self, self.saves)
+        self.checkpoints = CheckpointLoader(self)
 
         # One black frame lets core systems settle before the title menu.
         self.scenes.push(BootScene(self))

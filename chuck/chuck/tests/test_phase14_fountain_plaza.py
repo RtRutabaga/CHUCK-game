@@ -11,6 +11,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.systems.checkpoints import WATERDEEP_RETURN_FLAG
 from src.systems.waterdeep_finale import (
@@ -135,24 +136,24 @@ def test_return_state_survives_the_existing_waterdeep_save_point() -> None:
         scene._arrival_fade_t = None
         scene.update(0.01)
         # Saved from the menu, at the docks he walked back onto.
-        assert game.checkpoints.write_save(
-            "waterdeep_return", scene.sanity.current)
-        record = game.saves.load()
-        assert record is not None
+        code = save_code.for_display(
+            game.checkpoints.save_here(
+                "waterdeep_return", scene.sanity.current))
+        record = save_code.decode(code)
         assert WATERDEEP_RETURN_FLAG in record.progress_flags
     finally:
         game._shutdown()
 
     game = Game(save_path=save_path)
     try:
-        scene = game.checkpoints.continue_game()
+        scene = game.checkpoints.resume_from(save_code.decode(code))
         assert scene is not None
         assert scene.tilemap._tileset.sheet == "docks_midday.png"
         scene.load_map("waterdeep_plaza", arrival="from_docks", facing="right")
         assert scene.tilemap._tileset.sheet == "docks_midday.png"
         assert len(scene.npcs) == (
             len(PLAZA_TOWNSFOLK) + len(RETURN_PLAZA_TOWNSFOLK)
-        )
+            )
     finally:
         game._shutdown()
         directory.cleanup()

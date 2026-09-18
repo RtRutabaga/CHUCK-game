@@ -5,44 +5,58 @@
 
 ## Baton
 
-- **Decision from Sean, 2026-09-18: the save code is the only save.**
-  CONTINUE and the local save file are being removed. Full reasoning in
-  `DECISIONS.md`; `SAVE_CODES.md` §7 and `WEB-BUILD.md` §4.1 are marked
-  reversed and cancelled. **Do not build browser save persistence.**
-  Sanity stays out of the code — codes stay twelve characters.
-- **Branch / base:** `save-codes`, base `36de03f`. Tree clean.
-- **Done this pass:** QUIT TO TITLE now shows the code instead of warning
-  in the abstract, because with no CONTINUE that is the only thing that
-  survives leaving. It is read-only and writes nothing. Four new checks;
-  full suite 190 of 190.
-- **Next bounded task — the removal itself.** Deliberately left for its
-  own session: it touches about 37 test files, over the twenty-file line
-  in `TWO-AGENT-GIT-WORKFLOW.md`. In order:
-  1. Drop CONTINUE from `TitleScene.options` and `_choose`.
-  2. Remove `SaveSystem`, `src/systems/save.py`, `save2.json`, and
-     `checkpoints.valid_save` / `can_continue` / `continue_game`.
-     `write_save` keeps `set_runtime_checkpoint` (it banks cigarettes and
-     the respawn) but stops writing a file; `new_game`'s `saves.delete()`
-     goes; `resume_from`'s `remember` flag goes.
-  3. **`settings.json` needs its own path** — `game.py:61` currently
-     derives it from `saves.path.with_name(...)`, so it disappears with
-     the save file. Volume and fullscreen would be silently lost.
-  4. Tests: round trips through `continue_game` become round trips
-     through a code, the way `test_save_menu.py` already does it.
-- **`spoken`** (who has introduced themselves) loses its only persistence
-  with the file. In-memory per session is the accepted outcome.
-- **Unchanged and still true:** Pages is viable, no cross-origin
-  isolation needed; the runtime comes from a third-party CDN; do not
-  measure performance in Claude's browser pane (~1.4 fps there).
-  Traversal and the browser code round trip still need a real browser.
+- **CONTINUE and the save file are gone.** The twelve-character code is
+  the whole save system, on desktop and in a browser alike. Sean's
+  decision; reasoning in `DECISIONS.md`. Do not reintroduce either, and
+  **do not build browser save persistence** — `WEB-BUILD.md` §4.1 is
+  cancelled.
+- **Branch / base:** `save-codes`, base `a000690`.
+- **What changed:** `SaveSystem`, `save2.json` and `default_save_path`
+  are removed; `src/systems/save.py` keeps only `SaveRecord`, which the
+  codec is written from. `checkpoints.write_save` is now `save_here` —
+  it banks the save point and hands back the record to make a code of,
+  and writes nothing. `settings.json` has its own path in
+  `settings.default_settings_path()`, the same location as before, so a
+  player's existing volume and fullscreen survive.
+- **`spoken` is session memory now.** People Chuck has met introduce
+  themselves again after a resume. It needed a positional key and never
+  fit in twelve characters. Cosmetic, and accepted.
+- **Sanity likewise:** a resumed game starts at `SANITY_START`. Codes
+  stay twelve characters; do not widen the format to carry it.
+- **Tests:** the file round trips became code round trips. Where a test
+  asserted an exact sanity after resuming it now asserts
+  `config.SANITY_START`, because the old assertion described something
+  the game can no longer do.
+- **Verified:** full suite 190 of 190, no failures. Desktop boots to the
+  title and loads a checkpoint.
+- **Next bounded task:** browser verification on a real machine —
+  traversal, a map transition, and a save-code round trip in the
+  browser. Claude's pane cannot do it (~1.4 fps there). After that,
+  `WEB-BUILD.md` §5, the Pages workflow.
+- **Still open:** `origin` still points at `SeanKerr9876/CHUCK-game`;
+  the repository moved to `RtRutabaga`. Pushes redirect but the remote
+  wants repointing, and the Pages URL follows the new owner.
 - **Preview:** `python -m http.server 8000 --bind 127.0.0.1 --directory
   chuck/chuck/build/browser-app/build/web`, then `http://127.0.0.1:8000/`
-  in a fresh tab. Never `localhost`. Check for an existing server before
-  starting or killing one — Sean may be playing.
+  in a fresh tab. Never `localhost`. Check for a server already running
+  before starting or killing one — Sean may be playing.
 
 ---
 
 ## Recent Passes
+
+## Latest Pass — The Code Is The Only Save (2026-09-18)
+
+- Removed CONTINUE from the title and the local save file from the game.
+  `SaveSystem`, `save2.json` and `default_save_path` are gone; `save.py`
+  keeps `SaveRecord` alone. `write_save` became `save_here`, which banks
+  the point and returns the record rather than writing anything.
+- `settings.json` was deriving its path from the save file's and would
+  have vanished with it. It has its own `default_settings_path()` now,
+  pointing at the same place, so existing settings are kept.
+- The test suite's save/relaunch round trips go through a code. Sanity
+  assertions after a resume became `SANITY_START`: a code has no room
+  for sanity, so the old assertions described the impossible.
 
 ## Latest Pass — Codes Become The Only Save (2026-09-18)
 

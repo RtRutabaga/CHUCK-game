@@ -9,6 +9,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.prop import Prop
 from src.systems.checkpoints import CHECKPOINT_BY_ID
@@ -276,15 +277,12 @@ def test_shared_checkpoint_loader_and_the_save_persists() -> None:
         assert world.player.facing == "right"
         assert world.sanity.current == 61
         assert game.progress.has("doug_fir_transition_completed")
-        assert game.checkpoints.saves.load() is None
-
-        assert game.checkpoints.write_save(
+        code = save_code.for_display(game.checkpoints.save_here(
             "tahuya_exterior", sanity=world.sanity.current
-        )
-        record = game.checkpoints.saves.load()
-        assert record is not None
+        ))
+        record = save_code.decode(code)
         assert record.checkpoint_id == "tahuya_exterior"
-        continued = game.checkpoints.continue_game()
+        continued = game.checkpoints.resume_from(save_code.decode(code))
         assert continued.map_name == MAP_NAME
         assert game.active_checkpoint_id == "tahuya_exterior"
 

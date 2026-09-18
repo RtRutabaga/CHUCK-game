@@ -134,8 +134,14 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - **Quitting hands the code over.** With no CONTINUE, leaving without a code
   loses the session, so QUIT TO TITLE shows the code rather than warning in
   the abstract. It writes nothing; it is read-only. Done 2026-09-18.
-- **Still to do:** remove CONTINUE from the title, remove `SaveSystem` and
-  `save2.json`, give `settings.json` its own path (it currently derives from
-  the save file's), and rework the tests that round-trip through
-  `continue_game`. Roughly 37 test files touch it.
+- **Done, 2026-09-18.** CONTINUE is off the title; `SaveSystem`, `save2.json`
+  and `default_save_path` are gone; `settings.json` has its own path (the same
+  place it always was, so existing settings survive); and the tests round-trip
+  through a code instead of a file. `src/systems/save.py` keeps only
+  `SaveRecord`, which the codec is written from.
+- `checkpoints.write_save` is now `save_here`: it banks the save point and
+  returns the record to make a code of. It writes nothing.
+- **`spoken` is session memory now.** It needed a positional key and never fit
+  in twelve characters, so people Chuck has met introduce themselves again
+  after a resume. Cosmetic, and accepted.
 

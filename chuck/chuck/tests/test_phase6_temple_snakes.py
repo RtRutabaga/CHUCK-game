@@ -9,6 +9,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.snake import TempleSnake
 from src.systems.checkpoints import CHECKPOINT_BY_ID
@@ -110,8 +111,9 @@ def test_temple_5_checkpoint_saves_continues_and_resets_snakes() -> None:
         scene._arrival_fade_t = None
         came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 67
-        # The save the menu writes, at the door he came in by.
-        assert game.checkpoints.write_save("temple_5", scene.sanity.current)
+        # The save the menu banks, at the door he came in by.
+        code = save_code.for_display(
+            game.checkpoints.save_here("temple_5", scene.sanity.current))
         assert game.active_checkpoint_id == "temple_5"
         scene.snakes[0].alive = False
         scene.snakes = []
@@ -126,10 +128,11 @@ def test_temple_5_checkpoint_saves_continues_and_resets_snakes() -> None:
 
     resumed = Game(save_path=save_path)
     try:
-        scene = resumed.checkpoints.continue_game()
+        scene = resumed.checkpoints.resume_from(save_code.decode(code))
         assert scene.map_name == "temple_snakes"
         assert resumed.active_checkpoint_id == "temple_5"
-        assert scene.sanity.current == 67
+        # A code does not carry sanity.
+        assert scene.sanity.current == config.SANITY_START
         assert len(scene.snakes) == 20
     finally:
         resumed._shutdown()

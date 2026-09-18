@@ -8,6 +8,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.captain_chest import CaptainChest
 from src.entities.pickup import GoldenCigaretteCarton
@@ -163,15 +164,16 @@ def test_collected_gold_carton_and_open_chest_persist_through_continue() -> None
             scene.player.x = carton.x
             scene.player.y = carton.y
             scene.update(0.0)
-            assert game.checkpoints.write_save(
+            code = save_code.for_display(
+                game.checkpoints.save_here(
                 "ship_captain_cabin", scene.sanity.current
-            )
+                ))
         finally:
             game._shutdown()
 
         resumed = Game(save_path=path)
         try:
-            scene = resumed.checkpoints.continue_game()
+            scene = resumed.checkpoints.resume_from(save_code.decode(code))
             assert scene.map_name == MAP_NAME
             assert resumed.progress.has("captain_chest_opened")
             assert resumed.progress.has("captain_chest_carton_collected")
@@ -198,15 +200,16 @@ def test_open_uncollected_chest_reconstructs_carton_on_continue() -> None:
                          if isinstance(prop, CaptainChest))
             chest.on_scratched()
             scene.update(chest.opening_duration)
-            assert game.checkpoints.write_save(
+            code = save_code.for_display(
+                game.checkpoints.save_here(
                 "ship_captain_cabin", scene.sanity.current
-            )
+                ))
         finally:
             game._shutdown()
 
         resumed = Game(save_path=path)
         try:
-            scene = resumed.checkpoints.continue_game()
+            scene = resumed.checkpoints.resume_from(save_code.decode(code))
             assert resumed.progress.has("captain_chest_opened")
             assert not resumed.progress.has("captain_chest_carton_collected")
             assert sum(isinstance(pickup, GoldenCigaretteCarton)

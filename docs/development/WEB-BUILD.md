@@ -35,7 +35,10 @@ document wins and the web work bends around it.
   packaged as CPython compiled to WebAssembly, emitting a static site. It
   is the only maintained path for pygame-ce in a browser.
 - **Host:** GitHub Pages on this repository, built by GitHub Actions.
-- **URL shape:** `https://seankerr9876.github.io/CHUCK-game/`
+- **URL shape:** `https://<owner>.github.io/CHUCK-game/`. The repository
+  moved from `SeanKerr9876` to `RtRutabaga` on 2026-09-18, so the owner
+  half is `rtrutabaga` unless it moves again. Confirm against the live
+  remote before writing it into a workflow or a README.
 - **Added dependencies:** build-time only, in `requirements-web.txt`,
   never imported by the game and never in `requirements.txt`.
 

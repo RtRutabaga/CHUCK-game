@@ -297,7 +297,6 @@ def test_the_phase_hands_to_playable_waterdeep_with_crossing_recorded() -> None:
         assert world.sanity.current == 48
         assert WATERDEEP_RETURN_FLAG in game.progress.flags
         # Nothing was written: the crossing is not a save point.
-        assert not game.checkpoints.can_continue
 
         # Everything the return flag gates is a finale entry, and the
         # docks' own is one of them. Written as the rule rather than as

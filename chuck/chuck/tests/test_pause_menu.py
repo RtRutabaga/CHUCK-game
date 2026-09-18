@@ -11,6 +11,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.scenes.dialogue_scene import DialogueScene
 from src.scenes.opening_cutscene_scene import OpeningCutsceneScene
@@ -179,10 +180,9 @@ def test_volume_is_two_sliders_that_stick() -> None:
                    * (DEFAULT_LEVEL - 3) / DEFAULT_LEVEL) < 1e-9
         assert game.audio.sfx_volume <= 1.0
         path = game.settings_store.path
-        assert path.parent == game.saves.path.parent
         stored = json.loads(path.read_text(encoding="utf-8"))
         assert stored["music"] == DEFAULT_LEVEL - 3
-        # NEW GAME wipes the save, not the settings.
+        # NEW GAME does not reset the settings.
         game.checkpoints.new_game()
         assert path.is_file()
     finally:
@@ -238,45 +238,33 @@ def test_any_window_size_gets_whole_pixels_and_black_bars() -> None:
     assert frame.get_width() <= 200 and frame.get_height() <= 200
 
 
-def test_second_words_survive_a_reload() -> None:
+def test_second_words_are_session_memory_that_a_code_drops() -> None:
+    """Everyone introduces themselves again after resuming from a code.
+
+    `spoken` went with the save file. It needs a positional key and
+    would never fit in twelve characters, so it lives for the session
+    and no longer survives a resume. The cost is one repeated hello per
+    person already met, which is cosmetic.
+    """
     directory, game = _game()
     try:
         scene = game.checkpoints.load_checkpoint("waterdeep_start")
         worker = next(n for n in scene.npcs if n.dialogue_id == "dock_worker")
         assert scene._second_word(worker, "dock_worker") == "dock_worker"
-        assert game.checkpoints.write_save(
-            "waterdeep_start", scene.sanity.current)
-        record = game.saves.load()
-        assert record is not None and record.spoken
-        # A new session, continued from that save.
+        assert game.spoken_to, "the session remembers within itself"
+        code = save_code.for_display(game.checkpoints.save_here(
+            "waterdeep_start", scene.sanity.current))
+        assert save_code.decode(code).spoken == ()
+
         game.spoken_to.clear()
-        continued = game.checkpoints.continue_game()
+        continued = game.checkpoints.resume_from(save_code.decode(code))
         assert continued is not None
         again = next(n for n in continued.npcs
                      if n.dialogue_id == "dock_worker")
-        assert continued._second_word(again, "dock_worker") == \
-            "dock_worker_repeat"
+        assert continued._second_word(again, "dock_worker") == "dock_worker"
         # NEW GAME forgets.
         game.checkpoints.new_game()
         assert not game.spoken_to
-    finally:
-        game._shutdown()
-        directory.cleanup()
-
-
-def test_old_saves_without_second_words_still_load() -> None:
-    directory, game = _game()
-    try:
-        game.saves.path.parent.mkdir(parents=True, exist_ok=True)
-        record = SaveRecord("waterdeep_start", 80, ("sewer_completed",))
-        data = record.to_json()
-        del data["spoken"]
-        game.saves.path.write_text(json.dumps(data), encoding="utf-8")
-        loaded = game.saves.load()
-        assert loaded is not None and loaded.spoken == ()
-        data["spoken"] = [["waterdeep_docks", "x", 3, "dock_worker"]]
-        game.saves.path.write_text(json.dumps(data), encoding="utf-8")
-        assert game.saves.load() is None
     finally:
         game._shutdown()
         directory.cleanup()

@@ -278,22 +278,20 @@ class PauseScene(Scene):
         return save_code.for_display(record)
 
     def _save_now(self) -> None:
-        """Write the slot and work out the code, then show the page.
+        """Bank the save point, show the code, and say what it means.
 
-        Both come off one record, so the code on screen and the save on
-        disk cannot be two different games.
+        There is nothing else: the code is the save. Nothing is written
+        to this machine, so a player who does not keep it has not saved.
         """
         self._code, self._note = None, ""
         checkpoint_id = self.game.active_checkpoint_id
         if not is_save_point(checkpoint_id):
             self._goto("save")
             return
-        checkpoints = self.game.checkpoints
-        record = checkpoints.current_record(checkpoint_id, self._sanity())
+        record = self.game.checkpoints.save_here(
+            checkpoint_id, self._sanity())
         self._code = save_code.for_display(record)
-        self._note = ("Saved on this machine too."
-                      if checkpoints.write_save(checkpoint_id, self._sanity())
-                      else "Nowhere to write it here. Keep the code.")
+        self._note = "This code is the save. Nothing is kept for you."
         self._goto("save")
 
     def _sanity(self) -> int:

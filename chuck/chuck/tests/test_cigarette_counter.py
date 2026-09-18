@@ -18,11 +18,12 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.pickup import Cigarette, CigaretteCarton
 from src.systems.cigarettes import CigaretteLedger
 from src.systems.sanity import SanitySystem
-from src.systems.save import SAVE_VERSION, SaveRecord, SaveSystem
+from src.systems.save import SaveRecord
 
 
 def _temp_save() -> tuple[tempfile.TemporaryDirectory, Path]:
@@ -93,8 +94,9 @@ def test_death_rewinds_the_count_to_the_respawn_point() -> None:
         # Bank some, save from the menu (which commits), bank more,
         # die: the count rewinds exactly to the saved value.
         game.cigarettes.add(5)
-        assert game.checkpoints.write_save(
-            game.active_checkpoint_id, scene.sanity.current)
+        code = save_code.for_display(
+            game.checkpoints.save_here(
+                game.active_checkpoint_id, scene.sanity.current))
         assert game.cigarettes.checkpoint_total == 5
         game.cigarettes.add(3)
         assert game.cigarettes.total == 8
@@ -120,15 +122,15 @@ def test_anchor_save_and_continue_round_trip_the_total() -> None:
         scene = game.checkpoints.load_checkpoint("waterdeep_start")
         game.cigarettes.add(23)
         scene.sanity.current = 47
-        assert game.checkpoints.write_save("waterdeep_start", 47)
-        raw = json.loads(path.read_text(encoding="utf-8"))
-        assert raw["cigarettes"] == 23
+        code = save_code.for_display(
+            game.checkpoints.save_here("waterdeep_start", 47))
+        assert save_code.decode(code).cigarettes == 23
     finally:
         game._shutdown()
 
     resumed = Game(save_path=path)
     try:
-        scene = resumed.checkpoints.continue_game()
+        scene = resumed.checkpoints.resume_from(save_code.decode(code))
         assert scene is not None
         assert resumed.cigarettes.total == 23
     finally:
@@ -143,30 +145,6 @@ def test_anchor_save_and_continue_round_trip_the_total() -> None:
         directory.cleanup()
 
 
-def test_pre_counter_saves_stay_valid_with_zero_banked() -> None:
-    directory, path = _temp_save()
-    try:
-        path.write_text(json.dumps({
-            "version": SAVE_VERSION,
-            "checkpoint_id": "waterdeep_start",
-            "sanity": 50,
-            "progress_flags": [],
-        }), encoding="utf-8")
-        record = SaveSystem(path).load()
-        assert record == SaveRecord("waterdeep_start", 50, (), 0)
-        # Forged totals are rejected like every other bad field.
-        path.write_text(json.dumps({
-            "version": SAVE_VERSION,
-            "checkpoint_id": "waterdeep_start",
-            "sanity": 50,
-            "progress_flags": [],
-            "cigarettes": -3,
-        }), encoding="utf-8")
-        assert SaveSystem(path).load() is None
-    finally:
-        directory.cleanup()
-
-
 def test_hud_shows_the_total_in_the_top_right_corner() -> None:
     game = Game()
     try:
@@ -174,7 +152,7 @@ def test_hud_shows_the_total_in_the_top_right_corner() -> None:
         game.cigarettes.replace(42)
         surface = pygame.Surface(
             (config.NATIVE_WIDTH, config.NATIVE_HEIGHT)
-        )
+            )
         scene.draw(surface)
         # The counter marks pixels in the top-right corner region that a
         # zero-count HUD leaves different (the label changes width/glyphs).

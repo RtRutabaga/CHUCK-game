@@ -1,35 +1,25 @@
-"""Small, versioned JSON saves for checkpoint restoration.
+"""What a save is made of.
 
-Only durable resume state belongs here. Runtime entities, scene objects, enemy
-positions, animation timers, and camera state are rebuilt from authored data.
+There is no save file any more. A save is a twelve-character code the
+player holds (`save_code`), and this is the record that code is written
+from and read back into. Nothing here touches a disk.
+
+The file went with CONTINUE. There was never an autosave -- only the
+pause menu wrote a save -- so a slot on disk was never better than the
+player's last deliberate save, and it cost a second persistence system
+that had to agree with the code and could not in a browser. See
+`docs/development/DECISIONS.md`.
+
+Two fields are in the record but not in a code, because a code is
+twelve characters and these are what did not fit:
+
+    sanity    a resumed game starts at config.SANITY_START
+    spoken    everyone Chuck has met introduces themselves again
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-import json
-import os
-from pathlib import Path
-
-from src.core import config
-
-
-# 2: the save point is the door Chuck came in by rather than an Ashtray,
-# and the file moved with it. The loader refuses any version but this
-# one, so an older build reading a newer file sees "no save" instead of
-# choking -- and because the name changed too, an older build finds its
-# own save.json exactly where it left it.
-SAVE_VERSION = 2
-SAVE_FILENAME = "save2.json"
-
-
-def default_save_path() -> Path:
-    """Return the per-user save path without depending on the working folder."""
-    if os.name == "nt":
-        base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData/Local"))
-    else:
-        base = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
-    return base / "CHUCK" / SAVE_FILENAME
 
 
 @dataclass(frozen=True)
@@ -37,104 +27,11 @@ class SaveRecord:
     checkpoint_id: str
     sanity: int
     progress_flags: tuple[str, ...]
-    # The overall-game cigarette total (session 128). Defaults keep
-    # pre-counter saves valid — they simply resume with zero banked.
+    # The overall-game cigarette total (session 128).
     cigarettes: int = 0
-    # Deaths this playthrough. Defaulted for the same reason: saves
-    # written before the counter existed resume with none recorded.
+    # Deaths this playthrough.
     deaths: int = 0
     # Who Chuck has already had a first word from, as (map, x, y, line)
-    # -- the second-word memory (WorldScene._second_word). Saved so a
-    # reload does not have everybody introduce themselves again.
+    # -- the second-word memory (WorldScene._second_word). Held for the
+    # session only; a code does not carry it.
     spoken: tuple[tuple[str, int, int, str], ...] = ()
-
-    def to_json(self) -> dict:
-        return {
-            "version": SAVE_VERSION,
-            "checkpoint_id": self.checkpoint_id,
-            "sanity": self.sanity,
-            "progress_flags": list(self.progress_flags),
-            "cigarettes": self.cigarettes,
-            "deaths": self.deaths,
-            "spoken": [list(entry) for entry in self.spoken],
-        }
-
-
-class SaveSystem:
-    """Reads and atomically writes the single player save slot."""
-
-    def __init__(self, path: str | Path | None = None) -> None:
-        self.path = Path(path) if path is not None else default_save_path()
-
-    def load(self) -> SaveRecord | None:
-        """Return a valid current-version record, or None for any bad save."""
-        try:
-            raw = json.loads(self.path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError, UnicodeError):
-            return None
-        if not isinstance(raw, dict) or raw.get("version") != SAVE_VERSION:
-            return None
-        checkpoint_id = raw.get("checkpoint_id")
-        sanity = raw.get("sanity")
-        flags = raw.get("progress_flags")
-        if not isinstance(checkpoint_id, str) or not checkpoint_id:
-            return None
-        if isinstance(sanity, bool) or not isinstance(sanity, int):
-            return None
-        if not 0 < sanity <= config.SANITY_MAX:
-            return None
-        if (
-            not isinstance(flags, list)
-            or not all(isinstance(flag, str) and flag for flag in flags)
-            or len(set(flags)) != len(flags)
-        ):
-            return None
-        cigarettes = raw.get("cigarettes", 0)
-        if isinstance(cigarettes, bool) or not isinstance(cigarettes, int):
-            return None
-        if cigarettes < 0:
-            return None
-        deaths = raw.get("deaths", 0)
-        if isinstance(deaths, bool) or not isinstance(deaths, int):
-            return None
-        if deaths < 0:
-            return None
-        spoken = raw.get("spoken", [])
-        if not isinstance(spoken, list):
-            return None
-        entries = []
-        for entry in spoken:
-            if (not isinstance(entry, list) or len(entry) != 4
-                    or not isinstance(entry[0], str)
-                    or not isinstance(entry[3], str)
-                    or any(isinstance(v, bool) or not isinstance(v, int)
-                           for v in entry[1:3])):
-                return None
-            entries.append(tuple(entry))
-        return SaveRecord(checkpoint_id, sanity, tuple(sorted(flags)),
-                          cigarettes, deaths, tuple(sorted(set(entries))))
-
-    def write(self, record: SaveRecord) -> bool:
-        """Atomically replace the save; return False if storage is unavailable."""
-        temporary = self.path.with_suffix(self.path.suffix + ".tmp")
-        try:
-            self.path.parent.mkdir(parents=True, exist_ok=True)
-            temporary.write_text(
-                json.dumps(record.to_json(), indent=2, sort_keys=True) + "\n",
-                encoding="utf-8",
-            )
-            temporary.replace(self.path)
-        except OSError:
-            try:
-                temporary.unlink(missing_ok=True)
-            except OSError:
-                pass
-            return False
-        return True
-
-    def delete(self) -> None:
-        """Clear the single slot for NEW GAME; failure is non-fatal."""
-        try:
-            self.path.unlink(missing_ok=True)
-        except OSError:
-            pass

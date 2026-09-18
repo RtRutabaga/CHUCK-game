@@ -9,6 +9,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.cabin_light_entity import CabinLightEntity, FRAME_TIME
 from src.world.tilemap import TileMap
@@ -104,10 +105,11 @@ def test_entities_use_offset_animation_and_durable_idempotent_flags() -> None:
 
         # The existing save/checkpoint path carries all four flags without a
         # cabin-specific format or duplicate all-spoken flag.
-        assert game.checkpoints.write_save(
+        code = save_code.for_display(
+            game.checkpoints.save_here(
             "tahuya_interior", world.sanity.current
-        )
-        continued = game.checkpoints.continue_game()
+            ))
+        continued = game.checkpoints.resume_from(save_code.decode(code))
         assert EXPECTED_FLAGS <= game.progress.flags
         assert len([npc for npc in continued.npcs
                     if isinstance(npc, CabinLightEntity)]) == 4

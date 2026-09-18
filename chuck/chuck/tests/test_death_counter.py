@@ -25,9 +25,10 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.systems.deaths import DeathCounter
-from src.systems.save import SAVE_VERSION, SaveRecord, SaveSystem
+from src.systems.save import SaveRecord
 from src.ui.hud import death_icon
 
 
@@ -207,40 +208,20 @@ def test_the_the_save_survives_a_relaunch() -> None:
         scene = game.checkpoints.load_checkpoint("waterdeep_start")
         _die_and_return(scene)
         _die_and_return(scene)
-        assert game.checkpoints.write_save(
-            "waterdeep_start", scene.sanity.current)
-        assert json.loads(path.read_text(encoding="utf-8"))["deaths"] == 2
+        code = save_code.for_display(
+            game.checkpoints.save_here(
+                "waterdeep_start", scene.sanity.current))
+        # The code is the save, so the count is read back out of it.
+        assert save_code.decode(code).deaths == 2
     finally:
         game._shutdown()
 
     resumed = Game(save_path=path)
     try:
-        assert resumed.checkpoints.continue_game() is not None
+        assert resumed.checkpoints.resume_from(save_code.decode(code)) is not None
         assert resumed.deaths.total == 2
     finally:
         resumed._shutdown()
-        directory.cleanup()
-
-
-def test_saves_from_before_the_counter_still_load() -> None:
-    directory = tempfile.TemporaryDirectory()
-    path = Path(directory.name) / "save.json"
-    try:
-        base = {
-            "version": SAVE_VERSION,
-            "checkpoint_id": "waterdeep_start",
-            "sanity": 50,
-            "progress_flags": [],
-            "cigarettes": 4,
-        }
-        path.write_text(json.dumps(base), encoding="utf-8")
-        assert SaveSystem(path).load() == SaveRecord(
-            "waterdeep_start", 50, (), 4, 0)
-        for forged in (-1, True, "3"):
-            path.write_text(json.dumps({**base, "deaths": forged}),
-                            encoding="utf-8")
-            assert SaveSystem(path).load() is None, forged
-    finally:
         directory.cleanup()
 
 
@@ -271,7 +252,7 @@ def test_the_hud_shows_a_skull_beside_the_cigarettes() -> None:
             surface.get_at((x, y))[:3] == bone
             for x in range(region[0], config.NATIVE_WIDTH)
             for y in range(0, 16)
-        )
+            )
         assert found, "no bone-coloured pixels in the HUD corner"
         assert icon.get_width() > icon.get_height() > 8
     finally:

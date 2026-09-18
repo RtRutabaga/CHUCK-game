@@ -14,8 +14,10 @@ from src.scenes.boot_scene import BootScene
 from src.scenes.checkpoint_select_scene import CheckpointSelectScene
 from src.scenes.title_scene import TitleScene
 from src.scenes.world_scene import WorldScene
-from src.systems.checkpoints import CHECKPOINTS, OPENING_CHECKPOINT_ID
-from src.systems.save import SAVE_VERSION, SaveRecord, SaveSystem
+from src.systems.checkpoints import (
+    CHECKPOINTS, OPENING_CHECKPOINT_ID, CheckpointLoader)
+from src.systems import save_code
+from src.systems.save import SaveRecord
 from src.ui.bitmap_font import GLYPH_ORDER
 
 
@@ -31,55 +33,6 @@ def _boot_to_title(game: Game) -> TitleScene:
     return game.scenes.current
 
 
-def test_save_format_is_readable_versioned_and_atomic() -> None:
-    directory, path = _temp_save()
-    try:
-        saves = SaveSystem(path)
-        assert saves.load() is None
-        record = SaveRecord("sewer_entrance", 47, ("sewer_completed",))
-        assert saves.write(record)
-        raw = json.loads(path.read_text(encoding="utf-8"))
-        assert raw == {
-            "version": SAVE_VERSION,
-            "checkpoint_id": "sewer_entrance",
-            "sanity": 47,
-            "progress_flags": ["sewer_completed"],
-            "cigarettes": 0,
-            "deaths": 0,
-            "spoken": [],
-        }
-        assert saves.load() == record
-        assert not path.with_suffix(".json.tmp").exists()
-    finally:
-        directory.cleanup()
-
-
-def test_missing_invalid_and_outdated_saves_are_graceful() -> None:
-    directory, path = _temp_save()
-    try:
-        saves = SaveSystem(path)
-        for raw in (
-            "not json",
-            json.dumps({"version": SAVE_VERSION + 1}),
-            json.dumps({
-                "version": SAVE_VERSION,
-                "checkpoint_id": "sewer_entrance",
-                "sanity": 0,
-                "progress_flags": [],
-            }),
-            json.dumps({
-                "version": SAVE_VERSION,
-                "checkpoint_id": "sewer_entrance",
-                "sanity": "lots",
-                "progress_flags": [],
-            }),
-        ):
-            path.write_text(raw, encoding="utf-8")
-            assert saves.load() is None
-    finally:
-        directory.cleanup()
-
-
 def _play_through_opening(game) -> None:
     """New Game opens on the wake-up cutscene; run it to its hand-off."""
     from src.scenes.opening_cutscene_scene import OpeningCutsceneScene
@@ -90,15 +43,19 @@ def _play_through_opening(game) -> None:
         scene.update(0.25)
 
 
-def test_title_without_save_disables_continue_and_new_game_uses_loader() -> None:
+def test_the_title_offers_no_continue_and_new_game_uses_the_loader() -> None:
+    """There is no CONTINUE: a code is the only way back into a game."""
     directory, path = _temp_save()
     game = Game(save_path=path)
     try:
         title = _boot_to_title(game)
-        assert not title.continue_available
-        assert title.options[:2] == ("NEW GAME", "CONTINUE")
-        title._move(1)
-        assert title._selected != 1
+        assert "CONTINUE" not in title.options
+        assert title.options[:2] == ("NEW GAME", "LOAD CODE")
+        # Every option is reachable; none is greyed out any more.
+        for step in range(len(title.options)):
+            title._move(1)
+            assert title._selected == (step + 1) % len(title.options)
+        title._selected = 0
 
         calls = []
         real_load = game.checkpoints.load_checkpoint
@@ -122,25 +79,7 @@ def test_title_without_save_disables_continue_and_new_game_uses_loader() -> None
         directory.cleanup()
 
 
-def test_new_game_clears_an_existing_save_slot() -> None:
-    directory, path = _temp_save()
-    SaveSystem(path).write(SaveRecord("sewer_entrance", 32, ()))
-    game = Game(save_path=path)
-    try:
-        title = _boot_to_title(game)
-        assert title.continue_available
-        title._selected = 0
-        title._choose()
-        _play_through_opening(game)
-        assert not path.exists()
-        assert game.active_checkpoint_id == OPENING_CHECKPOINT_ID
-        assert game.progress.flags == set()
-    finally:
-        game._shutdown()
-        directory.cleanup()
-
-
-def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
+def test_a_saved_code_relaunches_into_the_same_game_and_respawn() -> None:
     directory, path = _temp_save()
     game = Game(save_path=path)
     try:
@@ -150,13 +89,13 @@ def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
         scene.sanity.current = 47
         came_in = scene.respawn.position_for_chuck()
         scene.update(0.01)
-        # The save the menu writes, at the door he came in by.
-        assert game.checkpoints.write_save("waterdeep_start", 47)
-
-        record = game.saves.load()
+        # The save the menu banks, at the door he came in by. It is
+        # handed back as a record, and the code is made of it.
+        record = game.checkpoints.save_here("waterdeep_start", 47)
         assert record == SaveRecord(
             "waterdeep_start", 47, ("sewer_completed",)
         )
+        code = save_code.for_display(record)
         assert game.active_checkpoint_id == "waterdeep_start"
 
         scene.sanity.deplete()
@@ -168,26 +107,27 @@ def test_anchor_save_relaunch_continue_restores_state_and_respawn() -> None:
     finally:
         game._shutdown()
 
+    # A fresh launch that has never seen this game, resuming from the
+    # twelve characters alone.
     game = Game(save_path=path)
     try:
-        title = _boot_to_title(game)
-        assert title.continue_available
+        _boot_to_title(game)
         calls = []
         real_load = game.checkpoints.load_checkpoint
         game.checkpoints.load_checkpoint = lambda checkpoint_id, **kwargs: (
             calls.append((checkpoint_id, kwargs))
             or real_load(checkpoint_id, **kwargs)
         )
-        title._selected = 1
-        title._choose()
-        scene = game.scenes.current
+        scene = game.checkpoints.resume_from(save_code.decode(code))
         assert calls == [(
             "waterdeep_start",
-            {"progress_flags": ("sewer_completed",), "sanity": 47,
+            {"progress_flags": ("sewer_completed",),
+             "sanity": config.SANITY_START,
              "cigarettes": 0, "deaths": 0},
         )]
         assert scene.map_name == "waterdeep_docks"
-        assert scene.sanity.current == 47
+        # Sanity is what a code trades away for being twelve characters.
+        assert scene.sanity.current == config.SANITY_START
         assert scene.tilemap.terrain_at(44, 17) == "v"
     finally:
         game._shutdown()
@@ -203,18 +143,9 @@ def test_continue_rejects_ids_that_are_not_save_points() -> None:
     -- `waterdeep_finale` is reached by a cutscene, not walked into --
     and an id that is not a checkpoint at all.
     """
-    directory, path = _temp_save()
-    try:
-        for checkpoint_id in ("waterdeep_finale", "not_a_checkpoint"):
-            SaveSystem(path).write(SaveRecord(checkpoint_id, 60, ()))
-            game = Game(save_path=path)
-            try:
-                title = _boot_to_title(game)
-                assert not title.continue_available
-            finally:
-                game._shutdown()
-    finally:
-        directory.cleanup()
+    for checkpoint_id in ("waterdeep_finale", "not_a_checkpoint"):
+        record = SaveRecord(checkpoint_id, 60, ())
+        assert not CheckpointLoader.can_resume(record), checkpoint_id
 
 
 def test_normal_map_entries_preserve_sanity_and_use_registry_checkpoints() -> None:
@@ -406,45 +337,6 @@ if __name__ == "__main__":
     _run_all()
 
 
-def test_the_new_save_format_leaves_the_old_file_where_it_was() -> None:
-    """Rolling the code back has to find the player's save intact.
-
-    Git can revert a commit; it cannot un-overwrite a file on disk. The
-    version moved to 2 *and* the file moved to a new name, so an older
-    build reads its own save.json exactly as it left it, and a newer
-    file it cannot understand is simply not its file.
-    """
-    import json
-    from src.systems.save import SAVE_FILENAME, SAVE_VERSION, default_save_path
-
-    assert SAVE_VERSION == 2
-    assert SAVE_FILENAME == "save2.json"
-    assert default_save_path().name == SAVE_FILENAME
-
-    directory = tempfile.TemporaryDirectory()
-    try:
-        old = Path(directory.name) / "save.json"
-        old.write_text(json.dumps({
-            "version": 1, "checkpoint_id": "waterdeep_start", "sanity": 60,
-            "progress_flags": [], "cigarettes": 3, "deaths": 1, "spoken": [],
-        }), encoding="utf-8")
-        before = old.read_text(encoding="utf-8")
-
-        path = Path(directory.name) / "save2.json"
-        game = Game(save_path=path)
-        try:
-            assert game.checkpoints.write_save("temple_1", 55)
-        finally:
-            game._shutdown()
-
-        assert path.exists(), "the new save went somewhere else"
-        assert old.read_text(encoding="utf-8") == before, "it ate the old save"
-        # ...and a version-1 file is refused rather than misread.
-        assert SaveSystem(old).load() is None
-    finally:
-        directory.cleanup()
-
-
 def test_a_door_is_a_save_point_and_a_cutscene_handoff_is_not() -> None:
     from src.systems.checkpoints import is_save_point
     from src.systems import save_registry
@@ -463,7 +355,7 @@ def test_a_door_is_a_save_point_and_a_cutscene_handoff_is_not() -> None:
     game = Game(save_path=path)
     try:
         try:
-            game.checkpoints.write_save("waterdeep_finale", 60)
+            game.checkpoints.save_here("waterdeep_finale", 60)
         except ValueError as exc:
             assert "not a save point" in str(exc)
         else:
@@ -480,14 +372,16 @@ def test_a_save_written_at_a_door_survives_the_round_trip() -> None:
         game.progress.enable("sewer_completed")
         game.cigarettes.replace(42)
         game.deaths.replace(3)
-        assert game.checkpoints.write_save("chult_2", 77)
+        code = save_code.for_display(
+            game.checkpoints.save_here("chult_2", 77))
     finally:
         game._shutdown()
     try:
-        record = SaveSystem(path).load()
-        assert record is not None
+        # The round trip is the code's, because the code is the save.
+        record = save_code.decode(code)
         assert record.checkpoint_id == "chult_2"
-        assert record.sanity == 77
+        # Sanity is the one thing a code does not carry.
+        assert record.sanity == config.SANITY_START
         assert "sewer_completed" in record.progress_flags
         assert record.cigarettes == 42 and record.deaths == 3
     finally:

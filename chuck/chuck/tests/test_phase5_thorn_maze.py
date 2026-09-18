@@ -9,6 +9,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.world.tilemap import TileMap
@@ -159,16 +160,17 @@ def test_maze_transition_and_chult_3_save_do_not_bounce() -> None:
         scene.update(0.0)
         assert scene.map_name == "chult_run"
 
-        # The save the menu writes, at the door he came in by.
-        assert game.checkpoints.write_save("chult_3", scene.sanity.current)
+        # The save the menu banks, at the door he came in by.
+        code = save_code.for_display(
+            game.checkpoints.save_here("chult_3", scene.sanity.current))
         assert game.active_checkpoint_id == "chult_3"
-        assert game.saves.load().checkpoint_id == "chult_3"
+        assert save_code.decode(code).checkpoint_id == "chult_3"
     finally:
         game._shutdown()
 
     resumed = Game(save_path=save_path)
     try:
-        scene = resumed.checkpoints.continue_game()
+        scene = resumed.checkpoints.resume_from(save_code.decode(code))
         assert scene.map_name == "chult_run"
         assert resumed.active_checkpoint_id == "chult_3"
     finally:

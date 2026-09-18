@@ -26,6 +26,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.choice_trigger import _TRIGGER_TILES, _WALK_TRIGGERS
 from src.scenes.desert_arrival_cutscene_scene import (
@@ -340,9 +341,10 @@ def test_the_crossing_comes_out_in_the_playable_desert() -> None:
 
     directory, game, world = _world(AWAKE)
     try:
-        assert game.checkpoints.write_save(
+        code = save_code.for_display(
+            game.checkpoints.save_here(
             "tahuya_interior", sanity=52
-        )
+            ))
         scene = DesertArrivalCutsceneScene(game, sanity=52)
         scene.on_enter()
         game.scenes.replace(scene)
@@ -368,7 +370,7 @@ def test_the_crossing_comes_out_in_the_playable_desert() -> None:
         # The desert's own door owns persistence from here: the
         # handoff itself writes nothing, so the save still points at the
         # cabin until the player reaches the new one.
-        record = game.checkpoints.saves.load()
+        record = save_code.decode(code)
         assert record is not None
         assert record.checkpoint_id == "tahuya_interior"
 

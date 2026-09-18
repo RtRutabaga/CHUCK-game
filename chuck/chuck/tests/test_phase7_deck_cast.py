@@ -8,6 +8,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.deck_pirate import DeckPirateNPC
 from src.systems.captain_confrontation import (
@@ -174,15 +175,16 @@ def test_all_four_pirates_switch_to_repeat_dialogue_and_persist() -> None:
                 assert pirate.interact(scene.player) == f"{pirate.npc_id}_first"
                 assert pirate.interact(scene.player) == f"{pirate.npc_id}_repeat"
             assert FLAGS <= game.progress.flags
-            assert game.checkpoints.write_save(
+            code = save_code.for_display(
+                game.checkpoints.save_here(
                 "ship_exterior_deck", scene.sanity.current
-            )
+                ))
         finally:
             game._shutdown()
 
         resumed = Game(save_path=path)
         try:
-            scene = resumed.checkpoints.continue_game()
+            scene = resumed.checkpoints.resume_from(save_code.decode(code))
             assert FLAGS <= resumed.progress.flags
             pirates = [npc for npc in scene.npcs
                        if isinstance(npc, DeckPirateNPC)]

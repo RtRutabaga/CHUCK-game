@@ -8,6 +8,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.pirate_npc import PirateNPC
 from src.systems.checkpoints import CHECKPOINT_BY_ID
@@ -111,15 +112,16 @@ def test_crew_pirate_memory_persists_through_shared_save_loader() -> None:
         try:
             game.checkpoints.load_checkpoint("ship_crew_quarters")
             game.progress.enable("crew_pirate_met")
-            assert game.checkpoints.write_save(
+            code = save_code.for_display(
+                game.checkpoints.save_here(
                 "ship_crew_quarters", config.SANITY_START
-            )
+                ))
         finally:
             game._shutdown()
 
         resumed = Game(save_path=save_path)
         try:
-            scene = resumed.checkpoints.continue_game()
+            scene = resumed.checkpoints.resume_from(save_code.decode(code))
             assert scene.map_name == MAP_NAME
             assert resumed.progress.has("crew_pirate_met")
             pirate = next(npc for npc in scene.npcs

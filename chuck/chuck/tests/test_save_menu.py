@@ -83,18 +83,18 @@ def test_saving_at_a_door_shows_a_code_for_the_game_on_disk() -> None:
             assert pause.options == SAVED
 
             decoded = save_code.decode(pause._code)
-            written = game.saves.load()
-            assert decoded.checkpoint_id == written.checkpoint_id == "temple_1"
-            assert decoded.cigarettes == written.cigarettes == 214
-            assert decoded.deaths == written.deaths == 9
-            assert set(decoded.progress_flags) == set(written.progress_flags)
-            assert "Saved" in pause._note
+            assert decoded.checkpoint_id == "temple_1"
+            assert decoded.cigarettes == 214
+            assert decoded.deaths == 9
+            assert "chult_reached" in decoded.progress_flags
+            # The code is the save; nothing is kept on the machine.
+            assert "Nothing is kept" in pause._note
         finally:
             game._shutdown()
 
 
-def test_the_code_is_the_sanity_free_form_of_the_record_on_disk() -> None:
-    """The slot keeps the exact figure; the code resumes on a fresh 60."""
+def test_the_code_leaves_sanity_behind() -> None:
+    """Twelve characters had no room for it, and that is the whole cost."""
     with tempfile.TemporaryDirectory() as directory:
         game = _game(directory)
         try:
@@ -104,7 +104,6 @@ def test_the_code_is_the_sanity_free_form_of_the_record_on_disk() -> None:
             game.scenes.push(pause)
             pause.choose("SAVE GAME")
 
-            assert game.saves.load().sanity == 23
             assert save_code.decode(pause._code).sanity == config.SANITY_START
         finally:
             game._shutdown()
@@ -124,7 +123,6 @@ def test_there_is_nowhere_to_save_from_a_cutscene() -> None:
             assert pause.page == "save"
             assert pause._code is None
             assert pause.options == NOT_HERE
-            assert game.saves.load() is None
         finally:
             game._shutdown()
 
@@ -222,19 +220,18 @@ def test_a_code_typed_in_starts_that_game() -> None:
             game._shutdown()
 
 
-def test_loading_a_code_is_what_continue_comes_back_to() -> None:
-    """Otherwise CONTINUE would take them to whatever was here before."""
+def test_a_loaded_code_is_where_the_game_now_is() -> None:
+    """Nothing is kept on the machine, so the code is the whole answer."""
     code = save_code.for_display(
         SaveRecord("temple_9", 60, ("chult_reached",), 3, 1))
     with tempfile.TemporaryDirectory() as directory:
         game = _game(directory)
         try:
-            game.saves.write(SaveRecord("temple_1", 60, (), 0, 0))
             menu = _load_page(game)
             _type(menu, code.replace("-", ""))
             _enter(menu)
-            assert game.saves.load().checkpoint_id == "temple_9"
-            assert game.checkpoints.can_continue
+            assert game.active_checkpoint_id == "temple_9"
+            assert game.cigarettes.total == 3 and game.deaths.total == 1
         finally:
             game._shutdown()
 
@@ -248,8 +245,8 @@ def test_a_mistyped_code_stays_on_the_menu_and_says_so() -> None:
             _enter(menu)
             assert game.scenes.current is menu
             assert menu._field().error
-            # Nothing was started and nothing was written.
-            assert game.saves.load() is None
+            # Nothing was started.
+            assert game.active_checkpoint_id != "temple_9"
         finally:
             game._shutdown()
 
@@ -364,7 +361,6 @@ def test_a_code_carries_a_game_from_one_machine_to_another() -> None:
     with tempfile.TemporaryDirectory() as second_dir:
         second = _game(second_dir)
         try:
-            assert not second.checkpoints.can_continue
             menu = _load_page(second)
             # Pasted the way it would arrive: dashes, and lower case.
             menu._field().set_text(code.lower())
@@ -409,8 +405,8 @@ def test_quitting_hands_the_code_over_before_it_asks() -> None:
             game._shutdown()
 
 
-def test_quitting_writes_nothing() -> None:
-    """The warning is read-only. It offers a code; it does not save."""
+def test_quitting_only_offers_a_code() -> None:
+    """The warning is read-only: it hands a code over, it does not bank one."""
     with tempfile.TemporaryDirectory() as directory:
         game = _game(directory)
         try:
@@ -419,7 +415,6 @@ def test_quitting_writes_nothing() -> None:
             game.scenes.push(pause)
             pause.choose("QUIT TO TITLE")
             assert pause._code
-            assert game.saves.load() is None
         finally:
             game._shutdown()
 

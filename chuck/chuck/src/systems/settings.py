@@ -1,17 +1,36 @@
 """Player settings: music and sound levels, and fullscreen.
 
-Kept apart from the save slot on purpose. NEW GAME wipes the save, and a
-player who turned the music down should not have it come back up because
-they started over. Stored beside the save as settings.json, and anything
-unreadable or out of range falls back to the defaults rather than
-stopping the game from starting.
+These are the only thing the game keeps on the machine. The save is a
+code the player holds, and the save file went with CONTINUE -- but a
+player who turned the music down should not have it come back up
+because they started over, so settings persist on their own.
+
+Anything unreadable or out of range falls back to the defaults rather
+than stopping the game from starting.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 import json
+import os
 from pathlib import Path
+
+SETTINGS_FILENAME = "settings.json"
+
+
+def default_settings_path() -> Path:
+    """The per-user settings path, without depending on the working folder.
+
+    This used to be derived from the save file's location. The save file
+    is gone, so it stands on its own -- in the same place, so a player
+    who already had settings keeps them.
+    """
+    if os.name == "nt":
+        base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData/Local"))
+    else:
+        base = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share"))
+    return base / "CHUCK" / SETTINGS_FILENAME
 
 # The volume sliders run 0..LEVELS in whole steps. DEFAULT_LEVEL is where
 # the game's authored mix sits, so a fresh install sounds exactly as it

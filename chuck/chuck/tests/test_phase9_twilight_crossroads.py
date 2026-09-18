@@ -10,6 +10,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.world import collision
@@ -193,8 +194,8 @@ def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:
             came_in = scene.respawn.position_for_chuck()
             scene.update(0.0)
             # Saved from the menu, at the door he came in by.
-            assert game.checkpoints.write_save(
-                "feywild_13", scene.sanity.current)
+            code = save_code.for_display(game.checkpoints.save_here(
+                "feywild_13", scene.sanity.current))
             assert game.active_checkpoint_id == "feywild_13"
 
             scene.rats.clear()
@@ -220,7 +221,7 @@ def test_shared_checkpoint_save_continue_respawn_and_round_trip() -> None:
 
             # Continue still restores the saved door, not the unsaved
             # map edge visited afterward.
-            resumed = game.checkpoints.continue_game()
+            resumed = game.checkpoints.resume_from(save_code.decode(code))
             assert resumed is not None and resumed.map_name == MAP_NAME
         finally:
             game._shutdown()

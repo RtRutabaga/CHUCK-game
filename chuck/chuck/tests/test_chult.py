@@ -8,6 +8,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.scenes.falling_cutscene_scene import (
     CHULT_FADE_OUT_START, CHULT_HANDOFF_TIME, FallingCutsceneScene,
@@ -119,14 +120,16 @@ def test_cutscene_fades_to_black_then_chult_fades_in() -> None:
 
 def test_chult_anchor_saves_and_continue_restores_it() -> None:
     directory, game = _game()
-    path = game.saves.path
+    path = game.settings_store.path
     try:
         scene = game.checkpoints.load_checkpoint("chult_landing")
         scene.update(config.AREA_FADE_DURATION + 0.01)
         scene.sanity.current = 63
-        assert game.checkpoints.write_save("chult_landing", 63)
-        assert game.saves.load() == SaveRecord(
-            "chult_landing", 63, ("chult_reached", "sewer_completed")
+        code = save_code.for_display(
+            game.checkpoints.save_here("chult_landing", 63))
+        assert save_code.decode(code) == SaveRecord(
+            "chult_landing", config.SANITY_START,
+            ("chult_reached", "sewer_completed")
         )
         assert game.active_checkpoint_id == "chult_landing"
     finally:
@@ -134,9 +137,10 @@ def test_chult_anchor_saves_and_continue_restores_it() -> None:
 
     game = Game(save_path=path)
     try:
-        scene = game.checkpoints.continue_game()
+        scene = game.checkpoints.resume_from(save_code.decode(code))
         assert scene.map_name == "chult_jungle"
-        assert scene.sanity.current == 63
+        # A code does not carry sanity.
+        assert scene.sanity.current == config.SANITY_START
         assert game.active_checkpoint_id == "chult_landing"
     finally:
         game._shutdown()

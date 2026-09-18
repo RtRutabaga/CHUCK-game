@@ -14,6 +14,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.systems.checkpoints import CHECKPOINT_BY_ID
 from src.world.tilemap import TileMap
@@ -124,8 +125,9 @@ def test_temple_7_checkpoint_saves_continues_and_respawns() -> None:
         assert len(scene.undead) == 12
         came_in = scene.respawn.position_for_chuck()
         scene.sanity.current = 58
-        # The save the menu writes, at the door he came in by.
-        assert game.checkpoints.write_save("temple_7", scene.sanity.current)
+        # The save the menu banks, at the door he came in by.
+        code = save_code.for_display(
+            game.checkpoints.save_here("temple_7", scene.sanity.current))
         assert game.active_checkpoint_id == "temple_7"
         scene.sanity.deplete()
         scene.update(config.RESPAWN_FADE_OUT + 0.01)
@@ -138,10 +140,11 @@ def test_temple_7_checkpoint_saves_continues_and_respawns() -> None:
 
     resumed = Game(save_path=save_path)
     try:
-        scene = resumed.checkpoints.continue_game()
+        scene = resumed.checkpoints.resume_from(save_code.decode(code))
         assert scene.map_name == MAP_NAME
         assert resumed.active_checkpoint_id == "temple_7"
-        assert scene.sanity.current == 58
+        # A code does not carry sanity.
+        assert scene.sanity.current == config.SANITY_START
     finally:
         resumed._shutdown()
         directory.cleanup()

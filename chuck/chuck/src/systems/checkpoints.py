@@ -16,7 +16,7 @@ from src.systems.cabin_progress import (
 )
 from src.systems.captain_confrontation import CAPTAIN_REQUIRED_FLAGS
 from src.systems import save_registry
-from src.systems.save import SaveRecord, SaveSystem
+from src.systems.save import SaveRecord
 
 if TYPE_CHECKING:
     from src.core.game import Game
@@ -1218,9 +1218,8 @@ def is_save_point(checkpoint_id: str) -> bool:
 class CheckpointLoader:
     """Owns checkpoint selection, initialization, and save restoration."""
 
-    def __init__(self, game: "Game", saves: SaveSystem) -> None:
+    def __init__(self, game: "Game") -> None:
         self.game = game
-        self.saves = saves
 
     @property
     def development_checkpoints(self) -> tuple[CheckpointDefinition, ...]:
@@ -1298,7 +1297,6 @@ class CheckpointLoader:
         return scene
 
     def new_game(self):
-        self.saves.delete()
         self.game.spoken_to.clear()
         return self.load_checkpoint(OPENING_CHECKPOINT_ID, cigarettes=0,
                                     deaths=0)
@@ -1316,28 +1314,11 @@ class CheckpointLoader:
                 and is_save_point(record.checkpoint_id)
                 and set(record.progress_flags) <= KNOWN_PROGRESS_FLAGS)
 
-    def valid_save(self) -> SaveRecord | None:
-        record = self.saves.load()
-        if record is None or not self.can_resume(record):
-            return None
-        return record
-
-    @property
-    def can_continue(self) -> bool:
-        return self.valid_save() is not None
-
-    def resume_from(self, record: SaveRecord, *, remember: bool = True):
-        """Start playing from a record, wherever it came from.
-
-        `remember` writes it to the local slot, which is what a pasted
-        code wants: having loaded it, CONTINUE should come back here and
-        not to whatever was on this machine before.
-        """
+    def resume_from(self, record: SaveRecord):
+        """Start playing from a record -- which only ever comes from a code."""
         if not self.can_resume(record):
             return None
         self.game.spoken_to = set(record.spoken)
-        if remember:
-            self.saves.write(record)
         return self.load_checkpoint(
             record.checkpoint_id,
             progress_flags=record.progress_flags,
@@ -1346,27 +1327,22 @@ class CheckpointLoader:
             deaths=record.deaths,
         )
 
-    def continue_game(self):
-        record = self.valid_save()
-        if record is None:
-            return None
-        # Already on disk, and already the record we are loading.
-        return self.resume_from(record, remember=False)
+    def save_here(self, checkpoint_id: str, sanity: int) -> SaveRecord:
+        """Bank the save point and hand back the record to make a code of.
 
-    def write_save(self, checkpoint_id: str, sanity: int) -> bool:
-        """Persist durable resume state at a door Chuck has walked in by.
-
-        The door is the save point and the respawn point both, so this
-        is the only thing that writes the slot. It refuses anything that
-        is not in the save registry, because a record it cannot write as
-        a code is a record that cannot leave the machine it is on.
+        Nothing is written to a disk. The door is the save point and the
+        respawn point both; this marks it and returns the game as it
+        stands, which the menu turns into the twelve characters the
+        player keeps. It refuses anything not in the save registry,
+        because a record that cannot be written as a code is a record
+        that cannot leave the machine it is on.
         """
         self.definition(checkpoint_id)
         if not is_save_point(checkpoint_id):
             raise ValueError(
                 f"Checkpoint {checkpoint_id!r} is not a save point")
         self.set_runtime_checkpoint(checkpoint_id)
-        return self.saves.write(self.current_record(checkpoint_id, sanity))
+        return self.current_record(checkpoint_id, sanity)
 
     def current_record(self, checkpoint_id: str, sanity: int) -> SaveRecord:
         """The game as it stands, whether or not it is being written down.

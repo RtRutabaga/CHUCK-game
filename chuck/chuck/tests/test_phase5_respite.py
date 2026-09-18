@@ -9,6 +9,7 @@ os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.player import Player
 from src.entities.undead import UndeadEnemy
@@ -246,15 +247,16 @@ def test_chult_4_checkpoint_and_the_save_share_the_loader() -> None:
     game = Game(save_path=save_path)
     try:
         scene = game.checkpoints.load_checkpoint("chult_4")
-        # The save the menu writes, at the door he came in by.
-        assert game.checkpoints.write_save("chult_4", scene.sanity.current)
+        # The save the menu banks, at the door he came in by.
+        code = save_code.for_display(
+            game.checkpoints.save_here("chult_4", scene.sanity.current))
         assert game.active_checkpoint_id == "chult_4"
     finally:
         game._shutdown()
 
     resumed = Game(save_path=save_path)
     try:
-        scene = resumed.checkpoints.continue_game()
+        scene = resumed.checkpoints.resume_from(save_code.decode(code))
         assert scene.map_name == "chult_respite"
         assert resumed.active_checkpoint_id == "chult_4"
     finally:

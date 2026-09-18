@@ -11,6 +11,7 @@ os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 import pygame
 
 from src.core import config
+from src.systems import save_code
 from src.core.game import Game
 from src.entities.player import Player
 from src.systems.checkpoints import CHECKPOINT_BY_ID
@@ -207,12 +208,14 @@ def test_orchard_uses_shared_transitions_checkpoints_and_save() -> None:
             scene.update(0.0)
             assert game.active_checkpoint_id == "feywild_3"
             # Saved from the menu, at the door he came in by.
-            assert game.checkpoints.write_save("feywild_3", 59)
+            code = save_code.for_display(
+                game.checkpoints.save_here("feywild_3", 59))
 
-            resumed = game.checkpoints.continue_game()
+            resumed = game.checkpoints.resume_from(save_code.decode(code))
             assert resumed is not None
             assert resumed.map_name == MAP_NAME
-            assert resumed.sanity.current == 59
+            # A code does not carry sanity.
+            assert resumed.sanity.current == config.SANITY_START
             assert not resumed.reactive_flowers.groups["orchard"].active
         finally:
             game._shutdown()
