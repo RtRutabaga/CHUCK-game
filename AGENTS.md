@@ -55,22 +55,30 @@ Avoid traditional equipment progression, inventory-driven design, quest logs, ra
 
 Only one coding agent should make changes at a time.
 
+Sessions can end without warning on a usage limit. The repository is the
+handoff; chat is not. `docs/development/TWO-AGENT-GIT-WORKFLOW.md` covers
+session sizing, committing at every green point, and picking up a dirty tree.
+
 Before editing:
 
 1. Read this file.
-2. Read `docs/README.md`.
-3. Read `docs/development/CURRENT-PHASE.md`.
-4. Read the relevant design supplement.
-5. Inspect the current code and recent Git history.
-6. State the intended implementation boundary.
+2. Read the **Baton** block at the top of `docs/development/HANDOFF.md`.
+3. Read `docs/README.md`.
+4. Read `docs/development/CURRENT-PHASE.md`.
+5. Read the relevant design supplement.
+6. Inspect the current code and recent Git history.
+7. State the intended implementation boundary.
 
 After editing:
 
 1. Run the game or the most relevant available checks.
 2. Verify the requested feature.
 3. Review the diff for unrelated changes.
-4. Update `docs/development/HANDOFF.md`.
+4. Update the Baton in `docs/development/HANDOFF.md`.
 5. Commit the completed pass with a clear commit message.
+
+Do not leave a session holding uncommitted work. Commit at every green
+point rather than once at the end.
 
 The next agent should begin from the repository state and Git history, not assumptions about the previous agent's chat.
 

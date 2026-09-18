@@ -15,9 +15,10 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Claude Code and Codex use the same Git repository.
 - Only one coding agent edits at a time.
 - Each completed pass should be tested, handed off, and committed before switching agents.
-- Each newly authored gameplay map receives one physical Ashtray/checkpoint,
+- ~~Each newly authored gameplay map receives one physical Ashtray/checkpoint,
   registered through the shared save/checkpoint loader rather than a separate
-  map-specific or development teleport path.
+  map-specific or development teleport path.~~ **Superseded** — see the save
+  and browser decisions at the end of this file. Do not add Ashtrays.
 - Phase 5 and Phase 6 are complete. Phase 6's implemented scope remains
   documented in `PHASE-6.md`.
 - Phase 6 begins at the jungle-temple interior and ends when Chuck reaches the
@@ -56,3 +57,40 @@ Record durable decisions another agent might otherwise reverse. Do not use this 
 - Phase 12's counter map awakens only after all four light entities have been
   spoken to and Chuck subsequently crosses the back door. Its desert-arrival
   cutscene is the end boundary; playable desert content belongs to Phase 13.
+
+## Save, Respawn, and the Browser (2026-09-17)
+
+- The Ashtray is gone from the game entirely: object, interaction and writing.
+  Do not reintroduce it, and do not add one to a new map. The only surviving
+  ashtray is Zephyros's cigarette metaphor in `data/dialogue/zephyros.json`,
+  which is about the cigarette the game is named after and not about saving.
+- A map's **door** — the runtime entry Chuck walked in by — is both the save
+  point and the respawn point. One per visit, set on arrival, unmoved while he
+  is in the map. Measured cost against the old Ashtrays: a median of 1.7 tiles
+  of extra walking.
+- A save is written from the pause menu, not by touching anything in the world.
+- The portable save is a **twelve-character code** (`src/systems/save_code.py`).
+  Its two registries in `src/systems/save_registry.py` are append-only: reorder
+  one and every code in the wild silently means something else.
+- The code's check is one Reed-Solomon symbol, not a hash. It always catches a
+  single wrong character and a single transposition; beyond that it is a
+  one-in-32 coin, and a made-up code is a real save about one time in fifty-six.
+  That is deliberate, measured, and the price of twelve characters.
+- Past their ceilings the cigarette and death counters read "a lot" rather than
+  a number (`src/systems/tally.py`). The code's field widths are sized to those
+  ceilings, not the other way round.
+
+## Map Generators Are Stale (2026-09-17)
+
+- The generators in `tools/` no longer reproduce every shipped map. Several
+  Feywild maps have been dressed by hand since generation and differ from their
+  generator by 500 cells and more — `feywild_pollen_orchard` by 663.
+- **Re-running a generator for one of those maps destroys authored work.**
+  Treat the shipped `assets/maps/*.txt` as the artifact and edit it directly,
+  unless a test holds that map to its generator.
+- Some maps *are* held to their generators by tests — the modern-city set in
+  `test_city_furnishing.py`, the desert pair in `test_desert_ribcage_and_camp.py`.
+  For those the generator is authoritative and the map follows it.
+- This was established by running every generator and diffing; it cost a
+  session to find. Do not rediscover it.
+

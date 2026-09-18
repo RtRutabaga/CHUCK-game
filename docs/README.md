@@ -34,7 +34,11 @@ Then read the topic-specific supplement relevant to the task.
   and publishing it from GitHub Pages. A technical document, not a phase:
   it changes no game content and does not open Phase 15. Partly built;
   read its section 2 before touching the web work.
-- `development/HANDOFF.md`: short-lived relay notes between Claude Code and Codex.
+- `development/HANDOFF.md`: the relay note. Opens with a **Baton** block —
+  the one thing to read to pick up work, and the one thing that survives a
+  session ending on a usage limit. Recent passes follow it.
+- `development/HANDOFF-ARCHIVE.md`: older passes, moved out of the read
+  path. Not part of starting a task.
 - `development/DECISIONS.md`: durable decisions future agents could otherwise reverse.
 - `source/campaigns/`: historical D&D source material.
 
