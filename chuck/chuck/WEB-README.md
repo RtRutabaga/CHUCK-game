@@ -37,6 +37,10 @@ are not shipped. Generated output and `.venv-web` are ignored by Git.
 - Browser music replacement explicitly stops the previous stream before
   loading a new one. This fixes the opening hang while the title cue was
   still fading at the cutscene's 0.2-second music handoff.
+- Browser mixer buffer is 2048 samples (~93 ms), giving audio more headroom
+  during rendering than the desktop's 512 samples (~23 ms). This targets
+  reported walking dropouts; listening confirmation is pending and sound
+  effects may have slightly more latency.
 - Use **127.0.0.1**, not `localhost`: Pygbag 0.9.3 treats the latter as a
   runtime-development host and tried to fetch pygame from a missing local
   `/cdn/` path in testing.

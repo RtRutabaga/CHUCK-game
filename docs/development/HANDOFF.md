@@ -5,6 +5,15 @@
 
 ## Baton
 
+- **Latest pass (Codex):** Sean reports glitchy audio while walking in web;
+  unsure whether music or footsteps. Base `5f74abe`. Increased browser mixer
+  buffer to 2048 (~93 ms at 22050 Hz); desktop remains 512 (~23 ms).
+  This mitigates suspected callback starvation, not an audibly confirmed fix.
+  Six browser-runtime and ten audio checks pass, plus mocked startup checks
+  confirming each platform's buffer. Web preview rebuilt successfully.
+  Next: Sean's listening test; if glitches persist, measure movement/frame
+  stalls before expanding the change. Slightly increased SFX latency possible.
+
 - **Branch / base commit:** `save-codes`, this browser-fix pass starts at
   `ac3199d`; previous build foundation is `c54100a`.
 - **Completed:** fixed Sean's narrow/stretching browser canvas and opening
@@ -38,6 +47,13 @@
 ---
 
 ## Recent Passes
+
+## Latest Pass — Browser Audio Buffer (2026-09-18)
+
+- Added browser-only buffering headroom for reported walking audio glitches.
+- Desktop audio, cues and playback rules unchanged. 16 focused checks and
+  both platform startup assertions pass; web build succeeds.
+- Audible result awaits Sean's test in a fresh preview tab.
 
 ## Latest Pass — Browser Cutscene and Canvas Fix (2026-09-18)
 

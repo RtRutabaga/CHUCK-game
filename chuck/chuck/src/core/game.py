@@ -45,9 +45,12 @@ class Game:
 
     def __init__(self, save_path: str | Path | None = None) -> None:
         """Initialize pygame, the window, and core managers."""
-        # Match the mixer to our rendered audio before pygame.init.
+        # Match the mixer to our rendered audio before pygame.init. Browser
+        # rendering and SDL audio share the host thread: give its callbacks
+        # ~93 ms of headroom rather than the desktop's ~23 ms (at 22050 Hz).
+        audio_buffer = 2048 if sys.platform == "emscripten" else 512
         pygame.mixer.pre_init(frequency=22050, size=-16, channels=2,
-                              buffer=512)
+                              buffer=audio_buffer)
         use_positional_buttons()
         pygame.init()
 
