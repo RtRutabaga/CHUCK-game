@@ -27,6 +27,7 @@ The two code pages are the whole of the save UI:
 from __future__ import annotations
 
 import pygame
+import sys
 
 from src.core import config
 from src.scenes.scene import Scene
@@ -57,9 +58,9 @@ CONTROLS_NOTE = "SAVE GAME gives you a code."
 def controls_rows(input_manager) -> tuple[tuple[str, str], ...]:
     """The controls page for whatever the player last used."""
     if input_manager is None or not input_manager.using_controller:
-        return CONTROLS
+        return CONTROLS[:-1] if sys.platform == "emscripten" else CONTROLS
     label = prompts.label
-    return (
+    rows = (
         ("MOVE", prompts.PAD_MOVE),
         ("TALK / EXAMINE", label(input_manager, "interact")),
         ("JUMP", label(input_manager, "jump")),
@@ -67,9 +68,18 @@ def controls_rows(input_manager) -> tuple[tuple[str, str], ...]:
         ("PAUSE", label(input_manager, "pause")),
         ("FULLSCREEN", "F11 (KEYBOARD)"),
     )
+    return rows[:-1] if sys.platform == "emscripten" else rows
 
 MAIN = ("RESUME", "CONTROLS", "VOLUME", "SAVE GAME", "FULLSCREEN",
         "QUIT TO TITLE")
+
+
+def main_options() -> tuple[str, ...]:
+    """SDL owns desktop fullscreen; browser chrome owns web fullscreen."""
+    if sys.platform == "emscripten":
+        return tuple(option for option in MAIN if option != "FULLSCREEN")
+    return MAIN
+
 VOLUME = ("MUSIC", "SOUND", "BACK")
 CONFIRM = ("NO", "YES")
 SAVED = ("COPY", "BACK")
@@ -137,7 +147,7 @@ class PauseScene(Scene):
     @property
     def options(self) -> tuple[str, ...]:
         if self.page == "main":
-            return MAIN
+            return main_options()
         if self.page == "volume":
             return VOLUME
         if self.page == "confirm":
@@ -173,7 +183,7 @@ class PauseScene(Scene):
         if self.page == "main" or self.standalone:
             self.close()
         else:
-            self._goto("main", MAIN.index(
+            self._goto("main", main_options().index(
                 {"controls": "CONTROLS", "volume": "VOLUME",
                  "save": "SAVE GAME",
                  "confirm": "QUIT TO TITLE"}.get(self.page, "RESUME")))
@@ -404,7 +414,7 @@ class PauseScene(Scene):
 
     def _draw_main(self, canvas) -> None:
         rect = self._panel(canvas, 150, 117, "PAUSED")
-        self._menu(canvas, rect, [self.label(o) for o in MAIN], rect.y + 26)
+        self._menu(canvas, rect, [self.label(o) for o in self.options], rect.y + 26)
 
     def _draw_controls(self, canvas) -> None:
         rect = self._panel(canvas, 230, 146, "CONTROLS")

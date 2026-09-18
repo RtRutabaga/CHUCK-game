@@ -1,7 +1,7 @@
 """Stage a browser-only copy, then package it with Pygbag.
 
 Run from any directory: python tools/build_web.py
-Add --serve to build and serve locally at http://localhost:8000.
+Add --serve to build and serve locally at http://127.0.0.1:8000.
 Desktop WAV masters and save files are never included or modified.
 """
 
@@ -53,11 +53,25 @@ def main() -> None:
     args = parser.parse_args()
     directory = stage()
     command = [sys.executable, "-m", "pygbag", "--no_opt", "--title", "CHUCK"]
-    if not args.serve:
-        command.append("--build")
+    command.append("--build")
     subprocess.run([*command, str(directory)], check=True)
-    if not args.serve:
-        print(f"Browser files: {directory / 'build' / 'web'}", flush=True)
+    web = directory / "build" / "web"
+    page = web / "index.html"
+    # Override the stock template's independent width/height scaling. SDL
+    # retains a fixed framebuffer; CSS fits it into the browser viewport.
+    style = """<style>
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #000 !important; }
+#canvas { width: min(100vw, 177.777778vh) !important;
+          height: min(100vh, 56.25vw) !important;
+          position: fixed !important; inset: 0 !important;
+          margin: auto !important; border: 0 !important;
+          image-rendering: pixelated; }
+</style>"""
+    page.write_text(page.read_text(encoding="utf-8") + style, encoding="utf-8")
+    print(f"Browser files: {web}", flush=True)
+    if args.serve:
+        subprocess.run([sys.executable, "-m", "http.server", "8000",
+                        "--bind", "127.0.0.1", "--directory", str(web)], check=True)
 
 
 if __name__ == "__main__":

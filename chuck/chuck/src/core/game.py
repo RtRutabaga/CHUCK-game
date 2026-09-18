@@ -13,6 +13,7 @@ system, or entity instead.
 
 import os
 import asyncio
+import sys
 from pathlib import Path
 
 import pygame
@@ -135,6 +136,9 @@ class Game:
         If the display will not give us fullscreen, the window is the
         fallback rather than a crash.
         """
+        if sys.platform == "emscripten":
+            return pygame.display.set_mode(
+                (config.WINDOW_WIDTH, config.WINDOW_HEIGHT))
         extra = {"vsync": 1} if vsync else {}
         if fullscreen:
             try:
@@ -152,6 +156,8 @@ class Game:
 
     def set_fullscreen(self, fullscreen: bool) -> None:
         """Switch between fullscreen and a window, and remember it."""
+        if sys.platform == "emscripten":
+            return  # Browser chrome owns fullscreen; never recreate SDL.
         self.settings.fullscreen = bool(fullscreen)
         self.window = self._open_window(self.settings.fullscreen,
                                         vsync=False)

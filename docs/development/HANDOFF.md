@@ -5,41 +5,49 @@
 
 ## Baton
 
-- **Branch / base commit:** `save-codes`, runtime/build foundation `c54100a`.
-- **Committed and done:** reconciled the unfinished browser pass (WEB-BUILD
-  step 0). Async browser loop, OGG-only staging, pinned build tools, direct
-  pygame preload import and browser-console tracebacks. Desktop loop retained.
-- **Verified:** all 1,291 checks across 189 desktop test modules pass. Initial
-  cigarette-counter test failed because its default save folder was protected;
-  all seven checks in that module passed with LOCALAPPDATA redirected to
-  `chuck/chuck/build/test-userdata`. No game fix was needed. New async tests
-  cover yielding to the host, uncapped tick, dt clamping and shutdown on error.
-- **Browser evidence:** real title launch on Pygbag 0.9.3, CPython 3.12.12,
-  pygame-ce 2.5.7 / SDL 2.28.4. NEW GAME changed loader status to diagnostic
-  punctuation; neither gameplay nor a traceback was captured before the browser
-  connection became unavailable on resume. This is unresolved, not a diagnosed
-  feature gap. Do not claim the browser game is playable or publish yet.
-- **Build measurements:** 41 audio files (24 music, 17 SFX), 87.5 MB WAV ->
-  10.4 MB OGG. Every encoded file preserves frames/rate/channels. Final tar.gz
-  is 11,128,737 bytes; excludes WAVs, saves, tools, tests, venv and bytecode.
-  Runtime downloads are additional. Cold-load time/FPS and listening pending.
-- **Expensive findings:** pygbag needs a direct pygame import in main.py to
-  discover its dependency. Whole-track SoundFile Vorbis writes stack-overflow
-  on Windows; streaming 8192-frame blocks works. Desktop WAV masters untouched.
-- **Dirty work:** none after this handoff commit. Local build environment and
-  outputs are ignored. Build/run instructions: `chuck/chuck/WEB-README.md`.
-- **Known issues:** stale Feywild generators (DECISIONS.md); browser save/settings
-  persistence and fullscreen remain later WEB-BUILD steps. The standard Pygbag
-  loader waits for a canvas click before Game starts, but sound is not yet
-  audibly verified. Browser save-code round trip remains unverified.
-- **Next bounded task:** WEB-BUILD step 1 with a connected browser: reproduce
-  NEW GAME, inspect the JS console traceback if it fails, then play the docks,
-  sewer and one transition and record load time/FPS. Test save-code loading.
-  No Pages workflow or publishing was added in this pass.
+- **Branch / base commit:** `save-codes`, this browser-fix pass starts at
+  `ac3199d`; previous build foundation is `c54100a`.
+- **Completed:** fixed Sean's narrow/stretching browser canvas and opening
+  cutscene freeze. Browser framebuffer is fixed at 1280x720, CSS fits 16:9
+  with letterboxing. Desktop fullscreen UI omitted on web; web F11 never
+  recreates SDL's surface. Desktop display behavior remains unchanged.
+- **Freeze:** title music begins a 400 ms fade; opening music loads at 200 ms.
+  Loading a replacement while that fade was pending hung the wasm renderer.
+  On web only, explicitly stopping before loading resolves it. Actual browser
+  ran the complete opening, arrived on docks, and accepted movement/jump/pause.
+- **Verified:** 71 focused checks across browser runtime, audio, opening,
+  title, pause, save menu, transitions and controller pass. Previous full
+  baseline: 1,291 checks. Web geometry: framebuffer 1280x720; displayed at
+  1280x720 in wide view and 800x450 in an 800x900 viewport. Override reset.
+- **Build:** local files rebuilt under `chuck/chuck/build/browser-app/build/web`.
+  Open `http://127.0.0.1:8000/`; close an older frozen tab and open afresh.
+  Build command and limitations are in `chuck/chuck/WEB-README.md`.
+- **Expensive findings:** do not use `localhost` with this runtime: Pygbag
+  treated it as a runtime-development host, fetching a nonexistent local
+  `/cdn/` pygame wheel. `127.0.0.1` fetched the public runtime successfully.
+  Normal reload sometimes leaves the old wasm game; use a fresh tab.
+- **Dirty work:** none after this pass is committed. No deployment or content
+  changes. Browser audio uses the same cues and original desktop WAV masters.
+- **Known limitations:** audible quality, cold-load time/FPS, full traversal,
+  browser save-code round trip and other browsers are not yet verified.
+  Browser file saves/settings remain temporary; use portable codes.
+  Stale Feywild generators remain unrelated (see DECISIONS.md).
+- **Next bounded task:** continue WEB-BUILD browser traversal/measurement,
+  then persistent saves. No Pages deployment until remaining checks pass.
 
 ---
 
 ## Recent Passes
+
+## Latest Pass — Browser Cutscene and Canvas Fix (2026-09-18)
+
+- Explicitly stop the previous browser music stream before replacement,
+  avoiding the hang at the opening cutscene's early music cue.
+- Fixed SDL framebuffer and CSS 16:9 letterboxing; browser fullscreen stays
+  with browser chrome. Build/serve both apply the presentation override.
+- Live title -> full opening -> docks verified, plus movement/jump/pause
+  and tall-window proportions. 71 relevant regression checks pass.
+- Preview rebuilt; desktop behavior and authored content retained.
 
 ## Latest Pass — Local Browser Build Foundation (2026-09-17)
 

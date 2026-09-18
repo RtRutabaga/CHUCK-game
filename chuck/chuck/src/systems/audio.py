@@ -13,6 +13,7 @@ of crashing. The game must always launch.
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+import sys
 
 import pygame
 
@@ -59,6 +60,10 @@ class AudioSystem:
             raise FileNotFoundError(
                 f"Missing music {path}. Run: python tools/generate_music.py"
             )
+        if sys.platform == "emscripten":
+            # Loading during a pending fade waits for the audio callback in
+            # SDL_mixer. On the browser's single thread that can deadlock.
+            pygame.mixer.music.stop()
         pygame.mixer.music.load(str(path))
         pygame.mixer.music.set_volume(self.volume_for(filename))
         pygame.mixer.music.play(-1 if loop else 0)

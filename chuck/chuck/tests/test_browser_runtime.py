@@ -3,10 +3,54 @@
 import asyncio
 from pathlib import Path
 from unittest.mock import patch
+from unittest.mock import Mock, call
+import tempfile
 
 from src.core import config
 from src.core.game import Game
 from src.core.runtime import audio_path
+from src.systems.audio import AudioSystem
+
+
+def test_browser_music_cancels_fade_before_replacing_track():
+    with tempfile.TemporaryDirectory() as folder:
+        directory = Path(folder)
+        (directory / "next.ogg").touch()
+        (directory / "next.wav").touch()
+        for platform, suffix, stops in (("emscripten", ".ogg", True),
+                                        ("win32", ".wav", False)):
+            music = Mock()
+            audio = AudioSystem.__new__(AudioSystem)
+            audio.enabled = True
+            audio.music_volume = 0.5
+            audio._current_music = ("previous.wav", True)
+            with patch("sys.platform", platform), \
+                    patch.object(config, "MUSIC_DIR", directory), \
+                    patch("pygame.mixer.music", music):
+                audio.play_music("next.wav")
+                expected = [call.stop()] if stops else []
+                expected += [call.load(str(directory / ("next" + suffix))),
+                             call.set_volume(0.5), call.play(-1)]
+                assert music.mock_calls == expected
+                audio.play_music("next.wav")
+                assert music.mock_calls == expected  # Same cue keeps playing.
+
+
+def test_browser_display_has_fixed_framebuffer():
+    with patch("sys.platform", "emscripten"), \
+            patch("pygame.display.set_mode") as mode:
+        Game._open_window(True)
+        mode.assert_called_once_with((config.WINDOW_WIDTH, config.WINDOW_HEIGHT))
+
+
+def test_browser_fullscreen_cannot_recreate_window():
+    from src.scenes.pause_scene import main_options, controls_rows
+    with patch("sys.platform", "emscripten"), \
+            patch("pygame.display.set_mode") as mode:
+        Game.set_fullscreen(object(), True)
+        mode.assert_not_called()
+        assert "FULLSCREEN" not in main_options()
+        assert not any(row[0] == "FULLSCREEN" for row in controls_rows(None))
 
 
 def test_browser_audio_paths_preserve_desktop_cues():

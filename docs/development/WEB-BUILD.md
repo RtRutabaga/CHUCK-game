@@ -1,7 +1,7 @@
 # Web Build — CHUCK in a browser, hosted on GitHub Pages
 
-Status: **local build foundation reconciled; live gameplay verification is
-unfinished.** Read the Baton in `HANDOFF.md` for current results. The build
+Status: **local build foundation and opening browser fixes verified; broader
+traversal and release checks remain.** Read the Baton in `HANDOFF.md` for current results. The build
 instructions are in `../../chuck/chuck/WEB-README.md`. Section 2 below records
 the original incoming state, not a claim that those files remain uncommitted.
 
