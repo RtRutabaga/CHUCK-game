@@ -70,9 +70,21 @@ After editing:
 
 1. Run the game or the most relevant available checks.
 2. Verify the requested feature.
-3. Review the diff for unrelated changes.
-4. Update the Baton in `docs/development/HANDOFF.md`.
-5. Commit the completed pass with a clear commit message.
+3. Run the suite, from `chuck/chuck`:
+
+   ```
+   python tools/run_tests.py
+   ```
+
+   It prints `modules: N of N` and then the failures, if any. **Read the
+   module count, not only the failure line** -- a module that fails to
+   import contributes no tests, and a green-looking run can be hiding
+   one. There is no pytest here and none is wanted; the tests are plain
+   modules of `test_*` functions.
+4. Review the diff for unrelated changes.
+5. Update the Baton in `docs/development/HANDOFF.md`, including the suite
+   result as a number.
+6. Commit the completed pass with a clear commit message.
 
 Do not leave a session holding uncommitted work. Commit at every green
 point rather than once at the end.
