@@ -5,6 +5,11 @@
 
 ## Baton
 
+- **NPC trailer revision (Codex, 2026-09-19):** added eight seconds of Chuck
+  approaching the plaza blacksmith, interacting, reading "I don't shoe rats."
+  and walking away. Dialogue stays visible 5.4 seconds. Trailer is now 46
+  seconds; previous action footage and per-world audio preserved. Reviewed
+  conversation frame and verified full export decode; same local MP4 path.
 - **Action trailer revision (Codex, 2026-09-19):** recut to 38 seconds:
   grass destruction + cigarette pickup, sewer enemy scratch/defeat, Chult,
   urn shatter + carton collection, three spike-pit jumps, ship, Feywild, city.

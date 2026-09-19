@@ -21,7 +21,8 @@ from src.world.transitions import AREA_WALK_EXITS
 
 OUT = ROOT.parents[1] / 'artifacts' / 'trailer'
 FPS = 30
-SHOTS = [('waterdeep_start', 5), ('sewer_entrance', 3), ('chult_falls', 5),
+SHOTS = [('waterdeep_start', 5), ('waterdeep_plaza_from_docks', 8),
+         ('sewer_entrance', 3), ('chult_falls', 5),
          ('temple_1', 5), ('temple_2', 5), ('ship_exterior_deck', 5),
          ('feywild_2', 5), ('modern_city_1', 5)]
 
@@ -80,6 +81,15 @@ def main():
             assert not any(s in world.map_name for s in ('tahuya','cabin','desert_trio'))
             world._arrival_fade_t=None
             subject=None
+            npc=None
+            dialogue_frames=0
+            dialogue_lines=[]
+            if checkpoint=='waterdeep_plaza_from_docks':
+                npc=next(n for n in world.npcs if n.dialogue_id=='blacksmith')
+                world.player.x=npc.x+npc.width/2-world.player.width/2
+                world.player.y=npc.y+npc.height+28
+                world.player.facing='up'
+                world.camera.follow(world.player)
             before_cigarettes=game.cigarettes.total
             before_enemies=len(world.rats)
             if checkpoint in ('waterdeep_start','temple_1','sewer_entrance'):
@@ -132,6 +142,10 @@ def main():
                     elif abs(dx)>2: actions.add('move_right' if dx>0 else 'move_left')
                     elif abs(dy)>2: actions.add('move_down' if dy>0 else 'move_up')
                 game.input._actions_down=actions
+                if npc is not None:
+                    game.input._actions_down={'move_up'} if 12<=n<21 else set()
+                    if n in (28,190): game.input._actions_just_pressed.add('interact')
+                    if n>205: game.input._actions_down={'move_right'}
                 if subject is not None:
                     actions=set()
                     if checkpoint=='sewer_entrance':
@@ -159,6 +173,9 @@ def main():
                 if n in (65,125) and checkpoint in ('chult_falls','feywild_2'):
                     game.input._actions_just_pressed.add('jump')
                 game.scenes.update(1/FPS)
+                if npc is not None and game.scenes.current is not world:
+                    dialogue_frames+=1
+                    dialogue_lines=list(getattr(game.scenes.current,'_lines',[]))
                 frame.fill((0,0,0)); game.scenes.draw(frame)
                 if n==seconds*FPS//2: pygame.image.save(frame,OUT/f'shot-{index+1}.png')
                 positions.append((round(world.player.x,1),round(world.player.y,1)))
@@ -168,6 +185,7 @@ def main():
                                  cigarettes_collected=game.cigarettes.total-before_cigarettes,
                                  enemies_defeated=before_enemies-len(world.rats),
                                  object_broken=subject is not None and not getattr(subject,'intact',True),
+                                 npc_dialogue=dialogue_lines,dialogue_frames=dialogue_frames,
                                  end_tile=world._player_tile()))
             print(manifest[-1],flush=True)
         encoder.stdin.close(); assert encoder.wait()==0
