@@ -26,6 +26,7 @@ The two code pages are the whole of the save UI:
 
 from __future__ import annotations
 
+import asyncio
 import pygame
 import sys
 
@@ -123,6 +124,7 @@ class PauseScene(Scene):
         self._code: str | None = None
         self._note = ""
         self._entry: CodeEntry | None = None
+        self._copy_task = None
 
     @property
     def canvas_size(self):
@@ -256,10 +258,22 @@ class PauseScene(Scene):
                 self.back()
         elif self.page == "save":
             if option == "COPY":
-                self._note = ("Copied." if clipboard.copy(self._code or "")
-                              else "No clipboard here. Write it down.")
+                if sys.platform == "emscripten":
+                    self._note = "Copying..."
+                    self._copy_task = asyncio.create_task(self._copy_code())
+                else:
+                    self._note = (
+                        "Copied." if clipboard.copy(self._code or "")
+                        else "No clipboard here. Write it down."
+                    )
             else:
                 self.back()
+
+    async def _copy_code(self) -> None:
+        copied = await clipboard.copy_browser(self._code or "")
+        self._note = (
+            "Copied." if copied else "Clipboard blocked. Write it down."
+        )
 
     # ------------------------------------------------------------------
     # Saving, and the code that comes of it

@@ -5,6 +5,11 @@
 
 ## Baton
 
+- **Latest pass (Codex, 2026-09-18):** browser SAVE GAME → COPY now uses
+  ``navigator.clipboard.writeText`` instead of unavailable Pygame/SDL scrap.
+  It reports ``Copied.`` on success and an honest permission fallback when a
+  browser or device blocks clipboard access. Desktop copying is unchanged.
+  The browser package builds and 54 focused save/code/browser tests pass.
 - **Latest fix (Codex, 2026-09-18):** completed the north Waterdeep guard
   boundary as specified. Every upper-east exit tile now gives ``Stick to the
   docks, rat.`` and holds Chuck on the docks after the dialogue closes, in

@@ -14,6 +14,8 @@ failure state: the code is on screen, large enough to read and type.
 
 from __future__ import annotations
 
+import sys
+
 
 def _scrap():
     """pygame.scrap, initialised, or None if this build has no clipboard."""
@@ -43,6 +45,24 @@ def copy(text: str) -> bool:
     try:
         scrap.put_text(text)
     except Exception:       # noqa: BLE001 - a clipboard is never worth a crash
+        return False
+    return True
+
+
+async def copy_browser(text: str) -> bool:
+    """Copy through the secure browser Clipboard API when running on web.
+
+    Pygame's SDL clipboard is not implemented by the WebAssembly build. The
+    browser API returns a promise and may still be refused by a browser or
+    device policy, so this keeps the same honest True/False contract.
+    """
+    if sys.platform != "emscripten":
+        return copy(text)
+    try:
+        import platform
+        browser_clipboard = platform.window.navigator.clipboard
+        await browser_clipboard.writeText(text)
+    except Exception:       # noqa: BLE001 - clipboard denial is ordinary
         return False
     return True
 

@@ -8,6 +8,7 @@ interact key everywhere else in the game.
 """
 
 import os
+import asyncio
 from pathlib import Path
 import tempfile
 
@@ -148,6 +149,38 @@ def test_copy_puts_it_on_the_clipboard_or_says_it_could_not() -> None:
             assert "Write it down" in pause._note
         finally:
             clipboard.copy = original
+            game._shutdown()
+
+
+def test_browser_copy_updates_the_save_page_after_permission_result() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        original = clipboard.copy_browser
+        try:
+            game.checkpoints.load_checkpoint("temple_1")
+            pause = PauseScene(game)
+            game.scenes.push(pause)
+            pause.choose("SAVE GAME")
+
+            taken = []
+
+            async def allowed(text):
+                taken.append(text)
+                return True
+
+            clipboard.copy_browser = allowed
+            asyncio.run(pause._copy_code())
+            assert taken == [pause._code]
+            assert pause._note == "Copied."
+
+            async def blocked(_text):
+                return False
+
+            clipboard.copy_browser = blocked
+            asyncio.run(pause._copy_code())
+            assert pause._note == "Clipboard blocked. Write it down."
+        finally:
+            clipboard.copy_browser = original
             game._shutdown()
 
 
