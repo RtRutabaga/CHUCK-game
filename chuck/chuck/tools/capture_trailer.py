@@ -21,9 +21,9 @@ from src.world.transitions import AREA_WALK_EXITS
 
 OUT = ROOT.parents[1] / 'artifacts' / 'trailer'
 FPS = 30
-SHOTS = [('waterdeep_start', 7), ('chult_falls', 6), ('temple_9', 6),
-         ('ship_exterior_deck', 6), ('feywild_2', 6),
-         ('modern_city_1', 7), ('modern_city_day_1', 6)]
+SHOTS = [('waterdeep_start', 5), ('sewer_entrance', 3), ('chult_falls', 5),
+         ('temple_1', 5), ('temple_2', 5), ('ship_exterior_deck', 5),
+         ('feywild_2', 5), ('modern_city_1', 5)]
 
 
 def route(world, steps=30):
@@ -79,6 +79,29 @@ def main():
             world=game.checkpoints.load_checkpoint(checkpoint)
             assert not any(s in world.map_name for s in ('tahuya','cabin','desert_trio'))
             world._arrival_fade_t=None
+            subject=None
+            before_cigarettes=game.cigarettes.total
+            before_enemies=len(world.rats)
+            if checkpoint in ('waterdeep_start','temple_1','sewer_entrance'):
+                objects=world.rats if checkpoint=='sewer_entrance' else world.breakables
+                subjects=[o for o in objects
+                          if not world.tilemap.is_solid(int((o.x+o.width/2)//16),int((o.y+o.height/2+24)//16))]
+                subject=subjects[0]
+                if checkpoint=='sewer_entrance':
+                    subject=next(r for r in world.rats if r.patrolling)
+                world.player.x=subject.x+subject.width/2-world.player.width/2
+                world.player.y=subject.y+subject.height/2+24-world.player.height/2
+                world.player.facing='up'
+                if checkpoint=='sewer_entrance':
+                    world.player.x=subject.x+subject.width/2-14-world.player.width/2
+                    world.player.y=subject.y+subject.height/2-world.player.height/2
+                    world.player.facing='right'
+                world.camera.follow(world.player)
+            if checkpoint=='temple_2':
+                world.player.x=23.5*16-world.player.width/2
+                world.player.y=32.5*16-world.player.height/2
+                world.player.facing='up'
+                world.camera.follow(world.player)
             if checkpoint == 'temple_9':
                 # Advance the entrance conversation before this action take.
                 effect_start=len(effects)
@@ -109,6 +132,30 @@ def main():
                     elif abs(dx)>2: actions.add('move_right' if dx>0 else 'move_left')
                     elif abs(dy)>2: actions.add('move_down' if dy>0 else 'move_up')
                 game.input._actions_down=actions
+                if subject is not None:
+                    actions=set()
+                    if checkpoint=='sewer_entrance':
+                        if subject.alive and n>4:
+                            dx=subject.x+subject.width/2-world.player.hitbox.centerx
+                            dy=subject.y+subject.height/2-world.player.hitbox.centery
+                            if abs(dx)>abs(dy):
+                                world.player.facing='right' if dx>0 else 'left'
+                            else: world.player.facing='down' if dy>0 else 'up'
+                            if max(abs(dx),abs(dy))>16:
+                                actions.add('move_'+world.player.facing)
+                            elif n%8==0: game.input._actions_just_pressed.add('scratch')
+                    else:
+                        if 18<n<28: actions.add('move_up')
+                        if n in (30,42,54): game.input._actions_just_pressed.add('scratch')
+                        if 64<n<80: actions.add('move_up')
+                        if 110<n<150: actions.add('move_right')
+                    game.input._actions_down=actions
+                if checkpoint=='temple_2':
+                    world.player.facing='up'
+                    cy=world.player.hitbox.centery/16
+                    game.input._actions_down={'move_up'} if n>15 and cy>16.5 else set()
+                    if not world.player.jumping and any(1.0<cy-row<1.4 for row in (30,24,18,12,6)):
+                        game.input._actions_just_pressed.add('jump')
                 if n in (65,125) and checkpoint in ('chult_falls','feywild_2'):
                     game.input._actions_just_pressed.add('jump')
                 game.scenes.update(1/FPS)
@@ -117,7 +164,11 @@ def main():
                 positions.append((round(world.player.x,1),round(world.player.y,1)))
                 emit()
             manifest.append(dict(checkpoint=checkpoint,map=world.map_name,start=start,seconds=seconds,
-                                 distinct_positions=len(set(positions)),path_tiles=len(path)))
+                                 distinct_positions=len(set(positions)),path_tiles=len(path),
+                                 cigarettes_collected=game.cigarettes.total-before_cigarettes,
+                                 enemies_defeated=before_enemies-len(world.rats),
+                                 object_broken=subject is not None and not getattr(subject,'intact',True),
+                                 end_tile=world._player_tile()))
             print(manifest[-1],flush=True)
         encoder.stdin.close(); assert encoder.wait()==0
     finally:

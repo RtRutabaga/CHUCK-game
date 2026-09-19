@@ -5,6 +5,12 @@
 
 ## Baton
 
+- **Action trailer revision (Codex, 2026-09-19):** recut to 38 seconds:
+  grass destruction + cigarette pickup, sewer enemy scratch/defeat, Chult,
+  urn shatter + carton collection, three spike-pit jumps, ship, Feywild, city.
+  Actual game-state logs verify rewards, breakage and defeat; no gameplay
+  rules changed. Local MP4 overwritten, per-area music retained, no added
+  text, cabin or final encounter. Export verified by full decode.
 - **Trailer revision (Codex, 2026-09-19):** per Sean, removed all added
   titles/cards and video fades. Export is now 44 seconds of gameplay with
   each scene's actual requested music and synchronized SFX. No continuous
