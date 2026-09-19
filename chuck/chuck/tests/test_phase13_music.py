@@ -247,6 +247,20 @@ def test_the_climax_loops_and_is_the_biggest_thing_in_the_phase() -> None:
             assert 0 <= note.beat < desert_trio.TOTAL_BEATS
 
 
+def test_pressure_loop_keeps_the_kit_and_pulse_through_its_seam() -> None:
+    from data.music import desert_trio_pressure as pressure
+    named = {track.name: track for track in pressure.build_tracks()}
+    for voice in ("pulse", "bass", "kick", "snare", "hats", "timp"):
+        occupied = {int(note.beat // 4) for note in named[voice].notes}
+        assert occupied == set(range(pressure.TOTAL_BARS)), voice
+    measured = _measure("desert_trio_pressure.wav")
+    assert measured["peak"] <= .9
+    assert measured["seam"] < .15
+    assert measured["rms"] >= _measure(CLIMAX)["rms"]
+    for track in named.values():
+        assert all(0 <= note.beat < pressure.TOTAL_BEATS for note in track.notes)
+
+
 def test_the_wrong_note_becomes_the_key() -> None:
     """The third turn of the same screw, and the reason it lands.
 

@@ -5,6 +5,12 @@
 
 ## Baton
 
+- **Final encounter music (Codex, 2026-09-18):** the 74-second trio cue
+  was looping back to its sparse intro before the dragon's 82+ second entry.
+  First dialogue now hands to desert_trio_pressure.wav, a developed-section
+  loop with continuous pulse/kit, added timpani, snare pickups and brass
+  through the ending. The existing dragon trigger still starts its boss cue.
+  Source score and rendered WAV included; 22 music/encounter checks pass.
 - **Final encounter respawn (Codex, 2026-09-18):** death now preserves the
   running trio encounter, army/siege/dragon, dialogue clock, terrain and music.
   Chuck returns at (32, 26), on protected ground beyond the west Sea's maximum

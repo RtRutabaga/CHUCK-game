@@ -1141,6 +1141,8 @@ class WorldScene(Scene):
                 self.player.hitbox,
             )
             if beat is not None:
+                if beat == "trio_early":
+                    self.game.audio.play_music("desert_trio_pressure.wav")
                 self.camera.focus_on(*self._battle_establishing_focus())
                 self._restore_camera_to_player = True
                 if self.trio.advances:

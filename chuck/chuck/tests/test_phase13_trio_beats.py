@@ -417,6 +417,20 @@ def test_death_preserves_encounter_and_returns_to_surviving_ground() -> None:
         directory.cleanup()
 
 
+def test_music_holds_pressure_until_the_dragon_arrives() -> None:
+    directory, game, world = _world()
+    played = []
+    game.audio.play_music = lambda filename, **kwargs: played.append(filename)
+    try:
+        _play(game, world, 90.0)
+        assert played[0] == "desert_trio_pressure.wav"
+        assert "desert_dragon.wav" in played
+        assert "desert_trio.wav" not in played
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
 def _run_all() -> None:
     failures = 0
     for name, fn in sorted(globals().items()):
