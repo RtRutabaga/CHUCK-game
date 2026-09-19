@@ -19,13 +19,13 @@ from src.core import config
 
 # Button labels by controller kind, for the positions the game uses.
 PAD_LABELS = {
-    "xbox": {"interact": "A", "jump": "B", "scratch": "X",
-             "pause": "Y", "back": "B"},
-    "playstation": {"interact": "CROSS", "jump": "CIRCLE",
+    "xbox": {"interact": "B", "jump": "A", "scratch": "X",
+             "pause": "Y", "back": "A"},
+    "playstation": {"interact": "CIRCLE", "jump": "CROSS",
                     "scratch": "SQUARE", "pause": "TRIANGLE",
-                    "back": "CIRCLE"},
-    "switch": {"interact": "B", "jump": "A", "scratch": "Y",
-               "pause": "X", "back": "A"},
+                    "back": "CROSS"},
+    "switch": {"interact": "A", "jump": "B", "scratch": "Y",
+               "pause": "X", "back": "B"},
 }
 KEY_LABELS = {"interact": "E", "jump": "SPACE", "scratch": "F",
               "pause": "ESC", "back": "ESC"}

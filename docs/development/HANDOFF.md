@@ -5,6 +5,13 @@
 
 ## Baton
 
+- **Correction (Codex, 2026-09-18):** Sean clarified that only the street
+  north of the tavern is guarded (rows 1–7, including the previously missed
+  row 7). East exits beside/south of the tavern reach the fountain plaza.
+  Supersedes the full-edge block below. Controller A now jumps/backs out;
+  B inspects, talks, and confirms. Y still pauses; View/Menu stay unbound.
+  Verified all east exit rows in both eras; 13 plaza checks and 29
+  controller/tutorial/checkpoint checks pass.
 - **Publication follow-up (Codex, 2026-09-18):** the previous full dock
   boundary fix had never been committed/pushed after approval hit a usage
   limit. Verified every east exit row in both Waterdeep eras, including

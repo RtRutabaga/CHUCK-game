@@ -80,8 +80,8 @@ def _key(manager, key, down=True):
 def test_the_layout() -> None:
     manager = _manager()
     for button, actions in (
-            (pygame.CONTROLLER_BUTTON_A, {"interact"}),
-            (pygame.CONTROLLER_BUTTON_B, {"jump", "back"}),
+            (pygame.CONTROLLER_BUTTON_A, {"jump", "back"}),
+            (pygame.CONTROLLER_BUTTON_B, {"interact"}),
             (pygame.CONTROLLER_BUTTON_X, {"scratch"}),
             (pygame.CONTROLLER_BUTTON_Y, {"pause"}),
             (pygame.CONTROLLER_BUTTON_DPAD_LEFT, {"move_left"})):
@@ -135,19 +135,19 @@ def test_browser_gamepad_fallback_maps_xbox_edge_without_sdl_events() -> None:
     manager.enable_browser_gamepads(navigator)
 
     manager.begin_frame()
-    pad.buttons[0].pressed = True
+    pad.buttons[1].pressed = True
     assert manager.poll_browser_gamepads() == {"interact"}
     assert manager.was_pressed("interact")
     assert manager.last_device == CONTROLLER
-    assert prompts.title_prompt(manager) == "D-PAD / STICK   A"
+    assert prompts.title_prompt(manager) == "D-PAD / STICK   B"
     assert prompts.hint(manager, config.HINT_INTERACT) == \
-        "Press A to interact"
+        "Press B to interact"
     assert dict(controls_rows(manager))["MOVE"] == "LEFT STICK / D-PAD"
 
     manager.begin_frame()
     assert manager.poll_browser_gamepads() == set()
     assert manager.is_down("interact") and not manager.was_pressed("interact")
-    pad.buttons[0].pressed = False
+    pad.buttons[1].pressed = False
     manager.poll_browser_gamepads()
     assert not manager.is_down("interact")
 
@@ -185,23 +185,23 @@ def test_prompts_name_the_button_being_held() -> None:
     assert controls_rows(manager) == CONTROLS
     _button(manager, pygame.CONTROLLER_BUTTON_A)
     assert prompts.hint(manager, config.HINT_INTERACT) == \
-        "Press A to interact"
-    assert prompts.hint(manager, config.HINT_JUMP) == "Press B to jump"
+        "Press B to interact"
+    assert prompts.hint(manager, config.HINT_JUMP) == "Press A to jump"
     assert prompts.hint(manager, config.HINT_SCRATCH) == "Press X to scratch"
-    assert prompts.title_prompt(manager) == "D-PAD / STICK   A"
+    assert prompts.title_prompt(manager) == "D-PAD / STICK   B"
     rows = dict(controls_rows(manager))
     assert rows["MOVE"] == "LEFT STICK / D-PAD"
     assert rows["PAUSE"] == "Y"
     manager._kinds[PAD] = "playstation"
     _button(manager, pygame.CONTROLLER_BUTTON_A)
     assert prompts.hint(manager, config.HINT_INTERACT) == \
-        "Press CROSS to interact"
-    assert prompts.back_footer(manager) == "CROSS / CIRCLE: BACK"
+        "Press CIRCLE to interact"
+    assert prompts.back_footer(manager) == "CIRCLE / CROSS: BACK"
     manager._kinds[PAD] = "switch"
     _button(manager, pygame.CONTROLLER_BUTTON_A)
-    # Nintendo prints B where Xbox prints A.
+    # Nintendo prints A where Xbox prints B.
     assert prompts.hint(manager, config.HINT_INTERACT) == \
-        "Press B to interact"
+        "Press A to interact"
     # Every label is drawable in the pixel font.
     from src.ui.bitmap_font import GLYPH_ORDER
     for labels in prompts.PAD_LABELS.values():
@@ -222,7 +222,7 @@ def _post(game, event_type, **fields):
     game._handle_events()
 
 
-def test_start_pauses_and_b_backs_out_and_chuck_walks_on_the_stick() -> None:
+def test_y_pauses_and_a_backs_out_and_chuck_walks_on_the_stick() -> None:
     directory, game = _game()
     try:
         world = game.checkpoints.load_checkpoint("waterdeep_start")
@@ -245,7 +245,7 @@ def test_start_pauses_and_b_backs_out_and_chuck_walks_on_the_stick() -> None:
         surface = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
         pause.draw(surface)
         _post(game, pygame.CONTROLLERBUTTONDOWN, instance_id=PAD,
-              button=pygame.CONTROLLER_BUTTON_B)
+              button=pygame.CONTROLLER_BUTTON_A)
         game.scenes.update(0.0)
         assert pause.page == "main"
         _post(game, pygame.CONTROLLERBUTTONDOWN, instance_id=PAD,

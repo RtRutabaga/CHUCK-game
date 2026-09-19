@@ -15,8 +15,8 @@ PlayStation, Switch Pro and most PC pads the same way. Buttons are read by
 only the labels differ:
 
     left stick / D-pad   move (and menus)
-    south  (Xbox A)      talk / examine / confirm
-    east   (Xbox B)      jump -- and back, in menus
+    south  (Xbox A)      jump -- and back, in menus
+    east   (Xbox B)      talk / examine / confirm
     west   (Xbox X)      scratch
     Y                    pause
 
@@ -48,15 +48,15 @@ KEY_BINDINGS: dict[int, str] = {
 }
 
 # Controller buttons, by position. One button can mean two things: the
-# east button is jump in play and back in a menu, and each scene reads
+# south button is jump in play and back in a menu, and each scene reads
 # whichever of the two it cares about.
 BUTTON_BINDINGS: dict[int, tuple[str, ...]] = {
     pygame.CONTROLLER_BUTTON_DPAD_UP: ("move_up",),
     pygame.CONTROLLER_BUTTON_DPAD_DOWN: ("move_down",),
     pygame.CONTROLLER_BUTTON_DPAD_LEFT: ("move_left",),
     pygame.CONTROLLER_BUTTON_DPAD_RIGHT: ("move_right",),
-    pygame.CONTROLLER_BUTTON_A: ("interact",),
-    pygame.CONTROLLER_BUTTON_B: ("jump", "back"),
+    pygame.CONTROLLER_BUTTON_A: ("jump", "back"),
+    pygame.CONTROLLER_BUTTON_B: ("interact",),
     pygame.CONTROLLER_BUTTON_X: ("scratch",),
     # Keep Xbox Menu/Start and View/Back available to Edge. Y is an otherwise
     # unused face button and serves as the in-game pause action.
@@ -68,8 +68,8 @@ BUTTON_BINDINGS: dict[int, tuple[str, ...]] = {
 # pad to JavaScript without producing any SDL controller events.  This table
 # is the fallback for that browser-only gap.
 BROWSER_BUTTON_BINDINGS: dict[int, tuple[str, ...]] = {
-    0: ("interact",),
-    1: ("jump", "back"),
+    0: ("jump", "back"),
+    1: ("interact",),
     2: ("scratch",),
     3: ("pause",),       # Y on the browser Gamepad API standard mapping
     12: ("move_up",),
