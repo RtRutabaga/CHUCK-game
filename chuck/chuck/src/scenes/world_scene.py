@@ -1308,7 +1308,10 @@ class WorldScene(Scene):
                     dialogue=self.dialogue,
                 ))
                 self.camera.update(dt)
-                return
+            # Stay on the docks after the warning closes. The trigger remains
+            # disarmed until Chuck steps away, so it neither repeats every
+            # frame nor falls through to the ordinary plaza transition.
+            return
         else:
             self._dock_guard_boundary_armed = True
         if self.player.jump_just_started:
@@ -2058,11 +2061,11 @@ class WorldScene(Scene):
 
     @property
     def _dock_guard_boundary_hit(self) -> bool:
-        """Whether Chuck is pressing against the guarded upper east edge."""
-        if self.map_name != "waterdeep_docks" or self.player.facing != "right":
+        """Whether Chuck has entered the guarded upper east approach."""
+        if self.map_name != "waterdeep_docks":
             return False
         col, row = self._player_tile()
-        return col >= self.tilemap.width_tiles - 3 and row <= 6
+        return row <= 6 and self.tilemap.terrain_at(col, row) == "⮞"
 
     @property
     def _waterdeep_midday(self) -> bool:

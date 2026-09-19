@@ -5,6 +5,11 @@
 
 ## Baton
 
+- **Latest fix (Codex, 2026-09-18):** completed the north Waterdeep guard
+  boundary as specified. Every upper-east exit tile now gives ``Stick to the
+  docks, rat.`` and holds Chuck on the docks after the dialogue closes, in
+  both opening and finale states. Only the lower eastern street reaches the
+  plaza. Focused Waterdeep checks pass (23).
 - **Latest pass (Codex, 2026-09-18):** added a browser Gamepad API fallback
   for Xbox Edge, which can expose the controller to JavaScript while sending
   no SDL/Pygame events. Standard Xbox buttons, d-pad, and left stick now feed

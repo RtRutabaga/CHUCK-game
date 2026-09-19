@@ -13,6 +13,7 @@ import pygame
 from src.core import config
 from src.systems import save_code
 from src.core.game import Game
+from src.scenes.dialogue_scene import DialogueScene
 from src.systems.checkpoints import WATERDEEP_RETURN_FLAG
 from src.systems.waterdeep_finale import (
     PLAZA_TOWNSFOLK, RETURN_PLAZA_TOWNSFOLK,
@@ -80,6 +81,31 @@ def test_eastern_docks_street_is_a_two_way_shared_route() -> None:
                for kind, _position in docks.object_spawns)
     assert any(kind == "arrival:from_docks"
                for kind, _position in plaza.object_spawns)
+
+
+def test_north_guard_holds_the_upper_plaza_approach_in_both_eras() -> None:
+    for checkpoint in ("waterdeep_start", "waterdeep_finale"):
+        directory, game = _game()
+        try:
+            world = game.checkpoints.load_checkpoint(checkpoint)
+            world._arrival_fade_t = None
+            ts = config.TILE_SIZE
+            world.player.x = 55 * ts + (ts - world.player.width) / 2
+            world.player.y = 5 * ts + (ts - world.player.height) / 2
+
+            world.update(0.01)
+            warning = game.scenes.current
+            assert isinstance(warning, DialogueScene)
+            assert warning._lines == ["Stick to the docks, rat."]
+
+            game.scenes.pop()
+            world.update(0.01)
+            assert game.scenes.current is world
+            assert world.map_name == "waterdeep_docks"
+            assert world._player_tile() == (55, 5)
+        finally:
+            game._shutdown()
+            directory.cleanup()
 
 
 def test_opening_and_finale_share_geometry_but_not_population_or_light() -> None:
@@ -316,7 +342,9 @@ def test_crossing_the_edge_keeps_chuck_on_his_row() -> None:
             scene = game.checkpoints.load_checkpoint(checkpoint)
             ts = config.TILE_SIZE
             east = scene.tilemap.width_tiles - 1
-            for row in (3, 30):
+            # The upper opening is held by the north guard; the lower street
+            # is the actual shared route to the plaza.
+            for row in (18, 30):
                 scene.load_map("waterdeep_docks", arrival="from_plaza",
                                facing="left")
                 scene.player.x = east * ts + 3
