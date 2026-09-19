@@ -83,7 +83,7 @@ def test_the_layout() -> None:
             (pygame.CONTROLLER_BUTTON_A, {"interact"}),
             (pygame.CONTROLLER_BUTTON_B, {"jump", "back"}),
             (pygame.CONTROLLER_BUTTON_X, {"scratch"}),
-            (pygame.CONTROLLER_BUTTON_START, {"pause"}),
+            (pygame.CONTROLLER_BUTTON_Y, {"pause"}),
             (pygame.CONTROLLER_BUTTON_DPAD_LEFT, {"move_left"})):
         manager.begin_frame()
         _button(manager, button)
@@ -139,6 +139,10 @@ def test_browser_gamepad_fallback_maps_xbox_edge_without_sdl_events() -> None:
     assert manager.poll_browser_gamepads() == {"interact"}
     assert manager.was_pressed("interact")
     assert manager.last_device == CONTROLLER
+    assert prompts.title_prompt(manager) == "D-PAD / STICK   A"
+    assert prompts.hint(manager, config.HINT_INTERACT) == \
+        "Press A to interact"
+    assert dict(controls_rows(manager))["MOVE"] == "LEFT STICK / D-PAD"
 
     manager.begin_frame()
     assert manager.poll_browser_gamepads() == set()
@@ -184,10 +188,10 @@ def test_prompts_name_the_button_being_held() -> None:
         "Press A to interact"
     assert prompts.hint(manager, config.HINT_JUMP) == "Press B to jump"
     assert prompts.hint(manager, config.HINT_SCRATCH) == "Press X to scratch"
-    assert prompts.title_prompt(manager) == "UP / DOWN   A"
+    assert prompts.title_prompt(manager) == "D-PAD / STICK   A"
     rows = dict(controls_rows(manager))
     assert rows["MOVE"] == "LEFT STICK / D-PAD"
-    assert rows["PAUSE"] == "START"
+    assert rows["PAUSE"] == "Y"
     manager._kinds[PAD] = "playstation"
     _button(manager, pygame.CONTROLLER_BUTTON_A)
     assert prompts.hint(manager, config.HINT_INTERACT) == \
@@ -234,7 +238,7 @@ def test_start_pauses_and_b_backs_out_and_chuck_walks_on_the_stick() -> None:
               axis=pygame.CONTROLLER_AXIS_LEFTX, value=0)
 
         _post(game, pygame.CONTROLLERBUTTONDOWN, instance_id=PAD,
-              button=pygame.CONTROLLER_BUTTON_START)
+              button=pygame.CONTROLLER_BUTTON_Y)
         pause = game.scenes.current
         assert isinstance(pause, PauseScene)
         pause._goto("controls")
@@ -245,7 +249,7 @@ def test_start_pauses_and_b_backs_out_and_chuck_walks_on_the_stick() -> None:
         game.scenes.update(0.0)
         assert pause.page == "main"
         _post(game, pygame.CONTROLLERBUTTONDOWN, instance_id=PAD,
-              button=pygame.CONTROLLER_BUTTON_START)
+              button=pygame.CONTROLLER_BUTTON_Y)
         assert game.scenes.current is world
         assert game.running
     finally:

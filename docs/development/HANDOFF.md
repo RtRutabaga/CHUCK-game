@@ -5,16 +5,31 @@
 
 ## Baton
 
+- **Publication follow-up (Codex, 2026-09-18):** the previous full dock
+  boundary fix had never been committed/pushed after approval hit a usage
+  limit. Verified every east exit row in both Waterdeep eras, including
+  repeated updates on the exit; 32 focused tests pass. Publishing the pending
+  guard fix together with the previously requested controller changes.
+- **Latest pass (Codex, 2026-09-18):** reserved Xbox Menu/Start and
+  View/Change View for Edge browser controls. In-game controller pause now uses
+  the otherwise-unused Y button, with prompts and browser Gamepad fallback
+  updated accordingly. Focused controller/tutorial checks pass (32).
+- **Latest polish (Codex, 2026-09-18):** confirmed controller-aware text is
+  shared by the title, Controls page, load/save footers, and tutorial hints,
+  including browser Gamepad fallback input. The title's controller footer now
+  explicitly reads ``D-PAD / STICK`` plus the controller-specific confirm
+  button. Focused controller/title checks pass (18).
 - **Latest pass (Codex, 2026-09-18):** browser SAVE GAME → COPY now uses
   ``navigator.clipboard.writeText`` instead of unavailable Pygame/SDL scrap.
   It reports ``Copied.`` on success and an honest permission fallback when a
   browser or device blocks clipboard access. Desktop copying is unchanged.
   The browser package builds and 54 focused save/code/browser tests pass.
-- **Latest fix (Codex, 2026-09-18):** completed the north Waterdeep guard
-  boundary as specified. Every upper-east exit tile now gives ``Stick to the
-  docks, rat.`` and holds Chuck on the docks after the dialogue closes, in
-  both opening and finale states. Only the lower eastern street reaches the
-  plaza. Focused Waterdeep checks pass (23).
+- **Latest fix (Codex, 2026-09-18):** completed the Waterdeep guard boundary
+  as specified. Every east-edge exit tile, including the lower opening, now
+  gives ``Stick to the docks, rat.`` and holds Chuck on the docks after the
+  dialogue closes, in both opening and finale states. The plaza remains
+  available by checkpoint/code but not by walking from the docks. Focused
+  Waterdeep checks pass (23).
 - **Latest pass (Codex, 2026-09-18):** added a browser Gamepad API fallback
   for Xbox Edge, which can expose the controller to JavaScript while sending
   no SDL/Pygame events. Standard Xbox buttons, d-pad, and left stick now feed

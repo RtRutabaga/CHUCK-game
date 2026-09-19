@@ -18,7 +18,7 @@ only the labels differ:
     south  (Xbox A)      talk / examine / confirm
     east   (Xbox B)      jump -- and back, in menus
     west   (Xbox X)      scratch
-    Start / Back         pause
+    Y                    pause
 
 The stick is read as four directions with hysteresis, the same as the
 keys, so movement stays eight-way and a jump off a stick goes exactly
@@ -58,8 +58,9 @@ BUTTON_BINDINGS: dict[int, tuple[str, ...]] = {
     pygame.CONTROLLER_BUTTON_A: ("interact",),
     pygame.CONTROLLER_BUTTON_B: ("jump", "back"),
     pygame.CONTROLLER_BUTTON_X: ("scratch",),
-    pygame.CONTROLLER_BUTTON_START: ("pause",),
-    pygame.CONTROLLER_BUTTON_BACK: ("pause",),
+    # Keep Xbox Menu/Start and View/Back available to Edge. Y is an otherwise
+    # unused face button and serves as the in-game pause action.
+    pygame.CONTROLLER_BUTTON_Y: ("pause",),
 }
 
 # The browser Gamepad API's standard mapping uses numeric button positions.
@@ -70,8 +71,7 @@ BROWSER_BUTTON_BINDINGS: dict[int, tuple[str, ...]] = {
     0: ("interact",),
     1: ("jump", "back"),
     2: ("scratch",),
-    8: ("pause",),
-    9: ("pause",),
+    3: ("pause",),       # Y on the browser Gamepad API standard mapping
     12: ("move_up",),
     13: ("move_down",),
     14: ("move_left",),

@@ -20,12 +20,12 @@ from src.core import config
 # Button labels by controller kind, for the positions the game uses.
 PAD_LABELS = {
     "xbox": {"interact": "A", "jump": "B", "scratch": "X",
-             "pause": "START", "back": "B"},
+             "pause": "Y", "back": "B"},
     "playstation": {"interact": "CROSS", "jump": "CIRCLE",
-                    "scratch": "SQUARE", "pause": "OPTIONS",
+                    "scratch": "SQUARE", "pause": "TRIANGLE",
                     "back": "CIRCLE"},
     "switch": {"interact": "B", "jump": "A", "scratch": "Y",
-               "pause": "PLUS", "back": "A"},
+               "pause": "X", "back": "A"},
 }
 KEY_LABELS = {"interact": "E", "jump": "SPACE", "scratch": "F",
               "pause": "ESC", "back": "ESC"}
@@ -69,7 +69,7 @@ def hint(input_manager, text: str) -> str:
 
 def title_prompt(input_manager) -> str:
     if input_manager is not None and input_manager.using_controller:
-        return f"UP / DOWN   {label(input_manager, 'interact')}"
+        return f"D-PAD / STICK   {label(input_manager, 'interact')}"
     return "UP / DOWN   E / ENTER"
 
 

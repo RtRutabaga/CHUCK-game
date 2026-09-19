@@ -1295,7 +1295,7 @@ class WorldScene(Scene):
             self.tilemap, self.player.hitbox, self.player.jumping
         )
         self.player.update(dt)
-        # The upper east edge is the guarded approach to the courtyard. It
+        # The east edge is the guarded approach to the courtyard. It
         # is deliberately a dead end from the docks: walking into it should
         # get the same brief warning as speaking to the guard, rather than
         # silently carrying Chuck into a spatially disconnected map.
@@ -2061,11 +2061,11 @@ class WorldScene(Scene):
 
     @property
     def _dock_guard_boundary_hit(self) -> bool:
-        """Whether Chuck has entered the guarded upper east approach."""
+        """Whether Chuck has entered the guarded east boundary."""
         if self.map_name != "waterdeep_docks":
             return False
         col, row = self._player_tile()
-        return row <= 6 and self.tilemap.terrain_at(col, row) == "⮞"
+        return self.tilemap.terrain_at(col, row) == "⮞"
 
     @property
     def _waterdeep_midday(self) -> bool:

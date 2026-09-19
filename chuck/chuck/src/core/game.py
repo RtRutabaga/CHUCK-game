@@ -223,10 +223,9 @@ class Game:
                 continue
             self.input.process_event(event)
             if (event.type == pygame.CONTROLLERBUTTONDOWN
-                    and event.button in (pygame.CONTROLLER_BUTTON_START,
-                                         pygame.CONTROLLER_BUTTON_BACK)):
-                # Start is Esc for a controller: it pauses, and in the
-                # pause menu it steps back out again.
+                    and event.button == pygame.CONTROLLER_BUTTON_Y):
+                # Y pauses in-game; Xbox View and Menu remain available to
+                # Edge for fullscreen and browser/game-control actions.
                 self._start_pressed()
                 controller_pause_handled = True
                 continue

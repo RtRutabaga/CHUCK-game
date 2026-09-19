@@ -330,31 +330,30 @@ def test_plaza_remains_navigable_around_the_fountain_and_shops() -> None:
             (3, 20), (45, 20), (6, 25), (24, 13)} <= seen
 
 
-def test_crossing_the_edge_keeps_chuck_on_his_row() -> None:
-    """Walk off the long edge anywhere and arrive level with where he left.
-
-    Both eras, both directions. Where the row he left on is a building on
-    the other side, he comes out on the nearest open row instead.
-    """
+def test_docks_east_edge_is_guarded_in_both_eras() -> None:
+    """The plaza gate is beyond the docks guard and cannot be entered."""
     for checkpoint in ("waterdeep_start", "waterdeep_finale"):
         directory, game = _game()
         try:
             scene = game.checkpoints.load_checkpoint(checkpoint)
             ts = config.TILE_SIZE
             east = scene.tilemap.width_tiles - 1
-            # The upper opening is held by the north guard; the lower street
-            # is the actual shared route to the plaza.
-            for row in (18, 30):
+            # Every east-edge opening is held by the guard, including the
+            # lower opening that used to let Chuck sneak into the plaza.
+            exit_rows = [row for row in range(scene.tilemap.height_tiles)
+                         if scene.tilemap.terrain_at(east, row) == "⮞"]
+            assert exit_rows
+            for row in exit_rows:
                 scene.load_map("waterdeep_docks", arrival="from_plaza",
                                facing="left")
                 scene.player.x = east * ts + 3
                 scene.player.y = row * ts + 4
                 scene.update(1 / 60)
-                assert scene.map_name == "waterdeep_plaza", (checkpoint, row)
-                arrived = int((scene.player.y + scene.player.height / 2)
-                              // ts)
-                expected = max(row, 4)          # rows 0-3 are the wall
-                assert arrived == expected, (checkpoint, row, arrived)
+                assert scene.map_name == "waterdeep_docks", (checkpoint, row)
+                # Even after the warning, lingering on the exit must never
+                # fall through to the normal map transition.
+                scene.update(1 / 60)
+                assert scene.map_name == "waterdeep_docks", (checkpoint, row)
 
             # Back the other way from a row that is a building in the docks.
             scene.load_map("waterdeep_plaza", arrival="from_docks",

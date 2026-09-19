@@ -111,7 +111,7 @@ def test_scratch_hint_names_the_f_binding() -> None:
     assert re.search(r"pygame\.K_f:\s*\"scratch\"", src)
 
 
-def test_pause_fallback_names_escape_and_controller_start() -> None:
+def test_pause_fallback_names_escape_and_controller_y() -> None:
     from src.ui import prompts
 
     assert config.HINT_PAUSE == "Press ESC to pause"
@@ -120,7 +120,7 @@ def test_pause_fallback_names_escape_and_controller_start() -> None:
         "using_controller": True, "last_kind": "xbox"})()
     assert prompts.hint(keyboard, config.HINT_PAUSE) == "Press ESC to pause"
     assert prompts.hint(controller, config.HINT_PAUSE) == \
-        "Press START to pause"
+        "Press Y to pause"
 
 
 def _run_all() -> None:
