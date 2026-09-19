@@ -72,9 +72,10 @@ def test_eastern_docks_street_is_a_two_way_shared_route() -> None:
                  if not docks.is_solid(east, row)]
     assert len(open_east) > 20
     assert all(docks.terrain_at(east, row) == "⮞" for row in open_east)
-    # ...and the plaza has no west wall at all: below the north wall and
-    # above the south one, its whole west side is the way back.
-    for row in range(4, plaza.height_tiles - 1):
+    # The smithy seals the northern return; the southern street stays open.
+    for row in range(4, 13):
+        assert all(plaza.is_solid(col, row) for col in range(3))
+    for row in range(13, plaza.height_tiles - 1):
         assert plaza.terrain_at(0, row) == "⮜", row
         assert plaza.terrain_at(1, row) == "⮜", row
     assert any(kind == "arrival:from_plaza"
@@ -326,7 +327,7 @@ def test_plaza_remains_navigable_around_the_fountain_and_shops() -> None:
             (21, 20), (28, 20), (15, 30),
             # The corners and the flanks, because a furnishing pass is
             # exactly the kind of change that walls one off.
-            (2, 4), (45, 4), (2, 32), (45, 32),
+            (15, 4), (45, 4), (2, 32), (45, 32),
             (3, 20), (45, 20), (6, 25), (24, 13)} <= seen
 
 
@@ -359,13 +360,13 @@ def test_docks_north_edge_is_guarded_and_south_routes_open_in_both_eras() -> Non
             scene.load_map("waterdeep_plaza", arrival="from_docks",
                            facing="right")
             scene.player.x = 0 * ts + 3
-            scene.player.y = 12 * ts + 4
+            scene.player.y = 13 * ts + 4
             scene.update(1 / 60)
             assert scene.map_name == "waterdeep_docks"
             col = int((scene.player.x + scene.player.width / 2) // ts)
             row = int((scene.player.y + scene.player.height / 2) // ts)
             assert not scene.tilemap.is_solid(col, row)
-            assert abs(row - 12) <= 6, row
+            assert abs(row - 13) <= 6, row
         finally:
             game._shutdown()
             directory.cleanup()

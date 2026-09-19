@@ -80,7 +80,8 @@ class EscapeCutsceneScene(Scene):
             # Onto the playable deck, Sanity intact. Phase 6 ends here.
             self._handed_off = True
             self.game.checkpoints.load_checkpoint(
-                "ship_deck", sanity=self._sanity
+                "ship_deck", sanity=self._sanity,
+                progress_flags=set(self.game.progress.flags),
             )
 
     # ------------------------------------------------------------------

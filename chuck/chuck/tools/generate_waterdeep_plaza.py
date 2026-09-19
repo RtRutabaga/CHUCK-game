@@ -297,9 +297,8 @@ def build_map() -> list[str]:
     for row in range(NORTH_WALL_ROWS, HEIGHT - 1):
         grid[row][-1] = "b"
 
-    # There is no west wall. The plaza is the far end of the docks' own
-    # eastern street, so its whole west side is the way back, two columns
-    # deep so a fast-moving Chuck cannot slip past the edge.
+    # Lay the western return street two columns deep. The smithy's wing
+    # below replaces its northern section so it cannot bypass the guard.
     for row in range(NORTH_WALL_ROWS, HEIGHT - 1):
         grid[row][0] = "⮜"
         grid[row][1] = "⮜"
@@ -307,6 +306,11 @@ def build_map() -> list[str]:
     grid[20][4] = "Ʀ"       # safe direct-load spawn
 
     _building(grid, 3, 14, 5, 7)
+    # Extend the smithy's west wing to the map edge and north wall.
+    # No alley behind it may return Chuck to the guarded docks street.
+    for row in range(4, 13):
+        for col in range(3):
+            grid[row][col] = "r" if row == 4 else grid[row][3]
     _building(grid, 33, 44, 5, 40)
 
     # Guarded gate, set into the bottom course of the wall, smithy yard,
@@ -381,7 +385,7 @@ def _assert_connected(rows: list[str]) -> None:
                 (21, 20), (28, 20), (24, 31),
                 # ...and the corners, because a furnishing pass is
                 # exactly the kind of change that walls one off.
-                (2, 4), (45, 4), (2, 32), (45, 32),
+                (15, 4), (45, 4), (2, 32), (45, 32),
                 (3, 20), (45, 20), (24, 13), (24, 21)}
     assert required <= seen, sorted(required - seen)
     _assert_nowhere_is_empty(rows)

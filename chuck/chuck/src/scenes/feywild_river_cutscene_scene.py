@@ -125,7 +125,8 @@ class FeywildRiverCutsceneScene(Scene):
         if self.elapsed >= CUTSCENE_END and not self._handoff_started:
             self._handoff_started = True
             self.game.checkpoints.load_checkpoint(
-                "feywild_riverbank", sanity=self.sanity
+                "feywild_riverbank", sanity=self.sanity,
+                progress_flags=set(self.game.progress.flags),
             )
 
     def draw(self, surface: pygame.Surface) -> None:

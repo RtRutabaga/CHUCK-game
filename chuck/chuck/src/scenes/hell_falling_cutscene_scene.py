@@ -154,7 +154,8 @@ class HellFallingCutsceneScene(Scene):
             # The fade completes: Phase 8 begins on the Phlegethos ground.
             self._handed_off = True
             self.game.checkpoints.load_checkpoint(
-                "phlegethos_arrival", sanity=self.sanity)
+                "phlegethos_arrival", sanity=self.sanity,
+                progress_flags=set(self.game.progress.flags))
 
     def draw(self, surface: pygame.Surface) -> None:
         self._draw_void(surface)

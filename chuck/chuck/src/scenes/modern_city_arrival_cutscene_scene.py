@@ -133,7 +133,8 @@ class ModernCityArrivalCutsceneScene(Scene):
                 "modern_city_1", config.SANITY_MAX
             )
             self.game.checkpoints.load_checkpoint(
-                "modern_city_1", sanity=config.SANITY_MAX
+                "modern_city_1", sanity=config.SANITY_MAX,
+                progress_flags=set(self.game.progress.flags),
             )
 
     def draw(self, surface: pygame.Surface) -> None:

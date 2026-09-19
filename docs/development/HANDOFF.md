@@ -5,6 +5,14 @@
 
 ## Baton
 
+- **Latest fixes (Codex, 2026-09-18):** extended the plaza smithy's west
+  wing to the edge and north wall, sealing the reverse route into the guarded
+  docks street while keeping southern exits open. Escape-to-ship and four
+  later story cutscenes now pass existing progress flags to checkpoint loads
+  so premium cartons survive. Verified five real cutscene handoffs, all plaza
+  tests, and existing escape/river tests (27 passing checks total).
+  Already-erased treasure flags need a player save-code repair; do not award
+  optional treasure automatically to all players.
 - **Correction (Codex, 2026-09-18):** Sean clarified that only the street
   north of the tavern is guarded (rows 1–7, including the previously missed
   row 7). East exits beside/south of the tavern reach the fountain plaza.

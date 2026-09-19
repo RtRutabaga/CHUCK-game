@@ -81,7 +81,8 @@ class TowerArrivalCutsceneScene(Scene):
         if self.elapsed >= CUTSCENE_END and not self._handed_off:
             self._handed_off = True
             self.game.checkpoints.load_checkpoint(
-                "zephyros_2", sanity=self._sanity
+                "zephyros_2", sanity=self._sanity,
+                progress_flags=set(self.game.progress.flags),
             )
 
     def draw(self, surface: pygame.Surface) -> None:
