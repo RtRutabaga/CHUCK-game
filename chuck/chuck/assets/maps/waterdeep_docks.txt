@@ -5,6 +5,7 @@
 ; District wall: battlements 'w' over brick 'b', banners 'F',
 ; torches 'i', raised portcullis gates 'g' — per the wall reference.
 ; Northern boundary (row 0): same castle battlements 'w'.
+; Southern quay boundary: castle brick 'b', matching the fountain plaza.
 ; North district: the three blocks are houses/shops now —
 ; tavern grammar (roof 'r', eave 'e', facade 't', windows 'W',
 ; chimneys 'm') plus decorative doors 'h'. Never accessible.
@@ -56,4 +57,4 @@
 ~~~~~~~~~ꜭꜭꜭꜭꜭꜭꜭꜭꜳ~~,,,,,,,,,,,,,,,,,,,,I,,1,2,5,3,4,,⮞⮞
 ~~~~~~~~~~~~~~~~~~~~,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,⮞⮞
 ~~~~~~~~~~~~~~~~~~~~,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,⮞⮞
-~~~~~~~~~~~~~~~~~~~~,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,⮞⮞
+~~~~~~~~~~~~~~~~~~~~bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb

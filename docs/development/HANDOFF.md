@@ -5,6 +5,13 @@
 
 ## Baton
 
+**Codex, 2026-09-19: Waterdeep southern wall.** The shared docks map now
+uses the fountain plaza's solid castle-brick terrain across its southern
+land edge (row 34, columns 20–55), including the southeast corner. Sea
+remains sea. Opening, post-sewer, and finale use this same geometry.
+Eight Waterdeep-return checks pass; opening and finale wall collision and
+rendering checked directly. No mobile-shell files changed.
+
 **Codex, 2026-09-19: Phlegethos handoff crash fixed.** Preserving story
 flags exposed unconditional captain/plank reconstruction on every map once
 `captain_confronted` was set. Restrict that reconstruction to
