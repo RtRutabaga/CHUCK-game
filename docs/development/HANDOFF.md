@@ -5,6 +5,12 @@
 
 ## Baton
 
+- **Latest pass (Codex, 2026-09-18):** added a browser Gamepad API fallback
+  for Xbox Edge, which can expose the controller to JavaScript while sending
+  no SDL/Pygame events. Standard Xbox buttons, d-pad, and left stick now feed
+  the same named actions as desktop controllers; Menu/View pause globally.
+  The browser package builds successfully and the focused fallback/browser/
+  checkpoint checks pass (25).
 - **Latest pass (Claude Code, 2026-09-18):** finished Codex's dock pass.
   The tree is clean; `main` is pushed and Pages redeploys on push.
 - **Branch / base:** `main`, base `9fc2c87`.

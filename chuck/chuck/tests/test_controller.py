@@ -26,6 +26,32 @@ class _FakePad:
         pass
 
 
+class _BrowserButton:
+    def __init__(self):
+        self.pressed = False
+
+
+class _BrowserValues(list):
+    @property
+    def length(self):
+        return len(self)
+
+
+class _BrowserPad:
+    def __init__(self):
+        self.id = "Xbox Wireless Controller"
+        self.buttons = _BrowserValues(_BrowserButton() for _ in range(16))
+        self.axes = _BrowserValues([0.0, 0.0])
+
+
+class _BrowserNavigator:
+    def __init__(self, pad):
+        self.pads = _BrowserValues([pad])
+
+    def getGamepads(self):
+        return self.pads
+
+
 def _manager(kind: str = "xbox") -> InputManager:
     manager = InputManager()
     manager.controllers[PAD] = _FakePad()
@@ -100,6 +126,36 @@ def test_every_source_has_to_let_go() -> None:
     assert manager.is_down("move_right")
     _stick(manager, pygame.CONTROLLER_AXIS_LEFTX, 0.0)
     assert not manager.is_down("move_right")
+
+
+def test_browser_gamepad_fallback_maps_xbox_edge_without_sdl_events() -> None:
+    manager = InputManager()
+    pad = _BrowserPad()
+    navigator = _BrowserNavigator(pad)
+    manager.enable_browser_gamepads(navigator)
+
+    manager.begin_frame()
+    pad.buttons[0].pressed = True
+    assert manager.poll_browser_gamepads() == {"interact"}
+    assert manager.was_pressed("interact")
+    assert manager.last_device == CONTROLLER
+
+    manager.begin_frame()
+    assert manager.poll_browser_gamepads() == set()
+    assert manager.is_down("interact") and not manager.was_pressed("interact")
+    pad.buttons[0].pressed = False
+    manager.poll_browser_gamepads()
+    assert not manager.is_down("interact")
+
+    manager.begin_frame()
+    pad.buttons[13].pressed = True
+    pad.axes[0] = -0.9
+    manager.poll_browser_gamepads()
+    assert manager.is_down("move_down") and manager.is_down("move_left")
+    pad.buttons[13].pressed = False
+    pad.axes[0] = 0.0
+    manager.poll_browser_gamepads()
+    assert manager.movement_vector() == (0.0, 0.0)
 
 
 def test_it_knows_what_was_used_last_and_what_kind_of_pad() -> None:

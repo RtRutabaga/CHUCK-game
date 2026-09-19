@@ -207,6 +207,7 @@ class Game:
     def _handle_events(self) -> None:
         """Pump the pygame event queue and route events."""
         self.input.begin_frame()
+        controller_pause_handled = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
@@ -227,12 +228,16 @@ class Game:
                 # Start is Esc for a controller: it pauses, and in the
                 # pause menu it steps back out again.
                 self._start_pressed()
+                controller_pause_handled = True
                 continue
             if self.input.lost_controller is not None:
                 # The pad in use came unplugged: stop, rather than let
                 # Chuck walk on into whatever he was walking at.
                 self.pause()
             self.scenes.handle_event(event)
+        browser_pressed = self.input.poll_browser_gamepads()
+        if "pause" in browser_pressed and not controller_pause_handled:
+            self._start_pressed()
 
     def _update(self, dt: float) -> None:
         """Advance game state by dt seconds."""

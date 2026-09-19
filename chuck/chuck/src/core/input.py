@@ -62,6 +62,22 @@ BUTTON_BINDINGS: dict[int, tuple[str, ...]] = {
     pygame.CONTROLLER_BUTTON_BACK: ("pause",),
 }
 
+# The browser Gamepad API's standard mapping uses numeric button positions.
+# Pygbag normally translates these through SDL, but Xbox Edge can expose the
+# pad to JavaScript without producing any SDL controller events.  This table
+# is the fallback for that browser-only gap.
+BROWSER_BUTTON_BINDINGS: dict[int, tuple[str, ...]] = {
+    0: ("interact",),
+    1: ("jump", "back"),
+    2: ("scratch",),
+    8: ("pause",),
+    9: ("pause",),
+    12: ("move_up",),
+    13: ("move_down",),
+    14: ("move_left",),
+    15: ("move_right",),
+}
+
 # The left stick, as four directions. It has to pass PRESS to count and
 # fall back under RELEASE to let go, so a stick resting near the edge of
 # the dead zone does not flicker a direction on and off.
@@ -118,6 +134,9 @@ class InputManager:
         # The instance id of a controller unplugged this frame, while it
         # was the device in use. Game pauses on it.
         self.lost_controller: int | None = None
+        self._browser_navigator = None
+        self._browser_buttons: set[int] = set()
+        self._browser_axes: dict[int, int] = {}
 
     # ------------------------------------------------------------------
     # Controllers
@@ -131,6 +150,106 @@ class InputManager:
                 self._open(index)
         except (ImportError, pygame.error):
             pass
+
+    def enable_browser_gamepads(self, navigator) -> None:
+        """Use ``navigator.getGamepads`` when Xbox Edge bypasses SDL."""
+        self._browser_navigator = navigator
+
+    @staticmethod
+    def _browser_length(values) -> int:
+        try:
+            return int(values.length)
+        except (AttributeError, TypeError, ValueError):
+            return len(values)
+
+    def poll_browser_gamepads(self) -> set[str]:
+        """Poll the browser's standard-mapped first pad.
+
+        Returns actions newly pressed by this fallback during this frame so
+        the game loop can give the pause button its usual global treatment.
+        Desktop builds leave the navigator unset and pay no cost.
+        """
+        if self._browser_navigator is None:
+            return set()
+        try:
+            pads = self._browser_navigator.getGamepads()
+            pad = next(
+                (pads[index] for index in range(self._browser_length(pads))
+                 if pads[index] is not None),
+                None,
+            )
+        except Exception:  # noqa: BLE001 - browser input must never crash play
+            return set()
+        if pad is None:
+            self._release_browser_gamepad()
+            return set()
+
+        newly_pressed: set[str] = set()
+        try:
+            buttons = pad.buttons
+            now = {
+                index for index in range(self._browser_length(buttons))
+                if bool(buttons[index].pressed)
+            }
+        except Exception:  # noqa: BLE001
+            return set()
+        for index in now - self._browser_buttons:
+            for action in BROWSER_BUTTON_BINDINGS.get(index, ()):
+                self._hold(action, ("browser_button", 0, index))
+                newly_pressed.add(action)
+        for index in self._browser_buttons - now:
+            for action in BROWSER_BUTTON_BINDINGS.get(index, ()):
+                self._let_go(action, ("browser_button", 0, index))
+        self._browser_buttons = now
+
+        try:
+            axes = pad.axes
+            axis_values = [float(axes[index]) for index in range(
+                min(2, self._browser_length(axes))
+            )]
+        except Exception:  # noqa: BLE001
+            axis_values = []
+        for axis, value in enumerate(axis_values):
+            self._browser_axis_moved(axis, value)
+
+        if now or any(self._browser_axes.values()):
+            self.last_device = CONTROLLER
+            self.last_kind = controller_kind(str(getattr(pad, "id", "")))
+        return newly_pressed
+
+    def _browser_axis_moved(self, axis: int, amount: float) -> None:
+        negative, positive = (
+            ("move_left", "move_right") if axis == 0
+            else ("move_up", "move_down")
+        )
+        held = self._browser_axes.get(axis, 0)
+        if held and abs(amount) >= STICK_RELEASE and (amount > 0) == (held > 0):
+            return
+        now = -1 if amount <= -STICK_PRESS else 1 if amount >= STICK_PRESS else 0
+        if now == held:
+            return
+        if held:
+            self._let_go(negative if held < 0 else positive,
+                         ("browser_axis", 0, axis))
+        if now:
+            self._hold(negative if now < 0 else positive,
+                       ("browser_axis", 0, axis))
+        self._browser_axes[axis] = now
+
+    def _release_browser_gamepad(self) -> None:
+        for index in tuple(self._browser_buttons):
+            for action in BROWSER_BUTTON_BINDINGS.get(index, ()):
+                self._let_go(action, ("browser_button", 0, index))
+        for axis, held in tuple(self._browser_axes.items()):
+            if held:
+                negative, positive = (
+                    ("move_left", "move_right") if axis == 0
+                    else ("move_up", "move_down")
+                )
+                self._let_go(negative if held < 0 else positive,
+                             ("browser_axis", 0, axis))
+        self._browser_buttons.clear()
+        self._browser_axes.clear()
 
     def _open(self, device_index: int) -> None:
         try:

@@ -50,6 +50,7 @@ async def browser_main() -> None:
     platform.window.canvas.style.imageRendering = "pixelated"
     try:
         game = Game()
+        game.input.enable_browser_gamepads(platform.window.navigator)
         await game.run_async(report_frame=browser_reporter(platform.window))
     except Exception:
         # The browser's filesystem is temporary and Pygbag's Python console
