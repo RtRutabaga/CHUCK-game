@@ -78,7 +78,40 @@ it would offer to nest another shell. A link rather than a redirect, at
 Sean's call: user-agent sniffing would have to be right about the Xbox
 browser. JUMP and INSPECT were swapped on the touch pad, also his call.
 
-**Not verified, and it needs a device:** no real phone has touched this.
+**Sean's phone pass, 2026-09-19: entry works.** He resumed a game on a
+phone. Outstanding from the same pass: **no audio on `/mobile/`**, while
+**PC and Xbox audio have been working all along** -- so the browser
+build's audio is fine and this is the shell, not the game.
+
+Ruled out already: audio is built and shipped (`build_web.py` converts
+every WAV master to OGG), `runtime.py`'s `audio_path` swaps the suffix
+on emscripten so lookups resolve, and the default levels are 8 of 10,
+not zero.
+
+The live suspect is that **the iframe has never received a trusted user
+gesture**. On PC and Xbox the player interacts with the game page
+directly; in the shell every tap lands on the parent overlay and reaches
+the game as a synthetic key event. Browsers unlock audio on a genuine
+gesture. Two things were measured and neither settles it: a tap on a
+shell button *does* give the iframe transient activation
+(`userActivation.isActive` true) although the event is untrusted, so a
+spec-compliant browser should allow `resume()`; but the browser pane
+creates its AudioContext already `running`, so a phone's suspended state
+could not be reproduced there. iOS Safari is stricter than the spec
+about Web Audio unlock.
+
+Diagnostics put to Sean, cheapest first: the iPhone silent switch (it
+mutes Web Audio in Safari), and tapping the *middle* of the screen away
+from any button -- the overlay is `pointer-events: none` there, so that
+tap passes through to the iframe and is the one trusted gesture
+available today. **If audio starts after that tap, the diagnosis is
+confirmed** and the fix is an unlock bridge: a helper beside
+`browser_clipboard.js` that tracks the AudioContext and exposes a
+`resume`, which the shell calls from inside a real tap handler in the
+parent. Deliberately not built yet -- not while the silent switch is
+still a live explanation.
+
+**Not verified, and it needs a device:** copying a save code out.
 The native keyboard raising, iOS viewport reflow in landscape, and the
 OS paste button are untested. `tests/test_browser_clipboard.js` was
 extended but **did not run** -- there is no Node on this machine and
