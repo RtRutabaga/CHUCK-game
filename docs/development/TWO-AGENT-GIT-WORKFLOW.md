@@ -225,6 +225,37 @@ tiles wide. Say which it was in the commit message.
 
 ---
 
+## There Is Only One CHUCK
+
+The phone is not a port and not a branch. `/mobile/` is a host page with
+an iframe around the same `index.html`, running the same wasm build from
+the same `src/`. A fix made for the PC or the Xbox browser is on the
+phone at the next build, because it is the same game; nothing is carried
+across, because nothing is forked.
+
+**So do not fork it.** If a mobile problem seems to need a change under
+`src/`, that is a change to the one game and is judged as one — it will
+land on desktop and Xbox too, and it needs to be right for them. Say so
+out loud rather than adding a `?mobile=1` branch quietly. The shell may
+grow buttons, layout and host-page behaviour freely; that is what it is
+for.
+
+The single exception, and the only place the phone can drift, is that
+the shell must name the keys its buttons press. That list is a copy of
+`KEY_BINDINGS` written in HTML, and it drifts *silently* — rebind
+scratch and the SCRATCH button sends `f` for ever with no error anywhere.
+
+`tests/test_mobile_touch_controls.py` watches that seam, so it does not
+need watching by hand: every touch button must press a key the game
+binds, and every bound action must be reachable from some button. Add an
+action to `KEY_BINDINGS` and the suite fails until the phone has a button
+for it or the action is listed as deliberately absent.
+
+That is the whole of the mobile/desktop sync problem. There is no
+checklist, because there is nothing else to check.
+
+---
+
 ## Cutting Content Stales The Tests That Count It
 
 Removing a map, a route or an NPC is never only the removal. Somewhere a

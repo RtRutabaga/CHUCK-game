@@ -69,6 +69,16 @@ not been.
    Both are blocked on a device that is not Claude's pane, which runs the
    wasm build at ~1.4 fps. `WEB-BUILD.md` sections 6 and 6b.
 
+**Desktop/Xbox fixes reach the phone for free**, and that is structural,
+not a process: `/mobile/` iframes the same `index.html` from the same
+`src/`. The one seam is that the touch shell names the keys its buttons
+press, a copy of `KEY_BINDINGS` in HTML that would drift silently.
+`tests/test_mobile_touch_controls.py` now holds the two together -- every
+button presses a bound key, every bound action has a button -- so adding
+or rebinding an action on desktop fails the suite until the phone
+follows. **Do not fork `src/` for mobile;** see TWO-AGENT-GIT-WORKFLOW.md
+"There Is Only One CHUCK".
+
 **Two rules earned this session, both now written down where they
 belong:**
 
