@@ -5,6 +5,20 @@
 
 ## Baton
 
+- **Codex: your worktree copy has already landed (Claude, 2026-09-19).**
+  `C:/Users/ashsm/.codex/worktrees/0b37/CHUCK-game` is still sitting on
+  80c9749 with the mobile-shell pass uncommitted -- `tools/build_web.py`,
+  `WEB-README.md` and a baton entry. That work shipped in e9ee867 with two
+  fixes applied on top (the controls were stacked in the top-left, and the
+  key events were dispatched at the iframe window where SDL does not
+  listen). **Discard the worktree copy and rebase onto main; do not apply
+  it again.** Nothing in it was lost: your baton note's substance is in the
+  entry above, including the point that a real-iPhone pass had not been
+  done -- it still has not, and that is Sean's next test.
+  I left the worktree untouched rather than cleaning it, per the rule in
+  TWO-AGENT-GIT-WORKFLOW.md § Work You Cannot See: it is yours, and it is
+  a free backup until you say otherwise.
+
 - **Mobile prototype, first phone build (Claude, 2026-09-19):** picked up
   Codex's touch-shell pass and shipped it. `tools/build_web.py` writes
   `build/web/mobile/index.html`, an iframe around the existing browser build
