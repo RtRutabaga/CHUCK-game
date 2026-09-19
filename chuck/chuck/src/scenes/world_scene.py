@@ -3139,6 +3139,9 @@ class WorldScene(Scene):
                 int((self.player.y + self.player.height / 2) // ts),
             )
             self._respawn_position = self.respawn.position_for_chuck()
+            if self.trio is not None:
+                from src.systems.trio_encounter import RESPAWN_TILE
+                retry = RESPAWN_TILE
             if retry is not None:
                 self._respawn_position = (
                     (retry[0] + 0.5) * ts - self.player.width / 2,
@@ -3159,11 +3162,21 @@ class WorldScene(Scene):
             # Usually the entrance; a mercy region overrides this death
             # only, leaving the entrance and portable save record intact.
             self.player.x, self.player.y = self._respawn_position
-            self._reset_enemies()
+            if self.trio is None:
+                self._reset_enemies()
+            else:
+                # Chuck returns to the ongoing encounter. Do not rewind its
+                # dialogue, collapsing ground, army, dragon, or music.
+                self.player.jump_remaining = 0.0
+                self.player.scratch_remaining = 0.0
+                self.player.fall_progress = None
+                self._fall_t = None
+                self._fall_kind = None
             self.sanity.refill()
             # Death rewinds the cigarette count to the respawn point's
             # committed value — the run since the checkpoint is undone.
-            self.game.cigarettes.rollback()
+            if self.trio is None:
+                self.game.cigarettes.rollback()
             self.camera.follow(self.player)  # snap, no cross-map pan
             self.player.visible = True
             self._respawn_phase, self._respawn_t = "in", 0.0

@@ -316,12 +316,7 @@ def test_the_arriving_sections_are_drawn_as_outlines() -> None:
 
 
 def test_the_beats_and_the_collision_are_the_same_encounter() -> None:
-    """One clock, one arena, one reset.
-
-    They are separate objects because they do separate things, but a
-    player dying in the middle should get the whole room back rather
-    than a healed floor with the conversation already spent.
-    """
+    """The rift and collision share protected hero and respawn footing."""
     assert [name for _, name in BEATS][CHURN_FROM - 1] == "trio_found_it"
     directory, game, world = _world()
     try:

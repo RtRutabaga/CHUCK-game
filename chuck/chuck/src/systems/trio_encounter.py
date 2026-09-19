@@ -129,6 +129,12 @@ ENCROACH_INTERVAL = 1.8     # seconds per column
 # westmost cell orcs come in from is column 28, and a spawn ring inside
 # the Sea would be a horde that drowned on the way to the fight.
 ENCROACH_LIMIT = 26
+# Chuck returns on the western side of the surviving arena, beyond the
+# maximum incoming Sea. Keep a small landing clear through every phase.
+RESPAWN_TILE = (32, 26)
+RESPAWN_FOOTING = frozenset(
+    (col, row) for col in range(31, 34) for row in range(25, 28)
+)
 # How far past a tile the front has to have got before it will open
 # that tile under Chuck's feet.
 #
@@ -333,6 +339,7 @@ class TrioEncounter:
         # them, and a hero on a single tile is a hero nothing with a
         # body can walk up to. See `footing`.
         self._protected = footing(protected)
+        self._protected.update(RESPAWN_FOOTING)
         self._elapsed = 0.0
         self._next = 0
         self._pending: list[list] = []          # [delay, col, row]

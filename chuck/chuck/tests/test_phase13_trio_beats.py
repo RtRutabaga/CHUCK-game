@@ -15,8 +15,8 @@ another column of the arena. Three things about that are worth pinning
 rather than trusting, because all three are the kind of thing that
 looks like a bug when it goes wrong and like nothing at all when it
 goes right -- it must never open under Chuck, it must never take the
-footing out from under the heroes holding it, and dying must put the
-whole room back.
+footing out from under the heroes holding it, and dying must preserve
+the encounter while returning Chuck to surviving ground.
 """
 
 import json
@@ -293,13 +293,8 @@ def test_it_never_opens_under_anyone_who_is_standing_there() -> None:
         directory.cleanup()
 
 
-def test_dying_puts_the_whole_room_back() -> None:
-    """The sanctum's rule, for the same reason.
-
-    A player who dies to the last beat should get the encounter, not
-    the wreckage of their previous attempt with the conversation
-    already spent.
-    """
+def test_explicit_room_restore_heals_the_floor() -> None:
+    """A fresh room can restore authored terrain; death no longer does so."""
     directory, game, world = _world()
     try:
         before = [
@@ -377,6 +372,46 @@ def test_the_breaking_ground_is_drawn() -> None:
                 world.draw(surface)
                 break
         assert seen_flash, "the ground broke through with no warning"
+    finally:
+        game._shutdown()
+        directory.cleanup()
+
+
+def test_death_preserves_encounter_and_returns_to_surviving_ground() -> None:
+    from src.systems.trio_encounter import RESPAWN_TILE, RESPAWN_FOOTING
+    directory, game, world = _world()
+    try:
+        trio = world.trio
+        trio._next = CHURN_FROM
+        trio._elapsed = 7.0
+        while trio.encroached < ENCROACH_LIMIT:
+            trio.encroach((46, 26))
+        for _ in range(CHURN_FROM):
+            trio.advance((46, 26))
+        trio._break_through(100.0, pygame.Rect(0, 0, 1, 1))
+        ground = tuple(tuple(row) for row in world.tilemap._grid)
+        systems = (world.trio, world.churn, world.battle, world.horde,
+                   world.siege, world.red_dragon)
+        assert RESPAWN_FOOTING <= trio._protected
+        for col, row in RESPAWN_FOOTING:
+            assert not world.tilemap.is_solid(col, row)
+            assert world.tilemap.terrain_at(col, row) != "V"
+        for _ in range(2):
+            world.sanity.deplete()
+            world._update_respawn(config.RESPAWN_FADE_OUT)
+            world._update_respawn(config.RESPAWN_HOLD)
+            world._update_respawn(config.RESPAWN_FADE_IN)
+            assert world._player_tile() == RESPAWN_TILE
+            assert world.sanity.current == world.sanity.maximum
+            assert world.player.visible and world._respawn_phase is None
+            assert systems == (world.trio, world.churn, world.battle,
+                               world.horde, world.siege, world.red_dragon)
+            assert trio.beats_played == CHURN_FROM
+            assert trio._elapsed == 7.0
+            assert tuple(tuple(row) for row in world.tilemap._grid) == ground
+        # The next line still arrives from the existing clock.
+        assert trio.update(BEATS[CHURN_FROM][0], RESPAWN_TILE,
+                           world.player.hitbox) == BEATS[CHURN_FROM][1]
     finally:
         game._shutdown()
         directory.cleanup()

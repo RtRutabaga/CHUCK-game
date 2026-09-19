@@ -5,6 +5,13 @@
 
 ## Baton
 
+- **Final encounter respawn (Codex, 2026-09-18):** death now preserves the
+  running trio encounter, army/siege/dragon, dialogue clock, terrain and music.
+  Chuck returns at (32, 26), on protected ground beyond the west Sea's maximum
+  advance, with full sanity. Collected cigarettes remain with the ongoing
+  room. Other maps retain their existing reset behavior. All 34 focused final
+  encounter tests pass, including repeated deaths after arena collapse and
+  continued dialogue afterward.
 - **Latest cut (Codex, 2026-09-18):** removed the giant tea-table map.
   Rootways now connects directly to Needle Garden in both directions using
   their existing arrival markers. Retired feywild_5 save-code slots stay
