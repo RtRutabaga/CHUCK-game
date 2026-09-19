@@ -5,6 +5,13 @@
 
 ## Baton
 
+- **Trailer (Codex, 2026-09-19):** created a 49-second 1080p/30 MP4 at
+  artifacts/trailer/CHUCK-gameplay-trailer.mp4 (local ignored artifact).
+  tools/capture_trailer.py captures actual game-rendered frames with scripted
+  movement, mixes frame-timed game SFX with fall_to_chult music, and encodes
+  using optional local imageio-ffmpeg. Includes docks, Chult Falls, earlier
+  temple battle, ship, Feywild and city; excludes cabin and final encounter.
+  Gameplay code untouched. Capture setup and intermediates are ignored.
 - **Final encounter music (Codex, 2026-09-18):** the 74-second trio cue
   was looping back to its sparse intro before the dragon's 82+ second entry.
   First dialogue now hands to desert_trio_pressure.wav, a developed-section

@@ -1,2 +1,4 @@
 .claude/settings.local.json
 docs/source/campaigns/
+.trailer-tools/
+artifacts/trailer/
