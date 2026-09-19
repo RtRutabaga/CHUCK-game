@@ -233,33 +233,33 @@ def test_orchid_sprite_contains_three_readable_windup_stages() -> None:
         assert len(set(stages)) == 3
 
 
-def test_tea_table_and_needle_garden_transition_both_ways() -> None:
-    forward = AREA_WALK_EXITS[("feywild_tea_table", "⇩")]
+def test_rootways_and_needle_garden_transition_both_ways() -> None:
+    forward = AREA_WALK_EXITS[("feywild_rootways", "→")]
     backward = AREA_WALK_EXITS[(MAP_NAME, "⇧")]
     assert forward.destination == MAP_NAME
     assert forward.arrival == "from_feywild_5"
-    assert backward.destination == "feywild_tea_table"
-    assert backward.arrival == "from_feywild_6"
+    assert backward.destination == "feywild_rootways"
+    assert backward.arrival == "from_feywild_5"
     # The garden's east boundary now carries on into the Moonmoth Fen.
     onward = AREA_WALK_EXITS[(MAP_NAME, "→")]
     assert onward.destination == "feywild_moonmoth_fen"
     assert onward.arrival == "from_feywild_6"
 
     entry = CHECKPOINT_BY_ID["feywild_6"]
-    previous_return = CHECKPOINT_BY_ID["feywild_5_return"]
+    previous_return = CHECKPOINT_BY_ID["feywild_4_return"]
     future_return = CHECKPOINT_BY_ID["feywild_6_return"]
     assert entry.display_name == "Feywild 6" and entry.runtime_entry
-    assert previous_return.arrival == "from_feywild_6"
+    assert previous_return.arrival == "from_feywild_5"
     assert future_return.arrival == "from_feywild_7"
 
     game = Game()
     try:
-        scene = game.checkpoints.load_checkpoint("feywild_5")
+        scene = game.checkpoints.load_checkpoint("feywild_4")
         forward_tile = next(
             (col, row)
             for row, terrain_row in enumerate(scene.tilemap._grid)
             for col, char in enumerate(terrain_row)
-            if char == "⇩"
+            if char == "→"
         )
         scene.player.x = forward_tile[0] * config.TILE_SIZE + 3
         scene.player.y = forward_tile[1] * config.TILE_SIZE + 4
@@ -276,8 +276,20 @@ def test_tea_table_and_needle_garden_transition_both_ways() -> None:
         scene.player.x = return_tile[0] * config.TILE_SIZE + 3
         scene.player.y = return_tile[1] * config.TILE_SIZE + 4
         scene.update(0.0)
-        assert scene.map_name == "feywild_tea_table"
-        assert game.active_checkpoint_id == "feywild_5_return"
+        assert scene.map_name == "feywild_rootways"
+        assert game.active_checkpoint_id == "feywild_4_return"
+    finally:
+        game._shutdown()
+
+
+def test_retired_tea_table_save_ids_load_neighboring_maps() -> None:
+    game = Game()
+    try:
+        for old_id, expected in (("feywild_5", MAP_NAME),
+                                 ("feywild_5_return", "feywild_rootways")):
+            scene = game.checkpoints.load_checkpoint(old_id)
+            assert scene.map_name == expected
+            assert not scene.tilemap.is_solid(*scene._player_tile())
     finally:
         game._shutdown()
 

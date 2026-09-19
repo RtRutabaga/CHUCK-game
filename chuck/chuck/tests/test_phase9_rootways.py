@@ -119,8 +119,8 @@ def test_orchard_and_rootways_transition_both_ways() -> None:
     assert forward.arrival == "from_feywild_3"
     assert backward.destination == "feywild_pollen_orchard"
     assert backward.arrival == "from_feywild_4"
-    assert onward.destination == "feywild_tea_table"
-    assert onward.arrival == "from_feywild_4"
+    assert onward.destination == "feywild_needle_garden"
+    assert onward.arrival == "from_feywild_5"
 
     entry = CHECKPOINT_BY_ID["feywild_4"]
     assert entry.display_name == "Feywild 4" and entry.runtime_entry

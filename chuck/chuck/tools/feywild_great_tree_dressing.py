@@ -35,7 +35,6 @@ GREAT_TREE_ROOTS = "ፑ"    # the rest of the trunk's footprint: solid ground
 
 GREAT_TREES_BY_MAP: dict[str, tuple[int, int]] = {
     "feywild_rootways": (15, 38),
-    "feywild_tea_table": (61, 35),
     "feywild_needle_garden": (23, 16),
     "feywild_redcap_warrens": (67, 25),
     "feywild_displacer_meadow": (64, 26),

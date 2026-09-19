@@ -231,7 +231,6 @@ def test_feywild_handoffs_are_three_tile_openings_on_outer_edges() -> None:
         "feywild_blooming_path": (("west", "←"), ("east", "→")),
         "feywild_pollen_orchard": (("north", "⇧"), ("south", "⇩")),
         "feywild_rootways": (("west", "←"), ("east", "→")),
-        "feywild_tea_table": (("north", "⇧"), ("south", "⇩")),
         "feywild_needle_garden": (("north", "⇧"), ("east", "→")),
         "feywild_twilight_crossroads": (
             ("south", "⇩"), ("west", "←")

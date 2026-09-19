@@ -863,7 +863,6 @@ MAP_TILESET: dict[str, str] = {
     "feywild_blooming_path": "feywild",
     "feywild_pollen_orchard": "feywild",
     "feywild_rootways": "feywild",
-    "feywild_tea_table": "feywild",
     "feywild_needle_garden": "feywild",
     "feywild_moonmoth_fen": "feywild",
     "feywild_redcap_warrens": "feywild",

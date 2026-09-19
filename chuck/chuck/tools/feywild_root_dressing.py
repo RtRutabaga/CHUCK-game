@@ -27,7 +27,6 @@ ROOT_FAMILY = (ROOT_WALL, ROOT_FACE, ROOT_KNOT, ROOT_KNOT_FACE)
 
 ROOT_MAPS = (
     "feywild_rootways",
-    "feywild_tea_table",
     "feywild_redcap_warrens",
     "feywild_displacer_meadow",
     "feywild_twilight_crossroads",

@@ -425,12 +425,13 @@ CHECKPOINTS = (
         runtime_entry=True,
     ),
     CheckpointDefinition(
-        "feywild_5", "Feywild 5", "feywild_tea_table",
-        arrival="from_feywild_4", facing="down",
+        # Retired tea-table save IDs retain their numeric save-code slots.
+        "feywild_5", "Feywild 6", "feywild_needle_garden",
+        arrival="from_feywild_5", facing="down",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
-        runtime_entry=True,
+        development_visible=False, runtime_entry=False,
     ),
     CheckpointDefinition(
         "feywild_6", "Feywild 6", "feywild_needle_garden",
@@ -491,12 +492,12 @@ CHECKPOINTS = (
         development_visible=False, runtime_entry=True,
     ),
     CheckpointDefinition(
-        "feywild_5_return", "Feywild 5 Return", "feywild_tea_table",
-        arrival="from_feywild_6", facing="up",
+        "feywild_5_return", "Feywild 4 Return", "feywild_rootways",
+        arrival="from_feywild_5", facing="left",
         required_flags=frozenset({
             "sewer_completed", "chult_reached", "feywild_reached",
         }),
-        development_visible=False, runtime_entry=True,
+        development_visible=False, runtime_entry=False,
     ),
     CheckpointDefinition(
         "feywild_8_return", "Feywild 8 Return", "feywild_redcap_warrens",

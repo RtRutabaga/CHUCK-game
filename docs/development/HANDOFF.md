@@ -5,6 +5,11 @@
 
 ## Baton
 
+- **Latest cut (Codex, 2026-09-18):** removed the giant tea-table map.
+  Rootways now connects directly to Needle Garden in both directions using
+  their existing arrival markers. Retired feywild_5 save-code slots stay
+  reserved and load neighboring maps; no save registry IDs were renumbered.
+  Removed the map generator and retired-map tests/dressing registrations.
 - **Latest fixes (Codex, 2026-09-18):** extended the plaza smithy's west
   wing to the edge and north wall, sealing the reverse route into the guarded
   docks street while keeping southern exits open. Escape-to-ship and four

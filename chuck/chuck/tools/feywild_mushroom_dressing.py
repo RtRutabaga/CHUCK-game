@@ -10,9 +10,6 @@ MUSHROOM = "ŋ"
 # per map. Coordinates stay in broad pockets or replace already-solid hedge
 # growth so this visual pass cannot close a route or alter a jump landing.
 MUSHROOMS_BY_MAP: dict[str, tuple[tuple[int, int], ...]] = {
-    "feywild_tea_table": (
-        (9, 3), (65, 48), (60, 3), (20, 43), (35, 10), (45, 40),
-    ),
     "feywild_needle_garden": (
         (9, 3), (68, 45), (45, 17), (6, 17), (26, 11), (54, 40),
     ),
