@@ -5,6 +5,14 @@
 
 ## Baton
 
+**Codex, 2026-09-19: Phlegethos handoff crash fixed.** Preserving story
+flags exposed unconditional captain/plank reconstruction on every map once
+`captain_confronted` was set. Restrict that reconstruction to
+`ship_exterior_deck`. Reproduced the reported crash with actual completed-ship
+flags; the expanded treasure-handoff test now loads, updates, and draws all
+five destinations and passes. The 12 plank-procession checks also pass.
+The mobile-work notes below remain applicable; this pass is on main.
+
 **Branch** `main`, at the tip. **Suite 191 of 191, no failures** (run at
 c7dc7b9; nothing since has touched game code). **Tree clean.**
 

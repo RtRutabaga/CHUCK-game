@@ -725,7 +725,8 @@ class WorldScene(Scene):
             else:
                 raise ValueError(f"No spawner for object kind {kind!r}")
         self._add_waterdeep_state_dressing()
-        if self.game.progress.has(CAPTAIN_CONFRONTED_FLAG):
+        if (self.map_name == "ship_exterior_deck"
+                and self.game.progress.has(CAPTAIN_CONFRONTED_FLAG)):
             self._spawn_deck_captain()
             self._stage_deck_plank()
             self._apply_post_confrontation_tableau()
