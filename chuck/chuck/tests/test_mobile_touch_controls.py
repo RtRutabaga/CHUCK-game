@@ -50,6 +50,7 @@ DOM_TO_PYGAME = {
     "e": pygame.K_e,
     "f": pygame.K_f,
     "Escape": pygame.K_ESCAPE,
+    "Enter": pygame.K_RETURN,
 }
 
 # Escape is not in KEY_BINDINGS: scenes read it directly as "go back".
@@ -88,7 +89,8 @@ def test_every_action_can_be_reached_from_a_touch_button() -> None:
     reachable = {
         KEY_BINDINGS[DOM_TO_PYGAME[key]]
         for key, _code, _number in _buttons()
-        if key not in UNBOUND_BY_DESIGN
+        if key not in UNBOUND_BY_DESIGN and key in DOM_TO_PYGAME
+        and DOM_TO_PYGAME[key] in KEY_BINDINGS
     }
     missing = set(KEY_BINDINGS.values()) - reachable - NOT_ON_TOUCH
     assert not missing, (

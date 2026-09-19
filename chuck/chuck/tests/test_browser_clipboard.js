@@ -35,5 +35,25 @@ const settle = () => new Promise(resolve => setImmediate(resolve));
   bridge.enablePaste(false);
   handlers.paste(event);
   assert.equal(bridge.takePaste(), '');
-  console.log('Browser clipboard copy, denial, paste and lifecycle checks passed.');
+  // The phone shell's own field hands a code in by the same door, and
+  // only while the game is asking for one.
+  assert.equal(bridge.isPasteEnabled(), false);
+  assert.equal(bridge.offerPaste('KMW9-J6ZP-2T5D'), false);
+  assert.equal(bridge.takePaste(), '');
+  bridge.enablePaste(true);
+  assert.equal(bridge.isPasteEnabled(), true);
+  assert.equal(bridge.pastePending(), false);
+  assert.equal(bridge.offerPaste('KMW9-J6ZP-2T5D'), true);
+  assert.equal(bridge.pastePending(), true);
+  assert.equal(bridge.takePaste(), 'KMW9-J6ZP-2T5D');
+  // Pending goes false only once the game has collected it. That is the
+  // handshake the shell waits on before it presses Enter.
+  assert.equal(bridge.pastePending(), false);
+  // Leaving the load page drops anything still waiting, so a code can
+  // never arrive at a page that did not ask for one.
+  bridge.offerPaste('ABCD');
+  bridge.enablePaste(false);
+  assert.equal(bridge.pastePending(), false);
+  assert.equal(bridge.takePaste(), '');
+  console.log('Browser clipboard copy, denial, paste, offer and lifecycle checks passed.');
 })().catch(error => { console.error(error); process.exitCode = 1; });
