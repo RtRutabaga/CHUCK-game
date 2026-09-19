@@ -57,6 +57,27 @@ signal, a typed code is collected before Enter arrives, lower case and
 dashes pass through for `normalise`, refusals behave, and all eight
 original buttons still dispatch.
 
+**Copy out, not just paste in.** Saving on a phone reaches
+`navigator.clipboard.writeText` inside the iframe, and the worry was
+that the shell's buttons dispatch *synthetic* key events, which do not
+normally carry the transient user activation the clipboard requires.
+Measured inside the frame at the moment the game would copy: the event
+is untrusted (`isTrusted: false`) but activation is present
+(`userActivation.isActive: true`), because a real tap on the parent
+propagates it to a same-origin frame. So the mechanism is sound. It
+could not be proven end to end -- the browser pane denies clipboard
+writes to the parent frame too, so its refusal says nothing about a
+phone. The iframe now also states `allow="clipboard-read;
+clipboard-write"`: a no-op where the default `self` allowlist already
+covers it, insurance where a browser is stricter.
+
+**The two pages now point at each other.** Nothing detects a device. The
+desktop page carries a small link to `/mobile/` that removes itself
+inside a frame, because `/mobile/` iframes that very page -- left alone
+it would offer to nest another shell. A link rather than a redirect, at
+Sean's call: user-agent sniffing would have to be right about the Xbox
+browser. JUMP and INSPECT were swapped on the touch pad, also his call.
+
 **Not verified, and it needs a device:** no real phone has touched this.
 The native keyboard raising, iOS viewport reflow in landscape, and the
 OS paste button are untested. `tests/test_browser_clipboard.js` was
@@ -117,7 +138,7 @@ five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
 **Branch** `main`, at the tip. Last full suite: **193 of 193** at
-e12ba47.
+28e4f32.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
