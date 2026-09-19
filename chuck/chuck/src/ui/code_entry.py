@@ -13,11 +13,16 @@ Three ways in, because the field has to work wherever the game is:
 
     keyboard   type it; backspace, arrows, Ctrl-V all behave
     paste      the usual way a code arrives, especially in a browser
-    pad        up and down dial a slot through the alphabet
+    dial       up and down turn a slot through the alphabet
 
-The pad is the slow one and it is meant to be. It is there so that a
-player on a controller is not locked out of loading a game, not because
-anybody should want to enter twelve characters that way.
+The dial is the slow one and it is meant to be. It is there so that a
+player without a keyboard is not locked out of loading a game, not
+because anybody should want to enter twelve characters that way.
+
+It answers to two things: a controller's stick or d-pad, through
+`handle_pad`, and the arrow keys, through `handle_event`. The second is
+what a touch shell reaches, since a button on a phone can send an arrow
+but cannot open a keyboard.
 
 The field is forgiving on the way in: lower case, missing dashes, a
 letter O where a zero belongs -- `save_code.normalise` settles all of
@@ -146,7 +151,10 @@ class CodeEntry:
         self._time = 0.0
 
     def dial(self, step: int) -> None:
-        """Turn the slot under the caret through the alphabet, for a pad."""
+        """Turn the slot under the caret through the alphabet.
+
+        For a pad or an arrow key; see `handle_pad` and `handle_event`.
+        """
         index = min(self.cursor, self.length - 1)
         current = self._slots[index]
         position = ALPHABET.find(current) if current else -1
@@ -210,6 +218,20 @@ class CodeEntry:
             return True
         if event.key == pygame.K_RIGHT:
             self.move_cursor(1)
+            return True
+        # Dialling on the arrow keys themselves, not on the `move_up` and
+        # `move_down` actions the pad uses. Those actions carry W and S,
+        # and W is a letter in the alphabet -- routing the dial through
+        # them would make typing the W in a code dial a character too.
+        # An arrow produces no character, so it can do this safely, and
+        # a host that emulates a keyboard (the phone's touch shell sends
+        # ArrowUp and ArrowDown) gets the dial without being a
+        # controller.
+        if event.key == pygame.K_UP:
+            self.dial(1)
+            return True
+        if event.key == pygame.K_DOWN:
+            self.dial(-1)
             return True
         if event.key == pygame.K_HOME:
             self.cursor = 0

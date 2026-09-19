@@ -1,9 +1,11 @@
 """The code field: typing into it, pasting into it, and reading it back.
 
 The widget is the game's only text input, so the tests cover the three
-ways a code gets in -- typed, pasted, dialled on a pad -- and the two
-things that go wrong: a character that is not in the alphabet, and a
-field that is not full yet. Drawing is checked only for the caret, which
+ways a code gets in -- typed, pasted, dialled -- and the two things that
+go wrong: a character that is not in the alphabet, and a field that is
+not full yet. The dial is reachable two ways, from a pad and from the
+arrow keys, and both are covered here; the arrow keys are what a touch
+shell can press. Drawing is checked only for the caret, which
 is the one part of it that moves.
 """
 
@@ -166,6 +168,49 @@ def test_a_whole_code_can_be_dialled_in_on_a_pad_alone() -> None:
         while field._slots[field.cursor] != char:
             field.handle_pad(_Pad("move_up"))
         field.handle_pad(_Pad("move_right"))
+    assert field.display() == GOLDEN_CODE
+    assert field.decode() is not None
+
+
+def test_the_arrow_keys_dial_the_same_way_the_pad_does() -> None:
+    """The dial without a controller, which is how a phone reaches it.
+
+    A touch button can send an arrow key; it cannot open a keyboard and
+    it is not a controller. So up and down dial here exactly as they do
+    through `handle_pad`.
+    """
+    field = CodeEntry()
+    assert field.handle_event(_key(pygame.K_UP))
+    assert field.text == ALPHABET[0]
+    field.handle_event(_key(pygame.K_UP))
+    assert field.text == ALPHABET[1]
+    field.handle_event(_key(pygame.K_DOWN))
+    field.handle_event(_key(pygame.K_DOWN))
+    assert field.text == ALPHABET[-1]
+
+
+def test_dialling_on_arrows_leaves_the_pad_letters_typeable() -> None:
+    """Why the dial hangs off the arrows and not off `move_up`.
+
+    The pad's actions carry the WASD letters as well as the arrows, and
+    W and S are both in the save-code alphabet. If the dial read the
+    actions, typing the W in a code would dial a character instead of
+    writing one -- so it reads the keys, and the letters stay letters.
+    """
+    field = CodeEntry()
+    _type(field, "WS")
+    assert field.display().startswith("WS")
+    assert field.cursor == 2
+
+
+def test_a_whole_code_can_be_dialled_in_on_the_arrows_alone() -> None:
+    """The phone's resume path today, before it has a keyboard: slow,
+    but not locked out."""
+    field = CodeEntry()
+    for char in GOLDEN_CODE.replace("-", ""):
+        while field._slots[field.cursor] != char:
+            field.handle_event(_key(pygame.K_UP))
+        field.handle_event(_key(pygame.K_RIGHT))
     assert field.display() == GOLDEN_CODE
     assert field.decode() is not None
 
