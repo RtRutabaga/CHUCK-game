@@ -8,9 +8,11 @@ The repository documentation is organized so Claude Code and Codex can work from
 2. `development/CURRENT-PHASE.md`
 3. `design/GAME-BIBLE.md`
 
-Phase 14 is complete. Phase 13 remains the completed Collided Desert traversal,
-rift encounter, and return-to-Waterdeep contract. No Phase 15 scope document
-exists yet.
+The phase sequence is complete through Phase 14 and the main game is done;
+there is no active phase. Phase 13 remains the completed Collided Desert
+traversal, rift encounter, and return-to-Waterdeep contract. Technical work
+that is not a phase -- the browser build, the mobile shell -- continues under
+the Baton in `development/HANDOFF.md`.
 
 Then read the topic-specific supplement relevant to the task.
 
@@ -23,10 +25,10 @@ Then read the topic-specific supplement relevant to the task.
 - `development/PHASE-10.md`: completed Zephyros and city-arrival contract.
 - `development/PHASE-11.md`: completed contract for the rainy city,
   urban sewer, daytime collision district, and Douglas fir handoff.
-- `development/CURRENT-PHASE.md`: short pointer to the active implementation
-  boundary and its authoritative phase contract.
-- `development/PHASE-14.md`: active implementation contract for the Waterdeep
-  finale, shared starting/ending city layout, and fountain plaza.
+- `development/CURRENT-PHASE.md`: whether a phase is active, and what may
+  proceed without one. Currently: none is.
+- `development/PHASE-14.md`: completed contract for the Waterdeep finale,
+  shared starting/ending city layout, and fountain plaza. The last phase.
 - `design/references/tahuya-cabin/`: Sean-authored layout and photographic
   references for Phase 12. The layout drawing governs spatial relationships;
   photographs govern structure, materials, palette, furniture, and scale.
