@@ -5,47 +5,51 @@
 
 ## Baton
 
-- **Latest pass (Claude Code, 2026-09-18):** committed Codex's Xbox title
-  fix and added a gamepad diagnostic, because the fix is a guess and we
-  have no way to read what Xbox Edge actually sends.
-- **Branch / base:** `main`, base `e7e5f54`. Pushing `main` rebuilds and
-  deploys Pages automatically (`.github/workflows/pages.yml`).
-- **The Xbox report:** Sean, on Edge on Xbox, can move the title
-  selection with the d-pad but cannot confirm NEW GAME. Codex's fix
-  accepts `jump` as well as `interact` on the title. It is committed,
-  but it is a hypothesis, not a diagnosis.
-- **If the hypothesis is right, the fix is too narrow.** A confirm that
-  never arrives would also break advancing dialogue, choosing in the
-  pause menu, loading a code, and talking to anyone. Accepting `jump` in
-  the pause menu is *not* a safe copy of this fix: the east button is
-  bound to both `jump` and `back` there, so it would choose and go back
-  at once. Get the reading first.
-- **The reading:** `?diagnostics=1` now also logs the pad. It prints the
-  pad's name and button count once, then for every press
-  `button N down | reached: <actions>`. Press A on the Xbox and the
-  console says which index arrives and whether it reached anything.
-  That turns the next fix from a guess into a mapping.
-- **Verified:** full suite 191 of 191 with this pass and without the
-  dirty work below. Four focused pad checks.
-
-- **DIRTY TREE — Codex's unfinished pass, do not commit as is.**
-  `assets/maps/waterdeep_docks.txt`, `src/scenes/world_scene.py`,
-  `src/world/tilemap.py`, `tests/test_tavern.py` carry a tavern-door
-  widening and a dock-guard boundary warning. **They fail five tests:**
-  `test_bobert_ending`, `test_pause_menu` (second words),
-  `test_waterdeep_harbour`, `test_waterdeep_second_words`,
-  `test_tilemap` (tavern threshold). I set them aside to get the Xbox
-  fix out and restored them untouched. Finish or revert them; a copy is
-  in this session's scratchpad if the tree ones are lost.
-
-- **Next bounded task:** get the pad reading off the Xbox, then map the
-  confirm button properly across menus, dialogue and the world.
-- **Still open:** `origin` was repointed to `RtRutabaga`; the live game
-  is `https://rtrutabaga.github.io/CHUCK-game/`.
+- **Latest pass (Claude Code, 2026-09-18):** finished Codex's dock pass.
+  The tree is clean; `main` is pushed and Pages redeploys on push.
+- **Branch / base:** `main`, base `9fc2c87`.
+- **The bug in it was a decorator, not a design.** Codex's new
+  `_dock_guard_boundary_hit` property was inserted directly above
+  `_waterdeep_midday` and took its `@property` with it. `_waterdeep_midday`
+  became a bound method, which is always truthy, so the docks were
+  permanently in their returned-from-the-sewer state: `dock_worker`
+  became `bobert_neighbour`, the lamps went out, the pier retinted. Four
+  of the five failures were that one line.
+- **The fifth was a real disagreement, resolved in Codex's favour.** The
+  open tavern doorway art is 48px — three tiles — but only the centre
+  tile was walkable, so Chuck caught solid facade inside the visible
+  arch. `test_tilemap` asserted the sides stay solid "because Phase 2
+  does not build an interior"; that reason is stale now the tavern
+  interior exists, so the test was updated rather than the code.
+- **Verified by behaviour, not just by tests:** walking the guarded
+  upper-east edge gives "Stick to the docks, rat." and does not
+  transition; the tavern threshold is three walkable tiles with solid
+  facade either side and behind.
+- **Suite:** 191 of 191.
+- **Xbox, still open and the most useful next thing.** `?diagnostics=1`
+  now logs the pad: `button N down | reached: <actions>`. Get that
+  reading off the Xbox before any further controller fix. The title
+  accepts `jump` as a confirm; if that is what Xbox sends, dialogue,
+  the pause menu, the code field and talking in the world all need the
+  same treatment — and the pause menu cannot copy it verbatim, because
+  the east button is bound to both `jump` and `back` there.
+- **Live:** `https://rtrutabaga.github.io/CHUCK-game/`.
 
 ---
 
 ## Recent Passes
+
+## Latest Pass — Codex's Dock Pass, Finished (2026-09-18)
+
+- Restored `@property` to `_waterdeep_midday`, which Codex's new
+  boundary property had taken. That single line was four of the five
+  failures: the docks had been stuck in their midday state.
+- Kept the three-tile tavern threshold and updated the test that
+  contradicted it, since the art is 48px and the stated reason for the
+  old assertion no longer holds.
+- Checked both behaviours in a running scene rather than trusting the
+  suite: the guarded edge warns and holds, the doorway is walkable
+  across its visible width and solid either side.
 
 ## Latest Pass — Xbox Confirm, and a Way to Stop Guessing (2026-09-18)
 

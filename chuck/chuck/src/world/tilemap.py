@@ -1778,8 +1778,20 @@ class TileMap:
                 f"found {len(door_tiles)}"
             )
         col, row = door_tiles[0]
+        # The open doorway art is human-scale (48px wide), so it spans
+        # three 16px tiles.  The authored door marker is kept one tile wide
+        # for the closed state, but opening only that centre tile leaves
+        # Chuck's hitbox catching the solid facade beside the visible arch.
+        # Widen the walkable threshold to match the art while retaining the
+        # centre ``v`` as the walk-triggered transition tile.
         terrain_row = self._grid[row]
-        self._grid[row] = terrain_row[:col] + "v" + terrain_row[col + 1:]
+        left = max(0, col - 1)
+        right = min(len(terrain_row), col + 2)
+        self._grid[row] = (
+            terrain_row[:left]
+            + "v" * (right - left)
+            + terrain_row[right:]
+        )
         self.prop_tiles = [
             ("tavern_open" if kind == "tavern_door" else kind, pcol, prow)
             for kind, pcol, prow in self.prop_tiles

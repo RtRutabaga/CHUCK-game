@@ -168,6 +168,22 @@ def test_open_docks_door_enters_tavern_and_returns_safely() -> None:
         game._shutdown()
 
 
+def test_open_docks_tavern_threshold_matches_three_tile_doorway() -> None:
+    game = Game()
+    try:
+        game.scenes.replace(WorldScene(game, "waterdeep_docks"))
+        scene = game.scenes.current
+        scene.load_map("waterdeep_docks", arrival="sewer_outflow")
+        assert [scene.tilemap.terrain_at(col, 17) for col in (43, 44, 45)] == [
+            "v", "v", "v"
+        ]
+        assert not any(
+            scene.tilemap.is_solid(col, 17) for col in (43, 44, 45)
+        )
+    finally:
+        game._shutdown()
+
+
 def test_each_north_house_door_says_it_is_closed() -> None:
     game = Game()
     try:

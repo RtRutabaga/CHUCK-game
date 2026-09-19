@@ -226,6 +226,7 @@ class WorldScene(Scene):
         self._pending_facing = None
         self._pending_fade_in = False
         self._walk_choice_armed = True  # crevice-style walk-in prompts
+        self._dock_guard_boundary_armed = True
         self._ladder_choice_armed = True
         self.tilemap = TileMap(config.MAPS_DIR / f"{self.map_name}.txt")
         if (self.map_name == "waterdeep_docks" and self._sewer_completed
@@ -1294,6 +1295,22 @@ class WorldScene(Scene):
             self.tilemap, self.player.hitbox, self.player.jumping
         )
         self.player.update(dt)
+        # The upper east edge is the guarded approach to the courtyard. It
+        # is deliberately a dead end from the docks: walking into it should
+        # get the same brief warning as speaking to the guard, rather than
+        # silently carrying Chuck into a spatially disconnected map.
+        if self._dock_guard_boundary_hit:
+            if self._dock_guard_boundary_armed:
+                self._dock_guard_boundary_armed = False
+                self.game.scenes.push(DialogueScene(
+                    self.game,
+                    list(self.dialogue.get("guard")),
+                    dialogue=self.dialogue,
+                ))
+                self.camera.update(dt)
+                return
+        else:
+            self._dock_guard_boundary_armed = True
         if self.player.jump_just_started:
             self.game.audio.play_sfx("jump")
         river_block = self.feywild_river.colliding_block(
@@ -2038,6 +2055,14 @@ class WorldScene(Scene):
             if hit is not None:
                 self.horde.kill(hit)
                 shot.alive = False
+
+    @property
+    def _dock_guard_boundary_hit(self) -> bool:
+        """Whether Chuck is pressing against the guarded upper east edge."""
+        if self.map_name != "waterdeep_docks" or self.player.facing != "right":
+            return False
+        col, row = self._player_tile()
+        return col >= self.tilemap.width_tiles - 3 and row <= 6
 
     @property
     def _waterdeep_midday(self) -> bool:

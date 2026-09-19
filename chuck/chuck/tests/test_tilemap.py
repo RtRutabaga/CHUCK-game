@@ -191,10 +191,14 @@ def test_tavern_opens_as_a_walkable_exterior_threshold() -> None:
     counts = Counter(kind for kind, _, _ in m.prop_tiles)
     assert counts["tavern_door"] == 0
     assert counts["tavern_open"] == 1
-    # The facade behind and beside the shallow threshold remains closed;
-    # Phase 2 does not build an interior.
+    # The open doorway art is 48px -- three tiles -- so the threshold is
+    # three tiles wide. It used to be one, which left Chuck catching solid
+    # facade inside the visible arch. The facade *behind* it is still
+    # closed: the way in is the transition on the centre tile, not a hole
+    # in the wall.
     assert m.is_solid(44, 16)
-    assert m.is_solid(43, 17) and m.is_solid(45, 17)
+    assert not m.is_solid(43, 17) and not m.is_solid(45, 17)
+    assert m.is_solid(42, 17) and m.is_solid(46, 17)
 
 
 def test_docks_district_wall_reads_as_a_castle_wall() -> None:
