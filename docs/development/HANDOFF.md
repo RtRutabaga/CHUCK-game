@@ -5,6 +5,79 @@
 
 ## Baton
 
+**Claude, 2026-09-19: mobile save-code entry, and the phase sequence
+closed.** A phone can now resume a game. Two independent ways in, and
+`src/` is untouched by the second.
+
+The shell one is the good one: the phone's *own* keyboard, raised by a
+real HTML field in `/mobile/`, outside the iframe. SDL never sees a
+keystroke, so there is no question about whether a synthesised key event
+produces text on the Python side. The code goes in through the paste
+door the load page already polls, and OS long-press-paste works for
+free. Three methods on `tools/browser_clipboard.js` carry it:
+`isPasteEnabled()` (the game's own signal, set when the load page opens
+-- the shell reads it rather than tracking scenes), `offerPaste(text)`,
+and `pastePending()`. That last one is a handshake, not decoration: the
+game drains key events *before* it polls for a paste, so an Enter sent
+in the same breath reaches a field that is still empty. The shell waits
+for the code to be collected, then presses.
+
+**Why not an on-screen keyboard in `title_scene`:** `src/` has no
+pointer input at all -- nothing reads a mouse or a touch. Drawing one
+would mean building that first, inverting two scale steps to hit-test,
+and then either showing it to desktop players or giving the game a
+"this is a phone" branch, which is the fork `/mobile/` exists to avoid.
+Sean raised splitting into two pages/two builds, and it would have
+answered the desktop objection cleanly; it was not needed, because the
+phone's keyboard only exists for HTML inputs and the game is a canvas.
+Putting entry in the shell is what makes the native keyboard reachable
+at all.
+
+The `src/` one is a four-line fallback: `K_UP`/`K_DOWN` now dial in
+`CodeEntry.handle_event`. The dial was built for "a player without a
+keyboard" but only a controller could reach it, because the load page
+gates it on `using_controller` and the touch shell emulates a keyboard.
+**Do not fix that by loosening the gate.** The dial reads actions;
+`move_up` carries W and `interact` carries E, and W, S and E are all
+letters in the save-code alphabet, so a keyboard player would find the W
+in their code dialling and the E submitting. Hanging it off the arrow
+keys, which produce no character, has no collision to have.
+`test_code_entry.py` pins that reasoning so it does not get "simplified"
+back.
+
+`tests/test_mobile_code_entry.py` is the new seam test: it holds the
+shell and the bridge to the same method names, exactly as
+`test_mobile_touch_controls.py` holds the buttons to `KEY_BINDINGS`. A
+rename in either file would break the phone silently. The touch-control
+test caught the new Enter button unprompted, which is the seam working.
+
+Checks: **193 of 193**, and the shell's JavaScript driven in a browser
+against a stub exposing the real bridge -- the panel tracks the game's
+signal, a typed code is collected before Enter arrives, lower case and
+dashes pass through for `normalise`, refusals behave, and all eight
+original buttons still dispatch.
+
+**Not verified, and it needs a device:** no real phone has touched this.
+The native keyboard raising, iOS viewport reflow in landscape, and the
+OS paste button are untested. `tests/test_browser_clipboard.js` was
+extended but **did not run** -- there is no Node on this machine and
+`run_tests.py` does not execute it. Someone with Node should run it
+once.
+
+**The phase sequence is closed** (e421c24), at Sean's instruction: the
+main game is done, with the acknowledgment that he may change or add
+things later. `CURRENT-PHASE.md` now says what may proceed without a
+phase -- technical work, off the Baton -- and draws the line: a way to
+type a save code on a phone is not game content, a region is.
+
+**Next, in order:**
+
+1. **A real phone pass on `/mobile/`**: resume a game from a save code,
+   and check the keyboard in landscape. Everything above waits on it.
+2. **A real play test on a real browser**, and **listen to the audio**.
+   Both are blocked on a device that is not Claude's pane, which runs
+   the wasm build at ~1.4 fps. `WEB-BUILD.md` sections 6 and 6b.
+
 **Codex, 2026-09-19: browser save-code clipboard.** Sean confirmed the
 Phlegethos transition works in another browser. Copy now settles its browser
 Promise in JavaScript and polls a bounded status from Python, showing exactly
@@ -43,8 +116,8 @@ flags; the expanded treasure-handoff test now loads, updates, and draws all
 five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
-**Branch** `main`, at the tip. Last full suite: **191 of 191** at c7dc7b9;
-targeted checks for subsequent changes are recorded above.
+**Branch** `main`, at the tip. Last full suite: **193 of 193** at
+e12ba47.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
@@ -59,25 +132,24 @@ Discard your copy and rebase; do not apply it again. Nothing was lost,
 including your note that no real-iPhone pass had been done. It still has
 not been.
 
-**Next, in order:**
-
-1. **Mobile save-code entry (Codex).** A phone can start a game but not
-   resume one: LOAD CODE wants twelve typed characters and the touch
-   shell has no keyboard. Either on-screen entry in the shell or
-   touch-driven entry in `title_scene`.
-2. **A real play test on a real browser**, and **listen to the audio**.
-   Both are blocked on a device that is not Claude's pane, which runs the
-   wasm build at ~1.4 fps. `WEB-BUILD.md` sections 6 and 6b.
-
 **Desktop/Xbox fixes reach the phone for free**, and that is structural,
 not a process: `/mobile/` iframes the same `index.html` from the same
-`src/`. The one seam is that the touch shell names the keys its buttons
-press, a copy of `KEY_BINDINGS` in HTML that would drift silently.
-`tests/test_mobile_touch_controls.py` now holds the two together -- every
-button presses a bound key, every bound action has a button -- so adding
-or rebinding an action on desktop fails the suite until the phone
-follows. **Do not fork `src/` for mobile;** see TWO-AGENT-GIT-WORKFLOW.md
-"There Is Only One CHUCK".
+`src/`. There are two seams, both names written twice and both able to
+drift silently, and each has a test holding it shut:
+
+- the touch shell names the keys its buttons press, a copy of
+  `KEY_BINDINGS` in HTML -- `tests/test_mobile_touch_controls.py`, every
+  button presses a bound key and every bound action has a button, so
+  adding or rebinding an action on desktop fails the suite until the
+  phone follows;
+- the shell names the bridge methods it calls on `CHUCKClipboard` --
+  `tests/test_mobile_code_entry.py`, so renaming one in
+  `tools/browser_clipboard.js` cannot quietly stop the phone loading a
+  save code.
+
+Add a third seam and it needs a third test; that is the price of the
+shell, and it is much cheaper than a fork. **Do not fork `src/` for
+mobile;** see TWO-AGENT-GIT-WORKFLOW.md "There Is Only One CHUCK".
 
 **Two rules earned this session, both now written down where they
 belong:**
