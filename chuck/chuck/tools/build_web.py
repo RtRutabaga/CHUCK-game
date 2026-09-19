@@ -70,7 +70,7 @@ MOBILE_SHELL = r'''<!doctype html>
 #up{grid-area:1/2}#left{grid-area:2/1}#down{grid-area:3/2}#right{grid-area:2/3}
 #actions{position:absolute;pointer-events:auto;right:calc(var(--edge) + env(safe-area-inset-right));bottom:calc(var(--edge) + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(2,var(--button));grid-auto-rows:var(--button);gap:10px}
 #actions .touch{position:static;width:100%;height:100%}
-#actions #jump{grid-area:1/2}#actions #scratch{grid-area:2/1}#actions #inspect{grid-area:2/2}
+#actions #jump{grid-area:2/2}#actions #scratch{grid-area:2/1}#actions #inspect{grid-area:1/2}
 #pause{right:calc(var(--edge) + env(safe-area-inset-right));top:calc(var(--edge) + env(safe-area-inset-top));min-width:46px;min-height:46px;border-radius:18px}
 #settings{left:calc(var(--edge) + env(safe-area-inset-left));top:calc(var(--edge) + env(safe-area-inset-top));min-width:46px;min-height:46px;border-radius:18px}
 #panel{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,360px);padding:20px;background:#171322f5;border:1px solid #ffffff55;border-radius:14px;pointer-events:auto;line-height:1.5;box-shadow:0 8px 30px #000b}
