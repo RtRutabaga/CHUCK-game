@@ -15,8 +15,10 @@ import os
 os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
 os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
+from src.core import config
 from src.systems import save_registry as registry
 from src.systems.checkpoints import CHECKPOINT_BY_ID, KNOWN_PROGRESS_FLAGS
+from src.world.tilemap import TileMap
 
 
 def _digest(items) -> str:
@@ -54,7 +56,33 @@ def test_every_entry_is_a_real_resume_point() -> None:
         # A resume point is a door Chuck walks in by. Anything else --
         # a development jump, a cutscene handoff -- is not somewhere a
         # save should ever put him back.
+        #
+        # A retired slot is the one exception, and it is named in the
+        # registry rather than inferred from the checkpoint, so that
+        # nothing can drift into this gap quietly.
+        if entry in registry.RETIRED_ENTRIES:
+            continue
         assert checkpoint.runtime_entry, entry
+
+
+def test_every_retired_slot_still_lands_somewhere_real() -> None:
+    """Retiring a slot keeps old codes working, so it has to still resolve.
+
+    The point of retiring rather than tombstoning is that a code already
+    written to the slot comes back somewhere sensible. That only holds
+    while the entry names a checkpoint whose map and arrival marker
+    actually exist, which is what this checks.
+    """
+    for entry in sorted(registry.RETIRED_ENTRIES):
+        assert entry in registry.SAVE_ENTRIES, entry
+        checkpoint = CHECKPOINT_BY_ID.get(entry)
+        assert checkpoint is not None, entry
+        assert not checkpoint.runtime_entry, (
+            f"{entry} takes saves again -- drop it from RETIRED_ENTRIES")
+        tilemap = TileMap(config.MAPS_DIR / f"{checkpoint.map_name}.txt")
+        arrivals = {kind for kind, _ in tilemap.object_spawns}
+        assert f"arrival:{checkpoint.arrival}" in arrivals, (
+            entry, checkpoint.map_name, checkpoint.arrival)
 
 
 def test_every_door_in_the_game_has_a_slot() -> None:

@@ -65,8 +65,10 @@ def test_every_reciprocal_feywild_arrival_is_centered_just_inside_its_art() -> N
         )
         checked.add((destination, transition.arrival))
 
-    # Thirteen authored Feywild links, checked in both directions.
-    assert len(checked) == 26
+    # Twelve authored Feywild links, checked in both directions. It was
+    # thirteen until the tea table was cut: it sat between Rootways and
+    # Needle Garden, so removing it joined two links into one.
+    assert len(checked) == 24
 
 
 def _run_all() -> None:

@@ -20,7 +20,8 @@ def _mushroom_positions(map_name: str) -> set[tuple[int, int]]:
 
 
 def test_later_feywild_maps_have_dense_authored_mushroom_dressing() -> None:
-    assert len(MUSHROOMS_BY_MAP) == 10
+    # Nine, not ten: the tea table was cut and took its dressing with it.
+    assert len(MUSHROOMS_BY_MAP) == 9
     for map_name, expected in MUSHROOMS_BY_MAP.items():
         assert len(expected) == 6
         assert set(expected) <= _mushroom_positions(map_name)

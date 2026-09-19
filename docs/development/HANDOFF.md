@@ -32,19 +32,40 @@
   code entry in the shell or touch-driven entry in `title_scene`.
   Sean is play-testing Waterdeep and the sewers on a phone; Codex owns the
   next mobile pass. Core game code is untouched by this commit.
-- **Suite is red at 80c9749, and not from the mobile pass (Claude,
-  2026-09-19):** 190 of 191 modules, four failures, all pre-existing with a
-  clean tree. Three are counts left stale by the tea-table (`feywild_5`) cut:
-  `test_feywild_arrival_alignment` still wants 26 reciprocal arrivals,
-  `test_feywild_mushroom_dressing` still wants 10 mushroom maps, and
-  `test_save_registry.test_every_entry_is_a_real_resume_point` trips on the
-  retired `feywild_5` slot the cut deliberately kept -- so that test needs to
-  learn about retired slots rather than the slot being removed. The fourth,
-  `test_treasure_handoffs`, imports `pytest`, which is not installed in the
-  local 3.14 environment and which the module runner does not support.
-  Whoever picks this up owns deciding whether the suite gains pytest or that
-  module drops it. Not fixed here: unrelated to the mobile shell, and the
-  tea-table cut is Codex's to reconcile.
+- **Suite green again, 191 of 191 (Claude, 2026-09-19):** cleared the four
+  failures reported above. Two were counts left stale by the tea-table cut
+  and nothing more -- the bodies of both tests still passed. The mushroom
+  registry is 9 maps, not 10; the Feywild arrival count is 24, not 26,
+  because the tea table sat *between* Rootways and Needle Garden, so cutting
+  it joined two links into one. Both numbers now carry the reason.
+  `test_treasure_handoffs` was the only module importing `pytest`, which is
+  not installed, so it had been silently import-failing since it was added.
+  Rewritten in the plain style the other modules use -- same assertions, the
+  `parametrize` became a loop over the five crossing cutscenes. That is why
+  the module count went 190 -> 191.
+  The registry failure was the one real decision. 75a70b7 did not merely
+  delete the tea table: it repointed `feywild_5` and `feywild_5_return` onto
+  the surviving neighbours, same arrival and facing, then set
+  `runtime_entry=False`. So an existing code still resumes where the player
+  left off, but nothing new is saved there -- a state the codebase had no
+  word for, which is why the doors-only test failed. Both slots sit at index
+  49 and 57 inside a fully frozen 147-entry prefix, so tombstoning them (the
+  header's usual retirement) would have changed `FROZEN_ENTRY_DIGEST` *and*
+  broken codes that presently work. Instead the state is named:
+  `save_registry.RETIRED_ENTRIES`, listed explicitly rather than inferred
+  from `runtime_entry`, since inferring it would let a development jump or
+  cutscene handoff drift into `SAVE_ENTRIES` unnoticed. The frozen digest is
+  untouched and no code in the wild changes meaning.
+  Checked that the new exception narrows rather than masks: emptying the set
+  brings the original failure back, and a retired slot pointed at an arrival
+  that does not exist is caught by the new
+  `test_every_retired_slot_still_lands_somewhere_real`.
+  **If you retire a map, add its slots to `RETIRED_ENTRIES` and repoint them
+  at a surviving neighbour.** Tombstone only when there is nowhere sensible
+  left to land.
+- **Next:** mobile save-code entry, still Codex's -- a phone can start a game
+  but not resume one, because LOAD CODE wants twelve typed characters and the
+  shell has no keyboard.
 
 ## Recent Passes
 

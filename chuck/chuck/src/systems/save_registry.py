@@ -178,6 +178,26 @@ SAVE_ENTRIES: tuple[str, ...] = (
     "desert_trio",
 )
 
+# Slots whose door is gone but whose codes are not.
+#
+# This is not the tombstone the header describes. A tombstone is an empty
+# string: the place itself is gone and a code naming it is refused. A
+# retired slot still resolves, because when its map was cut the entry was
+# deliberately repointed onto a surviving neighbour -- same arrival, same
+# facing -- so a code already written to it comes back where the player
+# left off. It simply is not written to any more.
+#
+# Named here rather than inferred from `runtime_entry`, because inferring
+# it would let a development jump or a cutscene handoff drift into
+# SAVE_ENTRIES unnoticed, which is exactly what the test that reads this
+# exists to catch.
+RETIRED_ENTRIES: frozenset[str] = frozenset({
+    # The Feywild tea table, cut in 75a70b7; both now land in the rooms
+    # that used to sit either side of it.
+    "feywild_5",
+    "feywild_5_return",
+})
+
 # Everything that has durably happened, one bit each.
 SAVE_FLAGS: tuple[str, ...] = (
     "cabin_counter_map_awakened",
