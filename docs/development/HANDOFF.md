@@ -5,6 +5,54 @@
 
 ## Baton
 
+- **Mobile prototype, first phone build (Claude, 2026-09-19):** picked up
+  Codex's touch-shell pass and shipped it. `tools/build_web.py` writes
+  `build/web/mobile/index.html`, an iframe around the existing browser build
+  with a landscape touch overlay (d-pad, JUMP/SCRATCH/INSPECT, pause, and a
+  gear panel sizing the buttons). The existing Pages workflow uploads the
+  whole `web` tree, so it publishes free at
+  `https://rtrutabaga.github.io/CHUCK-game/mobile/`.
+  Two things were fixed before it could work at all:
+  - `#pad` and `#actions` are not `.touch`, so they were `position: static`
+    and both stacked at the top-left with all three action buttons at one
+    point. They now anchor to the bottom corners inside the safe-area insets.
+  - The shell dispatched its synthetic `KeyboardEvent`s at the iframe's
+    *window*. SDL registers `keydown`/`keyup` on the iframe's **document**
+    (confirmed by reading `JSEvents.eventHandlers`), so nothing ever reached
+    the game. It now dispatches on `contentDocument`, and each button carries
+    an explicit `data-code`/`data-keycode` because SDL2 looks the scancode up
+    from `code` -- `f` and `e` were sending `code:"f"`/`code:"e"` rather than
+    `KeyF`/`KeyE`.
+  Verified in-browser against the real buttons, not by hand-dispatching:
+  arrows move the title cursor, INSPECT opens LOAD CODE, pause backs out.
+  Same origin, so `contentDocument` stays reachable.
+  **Known gap for the next pass:** LOAD CODE wants a typed twelve-character
+  code and the shell offers no keyboard, so a phone can start a new game but
+  cannot resume one. That is the first thing to solve -- either an on-screen
+  code entry in the shell or touch-driven entry in `title_scene`.
+  Sean is play-testing Waterdeep and the sewers on a phone; Codex owns the
+  next mobile pass. Core game code is untouched by this commit.
+- **Suite is red at 80c9749, and not from the mobile pass (Claude,
+  2026-09-19):** 190 of 191 modules, four failures, all pre-existing with a
+  clean tree. Three are counts left stale by the tea-table (`feywild_5`) cut:
+  `test_feywild_arrival_alignment` still wants 26 reciprocal arrivals,
+  `test_feywild_mushroom_dressing` still wants 10 mushroom maps, and
+  `test_save_registry.test_every_entry_is_a_real_resume_point` trips on the
+  retired `feywild_5` slot the cut deliberately kept -- so that test needs to
+  learn about retired slots rather than the slot being removed. The fourth,
+  `test_treasure_handoffs`, imports `pytest`, which is not installed in the
+  local 3.14 environment and which the module runner does not support.
+  Whoever picks this up owns deciding whether the suite gains pytest or that
+  module drops it. Not fixed here: unrelated to the mobile shell, and the
+  tea-table cut is Codex's to reconcile.
+
+## Recent Passes
+
+## Superseded Baton Entries
+
+Passes that were left in the baton block rather than moved down when
+they finished. Newest first.
+
 - **NPC trailer revision (Codex, 2026-09-19):** added eight seconds of Chuck
   approaching the plaza blacksmith, interacting, reading "I don't shoe rats."
   and walking away. Dialogue stays visible 5.4 seconds. Trailer is now 46
@@ -123,7 +171,6 @@
 
 ---
 
-## Recent Passes
 
 ## Latest Pass — Codex's Dock Pass, Finished (2026-09-18)
 

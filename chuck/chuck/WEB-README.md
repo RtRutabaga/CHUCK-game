@@ -8,6 +8,15 @@ https://rtrutabaga.github.io/CHUCK-game/. The repository owner must select
 **GitHub Actions** once under **Settings → Pages → Source** before the first
 deployment. The workflow can also be run manually from the Actions tab.
 
+The landscape touch prototype is published at
+https://rtrutabaga.github.io/CHUCK-game/mobile/. It is a thin host shell over
+the same browser game and assets: touch buttons emit the existing keyboard
+actions, so desktop controls and gameplay rules stay unchanged. Use Safari on
+an iPhone in landscape; the settings button changes control size and edge
+inset. This is an exploratory test build, not a separate mobile runtime yet.
+LOAD CODE still wants a typed code and the shell has no keyboard, so a phone
+can start a new game but cannot yet resume one.
+
 Use Python 3.12 from this directory:
 
 ```powershell
