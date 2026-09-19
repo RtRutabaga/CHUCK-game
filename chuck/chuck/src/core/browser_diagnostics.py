@@ -4,6 +4,23 @@ import math
 from time import perf_counter
 
 
+def show_browser_crash(window, details):
+    """Keep a readable error after SDL closes, including on Xbox Edge."""
+    panel = window.document.createElement("pre")
+    panel.id = "chuck-crash"
+    panel.style.cssText = (
+        "position:fixed;inset:5%;z-index:2147483647;margin:0;padding:24px;"
+        "background:#171322;color:white;white-space:pre-wrap;overflow:auto;"
+        "font:18px/1.5 monospace;user-select:text"
+    )
+    panel.textContent = (
+        "CHUCK stopped unexpectedly.\n"
+        "Please share a photo of this message, then reload and use your save code.\n\n"
+        + details
+    )
+    window.document.body.appendChild(panel)
+
+
 class FrameReporter:
     """Report five-second samples, separating maps and scene transitions."""
 

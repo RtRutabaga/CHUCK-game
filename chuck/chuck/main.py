@@ -45,7 +45,7 @@ def main() -> None:
 async def browser_main() -> None:
     """Let the browser service input, audio and rendering between frames."""
     import platform
-    from src.core.browser_diagnostics import browser_reporter
+    from src.core.browser_diagnostics import browser_reporter, show_browser_crash
 
     platform.window.canvas.style.imageRendering = "pixelated"
     try:
@@ -56,7 +56,9 @@ async def browser_main() -> None:
         # The browser's filesystem is temporary and Pygbag's Python console
         # is normally hidden. Keep the traceback in the browser console too.
         import traceback
-        platform.window.console.error(traceback.format_exc())
+        details = traceback.format_exc()
+        platform.window.console.error(details)
+        show_browser_crash(platform.window, details)
         raise
 
 

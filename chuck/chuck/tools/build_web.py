@@ -6,6 +6,7 @@ Desktop WAV masters and save files are never included or modified.
 """
 
 import argparse
+import hashlib
 from pathlib import Path
 import shutil
 import subprocess
@@ -18,6 +19,14 @@ STAGE = ROOT / "build" / "browser-app"
 def finalize_web_artifact(web: Path) -> None:
     """Apply CHUCK's host-specific additions to Pygbag's static output."""
     page = web / "index.html"
+    html = page.read_text(encoding="utf-8")
+    archive = web / "browser-app.apk"
+    # A new URL for changed game bytes prevents browsers reusing an old APK
+    # after fetching a newer index. Keep the legacy file for older index pages.
+    digest = hashlib.sha256(archive.read_bytes()).hexdigest()[:16]
+    versioned = archive.with_name(f"browser-app-{digest}.apk")
+    shutil.copyfile(archive, versioned)
+    html = html.replace("browser-app.apk", versioned.name)
     # Override the stock template's independent width/height scaling. SDL
     # retains a fixed framebuffer; CSS fits it into the browser viewport.
     style = """<style>
@@ -28,7 +37,7 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
           margin: auto !important; border: 0 !important;
           image-rendering: pixelated; }
 </style>"""
-    page.write_text(page.read_text(encoding="utf-8") + style, encoding="utf-8")
+    page.write_text(html + style, encoding="utf-8")
     mobile = web / "mobile"
     mobile.mkdir(exist_ok=True)
     (mobile / "index.html").write_text(MOBILE_SHELL, encoding="utf-8")

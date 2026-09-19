@@ -13,16 +13,37 @@ from src.systems.audio import AudioSystem
 from tools.build_web import finalize_web_artifact
 
 
+def test_browser_crash_remains_readable_after_sdl_shutdown():
+    from src.core.browser_diagnostics import show_browser_crash
+    window = Mock()
+    show_browser_crash(window, "ValueError: missing captain marker")
+    panel = window.document.createElement.return_value
+    assert "ValueError: missing captain marker" in panel.textContent
+    assert "save code" in panel.textContent
+    window.document.body.appendChild.assert_called_once_with(panel)
+
+
 def test_browser_artifact_is_ready_for_github_pages():
     with tempfile.TemporaryDirectory() as folder:
         web = Path(folder)
         page = web / "index.html"
-        page.write_text("<canvas id=canvas></canvas>", encoding="utf-8")
+        page.write_text('<canvas id=canvas></canvas> fopen("browser-app.apk")',
+                        encoding="utf-8")
+        (web / "browser-app.apk").write_bytes(b"first game build")
 
         finalize_web_artifact(web)
 
         assert (web / ".nojekyll").is_file()
         assert "image-rendering: pixelated" in page.read_text(encoding="utf-8")
+        first = next(web.glob("browser-app-*.apk"))
+        assert first.read_bytes() == b"first game build"
+        assert first.name in page.read_text(encoding="utf-8")
+        page.write_text('fopen("browser-app.apk")', encoding="utf-8")
+        (web / "browser-app.apk").write_bytes(b"updated game build")
+        finalize_web_artifact(web)
+        updated = next(p for p in web.glob("browser-app-*.apk") if p != first)
+        assert updated.name in page.read_text(encoding="utf-8")
+        assert first.name not in page.read_text(encoding="utf-8")
 
 
 def test_browser_music_cancels_fade_before_replacing_track():

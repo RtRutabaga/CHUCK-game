@@ -235,6 +235,15 @@ def test_captain_arrival_runs_uninterrupted_through_the_plank_fall() -> None:
         assert isinstance(cutscene, HellFallingCutsceneScene)
         assert scene._plank_ending_block.kind == "hell"
         assert game.progress.has(CAPTAIN_CONFRONTED_FLAG)
+        # Continue the real sequence beyond the cutscene's black fade.
+        for _ in range(int(HELL_HANDOFF_TIME * 30) + 2):
+            game.scenes.update(1 / 30)
+            game.scenes.draw(game.native_surface)
+        world = game.scenes.current
+        assert world.map_name == "phlegethos_arrival"
+        for _ in range(90):
+            world.update(1 / 30)
+            world.draw(game.native_surface)
     finally:
         game._shutdown()
 

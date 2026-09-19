@@ -5,6 +5,17 @@
 
 ## Baton
 
+**Codex, 2026-09-19: Xbox still reports a blank Phlegethos handoff.**
+Confirmed Pages run 35467546505 succeeded and fetched the live APK to verify
+the captain-map guard really shipped. Full captain -> fall -> playable Hell
+sequence now runs frame-by-frame in the regression test and passes locally.
+No second gameplay exception reproduced; Xbox caching remains a hypothesis.
+Build finalization now gives the APK a content-hashed filename, retaining the
+legacy APK for old index pages. Browser Python crashes display their traceback
+in a DOM panel after SDL shutdown, so Xbox can report a readable error.
+Eight browser-runtime and twelve plank-procession tests pass. Actual Xbox
+retest still needed; do not claim the remaining report resolved.
+
 **Codex, 2026-09-19: Waterdeep southern wall.** The shared docks map now
 uses the fountain plaza's solid castle-brick terrain across its southern
 land edge (row 34, columns 20–55), including the southeast corner. Sea
@@ -20,8 +31,8 @@ flags; the expanded treasure-handoff test now loads, updates, and draws all
 five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
-**Branch** `main`, at the tip. **Suite 191 of 191, no failures** (run at
-c7dc7b9; nothing since has touched game code). **Tree clean.**
+**Branch** `main`, at the tip. Last full suite: **191 of 191** at c7dc7b9;
+targeted checks for subsequent changes are recorded above.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
