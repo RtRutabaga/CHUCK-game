@@ -86,7 +86,7 @@ MOBILE_SHELL = r'''<!doctype html>
 #codebuttons button:active,#codeload.held{background:#7954a9dd}
 #codeload{background:#4d3f77}
 #codenote{margin:9px 0 0;font-weight:400;font-size:11px;opacity:.75}
-</style></head><body><iframe id="game" src="../index.html?mobile=1" title="CHUCK game"></iframe><div id="controls">
+</style></head><body><iframe id="game" src="../index.html?mobile=1" allow="clipboard-read; clipboard-write" title="CHUCK game"></iframe><div id="controls">
 <div id="pad"><button class="touch" id="up" data-key="ArrowUp" data-code="ArrowUp" data-keycode="38" aria-label="Move up">▲</button><button class="touch" id="left" data-key="ArrowLeft" data-code="ArrowLeft" data-keycode="37" aria-label="Move left">◀</button><button class="touch" id="down" data-key="ArrowDown" data-code="ArrowDown" data-keycode="40" aria-label="Move down">▼</button><button class="touch" id="right" data-key="ArrowRight" data-code="ArrowRight" data-keycode="39" aria-label="Move right">▶</button></div>
 <div id="actions"><button class="touch" id="jump" data-key=" " data-code="Space" data-keycode="32" aria-label="Jump">JUMP</button><button class="touch" id="scratch" data-key="f" data-code="KeyF" data-keycode="70" aria-label="Scratch">SCRATCH</button><button class="touch" id="inspect" data-key="e" data-code="KeyE" data-keycode="69" aria-label="Inspect or talk">INSPECT<br>/ TALK</button></div>
 <button class="touch" id="pause" data-key="Escape" data-code="Escape" data-keycode="27" aria-label="Pause">Ⅱ</button><button class="touch" id="settings" aria-label="Control settings">⚙</button><div id="hint">Landscape prototype · tap ⚙ to resize controls</div>
