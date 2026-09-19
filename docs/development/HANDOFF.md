@@ -5,6 +5,10 @@
 
 ## Baton
 
+- **Trailer revision (Codex, 2026-09-19):** per Sean, removed all added
+  titles/cards and video fades. Export is now 44 seconds of gameplay with
+  each scene's actual requested music and synchronized SFX. No continuous
+  replacement soundtrack. Same local MP4 path; cabin/finale still excluded.
 - **Trailer (Codex, 2026-09-19):** created a 49-second 1080p/30 MP4 at
   artifacts/trailer/CHUCK-gameplay-trailer.mp4 (local ignored artifact).
   tools/capture_trailer.py captures actual game-rendered frames with scripted

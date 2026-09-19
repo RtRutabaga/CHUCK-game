@@ -65,14 +65,12 @@ def main():
     encoder = subprocess.Popen(cmd,stdin=subprocess.PIPE)
     frame = pygame.Surface((320,180)); clock = [0.0]; effects=[]; manifest=[]
     game.audio.play_sfx = lambda name: effects.append((clock[0],name))
-    game.audio.play_music = lambda *args,**kwargs: None
-    font = game.assets.bitmap_font()
-    def text_line(text,y,scale=1):
-        label=font.render(text,False,(255,255,255))
-        if scale!=1: label=pygame.transform.scale(label,(label.get_width()*scale,label.get_height()*scale))
-        x=(320-label.get_width())//2
-        pygame.draw.rect(frame,(9,10,17),(x-5,y-3,label.get_width()+10,label.get_height()+6))
-        frame.blit(label,(x,y))
+    music_events=[]
+    def record_music(filename, loop=True):
+        if music_events and music_events[-1][1:3] == (filename, loop):
+            return
+        music_events.append((clock[0],filename,loop,game.audio.volume_for(filename)))
+    game.audio.play_music = record_music
     def emit():
         encoder.stdin.write(pygame.image.tobytes(frame,'RGB'))
         clock[0]+=1/FPS
@@ -115,45 +113,43 @@ def main():
                     game.input._actions_just_pressed.add('jump')
                 game.scenes.update(1/FPS)
                 frame.fill((0,0,0)); game.scenes.draw(frame)
-                if index==0 and n<100:
-                    text_line('CHUCK',125,3)
-                    text_line('A SMALL RAT. A VERY STRANGE WORLD.',162)
-                if n < 6 or n >= seconds*FPS-6:
-                    shade=pygame.Surface(frame.get_size()); shade.fill((0,0,0))
-                    shade.set_alpha(int(255*(1-min(n,seconds*FPS-1-n)/6)))
-                    frame.blit(shade,(0,0))
                 if n==seconds*FPS//2: pygame.image.save(frame,OUT/f'shot-{index+1}.png')
                 positions.append((round(world.player.x,1),round(world.player.y,1)))
                 emit()
             manifest.append(dict(checkpoint=checkpoint,map=world.map_name,start=start,seconds=seconds,
                                  distinct_positions=len(set(positions)),path_tiles=len(path)))
             print(manifest[-1],flush=True)
-        for n in range(5*FPS):
-            frame.fill((13,13,23)); text_line('CHUCK',42,4)
-            text_line('PLAY FREE IN YOUR BROWSER',108)
-            text_line('rtrutabaga.github.io/CHUCK-game',132)
-            text_line('UNOFFICIAL FAN GAME',160)
-            emit()
         encoder.stdin.close(); assert encoder.wait()==0
     finally:
         game._shutdown()
     rate=22050; length=round(clock[0]*rate)
-    music,sr=read_wav(config.MUSIC_DIR/'fall_to_chult.wav'); assert sr==rate
-    mixed=np.resize(music,length)*.72
+    mixed=np.zeros(length,dtype=np.float32)
+    for index,(at,filename,loop,volume) in enumerate(music_events):
+        end=music_events[index+1][0] if index+1<len(music_events) else clock[0]
+        left,right=round(at*rate),round(end*rate)
+        music,sr=read_wav(config.MUSIC_DIR/filename); assert sr==rate
+        count=right-left
+        if count<=0: continue
+        segment=np.resize(music,count) if loop else np.pad(music,(0,max(0,count-len(music))))[:count]
+        # Tiny edge ramps prevent clicks at edits without overlapping worlds.
+        ramp=min(220,count//2)
+        segment=segment.copy()
+        segment[:ramp]*=np.linspace(0,1,ramp)
+        segment[-ramp:]*=np.linspace(1,0,ramp)
+        mixed[left:right]=segment*volume
     for at,name in effects:
         path=config.SFX_DIR/f'{name}.wav'
         if not path.exists(): continue
         sound,sr=read_wav(path); assert sr==rate
         i=round(at*rate); count=min(len(sound),length-i)
         if count>0: mixed[i:i+count]+=sound[:count]*.65
-    fade=min(rate*2,length); mixed[:rate]*=np.linspace(0,1,rate); mixed[-fade:]*=np.linspace(1,0,fade)
     mixed*=min(1,.94/max(.01,float(np.max(np.abs(mixed)))))
     with wave.open(str(OUT/'soundtrack.wav'),'wb') as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(rate); w.writeframes((mixed*32767).astype('<i2').tobytes())
     subprocess.run([ffmpeg,'-y','-loglevel','error','-i',str(video),'-i',str(OUT/'soundtrack.wav'),
                     '-c:v','copy','-c:a','aac','-b:a','192k','-movflags','+faststart','-shortest',
                     str(OUT/'CHUCK-gameplay-trailer.mp4')],check=True)
-    (OUT/'shots.json').write_text(json.dumps(dict(duration=clock[0],shots=manifest,sfx_events=effects),indent=2))
+    (OUT/'shots.json').write_text(json.dumps(dict(duration=clock[0],shots=manifest,sfx_events=effects,music_events=music_events),indent=2))
     print('TRAILER COMPLETE',flush=True)
 
 if __name__=='__main__': main()
