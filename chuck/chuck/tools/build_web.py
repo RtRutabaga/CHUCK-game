@@ -37,7 +37,10 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
           margin: auto !important; border: 0 !important;
           image-rendering: pixelated; }
 </style>"""
-    page.write_text(html + style, encoding="utf-8")
+    clipboard_script = Path(__file__).with_name("browser_clipboard.js").read_text(
+        encoding="utf-8")
+    page.write_text(html + style + "<script>" + clipboard_script + "</script>",
+                    encoding="utf-8")
     mobile = web / "mobile"
     mobile.mkdir(exist_ok=True)
     (mobile / "index.html").write_text(MOBILE_SHELL, encoding="utf-8")

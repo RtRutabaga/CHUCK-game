@@ -141,12 +141,14 @@ class PauseScene(Scene):
 
     # ------------------------------------------------------------------
     def on_enter(self) -> None:
+        clipboard.enable_browser_paste(self.page == "load")
         self.game.audio.play_sfx("interact")
         if not self.standalone and self.game.audio.enabled:
             pygame.mixer.music.pause()
             self._music_paused = True
 
     def on_exit(self) -> None:
+        clipboard.enable_browser_paste(False)
         if self._music_paused and self.game.audio.enabled:
             pygame.mixer.music.unpause()
         self._music_paused = False
@@ -201,6 +203,7 @@ class PauseScene(Scene):
 
     def _goto(self, page: str, selected: int = 0) -> None:
         self.page = page
+        clipboard.enable_browser_paste(page == "load")
         self.selected = selected
 
     def update(self, dt: float) -> None:
@@ -259,11 +262,13 @@ class PauseScene(Scene):
         elif self.page == "save":
             if option == "COPY":
                 if sys.platform == "emscripten":
-                    self._note = "Copying..."
+                    if self._copy_task is not None and not self._copy_task.done():
+                        return
+                    self._note = ""
                     self._copy_task = asyncio.create_task(self._copy_code())
                 else:
                     self._note = (
-                        "Copied." if clipboard.copy(self._code or "")
+                        "Copied" if clipboard.copy(self._code or "")
                         else "No clipboard here. Write it down."
                     )
             else:
@@ -272,7 +277,7 @@ class PauseScene(Scene):
     async def _copy_code(self) -> None:
         copied = await clipboard.copy_browser(self._code or "")
         self._note = (
-            "Copied." if copied else "Clipboard blocked. Write it down."
+            "Copied" if copied else "Clipboard blocked. Write it down."
         )
 
     # ------------------------------------------------------------------
@@ -340,6 +345,9 @@ class PauseScene(Scene):
         there the stick dials a character and the interact button loads.
         """
         field = self._field()
+        pasted = clipboard.take_browser_paste()
+        if pasted is not None and not field.set_text(pasted):
+            field.error = "That is not a save code."
         field.update(dt)
         if not self.game.input.using_controller:
             return

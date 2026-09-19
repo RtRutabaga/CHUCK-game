@@ -15,6 +15,7 @@ failure state: the code is on screen, large enough to read and type.
 from __future__ import annotations
 
 import sys
+import asyncio
 
 
 def _scrap():
@@ -60,11 +61,41 @@ async def copy_browser(text: str) -> bool:
         return copy(text)
     try:
         import platform
-        browser_clipboard = platform.window.navigator.clipboard
-        await browser_clipboard.writeText(text)
+        bridge = platform.window.CHUCKClipboard
+        request = bridge.beginCopy(text)
+        try:
+            for _ in range(100):
+                status = str(bridge.copyStatus(request))
+                if status != "pending":
+                    return status == "copied"
+                await asyncio.sleep(0.05)
+            return False
+        finally:
+            bridge.finishCopy(request)
     except Exception:       # noqa: BLE001 - clipboard denial is ordinary
         return False
     return True
+
+
+def enable_browser_paste(enabled: bool) -> None:
+    if sys.platform != "emscripten":
+        return
+    try:
+        import platform
+        platform.window.CHUCKClipboard.enablePaste(enabled)
+    except Exception:
+        pass
+
+
+def take_browser_paste() -> str | None:
+    if sys.platform != "emscripten":
+        return None
+    try:
+        import platform
+        text = str(platform.window.CHUCKClipboard.takePaste())
+        return text.replace("\x00", "") or None
+    except Exception:
+        return None
 
 
 def paste() -> str | None:

@@ -5,6 +5,18 @@
 
 ## Baton
 
+**Codex, 2026-09-19: browser save-code clipboard.** Sean confirmed the
+Phlegethos transition works in another browser. Copy now settles its browser
+Promise in JavaScript and polls a bounded status from Python, showing exactly
+`Copied` on success instead of remaining at `Copying...`. Load Code enables a
+native paste listener only while open; Ctrl/Cmd-V bypasses SDL's key capture,
+and the field consumes and normalizes the pasted text. Clipboard read access
+is limited to the user-initiated paste event. Desktop clipboard stays intact.
+Checks: browser clipboard JS (success/denial/paste/lifecycle), 9 browser-runtime,
+22 existing save-menu plus new paste-to-resume, and 25 code-entry tests pass.
+The previous commit's content-versioned downloads and visible crash reports
+are included in this publication. No actual Xbox clipboard test performed.
+
 **Codex, 2026-09-19: Xbox still reports a blank Phlegethos handoff.**
 Confirmed Pages run 35467546505 succeeded and fetched the live APK to verify
 the captain-map guard really shipped. Full captain -> fall -> playable Hell

@@ -142,13 +142,40 @@ def test_copy_puts_it_on_the_clipboard_or_says_it_could_not() -> None:
             clipboard.copy = lambda text: taken.append(text) or True
             pause.choose("COPY")
             assert taken == [pause._code]
-            assert pause._note == "Copied."
+            assert pause._note == "Copied"
 
             clipboard.copy = lambda text: False
             pause.choose("COPY")
             assert "Write it down" in pause._note
         finally:
             clipboard.copy = original
+            game._shutdown()
+
+
+def test_browser_paste_fills_load_code_and_resumes() -> None:
+    from unittest.mock import patch
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        try:
+            game.checkpoints.load_checkpoint("temple_1")
+            save_menu = PauseScene(game)
+            game.scenes.push(save_menu)
+            save_menu.choose("SAVE GAME")
+            code = save_menu._code
+            save_menu.close()
+            load_menu = PauseScene(game, page="load", standalone=True)
+            expected_map = game.scenes.current.map_name
+            with patch.object(clipboard, "enable_browser_paste") as enabled:
+                game.scenes.push(load_menu)
+                enabled.assert_called_with(True)
+                with patch.object(clipboard, "take_browser_paste", return_value=code):
+                    load_menu.update(1 / 30)
+                assert load_menu._field().complete
+                load_menu._try_code()
+                enabled.assert_called_with(False)
+            assert isinstance(game.scenes.current, WorldScene)
+            assert game.scenes.current.map_name == expected_map
+        finally:
             game._shutdown()
 
 
@@ -171,7 +198,7 @@ def test_browser_copy_updates_the_save_page_after_permission_result() -> None:
             clipboard.copy_browser = allowed
             asyncio.run(pause._copy_code())
             assert taken == [pause._code]
-            assert pause._note == "Copied."
+            assert pause._note == "Copied"
 
             async def blocked(_text):
                 return False

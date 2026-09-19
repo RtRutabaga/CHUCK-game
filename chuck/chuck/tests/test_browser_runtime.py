@@ -13,6 +13,26 @@ from src.systems.audio import AudioSystem
 from tools.build_web import finalize_web_artifact
 
 
+def test_browser_clipboard_polls_completion_and_times_out():
+    from src.systems.clipboard import copy_browser
+    from unittest.mock import AsyncMock
+    import platform
+    window = Mock()
+    bridge = window.CHUCKClipboard
+    bridge.beginCopy.return_value = 7
+    with patch("sys.platform", "emscripten"), \
+            patch.object(platform, "window", window, create=True), \
+            patch("src.systems.clipboard.asyncio.sleep", new_callable=AsyncMock):
+        bridge.copyStatus.side_effect = ["pending", "copied"]
+        assert asyncio.run(copy_browser("TEST-CODE")) is True
+        bridge.finishCopy.assert_called_with(7)
+        bridge.copyStatus.side_effect = None
+        bridge.copyStatus.return_value = "pending"
+        assert asyncio.run(copy_browser("TEST-CODE")) is False
+        bridge.copyStatus.return_value = "blocked"
+        assert asyncio.run(copy_browser("TEST-CODE")) is False
+
+
 def test_browser_crash_remains_readable_after_sdl_shutdown():
     from src.core.browser_diagnostics import show_browser_crash
     window = Mock()
