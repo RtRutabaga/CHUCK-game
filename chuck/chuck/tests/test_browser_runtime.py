@@ -10,7 +10,7 @@ from src.core import config
 from src.core.game import Game
 from src.core.runtime import audio_path
 from src.systems.audio import AudioSystem
-from tools.build_web import finalize_web_artifact
+from tools.build_web import MOBILE_SHELL, finalize_web_artifact
 
 
 def test_browser_clipboard_polls_completion_and_times_out():
@@ -64,6 +64,39 @@ def test_browser_artifact_is_ready_for_github_pages():
         updated = next(p for p in web.glob("browser-app-*.apk") if p != first)
         assert updated.name in page.read_text(encoding="utf-8")
         assert first.name not in page.read_text(encoding="utf-8")
+
+
+def test_the_desktop_page_points_phones_at_the_touch_shell():
+    """A link, and one that knows not to appear inside the shell.
+
+    Nothing detects a device, so the desktop page carries the only sign
+    that `/mobile/` exists. It is a link rather than a redirect because
+    user-agent sniffing would have to be right about the Xbox browser,
+    and being wrong there drops a controller player into a touch shell.
+
+    The catch it has to survive: `/mobile/` iframes this very page. A
+    link left alone would sit inside the touch shell offering to take
+    the player to the touch shell, and tapping it would nest another.
+    """
+    with tempfile.TemporaryDirectory() as folder:
+        web = Path(folder)
+        page = web / "index.html"
+        page.write_text('<canvas id=canvas></canvas> fopen("browser-app.apk")',
+                        encoding="utf-8")
+        (web / "browser-app.apk").write_bytes(b"game")
+
+        finalize_web_artifact(web)
+
+        html = page.read_text(encoding="utf-8")
+        assert 'href="mobile/"' in html, "no way to reach the touch shell"
+        assert "window.top !== window.self" in html, (
+            "the link does not remove itself inside a frame, so it would "
+            "appear inside /mobile/ and offer to nest another shell")
+        assert "mobile=1" in html, (
+            "the link ignores the marker the shell puts on the iframe URL")
+        # The shell must still be asking for it, or the check above is
+        # guarding against nothing.
+        assert "?mobile=1" in MOBILE_SHELL
 
 
 def test_browser_music_cancels_fade_before_replacing_track():

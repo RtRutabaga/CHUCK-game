@@ -36,10 +36,18 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
           position: fixed !important; inset: 0 !important;
           margin: auto !important; border: 0 !important;
           image-rendering: pixelated; }
+#mobile-link { position: fixed; left: 50%; bottom: 6px; z-index: 10;
+          transform: translateX(-50%);
+          font: 500 12px/1 system-ui, sans-serif; color: #ffffff8c;
+          text-decoration: none; background: #0d0a16b3;
+          border: 1px solid #ffffff2b; border-radius: 999px;
+          padding: 6px 12px; }
+#mobile-link:hover { color: #fff; border-color: #ffffff66; }
 </style>"""
     clipboard_script = Path(__file__).with_name("browser_clipboard.js").read_text(
         encoding="utf-8")
-    page.write_text(html + style + "<script>" + clipboard_script + "</script>",
+    page.write_text(html + style + MOBILE_POINTER
+                    + "<script>" + clipboard_script + "</script>",
                     encoding="utf-8")
     mobile = web / "mobile"
     mobile.mkdir(exist_ok=True)
@@ -48,6 +56,23 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
     # names begin with an underscore.
     (web / ".nojekyll").touch()
 
+
+# The desktop page's one nod to the phone: a way to find `/mobile/`,
+# since nothing here detects a device. A link rather than a redirect --
+# user-agent sniffing would have to be right about the Xbox browser,
+# and being wrong there drops a controller player into a touch shell.
+#
+# It removes itself inside a frame, because `/mobile/` embeds this very
+# page. Left alone it would sit inside the touch shell offering to take
+# the player to the touch shell. The frame check is the reliable half;
+# `?mobile=1`, which the shell already appends, says the same thing out
+# loud.
+MOBILE_POINTER = """<a id="mobile-link" href="mobile/">On a phone? Touch controls</a>
+<script>
+if (window.top !== window.self || location.search.indexOf("mobile=1") >= 0) {
+  document.getElementById("mobile-link").remove();
+}
+</script>"""
 
 # A landscape touch shell for phones: an iframe around the same browser
 # build, with buttons that press the keys the game already binds.
