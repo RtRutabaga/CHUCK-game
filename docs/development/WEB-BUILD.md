@@ -1,9 +1,12 @@
 # Web Build — CHUCK in a browser, hosted on GitHub Pages
 
-Status: **local build foundation and opening browser fixes verified; broader
-traversal and release checks remain.** Read the Baton in `HANDOFF.md` for current results. The build
-instructions are in `../../chuck/chuck/WEB-README.md`. Section 2 below records
-the original incoming state, not a claim that those files remain uncommitted.
+Status: **published and playable at
+<https://rtrutabaga.github.io/CHUCK-game/>; a landscape touch shell is
+published beside it at `/mobile/`. Real-device play testing, and the
+listening test in § 4.4, remain.** Read the Baton in `HANDOFF.md` for
+current results. The build instructions are in
+`../../chuck/chuck/WEB-README.md`. Section 2 below records the original
+incoming state, not a claim that those files remain uncommitted.
 
 This is a technical contract for running the existing game in a browser
 and publishing it from this repository. It is written to be executed by
@@ -121,7 +124,7 @@ Either way the **save code is the guarantee** and IndexedDB is only the
 convenience. If the local save cannot be written, say so in the UI: the
 player should learn to keep their code, not find out the hard way.
 
-### 4.2 Audio cannot start before a user gesture (not started)
+### 4.2 Audio cannot start before a user gesture (open; premise confirmed)
 
 Browsers refuse audio until the player interacts. `AudioSystem.__init__`
 calls `pygame.mixer.init()` at boot; `play_music()` streams per area.
@@ -133,16 +136,32 @@ not crash. But the title theme will be silent and may stay silent.
 event, then let the normal area cue take over. Silence until the first
 key press is acceptable; silence for the whole session is not.
 
-### 4.3 The window is opened and reopened (not started)
+**Confirmed 2026-09-19:** the premise holds. The published build reaches
+the title screen with `navigator.userActivation.hasBeenActive === false`
+-- pygbag does not interpose a click-to-start, so the browser's autoplay
+policy is in force at the moment the title theme is asked to play. What
+is *not* established is the consequence: whether the theme is silent,
+and whether it recovers on the first key press. That is a listening test
+on a real browser and cannot be done in Claude's pane (§ 6b).
+
+There is one emscripten branch in `AudioSystem.play_music` already, but
+it is unrelated -- it stops the mixer before a load because loading
+during a pending fade can deadlock on the browser's single thread.
+
+### 4.3 The window is opened and reopened — **done**
 
 `src/core/game.py:_open_window` asks for `RESIZABLE`, `vsync=1`, and
 `(0, 0) + FULLSCREEN`, and `set_fullscreen` **recreates** the window.
 Under wasm the display is set once; recreating it is unreliable.
 
-**Fix:** on emscripten open one fixed-size window and make
-`set_fullscreen` a no-op, or route F11 to the browser's own fullscreen
-through `platform.window`. The pause menu's FULLSCREEN row should be
-absent on web rather than offering something that does nothing.
+**Done, all three parts** (verified 2026-09-19):
+
+- `game.py:_open_window` returns a single fixed-size `set_mode` on
+  emscripten before any of the fullscreen or vsync handling.
+- `game.py:set_fullscreen` returns immediately on emscripten rather than
+  recreating the window: *browser chrome owns fullscreen*.
+- `pause_scene.main_options()` drops the FULLSCREEN row on emscripten,
+  so the menu does not offer something that would do nothing.
 
 ### 4.4 Audio weight — verify the encode
 
@@ -158,8 +177,29 @@ The WAVs are *derived* — `tools/generate_music.py` renders them from
 own copies without touching the desktop assets. `tools/build_web.py`
 already does this via `soundfile`.
 
-What has **not** been done is checking the result. Bitrate arithmetic for
-32.9 minutes:
+**Weighed 2026-09-19.** The encode comes in under even the most
+pessimistic row of the table below:
+
+| | |
+| --- | --- |
+| desktop WAV, 42 tracks | 89.1 MB |
+| browser OGG, same tracks | **10.6 MB** (8.4x smaller) |
+| `browser-app.apk` (game + assets, what loads) | 11.1 MB |
+| whole published site | 22 MB |
+
+`tools/build_web.py` encodes with `soundfile`'s default Vorbis quality
+at the source rate and channel count; nothing was tuned to reach this.
+The Pages ceilings (100 MB per file hard, 1 GB site soft) are not close.
+`browser-app.tar.gz` is the other 11 MB and is *referenced* by
+`index.html` -- it is not a stray duplicate, so do not delete it.
+
+What remains is the part a measurement cannot answer: **listen to it.**
+22 kHz synth material at default Vorbis may be clean or may be ugly, and
+the soundtrack has its own authority. Until somebody has listened on a
+real browser, the number below is a size result and not an approval.
+
+The original arithmetic, kept because it is what the number is judged
+against — for 32.9 minutes:
 
 | bitrate | total |
 | --- | --- |
@@ -179,14 +219,18 @@ music.
 
 ---
 
-## 5. Publishing — workflow prepared, activation pending
+## 5. Publishing — **live**
 
 `.github/workflows/pages.yml` builds the browser artifact on `main`, uploads it,
 and deploys it to the `github-pages` environment. The generated artifact now
 includes `.nojekyll`.
 
-- Repository Settings → Pages → Source = **GitHub Actions** (not a
-  branch). Must be set by hand once; a workflow cannot enable it.
+Deploying since 2026-09-18; every push to `main` republishes. Because the
+workflow uploads the whole `build/web` tree, anything the build writes
+under it publishes at no extra cost — which is how `/mobile/` is hosted.
+
+- ~~Repository Settings → Pages → Source = **GitHub Actions**.~~
+  **Done.** It had to be set by hand once; a workflow cannot enable it.
 - Workflow: build with pygbag, then `actions/upload-pages-artifact`
   followed by `actions/deploy-pages`. Needs
   `permissions: {pages: write, id-token: write}`.
@@ -220,18 +264,23 @@ includes `.nojekyll`.
 Each step is a commit that leaves the desktop game running and the suite
 green. Do not start the next until the previous is verified.
 
-0. **Reconcile** the uncommitted pass in §2 — finish it, commit it, or
-   set it aside. Record which in `HANDOFF.md`.
-1. **Local build and a real play test.** Build, open it, play from the
-   title through the docks, the sewer, and one map transition. Record the
-   load time and frame rate in `HANDOFF.md`. If it will not hold 60 fps
-   at 320×180, stop and report before optimising — the fix may be a
-   design question.
-2. **Audio** — §4.2, and weigh and listen to the encode per §4.4.
-3. **Display** — §4.3.
-4. **Saves** — §4.1.
-5. **Publish** — §5.
-6. **Document** — `docs/README.md`, `HANDOFF.md`, `DECISIONS.md`, and a
+Done: ~~§2 reconcile~~, ~~§4.1 saves~~ (cancelled — the code is the
+only save), ~~§4.3 display~~, ~~§5 publish~~, ~~weighing §4.4~~.
+
+What is left, in order:
+
+1. **A real play test, on a real browser.** Title through the docks, the
+   sewer, and one map transition. Record load time and frame rate in
+   `HANDOFF.md`. If it will not hold 60 fps at 320×180, stop and report
+   before optimising — the fix may be a design question. Not doable in
+   Claude's pane; see § 6b.
+2. **Listen to the audio** (§4.4) and, if the title theme is silent from
+   a cold load, fix the gesture problem (§4.2). These are one sitting:
+   the first tells you whether the second matters.
+3. **Mobile save-code entry.** A phone can start a game but not resume
+   one — LOAD CODE wants twelve typed characters and the touch shell has
+   no keyboard. Codex owns this.
+4. **Document** — `docs/README.md`, `HANDOFF.md`, `DECISIONS.md`, and a
    "Play in a browser" line in the root `README.md`.
 
 ---
@@ -262,8 +311,11 @@ Do not report a performance figure measured in the pane.
 3. **Performance.** 320×180 scaled up, y-sorted draws, up to ~4000 astral
    tiles on the largest maps. Unknown under wasm until step 1.
 4. **Audio quality** at whatever bitrate survives §4.4.
-5. **IndexedDB persistence** being flaky across browsers. Mitigated by
-   the save codes already existing.
+5. ~~**IndexedDB persistence** being flaky across browsers.~~ **Gone:**
+   §4.1 was cancelled, so nothing is persisted in the browser at all.
+6. **The touch shell is a host page, not a port.** It presses the
+   keyboard keys the game already binds. Anything the game asks a player
+   to *type* — a save code — has no route in from a phone.
 
 ---
 
@@ -272,8 +324,10 @@ Do not report a performance figure measured in the pane.
 - Playable at the Pages URL from a cold browser profile.
 - Title → NEW GAME → the docks → the sewer → a map transition, at a
   steady frame rate.
-- SAVE GAME produces a code; LOAD CODE on the title accepts one; a
-  reload plus CONTINUE resumes.
+- SAVE GAME produces a code and LOAD CODE on the title accepts one. The
+  round trip is the whole of it: **there is no CONTINUE and no browser
+  save**, by decision (`DECISIONS.md`), so a reload resumes only by the
+  player typing their code back in.
 - First load is well under the Pages per-file limit; the total is
   recorded in `HANDOFF.md`.
 - `python main.py` on Windows is unchanged.

@@ -5,6 +5,50 @@
 
 ## Baton
 
+**Branch** `main`, at the tip. **Suite 191 of 191, no failures** (run at
+c7dc7b9; nothing since has touched game code). **Tree clean.**
+
+**Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
+touch shell at `/mobile/`. Every push to `main` republishes both.
+
+**Codex, before anything else:** your worktree at
+`C:/Users/ashsm/.codex/worktrees/0b37/CHUCK-game` is still on 80c9749
+holding the mobile-shell pass uncommitted. **That work is already in
+main** (e9ee867), with two fixes on top: the controls were stacked in the
+top-left, and the key events were dispatched at the iframe *window*,
+where SDL does not listen -- it registers on the iframe's *document*.
+Discard your copy and rebase; do not apply it again. Nothing was lost,
+including your note that no real-iPhone pass had been done. It still has
+not been.
+
+**Next, in order:**
+
+1. **Mobile save-code entry (Codex).** A phone can start a game but not
+   resume one: LOAD CODE wants twelve typed characters and the touch
+   shell has no keyboard. Either on-screen entry in the shell or
+   touch-driven entry in `title_scene`.
+2. **A real play test on a real browser**, and **listen to the audio**.
+   Both are blocked on a device that is not Claude's pane, which runs the
+   wasm build at ~1.4 fps. `WEB-BUILD.md` sections 6 and 6b.
+
+**Two rules earned this session, both now written down where they
+belong:**
+
+- Retiring a map's save slots: add them to
+  `save_registry.RETIRED_ENTRIES` and repoint them at a surviving
+  neighbour. Tombstone only when there is nowhere sensible left to land.
+  Changing `FROZEN_ENTRY_DIGEST` is almost never the answer.
+- Finding another agent's stranded work: `git worktree list` first, not
+  `git status`. `TWO-AGENT-GIT-WORKFLOW.md` section "Work You Cannot
+  See" has the recovery procedure, including `diff HEAD` rather than
+  `diff`.
+
+## Recent Passes
+
+## Session of 2026-09-19 (Claude)
+
+Moved down from the baton. Newest first.
+
 - **Codex: your worktree copy has already landed (Claude, 2026-09-19).**
   `C:/Users/ashsm/.codex/worktrees/0b37/CHUCK-game` is still sitting on
   80c9749 with the mobile-shell pass uncommitted -- `tools/build_web.py`,
@@ -18,7 +62,6 @@
   I left the worktree untouched rather than cleaning it, per the rule in
   TWO-AGENT-GIT-WORKFLOW.md § Work You Cannot See: it is yours, and it is
   a free backup until you say otherwise.
-
 - **Mobile prototype, first phone build (Claude, 2026-09-19):** picked up
   Codex's touch-shell pass and shipped it. `tools/build_web.py` writes
   `build/web/mobile/index.html`, an iframe around the existing browser build
@@ -81,7 +124,6 @@
   but not resume one, because LOAD CODE wants twelve typed characters and the
   shell has no keyboard.
 
-## Recent Passes
 
 ## Superseded Baton Entries
 
