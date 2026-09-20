@@ -132,18 +132,26 @@ def test_the_page_claims_playback_audio_so_silent_mode_stops_muting_it():
 def test_the_shell_can_go_full_screen_or_say_why_it_cannot():
     """Full screen on Android; Add to Home Screen on iPhone.
 
-    Safari on iPhone has no Fullscreen API, so the button would sit there
-    doing nothing. It is removed instead, and the panel's note about the
-    home screen -- the only way to lose the browser bars on iOS -- is
-    shown in its place.
+    Safari on iPhone has no Fullscreen API. The button was removed there
+    at first, which left a player looking at browser bars with nothing
+    on screen to explain them or offer a way out. It stays instead, and
+    where it cannot go full screen it opens the panel holding the one
+    route that works.
     """
     assert 'id="fullscreen"' in MOBILE_SHELL
     assert "requestFullscreen" in MOBILE_SHELL
-    assert "fullscreen.remove()" in MOBILE_SHELL, (
-        "the full-screen button no longer removes itself where the "
-        "browser has no Fullscreen API, so iPhone gets a dead button")
     assert "Add to Home Screen" in MOBILE_SHELL, (
         "the shell no longer tells an iPhone player how to lose the bars")
+    # The branch taken when the API is missing must do something. A
+    # button that is neither removed nor wired is a dead control.
+    missing = MOBILE_SHELL[MOBILE_SHELL.index("if(!canFullscreen){"):]
+    missing = missing[:missing.index("else{")]
+    assert "fullscreen.onclick" in missing or "fullscreen.remove()" in missing, (
+        "where there is no Fullscreen API the button is left inert")
+    if "fullscreen.onclick" in missing:
+        assert "panel" in missing, (
+            "the button should open the panel that explains the home "
+            "screen route, since that is all iPhone has")
     # The orientation lock must not be able to undo the full screen it
     # was just given: it is refused outright on desktop, and a throw
     # there would escape before the await above had settled.

@@ -258,6 +258,42 @@ def test_the_controls_remember_their_size() -> None:
     assert "catch" in read[:400], "the settings read is not guarded"
 
 
+def test_the_tap_to_play_label_never_takes_the_tap() -> None:
+    """If this label ever catches the touch, the game cannot start.
+
+    Safari will not run a page that makes sound until it has had a real
+    touch, and pygbag says nothing about it -- its only message is the
+    "Loading" line, hidden by then. So the shell shows the prompt. The
+    tap it asks for has to pass straight through into the iframe, which
+    is the frame Safari wants the gesture in; a label that swallowed it
+    would leave the player tapping a black screen for ever.
+    """
+    rule = MOBILE_SHELL[MOBILE_SHELL.index("#start{"):]
+    rule = rule[:rule.index("}")]
+    assert "pointer-events:none" in rule, (
+        "the tap-to-play label would swallow the tap that starts the game")
+    assert "display:none" in rule, (
+        "the label is not hidden by default, so it would sit over the "
+        "game while it is still loading")
+    assert "#start.ready{display:grid" in MOBILE_SHELL, (
+        "nothing shows the label once the game is ready for its tap")
+
+
+def test_the_shell_watches_for_the_tap_inside_the_game() -> None:
+    """The parent never sees a touch that lands in the iframe.
+
+    So the listener has to be added to the iframe's own document, which
+    is reachable only because the two are the same origin.
+    """
+    watch = MOBILE_SHELL[MOBILE_SHELL.index("startLayer.classList.add('ready')"):]
+    watch = watch[:600]
+    assert "frame.contentDocument.addEventListener('pointerdown'" in watch, (
+        "the shell is not listening for the tap where it actually lands")
+    assert "dismissStart" in watch
+    # And a player who reaches for a control has plainly started too.
+    assert "getElementById('controls').addEventListener('pointerdown',dismissStart"         in MOBILE_SHELL
+
+
 def test_portrait_is_told_to_turn_sideways() -> None:
     """The game is 16:9. Held upright it is a sliver with controls on it."""
     assert 'id="rotate"' in MOBILE_SHELL

@@ -121,6 +121,10 @@ MOBILE_SHELL = r'''<!doctype html>
 #fullscreen{left:calc(var(--edge) + env(safe-area-inset-left) + 56px);top:calc(var(--edge) + env(safe-area-inset-top));min-width:var(--chip);min-height:var(--chip);border-radius:18px}
 #panel{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,360px);padding:20px;background:#171322f5;border:1px solid #ffffff55;border-radius:14px;pointer-events:auto;line-height:1.5;box-shadow:0 8px 30px #000b}
 #panel.open{display:block}#panel h1{font-size:18px;margin:0 0 12px}#panel label{display:block;margin:12px 0}#panel input{width:100%;accent-color:#ad80dc}#close{float:right;border:0;background:#ffffff22;color:white;border-radius:8px;padding:5px 10px}
+#start{position:fixed;inset:0;z-index:25;pointer-events:none;display:none;place-items:center;text-align:center;color:#f6d68c;font:700 clamp(15px,4.2vmin,26px)/1.5 system-ui;letter-spacing:.06em;text-shadow:0 2px 10px #000,0 0 24px #000}
+#start span{display:block;font:400 clamp(11px,2.8vmin,15px) system-ui;color:#ffffffb0;letter-spacing:0;margin-top:8px}
+#start.ready{display:grid;animation:waiting 1.8s ease-in-out infinite}
+@keyframes waiting{0%,100%{opacity:.6}50%{opacity:1}}
 #rotate{position:fixed;inset:0;z-index:30;display:none;place-items:center;text-align:center;padding:24px;background:#09070df5;color:#f6d68c;font:600 clamp(13px,4vmin,20px)/1.6 system-ui}
 #rotate span{display:block;color:#ffffffa0;font-weight:400;margin-top:8px}
 @media (orientation:portrait){#rotate{display:grid}}
@@ -134,7 +138,9 @@ MOBILE_SHELL = r'''<!doctype html>
 #codebuttons button:active,#codeload.held{background:#7954a9dd}
 #codeload{background:#4d3f77}
 #codenote{margin:9px 0 0;font-weight:400;font-size:11px;opacity:.75}
-</style></head><body><div id="rotate"><div>Turn your phone sideways.<span>CHUCK is a landscape game.</span></div></div><iframe id="game" src="../index.html?mobile=1" allow="clipboard-read; clipboard-write" title="CHUCK game"></iframe><div id="controls">
+#installnote{transition:background .3s,box-shadow .3s;border-radius:8px;padding:6px}
+#installnote.lit{background:#f6d68c22;box-shadow:0 0 0 1px #f6d68c66}
+</style></head><body><div id="start"><div>TAP TO PLAY<span>Safari will not start the game until you touch it.</span></div></div><div id="rotate"><div>Turn your phone sideways.<span>CHUCK is a landscape game.</span></div></div><iframe id="game" src="../index.html?mobile=1" allow="clipboard-read; clipboard-write" title="CHUCK game"></iframe><div id="controls">
 <div id="pad"><button class="touch" data-pad id="up" data-key="ArrowUp" data-code="ArrowUp" data-keycode="38" aria-label="Move up">▲</button><button class="touch" data-pad id="left" data-key="ArrowLeft" data-code="ArrowLeft" data-keycode="37" aria-label="Move left">◀</button><button class="touch" data-pad id="down" data-key="ArrowDown" data-code="ArrowDown" data-keycode="40" aria-label="Move down">▼</button><button class="touch" data-pad id="right" data-key="ArrowRight" data-code="ArrowRight" data-keycode="39" aria-label="Move right">▶</button></div>
 <div id="actions"><button class="touch" id="jump" data-key=" " data-code="Space" data-keycode="32" aria-label="Jump">JUMP</button><button class="touch" id="scratch" data-key="f" data-code="KeyF" data-keycode="70" aria-label="Scratch">SCRATCH</button><button class="touch" id="inspect" data-key="e" data-code="KeyE" data-keycode="69" aria-label="Inspect or talk">INSPECT<br>/ TALK</button></div>
 <button class="touch" id="pause" data-key="Escape" data-code="Escape" data-keycode="27" aria-label="Pause">Ⅱ</button><button class="touch" id="settings" aria-label="Control settings">⚙</button><button class="touch" id="fullscreen" aria-label="Full screen">⛶</button>
@@ -150,6 +156,35 @@ function key(button,down){const doc=frame.contentDocument; if(!doc)return; const
 function capture(element,event){
  try{element.setPointerCapture(event.pointerId)}catch(e){}}
 document.querySelectorAll('[data-key]:not(#codeload):not([data-pad])').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();active.set(e.pointerId,b);key(b,true);capture(b,e)});b.addEventListener('pointerup',e=>{e.preventDefault();if(active.get(e.pointerId)===b){key(b,false);active.delete(e.pointerId)}});b.addEventListener('pointercancel',e=>{if(active.get(e.pointerId)===b){key(b,false);active.delete(e.pointerId)}})});
+// Safari will not run a page that makes sound until it has had a real
+// touch, and pygbag does not say so: its only message is the "Loading"
+// line, which is hidden by then. So the game sat on a black screen with
+// nothing on it, waiting for a tap nobody knew to give.
+//
+// The shell says it instead, because the shell is the phone's host
+// page. The label never takes the tap -- it is pointer-events:none, so
+// the touch goes straight through into the game, which is what Safari
+// wants: a genuine gesture in the frame that needs it. The label only
+// waits for one to land, and then it is gone for good.
+const startLayer=document.getElementById('start');
+function gameCanvas(){
+ try{return frame.contentDocument&&frame.contentDocument.getElementById('canvas')}
+ catch(e){return null}}
+function dismissStart(){if(startLayer)startLayer.remove()}
+let startWatch=setInterval(()=>{
+ const canvas=gameCanvas();
+ if(!canvas||canvas.width<=1)return;          // still loading
+ startLayer.classList.add('ready');
+ // The tap happens inside the iframe, where the parent cannot see it.
+ // Same origin, so listen in there directly.
+ try{frame.contentDocument.addEventListener('pointerdown',dismissStart,
+  {once:true,capture:true})}catch(e){}
+ clearInterval(startWatch);startWatch=null;
+},400);
+// A player who reaches for a control instead has also started playing.
+document.getElementById('controls').addEventListener('pointerdown',dismissStart,
+ {once:true,capture:true});
+
 // A d-pad that behaves like a physical one.
 //
 // Four separate buttons could only ever press one arrow. A pointer is
@@ -214,7 +249,14 @@ const canFullscreen=!!(root0.requestFullscreen||root0.webkitRequestFullscreen);
 const installed=matchMedia('(display-mode: standalone)').matches
  ||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true;
 if(installed)document.getElementById('installnote').hidden=true;
-if(!canFullscreen){fullscreen.remove()}
+if(!canFullscreen){
+ // iPhone Safari has no Fullscreen API, and removing the button left
+ // no way to find that out -- the player just sees browser bars they
+ // cannot lose. The button stays and opens the one route that works.
+ fullscreen.onclick=()=>{document.getElementById('panel').classList.add('open');
+  const note=document.getElementById('installnote');
+  if(!note.hidden){note.classList.add('lit');setTimeout(()=>note.classList.remove('lit'),2200)}};
+}
 else{document.getElementById('installnote').hidden=true;
  fullscreen.onclick=async()=>{try{
   if(document.fullscreenElement||document.webkitFullscreenElement){
