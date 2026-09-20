@@ -397,6 +397,81 @@ def test_a_controller_spells_a_code_out_and_loads_it() -> None:
             game._shutdown()
 
 
+def test_arrow_keys_spell_a_code_out_through_the_menu_and_load_it() -> None:
+    """The phone's fallback, driven the way the shell actually drives it.
+
+    The touch shell sends real arrow keydowns, not controller actions,
+    so this goes through the scene's event path rather than calling the
+    field directly: a phone with no keyboard panel open can still dial a
+    code in and press Enter, using nothing the d-pad cannot send.
+    """
+    code = save_code.for_display(SaveRecord("temple_9", 60, (), 5, 2))
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        try:
+            menu = _load_page(game)
+            field = menu._field()
+            for char in save_code.normalise(code):
+                # Up dials. Twelve characters this way is slow on
+                # purpose; it is the way in that needs no keyboard.
+                guard = 0
+                while field._slots[field.cursor] != char:
+                    menu.handle_event(_key(pygame.K_UP))
+                    guard += 1
+                    assert guard < 64, "dialling went round without landing"
+                menu.handle_event(_key(pygame.K_RIGHT))
+            assert field.display() == code
+
+            menu.handle_event(_key(pygame.K_RETURN))
+            assert isinstance(game.scenes.current, WorldScene)
+            assert game.active_checkpoint_id == "temple_9"
+        finally:
+            game._shutdown()
+
+
+def test_the_letters_the_pad_shares_with_the_alphabet_still_type() -> None:
+    """W, S and E are directions to the pad and letters to the field.
+
+    The dial hangs off the arrow keys for exactly this reason: `move_up`
+    carries W as well as the up arrow, and `interact` carries E as well
+    as Enter, and all three are in the save-code alphabet. Move the dial
+    back onto the actions and typing the W in a code would dial a
+    character instead of writing one, while the E would submit.
+
+    So this drives the whole loop the way `Game._handle_events` does --
+    the key reaches the input manager *and* the scene, then the frame
+    updates -- because that is the only arrangement in which the bug
+    could appear at all.
+    """
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        try:
+            menu = _load_page(game)
+            field = menu._field()
+            typed = ""
+            for char in "WSE":
+                event = _key(ord(char.lower()), char.lower())
+                game.input.begin_frame()
+                game.input.process_event(event)
+                menu.handle_event(event)
+                menu.update(0.01)
+                typed += char
+                # After every keystroke, not just at the end: a stray
+                # dial lands in the *next* slot, and the following
+                # keystroke would type over it and hide the damage.
+                assert field.text == typed, (
+                    f"after typing {typed!r} the field holds "
+                    f"{field.text!r}: something is dialling as well as "
+                    f"typing")
+                # E is the other half of it. Read as `interact` it
+                # submits, and a three-character code complains.
+                assert field.error is None, (
+                    f"typing {char!r} tried to load the code: {field.error}")
+            assert menu.page == "load" and game.scenes.current is menu
+        finally:
+            game._shutdown()
+
+
 # ----------------------------------------------------------------------
 # Both ends
 # ----------------------------------------------------------------------
