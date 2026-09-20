@@ -111,7 +111,28 @@ confirmed** and the fix is an unlock bridge: a helper beside
 parent. Deliberately not built yet -- not while the silent switch is
 still a live explanation.
 
-**Not verified, and it needs a device:** copying a save code out.
+**The silent switch was the answer, and it is now handled.** iOS files a
+page's sound as "ambient" by default, which is what silent mode is for;
+music and video apps declare otherwise. `tools/browser_audio.js` now
+sets `navigator.audioSession.type = "playback"` (Safari 16.4+), which
+says this is the main content and stops the switch applying. It is
+injected before the clipboard script because it must precede the audio
+context the wasm build creates. The trade, accepted deliberately:
+playback audio interrupts other apps rather than mixing under them, and
+stops in the background.
+
+**Full screen is two answers.** Safari on iPhone has no Fullscreen API,
+so no button can hide the bars there -- do not add one and assume it
+works. Where the API exists the shell has a button that also tries
+`screen.orientation.lock`; where it does not, the button removes itself
+and the panel shows the only iOS route, Share -> Add to Home Screen,
+backed by `mobile/manifest.webmanifest` with display fullscreen and
+landscape.
+
+**Not verified, and it needs a device:** copying a save code out, and
+both halves of the above on an actual iPhone -- whether `audioSession`
+really defeats the silent switch, and whether the home-screen launch
+gives a chrome-free landscape game.
 The native keyboard raising, iOS viewport reflow in landscape, and the
 OS paste button are untested. `tests/test_browser_clipboard.js` was
 extended but **did not run** -- there is no Node on this machine and
@@ -171,7 +192,7 @@ five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
 **Branch** `main`, at the tip. Last full suite: **193 of 193** at
-28e4f32.
+0204b12.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
