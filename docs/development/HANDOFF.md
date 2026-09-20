@@ -186,11 +186,24 @@ menu footers all followed from one change. A controller still wins over
 the shell.
 
 **`touch_host()` is how a fork would start, so the rule is written into
-it: wording only.** Which control a line of text names, nothing else. No
-layout, scene, rule or control may depend on it -- that belongs in the
-shell. Its docstring and `tests/test_touch_wording.py` both say so, and
-a test pins the marker to the one the shell sends, so the game cannot
-grow a second opinion about what a phone is.
+it.** Two things may depend on it: what a control is *called*, and
+*where the game's own UI sits* so it is not underneath the controls the
+shell draws over the screen -- the dialogue panel lifts for exactly
+that reason (2e62825). Nothing else: no scene, no rule, no content, no
+control behaviour, nothing a player could describe as happening
+differently on a phone.
+
+That second clause was added after the first was written as "wording,
+and only wording", and was restated openly rather than widened quietly.
+**A third clause would be the fork.** Its docstring and
+`tests/test_touch_wording.py` both say so, and a test pins the marker
+to the one the shell sends, so the game cannot grow a second opinion
+about what a phone is.
+
+**Sean's device pass, 2026-09-19 (confirmed by him):** copying a save
+code out works, audio plays with the phone on silent, and the 8-way pad
+feels right. Those were the last three things only a device could
+answer.
 
 **The settings wheel did nothing, and now does (169ae9d).** It widened
 each `clamp()`'s bounds instead of scaling the result, and on a phone
@@ -303,7 +316,7 @@ five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
 **Branch** `main`, at the tip. Last full suite: **194 of 194** at
-6d8635b.
+2e62825.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
