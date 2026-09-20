@@ -258,40 +258,53 @@ def test_the_controls_remember_their_size() -> None:
     assert "catch" in read[:400], "the settings read is not guarded"
 
 
-def test_the_tap_to_play_label_never_takes_the_tap() -> None:
-    """If this label ever catches the touch, the game cannot start.
+def test_the_loading_notice_never_takes_the_tap() -> None:
+    """If this notice ever catches the touch, the game cannot start.
 
     Safari will not run a page that makes sound until it has had a real
-    touch, and pygbag says nothing about it -- its only message is the
-    "Loading" line, hidden by then. So the shell shows the prompt. The
-    tap it asks for has to pass straight through into the iframe, which
-    is the frame Safari wants the gesture in; a label that swallowed it
-    would leave the player tapping a black screen for ever.
+    touch, and the notice is what asks for one. The touch has to pass
+    straight through into the iframe, because that is the frame Safari
+    wants the gesture in; a notice that swallowed it would leave the
+    player tapping a black screen for ever.
     """
-    rule = MOBILE_SHELL[MOBILE_SHELL.index("#start{"):]
+    rule = MOBILE_SHELL[MOBILE_SHELL.index("#loading{"):]
     rule = rule[:rule.index("}")]
     assert "pointer-events:none" in rule, (
-        "the tap-to-play label would swallow the tap that starts the game")
-    assert "display:none" in rule, (
-        "the label is not hidden by default, so it would sit over the "
-        "game while it is still loading")
-    assert "#start.ready{display:grid" in MOBILE_SHELL, (
-        "nothing shows the label once the game is ready for its tap")
+        "the loading notice would swallow the tap that starts the game")
 
 
-def test_the_shell_watches_for_the_tap_inside_the_game() -> None:
-    """The parent never sees a touch that lands in the iframe.
+def test_the_touch_prompt_is_not_gated_on_the_touch_having_happened() -> None:
+    """The inversion that shipped once, and must not again.
 
-    So the listener has to be added to the iframe's own document, which
-    is reachable only because the two are the same origin.
+    On Safari the canvas is only sized *because* the player touched the
+    page. An earlier pass raised "TAP TO PLAY" when the canvas became
+    ready, so the prompt appeared at the moment it stopped being true --
+    superimposed on a running title screen, with the touch it asked for
+    already given. It was gated on the very thing it was asking for.
+
+    A sized canvas may therefore only ever *remove* the notice. What
+    raises the prompt is pygbag's own loading flag going quiet.
     """
-    watch = MOBILE_SHELL[MOBILE_SHELL.index("startLayer.classList.add('ready')"):]
-    watch = watch[:600]
-    assert "frame.contentDocument.addEventListener('pointerdown'" in watch, (
-        "the shell is not listening for the tap where it actually lands")
-    assert "dismissStart" in watch
-    # And a player who reaches for a control has plainly started too.
-    assert "getElementById('controls').addEventListener('pointerdown',dismissStart"         in MOBILE_SHELL
+    watch = MOBILE_SHELL[MOBILE_SHELL.index("let loadWatch="):]
+    watch = watch[:watch.index("},400);")]
+    assert "canvas.width>1" in watch, "nothing notices the game starting"
+    ready = watch[watch.index("canvas.width>1"):]
+    assert "doneLoading()" in ready[:120], (
+        "a sized canvas must remove the notice, not raise a prompt")
+    assert "TAP TO PLAY" not in ready[:240], (
+        "the touch prompt is gated on the canvas being ready, which on "
+        "Safari only happens once the touch has already been given")
+    assert "infobox" in watch, (
+        "nothing tells downloading apart from waiting for a touch, so "
+        "the player gets the same words for both")
+
+
+def test_the_notice_says_something_different_for_each_wait() -> None:
+    """A download and a refusal to start are not the same black screen."""
+    assert "LOADING CHUCK" in MOBILE_SHELL
+    assert "TAP TO PLAY" in MOBILE_SHELL
+    assert "11 MB" in MOBILE_SHELL, (
+        "the download says nothing about how long it might take")
 
 
 def test_portrait_is_told_to_turn_sideways() -> None:
