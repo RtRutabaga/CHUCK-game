@@ -106,8 +106,8 @@ MOBILE_SHELL = r'''<!doctype html>
 #controls{position:fixed;inset:0;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 .touch{pointer-events:auto;position:absolute;border:1px solid #ffffff55;background:#241d38cc;color:#fff;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:grid;place-items:center;min-width:var(--button);min-height:var(--button);font:700 clamp(11px,2.5vmin,16px) system-ui;border-radius:50%;box-shadow:0 2px 10px #0008}
 .touch:active,.touch.held{background:#7954a9dd;transform:scale(.96)}
-#pad{position:absolute;pointer-events:auto;left:calc(var(--edge) + env(safe-area-inset-left));bottom:calc(var(--edge) + env(safe-area-inset-bottom));width:var(--pad);height:var(--pad);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);gap:4px}
-#pad .touch{position:static;width:100%;height:100%;min-width:0;min-height:0;border-radius:22%;font-size:clamp(20px,5vmin,38px)}
+#pad{position:absolute;pointer-events:auto;left:calc(var(--edge) + env(safe-area-inset-left));bottom:calc(var(--edge) + env(safe-area-inset-bottom));width:var(--pad);height:var(--pad);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);gap:4px;background:#241d3866;border-radius:24%;touch-action:none}
+#pad .touch{position:static;width:100%;height:100%;min-width:0;min-height:0;border-radius:22%;font-size:clamp(20px,5vmin,38px);pointer-events:none}
 #up{grid-area:1/2}#left{grid-area:2/1}#down{grid-area:3/2}#right{grid-area:2/3}
 #actions{position:absolute;pointer-events:auto;right:calc(var(--edge) + env(safe-area-inset-right));bottom:calc(var(--edge) + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(2,var(--button));grid-auto-rows:var(--button);gap:10px}
 #actions .touch{position:static;width:100%;height:100%}
@@ -129,7 +129,7 @@ MOBILE_SHELL = r'''<!doctype html>
 #codeload{background:#4d3f77}
 #codenote{margin:9px 0 0;font-weight:400;font-size:11px;opacity:.75}
 </style></head><body><iframe id="game" src="../index.html?mobile=1" allow="clipboard-read; clipboard-write" title="CHUCK game"></iframe><div id="controls">
-<div id="pad"><button class="touch" id="up" data-key="ArrowUp" data-code="ArrowUp" data-keycode="38" aria-label="Move up">▲</button><button class="touch" id="left" data-key="ArrowLeft" data-code="ArrowLeft" data-keycode="37" aria-label="Move left">◀</button><button class="touch" id="down" data-key="ArrowDown" data-code="ArrowDown" data-keycode="40" aria-label="Move down">▼</button><button class="touch" id="right" data-key="ArrowRight" data-code="ArrowRight" data-keycode="39" aria-label="Move right">▶</button></div>
+<div id="pad"><button class="touch" data-pad id="up" data-key="ArrowUp" data-code="ArrowUp" data-keycode="38" aria-label="Move up">▲</button><button class="touch" data-pad id="left" data-key="ArrowLeft" data-code="ArrowLeft" data-keycode="37" aria-label="Move left">◀</button><button class="touch" data-pad id="down" data-key="ArrowDown" data-code="ArrowDown" data-keycode="40" aria-label="Move down">▼</button><button class="touch" data-pad id="right" data-key="ArrowRight" data-code="ArrowRight" data-keycode="39" aria-label="Move right">▶</button></div>
 <div id="actions"><button class="touch" id="jump" data-key=" " data-code="Space" data-keycode="32" aria-label="Jump">JUMP</button><button class="touch" id="scratch" data-key="f" data-code="KeyF" data-keycode="70" aria-label="Scratch">SCRATCH</button><button class="touch" id="inspect" data-key="e" data-code="KeyE" data-keycode="69" aria-label="Inspect or talk">INSPECT<br>/ TALK</button></div>
 <button class="touch" id="pause" data-key="Escape" data-code="Escape" data-keycode="27" aria-label="Pause">Ⅱ</button><button class="touch" id="settings" aria-label="Control settings">⚙</button><button class="touch" id="fullscreen" aria-label="Full screen">⛶</button><div id="hint">Landscape prototype · ⚙ resizes controls</div>
 <div id="panel"><button id="close">Close</button><h1>Touch controls</h1><label>Control size <input id="size" type="range" min="70" max="140" value="100"></label><label>Left / right inset <input id="inset" type="range" min="0" max="70" value="30"></label><p>Keep fingers on the edges so the gameplay view stays clear.</p><p id="installnote">On iPhone there is no full-screen button: Safari does not offer one. Use <b>Share → Add to Home Screen</b>, then open CHUCK from that icon — it launches with no browser bars at all.</p></div>
@@ -137,7 +137,64 @@ MOBILE_SHELL = r'''<!doctype html>
 <script>
 const frame=document.getElementById('game'); const active=new Map();
 function key(button,down){const doc=frame.contentDocument; if(!doc)return; const n=+button.dataset.keycode; frame.contentWindow?.focus(); doc.dispatchEvent(new KeyboardEvent(down?'keydown':'keyup',{key:button.dataset.key,code:button.dataset.code,keyCode:n,which:n,bubbles:true,cancelable:true})); button.classList.toggle('held',down)}
-document.querySelectorAll('[data-key]:not(#codeload)').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);active.set(e.pointerId,b);key(b,true)});b.addEventListener('pointerup',e=>{e.preventDefault();if(active.get(e.pointerId)===b){key(b,false);active.delete(e.pointerId)}});b.addEventListener('pointercancel',e=>{if(active.get(e.pointerId)===b){key(b,false);active.delete(e.pointerId)}})});
+// Following the finger once it leaves the control is worth having, but
+// it is not worth a lost press: setPointerCapture throws if the pointer
+// is already gone, and doing it before the press meant the throw ate
+// the input. Press first, then try to follow.
+function capture(element,event){
+ try{element.setPointerCapture(event.pointerId)}catch(e){}}
+document.querySelectorAll('[data-key]:not(#codeload):not([data-pad])').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();active.set(e.pointerId,b);key(b,true);capture(b,e)});b.addEventListener('pointerup',e=>{e.preventDefault();if(active.get(e.pointerId)===b){key(b,false);active.delete(e.pointerId)}});b.addEventListener('pointercancel',e=>{if(active.get(e.pointerId)===b){key(b,false);active.delete(e.pointerId)}})});
+// A d-pad that behaves like a physical one.
+//
+// Four separate buttons could only ever press one arrow. A pointer is
+// captured by the element it lands on, so a thumb resting between up
+// and left sent up alone and Chuck walked straight. Diagonals are
+// ordinary movement here -- a keyboard player just holds two arrows --
+// so the phone was the only place they were missing.
+//
+// The fix is the one Microsoft's touch-control guidance gives for a 2D
+// game with eight directions: an 8-way d-pad, where "multiple
+// directions can be activated together", rather than a joystick. So the
+// pad is read as one control instead of four buttons. The touch is
+// measured from the pad's centre: inside a small dead zone it means
+// nothing, and outside it the angle picks one of eight sectors -- and a
+// diagonal simply holds both of its arrows down. Sliding the thumb
+// round re-reads the angle, so a direction can be changed without
+// lifting off, which is the other thing a physical pad does.
+//
+// The cardinal sectors are wider than the diagonal ones, 50 degrees
+// against 40. Eight equal sectors make a clean diagonal easy and a
+// clean "up" hard, and "up" is what a menu wants.
+const pad=document.getElementById('pad');
+const PAD_SECTORS=[[335,360,['right']],[0,25,['right']],[25,65,['up','right']],
+ [65,115,['up']],[115,155,['up','left']],[155,205,['left']],
+ [205,245,['down','left']],[245,295,['down']],[295,335,['down','right']]];
+const PAD_DEAD=0.22;
+const padHeld=new Set(); let padPointer=null;
+function padDirections(event){
+ const r=pad.getBoundingClientRect();
+ const dx=event.clientX-(r.left+r.width/2),dy=event.clientY-(r.top+r.height/2);
+ const reach=Math.min(r.width,r.height)/2;
+ if(Math.hypot(dx,dy)<reach*PAD_DEAD)return [];
+ let a=Math.atan2(-dy,dx)*180/Math.PI; if(a<0)a+=360;
+ for(const [from,to,dirs] of PAD_SECTORS){if(a>=from&&a<to)return dirs}
+ return [];
+}
+function padApply(dirs){
+ const wanted=new Set(dirs);
+ for(const dir of [...padHeld]){if(!wanted.has(dir)){
+  key(document.getElementById(dir),false);padHeld.delete(dir)}}
+ for(const dir of wanted){if(!padHeld.has(dir)){
+  key(document.getElementById(dir),true);padHeld.add(dir)}}
+}
+function padRelease(){padApply([]);padPointer=null}
+pad.addEventListener('pointerdown',e=>{e.preventDefault();padPointer=e.pointerId;
+ padApply(padDirections(e));capture(pad,e)});
+pad.addEventListener('pointermove',e=>{
+ if(e.pointerId!==padPointer)return; e.preventDefault();padApply(padDirections(e))});
+for(const kind of ['pointerup','pointercancel']){
+ pad.addEventListener(kind,e=>{
+  if(e.pointerId===padPointer){e.preventDefault();padRelease()}})}
 const root=document.documentElement; document.getElementById('settings').onclick=()=>document.getElementById('panel').classList.add('open');document.getElementById('close').onclick=()=>document.getElementById('panel').classList.remove('open');
 // Full screen where the browser has it. Android Chrome does; iPhone
 // Safari has no Fullscreen API at all, so the button is removed rather
@@ -157,7 +214,7 @@ else{document.getElementById('installnote').hidden=true;
    try{await screen.orientation.lock('landscape')}catch(e){}}
  }catch(e){}}}
 document.getElementById('size').oninput=e=>root.style.setProperty('--button',`clamp(52px,${e.target.value/10}vmin,${92*e.target.value/100}px)`);document.getElementById('inset').oninput=e=>root.style.setProperty('--edge',`clamp(12px,${e.target.value/10}vmin,${e.target.value}px)`);
-document.addEventListener('visibilitychange',()=>{if(document.hidden){for(const b of active.values())key(b,false);active.clear()}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){for(const b of active.values())key(b,false);active.clear();padRelease()}});
 // Entering a save code on a phone.
 //
 // The game's LOAD CODE page turns browser paste on when it opens, for
