@@ -175,6 +175,22 @@ a KeyError first, and a W/S/E guard defeated because the next keystroke
 overwrites the damage. Breaking the code on purpose and confirming the
 test screams is the finish line, not writing the assertion.
 
+**The game now names the controls a phone has (e9ac16d).** It was
+telling touch players to press E, SPACE and ESC. `runtime.touch_host()`
+reads the marker the shell already puts on the page it embeds,
+`?mobile=1` -- the same one the desktop page reads to hide its link to
+`/mobile/` -- and `prompts.py` gained touch as a third case beside
+keyboard and controller, so the hints, title prompt, controls page and
+menu footers all followed from one change. A controller still wins over
+the shell.
+
+**`touch_host()` is how a fork would start, so the rule is written into
+it: wording only.** Which control a line of text names, nothing else. No
+layout, scene, rule or control may depend on it -- that belongs in the
+shell. Its docstring and `tests/test_touch_wording.py` both say so, and
+a test pins the marker to the one the shell sends, so the game cannot
+grow a second opinion about what a phone is.
+
 **Not verified, and it needs a device:** copying a save code out, and
 both halves of the above on an actual iPhone -- whether `audioSession`
 really defeats the silent switch, and whether the home-screen launch
@@ -237,8 +253,8 @@ flags; the expanded treasure-handoff test now loads, updates, and draws all
 five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
-**Branch** `main`, at the tip. Last full suite: **193 of 193** at
-86cf275.
+**Branch** `main`, at the tip. Last full suite: **194 of 194** at
+e9ac16d.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
