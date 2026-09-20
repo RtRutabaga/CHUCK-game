@@ -7,6 +7,7 @@ Desktop WAV masters and save files are never included or modified.
 
 import argparse
 import hashlib
+import json
 from pathlib import Path
 import shutil
 import subprocess
@@ -44,14 +45,29 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
           padding: 6px 12px; }
 #mobile-link:hover { color: #fff; border-color: #ffffff66; }
 </style>"""
-    clipboard_script = Path(__file__).with_name("browser_clipboard.js").read_text(
-        encoding="utf-8")
-    page.write_text(html + style + MOBILE_POINTER
-                    + "<script>" + clipboard_script + "</script>",
-                    encoding="utf-8")
+    scripts = "".join(
+        "<script>" + Path(__file__).with_name(name).read_text(encoding="utf-8")
+        + "</script>"
+        # Audio first: the session type should be declared before the
+        # wasm build boots and creates an audio context.
+        for name in ("browser_audio.js", "browser_clipboard.js"))
+    page.write_text(html + style + MOBILE_POINTER + scripts, encoding="utf-8")
     mobile = web / "mobile"
     mobile.mkdir(exist_ok=True)
     (mobile / "index.html").write_text(MOBILE_SHELL, encoding="utf-8")
+    # Added to the home screen, the shell launches without browser bars.
+    # That is the only way to lose them on an iPhone, where Safari has no
+    # Fullscreen API; Android honours the orientation as well.
+    (mobile / "manifest.webmanifest").write_text(json.dumps({
+        "name": "CHUCK",
+        "short_name": "CHUCK",
+        "display": "fullscreen",
+        "orientation": "landscape",
+        "start_url": "./",
+        "scope": "./",
+        "background_color": "#09070d",
+        "theme_color": "#09070d",
+    }, indent=2), encoding="utf-8")
     # Pages otherwise runs Jekyll, which can omit Pygbag runtime files whose
     # names begin with an underscore.
     (web / ".nojekyll").touch()
@@ -82,7 +98,7 @@ if (window.top !== window.self || location.search.indexOf("mobile=1") >= 0) {
 # is never seen. Each button also carries an explicit `code`, since SDL2
 # looks the scancode up from it, so "f" must travel as "KeyF".
 MOBILE_SHELL = r'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>CHUCK — mobile test</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>CHUCK — mobile test</title><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="CHUCK"><meta name="theme-color" content="#09070d">
 <style>
 :root{--button:clamp(52px,13vmin,92px);--pad:clamp(150px,36vmin,250px);--edge:clamp(12px,4vmin,42px)}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#09070d;color:#fff;font:600 14px system-ui,sans-serif;touch-action:none;-webkit-user-select:none;user-select:none}
@@ -98,6 +114,7 @@ MOBILE_SHELL = r'''<!doctype html>
 #actions #jump{grid-area:2/2}#actions #scratch{grid-area:2/1}#actions #inspect{grid-area:1/2}
 #pause{right:calc(var(--edge) + env(safe-area-inset-right));top:calc(var(--edge) + env(safe-area-inset-top));min-width:46px;min-height:46px;border-radius:18px}
 #settings{left:calc(var(--edge) + env(safe-area-inset-left));top:calc(var(--edge) + env(safe-area-inset-top));min-width:46px;min-height:46px;border-radius:18px}
+#fullscreen{left:calc(var(--edge) + env(safe-area-inset-left) + 56px);top:calc(var(--edge) + env(safe-area-inset-top));min-width:46px;min-height:46px;border-radius:18px}
 #panel{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,360px);padding:20px;background:#171322f5;border:1px solid #ffffff55;border-radius:14px;pointer-events:auto;line-height:1.5;box-shadow:0 8px 30px #000b}
 #panel.open{display:block}#panel h1{font-size:18px;margin:0 0 12px}#panel label{display:block;margin:12px 0}#panel input{width:100%;accent-color:#ad80dc}#close{float:right;border:0;background:#ffffff22;color:white;border-radius:8px;padding:5px 10px}
 #hint{position:absolute;left:50%;bottom:calc(8px + env(safe-area-inset-bottom));transform:translateX(-50%);opacity:.8;font-size:11px;text-align:center;white-space:nowrap;text-shadow:0 1px 3px #000}
@@ -114,14 +131,31 @@ MOBILE_SHELL = r'''<!doctype html>
 </style></head><body><iframe id="game" src="../index.html?mobile=1" allow="clipboard-read; clipboard-write" title="CHUCK game"></iframe><div id="controls">
 <div id="pad"><button class="touch" id="up" data-key="ArrowUp" data-code="ArrowUp" data-keycode="38" aria-label="Move up">▲</button><button class="touch" id="left" data-key="ArrowLeft" data-code="ArrowLeft" data-keycode="37" aria-label="Move left">◀</button><button class="touch" id="down" data-key="ArrowDown" data-code="ArrowDown" data-keycode="40" aria-label="Move down">▼</button><button class="touch" id="right" data-key="ArrowRight" data-code="ArrowRight" data-keycode="39" aria-label="Move right">▶</button></div>
 <div id="actions"><button class="touch" id="jump" data-key=" " data-code="Space" data-keycode="32" aria-label="Jump">JUMP</button><button class="touch" id="scratch" data-key="f" data-code="KeyF" data-keycode="70" aria-label="Scratch">SCRATCH</button><button class="touch" id="inspect" data-key="e" data-code="KeyE" data-keycode="69" aria-label="Inspect or talk">INSPECT<br>/ TALK</button></div>
-<button class="touch" id="pause" data-key="Escape" data-code="Escape" data-keycode="27" aria-label="Pause">Ⅱ</button><button class="touch" id="settings" aria-label="Control settings">⚙</button><div id="hint">Landscape prototype · tap ⚙ to resize controls</div>
-<div id="panel"><button id="close">Close</button><h1>Touch controls</h1><label>Control size <input id="size" type="range" min="70" max="140" value="100"></label><label>Left / right inset <input id="inset" type="range" min="0" max="70" value="30"></label><p>Keep fingers on the edges so the gameplay view stays clear. Use the browser’s rotate/fullscreen controls for the best landscape view.</p></div>
+<button class="touch" id="pause" data-key="Escape" data-code="Escape" data-keycode="27" aria-label="Pause">Ⅱ</button><button class="touch" id="settings" aria-label="Control settings">⚙</button><button class="touch" id="fullscreen" aria-label="Full screen">⛶</button><div id="hint">Landscape prototype · ⚙ resizes controls</div>
+<div id="panel"><button id="close">Close</button><h1>Touch controls</h1><label>Control size <input id="size" type="range" min="70" max="140" value="100"></label><label>Left / right inset <input id="inset" type="range" min="0" max="70" value="30"></label><p>Keep fingers on the edges so the gameplay view stays clear.</p><p id="installnote">On iPhone there is no full-screen button: Safari does not offer one. Use <b>Share → Add to Home Screen</b>, then open CHUCK from that icon — it launches with no browser bars at all.</p></div>
 <div id="code"><div id="codebox"><h1>Load a save code</h1><input id="codefield" type="text" inputmode="text" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false" maxlength="16" placeholder="XXXX-XXXX-XXXX" aria-label="Save code"><div id="codebuttons"><button id="codepaste">PASTE</button><button id="codeload" data-key="Enter" data-code="Enter" data-keycode="13" aria-label="Load this code">LOAD</button><button id="codehide">HIDE</button></div><p id="codenote"></p></div></div></div>
 <script>
 const frame=document.getElementById('game'); const active=new Map();
 function key(button,down){const doc=frame.contentDocument; if(!doc)return; const n=+button.dataset.keycode; frame.contentWindow?.focus(); doc.dispatchEvent(new KeyboardEvent(down?'keydown':'keyup',{key:button.dataset.key,code:button.dataset.code,keyCode:n,which:n,bubbles:true,cancelable:true})); button.classList.toggle('held',down)}
 document.querySelectorAll('[data-key]:not(#codeload)').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);active.set(e.pointerId,b);key(b,true)});b.addEventListener('pointerup',e=>{e.preventDefault();if(active.get(e.pointerId)===b){key(b,false);active.delete(e.pointerId)}});b.addEventListener('pointercancel',e=>{if(active.get(e.pointerId)===b){key(b,false);active.delete(e.pointerId)}})});
 const root=document.documentElement; document.getElementById('settings').onclick=()=>document.getElementById('panel').classList.add('open');document.getElementById('close').onclick=()=>document.getElementById('panel').classList.remove('open');
+// Full screen where the browser has it. Android Chrome does; iPhone
+// Safari has no Fullscreen API at all, so the button is removed rather
+// than left there doing nothing, and the panel points at Add to Home
+// Screen instead, which is the only way to lose the bars on iOS.
+const fullscreen=document.getElementById('fullscreen');
+const root0=document.documentElement;
+const canFullscreen=!!(root0.requestFullscreen||root0.webkitRequestFullscreen);
+if(!canFullscreen){fullscreen.remove()}
+else{document.getElementById('installnote').hidden=true;
+ fullscreen.onclick=async()=>{try{
+  if(document.fullscreenElement||document.webkitFullscreenElement){
+   await (document.exitFullscreen?document.exitFullscreen():document.webkitExitFullscreen())}
+  else{await (root0.requestFullscreen?root0.requestFullscreen():root0.webkitRequestFullscreen());
+   // Only meaningful once full screen, and refused on desktop; either
+   // way a failure here must not lose the full screen we just got.
+   try{await screen.orientation.lock('landscape')}catch(e){}}
+ }catch(e){}}}
 document.getElementById('size').oninput=e=>root.style.setProperty('--button',`clamp(52px,${e.target.value/10}vmin,${92*e.target.value/100}px)`);document.getElementById('inset').oninput=e=>root.style.setProperty('--edge',`clamp(12px,${e.target.value/10}vmin,${e.target.value}px)`);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){for(const b of active.values())key(b,false);active.clear()}});
 // Entering a save code on a phone.

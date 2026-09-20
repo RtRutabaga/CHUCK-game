@@ -4,6 +4,7 @@ import asyncio
 from pathlib import Path
 from unittest.mock import patch
 from unittest.mock import Mock, call
+import json
 import tempfile
 
 from src.core import config
@@ -97,6 +98,80 @@ def test_the_desktop_page_points_phones_at_the_touch_shell():
         # The shell must still be asking for it, or the check above is
         # guarding against nothing.
         assert "?mobile=1" in MOBILE_SHELL
+
+
+def test_the_page_claims_playback_audio_so_silent_mode_stops_muting_it():
+    """Why a phone with the ring switch on heard nothing.
+
+    iOS mutes Web Audio under the silent switch, because by default a
+    page's sound is filed as "ambient" -- incidental, the kind of thing
+    silent mode is for. Declaring the AudioSession type "playback" says
+    this is the main content, as a music or video app does, and the
+    switch stops applying. The same build was always audible on a PC and
+    on the Xbox, which is how we know the mixer was never the problem.
+    """
+    with tempfile.TemporaryDirectory() as folder:
+        web = Path(folder)
+        page = web / "index.html"
+        page.write_text('<canvas id=canvas></canvas> fopen("browser-app.apk")',
+                        encoding="utf-8")
+        (web / "browser-app.apk").write_bytes(b"game")
+
+        finalize_web_artifact(web)
+
+        html = page.read_text(encoding="utf-8")
+        assert "navigator.audioSession" in html, (
+            "the page no longer declares an audio session, so iOS will "
+            "mute it under the ring/silent switch")
+        assert '"playback"' in html
+        # It has to be declared before the wasm build boots and makes an
+        # audio context, so it must come first of the injected scripts.
+        assert html.index("audioSession") < html.index("CHUCKClipboard")
+
+
+def test_the_shell_can_go_full_screen_or_say_why_it_cannot():
+    """Full screen on Android; Add to Home Screen on iPhone.
+
+    Safari on iPhone has no Fullscreen API, so the button would sit there
+    doing nothing. It is removed instead, and the panel's note about the
+    home screen -- the only way to lose the browser bars on iOS -- is
+    shown in its place.
+    """
+    assert 'id="fullscreen"' in MOBILE_SHELL
+    assert "requestFullscreen" in MOBILE_SHELL
+    assert "fullscreen.remove()" in MOBILE_SHELL, (
+        "the full-screen button no longer removes itself where the "
+        "browser has no Fullscreen API, so iPhone gets a dead button")
+    assert "Add to Home Screen" in MOBILE_SHELL, (
+        "the shell no longer tells an iPhone player how to lose the bars")
+    # The orientation lock must not be able to undo the full screen it
+    # was just given: it is refused outright on desktop, and a throw
+    # there would escape before the await above had settled.
+    assert "try{await screen.orientation.lock('landscape')}catch" in MOBILE_SHELL, (
+        "screen.orientation.lock is not guarded by its own try/catch")
+
+
+def test_the_shell_is_installable_to_the_home_screen():
+    """The iPhone route to a chrome-free landscape game."""
+    with tempfile.TemporaryDirectory() as folder:
+        web = Path(folder)
+        (web / "index.html").write_text('fopen("browser-app.apk")',
+                                        encoding="utf-8")
+        (web / "browser-app.apk").write_bytes(b"game")
+
+        finalize_web_artifact(web)
+
+        manifest = web / "mobile" / "manifest.webmanifest"
+        assert manifest.is_file(), "no web app manifest beside the shell"
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+        assert data["display"] == "fullscreen"
+        assert data["orientation"] == "landscape"
+        # Relative, because the site is served from a repository
+        # subpath, not a domain root.
+        assert data["start_url"].startswith(".")
+        assert 'rel="manifest"' in MOBILE_SHELL
+        assert 'name="apple-mobile-web-app-capable"' in MOBILE_SHELL, (
+            "iOS needs this to launch without browser bars")
 
 
 def test_browser_music_cancels_fade_before_replacing_track():
