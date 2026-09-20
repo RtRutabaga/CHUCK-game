@@ -78,8 +78,10 @@ it would offer to nest another shell. A link rather than a redirect, at
 Sean's call: user-agent sniffing would have to be right about the Xbox
 browser. JUMP and INSPECT were swapped on the touch pad, also his call.
 
-**Sean's phone pass, 2026-09-19: entry works.** He resumed a game on a
-phone. Outstanding from the same pass: **no audio on `/mobile/`**, while
+**Sean's phone pass, 2026-09-19.** He played on a phone and said the
+mobile page works; whether that included a save-code resume specifically
+was not confirmed, so do not record it as tested until he says so.
+Outstanding from the same pass: **no audio on `/mobile/`**, while
 **PC and Xbox audio have been working all along** -- so the browser
 build's audio is fine and this is the shell, not the game.
 
@@ -151,6 +153,28 @@ through `_copy_now`, so the two cannot drift. The confirm panel grew to
 other so the fit test reads what the drawing uses. `test_pause_menu`
 pressed confirm options by index and now finds them by name.
 
+**The save-code panel has only been tested against a stub.** The real
+chain -- the game's load page turning paste on, the shell seeing
+`isPasteEnabled()`, `offerPaste` reaching `take_browser_paste` -- has
+never run end to end. The live bridge *is* reachable from the shell and
+answers `false` when no field is open, which is as far as it got.
+
+**Claude's browser pane cannot boot the wasm build at all while it is
+hidden**, which is worth knowing before anyone spends an hour on it:
+pygbag drives Python from `requestAnimationFrame`, and a hidden document
+halts it. Measured, not guessed -- zero animation frames in three
+seconds, `visibilityState: "hidden"`. The page sticks at "Loading,
+please wait ...". `show_pane` has no browser pane, so the pane has to be
+opened by hand before any in-game browser test will run. (The ~1.4 fps
+noted elsewhere is what it manages once visible.)
+
+**A habit worth keeping.** Three tests written this session passed
+against deliberately broken code before they were fixed: a panel-overflow
+check defeated by the font's descender rows, a d-pad seam check that hit
+a KeyError first, and a W/S/E guard defeated because the next keystroke
+overwrites the damage. Breaking the code on purpose and confirming the
+test screams is the finish line, not writing the assertion.
+
 **Not verified, and it needs a device:** copying a save code out, and
 both halves of the above on an actual iPhone -- whether `audioSession`
 really defeats the silent switch, and whether the home-screen launch
@@ -214,7 +238,7 @@ five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
 **Branch** `main`, at the tip. Last full suite: **193 of 193** at
-224173a.
+86cf275.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
