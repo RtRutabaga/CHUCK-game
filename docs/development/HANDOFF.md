@@ -129,6 +129,28 @@ and the panel shows the only iOS route, Share -> Add to Home Screen,
 backed by `mobile/manifest.webmanifest` with display fullscreen and
 landscape.
 
+**Diagonals on the phone (224173a).** Sean could not move diagonally.
+Four touch buttons never could: a pointer belongs to the element it
+lands on until it lifts, so a thumb between up and left sent up alone.
+Microsoft's touch guidance is explicit for a 2D game with eight
+directions -- an 8-way d-pad, not a joystick, with multiple directions
+active together -- so the pad is now read as one control. Angle from the
+centre picks one of eight sectors past a dead zone, a diagonal holds
+both arrows, and sliding re-reads the angle so a direction changes
+without lifting. Cardinals get 50 degrees against the diagonals' 40,
+because eight equal sectors make a clean "up" hard and menus want up.
+
+That pass also fixed a lost-press bug in the pad *and* the plain
+buttons: `setPointerCapture` throws once the pointer has gone, and it
+ran before the press, so the throw ate the input. **Press first, follow
+after** -- worth remembering for any control added later.
+
+**COPY on the quit warning (01de8dc).** Shared with the save page
+through `_copy_now`, so the two cannot drift. The confirm panel grew to
+128px for the third option; those numbers are constants beside each
+other so the fit test reads what the drawing uses. `test_pause_menu`
+pressed confirm options by index and now finds them by name.
+
 **Not verified, and it needs a device:** copying a save code out, and
 both halves of the above on an actual iPhone -- whether `audioSession`
 really defeats the silent switch, and whether the home-screen launch
@@ -192,7 +214,7 @@ five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
 **Branch** `main`, at the tip. Last full suite: **193 of 193** at
-0204b12.
+224173a.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
