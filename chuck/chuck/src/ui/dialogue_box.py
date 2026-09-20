@@ -13,12 +13,44 @@ show and when to advance is the DialogueScene's job.
 from __future__ import annotations
 
 from src.core import config
+from src.core.runtime import touch_host
 from src.ui.bitmap_font import glyph_clusters
 from src.ui.text import wrap_text
 
 MARGIN = 6           # panel inset from screen edges
 PANEL_H = 46         # panel height at native resolution
 PAD = 6              # text inset inside the panel
+
+# How far the panel rises when the phone's shell is drawing controls
+# over the screen.
+#
+# A panel left where it has always been -- bottom edge at y=174 of 180
+# -- is read straight through the d-pad and the jump and scratch
+# buttons. Lifting it by this much puts its bottom edge at y=100, which
+# clears the pad on every screen size at the default control size or
+# smaller.
+#
+# It does not clear it at the very largest control setting on the
+# smallest screens, and nothing could: lifting further puts the panel
+# under the gear and pause chips along the top instead, where they would
+# cover the first words rather than the last. The size slider is the
+# player's own trade -- bigger controls cover more of the game -- and
+# this is one of the things it trades.
+#
+# Dialogue holds the game still anyway, so covering more of the view
+# while it is up costs nothing.
+TOUCH_LIFT = 74
+
+
+def panel_top(screen_height: int) -> int:
+    """Where the dialogue panel's top edge sits.
+
+    The foot of the screen, as it always has been, except on a phone,
+    where the shell draws a d-pad and four buttons over the lower half
+    and the text would be read through them.
+    """
+    top = screen_height - PANEL_H - MARGIN
+    return top - TOUCH_LIFT if touch_host() else top
 
 # Back-compat aliases for this module's existing internals.
 _MARGIN, _PANEL_H, _PAD = MARGIN, PANEL_H, PAD
@@ -62,7 +94,7 @@ class DialogueBox:
 
         sw, sh = surface.get_size()
         panel = pygame.Rect(
-            _MARGIN, sh - _PANEL_H - _MARGIN, sw - 2 * _MARGIN, _PANEL_H
+            _MARGIN, panel_top(sh), sw - 2 * _MARGIN, _PANEL_H
         )
         pygame.draw.rect(surface, config.COLOR_DIALOGUE_PANEL, panel)
         pygame.draw.rect(surface, config.COLOR_DIALOGUE_BORDER, panel, 1)

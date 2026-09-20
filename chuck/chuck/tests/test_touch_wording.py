@@ -4,13 +4,18 @@ On a phone the shell puts its own buttons on screen -- JUMP, SCRATCH,
 INSPECT / TALK, a pause button -- and until now the game went on telling
 that player to press E, SPACE and ESC. Keys they do not have.
 
-**This is wording and nothing else.** No layout, scene, rule or control
-differs on a phone; it runs the same build as the PC and the Xbox. A
-line that said "Press E to interact" says "Tap INSPECT to interact",
-because that is what is written on the button under their thumb. If
-anything beyond a string ever starts depending on `touch_host()`, that
-is the fork `/mobile/` exists to avoid -- see TWO-AGENT-GIT-WORKFLOW.md
-"There Is Only One CHUCK".
+**Two things may depend on the phone, and nothing else:** the wording
+of a line that names a control, and where the game's own UI sits so it
+is not underneath the controls the shell draws over the screen. A line
+that said "Press E to interact" says "Tap INSPECT to interact", because
+that is what is written on the button under their thumb; the dialogue
+panel lifts because a d-pad is otherwise drawn across it.
+
+What must never depend on it is what the game **is** -- no scene, no
+rule, no content, no control behaviour, nothing a player could describe
+as happening differently on a phone. If a third clause starts to look
+necessary, that is the fork `/mobile/` exists to avoid; see
+TWO-AGENT-GIT-WORKFLOW.md "There Is Only One CHUCK".
 
 The signal is the marker the shell already puts on the page it embeds,
 `index.html?mobile=1`, which the desktop page already reads to hide its
@@ -179,6 +184,72 @@ def test_the_marker_is_the_one_the_shell_already_sends() -> None:
     assert "emscripten" in source, (
         "touch_host must stay inert off the web, or the desktop build "
         "could start naming buttons that are not there")
+
+
+def test_the_dialogue_panel_lifts_clear_of_the_touch_controls() -> None:
+    """Sean could not read his own dialogue: the d-pad sat across it.
+
+    The panel has always been at the foot of the screen, which is empty
+    on a PC and is where the phone's d-pad and its jump and scratch
+    buttons are. Dialogue holds the game still anyway, so covering more
+    of the view while it is up costs nothing -- being unreadable does.
+    """
+    from src.core import config
+    from src.ui.dialogue_box import MARGIN, PANEL_H, panel_top
+
+    floor = config.NATIVE_HEIGHT - PANEL_H - MARGIN
+    assert panel_top(config.NATIVE_HEIGHT) == floor, (
+        "the panel has moved on the desktop, where nothing is over it")
+    with _touching():
+        lifted = panel_top(config.NATIVE_HEIGHT)
+    assert lifted < floor, "the panel does not lift on a phone"
+    assert lifted >= MARGIN, "the panel has lifted off the top of the screen"
+
+
+def test_the_lifted_panel_clears_the_pad_at_the_sizes_it_promises() -> None:
+    """The player can make the controls larger, and the pad grows upward.
+
+    The shell sizes the pad as `clamp(150px,36vmin,250px)` times a scale
+    the player sets, sitting a small inset above the bottom. The panel
+    clears it at the default size and below, on every screen size --
+    which is the promise the lift actually makes.
+
+    Above the default it does not, and nothing could: lifting further
+    would put the panel under the chips along the top, covering the
+    first words instead of the last. Bigger controls cover more of the
+    game, and that is what the slider is for.
+    """
+    from src.core import config
+    from src.ui.dialogue_box import PANEL_H, panel_top
+
+    with _touching():
+        bottom = panel_top(config.NATIVE_HEIGHT) + PANEL_H
+
+    # Landscape phone, and the canvas is fitted to the full height, so
+    # one native pixel is height/180 device pixels.
+    for screen_h in (375, 430, 920):
+        scale = screen_h / config.NATIVE_HEIGHT
+        vmin = screen_h                       # the short side in landscape
+        for control_scale in (0.7, 0.85, 1.0):
+            pad = min(max(150, 0.36 * vmin), 250) * control_scale
+            inset = min(max(12, 0.04 * vmin), 40)
+            pad_top_native = (screen_h - inset - pad) / scale
+            assert bottom <= pad_top_native, (
+                f"at {screen_h}px tall with controls at {control_scale:g}x "
+                f"the pad reaches y={pad_top_native:.0f} but the panel "
+                f"runs to y={bottom}")
+
+
+def test_the_choices_stay_with_the_box_they_belong_to() -> None:
+    """A lifted panel with its options left at the foot would be absurd."""
+    import inspect
+
+    from src.ui import choice_box
+
+    source = inspect.getsource(choice_box)
+    assert "panel_top(" in source, (
+        "the choice box computes its own position again, so it can "
+        "drift away from the dialogue panel it sits in")
 
 
 def _run_all() -> None:
