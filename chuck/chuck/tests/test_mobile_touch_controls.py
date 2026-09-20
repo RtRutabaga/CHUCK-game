@@ -206,6 +206,69 @@ def test_a_failed_pointer_capture_cannot_swallow_a_press() -> None:
             f"throw before the press was registered")
 
 
+def test_every_control_is_sized_from_the_one_slider() -> None:
+    """The settings wheel was very nearly a no-op.
+
+    It used to widen the *bounds* of each `clamp()` rather than scale
+    the result. On a phone the floor wins at those viewports, so at full
+    stretch a button grew by half a pixel -- and the d-pad, which sizes
+    itself from its own variable, never moved at all. Measured before
+    the fix: pad 150px to 150px, JUMP 52px to 52.5px.
+
+    So every control size now multiplies by one variable, and this
+    checks each of them still does.
+    """
+    root = MOBILE_SHELL[MOBILE_SHELL.index(":root{"):]
+    root = root[:root.index("}")]
+    for name in ("--button", "--pad", "--chip"):
+        assert name in root, f"{name} is gone from the shell's sizes"
+        value = root.split(name + ":")[1].split(";")[0]
+        assert "var(--scale)" in value, (
+            f"{name} is {value!r}, which does not follow the size slider")
+    assert "--scale:1" in root, "no default scale"
+    assert "setProperty('--scale'" in MOBILE_SHELL, (
+        "the size slider no longer drives --scale")
+
+
+def test_no_control_carries_a_size_the_slider_cannot_reach() -> None:
+    """A hardcoded width is a control that ignores the setting.
+
+    The pause and gear chips were literally `46px` and stayed that size
+    at every slider position.
+    """
+    import re
+
+    for rule_id in ("#pause{", "#settings{", "#fullscreen{"):
+        rule = MOBILE_SHELL[MOBILE_SHELL.index(rule_id):]
+        rule = rule[:rule.index("}")]
+        for prop in ("min-width", "min-height"):
+            value = rule.split(prop + ":")[1].split(";")[0]
+            assert re.fullmatch(r"var\(--\w+\)", value), (
+                f"{rule_id[:-1]} sets {prop} to {value!r} rather than a "
+                f"variable, so the size slider cannot move it")
+
+
+def test_the_controls_remember_their_size() -> None:
+    """These are sized to a hand; re-finding it every visit is a tax."""
+    assert "localStorage.setItem" in MOBILE_SHELL
+    assert "localStorage.getItem" in MOBILE_SHELL
+    # Storage throws in private mode rather than returning null, and a
+    # thrown settings read would take the whole shell down with it.
+    read = MOBILE_SHELL[MOBILE_SHELL.index("localStorage.getItem"):]
+    assert "catch" in read[:400], "the settings read is not guarded"
+
+
+def test_portrait_is_told_to_turn_sideways() -> None:
+    """The game is 16:9. Held upright it is a sliver with controls on it."""
+    assert 'id="rotate"' in MOBILE_SHELL
+    assert "@media (orientation:portrait)" in MOBILE_SHELL
+    rule = MOBILE_SHELL[MOBILE_SHELL.index("#rotate{"):]
+    rule = rule[:rule.index("}")]
+    assert "display:none" in rule, (
+        "the rotate prompt is not hidden by default, so it would cover "
+        "the game in landscape too")
+
+
 def test_the_shell_hosts_the_game_rather_than_forking_it() -> None:
     """The reason desktop fixes reach the phone for free.
 

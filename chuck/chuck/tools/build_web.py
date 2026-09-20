@@ -100,24 +100,30 @@ if (window.top !== window.self || location.search.indexOf("mobile=1") >= 0) {
 MOBILE_SHELL = r'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>CHUCK — mobile test</title><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="CHUCK"><meta name="theme-color" content="#09070d">
 <style>
-:root{--button:clamp(52px,13vmin,92px);--pad:clamp(150px,36vmin,250px);--edge:clamp(12px,4vmin,42px)}
+/* --scale multiplies the sizes rather than stretching the clamp
+   bounds. Widening the bounds did almost nothing on a phone: at
+   these viewports the floor wins, so the slider moved a button by
+   half a pixel and the d-pad, on its own variable, not at all. */
+:root{--scale:1;--button:calc(clamp(52px,13vmin,92px) * var(--scale));--pad:calc(clamp(150px,36vmin,250px) * var(--scale));--chip:calc(46px * var(--scale));--edge:clamp(12px,4vmin,40px)}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#09070d;color:#fff;font:600 14px system-ui,sans-serif;touch-action:none;-webkit-user-select:none;user-select:none}
 #game{position:fixed;inset:0;width:100%;height:100%;border:0;background:#000}
 #controls{position:fixed;inset:0;pointer-events:none;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-.touch{pointer-events:auto;position:absolute;border:1px solid #ffffff55;background:#241d38cc;color:#fff;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:grid;place-items:center;min-width:var(--button);min-height:var(--button);font:700 clamp(11px,2.5vmin,16px) system-ui;border-radius:50%;box-shadow:0 2px 10px #0008}
+.touch{pointer-events:auto;position:absolute;border:1px solid #ffffff55;background:#241d38cc;color:#fff;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:grid;place-items:center;min-width:var(--button);min-height:var(--button);font:700 calc(clamp(11px,2.5vmin,16px) * var(--scale)) system-ui;border-radius:50%;box-shadow:0 2px 10px #0008}
 .touch:active,.touch.held{background:#7954a9dd;transform:scale(.96)}
 #pad{position:absolute;pointer-events:auto;left:calc(var(--edge) + env(safe-area-inset-left));bottom:calc(var(--edge) + env(safe-area-inset-bottom));width:var(--pad);height:var(--pad);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);gap:4px;background:#241d3866;border-radius:24%;touch-action:none}
-#pad .touch{position:static;width:100%;height:100%;min-width:0;min-height:0;border-radius:22%;font-size:clamp(20px,5vmin,38px);pointer-events:none}
+#pad .touch{position:static;width:100%;height:100%;min-width:0;min-height:0;border-radius:22%;font-size:calc(clamp(20px,5vmin,38px) * var(--scale));pointer-events:none}
 #up{grid-area:1/2}#left{grid-area:2/1}#down{grid-area:3/2}#right{grid-area:2/3}
 #actions{position:absolute;pointer-events:auto;right:calc(var(--edge) + env(safe-area-inset-right));bottom:calc(var(--edge) + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(2,var(--button));grid-auto-rows:var(--button);gap:10px}
 #actions .touch{position:static;width:100%;height:100%}
 #actions #jump{grid-area:2/2}#actions #scratch{grid-area:2/1}#actions #inspect{grid-area:1/2}
-#pause{right:calc(var(--edge) + env(safe-area-inset-right));top:calc(var(--edge) + env(safe-area-inset-top));min-width:46px;min-height:46px;border-radius:18px}
-#settings{left:calc(var(--edge) + env(safe-area-inset-left));top:calc(var(--edge) + env(safe-area-inset-top));min-width:46px;min-height:46px;border-radius:18px}
-#fullscreen{left:calc(var(--edge) + env(safe-area-inset-left) + 56px);top:calc(var(--edge) + env(safe-area-inset-top));min-width:46px;min-height:46px;border-radius:18px}
+#pause{right:calc(var(--edge) + env(safe-area-inset-right));top:calc(var(--edge) + env(safe-area-inset-top));min-width:var(--chip);min-height:var(--chip);border-radius:18px}
+#settings{left:calc(var(--edge) + env(safe-area-inset-left));top:calc(var(--edge) + env(safe-area-inset-top));min-width:var(--chip);min-height:var(--chip);border-radius:18px}
+#fullscreen{left:calc(var(--edge) + env(safe-area-inset-left) + 56px);top:calc(var(--edge) + env(safe-area-inset-top));min-width:var(--chip);min-height:var(--chip);border-radius:18px}
 #panel{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,360px);padding:20px;background:#171322f5;border:1px solid #ffffff55;border-radius:14px;pointer-events:auto;line-height:1.5;box-shadow:0 8px 30px #000b}
 #panel.open{display:block}#panel h1{font-size:18px;margin:0 0 12px}#panel label{display:block;margin:12px 0}#panel input{width:100%;accent-color:#ad80dc}#close{float:right;border:0;background:#ffffff22;color:white;border-radius:8px;padding:5px 10px}
-#hint{position:absolute;left:50%;bottom:calc(8px + env(safe-area-inset-bottom));transform:translateX(-50%);opacity:.8;font-size:11px;text-align:center;white-space:nowrap;text-shadow:0 1px 3px #000}
+#rotate{position:fixed;inset:0;z-index:30;display:none;place-items:center;text-align:center;padding:24px;background:#09070df5;color:#f6d68c;font:600 clamp(13px,4vmin,20px)/1.6 system-ui}
+#rotate span{display:block;color:#ffffffa0;font-weight:400;margin-top:8px}
+@media (orientation:portrait){#rotate{display:grid}}
 #code{position:absolute;inset:0;pointer-events:none;display:none}
 #code.open{display:block}
 #codebox{pointer-events:auto;position:absolute;left:50%;transform:translateX(-50%);top:calc(8px + env(safe-area-inset-top));width:min(94vw,520px);padding:12px 14px;background:#171322f5;border:1px solid #ffffff55;border-radius:14px;box-shadow:0 8px 30px #000b;line-height:1.4}
@@ -128,11 +134,11 @@ MOBILE_SHELL = r'''<!doctype html>
 #codebuttons button:active,#codeload.held{background:#7954a9dd}
 #codeload{background:#4d3f77}
 #codenote{margin:9px 0 0;font-weight:400;font-size:11px;opacity:.75}
-</style></head><body><iframe id="game" src="../index.html?mobile=1" allow="clipboard-read; clipboard-write" title="CHUCK game"></iframe><div id="controls">
+</style></head><body><div id="rotate"><div>Turn your phone sideways.<span>CHUCK is a landscape game.</span></div></div><iframe id="game" src="../index.html?mobile=1" allow="clipboard-read; clipboard-write" title="CHUCK game"></iframe><div id="controls">
 <div id="pad"><button class="touch" data-pad id="up" data-key="ArrowUp" data-code="ArrowUp" data-keycode="38" aria-label="Move up">▲</button><button class="touch" data-pad id="left" data-key="ArrowLeft" data-code="ArrowLeft" data-keycode="37" aria-label="Move left">◀</button><button class="touch" data-pad id="down" data-key="ArrowDown" data-code="ArrowDown" data-keycode="40" aria-label="Move down">▼</button><button class="touch" data-pad id="right" data-key="ArrowRight" data-code="ArrowRight" data-keycode="39" aria-label="Move right">▶</button></div>
 <div id="actions"><button class="touch" id="jump" data-key=" " data-code="Space" data-keycode="32" aria-label="Jump">JUMP</button><button class="touch" id="scratch" data-key="f" data-code="KeyF" data-keycode="70" aria-label="Scratch">SCRATCH</button><button class="touch" id="inspect" data-key="e" data-code="KeyE" data-keycode="69" aria-label="Inspect or talk">INSPECT<br>/ TALK</button></div>
-<button class="touch" id="pause" data-key="Escape" data-code="Escape" data-keycode="27" aria-label="Pause">Ⅱ</button><button class="touch" id="settings" aria-label="Control settings">⚙</button><button class="touch" id="fullscreen" aria-label="Full screen">⛶</button><div id="hint">Landscape prototype · ⚙ resizes controls</div>
-<div id="panel"><button id="close">Close</button><h1>Touch controls</h1><label>Control size <input id="size" type="range" min="70" max="140" value="100"></label><label>Left / right inset <input id="inset" type="range" min="0" max="70" value="30"></label><p>Keep fingers on the edges so the gameplay view stays clear.</p><p id="installnote">On iPhone there is no full-screen button: Safari does not offer one. Use <b>Share → Add to Home Screen</b>, then open CHUCK from that icon — it launches with no browser bars at all.</p></div>
+<button class="touch" id="pause" data-key="Escape" data-code="Escape" data-keycode="27" aria-label="Pause">Ⅱ</button><button class="touch" id="settings" aria-label="Control settings">⚙</button><button class="touch" id="fullscreen" aria-label="Full screen">⛶</button>
+<div id="panel"><button id="close">Close</button><h1>Touch controls</h1><label>Control size <input id="size" type="range" min="70" max="140" value="100"></label><label>Left / right inset <input id="inset" type="range" min="0" max="70" value="40"></label><p>Keep fingers on the edges so the gameplay view stays clear.</p><p id="installnote">On iPhone there is no full-screen button: Safari does not offer one. Use <b>Share → Add to Home Screen</b>, then open CHUCK from that icon — it launches with no browser bars at all.</p></div>
 <div id="code"><div id="codebox"><h1>Load a save code</h1><input id="codefield" type="text" inputmode="text" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false" maxlength="16" placeholder="XXXX-XXXX-XXXX" aria-label="Save code"><div id="codebuttons"><button id="codepaste">PASTE</button><button id="codeload" data-key="Enter" data-code="Enter" data-keycode="13" aria-label="Load this code">LOAD</button><button id="codehide">HIDE</button></div><p id="codenote"></p></div></div></div>
 <script>
 const frame=document.getElementById('game'); const active=new Map();
@@ -203,6 +209,11 @@ const root=document.documentElement; document.getElementById('settings').onclick
 const fullscreen=document.getElementById('fullscreen');
 const root0=document.documentElement;
 const canFullscreen=!!(root0.requestFullscreen||root0.webkitRequestFullscreen);
+// Already launched from the home screen: there are no browser bars to
+// lose, so the note has nothing to offer.
+const installed=matchMedia('(display-mode: standalone)').matches
+ ||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true;
+if(installed)document.getElementById('installnote').hidden=true;
 if(!canFullscreen){fullscreen.remove()}
 else{document.getElementById('installnote').hidden=true;
  fullscreen.onclick=async()=>{try{
@@ -213,7 +224,29 @@ else{document.getElementById('installnote').hidden=true;
    // way a failure here must not lose the full screen we just got.
    try{await screen.orientation.lock('landscape')}catch(e){}}
  }catch(e){}}}
-document.getElementById('size').oninput=e=>root.style.setProperty('--button',`clamp(52px,${e.target.value/10}vmin,${92*e.target.value/100}px)`);document.getElementById('inset').oninput=e=>root.style.setProperty('--edge',`clamp(12px,${e.target.value/10}vmin,${e.target.value}px)`);
+// Control size and inset, kept between visits.
+//
+// The size slider moves one multiplier and every control follows it:
+// the pad, the buttons and the two round chips. It used to widen the
+// clamp bounds instead, which on a phone did almost nothing -- the
+// floor wins at those viewports -- and never touched the pad at all,
+// because the pad sizes itself from its own variable.
+//
+// Remembering the choice matters more here than on a desktop: these are
+// sized to a hand, and re-finding the right size on every visit is the
+// kind of small tax that stops people playing.
+const sizeInput=document.getElementById('size'),insetInput=document.getElementById('inset');
+const SIZE_KEY='chuck.touch.controls';
+const applySize=v=>root.style.setProperty('--scale',v/100);
+const applyInset=v=>root.style.setProperty('--edge',`clamp(12px,${v/10}vmin,${v}px)`);
+try{const saved=JSON.parse(localStorage.getItem(SIZE_KEY)||'null');
+ if(saved&&saved.size){sizeInput.value=saved.size;applySize(saved.size)}
+ if(saved&&saved.inset!=null){insetInput.value=saved.inset;applyInset(saved.inset)}
+}catch(e){/* private mode, blocked storage: the defaults are fine */}
+function remember(){try{localStorage.setItem(SIZE_KEY,JSON.stringify(
+ {size:+sizeInput.value,inset:+insetInput.value}))}catch(e){}}
+sizeInput.oninput=e=>{applySize(e.target.value);remember()};
+insetInput.oninput=e=>{applyInset(e.target.value);remember()};
 document.addEventListener('visibilitychange',()=>{if(document.hidden){for(const b of active.values())key(b,false);active.clear();padRelease()}});
 // Entering a save code on a phone.
 //
