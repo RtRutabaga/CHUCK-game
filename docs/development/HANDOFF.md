@@ -209,13 +209,25 @@ what made it visible was removing the "Landscape prototype" note, which
 had been the only thing on screen and was standing in for a message
 that never existed.
 
-The shell shows "TAP TO PLAY" instead. **It must stay
-`pointer-events:none`:** the tap has to pass through into the iframe,
-because that is the frame Safari wants the gesture in, and a label that
-caught it would leave the player tapping a black screen for ever. A
-test fails if anyone makes it clickable. The listener that dismisses it
-goes on the *iframe's* document -- the parent never sees a touch that
-lands in there.
+The shell shows the notice instead, and the black screen has **two**
+halves that need different words: the ~11 MB download first, then the
+wait for a touch. pygbag's own `#infobox` tells them apart -- visible
+while fetching, hidden once done.
+
+**Two rules this must keep, both learned by getting them wrong:**
+
+- It stays `pointer-events:none`. The touch has to pass through into
+  the iframe, because that is the frame Safari wants the gesture in; a
+  notice that caught it would leave the player tapping a black screen
+  for ever.
+- **A ready canvas may only ever remove the notice, never raise a
+  prompt.** The first attempt gated "TAP TO PLAY" on the canvas being
+  ready -- but on Safari the canvas is only ready *because* the player
+  touched the page, so the prompt appeared at the moment it stopped
+  being true, over a running title screen, with the touch already gone
+  past. It was gated on the very thing it was asking for. A local
+  harness hid this by making the canvas ready on a timer; only a real
+  device made it ready on a *touch*.
 
 **iPhone Safari has no Fullscreen API**, and removing the button there
 was wrong: it left a player looking at browser bars with nothing to
@@ -291,7 +303,7 @@ five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
 **Branch** `main`, at the tip. Last full suite: **194 of 194** at
-121df58.
+6d8635b.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
