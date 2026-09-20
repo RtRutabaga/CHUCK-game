@@ -32,6 +32,7 @@ import sys
 
 from src.core import config
 from src.scenes.scene import Scene
+from src.core.runtime import touch_host
 from src.systems import clipboard, save_code
 from src.systems.checkpoints import is_save_point
 from src.systems.settings import LEVELS
@@ -59,6 +60,17 @@ CONTROLS_NOTE = "SAVE GAME gives you a code."
 def controls_rows(input_manager) -> tuple[tuple[str, str], ...]:
     """The controls page for whatever the player last used."""
     if input_manager is None or not input_manager.using_controller:
+        if touch_host():
+            # No FULLSCREEN row: the browser owns that, and on a phone
+            # it is the home screen rather than a key. See the shell.
+            label = prompts.label
+            return (
+                ("MOVE", prompts.TOUCH_MOVE),
+                ("TALK / EXAMINE", label(input_manager, "interact")),
+                ("JUMP", label(input_manager, "jump")),
+                ("SCRATCH", label(input_manager, "scratch")),
+                ("PAUSE", label(input_manager, "pause")),
+            )
         return CONTROLS[:-1] if sys.platform == "emscripten" else CONTROLS
     label = prompts.label
     rows = (
@@ -576,6 +588,10 @@ class PauseScene(Scene):
         if self.game.input.using_controller:
             return (f"{prompts.PAD_MOVE}: SPELL   "
                     f"{prompts.label(self.game.input, 'interact')}: LOAD")
+        if touch_host():
+            # The shell puts a field and a LOAD button at the top of the
+            # screen; the pad dials for anyone who closes it.
+            return "TYPE ABOVE, OR DIAL WITH THE PAD."
         return "CTRL-V PASTES.  ENTER LOADS.  ESC: BACK."
 
     def _big(self, text: str, tint=None):
