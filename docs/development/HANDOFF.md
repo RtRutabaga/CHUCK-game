@@ -153,20 +153,21 @@ through `_copy_now`, so the two cannot drift. The confirm panel grew to
 other so the fit test reads what the drawing uses. `test_pause_menu`
 pressed confirm options by index and now finds them by name.
 
-**The save-code panel has only been tested against a stub.** The real
-chain -- the game's load page turning paste on, the shell seeing
-`isPasteEnabled()`, `offerPaste` reaching `take_browser_paste` -- has
-never run end to end. The live bridge *is* reachable from the shell and
-answers `false` when no field is open, which is as far as it got.
+**The save-code panel is verified end to end against the real game.**
+Sean opened the browser pane, the live build booted, and the whole chain
+ran: the game's load page turned paste on, the shell's poll saw
+`isPasteEnabled()`, the panel appeared, a typed code went through
+`offerPaste` to `take_browser_paste`, and Enter resumed at temple_1 with
+the 12 cigarettes the code carried. The touch wording was visible in the
+same run -- "PAD UP / DOWN   INSPECT" on the title, "TYPE ABOVE, OR DIAL
+WITH THE PAD." on the load page.
 
 **Claude's browser pane cannot boot the wasm build at all while it is
-hidden**, which is worth knowing before anyone spends an hour on it:
-pygbag drives Python from `requestAnimationFrame`, and a hidden document
-halts it. Measured, not guessed -- zero animation frames in three
-seconds, `visibilityState: "hidden"`. The page sticks at "Loading,
-please wait ...". `show_pane` has no browser pane, so the pane has to be
-opened by hand before any in-game browser test will run. (The ~1.4 fps
-noted elsewhere is what it manages once visible.)
+hidden.** pygbag drives Python from `requestAnimationFrame`, and a
+hidden document halts it: zero animation frames in three seconds,
+measured, against 179 once the pane was open. The page sticks at
+"Loading, please wait ...". `show_pane` has no browser pane, so **ask
+Sean to open it** before attempting any in-game browser test.
 
 **A habit worth keeping.** Three tests written this session passed
 against deliberately broken code before they were fixed: a panel-overflow
@@ -190,6 +191,15 @@ layout, scene, rule or control may depend on it -- that belongs in the
 shell. Its docstring and `tests/test_touch_wording.py` both say so, and
 a test pins the marker to the one the shell sends, so the game cannot
 grow a second opinion about what a phone is.
+
+**The settings wheel did nothing, and now does (169ae9d).** It widened
+each `clamp()`'s bounds instead of scaling the result, and on a phone
+the floor wins: measured at full stretch, the d-pad went 150px to 150px
+and a button 52px to 52.5px. The pad was on a variable the slider never
+touched; the round chips were hardcoded. One `--scale` now multiplies
+every control size, kept in localStorage. Portrait gets a "turn
+sideways" prompt rather than a 16:9 sliver, and the prototype note is
+gone.
 
 **Not verified, and it needs a device:** copying a save code out, and
 both halves of the above on an actual iPhone -- whether `audioSession`
@@ -254,7 +264,7 @@ five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
 **Branch** `main`, at the tip. Last full suite: **194 of 194** at
-e9ac16d.
+169ae9d.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
