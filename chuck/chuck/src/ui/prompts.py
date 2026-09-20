@@ -65,11 +65,18 @@ _PAD_HINTS = {
 }
 
 # The same lines for a thumb. "Tap", because that is what is being done.
+#
+# The pause hint is empty on purpose, which means no hint at all. On a
+# keyboard the line has to exist because nothing on screen says ESC
+# pauses; on a phone the pause button is sitting in the corner the whole
+# time, so the line would be teaching a player to tap something already
+# in front of them. An empty hint draws nothing -- see
+# `TutorialHint.draw`.
 _TOUCH_HINTS = {
     config.HINT_INTERACT: "Tap INSPECT to interact",
     config.HINT_JUMP: "Tap JUMP to jump",
     config.HINT_SCRATCH: "Tap SCRATCH to scratch",
-    config.HINT_PAUSE: "Tap the pause button",
+    config.HINT_PAUSE: "",
 }
 
 def _on_pad(input_manager) -> bool:
@@ -97,7 +104,11 @@ def move_label(input_manager) -> str:
 
 
 def hint(input_manager, text: str) -> str:
-    """A tutorial hint, naming the control the player actually has."""
+    """A tutorial hint, naming the control the player actually has.
+
+    An empty return means the hint should not be shown at all on this
+    device, which is how the phone drops the pause hint.
+    """
     if _on_pad(input_manager):
         template = _PAD_HINTS.get(text)
         if template is None:

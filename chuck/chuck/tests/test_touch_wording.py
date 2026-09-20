@@ -61,12 +61,11 @@ def test_a_phone_is_told_to_tap_what_it_can_see() -> None:
         assert prompts.title_prompt(None) == "PAD UP / DOWN   INSPECT"
 
 
-def test_every_hint_the_game_can_show_has_a_thumb_version() -> None:
-    """A hint with no touch wording would still name a key.
+def test_no_hint_on_a_phone_still_names_a_key() -> None:
+    """Every hint is either reworded for a thumb, or silenced.
 
-    The keyboard lines live in config and the pad already has a template
-    for each; the phone needs the same coverage or a player is told to
-    press something that is not there.
+    What must never happen is a hint falling through unchanged and
+    telling a touch player to press something they do not have.
     """
     from src.core import config
 
@@ -78,6 +77,48 @@ def test_every_hint_the_game_can_show_has_a_thumb_version() -> None:
         for key in ("E", "SPACE", "ESC", "F"):
             assert f" {key} " not in f" {touched} ", (
                 f"the touch hint {touched!r} still names the {key} key")
+
+
+def test_the_phone_is_not_taught_to_pause() -> None:
+    """Sean's call, and it is the right one.
+
+    On a keyboard the line has to exist: nothing on screen says ESC
+    pauses. On a phone the pause button sits in the corner the whole
+    time, so the hint would teach a player to tap something already in
+    front of them. Silent on touch, unchanged everywhere else.
+    """
+    from src.core import config
+
+    with _touching():
+        assert prompts.hint(None, config.HINT_PAUSE) == ""
+    assert prompts.hint(None, config.HINT_PAUSE) == config.HINT_PAUSE
+    assert prompts.hint(_Pad(), config.HINT_PAUSE) == "Press Y to pause"
+
+
+def test_a_silent_hint_puts_nothing_on_the_screen() -> None:
+    """Empty wording has to mean nothing drawn, not an empty line drawn."""
+    import pygame
+
+    from src.core import config
+    from src.core.assets import AssetManager
+    from src.ui.tutorial_hint import TutorialHint
+
+    pygame.display.init()
+    pygame.display.set_mode((1, 1))
+    hint = TutorialHint(AssetManager(), None)
+    blank = pygame.Surface((config.NATIVE_WIDTH, config.NATIVE_HEIGHT))
+    surface = blank.copy()
+
+    with _touching():
+        hint.draw(surface, config.HINT_PAUSE)
+    assert pygame.image.tobytes(surface, "RGB") ==         pygame.image.tobytes(blank, "RGB"), (
+            "the silenced pause hint still drew something")
+
+    # And the ones that do have wording still appear, so this is not
+    # simply a hint system that stopped working.
+    with _touching():
+        hint.draw(surface, config.HINT_JUMP)
+    assert pygame.image.tobytes(surface, "RGB") !=         pygame.image.tobytes(blank, "RGB"), "the jump hint drew nothing"
 
 
 def test_the_controls_page_names_buttons_not_keys_on_a_phone() -> None:

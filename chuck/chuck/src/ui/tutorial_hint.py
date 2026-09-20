@@ -29,10 +29,17 @@ class TutorialHint:
         """Centered horizontally, TUTORIAL_HINT_TOP px from the top.
 
         Names the button rather than the key when the player is on a
-        controller (src/ui/prompts.py).
+        controller, and can be told there is nothing worth saying on
+        this device at all (src/ui/prompts.py).
         """
         from src.ui import prompts
 
-        rendered = self._font.render(prompts.hint(self._input, text))
+        line = prompts.hint(self._input, text)
+        if not line:
+            # A hint with no wording for this device is not shown. The
+            # phone's pause button is on screen the whole time and needs
+            # no teaching.
+            return
+        rendered = self._font.render(line)
         x = (surface.get_width() - rendered.get_width()) // 2
         surface.blit(rendered, (x, config.TUTORIAL_HINT_TOP))
