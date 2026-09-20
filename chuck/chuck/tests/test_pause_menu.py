@@ -117,15 +117,22 @@ def test_the_menu_does_what_it_says() -> None:
         _press(game, "interact")                  # back
         assert pause.page == "main"
 
-        # Quit asks first, and NO is where the caret starts.
+        # Quit asks first, and the caret never starts on YES. Which
+        # option leads depends on whether there is a code to copy, so
+        # the answers are found by name rather than by position.
         pause.selected = MAIN.index("QUIT TO TITLE")
         _press(game, "interact")
-        assert pause.page == "confirm" and pause.selected == 0
+        assert pause.page == "confirm"
+        assert pause.options[pause.selected] != "YES"
+        first = pause.selected
+        _press(game, "move_down")
+        assert pause.selected != first, "the warning should still navigate"
+        pause.selected = pause.options.index("NO")
         _press(game, "interact")                  # NO
         assert pause.page == "main" and game.scenes.current is pause
         pause.selected = MAIN.index("QUIT TO TITLE")
         _press(game, "interact")
-        _press(game, "move_down")
+        pause.selected = pause.options.index("YES")
         _press(game, "interact")                  # YES
         assert isinstance(game.scenes.current, TitleScene)
         assert len(game.scenes._stack) == 1

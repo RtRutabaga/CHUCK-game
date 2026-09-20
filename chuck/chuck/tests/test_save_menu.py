@@ -459,8 +459,9 @@ def test_quitting_hands_the_code_over_before_it_asks() -> None:
             assert pause._code, "quitting should show a code"
             assert save_code.decode(pause._code).checkpoint_id == "temple_1"
             assert save_code.decode(pause._code).cigarettes == 77
-            # NO is where the caret starts: leaving is the deliberate one.
-            assert pause.selected == 0
+            # The caret starts on COPY -- the useful, harmless thing --
+            # and never on YES: leaving is the deliberate one.
+            assert pause.options[pause.selected] == "COPY"
         finally:
             game._shutdown()
 
@@ -476,6 +477,106 @@ def test_quitting_only_offers_a_code() -> None:
             pause.choose("QUIT TO TITLE")
             assert pause._code
         finally:
+            game._shutdown()
+
+
+def test_the_quit_warning_can_copy_the_code_it_shows() -> None:
+    """The same offer the save page makes, on the page that needs it more.
+
+    Quitting is the last moment a code is reachable, and before this the
+    only way to keep it was to transcribe twelve characters by eye. On a
+    phone there is nothing to transcribe onto.
+    """
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        original = clipboard.copy
+        try:
+            game.checkpoints.load_checkpoint("temple_1")
+            game.cigarettes.replace(41)
+            pause = PauseScene(game)
+            game.scenes.push(pause)
+            pause.choose("QUIT TO TITLE")
+
+            assert pause.options == ("COPY", "NO", "YES")
+            taken = []
+            clipboard.copy = lambda text: taken.append(text) or True
+            pause.choose("COPY")
+            assert taken == [pause._code]
+            assert pause._note == "Copied"
+            # Copying is not leaving: the warning is still up, and the
+            # code it copied is still the one for this game.
+            assert pause.page == "confirm"
+            assert save_code.decode(taken[0]).cigarettes == 41
+
+            clipboard.copy = lambda text: False
+            pause.choose("COPY")
+            assert "Write it down" in pause._note
+            assert pause.page == "confirm"
+        finally:
+            clipboard.copy = original
+            game._shutdown()
+
+
+def test_the_quit_warning_offers_no_copy_when_there_is_nothing_to_copy() -> None:
+    """From a cutscene there is no code, so there is nothing to offer."""
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        try:
+            game.checkpoints.load_checkpoint("temple_1")
+            game.active_checkpoint_id = "opening_docks"
+            pause = PauseScene(game)
+            game.scenes.push(pause)
+            pause.choose("QUIT TO TITLE")
+            assert pause._code is None
+            assert pause.options == ("NO", "YES")
+        finally:
+            game._shutdown()
+
+
+def test_copying_on_the_way_out_does_not_stop_the_player_leaving() -> None:
+    """COPY is an extra, not a gate: YES and NO still do what they did."""
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        try:
+            game.checkpoints.load_checkpoint("temple_1")
+            pause = PauseScene(game)
+            game.scenes.push(pause)
+
+            pause.choose("QUIT TO TITLE")
+            pause.choose("NO")
+            assert pause.page == "main", "NO should go back, not leave"
+
+            pause.choose("QUIT TO TITLE")
+            pause.choose("YES")
+            from src.scenes.title_scene import TitleScene
+            assert isinstance(game.scenes.current, TitleScene)
+        finally:
+            game._shutdown()
+
+
+def test_a_copied_note_does_not_follow_the_player_onto_the_warning() -> None:
+    """"Copied" belongs to the page that copied.
+
+    Saving, then quitting, must not open the warning already claiming
+    something was copied from it.
+    """
+    with tempfile.TemporaryDirectory() as directory:
+        game = _game(directory)
+        original = clipboard.copy
+        try:
+            game.checkpoints.load_checkpoint("temple_1")
+            pause = PauseScene(game)
+            game.scenes.push(pause)
+            clipboard.copy = lambda text: True
+            pause.choose("SAVE GAME")
+            pause.choose("COPY")
+            assert pause._note == "Copied"
+
+            pause.back()
+            pause.choose("QUIT TO TITLE")
+            assert pause._note == ""
+        finally:
+            clipboard.copy = original
             game._shutdown()
 
 
@@ -502,7 +603,7 @@ def test_every_line_the_quit_warning_can_show_fits_its_panel() -> None:
     from src.ui.bitmap_font import ADVANCE
 
     usable = 250 - 16
-    for line in QUIT_WITHOUT_A_CODE + ("Write this down before you go:",
+    for line in QUIT_WITHOUT_A_CODE + ("Write this down, or copy it:",
                                        "Anything since here will be lost."):
         assert len(line) * ADVANCE - 1 <= usable, line
 
@@ -539,6 +640,43 @@ def test_both_pages_draw_without_running_off_their_panel() -> None:
             assert pause._big(pause._code).get_width() < 236 - 8
         finally:
             game._shutdown()
+
+
+def test_the_quit_warning_has_room_for_every_option_it_offers() -> None:
+    """Adding COPY pushed the options down, so the panel had to grow.
+
+    Checking the drawn pixels does not work here: the font's bottom two
+    rows are descender space, so a line that overruns by a little paints
+    nothing and an intact border proves nothing. What actually breaks is
+    the options colliding with the footer under them, so that is what
+    this checks -- from the same constants the drawing uses, so a fourth
+    option added without more height fails here rather than on screen.
+    """
+    from src.scenes.pause_scene import (
+        CONFIRM, CONFIRM_HEIGHT, CONFIRM_HEIGHT_NO_CODE, CONFIRM_MENU_TOP,
+        CONFIRM_MENU_TOP_NO_CODE, CONFIRM_WITH_CODE, FOOTER_MARGIN,
+    )
+    from src.ui.bitmap_font import GLYPH_H
+
+    line = GLYPH_H + 4
+
+    # Only the code page can show a footer: the note is cleared on the
+    # way in, and the one thing that sets it is COPY, which is not
+    # offered when there is no code. So this page owes the footer room
+    # and the other one does not.
+    last = CONFIRM_MENU_TOP + (len(CONFIRM_WITH_CODE) - 1) * line + GLYPH_H
+    footer_top = CONFIRM_HEIGHT - GLYPH_H - FOOTER_MARGIN
+    assert last <= footer_top, (
+        f"{CONFIRM_WITH_CODE} runs to y={last} but the footer starts at "
+        f"y={footer_top}; the quit warning needs a taller panel")
+
+    bare = CONFIRM_MENU_TOP_NO_CODE + (len(CONFIRM) - 1) * line + GLYPH_H
+    assert bare < CONFIRM_HEIGHT_NO_CODE, (
+        f"{CONFIRM} runs to y={bare} on a {CONFIRM_HEIGHT_NO_CODE}px panel")
+
+    for height in (CONFIRM_HEIGHT, CONFIRM_HEIGHT_NO_CODE):
+        assert height <= config.NATIVE_HEIGHT, (
+            f"a {height}px panel does not fit a {config.NATIVE_HEIGHT}px screen")
 
 
 def _run_all() -> None:

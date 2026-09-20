@@ -83,6 +83,11 @@ def main_options() -> tuple[str, ...]:
 
 VOLUME = ("MUSIC", "SOUND", "BACK")
 CONFIRM = ("NO", "YES")
+# With a code on screen there is something to do besides answer. The
+# page exists to put it in the player's hands, and a hand-typed code is
+# a poor substitute for a copied one -- especially on a phone, where
+# there is nothing to write on.
+CONFIRM_WITH_CODE = ("COPY", "NO", "YES")
 SAVED = ("COPY", "BACK")
 NOT_HERE = ("BACK",)
 
@@ -96,6 +101,17 @@ NO_SAVE_HERE = ("There is nowhere to save from here.",
 # mid-fall. There is no code to hand over, so say so plainly.
 QUIT_WITHOUT_A_CODE = ("No code from here.",
                        "Everything since your last is lost.")
+
+# The quit warning's panel, sized to what it has to hold: the code, a
+# line about what is lost, the options a font-line apart, and a line of
+# feedback under them. The numbers live here rather than inline so the
+# test that checks they still fit reads the same ones the drawing uses
+# -- add a fourth option without growing the height and it will say so.
+CONFIRM_HEIGHT = 128
+CONFIRM_MENU_TOP = 72
+CONFIRM_HEIGHT_NO_CODE = 106
+CONFIRM_MENU_TOP_NO_CODE = 74
+FOOTER_MARGIN = 6
 
 PANEL = (24, 22, 30)
 BORDER = (120, 116, 130)
@@ -160,7 +176,7 @@ class PauseScene(Scene):
         if self.page == "volume":
             return VOLUME
         if self.page == "confirm":
-            return CONFIRM
+            return CONFIRM_WITH_CODE if self._code else CONFIRM
         if self.page == "save":
             return SAVED if self._code else NOT_HERE
         # The load page has no option list at all; see `update`.
@@ -247,6 +263,9 @@ class PauseScene(Scene):
                 self.game.set_fullscreen(not self.game.settings.fullscreen)
             elif option == "QUIT TO TITLE":
                 self._code = self._code_here()
+                # A "Copied" from the save page belongs to the save
+                # page; this one starts with nothing to report.
+                self._note = ""
                 self._goto("confirm")
         elif self.page == "volume":
             if option == "BACK":
@@ -255,24 +274,41 @@ class PauseScene(Scene):
                 # E on a slider steps it up, wrapping to silent at the top.
                 self._nudge(1, wrap=True)
         elif self.page == "confirm":
-            if option == "YES":
+            if option == "COPY":
+                self._copy_now()
+            elif option == "YES":
                 self.quit_to_title()
             else:
                 self.back()
         elif self.page == "save":
             if option == "COPY":
-                if sys.platform == "emscripten":
-                    if self._copy_task is not None and not self._copy_task.done():
-                        return
-                    self._note = ""
-                    self._copy_task = asyncio.create_task(self._copy_code())
-                else:
-                    self._note = (
-                        "Copied" if clipboard.copy(self._code or "")
-                        else "No clipboard here. Write it down."
-                    )
+                self._copy_now()
             else:
                 self.back()
+
+    def _copy_now(self) -> None:
+        """Hand the shown code to the clipboard, and say what happened.
+
+        Both pages that show a code can do this, and they do it the same
+        way: saving offers it because a code is the save, and quitting
+        offers it because a code is the only thing that survives
+        leaving. One implementation, so the second cannot quietly drift
+        into behaving differently from the first.
+
+        The browser settles its clipboard promise in JavaScript, so
+        there the copy is a task and the note arrives later; a second
+        press while one is in flight is ignored rather than queued.
+        """
+        if sys.platform == "emscripten":
+            if self._copy_task is not None and not self._copy_task.done():
+                return
+            self._note = ""
+            self._copy_task = asyncio.create_task(self._copy_code())
+        else:
+            self._note = (
+                "Copied" if clipboard.copy(self._code or "")
+                else "No clipboard here. Write it down."
+            )
 
     async def _copy_code(self) -> None:
         copied = await clipboard.copy_browser(self._code or "")
@@ -449,7 +485,7 @@ class PauseScene(Scene):
     def _footer(self, canvas, rect, text: str) -> None:
         hint = self._text(text, alpha=150)
         canvas.blit(hint, (rect.centerx - hint.get_width() // 2,
-                           rect.bottom - hint.get_height() - 6))
+                           rect.bottom - hint.get_height() - FOOTER_MARGIN))
 
     def _draw_main(self, canvas) -> None:
         rect = self._panel(canvas, 150, 117, "PAUSED")
@@ -554,25 +590,36 @@ class PauseScene(Scene):
         it rather than warning about it in the abstract. Nothing is
         written here; the player is being given something to copy.
         """
-        rect = self._panel(canvas, 250, 106, "QUIT TO TITLE?")
+        # The code case carries a third option and a line of feedback,
+        # and the panel has to be tall enough for both: the options are
+        # a 13px line apart, so three of them no longer fit the height
+        # two used to need.
+        rect = self._panel(
+            canvas, 250,
+            CONFIRM_HEIGHT if self._code else CONFIRM_HEIGHT_NO_CODE,
+            "QUIT TO TITLE?")
         if self._code:
-            label = self._text("Write this down before you go:", alpha=190)
+            label = self._text("Write this down, or copy it:", alpha=190)
             canvas.blit(label, (rect.centerx - label.get_width() // 2,
                                 rect.y + 22))
             code = self._big(self._code, TITLE_TINT)
             canvas.blit(code, (rect.centerx - code.get_width() // 2,
                                rect.y + 34))
             lines, top = ("Anything since here will be lost.",), 56
+            menu_top = CONFIRM_MENU_TOP
         else:
             # No code to make room for, and one line more to fit.
             lines, top = QUIT_WITHOUT_A_CODE, 34
+            menu_top = CONFIRM_MENU_TOP_NO_CODE
         for index, line in enumerate(lines):
             text = self._text(line, alpha=200)
             canvas.blit(text, (rect.centerx - text.get_width() // 2,
                                rect.y + top + index * 11))
         line_h = self._font.get_height() + 4
-        for index, option in enumerate(CONFIRM):
+        for index, option in enumerate(self.options):
             caret = ">" if index == self.selected else " "
             text = self._text(f"{caret} {option}",
                               alpha=255 if index == self.selected else 190)
-            canvas.blit(text, (rect.x + 96, rect.y + 74 + index * line_h))
+            canvas.blit(text, (rect.x + 96, rect.y + menu_top + index * line_h))
+        if self._note:
+            self._footer(canvas, rect, self._note)
