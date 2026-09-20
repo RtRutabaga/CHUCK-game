@@ -201,6 +201,33 @@ every control size, kept in localStorage. Portrait gets a "turn
 sideways" prompt rather than a 16:9 sliver, and the prototype note is
 gone.
 
+**Safari will not start the game until the page has had a real touch**
+(121df58), and pygbag never says so: its only message element is the
+"Loading" line, hidden by then. The game therefore sat on a black
+screen waiting for a tap nobody knew to give. That was always true --
+what made it visible was removing the "Landscape prototype" note, which
+had been the only thing on screen and was standing in for a message
+that never existed.
+
+The shell shows "TAP TO PLAY" instead. **It must stay
+`pointer-events:none`:** the tap has to pass through into the iframe,
+because that is the frame Safari wants the gesture in, and a label that
+caught it would leave the player tapping a black screen for ever. A
+test fails if anyone makes it clickable. The listener that dismisses it
+goes on the *iframe's* document -- the parent never sees a touch that
+lands in there.
+
+**iPhone Safari has no Fullscreen API**, and removing the button there
+was wrong: it left a player looking at browser bars with nothing to
+explain them. The button stays and opens the panel holding the Add to
+Home Screen route, which is the only thing that works on iOS.
+
+**A process rule, learned the hard way this session:** work that is
+built and tested is not shipped. Say "pushed" or "live" only after the
+push has happened *and* the deployed page has been fetched and checked.
+Sean went to look at his phone for a fix that was still sitting
+uncommitted, because it had been described as done.
+
 **Not verified, and it needs a device:** copying a save code out, and
 both halves of the above on an actual iPhone -- whether `audioSession`
 really defeats the silent switch, and whether the home-screen launch
@@ -264,7 +291,7 @@ five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
 **Branch** `main`, at the tip. Last full suite: **194 of 194** at
-169ae9d.
+121df58.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.
