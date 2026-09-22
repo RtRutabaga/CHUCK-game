@@ -85,9 +85,23 @@ html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background:
 # loud.
 MOBILE_POINTER = """<a id="mobile-link" href="mobile/">On a phone? Touch controls</a>
 <script>
-if (window.top !== window.self || location.search.indexOf("mobile=1") >= 0) {
-  document.getElementById("mobile-link").remove();
-}
+(() => {
+  const link = document.getElementById("mobile-link");
+  // Inside the touch shell this page *is* the mobile build, and the
+  // link would offer to take the player where they already are.
+  if (window.top !== window.self || location.search.indexOf("mobile=1") >= 0) {
+    link.remove();
+    return;
+  }
+  // The game says when the title screen is up. The link is for someone
+  // who has just arrived holding a phone, so it belongs there and
+  // nowhere later: left alone it sits across the bottom of the game for
+  // the rest of the session, and a player on a controller has no way to
+  // dismiss it. Removed for good the moment the title is left behind.
+  window.CHUCKPage = {
+    setAtTitle(atTitle) { if (!atTitle && link.isConnected) link.remove(); }
+  };
+})();
 </script>"""
 
 # A landscape touch shell for phones: an iframe around the same browser

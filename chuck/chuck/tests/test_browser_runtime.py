@@ -182,6 +182,60 @@ def test_the_shell_is_installable_to_the_home_screen():
             "iOS needs this to launch without browser bars")
 
 
+def test_the_mobile_link_leaves_when_the_title_does():
+    """It is for somebody arriving, not somebody playing.
+
+    Left alone the link sits across the bottom of the game for the whole
+    session. A keyboard player could ignore it; a player on a controller
+    has no way to be rid of it at all, and on a 16:9 screen the canvas
+    reaches the bottom edge, so it lies over the game itself.
+
+    The game says when the title is up and the page acts on it. Both
+    halves of that have to keep agreeing -- rename one and the link
+    silently never leaves again.
+    """
+    import inspect
+
+    from src.scenes.title_scene import TitleScene
+    from src.systems import host_page
+
+    with tempfile.TemporaryDirectory() as folder:
+        web = Path(folder)
+        page = web / "index.html"
+        page.write_text('<canvas id=canvas></canvas> fopen("browser-app.apk")',
+                        encoding="utf-8")
+        (web / "browser-app.apk").write_bytes(b"game")
+        finalize_web_artifact(web)
+        html = page.read_text(encoding="utf-8")
+
+    assert "CHUCKPage" in html and "setAtTitle" in html, (
+        "the page no longer offers the hook the game calls")
+    assert "link.remove()" in html
+
+    # The game's side: the title says so on the way in and on the way
+    # out, and the call names what the page actually defines.
+    called = inspect.getsource(host_page.set_at_title)
+    assert "CHUCKPage.setAtTitle" in called, (
+        "the game calls something the page does not define")
+    for hook in ("on_enter", "on_exit"):
+        source = inspect.getsource(getattr(TitleScene, hook))
+        assert "set_at_title" in source, (
+            f"TitleScene.{hook} no longer tells the page where it is, so "
+            f"the link would never leave")
+
+
+def test_telling_the_page_where_we_are_cannot_break_the_game():
+    """Page furniture is never worth a crash, and never runs off the web."""
+    from src.systems import host_page
+
+    host_page.set_at_title(True)      # no browser here: must be inert
+    host_page.set_at_title(False)
+    source = __import__("inspect").getsource(host_page)
+    assert "emscripten" in source, "this would try to run on the desktop"
+    assert "except Exception" in source, (
+        "a page that has not defined the hook would take the game down")
+
+
 def test_browser_music_cancels_fade_before_replacing_track():
     with tempfile.TemporaryDirectory() as folder:
         directory = Path(folder)

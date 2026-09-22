@@ -27,6 +27,7 @@ import pygame
 
 from src.core import config
 from src.scenes.scene import Scene
+from src.systems import host_page
 
 
 TITLE_DIR = "title"
@@ -136,6 +137,13 @@ class TitleScene(Scene):
         # Very quiet space ambience under the portrait; the trim in
         # config keeps it well below every area theme.
         self.game.audio.play_music(TITLE_MUSIC)
+        # The browser page puts a link to the touch build under the
+        # title. It is for someone who has just arrived on a phone, so
+        # it belongs here and nowhere later. See src/systems/host_page.
+        host_page.set_at_title(True)
+
+    def on_exit(self) -> None:
+        host_page.set_at_title(False)
 
     def handle_event(self, event: pygame.event.Event) -> None:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
