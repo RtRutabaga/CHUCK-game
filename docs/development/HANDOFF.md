@@ -5,6 +5,26 @@
 
 ## Baton
 
+**Sean, 2026-09-21: the project is finished.** His words: "for all intents and
+purposes this project is finished", with the caveat that he may notice and
+change things later. Treat the game as complete, not closed -- the repository
+is not archived, and it should not be.
+
+Tagged **`v1.0`** at the commit that carried the last change. The root
+`README.md` was rewritten to be a front door for a finished game rather than
+setup notes: what it is, both play links, how the save codes work, the controls
+on all three input kinds, how to run and test it, and where the docs are.
+`chuck/chuck/README.md` had been describing Ashtray checkpoints and a CONTINUE
+option that the save-code system replaced; that is corrected.
+
+**Still Sean's to do on GitHub, and nobody else can:** set the repository's
+About panel -- description, the Pages URL as the website, a few topics -- and,
+if he wants one, cut a formal Release from the `v1.0` tag. Neither is needed
+for the game to work; both make a finished repository read as finished.
+
+**Do not archive it.** Archiving makes a repository read-only, which would
+block the changes he has explicitly reserved the right to make.
+
 **Claude, 2026-09-19: mobile save-code entry, and the phase sequence
 closed.** A phone can now resume a game. Two independent ways in, and
 `src/` is untouched by the second.
@@ -316,7 +336,7 @@ five destinations and passes. The 12 plank-procession checks also pass.
 The mobile-work notes below remain applicable; this pass is on main.
 
 **Branch** `main`, at the tip. Last full suite: **194 of 194** at
-2e62825.
+4f3c909, tagged `v1.0`.
 
 **Live:** <https://rtrutabaga.github.io/CHUCK-game/> and the landscape
 touch shell at `/mobile/`. Every push to `main` republishes both.

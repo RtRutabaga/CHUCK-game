@@ -13,14 +13,15 @@ pip install -r requirements.txt
 python main.py
 ```
 
-The game opens at a native-resolution title menu. NEW GAME starts fresh;
-CONTINUE becomes available after Chuck touches an Ashtray checkpoint. Saves use
-a single versioned JSON slot at `%LOCALAPPDATA%\CHUCK\save.json` on Windows.
+The game opens at a native-resolution title menu: NEW GAME, LOAD CODE,
+CONTROLS.
 
-For development, choose `DEV CHECKPOINTS` on the title screen, then select an
-authored test entry with Up/Down and E or Enter. Set
-`ENABLE_DEV_CHECKPOINT_SELECTOR = False` in `src/core/config.py` to remove that
-option without changing the real checkpoint or save architecture.
+**There are no save files.** SAVE GAME in the pause menu gives a
+twelve-character code and LOAD CODE takes one back, on any machine and in any
+build. The Ashtray checkpoints this file used to describe, and the CONTINUE
+option that went with them, were replaced by that system; `save.json` holds
+settings and the current slot, not a save the player can rely on. A code is the
+save.
 
 ## Building the Windows demo
 
