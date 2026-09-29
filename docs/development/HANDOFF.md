@@ -5,6 +5,38 @@
 
 ## Baton
 
+**Claude, 2026-09-28: enemies no longer lock Chuck into a fight.** Sean's
+request, with Animal Control excepted. Contact used to run
+`self.player.x, self.player.y = old_player_position` -- Chuck's whole move
+cancelled while any enemy hitbox overlapped his, in every direction. A
+pursuer that caught up stood in him and held him there, so the first hit
+committed him to the fight. Ten copies of that line, one per enemy family.
+
+Now only the closing half of a move is refused (`combat.moved_away`): a body
+is still solid to walk into, never a cage to walk out of. Chuck is faster
+than every pursuer (80 vs 68 at most), so being let go is all escaping
+needs. Contact still hurts, unchanged -- damage was already rate-limited by
+its own 0.8s invulnerability.
+
+Measured through the real update loop, zombie standing on Chuck, right held
+1.5s: **1.0px before, 94.3px now, 1.0px for an Animal Control officer.**
+
+- Officers share `self.undead` with zombies and knights, so the exception is
+  an explicit `isinstance` check in the one undead branch, not a separate
+  path. They are only on `modern_city_day_2`..`_5`, seven in total. Their
+  net (`NetCapture`) was always separate and is untouched.
+- **The horde orcs got the rule too.** They do not chase -- they are the
+  moving obstacles in the siege crossing -- but being unable to back out of
+  one you bumped into is the same trapped feeling. Reversible if Sean wants
+  that room as it was.
+- The siege catapult stays fully solid: scenery in the way, not an enemy.
+- Ten copies collapsed into `WorldScene._touched_by`, because the rule is
+  now subtler than "revert" and ten copies is how it drifts.
+
+`tests/test_enemy_escape.py` holds both halves, including two that drive the
+real `update` loop. Checked the escape test fails if the old behaviour is
+restored. **Suite 195 of 195, no failures.**
+
 **Sean, 2026-09-21: the project is finished.** His words: "for all intents and
 purposes this project is finished", with the caveat that he may notice and
 change things later. Treat the game as complete, not closed -- the repository

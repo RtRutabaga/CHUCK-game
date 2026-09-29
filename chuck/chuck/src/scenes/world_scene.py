@@ -90,7 +90,7 @@ from src.systems.captain_confrontation import (
     stage_deck_plank,
 )
 from src.systems.choice import Choice, ChoiceSystem, Option
-from src.systems.combat import scratch_first_target
+from src.systems.combat import moved_away, scratch_first_target
 from src.systems.dialogue import DialogueSystem
 from src.systems.fall import fall_zone_kind
 from src.systems.interaction import find_target
@@ -1459,22 +1459,14 @@ class WorldScene(Scene):
             (rat for rat in self.rats if overlaps(self.player.hitbox, rat.hitbox)),
             None,
         )
-        if blocking_rat is not None:
-            if self.sanity.damage(blocking_rat.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+        self._touched_by(blocking_rat, old_player_position)
 
         blocking_raccoon = next(
             (enemy for enemy in self.raccoons
              if overlaps(self.player.hitbox, enemy.hitbox)),
             None,
         )
-        if blocking_raccoon is not None:
-            if self.sanity.damage(blocking_raccoon.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+        self._touched_by(blocking_raccoon, old_player_position)
 
         blocking_undead = next(
             (enemy for enemy in self.undead
@@ -1482,10 +1474,11 @@ class WorldScene(Scene):
             None,
         )
         if blocking_undead is not None:
-            if self.sanity.damage(blocking_undead.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+            # Animal Control is the one enemy that still corners him.
+            self._touched_by(
+                blocking_undead, old_player_position,
+                lets_go=not isinstance(blocking_undead, AnimalControlOfficer),
+            )
 
         # The horde is not coming for him, but it is in his way. This is
         # the weave the room is made of: their paths converge on two
@@ -1495,11 +1488,7 @@ class WorldScene(Scene):
              if overlaps(self.player.hitbox, orc.hitbox)),
             None,
         )
-        if blocking_orc is not None:
-            if self.sanity.damage(blocking_orc.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+        self._touched_by(blocking_orc, old_player_position)
         if self.siege is not None and self.siege.blocks(self.player.hitbox):
             # The catapult is a thing in the way, not a thing that hurts.
             self.player.x, self.player.y = old_player_position
@@ -1509,66 +1498,42 @@ class WorldScene(Scene):
              if overlaps(self.player.hitbox, raptor.hitbox)),
             None,
         )
-        if blocking_raptor is not None:
-            if self.sanity.damage(blocking_raptor.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+        self._touched_by(blocking_raptor, old_player_position)
 
         blocking_redcap = next(
             (redcap for redcap in self.redcaps
              if overlaps(self.player.hitbox, redcap.hitbox)),
             None,
         )
-        if blocking_redcap is not None:
-            if self.sanity.damage(blocking_redcap.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+        self._touched_by(blocking_redcap, old_player_position)
 
         blocking_dinosaur = next(
             (dinosaur for dinosaur in self.dinosaurs
              if overlaps(self.player.hitbox, dinosaur.hitbox)),
             None,
         )
-        if blocking_dinosaur is not None:
-            if self.sanity.damage(blocking_dinosaur.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+        self._touched_by(blocking_dinosaur, old_player_position)
 
         blocking_snake = next(
             (snake for snake in self.snakes
              if overlaps(self.player.hitbox, snake.hitbox)),
             None,
         )
-        if blocking_snake is not None:
-            if self.sanity.damage(blocking_snake.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+        self._touched_by(blocking_snake, old_player_position)
 
         blocking_chef = next(
             (chef for chef in self.chefs
              if overlaps(self.player.hitbox, chef.hitbox)),
             None,
         )
-        if blocking_chef is not None:
-            if self.sanity.damage(blocking_chef.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+        self._touched_by(blocking_chef, old_player_position)
 
         blocking_fencer = next(
             (fencer for fencer in self.fencers
              if overlaps(self.player.hitbox, fencer.hitbox)),
             None,
         )
-        if blocking_fencer is not None:
-            if self.sanity.damage(blocking_fencer.damage):
-                self.player.hurt_blink = config.HURT_COOLDOWN
-                self.game.audio.play_sfx("hurt")
-            self.player.x, self.player.y = old_player_position
+        self._touched_by(blocking_fencer, old_player_position)
 
         # Talking: interact probes one tile ahead of Chuck.
         if self.game.input.was_pressed("interact"):
@@ -2984,6 +2949,21 @@ class WorldScene(Scene):
         enemy.tilemap = self.tilemap
         enemy.load_sprites(self.game.assets)
         self.undead.append(enemy)
+
+    def _touched_by(self, enemy, old_position, *, lets_go: bool = True) -> None:
+        """Contact hurts, and holds Chuck out of a body -- but lets him leave.
+
+        `lets_go` is False only for Animal Control, whose whole role is
+        to corner him; see `combat.moved_away`.
+        """
+        if enemy is None:
+            return
+        if self.sanity.damage(enemy.damage):
+            self.player.hurt_blink = config.HURT_COOLDOWN
+            self.game.audio.play_sfx("hurt")
+        if lets_go and moved_away(old_position, self.player, enemy):
+            return
+        self.player.x, self.player.y = old_position
 
     # ------------------------------------------------------------------
     # Animal Control's net
